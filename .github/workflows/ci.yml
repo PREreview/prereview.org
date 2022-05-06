@@ -37,3 +37,22 @@ jobs:
 
       - name: 'Run formatter'
         run: npm run format
+
+  deploy:
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - dockerfile
+      - format
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v2
+
+      - name: 'Set up flyctl'
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: 'Deploy app'
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
