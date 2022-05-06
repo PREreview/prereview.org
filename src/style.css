@@ -53,9 +53,22 @@ body > * {
   padding-inline: var(--space-m);
 }
 
-h1 {
-  font-size: var(--step-5);
+h1,
+h2 {
   font-weight: 700;
   line-height: 1.2;
   margin-block-start: var(--space-m);
+}
+
+h1 {
+  font-size: var(--step-5);
+}
+
+h2 {
+  font-size: var(--step-4);
+}
+
+ul {
+  margin-block-start: var(--space-s);
+  padding-inline-start: var(--space-m);
 }
