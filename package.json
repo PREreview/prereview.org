@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "engines": {
+    "node": "16",
+    "npm": "8"
+  },
+  "devDependencies": {
+    "prettier": "^2.6.2"
+  },
+  "scripts": {
+    "format": "prettier --ignore-unknown --check '**'",
+    "format:fix": "npm run format -- --write"
+  }
+}
