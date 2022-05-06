@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://unpkg.com/open-color@1.9.1/open-color.css');
+@import url('space.css');
+@import url('step.css');
+
+*,
+*::before,
+*::after {
+  padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+:root {
+  --font-sans-serif: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue',
+    'Noto Sans', 'Liberation Sans', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --color-background: white;
+  --color-text: var(--oc-gray-8);
+
+  font-family: var(--font-sans-serif);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+@media screen {
+  html {
+    color: var(--color-text);
+    background-color: var(--color-background);
+    block-size: 100%;
+  }
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-block-end: var(--space-m);
+  font-size: var(--step-0);
+}
+
+@media screen {
+  body {
+    min-block-size: 100%;
+    min-inline-size: 320px;
+  }
+}
+
+body > * {
+  inline-size: 100%;
+  max-inline-size: 100rem;
+  margin-inline: auto;
+  padding-inline: var(--space-m);
+}
+
+h1 {
+  font-size: var(--step-5);
+  font-weight: 700;
+  line-height: 1.2;
+  margin-block-start: var(--space-m);
+}

@@ -21,6 +21,7 @@ FROM node AS prod
 ENV NODE_ENV=production
 
 COPY --from=npm-prod /app/ .
+COPY src/ src/
 
 EXPOSE 3000
 

@@ -9,11 +9,17 @@
   },
   "devDependencies": {
     "prettier": "^2.6.2",
-    "prettier-plugin-sh": "^0.10.2"
+    "prettier-plugin-sh": "^0.10.2",
+    "stylelint": "^14.8.2",
+    "stylelint-config-logic-order": "^1.0.1",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-standard": "^25.0.0",
+    "stylelint-use-logical-spec": "^3.2.2"
   },
   "scripts": {
     "format": "prettier --ignore-unknown --check '**'",
     "format:fix": "npm run format -- --write",
-    "start": "serve src"
+    "start": "serve src",
+    "stylelint": "stylelint '**/*.css'"
   }
 }

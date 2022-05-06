@@ -1,0 +1,9 @@
+/* @link https://utopia.fyi/space/calculator?c=320,20,1.2,1600,24,1.25,5,2,&s=,1.5,s-l */
+
+:root {
+  --space-s: clamp(1.25rem, calc(1.19rem + 0.31vw), 1.5rem);
+  --space-m: clamp(1.88rem, calc(1.78rem + 0.47vw), 2.25rem);
+
+  /* One-up pairs */
+  --space-s-m: clamp(1.25rem, calc(1rem + 1.25vw), 2.25rem);
+}

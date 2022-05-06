@@ -1,0 +1,7 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-logic-order", "stylelint-config-prettier"],
+  "plugins": ["stylelint-use-logical-spec"],
+  "rules": {
+    "liberty/use-logical-spec": true
+  }
+}
