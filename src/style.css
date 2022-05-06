@@ -17,10 +17,38 @@
     'Noto Color Emoji';
   --color-background: white;
   --color-text: var(--oc-gray-8);
+  --color-focus: var(--oc-yellow-7);
+  --color-link: var(--oc-blue-6);
+  --width-divider: 4px;
 
   font-family: var(--font-sans-serif);
   font-weight: 400;
   line-height: 1.4;
+}
+
+@media screen {
+  :focus-visible {
+    outline: var(--color-focus) solid var(--width-divider);
+    outline-offset: var(--width-divider);
+  }
+}
+
+:any-link {
+  color: var(--color-link);
+}
+
+@media screen {
+  :any-link {
+    text-decoration: underline;
+    text-decoration-thickness: max(1px, 0.08rem);
+    text-underline-offset: 0.1em;
+  }
+
+  :any-link:hover {
+    text-decoration-thickness: max(3px, 0.1875rem, 0.12em);
+    text-decoration-skip-ink: none;
+    text-decoration-skip: none;
+  }
 }
 
 @media screen {
