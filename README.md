@@ -1,6 +1,8 @@
 # prereview.org
 
-⚠️ This repo doesn't yet do anything useful.
+The source code for [prereview.fly.dev].
+
+⚠️ This site doesn't yet contain anything.
 
 ## Development
 
@@ -19,4 +21,10 @@ npm start
 
 You can now access the app at <http://localhost:3000>.
 
+## Operations
+
+Once it passes CI, we deploy every commit on the `main` branch to [prereview.fly.dev], which [Fly.io] hosts.
+
+[fly.io]: https://fly.io/
 [node.js]: https://nodejs.org/
+[prereview.fly.dev]: https://prereview.fly.dev/

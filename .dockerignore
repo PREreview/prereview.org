@@ -2,5 +2,6 @@
 /.github/
 /node_modules/
 /.gitignore
+/fly.toml
 /LICENSE
 /README.md

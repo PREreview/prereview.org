@@ -1,0 +1,14 @@
+app = "prereview"
+
+[[services]]
+internal_port = 3000
+protocol = "tcp"
+script_checks = []
+
+[[services.ports]]
+handlers = ["http"]
+port = 80
+
+[[services.ports]]
+handlers = ["http", "tls"]
+port = 443
