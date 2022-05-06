@@ -68,7 +68,28 @@ h2 {
   font-size: var(--step-4);
 }
 
+ol,
 ul {
   margin-block-start: var(--space-s);
   padding-inline-start: var(--space-m);
+}
+
+p {
+  hyphens: auto;
+  margin-block-start: var(--space-xs);
+}
+
+.author-list {
+  display: flow-root;
+  font-style: italic;
+  padding-inline-start: 0;
+}
+
+.author-list > li {
+  display: inline-flex;
+  align-items: center;
+}
+
+.author-list > li:not(:last-child)::after {
+  content: ', ';
 }
