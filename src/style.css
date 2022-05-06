@@ -53,6 +53,10 @@ body > * {
   padding-inline: var(--space-m);
 }
 
+nav {
+  margin-block-start: var(--space-m);
+}
+
 h1,
 h2 {
   font-weight: 700;
@@ -77,6 +81,25 @@ ul {
 p {
   hyphens: auto;
   margin-block-start: var(--space-xs);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+}
+
+.back:any-link {
+  color: inherit;
+}
+
+.back::before {
+  content: '‹\00a0';
+}
+
+@media print {
+  .back {
+    display: none;
+  }
 }
 
 .author-list {
