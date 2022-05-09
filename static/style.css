@@ -177,6 +177,10 @@ p {
   margin-block-start: 0;
 }
 
+.cards h2 {
+  font-size: var(--step-3);
+}
+
 .cards a::after {
   position: absolute;
   inset: 0;
