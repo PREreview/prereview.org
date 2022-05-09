@@ -1,6 +1,7 @@
 import { createTerminus } from '@godaddy/terminus'
 import { SystemClock } from 'clock-ts'
 import express from 'express'
+import * as RTC from 'fp-ts-contrib/ReaderTask'
 import * as C from 'fp-ts/Console'
 import { pipe } from 'fp-ts/function'
 import fs from 'fs/promises'
@@ -39,7 +40,9 @@ const app = express()
     await fs
       .access(path.join('static', file))
       .then(() => (req.url = file))
-      .catch(() => {})
+      .catch(() => {
+        // do nothing
+      })
 
     next()
   })
@@ -52,12 +55,8 @@ server.on('listening', () => {
 })
 
 createTerminus(server, {
-  onShutdown: async () => {
-    L.debug('Shutting server down')(deps)()
-  },
-  onSignal: async () => {
-    L.debug('Signal received')(deps)()
-  },
+  onShutdown: RTC.fromReaderIO(L.debug('Shutting server down'))(deps),
+  onSignal: RTC.fromReaderIO(L.debug('Signal received'))(deps),
   signals: ['SIGINT', 'SIGTERM'],
 })
 
