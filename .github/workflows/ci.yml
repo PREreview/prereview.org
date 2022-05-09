@@ -116,6 +116,8 @@ jobs:
       - dockerfile
       - format
       - stylelint
+      - test-integration
+      - typecheck
 
     steps:
       - name: 'Checkout code'
