@@ -3,6 +3,16 @@
 @import url('space.css');
 @import url('step.css');
 
+.visually-hidden:not(:focus):not(:active) {
+  position: absolute;
+  white-space: nowrap;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  block-size: 1px;
+  inline-size: 1px;
+}
+
 *,
 *::before,
 *::after {
@@ -19,6 +29,8 @@
   --color-text: var(--oc-gray-8);
   --color-focus: var(--oc-yellow-7);
   --color-link: var(--oc-blue-6);
+  --color-divider: var(--oc-gray-3);
+  --color-divider-light: var(--oc-gray-1);
   --width-divider: 4px;
 
   font-family: var(--font-sans-serif);
@@ -85,6 +97,10 @@ nav {
   margin-block-start: var(--space-m);
 }
 
+article {
+  margin-block-start: var(--space-l);
+}
+
 h1,
 h2 {
   font-weight: 700;
@@ -143,4 +159,58 @@ p {
 
 .author-list > li:not(:last-child)::after {
   content: ', ';
+}
+
+.cards {
+  list-style-type: none;
+  padding-inline-start: 0;
+}
+
+.cards article {
+  position: relative;
+  padding-block: var(--space-xs);
+  padding-inline: var(--space-s);
+  inline-size: 100%;
+}
+
+.cards article > :first-child {
+  margin-block-start: 0;
+}
+
+.cards a::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  border: var(--width-divider) solid var(--color-divider-light);
+  border-radius: calc(var(--width-divider) * 5);
+}
+
+.cards a:hover::after {
+  border-color: var(--color-divider);
+}
+
+.cards a:focus-visible {
+  outline-width: 0;
+}
+
+@media screen {
+  .cards article a:focus-visible::after {
+    border-color: var(--color-divider);
+    outline: var(--color-focus) solid var(--width-divider);
+  }
+}
+
+.more {
+  margin-block-start: var(--space-xs);
+  display: inline-flex;
+  align-items: center;
+}
+
+.more:any-link {
+  color: inherit;
+}
+
+.more::before {
+  order: 1;
+  content: '\00a0›';
 }
