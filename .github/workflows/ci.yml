@@ -57,6 +57,39 @@ jobs:
       - name: 'Run stylelint'
         run: npm run stylelint
 
+  test-integration:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v2
+
+      - name: 'Set up Node.js'
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: ${{ !env.ACT && 'npm' || '' }}
+
+      - name: 'Install dependencies'
+        run: npm ci
+
+      - name: 'Install browser dependencies'
+        run: npx playwright install-deps
+
+      - name: 'Install browsers'
+        run: npx playwright install
+
+      - name: 'Run Playwright'
+        id: 'playwright'
+        run: npm run test:integration -- --forbid-only
+
+      - name: 'Store results'
+        if: failure() && steps.playwright.outcome == 'failure'
+        uses: actions/upload-artifact@v2
+        with:
+          name: integration-tests-results
+          path: integration-results
+
   typecheck:
     runs-on: ubuntu-20.04
 

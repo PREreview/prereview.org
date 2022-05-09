@@ -1,6 +1,7 @@
 /.git/
 /.github/
 /dist/
+/integration-results/
 /node_modules/
 /.gitignore
 /fly.toml
