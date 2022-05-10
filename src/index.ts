@@ -6,8 +6,10 @@ import * as C from 'fp-ts/Console'
 import { pipe } from 'fp-ts/function'
 import fs from 'fs/promises'
 import http from 'http'
+import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import path from 'path'
+import { appMiddleware } from './app'
 
 type AppEnv = L.LoggerEnv
 
@@ -47,6 +49,7 @@ const app = express()
     next()
   })
   .use(express.static('static'))
+  .use(pipe(appMiddleware, toRequestHandler))
 
 const server = http.createServer(app)
 

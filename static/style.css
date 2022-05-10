@@ -29,6 +29,7 @@
   --color-text: var(--oc-gray-8);
   --color-focus: var(--oc-yellow-7);
   --color-link: var(--oc-blue-6);
+  --color-link-dark: var(--oc-blue-8);
   --color-divider: var(--oc-gray-3);
   --color-divider-light: var(--oc-gray-1);
   --width-divider: 4px;
@@ -39,9 +40,12 @@
 }
 
 @media screen {
+  :not(input, button):focus-visible {
+    outline-offset: var(--width-divider);
+  }
+
   :focus-visible {
     outline: var(--color-focus) solid var(--width-divider);
-    outline-offset: var(--width-divider);
   }
 }
 
@@ -125,6 +129,84 @@ ul {
 p {
   hyphens: auto;
   margin-block-start: var(--space-xs);
+}
+
+label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  inline-size: fit-content;
+  cursor: pointer;
+  touch-action: manipulation;
+  margin-block-start: var(--space-m);
+}
+
+button {
+  display: inline-block;
+  font-size: var(--step-1);
+  font-weight: 700;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-align: center;
+  text-decoration-line: none;
+  line-height: 1.5;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+  color: var(--color-link-dark);
+  border: var(--width-divider) solid var(--color-link-dark);
+  border-radius: calc(var(--width-divider) * 5);
+  cursor: pointer;
+  transform: translateZ(0);
+  transition: filter 0.2s;
+  padding-block: var(--space-2xs);
+  padding-inline: var(--space-xs);
+  touch-action: manipulation;
+  user-select: none;
+}
+
+@media screen {
+  button {
+    color: var(--color-background);
+    background-color: var(--color-link-dark);
+    border: 0 solid transparent;
+    border-block-end-width: var(--width-divider);
+  }
+
+  button::after {
+    position: absolute;
+    content: '';
+    background-clip: padding-box;
+    background-color: var(--color-link);
+    border: 0 solid transparent;
+    border-block-end-width: 4px;
+    border-radius: 16px;
+    z-index: -1;
+    inset: 0;
+    inset-block-end: -4px;
+  }
+}
+
+:not(button) + button {
+  margin-block-start: var(--space-l);
+}
+
+button:focus {
+  user-select: auto;
+}
+
+button:hover {
+  filter: brightness(1.1);
+}
+
+[type='text'] {
+  font: inherit;
+  color: inherit;
+  background-color: var(--color-background);
+  border: var(--width-divider) solid currentcolor;
+  border-radius: 0;
+  padding-block: var(--space-3xs);
+  padding-inline: var(--space-2xs);
+  inline-size: 100%;
 }
 
 .back {

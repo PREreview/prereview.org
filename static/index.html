@@ -11,20 +11,15 @@
   <main>
     <h1>PREreview</h1>
 
-    <h2>Preprints</h2>
+    <h2>Find reviews for a preprint</h2>
 
-    <ol class="cards">
-      <li>
-        <article>
-          <h2>The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i></h2>
-          <a href="preprints/doi-10.1101-2022.01.13.476201.html" class="more">
-            Read reviews
-            <span class="visually-hidden"
-              >of “The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>”</span
-            >
-          </a>
-        </article>
-      </li>
-    </ol>
+    <form method="get" action="/lookup-doi" novalidate>
+      <label>
+        Preprint DOI
+        <input name="doi" type="text" spellcheck="false" value="10.1101/2022.01.13.476201" />
+      </label>
+
+      <button>Find reviews</button>
+    </form>
   </main>
 </html>
