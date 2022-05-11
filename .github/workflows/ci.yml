@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 'Lint Dockerfile'
         uses: hadolint/hadolint-action@v2.1.0
@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v2
@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v2
@@ -62,7 +62,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v2
@@ -95,7 +95,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 'Set up Node.js'
         uses: actions/setup-node@v2
@@ -121,7 +121,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: 'Set up flyctl'
         uses: superfly/flyctl-actions/setup-flyctl@master
