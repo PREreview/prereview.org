@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=IBM+Plex+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://unpkg.com/open-color@1.9.1/open-color.css');
 @import url('space.css');
 @import url('step.css');
@@ -25,6 +25,8 @@
   --font-sans-serif: 'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'Roboto', 'Helvetica Neue',
     'Noto Sans', 'Liberation Sans', 'Arial', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
+  --font-monospace: 'IBM Plex Mono', ui-monospace, 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Ubuntu Mono',
+    'Liberation Mono', 'DejaVu Sans Mono', 'Courier New', monospace;
   --color-primary: var(--oc-red-6);
   --color-background: white;
   --color-text: var(--oc-gray-8);
@@ -33,6 +35,7 @@
   --color-link-dark: var(--oc-blue-8);
   --color-divider: var(--oc-gray-3);
   --color-divider-light: var(--oc-gray-1);
+  --color-success: var(--oc-green-7);
   --width-divider: 4px;
 
   font-family: var(--font-sans-serif);
@@ -246,6 +249,10 @@ textarea,
   block-size: var(--space-3xl);
 }
 
+.doi {
+  font-family: var(--font-monospace);
+}
+
 .back {
   display: inline-flex;
   align-items: center;
@@ -278,6 +285,33 @@ textarea,
 
 .author-list > li:not(:last-child)::after {
   content: ', ';
+}
+
+.panel {
+  font-size: var(--step-1);
+  text-align: center;
+  line-height: 1.25;
+  padding: var(--space-xs-m);
+  border: var(--width-divider) solid transparent;
+}
+
+.panel > :first-child {
+  margin-block-start: 0;
+}
+
+@media print {
+  .panel {
+    border-color: var(--color-success);
+  }
+}
+
+@media screen {
+  .panel {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--color-background);
+    background-color: var(--color-success);
+  }
 }
 
 .cards {

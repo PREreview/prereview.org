@@ -9,11 +9,11 @@ test('can post a full PREreview', async ({ page }) => {
 
   const h1 = page.locator('h1')
 
-  test.fixme(true, 'Success message does not appear')
-
   await expect(h1).toContainText('PREreview posted')
 
   await page.click('text="Back to preprint"')
+
+  test.fixme(true, 'PREreview does not appear')
 
   const review = page.locator('main article').first()
 
