@@ -41,12 +41,13 @@
 }
 
 @media screen {
-  :not(input, button):focus-visible {
+  :not(input, textarea, button, .button):focus-visible {
     outline-offset: var(--width-divider);
   }
 
   :focus-visible {
     outline: var(--color-focus) solid var(--width-divider);
+    outline-offset: 0;
   }
 }
 
@@ -166,7 +167,8 @@ label {
   margin-block-start: var(--space-m);
 }
 
-button {
+button,
+.button {
   display: inline-block;
   font-size: var(--step-1);
   font-weight: 700;
@@ -185,19 +187,22 @@ button {
   transition: filter 0.2s;
   padding-block: var(--space-2xs);
   padding-inline: var(--space-xs);
+  margin-block-start: var(--space-l);
   touch-action: manipulation;
   user-select: none;
 }
 
 @media screen {
-  button {
+  button,
+  .button {
     color: var(--color-background);
     background-color: var(--color-link-dark);
     border: 0 solid transparent;
     border-block-end-width: var(--width-divider);
   }
 
-  button::after {
+  button::after,
+  .button::after {
     position: absolute;
     content: '';
     background-clip: padding-box;
@@ -211,18 +216,17 @@ button {
   }
 }
 
-:not(button) + button {
-  margin-block-start: var(--space-l);
-}
-
-button:focus {
+button:focus,
+.button:focus {
   user-select: auto;
 }
 
-button:hover {
+button:hover,
+.button:hover {
   filter: brightness(1.1);
 }
 
+textarea,
 [type='text'] {
   font: inherit;
   color: inherit;
@@ -232,6 +236,10 @@ button:hover {
   padding-block: var(--space-3xs);
   padding-inline: var(--space-2xs);
   inline-size: 100%;
+}
+
+:not(label) > :is(textarea, [type='text']) {
+  margin-block-start: var(--space-m);
 }
 
 .home-logo {
@@ -328,4 +336,8 @@ button:hover {
 .more::before {
   order: 1;
   content: '\00a0›';
+}
+
+.textarea {
+  inline-size: 100%;
 }
