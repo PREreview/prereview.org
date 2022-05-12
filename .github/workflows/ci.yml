@@ -206,7 +206,7 @@ jobs:
         run: echo "::set-output name=image::registry.fly.io/prereview:${{ github.sha }}"
 
       - name: 'Tag image'
-        run: docker tag ${{ steps.image.outputs.image }}
+        run: docker tag ${{ needs.build.outputs.image }} ${{ steps.image.outputs.image }}
 
       - name: 'Push image'
         run: docker push ${{ steps.image.outputs.image }}
@@ -219,6 +219,9 @@ jobs:
       - push
 
     steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v3.0.2
+
       - name: 'Set up flyctl'
         uses: superfly/flyctl-actions/setup-flyctl@master
 
