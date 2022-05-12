@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: 'Build'
     runs-on: ubuntu-20.04
     outputs:
       image: ${{ steps.build.outputs.imageid }}
@@ -32,6 +33,7 @@ jobs:
           path: /tmp/image.tar
 
   format:
+    name: 'Format'
     runs-on: ubuntu-20.04
 
     steps:
@@ -51,6 +53,7 @@ jobs:
         run: npm run format
 
   lint:
+    name: 'Lint'
     runs-on: ubuntu-20.04
 
     steps:
@@ -70,6 +73,7 @@ jobs:
         run: npm run lint
 
   test:
+    name: 'Test'
     runs-on: ubuntu-20.04
 
     steps:
@@ -89,6 +93,7 @@ jobs:
         run: npm run test
 
   test-integration:
+    name: 'Integration test'
     runs-on: ubuntu-20.04
 
     steps:
@@ -144,6 +149,7 @@ jobs:
         run: scripts/smoke-test.sh ${{ needs.build.outputs.image }}
 
   typecheck:
+    name: 'Typecheck'
     runs-on: ubuntu-20.04
 
     steps:
@@ -163,6 +169,7 @@ jobs:
         run: npm run typecheck
 
   deploy:
+    name: 'Deploy'
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/main'
     needs:
