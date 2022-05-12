@@ -49,6 +49,7 @@ const app = express()
     next()
   })
   .use(express.static('static'))
+  .use(express.urlencoded({ extended: true }))
   .use(pipe(appMiddleware, toRequestHandler))
 
 const server = http.createServer(app)
