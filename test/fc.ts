@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
-import { Body, createRequest, createResponse } from 'node-mocks-http'
+import { Body, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 
 export * from 'fast-check'
@@ -17,8 +17,20 @@ export const doi = (): fc.Arbitrary<Doi> =>
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
     .filter(isDoi)
 
-export const request = ({ body }: { body?: fc.Arbitrary<Body> } = {}): fc.Arbitrary<Request> =>
-  fc.record({ body: body ?? fc.constant(undefined), url: fc.webUrl() }).map(createRequest)
+export const requestMethod = (): fc.Arbitrary<RequestMethod> =>
+  fc.constantFrom('CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE')
+
+export const request = ({
+  body,
+  method,
+}: { body?: fc.Arbitrary<Body>; method?: fc.Arbitrary<RequestMethod> } = {}): fc.Arbitrary<Request> =>
+  fc
+    .record({
+      body: body ?? fc.constant(undefined),
+      method: method ?? requestMethod(),
+      url: fc.webUrl(),
+    })
+    .map(createRequest)
 
 export const response = (): fc.Arbitrary<Response> => fc.record({ req: request() }).map(createResponse)
 

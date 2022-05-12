@@ -6,7 +6,6 @@ import { pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { lookupDoi } from './lookup-doi'
-import { publishReview } from './publish-review'
 import { writeReview } from './write-review'
 
 const DoiC = C.fromDecoder(D.fromRefinement(isDoi, 'DOI'))
@@ -14,8 +13,6 @@ const DoiC = C.fromDecoder(D.fromRefinement(isDoi, 'DOI'))
 export const lookupDoiMatch = R.lit('lookup-doi')
   .then(query(C.struct({ doi: DoiC })))
   .then(R.end)
-
-export const publishReviewMatch = pipe(R.lit('publish-review'), R.then(R.end))
 
 export const writeReviewMatch = pipe(
   R.lit('preprints'),
@@ -29,10 +26,6 @@ export const router = pipe(
     pipe(
       lookupDoiMatch.parser,
       R.map(({ doi }) => lookupDoi(doi)),
-    ),
-    pipe(
-      publishReviewMatch.parser,
-      R.map(() => publishReview),
     ),
     pipe(
       writeReviewMatch.parser,
