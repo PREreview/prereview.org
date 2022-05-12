@@ -168,10 +168,12 @@ jobs:
       - name: 'Run typechecker'
         run: npm run typecheck
 
-  deploy:
-    name: 'Deploy'
+  push:
+    name: 'Push image'
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/main'
+    outputs:
+      image: ${{ steps.image.outputs.image }}
     needs:
       - build
       - format
@@ -182,13 +184,45 @@ jobs:
       - typecheck
 
     steps:
-      - name: 'Checkout code'
-        uses: actions/checkout@v3.0.2
+      - name: 'Set up flyctl'
+        uses: superfly/flyctl-actions/setup-flyctl@master
 
+      - name: 'Log in to the registry'
+        run: flyctl auth docker
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      - name: 'Download image'
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: image
+          path: /tmp
+
+      - name: 'Load image'
+        run: docker load --input /tmp/image.tar
+
+      - name: 'Generate image name'
+        id: image
+        run: echo "::set-output name=image::registry.fly.io/prereview:${{ github.sha }}"
+
+      - name: 'Tag image'
+        run: docker tag ${{ steps.image.outputs.image }}
+
+      - name: 'Push image'
+        run: docker push ${{ steps.image.outputs.image }}
+
+  deploy:
+    name: 'Deploy'
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/main'
+    needs:
+      - push
+
+    steps:
       - name: 'Set up flyctl'
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: 'Deploy app'
-        run: flyctl deploy --remote-only
+        run: flyctl deploy --image ${{ needs.push.outputs.image }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
