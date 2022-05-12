@@ -27,7 +27,7 @@
     "@types/http-errors": "^1.8.2",
     "@types/node": "^16.11.33",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
-    "@typescript-eslint/parser": "^5.22.0",
+    "@typescript-eslint/parser": "^5.23.0",
     "del-cli": "^4.0.1",
     "eslint": "^8.15.0",
     "eslint-config-prettier": "^8.5.0",
