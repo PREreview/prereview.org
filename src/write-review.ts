@@ -1,3 +1,18 @@
+import { format } from 'fp-ts-routing'
+import { flow, pipe } from 'fp-ts/function'
+import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
+import { publishReviewMatch } from './router'
+
+export const writeReview = pipe(
+  M.status(Status.OK),
+  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
+  M.ichainFirst(() => M.closeHeaders()),
+  M.ichain(flow(createPage, M.send)),
+)
+
+function createPage() {
+  return `
 <!DOCTYPE html>
 
 <html lang="en">
@@ -19,10 +34,12 @@
       </label>
     </h1>
 
-    <form method="post" action="/publish-review">
+    <form method="post" action="${format(publishReviewMatch.formatter, {})}">
       <textarea id="review" name="review" rows="20"></textarea>
 
       <button>Post PREreview</button>
     </form>
   </main>
 </html>
+`
+}

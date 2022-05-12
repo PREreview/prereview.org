@@ -7,6 +7,7 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { lookupDoi } from './lookup-doi'
 import { publishReview } from './publish-review'
+import { writeReview } from './write-review'
 
 const DoiC = C.fromDecoder(D.fromRefinement(isDoi, 'DOI'))
 
@@ -15,6 +16,13 @@ export const lookupDoiMatch = R.lit('lookup-doi')
   .then(R.end)
 
 export const publishReviewMatch = pipe(R.lit('publish-review'), R.then(R.end))
+
+export const writeReviewMatch = pipe(
+  R.lit('preprints'),
+  R.then(R.lit('doi-10.1101-2022.01.13.476201')),
+  R.then(R.lit('review')),
+  R.then(R.end),
+)
 
 export const router = pipe(
   [
@@ -25,6 +33,10 @@ export const router = pipe(
     pipe(
       publishReviewMatch.parser,
       R.map(() => publishReview),
+    ),
+    pipe(
+      writeReviewMatch.parser,
+      R.map(() => writeReview),
     ),
   ],
   M.concatAll(R.getParserMonoid()),
