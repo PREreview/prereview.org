@@ -7,17 +7,18 @@ on:
   pull_request:
 
 jobs:
-  dockerfile:
+  build:
     runs-on: ubuntu-20.04
 
     steps:
       - name: 'Checkout code'
         uses: actions/checkout@v3.0.2
 
-      - name: 'Lint Dockerfile'
-        uses: hadolint/hadolint-action@v2.1.0
-        with:
-          dockerfile: Dockerfile
+      - name: 'Set up Docker Build'
+        uses: docker/setup-buildx-action@v2.0.0
+
+      - name: 'Build image'
+        uses: docker/build-push-action@v3.0.0
 
   format:
     runs-on: ubuntu-20.04
@@ -132,7 +133,7 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/main'
     needs:
-      - dockerfile
+      - build
       - format
       - lint
       - test-integration
