@@ -2,7 +2,7 @@
 
 The source code for [prereview.fly.dev].
 
-⚠️ This site doesn't yet contain anything.
+🌱️ This site is under active development and will become [prereview.org].
 
 ## Development
 
@@ -28,3 +28,4 @@ Once it passes CI, we deploy every commit on the `main` branch to [prereview.fly
 [fly.io]: https://fly.io/
 [node.js]: https://nodejs.org/
 [prereview.fly.dev]: https://prereview.fly.dev/
+[prereview.org]: https://prereview.org/
