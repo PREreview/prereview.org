@@ -4,6 +4,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
+import { page } from './page'
 import { NonEmptyStringC } from './string'
 
 const NewReviewD = D.struct({
@@ -47,21 +48,9 @@ const showSuccessMessage = pipe(
 )
 
 function successMessage() {
-  return `
-  <!DOCTYPE html>
-
-<html lang="en">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <link href="../../style.css" rel="stylesheet" />
-
-  <title>PREreview posted</title>
-
-  <header>
-    <a href="../../index.html"><img src="../../prereview.svg" width="262" height="63" alt="PREreview" /></a>
-  </header>
-
+  return page({
+    title: 'PREreview posted',
+    content: `
   <main>
     <div class="panel">
       <h1>PREreview posted</h1>
@@ -78,26 +67,14 @@ function successMessage() {
 
     <a href="../doi-10.1101-2022.01.13.476201" class="button">Back to preprint</a>
   </main>
-</html>
-`
+`,
+  })
 }
 
 function form() {
-  return `
-<!DOCTYPE html>
-
-<html lang="en">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <link href="../../style.css" rel="stylesheet" />
-
-  <title>Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'</title>
-
-  <header>
-    <a href="../../index.html"><img src="../../prereview.svg" width="262" height="63" alt="PREreview" /></a>
-  </header>
-
+  return page({
+    title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    content: `
   <main>
     <h1>
       <label for="review">
@@ -111,6 +88,6 @@ function form() {
       <button>Post PREreview</button>
     </form>
   </main>
-</html>
-`
+`,
+  })
 }
