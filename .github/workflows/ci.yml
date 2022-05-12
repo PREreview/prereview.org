@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v3.0.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.1.1
         with:
           node-version: 16
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v3.0.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.1.1
         with:
           node-version: 16
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -65,7 +65,7 @@ jobs:
         uses: actions/checkout@v3.0.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.1.1
         with:
           node-version: 16
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -98,7 +98,7 @@ jobs:
         uses: actions/checkout@v3.0.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v2.5.1
+        uses: actions/setup-node@v3.1.1
         with:
           node-version: 16
           cache: ${{ !env.ACT && 'npm' || '' }}
