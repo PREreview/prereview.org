@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.2
 
       - name: 'Lint Dockerfile'
         uses: hadolint/hadolint-action@v2.1.0
@@ -24,10 +24,10 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v2.5.1
         with:
           node-version: 16
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -43,10 +43,10 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v2.5.1
         with:
           node-version: 16
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -62,10 +62,10 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v2.5.1
         with:
           node-version: 16
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -85,7 +85,7 @@ jobs:
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2.3.1
         with:
           name: integration-tests-results
           path: integration-results
@@ -95,10 +95,10 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.2
 
       - name: 'Set up Node.js'
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v2.5.1
         with:
           node-version: 16
           cache: ${{ !env.ACT && 'npm' || '' }}
@@ -121,7 +121,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.4.2
 
       - name: 'Set up flyctl'
         uses: superfly/flyctl-actions/setup-flyctl@master
