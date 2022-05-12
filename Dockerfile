@@ -49,6 +49,9 @@ COPY --from=npm-prod /app/node_modules/ node_modules/
 COPY --from=build-prod /app/dist/ dist/
 COPY static/ static/
 
+HEALTHCHECK --interval=5s --timeout=1s \
+  CMD wget --quiet --tries=1 --spider http://localhost:3000 || exit 1
+
 EXPOSE 3000
 USER node
 
