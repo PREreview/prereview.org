@@ -21,10 +21,7 @@ export const writeReview = pipe(
 
 const handleForm = pipe(
   M.decodeBody(NewReviewD.decode),
-  M.ichain(() => M.status(Status.SeeOther)),
-  M.ichain(() => M.header('Location', '/preprints/doi-10.1101-2022.01.13.476201/success')),
-  M.ichain(() => M.closeHeaders()),
-  M.ichain(() => M.end()),
+  M.ichainW(() => showSuccessMessage),
   M.orElse(() =>
     pipe(
       M.status(Status.SeeOther),
@@ -39,10 +36,53 @@ const showForm = pipe(
   M.status(Status.OK),
   M.ichainFirst(() => M.contentType(MediaType.textHTML)),
   M.ichainFirst(() => M.closeHeaders()),
-  M.ichain(flow(createPage, M.send)),
+  M.ichain(flow(form, M.send)),
 )
 
-function createPage() {
+const showSuccessMessage = pipe(
+  M.status(Status.OK),
+  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
+  M.ichainFirst(() => M.closeHeaders()),
+  M.ichain(flow(successMessage, M.send)),
+)
+
+function successMessage() {
+  return `
+  <!DOCTYPE html>
+
+<html lang="en">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link href="../../style.css" rel="stylesheet" />
+
+  <title>PREreview posted</title>
+
+  <header>
+    <a href="../../index.html"><img src="../../prereview.svg" width="262" height="63" alt="PREreview" /></a>
+  </header>
+
+  <main>
+    <div class="panel">
+      <h1>PREreview posted</h1>
+
+      <p>
+        Your DOI <br />
+        <strong class="doi">10.5072/zenodo.1055806</strong>
+      </p>
+    </div>
+
+    <h2>What happens next</h2>
+
+    <p>You’ll be able to see your PREreview shortly.</p>
+
+    <a href="../doi-10.1101-2022.01.13.476201" class="button">Back to preprint</a>
+  </main>
+</html>
+`
+}
+
+function form() {
   return `
 <!DOCTYPE html>
 
