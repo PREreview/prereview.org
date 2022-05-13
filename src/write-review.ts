@@ -1,3 +1,4 @@
+import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
 import { flow, pipe } from 'fp-ts/function'
 import { MediaType, Status } from 'hyper-ts'
@@ -37,7 +38,7 @@ function createDepositMetadata(review: NewReview): DepositMetadata {
 const handleForm = pipe(
   RM.decodeBody(NewReviewD.decode),
   RM.chainReaderTaskEitherK(flow(createDepositMetadata, createDeposition)),
-  RM.ichainMiddlewareKW(() => showSuccessMessage),
+  RM.ichainMiddlewareKW(deposition => showSuccessMessage(deposition.metadata.prereserve_doi.doi)),
   RM.orElseMiddlewareK(() =>
     pipe(
       M.status(Status.SeeOther),
@@ -55,14 +56,15 @@ const showForm = pipe(
   M.ichain(flow(form, M.send)),
 )
 
-const showSuccessMessage = pipe(
-  M.status(Status.OK),
-  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-  M.ichainFirst(() => M.closeHeaders()),
-  M.ichain(flow(successMessage, M.send)),
-)
+const showSuccessMessage = (doi: Doi) =>
+  pipe(
+    M.status(Status.OK),
+    M.ichainFirst(() => M.contentType(MediaType.textHTML)),
+    M.ichainFirst(() => M.closeHeaders()),
+    M.ichain(() => pipe(successMessage(doi), M.send)),
+  )
 
-function successMessage() {
+function successMessage(doi: Doi) {
   return page({
     title: 'PREreview posted',
     content: `
@@ -72,7 +74,7 @@ function successMessage() {
 
       <p>
         Your DOI <br />
-        <strong class="doi">10.5072/zenodo.1055806</strong>
+        <strong class="doi">${doi}</strong>
       </p>
     </div>
 
