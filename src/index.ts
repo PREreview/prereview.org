@@ -2,9 +2,21 @@ import { createTerminus } from '@godaddy/terminus'
 import { SystemClock } from 'clock-ts'
 import * as RTC from 'fp-ts-contrib/ReaderTask'
 import * as C from 'fp-ts/Console'
-import { pipe } from 'fp-ts/function'
+import * as IOE from 'fp-ts/IOEither'
+import { flow, pipe } from 'fp-ts/function'
+import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
 import { AppEnv, app } from './app'
+
+const EnvD = D.struct({})
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const env = pipe(
+  process.env,
+  IOE.fromEitherK(EnvD.decode),
+  IOE.orElseFirstIOK(flow(D.draw, C.log)),
+  IOE.getOrElse(() => process.exit(1)),
+)()
 
 const deps: AppEnv = {
   clock: SystemClock,

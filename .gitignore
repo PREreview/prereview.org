@@ -1,3 +1,4 @@
 /dist/
 /integration-results/
 /node_modules/
+/.env

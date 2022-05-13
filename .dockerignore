@@ -3,6 +3,8 @@
 /dist/
 /integration-results/
 /node_modules/
+/.env
+/.env.dist
 /.gitignore
 /fly.toml
 /LICENSE

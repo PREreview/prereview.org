@@ -12,7 +12,7 @@ The source code for [prereview.fly.dev].
 
 ### Running the app
 
-To build and run the app locally, execute:
+To build and run the app locally, create a `.env` file (based on [`.env.dist`](.env.dist)) and execute:
 
 ```shell
 npm ci
