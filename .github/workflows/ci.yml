@@ -118,6 +118,8 @@ jobs:
       - name: 'Run Playwright'
         id: 'playwright'
         run: npm run test:integration -- --forbid-only
+        env:
+          ZENODO_API_KEY: ${{ secrets.ZENODO_API_KEY }}
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'

@@ -2,8 +2,10 @@ import * as E from 'fp-ts/Either'
 import { flow, pipe } from 'fp-ts/function'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
+import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
+import { DepositMetadata, createDeposition } from 'zenodo-ts'
 import { page } from './page'
 import { NonEmptyStringC } from './string'
 
@@ -11,19 +13,32 @@ const NewReviewD = D.struct({
   review: NonEmptyStringC,
 })
 
+type NewReview = D.TypeOf<typeof NewReviewD>
+
 export const writeReview = pipe(
-  M.decodeMethod(E.right),
-  M.ichainW(method =>
+  RM.decodeMethod(E.right),
+  RM.ichainW(method =>
     match(method)
       .with('POST', () => handleForm)
-      .otherwise(() => showForm),
+      .otherwise(() => RM.fromMiddleware(showForm)),
   ),
 )
 
+function createDepositMetadata(review: NewReview): DepositMetadata {
+  return {
+    upload_type: 'publication',
+    publication_type: 'article',
+    title: 'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
+    creators: [{ name: 'PREreviewer' }],
+    description: review.review,
+  }
+}
+
 const handleForm = pipe(
-  M.decodeBody(NewReviewD.decode),
-  M.ichainW(() => showSuccessMessage),
-  M.orElse(() =>
+  RM.decodeBody(NewReviewD.decode),
+  RM.chainReaderTaskEitherK(flow(createDepositMetadata, createDeposition)),
+  RM.ichainMiddlewareKW(() => showSuccessMessage),
+  RM.orElseMiddlewareK(() =>
     pipe(
       M.status(Status.SeeOther),
       M.ichain(() => M.header('Location', '/preprints/doi-10.1101-2022.01.13.476201/review')),

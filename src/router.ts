@@ -30,7 +30,7 @@ export const router = pipe(
     ),
     pipe(
       writeReviewMatch.parser,
-      R.map(() => RM.fromMiddleware(writeReview)),
+      R.map(() => writeReview),
     ),
   ],
   M.concatAll(R.getParserMonoid()),

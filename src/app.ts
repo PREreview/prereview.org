@@ -8,10 +8,11 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import path from 'path'
+import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { handleError } from './http-error'
 import { router } from './router'
 
-export type AppEnv = L.LoggerEnv
+export type AppEnv = L.LoggerEnv & ZenodoAuthenticatedEnv
 
 const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
 

@@ -6,11 +6,13 @@ import * as IOE from 'fp-ts/IOEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
+import nodeFetch from 'node-fetch'
 import { AppEnv, app } from './app'
 
-const EnvD = D.struct({})
+const EnvD = D.struct({
+  ZENODO_API_KEY: D.string,
+})
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const env = pipe(
   process.env,
   IOE.fromEitherK(EnvD.decode),
@@ -20,7 +22,10 @@ const env = pipe(
 
 const deps: AppEnv = {
   clock: SystemClock,
+  fetch: nodeFetch,
   logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
+  zenodoApiKey: env.ZENODO_API_KEY,
+  zenodoUrl: new URL('https://sandbox.zenodo.org/'),
 }
 
 const server = app(deps)

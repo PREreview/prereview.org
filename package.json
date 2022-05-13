@@ -17,7 +17,9 @@
     "hyper-ts-routing": "^0.1.0",
     "io-ts": "^2.2.16",
     "logger-fp-ts": "^0.2.0",
-    "ts-pattern": "^4.0.2"
+    "node-fetch": "^2.6.7",
+    "ts-pattern": "^4.0.2",
+    "zenodo-ts": "^0.1.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.21.1",
@@ -28,6 +30,7 @@
     "@types/http-errors": "^1.8.2",
     "@types/jest": "^27.5.1",
     "@types/node": "^16.11.33",
+    "@types/node-fetch": "^2.6.1",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
     "del-cli": "^4.0.1",
