@@ -50,7 +50,7 @@ const app = express()
   })
   .use(express.static('static'))
   .use(express.urlencoded({ extended: true }))
-  .use(pipe(appMiddleware, toRequestHandler))
+  .use(pipe(appMiddleware(deps), toRequestHandler))
 
 const server = http.createServer(app)
 

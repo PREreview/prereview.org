@@ -3,6 +3,7 @@ import * as R from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
 import * as O from 'fp-ts/Option'
 import { pipe, tuple } from 'fp-ts/function'
+import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { lookupDoi } from './lookup-doi'
@@ -25,11 +26,11 @@ export const router = pipe(
   [
     pipe(
       lookupDoiMatch.parser,
-      R.map(({ doi }) => lookupDoi(doi)),
+      R.map(({ doi }) => RM.fromMiddleware(lookupDoi(doi))),
     ),
     pipe(
       writeReviewMatch.parser,
-      R.map(() => writeReview),
+      R.map(() => RM.fromMiddleware(writeReview)),
     ),
   ],
   M.concatAll(R.getParserMonoid()),
