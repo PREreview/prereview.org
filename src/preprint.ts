@@ -1,16 +1,21 @@
-<!DOCTYPE html>
+import { flow, pipe } from 'fp-ts/function'
+import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
+import { page } from './page'
 
-<html lang="en">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+const sendPage = flow(createPage, M.send)
 
-  <link href="../style.css" rel="stylesheet" />
+export const preprint = pipe(
+  M.status(Status.OK),
+  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
+  M.ichainFirst(() => M.closeHeaders()),
+  M.ichain(sendPage),
+)
 
-  <title>Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'</title>
-
-  <header>
-    <a href="../index.html"><img src="../prereview.svg" width="262" height="63" alt="PREreview" /></a>
-  </header>
+function createPage() {
+  return page({
+    title: "Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    content: `
 
   <article>
     <h1>The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i></h1>
@@ -44,4 +49,6 @@
       </li>
     </ol>
   </main>
-</html>
+`,
+  })
+}
