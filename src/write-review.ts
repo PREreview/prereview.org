@@ -7,7 +7,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
-import { DepositMetadata, createDeposition, uploadFile } from 'zenodo-ts'
+import { DepositMetadata, createDeposition, publishDeposition, uploadFile } from 'zenodo-ts'
 import { page } from './page'
 import { NonEmptyStringC } from './string'
 
@@ -39,7 +39,7 @@ function createDepositMetadata(review: NewReview): DepositMetadata {
 const handleForm = pipe(
   RM.decodeBody(NewReviewD.decode),
   RM.chainReaderTaskEitherK(createRecord),
-  RM.ichainMiddlewareKW(deposition => showSuccessMessage(deposition.metadata.prereserve_doi.doi)),
+  RM.ichainMiddlewareKW(deposition => showSuccessMessage(deposition.metadata.doi)),
   RM.orElseMiddlewareK(() =>
     pipe(
       M.status(Status.SeeOther),
@@ -61,6 +61,7 @@ function createRecord(review: NewReview) {
         content: review.review,
       }),
     ),
+    RTE.chain(publishDeposition),
   )
 }
 

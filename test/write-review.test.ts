@@ -2,7 +2,7 @@ import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
 import { MediaType, Status } from 'hyper-ts'
 import { Response } from 'node-fetch'
-import { UnsubmittedDeposition, UnsubmittedDepositionC } from 'zenodo-ts'
+import { SubmittedDeposition, SubmittedDepositionC, UnsubmittedDeposition, UnsubmittedDepositionC } from 'zenodo-ts'
 import * as _ from '../src/write-review'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -39,7 +39,7 @@ describe('write-review', () => {
             fc.connection({ body: fc.record({ review: fc.nonEmptyString() }), method: fc.constant('POST') }),
             fc.string(),
             async (connection, zenodoApiKey) => {
-              const deposition: UnsubmittedDeposition = {
+              const unsubmittedDeposition: UnsubmittedDeposition = {
                 id: 1,
                 links: {
                   bucket: new URL('http://example.com/bucket'),
@@ -58,16 +58,35 @@ describe('write-review', () => {
                 state: 'unsubmitted',
                 submitted: false,
               }
+              const submittedDeposition: SubmittedDeposition = {
+                id: 1,
+                metadata: {
+                  creators: [{ name: 'PREreviewer' }],
+                  description: 'Description',
+                  doi: '10.5072/zenodo.1055806' as Doi,
+                  title: 'Title',
+                  upload_type: 'publication',
+                  publication_type: 'article',
+                },
+                state: 'done',
+                submitted: true,
+              }
               const actual = await runMiddleware(
                 _.writeReview({
                   fetch: url => {
                     switch (url) {
                       case 'https://zenodo.org/api/deposit/depositions':
                         return Promise.resolve(
-                          new Response(UnsubmittedDepositionC.encode(deposition), { status: Status.Created }),
+                          new Response(UnsubmittedDepositionC.encode(unsubmittedDeposition), {
+                            status: Status.Created,
+                          }),
                         )
                       case 'http://example.com/bucket/review.txt':
                         return Promise.resolve(new Response(undefined, { status: Status.Created }))
+                      case 'http://example.com/publish':
+                        return Promise.resolve(
+                          new Response(SubmittedDepositionC.encode(submittedDeposition), { status: Status.Accepted }),
+                        )
                     }
 
                     return Promise.reject(new Response(undefined, { status: Status.NotFound }))
