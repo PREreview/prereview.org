@@ -7,6 +7,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { lookupDoi } from './lookup-doi'
+import { review } from './review'
 import { writeReview } from './write-review'
 
 const DoiC = C.fromDecoder(D.fromRefinement(isDoi, 'DOI'))
@@ -14,6 +15,8 @@ const DoiC = C.fromDecoder(D.fromRefinement(isDoi, 'DOI'))
 export const lookupDoiMatch = R.lit('lookup-doi')
   .then(query(C.struct({ doi: DoiC })))
   .then(R.end)
+
+export const reviewMatch = pipe(R.lit('reviews'), R.then(R.lit('6415043')), R.then(R.end))
 
 export const writeReviewMatch = pipe(
   R.lit('preprints'),
@@ -27,6 +30,10 @@ export const router = pipe(
     pipe(
       lookupDoiMatch.parser,
       R.map(({ doi }) => RM.fromMiddleware(lookupDoi(doi))),
+    ),
+    pipe(
+      reviewMatch.parser,
+      R.map(() => RM.fromMiddleware(review)),
     ),
     pipe(
       writeReviewMatch.parser,
