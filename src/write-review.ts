@@ -1,12 +1,13 @@
 import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
-import { DepositMetadata, createDeposition } from 'zenodo-ts'
+import { DepositMetadata, createDeposition, uploadFile } from 'zenodo-ts'
 import { page } from './page'
 import { NonEmptyStringC } from './string'
 
@@ -37,7 +38,7 @@ function createDepositMetadata(review: NewReview): DepositMetadata {
 
 const handleForm = pipe(
   RM.decodeBody(NewReviewD.decode),
-  RM.chainReaderTaskEitherK(flow(createDepositMetadata, createDeposition)),
+  RM.chainReaderTaskEitherK(createRecord),
   RM.ichainMiddlewareKW(deposition => showSuccessMessage(deposition.metadata.prereserve_doi.doi)),
   RM.orElseMiddlewareK(() =>
     pipe(
@@ -48,6 +49,20 @@ const handleForm = pipe(
     ),
   ),
 )
+
+function createRecord(review: NewReview) {
+  return pipe(
+    createDepositMetadata(review),
+    createDeposition,
+    RTE.chainFirst(
+      uploadFile({
+        name: 'review.txt',
+        type: 'text/plain',
+        content: review.review,
+      }),
+    ),
+  )
+}
 
 const showForm = pipe(
   M.status(Status.OK),

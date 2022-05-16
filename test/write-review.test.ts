@@ -41,6 +41,10 @@ describe('write-review', () => {
             async (connection, zenodoApiKey) => {
               const deposition: UnsubmittedDeposition = {
                 id: 1,
+                links: {
+                  bucket: new URL('http://example.com/bucket'),
+                  publish: new URL('http://example.com/publish'),
+                },
                 metadata: {
                   creators: [{ name: 'PREreviewer' }],
                   description: 'Description',
@@ -56,10 +60,18 @@ describe('write-review', () => {
               }
               const actual = await runMiddleware(
                 _.writeReview({
-                  fetch: () =>
-                    Promise.resolve(
-                      new Response(UnsubmittedDepositionC.encode(deposition), { status: Status.Created }),
-                    ),
+                  fetch: url => {
+                    switch (url) {
+                      case 'https://zenodo.org/api/deposit/depositions':
+                        return Promise.resolve(
+                          new Response(UnsubmittedDepositionC.encode(deposition), { status: Status.Created }),
+                        )
+                      case 'http://example.com/bucket/review.txt':
+                        return Promise.resolve(new Response(undefined, { status: Status.Created }))
+                    }
+
+                    return Promise.reject(new Response(undefined, { status: Status.NotFound }))
+                  },
                   zenodoApiKey,
                 }),
                 connection,
