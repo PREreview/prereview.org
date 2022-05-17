@@ -1,17 +1,30 @@
-import { pipe } from 'fp-ts/function'
+import * as A from 'fp-ts/Array'
+import * as O from 'fp-ts/Option'
+import { Predicate } from 'fp-ts/Predicate'
+import { flow, pipe } from 'fp-ts/function'
+import { NotFound } from 'http-errors'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Record, getRecord } from 'zenodo-ts'
+import { handleError } from './http-error'
 import { page } from './page'
 
-const sendPage = (review: Record) =>
-  pipe(
-    M.status(Status.OK),
-    M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-    M.ichainFirst(() => M.closeHeaders()),
-    M.ichain(() => pipe(createPage(review), M.send)),
-  )
+const isInCommunity: Predicate<Record> = flow(
+  O.fromNullableK(record => record.metadata.communities),
+  O.chain(A.findFirst(community => community.id === 'prereview-reviews')),
+  O.isSome,
+)
+
+const sendPage = flow(
+  (record: Record) => M.of(record),
+  M.filterOrElse(isInCommunity, () => new NotFound()),
+  M.ichainFirst(() => M.status(Status.OK)),
+  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
+  M.ichainFirst(() => M.closeHeaders()),
+  M.ichainW(flow(createPage, M.send)),
+  M.orElseW(handleError),
+)
 
 export const review = pipe(
   RM.right(1061864),
