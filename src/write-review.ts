@@ -33,6 +33,7 @@ function createDepositMetadata(review: NewReview): DepositMetadata {
     title: 'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
     creators: [{ name: 'PREreviewer' }],
     description: review.review,
+    communities: [{ identifier: 'prereview-reviews' }],
   }
 }
 
