@@ -1,14 +1,19 @@
 import { Fixtures, PlaywrightTestArgs, PlaywrightTestOptions, test as baseTest } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import fetchMock, { FetchMockSandbox } from 'fetch-mock'
-import * as IO from 'fp-ts/IO'
+import * as fs from 'fs/promises'
 import { Server } from 'http'
+import * as L from 'logger-fp-ts'
 import { app } from '../src/app'
+
+import Logger = L.Logger
+import LogEntry = L.LogEntry
 
 export { expect } from '@playwright/test'
 
 type AppFixtures = {
   fetch: FetchMockSandbox
+  logger: Logger
   server: Server
 }
 
@@ -25,11 +30,19 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   fetch: async ({}, use) => {
     await use(fetchMock.sandbox())
   },
-  server: async ({ fetch }, use) => {
+  logger: async ({}, use, testInfo) => {
+    const logs: Array<LogEntry> = []
+    const logger: Logger = entry => () => logs.push(entry)
+
+    await use(logger)
+
+    await fs.writeFile(testInfo.outputPath('server.log'), logs.map(L.ShowLogEntry.show).join('\n'))
+  },
+  server: async ({ fetch, logger }, use) => {
     const server = app({
       clock: SystemClock,
       fetch,
-      logger: () => IO.of(undefined),
+      logger,
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
     })
