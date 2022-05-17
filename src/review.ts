@@ -57,13 +57,7 @@ function createPage(review: Record) {
     <h1>Review of 'The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'</h1>
 
     <ol aria-label="Authors of this review" class="author-list">
-      <li>Alizée Malnoë</li>
-      <li>Jack Forsman</li>
-      <li>Jianli Duan</li>
-      <li>Jingfang Hao</li>
-      <li>Maria Paola Puggioni</li>
-      <li>Pierrick Bru</li>
-      <li>Pushan bag</li>
+      ${review.metadata.creators.map(author => `<li>${author.name}</li>`).join('\n')}
     </ol>
 
     ${review.metadata.description}
