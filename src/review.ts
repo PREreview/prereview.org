@@ -1,18 +1,50 @@
-import { flow, pipe } from 'fp-ts/function'
+import { pipe } from 'fp-ts/function'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
+import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Record, getRecord } from 'zenodo-ts'
 import { page } from './page'
 
-const sendPage = flow(createPage, M.send)
+const sendPage = (review: Record) =>
+  pipe(
+    M.status(Status.OK),
+    M.ichainFirst(() => M.contentType(MediaType.textHTML)),
+    M.ichainFirst(() => M.closeHeaders()),
+    M.ichain(() => pipe(createPage(review), M.send)),
+  )
 
 export const review = pipe(
-  M.status(Status.OK),
-  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-  M.ichainFirst(() => M.closeHeaders()),
-  M.ichain(sendPage),
+  RM.right(1061864),
+  RM.chainReaderTaskEitherK(getRecord),
+  RM.ichainMiddlewareKW(sendPage),
+  RM.orElseMiddlewareK(() => showFailureMessage),
 )
 
-function createPage() {
+const showFailureMessage = pipe(
+  M.status(Status.ServiceUnavailable),
+  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
+  M.ichainFirst(() => M.closeHeaders()),
+  M.ichain(() => pipe(failureMessage(), M.send)),
+)
+
+function failureMessage() {
+  return page({
+    title: 'Sorry, we’re having problems',
+    content: `
+  <main>
+    <h1>Sorry, we’re having problems</h1>
+
+    <p>We’re unable to show the PREreview now.</p>
+
+    <p>Please try again later.</p>
+
+    <a href="../doi-10.1101-2022.01.13.476201" class="button">Back to preprint</a>
+  </main>
+`,
+  })
+}
+
+function createPage(review: Record) {
   return page({
     title:
       "Review of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' by Jingfang Hao et al.",
@@ -34,110 +66,7 @@ function createPage() {
       <li>Pushan bag</li>
     </ol>
 
-    <p>
-      The manuscript “The role of LHCBM1 in non-photochemical quenching in <em>Chlamydomonas reinhardtii</em>” by Liu et
-      al. aims to elucidate how LHCBM1 is involved in non-photochemical quenching (NPQ) in
-      <em>Chlamydomonas reinhardtii</em>. The Chlamydomonas mutant lacking LHCBM1 (<em>npq5</em>) displays a low NPQ
-      phenotype. The authors found that the antenna size and LHCSR3 accumulation are not responsible for the lower NPQ
-      phenotype in <em>npq5</em>. They also artificially acidified the lumenal pH to protonate LHCSR3 for NPQ induction
-      and found that <em>npq5 </em>NPQ is still low. They propose that absence of LHCBM1 could alter the association of
-      LHCSR3 with the PSII supercomplex or that LHCBM1 interacts with LHCSR3 which would enhance its quenching capacity.
-      This work enriches the knowledge about the impact of lack of LHCBM1 on antenna size, PSII function, LHCSR1 and 3
-      proteins accumulation and NPQ capacity during a 48-h high light treatment.
-    </p>
-
-    <h2>Major comments</h2>
-    <ol>
-      <li>
-        <p>
-          Fig. 1, it is stated that LHCBM1 (Type IV) does not accumulate but Fig. S1 and S2 show that Type IV
-          accumulates between 7 and 9% of the total amount of LHCBMs. Could you comment on this accumulation, and
-          whether it increases in high light?
-        </p>
-      </li>
-      <li>
-        <p>
-          Statistical test between WT and <em>npq5</em> for all the data represented in bar graphs would be required to
-          state that differences are significant. Consider showing all data points in addition to error bars.
-        </p>
-      </li>
-
-      <li>
-        <p>
-          Consider providing Fo and Fm values for all fluorescence measurements (and D1 accumulation) to discuss whether
-          a possible increased Fo in <em>npq5</em> in HL is due to disconnected antenna and/or loss of functional core
-          complexes.
-        </p>
-      </li>
-
-      <li>
-        <p>
-          Discussion, discuss why there is much less LHCSR1 in the <em>npq5</em> mutant? Is this regulation at the
-          transcriptional or post-translational level? It could be that LHCBM1 interacts with LHCSR1 preventing its
-          degradation. In the abstract, and discussion, as no interaction data is shown, consider toning down statements
-          regarding LHCBM1 interaction with LHCSR3.
-        </p>
-      </li>
-
-      <li>
-        <p>
-          Discussion, discuss whether similar results were observed for the <em>npq4</em> mutant (increased antenna size
-          in HL and less functional PSII observed in <em>npq5</em>). Is this phenotype linked to the low NPQ capacity or
-          specific to the lower level of LHCBM1 in the <em>npq5</em> mutant?
-        </p>
-      </li>
-    </ol>
-
-    <h2>Minor comments</h2>
-    <ol>
-      <li>
-        Please give a title to summarize the first result in Fig. 1. In the result section, consider making the section
-        subtitles more informative about the main result from that section (e.g., “Photoprotection capacity after
-        high-light acclimation” could be “NPQ induction is severely hampered in <em>npq5</em> after high-light
-        acclimation”).
-      </li>
-
-      <li>
-        <p>
-          Page 3, method, actinic light of 1,500 μmol photons.m-2.s-1 (and saturating pulses of 12,000 &nbsp;μmol
-          photons.m-2.s-1) are used for the fluorescence measurements. Comment on the choice of such a high light
-          intensity (and high intensity pulses, actinic effect?). Why not use a light intensity closer to the HL
-          treatment? Also state length of dark-acclimation prior to each type of measurement.
-        </p>
-      </li>
-
-      <li><p>Immunoblot method, state dilutions used and secondary antibody type and dilution used.</p></li>
-      <li>
-        <p>
-          Page 4, it is stated that “the level of the other LHCBMs is similar to that of WT (CC-425)” by referring to
-          Fig. S1 and S2. It is difficult to see in Fig. S1 that the level of other LHCBMs is similar in
-          <em>npq5</em> and WT as the data is represented in percentage of total LHCBMs. Could you also represent the
-          amount of the different LHCBMs in <em>npq5</em> normalized to WT in a bar graph? For the Type III and Type
-          II/I LHCBMs accumulation, a dilution series might be best for quantification to ensure that CP47 antibody
-          signal is not saturated.
-        </p>
-      </li>
-
-      <li>
-        <p>
-          In Fig. S1, <em>npq5</em> should be italic. In Fig. S2, one of the labels is likely wrong: there are two 48h
-          time points. By biological replica, is it meant three independent batches of grown and treated cells? What is
-          the fourth band right below the upper band detected by the LHCBM5 antibody at 48h?
-        </p>
-      </li>
-
-      <li><p>Fig. 5, please enlarge panels B and C to match panel A.</p></li>
-      <li><p>Fig. 6, specify in the legend that 24h and 48h refer to the HL treatment.</p></li>
-      <li>
-        <p>Discussion, “and confirmed here by analysis of the [<em>npq5</em>] mutant” (not <em>npq4</em>)</p>
-      </li>
-    </ol>
-
-    <p>
-      Jingfang Hao and Pierrick Bru (Umeå University) - not prompted by a journal; this review was written within a
-      preprint journal club with input from group discussion including Alizée Malnoë, Aurélie Crepin, Fadime Demirel,
-      Jack Forsman and Domenica Farci.
-    </p>
+    ${review.metadata.description}
   </main>
 `,
   })

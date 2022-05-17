@@ -40,7 +40,7 @@ export const router = pipe(
     ),
     pipe(
       reviewMatch.parser,
-      R.map(() => RM.fromMiddleware(review)),
+      R.map(() => review),
     ),
     pipe(
       writeReviewMatch.parser,
