@@ -1,14 +1,14 @@
 import { Fixtures, PlaywrightTestArgs, PlaywrightTestOptions, test as baseTest } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
-import dotenv from 'dotenv'
+import fetchMock, { FetchMockSandbox } from 'fetch-mock'
 import * as IO from 'fp-ts/IO'
 import { Server } from 'http'
-import nodeFetch from 'node-fetch'
 import { app } from '../src/app'
 
 export { expect } from '@playwright/test'
 
 type AppFixtures = {
+  fetch: FetchMockSandbox
   server: Server
 }
 
@@ -22,15 +22,16 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await use(`http://localhost:${address.port}`)
   },
-  server: async ({}, use) => {
-    dotenv.config()
-
+  fetch: async ({}, use) => {
+    await use(fetchMock.sandbox())
+  },
+  server: async ({ fetch }, use) => {
     const server = app({
       clock: SystemClock,
-      fetch: nodeFetch,
+      fetch,
       logger: () => IO.of(undefined),
-      zenodoApiKey: process.env.ZENODO_API_KEY ?? '',
-      zenodoUrl: new URL('https://sandbox.zenodo.org/'),
+      zenodoApiKey: '',
+      zenodoUrl: new URL('http://zenodo.test/'),
     })
 
     server.listen()
