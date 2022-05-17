@@ -16,14 +16,9 @@ const config: PlaywrightTestConfig = {
   ],
   testDir: 'integration',
   use: {
-    baseURL: 'http://localhost:3000/',
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
-  },
-  webServer: {
-    command: 'npm start',
-    port: 3000,
   },
 }
 

@@ -17,6 +17,12 @@
       "rules": {
         "@typescript-eslint/no-unsafe-assignment": "off"
       }
+    },
+    {
+      "files": ["integration/test.ts"],
+      "rules": {
+        "no-empty-pattern": "off"
+      }
     }
   ],
   "parserOptions": {

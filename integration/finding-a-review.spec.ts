@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 
 test('can find and view a review', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
