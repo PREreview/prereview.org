@@ -37,10 +37,15 @@ function createDepositMetadata(review: NewReview): DepositMetadata {
   }
 }
 
+const handleNewReview = flow(
+  RM.fromReaderTaskEitherK(createRecord),
+  RM.ichainMiddlewareKW(deposition => showSuccessMessage(deposition.metadata.doi)),
+  RM.orElseMiddlewareK(() => showFailureMessage),
+)
+
 const handleForm = pipe(
   RM.decodeBody(NewReviewD.decode),
-  RM.chainReaderTaskEitherK(createRecord),
-  RM.ichainMiddlewareKW(deposition => showSuccessMessage(deposition.metadata.doi)),
+  RM.ichainW(handleNewReview),
   RM.orElseMiddlewareK(() =>
     pipe(
       M.status(Status.SeeOther),
@@ -81,6 +86,13 @@ const showSuccessMessage = (doi: Doi) =>
     M.ichain(() => pipe(successMessage(doi), M.send)),
   )
 
+const showFailureMessage = pipe(
+  M.status(Status.ServiceUnavailable),
+  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
+  M.ichainFirst(() => M.closeHeaders()),
+  M.ichain(() => pipe(failureMessage(), M.send)),
+)
+
 function successMessage(doi: Doi) {
   return page({
     title: 'PREreview posted',
@@ -98,6 +110,23 @@ function successMessage(doi: Doi) {
     <h2>What happens next</h2>
 
     <p>You’ll be able to see your PREreview shortly.</p>
+
+    <a href="../doi-10.1101-2022.01.13.476201" class="button">Back to preprint</a>
+  </main>
+`,
+  })
+}
+
+function failureMessage() {
+  return page({
+    title: 'Sorry, we’re having problems',
+    content: `
+  <main>
+    <h1>Sorry, we’re having problems</h1>
+
+    <p>We’re unable to post your PREreview now.</p>
+
+    <p>Please try again later.</p>
 
     <a href="../doi-10.1101-2022.01.13.476201" class="button">Back to preprint</a>
   </main>

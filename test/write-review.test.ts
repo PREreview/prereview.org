@@ -4,6 +4,7 @@ import { MediaType, Status } from 'hyper-ts'
 import { Response } from 'node-fetch'
 import { SubmittedDeposition, SubmittedDepositionC, UnsubmittedDeposition, UnsubmittedDepositionC } from 'zenodo-ts'
 import * as _ from '../src/write-review'
+import { fetchResponse } from './fc'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
@@ -124,6 +125,36 @@ describe('write-review', () => {
                   { type: 'setStatus', status: Status.SeeOther },
                   { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
                   { type: 'endResponse' },
+                ]),
+              )
+            },
+          ),
+        )
+      })
+
+      test('Zenodo is unavailable', async () => {
+        await fc.assert(
+          fc.asyncProperty(
+            fc.connection({ body: fc.record({ review: fc.nonEmptyString() }), method: fc.constant('POST') }),
+            fc.string(),
+            fc.oneof(
+              fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
+              fc.error().map(error => Promise.reject(error)),
+            ),
+            async (connection, zenodoApiKey, response) => {
+              const actual = await runMiddleware(
+                _.writeReview({
+                  fetch: () => response,
+                  zenodoApiKey,
+                }),
+                connection,
+              )()
+
+              expect(actual).toStrictEqual(
+                E.right([
+                  { type: 'setStatus', status: Status.ServiceUnavailable },
+                  { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                  { type: 'setBody', body: expect.anything() },
                 ]),
               )
             },
