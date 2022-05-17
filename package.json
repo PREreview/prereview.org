@@ -19,7 +19,7 @@
     "logger-fp-ts": "^0.2.0",
     "node-fetch": "^2.6.7",
     "ts-pattern": "^4.0.2",
-    "zenodo-ts": "^0.1.3"
+    "zenodo-ts": "^0.1.4"
   },
   "devDependencies": {
     "@playwright/test": "^1.22.0",
