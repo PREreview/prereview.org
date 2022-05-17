@@ -1,10 +1,9 @@
 import { Doi } from 'doi-ts'
+import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { MediaType, Status } from 'hyper-ts'
-import { Response } from 'node-fetch'
 import { SubmittedDeposition, SubmittedDepositionC, UnsubmittedDeposition, UnsubmittedDepositionC } from 'zenodo-ts'
 import * as _ from '../src/write-review'
-import { fetchResponse } from './fc'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
@@ -74,24 +73,19 @@ describe('write-review', () => {
               }
               const actual = await runMiddleware(
                 _.writeReview({
-                  fetch: url => {
-                    switch (url) {
-                      case 'https://zenodo.org/api/deposit/depositions':
-                        return Promise.resolve(
-                          new Response(UnsubmittedDepositionC.encode(unsubmittedDeposition), {
-                            status: Status.Created,
-                          }),
-                        )
-                      case 'http://example.com/bucket/review.txt':
-                        return Promise.resolve(new Response(undefined, { status: Status.Created }))
-                      case 'http://example.com/publish':
-                        return Promise.resolve(
-                          new Response(SubmittedDepositionC.encode(submittedDeposition), { status: Status.Accepted }),
-                        )
-                    }
-
-                    return Promise.reject(new Response(undefined, { status: Status.NotFound }))
-                  },
+                  fetch: fetchMock
+                    .sandbox()
+                    .postOnce('https://zenodo.org/api/deposit/depositions', {
+                      body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+                      status: Status.Created,
+                    })
+                    .putOnce('http://example.com/bucket/review.txt', {
+                      status: Status.Created,
+                    })
+                    .postOnce('http://example.com/publish', {
+                      body: SubmittedDepositionC.encode(submittedDeposition),
+                      status: Status.Accepted,
+                    }),
                   zenodoApiKey,
                 }),
                 connection,
