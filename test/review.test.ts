@@ -13,12 +13,13 @@ describe('review', () => {
     test('when the review can be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(
+          fc.integer(),
           fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          async connection => {
+          async (id, connection) => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
               conceptrecid: 1061863,
-              id: 1061864,
+              id,
               links: {
                 latest: new URL('http://example.com/latest'),
                 latest_html: new URL('http://example.com/latest_html'),
@@ -40,8 +41,8 @@ describe('review', () => {
             }
 
             const actual = await runMiddleware(
-              _.review({
-                fetch: fetchMock.sandbox().getOnce('https://zenodo.org/api/records/1061864', {
+              _.review(id)({
+                fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
                   body: RecordC.encode(record),
                   status: Status.OK,
                 }),
@@ -64,11 +65,12 @@ describe('review', () => {
     test('when the review cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(
+          fc.integer(),
           fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          async connection => {
+          async (id, connection) => {
             const actual = await runMiddleware(
-              _.review({
-                fetch: fetchMock.sandbox().getOnce('https://zenodo.org/api/records/1061864', {
+              _.review(id)({
+                fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
                   body: undefined,
                   status: Status.ServiceUnavailable,
                 }),
@@ -90,12 +92,13 @@ describe('review', () => {
     test('when the record is not in the community', async () => {
       await fc.assert(
         fc.asyncProperty(
+          fc.integer(),
           fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          async connection => {
+          async (id, connection) => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
               conceptrecid: 1061863,
-              id: 1061864,
+              id,
               links: {
                 latest: new URL('http://example.com/latest'),
                 latest_html: new URL('http://example.com/latest_html'),
@@ -116,8 +119,8 @@ describe('review', () => {
             }
 
             const actual = await runMiddleware(
-              _.review({
-                fetch: fetchMock.sandbox().getOnce('https://zenodo.org/api/records/1061864', {
+              _.review(id)({
+                fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
                   body: RecordC.encode(record),
                   status: Status.OK,
                 }),

@@ -26,9 +26,8 @@ const sendPage = flow(
   M.orElseW(handleError),
 )
 
-export const review = pipe(
-  RM.right(1061864),
-  RM.chainReaderTaskEitherK(getRecord),
+export const review = flow(
+  RM.fromReaderTaskEitherK(getRecord),
   RM.ichainMiddlewareKW(sendPage),
   RM.orElseMiddlewareK(() => showFailureMessage),
 )

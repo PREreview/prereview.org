@@ -42,7 +42,7 @@ function createPage() {
             Liu et al. aims to elucidate how LHCBM1 is involved in non-photochemical quenching (NPQ) in
             <em>Chlamydomonas reinhardtii</em>. The Chlamydomonas mutant lacking LHCBM1 (<em>npq5</em>) displays …
           </p>
-          <a href="../reviews/6415043" class="more">
+          <a href="../reviews/1061864" class="more">
             Read <span class="visually-hidden">the review by Jingfang Hao et al.</span>
           </a>
         </article>
