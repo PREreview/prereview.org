@@ -1,13 +1,15 @@
+import { format } from 'fp-ts-routing'
 import { flow, pipe } from 'fp-ts/function'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import textClipper from 'text-clipper'
-import { Record, getRecord } from 'zenodo-ts'
+import { Record, Records, getRecords } from 'zenodo-ts'
 import { page } from './page'
+import { reviewMatch } from './router'
 
 const sendPage = flow(
-  (record: Record) => M.of(record),
+  (records: Records) => M.of(records),
   M.ichainFirst(() => M.status(Status.OK)),
   M.ichainFirst(() => M.contentType(MediaType.textHTML)),
   M.ichainFirst(() => M.closeHeaders()),
@@ -15,7 +17,12 @@ const sendPage = flow(
 )
 
 export const preprint = pipe(
-  RM.fromReaderTaskEither(getRecord(1061864)),
+  new URLSearchParams({
+    communities: 'prereview-reviews',
+    q: `related.identifier:"10.1101/2022.01.13.476201"`,
+    size: '100',
+  }),
+  RM.fromReaderTaskEitherK(getRecords),
   RM.ichainMiddlewareKW(sendPage),
   RM.orElseMiddlewareK(() => showFailureMessage),
 )
@@ -42,7 +49,7 @@ function failureMessage() {
   })
 }
 
-function createPage(review: Record) {
+function createPage(reviews: Records) {
   return page({
     title: "Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: `
@@ -52,25 +59,31 @@ function createPage(review: Record) {
   </article>
 
   <main>
-    <h2>1 PREreview</h2>
+    <h2>${reviews.hits.hits.length} PREreview${reviews.hits.hits.length !== 1 ? 's' : ''}</h2>
 
     <a href="doi-10.1101-2022.01.13.476201/review" class="button">Write a PREreview</a>
 
     <ol class="cards">
-      <li>
-        <article>
-          <ol aria-label="Authors of this review" role="list" class="author-list">
-            ${review.metadata.creators.map(author => `<li>${author.name}</li>`).join('\n')}
-          </ol>
-          ${textClipper(review.metadata.description, 300, { html: true, maxLines: 5 })}
-          <a href="../reviews/1061864" class="more">
-            Read <span class="visually-hidden">the review by ${review.metadata.creators[0].name}
-            ${review.metadata.creators.length > 1 ? 'et al.' : ''}</span>
-          </a>
-        </article>
-      </li>
+      ${reviews.hits.hits.map(showReview).join('\n')}
     </ol>
   </main>
 `,
   })
+}
+
+function showReview(review: Record) {
+  return `
+  <li>
+    <article>
+      <ol aria-label="Authors of this review" role="list" class="author-list">
+        ${review.metadata.creators.map(author => `<li>${author.name}</li>`).join('\n')}
+      </ol>
+      ${textClipper(review.metadata.description, 300, { html: true, maxLines: 5 })}
+      <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
+        Read <span class="visually-hidden">the review by ${review.metadata.creators[0].name}
+        ${review.metadata.creators.length > 1 ? 'et al.' : ''}</span>
+      </a>
+    </article>
+  </li>
+`
 }
