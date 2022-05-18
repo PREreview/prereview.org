@@ -62,7 +62,7 @@ function createPage(review: Record) {
       "Review of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' by Jingfang Hao et al.",
     content: `
   <nav>
-    <a href="../preprints/doi-10.1101-2022.01.13.476201.html" class="back">Back to preprint</a>
+    <a href="../preprints/doi-10.1101-2022.01.13.476201" class="back">Back to preprint</a>
   </nav>
 
   <main>
