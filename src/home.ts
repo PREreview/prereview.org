@@ -1,5 +1,18 @@
-<!DOCTYPE html>
+import { flow, pipe } from 'fp-ts/function'
+import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 
+const sendPage = flow(createPage, M.send)
+
+export const home = pipe(
+  M.status(Status.OK),
+  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
+  M.ichainFirst(() => M.closeHeaders()),
+  M.ichain(sendPage),
+)
+
+function createPage() {
+  return `<!DOCTYPE html>
 <html lang="en">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -25,3 +38,5 @@
     </form>
   </main>
 </html>
+`
+}

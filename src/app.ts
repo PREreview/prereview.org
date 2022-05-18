@@ -1,13 +1,11 @@
 import express from 'express'
 import { constant, pipe } from 'fp-ts/function'
-import fs from 'fs/promises'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { route } from 'hyper-ts-routing'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
-import path from 'path'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { handleError } from './http-error'
 import { router } from './router'
@@ -35,17 +33,6 @@ export const app = (deps: AppEnv) => {
 
         pipe({ status: res.statusCode }, L.warnP('HTTP response may not have been completely sent'))(deps)()
       })
-
-      next()
-    })
-    .use(async (req, res, next) => {
-      const file = req.url + '.html'
-      await fs
-        .access(path.join('static', file))
-        .then(() => (req.url = file))
-        .catch(() => {
-          // do nothing
-        })
 
       next()
     })

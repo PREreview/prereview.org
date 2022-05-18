@@ -6,6 +6,7 @@ import { pipe, tuple } from 'fp-ts/function'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+import { home } from './home'
 import { lookupDoi } from './lookup-doi'
 import { preprint } from './preprint'
 import { review } from './review'
@@ -26,6 +27,8 @@ const IntegerFromStringC = C.make(
   },
 )
 
+export const homeMatch = R.end
+
 export const lookupDoiMatch = R.lit('lookup-doi')
   .then(query(C.struct({ doi: DoiC })))
   .then(R.end)
@@ -43,6 +46,10 @@ export const writeReviewMatch = pipe(
 
 export const router = pipe(
   [
+    pipe(
+      homeMatch.parser,
+      R.map(() => RM.fromMiddleware(home)),
+    ),
     pipe(
       lookupDoiMatch.parser,
       R.map(({ doi }) => RM.fromMiddleware(lookupDoi(doi))),
