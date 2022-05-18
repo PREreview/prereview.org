@@ -64,7 +64,8 @@ function createPage(review: Record) {
           </ol>
           ${textClipper(review.metadata.description, 300, { html: true, maxLines: 5 })}
           <a href="../reviews/1061864" class="more">
-            Read <span class="visually-hidden">the review by ${review.metadata.creators[0].name} et al.</span>
+            Read <span class="visually-hidden">the review by ${review.metadata.creators[0].name}
+            ${review.metadata.creators.length > 1 ? 'et al.' : ''}</span>
           </a>
         </article>
       </li>
