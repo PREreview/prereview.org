@@ -34,6 +34,14 @@ function createDepositMetadata(review: NewReview): DepositMetadata {
     creators: [{ name: 'PREreviewer' }],
     description: review.review,
     communities: [{ identifier: 'prereview-reviews' }],
+    related_identifiers: [
+      {
+        scheme: 'doi',
+        identifier: '10.1101/2022.01.13.476201',
+        relation: 'reviews',
+        resource_type: 'publication-preprint',
+      },
+    ],
   }
 }
 
