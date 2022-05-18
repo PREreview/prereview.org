@@ -4,9 +4,7 @@ import { RecordC } from 'zenodo-ts'
 import { expect, test } from './test'
 
 test('can find and view a review', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-
-  fetch.getOnce('http://zenodo.test/api/records/1061864', {
+  fetch.get('http://zenodo.test/api/records/1061864', {
     body: RecordC.encode({
       conceptdoi: '10.5072/zenodo.1061863' as Doi,
       conceptrecid: 1061863,
@@ -52,6 +50,7 @@ test('can find and view a review', async ({ fetch, page }) => {
     }),
   })
 
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page.click('text=Read the review by Jingfang Hao et al')
 
   const review = page.locator('main')

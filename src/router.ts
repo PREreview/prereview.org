@@ -49,7 +49,7 @@ export const router = pipe(
     ),
     pipe(
       preprintMatch.parser,
-      R.map(() => RM.fromMiddleware(preprint)),
+      R.map(() => preprint),
     ),
     pipe(
       reviewMatch.parser,

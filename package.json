@@ -18,6 +18,7 @@
     "io-ts": "^2.2.16",
     "logger-fp-ts": "^0.2.0",
     "node-fetch": "^2.6.7",
+    "text-clipper": "^2.2.0",
     "ts-pattern": "^4.0.2",
     "zenodo-ts": "^0.1.4"
   },
