@@ -287,6 +287,26 @@ textarea,
   content: ', ';
 }
 
+.author-list a {
+  display: flex;
+  align-items: center;
+  text-decoration-line: inherit;
+  color: inherit;
+}
+
+.author-list a:hover {
+  text-decoration-line: underline;
+}
+
+.author-list a::after {
+  content: '';
+  inline-size: 1em;
+  block-size: 1em;
+  margin-inline-start: 0.4ch;
+  margin-inline-end: 0.1ch;
+  background-image: url('orcid.svg');
+}
+
 .panel {
   font-size: var(--step-1);
   text-align: center;

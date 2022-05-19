@@ -69,11 +69,19 @@ function createPage(review: Record) {
     <h1>Review of 'The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'</h1>
 
     <ol aria-label="Authors of this review" class="author-list">
-      ${review.metadata.creators.map(author => `<li>${author.name}</li>`).join('\n')}
+      ${review.metadata.creators.map(author => `<li>${displayAuthor(author)}</li>`).join('\n')}
     </ol>
 
     ${review.metadata.description}
   </main>
 `,
   })
+}
+
+function displayAuthor({ name, orcid }: { name: string; orcid?: string }) {
+  if (orcid) {
+    return `<a href="https://orcid.org/${orcid}">${name}</a>`
+  }
+
+  return name
 }
