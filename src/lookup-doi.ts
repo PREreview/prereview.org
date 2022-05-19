@@ -1,9 +1,11 @@
 import { isDoi } from 'doi-ts'
+import { format } from 'fp-ts-routing'
 import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
+import { homeMatch } from './router'
 
 const DoiD = D.fromRefinement(isDoi, 'DOI')
 
@@ -23,7 +25,7 @@ export const lookupDoi = pipe(
   M.orElse(() =>
     pipe(
       M.status(Status.SeeOther),
-      M.ichain(() => M.header('Location', '/')),
+      M.ichain(() => M.header('Location', format(homeMatch.formatter, {}))),
       M.ichain(() => M.closeHeaders()),
       M.ichain(() => M.end()),
     ),

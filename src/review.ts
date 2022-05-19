@@ -1,3 +1,4 @@
+import { format } from 'fp-ts-routing'
 import * as A from 'fp-ts/Array'
 import * as O from 'fp-ts/Option'
 import { Predicate } from 'fp-ts/Predicate'
@@ -9,6 +10,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Record, getRecord } from 'zenodo-ts'
 import { handleError } from './http-error'
 import { page } from './page'
+import { preprintMatch } from './router'
 
 const isInCommunity: Predicate<Record> = flow(
   O.fromNullableK(record => record.metadata.communities),
@@ -50,7 +52,7 @@ function failureMessage() {
 
     <p>Please try again later.</p>
 
-    <a href="../doi-10.1101-2022.01.13.476201" class="button">Back to preprint</a>
+    <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
   </main>
 `,
   })
@@ -62,7 +64,7 @@ function createPage(review: Record) {
       "Review of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' by Jingfang Hao et al.",
     content: `
   <nav>
-    <a href="../preprints/doi-10.1101-2022.01.13.476201" class="back">Back to preprint</a>
+    <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>
   </nav>
 
   <main>

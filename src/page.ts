@@ -1,3 +1,6 @@
+import { format } from 'fp-ts-routing'
+import { homeMatch } from './router'
+
 type Page = {
   readonly title: string
   readonly content: string
@@ -14,7 +17,9 @@ export function page(page: Page): string {
   <title>${page.title}</title>
 
   <header>
-    <a href="/"><img src="/prereview.svg" width="262" height="63" alt="PREreview" /></a>
+    <a href="${format(homeMatch.formatter, {})}">
+      <img src="/prereview.svg" width="262" height="63" alt="PREreview" />
+    </a>
   </header>
 
   ${page.content}

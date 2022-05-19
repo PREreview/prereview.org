@@ -1,4 +1,5 @@
 import { Doi } from 'doi-ts'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
@@ -10,6 +11,7 @@ import markdownIt from 'markdown-it'
 import { match } from 'ts-pattern'
 import { DepositMetadata, createDeposition, publishDeposition, uploadFile } from 'zenodo-ts'
 import { page } from './page'
+import { preprintMatch, writeReviewMatch } from './router'
 import { NonEmptyStringC } from './string'
 
 const NewReviewD = D.struct({
@@ -58,7 +60,7 @@ const handleForm = pipe(
   RM.orElseMiddlewareK(() =>
     pipe(
       M.status(Status.SeeOther),
-      M.ichain(() => M.header('Location', '/preprints/doi-10.1101-2022.01.13.476201/review')),
+      M.ichain(() => M.header('Location', format(writeReviewMatch.formatter, {}))),
       M.ichain(() => M.closeHeaders()),
       M.ichain(() => M.end()),
     ),
@@ -120,7 +122,7 @@ function successMessage(doi: Doi) {
 
     <p>You’ll be able to see your PREreview shortly.</p>
 
-    <a href="../doi-10.1101-2022.01.13.476201" class="button">Back to preprint</a>
+    <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
   </main>
 `,
   })
@@ -137,7 +139,7 @@ function failureMessage() {
 
     <p>Please try again later.</p>
 
-    <a href="../doi-10.1101-2022.01.13.476201" class="button">Back to preprint</a>
+    <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
   </main>
 `,
   })

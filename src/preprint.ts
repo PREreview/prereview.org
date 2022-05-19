@@ -6,7 +6,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import textClipper from 'text-clipper'
 import { Record, Records, getRecords } from 'zenodo-ts'
 import { page } from './page'
-import { reviewMatch } from './router'
+import { reviewMatch, writeReviewMatch } from './router'
 
 const sendPage = flow(
   (records: Records) => M.of(records),
@@ -61,7 +61,7 @@ function createPage(reviews: Records) {
   <main>
     <h2>${reviews.hits.hits.length} PREreview${reviews.hits.hits.length !== 1 ? 's' : ''}</h2>
 
-    <a href="doi-10.1101-2022.01.13.476201/review" class="button">Write a PREreview</a>
+    <a href="${format(writeReviewMatch.formatter, {})}" class="button">Write a PREreview</a>
 
     <ol class="cards">
       ${reviews.hits.hits.map(showReview).join('\n')}

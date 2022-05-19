@@ -1,6 +1,8 @@
+import { format } from 'fp-ts-routing'
 import { flow, pipe } from 'fp-ts/function'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
+import { lookupDoiMatch } from './router'
 
 const sendPage = flow(createPage, M.send)
 
@@ -28,7 +30,7 @@ function createPage() {
 
     <h2>Find reviews for a preprint</h2>
 
-    <form method="post" action="/lookup-doi" novalidate>
+    <form method="post" action="${format(lookupDoiMatch.formatter, {})}" novalidate>
       <label>
         Preprint DOI
         <input name="doi" type="text" spellcheck="false" value="10.1101/2022.01.13.476201" />
