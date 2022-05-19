@@ -19,6 +19,7 @@
     "logger-fp-ts": "^0.2.0",
     "markdown-it": "^12.3.2",
     "node-fetch": "^2.6.7",
+    "spectacles-ts": "^1.0.7",
     "text-clipper": "^2.2.0",
     "ts-pattern": "^4.0.2",
     "zenodo-ts": "^0.1.4"

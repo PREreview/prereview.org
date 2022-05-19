@@ -28,7 +28,7 @@ function createPage() {
 
     <h2>Find reviews for a preprint</h2>
 
-    <form method="get" action="/lookup-doi" novalidate>
+    <form method="post" action="/lookup-doi" novalidate>
       <label>
         Preprint DOI
         <input name="doi" type="text" spellcheck="false" value="10.1101/2022.01.13.476201" />

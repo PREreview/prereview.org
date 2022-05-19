@@ -1,4 +1,3 @@
-import { isDoi } from 'doi-ts'
 import * as R from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
 import * as O from 'fp-ts/Option'
@@ -11,8 +10,6 @@ import { lookupDoi } from './lookup-doi'
 import { preprint } from './preprint'
 import { review } from './review'
 import { writeReview } from './write-review'
-
-const DoiC = C.fromDecoder(D.fromRefinement(isDoi, 'DOI'))
 
 const IntegerFromStringC = C.make(
   pipe(
@@ -29,9 +26,7 @@ const IntegerFromStringC = C.make(
 
 export const homeMatch = R.end
 
-export const lookupDoiMatch = R.lit('lookup-doi')
-  .then(query(C.struct({ doi: DoiC })))
-  .then(R.end)
+export const lookupDoiMatch = R.lit('lookup-doi').then(R.end)
 
 export const preprintMatch = pipe(R.lit('preprints'), R.then(R.lit('doi-10.1101-2022.01.13.476201')), R.then(R.end))
 
@@ -52,7 +47,7 @@ export const router = pipe(
     ),
     pipe(
       lookupDoiMatch.parser,
-      R.map(({ doi }) => RM.fromMiddleware(lookupDoi(doi))),
+      R.map(() => RM.fromMiddleware(lookupDoi)),
     ),
     pipe(
       preprintMatch.parser,
@@ -71,14 +66,6 @@ export const router = pipe(
 )
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
-function query<A>(codec: C.Codec<unknown, Record<string, R.QueryValues>, A>): R.Match<A> {
-  return new R.Match(
-    new R.Parser(r =>
-      O.Functor.map(O.fromEither(codec.decode(r.query)), query => tuple(query, new R.Route(r.parts, {}))),
-    ),
-    new R.Formatter((r, query) => new R.Route(r.parts, codec.encode(query))),
-  )
-}
 function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): R.Match<{ [_ in K]: A }> {
   return new R.Match(
     new R.Parser(r => {
@@ -93,5 +80,6 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): R.Ma
     new R.Formatter((r, o) => new R.Route(r.parts.concat(type.encode(o[k])), r.query)),
   )
 }
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
 const singleton = <K extends string, V>(k: K, v: V): { [_ in K]: V } => ({ [k as any]: v } as any)

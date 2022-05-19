@@ -5,19 +5,43 @@ import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
 describe('lookup-doi', () => {
-  test('lookupDoi', async () => {
-    await fc.assert(
-      fc.asyncProperty(fc.doi(), fc.connection(), async (doi, connection) => {
-        const actual = await runMiddleware(_.lookupDoi(doi), connection)()
+  describe('lookupDoi', () => {
+    test('with a DOI', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.doi().chain(doi => fc.tuple(fc.constant(doi), fc.connection({ body: fc.constant({ doi }) }))),
+          async ([doi, connection]) => {
+            const actual = await runMiddleware(_.lookupDoi, connection)()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.Found },
-            { type: 'setHeader', name: 'Location', value: `/preprints/doi-${doi.replace('/', '-')}` },
-            { type: 'endResponse' },
-          ]),
-        )
-      }),
-    )
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.SeeOther },
+                { type: 'setHeader', name: 'Location', value: `/preprints/doi-${doi.replace('/', '-')}` },
+                { type: 'endResponse' },
+              ]),
+            )
+          },
+        ),
+      )
+    })
+
+    test('with a non-DOI', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.connection({ body: fc.record({ doi: fc.string() }, { withDeletedKeys: true }) }),
+          async connection => {
+            const actual = await runMiddleware(_.lookupDoi, connection)()
+
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.SeeOther },
+                { type: 'setHeader', name: 'Location', value: '/' },
+                { type: 'endResponse' },
+              ]),
+            )
+          },
+        ),
+      )
+    })
   })
 })
