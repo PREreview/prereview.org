@@ -1,4 +1,5 @@
 import { PlaywrightTestConfig, devices } from '@playwright/test'
+import path from 'path'
 
 const config: PlaywrightTestConfig = {
   fullyParallel: true,
@@ -14,6 +15,7 @@ const config: PlaywrightTestConfig = {
       use: { ...devices['iPhone 11'] },
     },
   ],
+  snapshotDir: path.resolve('integration', 'snapshots'),
   testDir: 'integration',
   use: {
     screenshot: 'only-on-failure',

@@ -70,7 +70,7 @@
     "lint:ts": "eslint .",
     "start": "ts-node-dev --require dotenv/config --transpile-only src/index.ts",
     "test": "jest",
-    "test:integration": "docker run --rm --volume \"$(pwd)\"/integration-results:/app/integration-results \"$(docker build --quiet --target test-integration .)\"",
+    "test:integration": "docker run --rm --volume \"$(pwd)\"/integration/snapshots:/app/integration/snapshots --volume \"$(pwd)\"/integration-results:/app/integration-results \"$(docker build --quiet --target test-integration .)\"",
     "typecheck": "tsc --noEmit"
   }
 }

@@ -115,4 +115,5 @@ test('can find and view a review', async ({ fetch, page }) => {
   const review = page.locator('main')
 
   await expect(review).toContainText('This work enriches the knowledge')
+  await expect(page).toHaveScreenshot()
 })

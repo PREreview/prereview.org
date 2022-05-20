@@ -98,7 +98,7 @@ jobs:
 
     steps:
       - name: 'Checkout code'
-        uses: actions/checkout@v3.0.2
+        uses: nschloe/action-cached-lfs-checkout@v1.1.2
 
       - name: 'Build image'
         run: docker build --target test-integration .

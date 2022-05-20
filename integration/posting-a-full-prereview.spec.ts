@@ -24,6 +24,8 @@ test('can post a full PREreview', async ({ fetch, page }) => {
 
   await page.fill('text=PREreview', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
+  await expect(page).toHaveScreenshot()
+
   fetch
     .postOnce('http://zenodo.test/api/deposit/depositions', {
       body: UnsubmittedDepositionC.encode({
@@ -74,6 +76,7 @@ test('can post a full PREreview', async ({ fetch, page }) => {
 
   await expect(h1).toContainText('PREreview posted')
   await expect(main).toContainText('Your DOI 10.5072/zenodo.1055806')
+  await expect(page).toHaveScreenshot()
 
   fetch.get(
     {
@@ -132,4 +135,5 @@ test('can post a full PREreview', async ({ fetch, page }) => {
   const review = page.locator('main article').first()
 
   await expect(review).toContainText('Lorem ipsum dolor sit amet')
+  await expect(review).toHaveScreenshot()
 })

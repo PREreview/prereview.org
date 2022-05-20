@@ -11,11 +11,14 @@ test('might not find anything', async ({ page }) => {
   const h1 = page.locator('h1')
 
   await expect(h1).toHaveText('Not Found')
+  await expect(page).toHaveScreenshot()
 })
 
 test('can find and view a preprint', async ({ fetch, page }) => {
   await page.goto('/')
   await page.fill('text="Preprint DOI"', '10.1101/2022.01.13.476201')
+
+  await expect(page).toHaveScreenshot()
 
   fetch.getOnce(
     {
@@ -83,4 +86,5 @@ test('can find and view a preprint', async ({ fetch, page }) => {
 
   await expect(h1).toHaveText('The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii')
   await expect(reviews).toContainText('1 PREreview')
+  await expect(page).toHaveScreenshot()
 })
