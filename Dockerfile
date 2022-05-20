@@ -40,6 +40,20 @@ COPY src/ src/
 RUN npm run build
 
 #
+# Stage: Integration test environment
+#
+FROM mcr.microsoft.com/playwright:v1.22.0-focal AS test-integration
+WORKDIR /app
+
+COPY --from=npm-dev /app/ .
+COPY src/ src/
+COPY static/ static/
+COPY integration/ integration/
+COPY playwright.config.ts .
+
+ENTRYPOINT ["npx", "playwright", "test"]
+
+#
 # Stage: Production environment
 #
 FROM node AS prod
