@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import { flow, pipe } from 'fp-ts/function'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import { lookupDoiMatch } from './router'
+import { lookupDoiMatch } from './routes'
 
 const sendPage = flow(createPage, M.send)
 

@@ -29,6 +29,7 @@
     "project": "./tsconfig.json"
   },
   "rules": {
-    "fp-ts/no-module-imports": "off"
+    "fp-ts/no-module-imports": "off",
+    "import/no-cycle": "error"
   }
 }

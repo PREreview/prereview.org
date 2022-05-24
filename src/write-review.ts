@@ -11,7 +11,7 @@ import markdownIt from 'markdown-it'
 import { match } from 'ts-pattern'
 import { DepositMetadata, createDeposition, publishDeposition, uploadFile } from 'zenodo-ts'
 import { page } from './page'
-import { preprintMatch, writeReviewMatch } from './router'
+import { preprintMatch, writeReviewMatch } from './routes'
 import { NonEmptyStringC } from './string'
 
 const NewReviewD = D.struct({

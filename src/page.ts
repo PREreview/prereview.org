@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { homeMatch } from './router'
+import { homeMatch } from './routes'
 
 type Page = {
   readonly title: string

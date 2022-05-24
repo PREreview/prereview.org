@@ -10,7 +10,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Record, getRecord } from 'zenodo-ts'
 import { handleError } from './http-error'
 import { page } from './page'
-import { preprintMatch } from './router'
+import { preprintMatch } from './routes'
 
 const isInCommunity: Predicate<Record> = flow(
   O.fromNullableK(record => record.metadata.communities),

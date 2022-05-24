@@ -5,7 +5,7 @@ import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { homeMatch } from './router'
+import { homeMatch } from './routes'
 
 const DoiD = D.fromRefinement(isDoi, 'DOI')
 

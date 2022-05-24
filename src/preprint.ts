@@ -6,7 +6,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import textClipper from 'text-clipper'
 import { Record, Records, getRecords } from 'zenodo-ts'
 import { page } from './page'
-import { reviewMatch, writeReviewMatch } from './router'
+import { reviewMatch, writeReviewMatch } from './routes'
 
 const sendPage = flow(
   (records: Records) => M.of(records),

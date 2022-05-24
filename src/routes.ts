@@ -1,15 +1,8 @@
 import * as R from 'fp-ts-routing'
-import * as M from 'fp-ts/Monoid'
 import * as O from 'fp-ts/Option'
 import { pipe, tuple } from 'fp-ts/function'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
-import { home } from './home'
-import { lookupDoi } from './lookup-doi'
-import { preprint } from './preprint'
-import { review } from './review'
-import { writeReview } from './write-review'
 
 const IntegerFromStringC = C.make(
   pipe(
@@ -37,32 +30,6 @@ export const writeReviewMatch = pipe(
   R.then(R.lit('doi-10.1101-2022.01.13.476201')),
   R.then(R.lit('review')),
   R.then(R.end),
-)
-
-export const router = pipe(
-  [
-    pipe(
-      homeMatch.parser,
-      R.map(() => RM.fromMiddleware(home)),
-    ),
-    pipe(
-      lookupDoiMatch.parser,
-      R.map(() => RM.fromMiddleware(lookupDoi)),
-    ),
-    pipe(
-      preprintMatch.parser,
-      R.map(() => preprint),
-    ),
-    pipe(
-      reviewMatch.parser,
-      R.map(({ id }) => review(id)),
-    ),
-    pipe(
-      writeReviewMatch.parser,
-      R.map(() => writeReview),
-    ),
-  ],
-  M.concatAll(R.getParserMonoid()),
 )
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
