@@ -33,6 +33,10 @@
   },
   "rules": {
     "fp-ts/no-module-imports": "off",
-    "import/no-cycle": "error"
+    "import/no-cycle": "error",
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": ["integration/**/*.ts", "test/**/*.ts", "*.ts"] }
+    ]
   }
 }
