@@ -1,7 +1,9 @@
+import cookieSignature from 'cookie-signature'
 import { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { MediaType, Status } from 'hyper-ts'
+import Keyv from 'keyv'
 import { RequestInit } from 'node-fetch'
 import { SubmittedDeposition, SubmittedDepositionC, UnsubmittedDeposition, UnsubmittedDepositionC } from 'zenodo-ts'
 import * as _ from '../src/write-review'
@@ -10,43 +12,106 @@ import { runMiddleware } from './middleware'
 
 describe('write-review', () => {
   describe('writeReview', () => {
-    test('non-POST request', async () => {
-      await fc.assert(
-        fc.asyncProperty(
-          fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          fc.string(),
-          async (connection, zenodoApiKey) => {
-            const actual = await runMiddleware(
-              _.writeReview({ fetch: () => Promise.reject(), zenodoApiKey }),
-              connection,
-            )()
+    describe('non-POST request', () => {
+      test('when there is a session', async () => {
+        await fc.assert(
+          fc.asyncProperty(
+            fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+              fc.tuple(
+                fc.connection({
+                  headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                  method: fc.requestMethod().filter(method => method !== 'POST'),
+                }),
+                fc.constant(sessionId),
+                fc.constant(secret),
+              ),
+            ),
+            fc.string(),
+            fc.record({
+              name: fc.string(),
+              orcid: fc.string(),
+            }),
+            async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              const sessionStore = new Keyv()
+              await sessionStore.set(sessionId, user)
 
-            expect(actual).toStrictEqual(
-              E.right([
-                { type: 'setStatus', status: Status.OK },
-                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-                { type: 'setBody', body: expect.anything() },
-              ]),
-            )
-          },
-        ),
-      )
+              const actual = await runMiddleware(
+                _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                connection,
+              )()
+
+              expect(actual).toStrictEqual(
+                E.right([
+                  { type: 'setStatus', status: Status.OK },
+                  { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                  { type: 'setBody', body: expect.anything() },
+                ]),
+              )
+            },
+          ),
+        )
+      })
+
+      test("when there isn't a session", async () => {
+        await fc.assert(
+          fc.asyncProperty(
+            fc.connection({
+              headers: fc.constant({}),
+              method: fc.requestMethod().filter(method => method !== 'POST'),
+            }),
+            fc.uuid(),
+            fc.string(),
+            fc.string(),
+            fc.record({
+              name: fc.string(),
+              orcid: fc.string(),
+            }),
+            async (connection, sessionId, secret, zenodoApiKey) => {
+              const sessionStore = new Keyv()
+
+              const actual = await runMiddleware(
+                _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                connection,
+              )()
+
+              expect(actual).toStrictEqual(
+                E.right([
+                  { type: 'setStatus', status: Status.Found },
+                  { type: 'setHeader', name: 'Location', value: '/log-in' },
+                  { type: 'endResponse' },
+                ]),
+              )
+            },
+          ),
+        )
+      })
     })
 
     describe('POST request', () => {
       test('with a string', async () => {
         await fc.assert(
           fc.asyncProperty(
-            fc
-              .lorem()
-              .chain(review =>
-                fc.tuple(
-                  fc.constant(review),
-                  fc.connection({ body: fc.constant({ review }), method: fc.constant('POST') }),
-                ),
+            fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
+              fc.tuple(
+                fc.constant(review),
+                fc.connection({
+                  body: fc.constant({ review }),
+                  headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                  method: fc.constant('POST'),
+                }),
+                fc.constant(sessionId),
+                fc.constant(secret),
               ),
+            ),
             fc.string(),
-            async ([review, connection], zenodoApiKey) => {
+            fc.record({
+              name: fc.string(),
+              orcid: fc.string(),
+            }),
+            async ([review, connection, sessionId, secret], zenodoApiKey, user) => {
+              const sessionStore = new Keyv()
+              await sessionStore.set(sessionId, user)
+
               const unsubmittedDeposition: UnsubmittedDeposition = {
                 id: 1,
                 links: {
@@ -54,7 +119,7 @@ describe('write-review', () => {
                   publish: new URL('http://example.com/publish'),
                 },
                 metadata: {
-                  creators: [{ name: 'PREreviewer' }],
+                  creators: [user],
                   description: 'Description',
                   prereserve_doi: {
                     doi: '10.5072/zenodo.1055806' as Doi,
@@ -92,7 +157,7 @@ describe('write-review', () => {
                             publication_type: 'article',
                             title:
                               'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
-                            creators: [{ name: 'Josiah Carberry', orcid: '0000-0002-1825-0097' }],
+                            creators: [user],
                             communities: [{ identifier: 'prereview-reviews' }],
                             description: `<p>${review}</p>\n`,
                             related_identifiers: [
@@ -125,6 +190,8 @@ describe('write-review', () => {
                       body: SubmittedDepositionC.encode(submittedDeposition),
                       status: Status.Accepted,
                     }),
+                  secret,
+                  sessionStore,
                   zenodoApiKey,
                 }),
                 connection,
@@ -142,14 +209,67 @@ describe('write-review', () => {
         )
       })
 
+      test("when there isn't a session", async () => {
+        await fc.assert(
+          fc.asyncProperty(
+            fc.lorem().chain(review =>
+              fc.connection({
+                body: fc.constant({ review }),
+                method: fc.constant('POST'),
+              }),
+            ),
+            fc.string(),
+            fc.string(),
+            async (connection, secret, zenodoApiKey) => {
+              const sessionStore = new Keyv()
+
+              const actual = await runMiddleware(
+                _.writeReview({
+                  fetch: () => Promise.reject(),
+                  secret,
+                  sessionStore,
+                  zenodoApiKey,
+                }),
+                connection,
+              )()
+
+              expect(actual).toStrictEqual(
+                E.right([
+                  { type: 'setStatus', status: Status.ServiceUnavailable },
+                  { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                  { type: 'setBody', body: expect.anything() },
+                ]),
+              )
+            },
+          ),
+        )
+      })
+
       test('with an empty string', async () => {
         await fc.assert(
           fc.asyncProperty(
-            fc.connection({ body: fc.record({ review: fc.constant('') }), method: fc.constant('POST') }),
+            fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+              fc.tuple(
+                fc.connection({
+                  body: fc.record({ review: fc.constant('') }),
+                  headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                  method: fc.constant('POST'),
+                }),
+                fc.constant(sessionId),
+                fc.constant(secret),
+              ),
+            ),
             fc.string(),
-            async (connection, zenodoApiKey) => {
+            fc.record({
+              name: fc.string(),
+              orcid: fc.string(),
+            }),
+            async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              const sessionStore = new Keyv()
+              await sessionStore.set(sessionId, user)
+
               const actual = await runMiddleware(
-                _.writeReview({ fetch: () => Promise.reject(), zenodoApiKey }),
+                _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
                 connection,
               )()
 
@@ -168,16 +288,35 @@ describe('write-review', () => {
       test('Zenodo is unavailable', async () => {
         await fc.assert(
           fc.asyncProperty(
-            fc.connection({ body: fc.record({ review: fc.nonEmptyString() }), method: fc.constant('POST') }),
+            fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+              fc.tuple(
+                fc.connection({
+                  body: fc.record({ review: fc.nonEmptyString() }),
+                  headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                  method: fc.constant('POST'),
+                }),
+                fc.constant(sessionId),
+                fc.constant(secret),
+              ),
+            ),
             fc.string(),
             fc.oneof(
               fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
               fc.error().map(error => Promise.reject(error)),
             ),
-            async (connection, zenodoApiKey, response) => {
+            fc.record({
+              name: fc.string(),
+              orcid: fc.string(),
+            }),
+            async ([connection, sessionId, secret], zenodoApiKey, response, user) => {
+              const sessionStore = new Keyv()
+              await sessionStore.set(sessionId, user)
+
               const actual = await runMiddleware(
                 _.writeReview({
                   fetch: () => response,
+                  secret,
+                  sessionStore,
                   zenodoApiKey,
                 }),
                 connection,

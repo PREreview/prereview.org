@@ -4,8 +4,8 @@ import * as fc from 'fast-check'
 import * as F from 'fetch-fp-ts'
 import * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
-import { Headers } from 'node-fetch'
-import { Body, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
+import { Headers as FetchHeaders } from 'node-fetch'
+import { Body, Headers, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
 
@@ -32,7 +32,7 @@ const headerName = () =>
   )
 
 const headers = () =>
-  fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init => new Headers(init))
+  fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init => new FetchHeaders(init))
 
 export const fetchResponse = ({ status }: { status?: fc.Arbitrary<number> } = {}): fc.Arbitrary<F.Response> =>
   fc.record({
@@ -45,11 +45,17 @@ export const fetchResponse = ({ status }: { status?: fc.Arbitrary<number> } = {}
 
 export const request = ({
   body,
+  headers,
   method,
-}: { body?: fc.Arbitrary<Body>; method?: fc.Arbitrary<RequestMethod> } = {}): fc.Arbitrary<Request> =>
+}: {
+  body?: fc.Arbitrary<Body>
+  headers?: fc.Arbitrary<Headers>
+  method?: fc.Arbitrary<RequestMethod>
+} = {}): fc.Arbitrary<Request> =>
   fc
     .record({
       body: body ?? fc.constant(undefined),
+      headers: headers ?? fc.constant({}),
       method: method ?? requestMethod(),
       url: fc.webUrl(),
     })

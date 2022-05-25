@@ -4,6 +4,7 @@ import * as E from 'fp-ts/Either'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { MediaType, Status } from 'hyper-ts'
+import { getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
@@ -11,8 +12,9 @@ import markdownIt from 'markdown-it'
 import { match } from 'ts-pattern'
 import { DepositMetadata, createDeposition, publishDeposition, uploadFile } from 'zenodo-ts'
 import { page } from './page'
-import { preprintMatch, writeReviewMatch } from './routes'
+import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
 import { NonEmptyStringC } from './string'
+import { User, UserC } from './user'
 
 const NewReviewD = D.struct({
   review: NonEmptyStringC,
@@ -25,16 +27,16 @@ export const writeReview = pipe(
   RM.ichainW(method =>
     match(method)
       .with('POST', () => handleForm)
-      .otherwise(() => RM.fromMiddleware(showForm)),
+      .otherwise(() => showForm),
   ),
 )
 
-function createDepositMetadata(review: NewReview): DepositMetadata {
+function createDepositMetadata(review: NewReview, user: User): DepositMetadata {
   return {
     upload_type: 'publication',
     publication_type: 'article',
     title: 'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
-    creators: [{ name: 'Josiah Carberry', orcid: '0000-0002-1825-0097' }],
+    creators: [user],
     description: markdownIt().render(review.review),
     communities: [{ identifier: 'prereview-reviews' }],
     related_identifiers: [
@@ -48,11 +50,14 @@ function createDepositMetadata(review: NewReview): DepositMetadata {
   }
 }
 
-const handleNewReview = flow(
-  RM.fromReaderTaskEitherK(createRecord),
-  RM.ichainMiddlewareKW(deposition => showSuccessMessage(deposition.metadata.doi)),
-  RM.orElseMiddlewareK(() => showFailureMessage),
-)
+const handleNewReview = (review: NewReview) =>
+  pipe(
+    getSession(),
+    RM.chainEitherKW(UserC.decode),
+    RM.chainReaderTaskEitherKW(createRecord(review)),
+    RM.ichainMiddlewareKW(deposition => showSuccessMessage(deposition.metadata.doi)),
+    RM.orElseMiddlewareK(() => showFailureMessage),
+  )
 
 const handleForm = pipe(
   RM.decodeBody(NewReviewD.decode),
@@ -68,25 +73,29 @@ const handleForm = pipe(
 )
 
 function createRecord(review: NewReview) {
-  return pipe(
-    createDepositMetadata(review),
-    createDeposition,
-    RTE.chainFirst(
-      uploadFile({
-        name: 'review.txt',
-        type: 'text/plain',
-        content: review.review,
-      }),
-    ),
-    RTE.chain(publishDeposition),
-  )
+  return (user: User) =>
+    pipe(
+      createDepositMetadata(review, user),
+      createDeposition,
+      RTE.chainFirst(
+        uploadFile({
+          name: 'review.txt',
+          type: 'text/plain',
+          content: review.review,
+        }),
+      ),
+      RTE.chain(publishDeposition),
+    )
 }
 
 const showForm = pipe(
-  M.status(Status.OK),
-  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-  M.ichainFirst(() => M.closeHeaders()),
-  M.ichain(flow(form, M.send)),
+  getSession(),
+  RM.chainEitherKW(UserC.decode),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainFirst(() => RM.contentType(MediaType.textHTML)),
+  RM.ichainFirst(() => RM.closeHeaders()),
+  RM.ichainW(flow(form, RM.send)),
+  RM.orElseMiddlewareK(() => redirectToLogInPage),
 )
 
 const showSuccessMessage = (doi: Doi) =>
@@ -102,6 +111,12 @@ const showFailureMessage = pipe(
   M.ichainFirst(() => M.contentType(MediaType.textHTML)),
   M.ichainFirst(() => M.closeHeaders()),
   M.ichain(() => pipe(failureMessage(), M.send)),
+)
+
+const redirectToLogInPage = pipe(
+  M.redirect(format(logInMatch.formatter, {})),
+  M.ichainFirst(() => M.closeHeaders()),
+  M.ichainFirst(() => M.end()),
 )
 
 function successMessage(doi: Doi) {
