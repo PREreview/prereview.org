@@ -160,19 +160,25 @@ function failureMessage() {
   })
 }
 
-function form() {
+function form(user: User) {
   return page({
     title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: `
   <main>
     <h1>
-      <label for="review">
-        Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>”
-      </label>
+      Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>”
     </h1>
 
     <form method="post">
-      <textarea id="review" name="review" rows="20"></textarea>
+      <label>
+        Name
+        <input type="text" value="${user.name}" readonly>
+      </label>
+
+      <label class="textarea">
+        Text
+        <textarea id="review" name="review" rows="20"></textarea>
+      </label>
 
       <button>Post PREreview</button>
     </form>
