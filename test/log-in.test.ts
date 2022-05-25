@@ -1,3 +1,4 @@
+import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import all from 'it-all'
@@ -9,27 +10,94 @@ import { runMiddleware } from './middleware'
 describe('log-in', () => {
   test('logIn', async () => {
     await fc.assert(
-      fc.asyncProperty(fc.string(), fc.connection(), async (secret, connection) => {
-        const sessionStore = new Keyv()
+      fc.asyncProperty(
+        fc.record({
+          authorizeUrl: fc.url(),
+          clientId: fc.string(),
+          clientSecret: fc.string(),
+          redirectUri: fc.url(),
+          tokenUrl: fc.url(),
+        }),
+        fc.connection(),
+        async (oauth, connection) => {
+          const actual = await runMiddleware(_.logIn({ oauth }), connection)()
 
-        const actual = await runMiddleware(_.logIn({ secret, sessionStore }), connection)()
-        const sessions = await all(sessionStore.iterator(undefined))
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.Found },
+              {
+                type: 'setHeader',
+                name: 'Location',
+                value: new URL(
+                  `?${new URLSearchParams({
+                    client_id: oauth.clientId,
+                    response_type: 'code',
+                    redirect_uri: oauth.redirectUri.href,
+                    scope: '/authenticate',
+                  }).toString()}`,
+                  oauth.authorizeUrl,
+                ).href,
+              },
+              { type: 'endResponse' },
+            ]),
+          )
+        },
+      ),
+    )
+  })
 
-        expect(sessions).toStrictEqual([[expect.anything(), { name: 'Josiah Carberry', orcid: '0000-0002-1825-0097' }]])
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.Found },
-            { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
-            {
-              type: 'setCookie',
-              name: 'session',
-              options: expect.anything(),
-              value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      }),
+  test('authenticate', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.string(),
+        fc.record({
+          authorizeUrl: fc.url(),
+          clientId: fc.string(),
+          clientSecret: fc.string(),
+          redirectUri: fc.url(),
+          tokenUrl: fc.url(),
+        }),
+        fc.record({
+          access_token: fc.string(),
+          token_type: fc.string(),
+          name: fc.string(),
+          orcid: fc.string(),
+        }),
+        fc.string(),
+        fc.connection(),
+        async (code, oauth, accessToken, secret, connection) => {
+          const sessionStore = new Keyv()
+
+          const actual = await runMiddleware(
+            _.authenticate(code)({
+              fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+                status: Status.OK,
+                body: accessToken,
+              }),
+              oauth,
+              secret,
+              sessionStore,
+            }),
+            connection,
+          )()
+          const sessions = await all(sessionStore.iterator(undefined))
+
+          expect(sessions).toStrictEqual([[expect.anything(), { name: accessToken.name, orcid: accessToken.orcid }]])
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.Found },
+              { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
+              {
+                type: 'setCookie',
+                name: 'session',
+                options: expect.anything(),
+                value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
+              },
+              { type: 'endResponse' },
+            ]),
+          )
+        },
+      ),
     )
   })
 })

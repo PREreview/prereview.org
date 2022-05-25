@@ -23,6 +23,8 @@ export const logInMatch = pipe(R.lit('log-in'), R.then(R.end))
 
 export const lookupDoiMatch = R.lit('lookup-doi').then(R.end)
 
+export const orcidCodeMatch = pipe(R.lit('orcid'), R.then(query(C.struct({ code: C.string }))), R.then(R.end))
+
 export const preprintMatch = pipe(R.lit('preprints'), R.then(R.lit('doi-10.1101-2022.01.13.476201')), R.then(R.end))
 
 export const reviewMatch = pipe(R.lit('reviews'), R.then(type('id', IntegerFromStringC)), R.then(R.end))
@@ -35,6 +37,15 @@ export const writeReviewMatch = pipe(
 )
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
+function query<A>(codec: C.Codec<unknown, Record<string, R.QueryValues>, A>): R.Match<A> {
+  return new R.Match(
+    new R.Parser(r =>
+      O.Functor.map(O.fromEither(codec.decode(r.query)), query => tuple(query, new R.Route(r.parts, {}))),
+    ),
+    new R.Formatter((r, query) => new R.Route(r.parts, codec.encode(query))),
+  )
+}
+
 function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): R.Match<{ [_ in K]: A }> {
   return new R.Match(
     new R.Parser(r => {

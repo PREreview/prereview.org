@@ -15,6 +15,7 @@ export { expect } from '@playwright/test'
 type AppFixtures = {
   fetch: FetchMockSandbox
   logger: Logger
+  port: number
   server: Server
 }
 
@@ -39,18 +40,28 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await fs.writeFile(testInfo.outputPath('server.log'), logs.map(L.ShowLogEntry.show).join('\n'))
   },
-  server: async ({ fetch, logger }, use) => {
+  port: async ({}, use, workerInfo) => {
+    await use(8000 + workerInfo.workerIndex)
+  },
+  server: async ({ fetch, logger, port }, use) => {
     const server = app({
       clock: SystemClock,
       fetch,
       logger,
+      oauth: {
+        authorizeUrl: new URL('https://oauth.mocklab.io/oauth/authorize'),
+        clientId: 'client-id',
+        clientSecret: 'client-secret',
+        redirectUri: new URL(`http://localhost:${port}/orcid`),
+        tokenUrl: new URL('http://orcid.test/token'),
+      },
       secret: '',
       sessionStore: new Keyv(),
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
     })
 
-    server.listen()
+    server.listen(port)
 
     await use(server)
 

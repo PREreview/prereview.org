@@ -22,6 +22,8 @@ export const doi = (): fc.Arbitrary<Doi> =>
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
     .filter(isDoi)
 
+export const url = (): fc.Arbitrary<URL> => fc.webUrl().map(url => new URL(url))
+
 export const requestMethod = (): fc.Arbitrary<RequestMethod> =>
   fc.constantFrom('CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE')
 

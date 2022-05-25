@@ -5,6 +5,7 @@ import { constant, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { ResponseEnded, StatusOpen } from 'hyper-ts'
+import { OAuthEnv } from 'hyper-ts-oauth'
 import { route } from 'hyper-ts-routing'
 import { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -13,14 +14,22 @@ import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { home } from './home'
 import { handleError } from './http-error'
-import { logIn } from './log-in'
+import { authenticate, logIn } from './log-in'
 import { lookupDoi } from './lookup-doi'
 import { preprint } from './preprint'
 import { review } from './review'
-import { homeMatch, logInMatch, lookupDoiMatch, preprintMatch, reviewMatch, writeReviewMatch } from './routes'
+import {
+  homeMatch,
+  logInMatch,
+  lookupDoiMatch,
+  orcidCodeMatch,
+  preprintMatch,
+  reviewMatch,
+  writeReviewMatch,
+} from './routes'
 import { writeReview } from './write-review'
 
-export type AppEnv = L.LoggerEnv & SessionEnv & ZenodoAuthenticatedEnv
+export type AppEnv = L.LoggerEnv & OAuthEnv & SessionEnv & ZenodoAuthenticatedEnv
 
 export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -35,6 +44,10 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       lookupDoiMatch.parser,
       R.map(() => RM.fromMiddleware(lookupDoi)),
+    ),
+    pipe(
+      orcidCodeMatch.parser,
+      R.map(({ code }) => authenticate(code)),
     ),
     pipe(
       preprintMatch.parser,

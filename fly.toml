@@ -1,5 +1,8 @@
 app = "prereview"
 
+[env]
+PUBLIC_URL = "https://prereview.fly.dev/"
+
 [[services]]
 internal_port = 3000
 protocol = "tcp"
