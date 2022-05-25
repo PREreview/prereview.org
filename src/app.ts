@@ -4,26 +4,33 @@ import * as M from 'fp-ts/Monoid'
 import { constant, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
+import { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
+import { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { home } from './home'
 import { handleError } from './http-error'
+import { logIn } from './log-in'
 import { lookupDoi } from './lookup-doi'
 import { preprint } from './preprint'
 import { review } from './review'
-import { homeMatch, lookupDoiMatch, preprintMatch, reviewMatch, writeReviewMatch } from './routes'
+import { homeMatch, logInMatch, lookupDoiMatch, preprintMatch, reviewMatch, writeReviewMatch } from './routes'
 import { writeReview } from './write-review'
 
-export type AppEnv = L.LoggerEnv & ZenodoAuthenticatedEnv
+export type AppEnv = L.LoggerEnv & SessionEnv & ZenodoAuthenticatedEnv
 
-export const router = pipe(
+export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       homeMatch.parser,
       R.map(() => RM.fromMiddleware(home)),
+    ),
+    pipe(
+      logInMatch.parser,
+      R.map(() => logIn),
     ),
     pipe(
       lookupDoiMatch.parser,

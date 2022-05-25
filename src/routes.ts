@@ -19,6 +19,8 @@ const IntegerFromStringC = C.make(
 
 export const homeMatch = R.end
 
+export const logInMatch = pipe(R.lit('log-in'), R.then(R.end))
+
 export const lookupDoiMatch = R.lit('lookup-doi').then(R.end)
 
 export const preprintMatch = pipe(R.lit('preprints'), R.then(R.lit('doi-10.1101-2022.01.13.476201')), R.then(R.end))

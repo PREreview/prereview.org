@@ -3,6 +3,7 @@ import { SystemClock } from 'clock-ts'
 import fetchMock, { FetchMockSandbox } from 'fetch-mock'
 import * as fs from 'fs/promises'
 import { Server } from 'http'
+import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { app } from '../src/app'
 
@@ -43,6 +44,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       clock: SystemClock,
       fetch,
       logger,
+      secret: '',
+      sessionStore: new Keyv(),
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
     })
