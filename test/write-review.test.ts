@@ -200,6 +200,7 @@ describe('write-review', () => {
               expect(actual).toStrictEqual(
                 E.right([
                   { type: 'setStatus', status: Status.OK },
+                  { type: 'clearCookie', name: 'session', options: expect.anything() },
                   { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
                   { type: 'setBody', body: expect.anything() },
                 ]),
@@ -325,6 +326,7 @@ describe('write-review', () => {
               expect(actual).toStrictEqual(
                 E.right([
                   { type: 'setStatus', status: Status.ServiceUnavailable },
+                  { type: 'clearCookie', name: 'session', options: expect.anything() },
                   { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
                   { type: 'setBody', body: expect.anything() },
                 ]),

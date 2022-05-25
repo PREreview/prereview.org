@@ -4,7 +4,7 @@ import * as E from 'fp-ts/Either'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { MediaType, Status } from 'hyper-ts'
-import { getSession } from 'hyper-ts-session'
+import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
@@ -55,8 +55,8 @@ const handleNewReview = (review: NewReview) =>
     getSession(),
     RM.chainEitherKW(UserC.decode),
     RM.chainReaderTaskEitherKW(createRecord(review)),
-    RM.ichainMiddlewareKW(deposition => showSuccessMessage(deposition.metadata.doi)),
-    RM.orElseMiddlewareK(() => showFailureMessage),
+    RM.ichainW(deposition => showSuccessMessage(deposition.metadata.doi)),
+    RM.orElseW(() => showFailureMessage),
   )
 
 const handleForm = pipe(
@@ -100,17 +100,19 @@ const showForm = pipe(
 
 const showSuccessMessage = (doi: Doi) =>
   pipe(
-    M.status(Status.OK),
-    M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-    M.ichainFirst(() => M.closeHeaders()),
-    M.ichain(() => pipe(successMessage(doi), M.send)),
+    RM.status(Status.OK),
+    RM.ichainFirst(() => endSession()),
+    RM.ichainFirst(() => RM.contentType(MediaType.textHTML)),
+    RM.ichainFirst(() => RM.closeHeaders()),
+    RM.ichainW(() => pipe(successMessage(doi), RM.send)),
   )
 
 const showFailureMessage = pipe(
-  M.status(Status.ServiceUnavailable),
-  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-  M.ichainFirst(() => M.closeHeaders()),
-  M.ichain(() => pipe(failureMessage(), M.send)),
+  RM.status(Status.ServiceUnavailable),
+  RM.ichainFirst(() => endSession()),
+  RM.ichainFirst(() => RM.contentType(MediaType.textHTML)),
+  RM.ichainFirst(() => RM.closeHeaders()),
+  RM.ichainW(() => pipe(failureMessage(), RM.send)),
 )
 
 const redirectToLogInPage = pipe(
