@@ -40,7 +40,7 @@
     "@types/markdown-it": "^12.2.3",
     "@types/node": "^16.11.36",
     "@types/node-fetch": "^2.6.1",
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",
     "cookie-signature": "^1.2.0",
     "del-cli": "^4.0.1",
