@@ -21,7 +21,7 @@ function finish() {
 trap finish EXIT
 
 echo "Starting the container"
-container=$(docker run --detach --env ZENODO_API_KEY=not-a-real-token "$1")
+container=$(docker run --detach --env SECRET=something-secret --env ZENODO_API_KEY=not-a-real-token "$1")
 
 timeout --foreground 20 bash << EOT
   while true; do
