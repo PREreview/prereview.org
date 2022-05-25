@@ -7,6 +7,7 @@ import { ExpressConnection } from 'hyper-ts/lib/express'
 import { Headers } from 'node-fetch'
 import { Body, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
+import { User } from '../src/user'
 
 export * from 'fast-check'
 
@@ -60,3 +61,9 @@ export const connection = <S = H.StatusOpen>(...args: Parameters<typeof request>
   fc.tuple(request(...args), response()).map(args => new ExpressConnection(...args))
 
 export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ minLength: 1 }).filter(isNonEmptyString)
+
+export const user = (): fc.Arbitrary<User> =>
+  fc.record({
+    name: fc.string(),
+    orcid: fc.string(),
+  })
