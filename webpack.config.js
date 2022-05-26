@@ -9,7 +9,31 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: [
+                  [
+                    'postcss-preset-env',
+                    {
+                      features: {
+                        'focus-visible-pseudo-class': false,
+                        'logical-properties-and-values': {
+                          dir: 'ltr',
+                        },
+                      },
+                      preserve: false,
+                    },
+                  ],
+                ],
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.ico$/,
