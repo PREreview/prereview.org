@@ -20,7 +20,7 @@ function createPage() {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <link href="${assets['style.css']}" rel="stylesheet" />
+  <link href="${assets['main.css']}" rel="stylesheet" />
   <script src="${assets['main.js']}" type="module"></script>
 
   <title>PREreview</title>

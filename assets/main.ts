@@ -1,6 +1,3 @@
 import './favicon.ico'
-import './orcid.svg'
 import './prereview.svg'
-import './space.css'
-import './step.css'
 import './style.css'

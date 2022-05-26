@@ -1,5 +1,6 @@
 const path = require('path')
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   mode: process.env.NODE_ENV,
@@ -8,7 +9,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/,
-        type: 'asset/resource',
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
         test: /\.ico$/,
@@ -33,6 +34,7 @@ module.exports = {
     publicPath: '/',
   },
   plugins: [
+    new MiniCssExtractPlugin(),
     new WebpackManifestPlugin({
       fileName: path.resolve('src', 'manifest.json'),
     }),
