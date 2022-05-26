@@ -89,7 +89,15 @@ export const app = (deps: AppEnv) => {
 
       next()
     })
-    .use(express.static('dist/assets'))
+    .use(
+      express.static('dist/assets', {
+        setHeaders: (res, path) => {
+          if (path.match(/\.[a-z0-9]{8,}\.[A-z0-9]+(?:\.map)?$/)) {
+            res.setHeader('Cache-Control', `public, max-age=${60 * 60 * 24 * 365}, immutable`)
+          }
+        },
+      }),
+    )
     .use(express.urlencoded({ extended: true }))
     .use(pipe(appMiddleware(deps), toRequestHandler))
 

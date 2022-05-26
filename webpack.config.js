@@ -42,6 +42,9 @@ module.exports = {
       {
         test: /\.ico$/,
         type: 'asset/resource',
+        generator: {
+          filename: '[name][ext]',
+        },
       },
       {
         test: /\.svg$/,
@@ -57,7 +60,8 @@ module.exports = {
     ],
   },
   output: {
-    assetModuleFilename: '[name][ext]',
+    assetModuleFilename: '[name].[contenthash][ext]',
+    filename: '[name].[contenthash].js',
     path: path.resolve('dist', 'assets'),
     publicPath: '/',
   },
@@ -65,7 +69,9 @@ module.exports = {
     minimizer: [`...`, new CssMinimizerPlugin()],
   },
   plugins: [
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+    }),
     new PurgeCssPlugin({
       paths: glob.sync(`src/**/*`, { nodir: true }),
       safelist: ['body', /^:/],
