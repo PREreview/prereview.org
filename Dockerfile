@@ -50,6 +50,7 @@ WORKDIR /app
 COPY --from=npm-dev /app/ .
 COPY --from=build-prod /app/dist/assets/ dist/assets/
 COPY src/ src/
+COPY --from=build-prod /app/src/manifest.json src/
 COPY integration/ integration/
 COPY playwright.config.ts .
 

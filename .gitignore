@@ -1,4 +1,5 @@
 /dist/
 /integration-results/
 /node_modules/
+/src/manifest.json
 /.env

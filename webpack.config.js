@@ -1,4 +1,5 @@
 const path = require('path')
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
 
 module.exports = {
   mode: process.env.NODE_ENV,
@@ -31,4 +32,9 @@ module.exports = {
     path: path.resolve('dist', 'assets'),
     publicPath: '/',
   },
+  plugins: [
+    new WebpackManifestPlugin({
+      fileName: path.resolve('src', 'manifest.json'),
+    }),
+  ],
 }

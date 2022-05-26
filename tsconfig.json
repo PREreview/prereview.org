@@ -1,4 +1,7 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+    "resolveJsonModule": true
+  },
   "include": ["assets", "integration", "src", "test", "*.ts"]
 }

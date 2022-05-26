@@ -7,8 +7,34 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: 'Build'
+  build-assets:
+    name: 'Build assets'
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v3.0.2
+
+      - name: 'Set up Node.js'
+        uses: actions/setup-node@v3.2.0
+        with:
+          node-version: 16
+          cache: ${{ !env.ACT && 'npm' || '' }}
+
+      - name: 'Install dependencies'
+        run: npm ci
+
+      - name: 'Build assets'
+        run: npm run build:assets
+
+      - name: 'Upload manifest'
+        uses: actions/upload-artifact@v3.1.0
+        with:
+          name: manifest
+          path: src/manifest.json
+
+  build-image:
+    name: 'Build image'
     runs-on: ubuntu-20.04
     outputs:
       image: ${{ steps.build.outputs.imageid }}
@@ -55,6 +81,8 @@ jobs:
   lint:
     name: 'Lint'
     runs-on: ubuntu-20.04
+    needs:
+      - build-assets
 
     steps:
       - name: 'Checkout code'
@@ -69,12 +97,20 @@ jobs:
       - name: 'Install dependencies'
         run: npm ci
 
+      - name: 'Download assets manifest'
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: manifest
+          path: src
+
       - name: 'Run the linters'
         run: npm run lint
 
   test:
     name: 'Test'
     runs-on: ubuntu-20.04
+    needs:
+      - build-assets
 
     steps:
       - name: 'Checkout code'
@@ -88,6 +124,12 @@ jobs:
 
       - name: 'Install dependencies'
         run: npm ci
+
+      - name: 'Download assets manifest'
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: manifest
+          path: src
 
       - name: 'Run the tests'
         run: npm run test
@@ -118,7 +160,7 @@ jobs:
     name: 'Smoke test'
     runs-on: ubuntu-20.04
     needs:
-      - build
+      - build-image
 
     steps:
       - name: 'Checkout code'
@@ -134,11 +176,13 @@ jobs:
         run: docker load --input /tmp/image.tar
 
       - name: 'Run smoke test'
-        run: scripts/smoke-test.sh ${{ needs.build.outputs.image }}
+        run: scripts/smoke-test.sh ${{ needs.build-image.outputs.image }}
 
   typecheck:
     name: 'Typecheck'
     runs-on: ubuntu-20.04
+    needs:
+      - build-assets
 
     steps:
       - name: 'Checkout code'
@@ -153,6 +197,12 @@ jobs:
       - name: 'Install dependencies'
         run: npm ci
 
+      - name: 'Download assets manifest'
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: manifest
+          path: src
+
       - name: 'Run typechecker'
         run: npm run typecheck
 
@@ -163,7 +213,7 @@ jobs:
     outputs:
       image: ${{ steps.image.outputs.image }}
     needs:
-      - build
+      - build-image
       - format
       - lint
       - test
@@ -194,7 +244,7 @@ jobs:
         run: echo "::set-output name=image::registry.fly.io/prereview:${{ github.sha }}"
 
       - name: 'Tag image'
-        run: docker tag ${{ needs.build.outputs.image }} ${{ steps.image.outputs.image }}
+        run: docker tag ${{ needs.build-image.outputs.image }} ${{ steps.image.outputs.image }}
 
       - name: 'Push image'
         run: docker push ${{ steps.image.outputs.image }}
