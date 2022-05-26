@@ -51,6 +51,8 @@ jobs:
         uses: docker/build-push-action@v3.0.0
         with:
           outputs: type=docker,dest=/tmp/image.tar
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: 'Upload build'
         uses: actions/upload-artifact@v3.1.0
