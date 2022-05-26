@@ -1,6 +1,9 @@
 const path = require('path')
+const glob = require('glob')
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const PurgeCssPlugin = require('purgecss-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 
 module.exports = {
   mode: process.env.NODE_ENV,
@@ -58,8 +61,16 @@ module.exports = {
     path: path.resolve('dist', 'assets'),
     publicPath: '/',
   },
+  optimization: {
+    minimizer: [`...`, new CssMinimizerPlugin()],
+  },
   plugins: [
     new MiniCssExtractPlugin(),
+    new PurgeCssPlugin({
+      paths: glob.sync(`src/**/*`, { nodir: true }),
+      safelist: ['body', /^:/],
+      variables: true,
+    }),
     new WebpackManifestPlugin({
       fileName: path.resolve('src', 'manifest.json'),
     }),
