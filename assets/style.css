@@ -279,22 +279,25 @@ textarea,
   }
 
   & a {
-    display: flex;
-    align-items: center;
     text-decoration-line: inherit;
     color: inherit;
 
-    &::after {
-      content: '';
-      inline-size: 1em;
-      block-size: 1em;
-      margin-inline-start: 0.4ch;
-      margin-inline-end: 0.1ch;
-      background-image: url('orcid.svg');
-    }
+    @media screen {
+      display: flex;
+      align-items: center;
 
-    &:hover {
-      text-decoration-line: underline;
+      &::after {
+        content: '';
+        inline-size: 1em;
+        block-size: 1em;
+        margin-inline-start: 0.4ch;
+        margin-inline-end: 0.1ch;
+        background-image: url('orcid.svg');
+      }
+
+      &:hover {
+        text-decoration-line: underline;
+      }
     }
   }
 }
