@@ -1,4 +1,4 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
-  "include": ["integration", "src", "test", "*.ts"]
+  "include": ["assets", "integration", "src", "test", "*.ts"]
 }

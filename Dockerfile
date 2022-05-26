@@ -34,8 +34,10 @@ ENV NODE_ENV=production
 COPY --from=npm-dev /app/node_modules/ node_modules/
 COPY tsconfig.build.json \
   tsconfig.json \
+  webpack.config.js \
   ./
 COPY src/ src/
+COPY assets/ assets/
 
 RUN npm run build
 
@@ -46,8 +48,8 @@ FROM mcr.microsoft.com/playwright:v1.22.2-focal AS test-integration
 WORKDIR /app
 
 COPY --from=npm-dev /app/ .
+COPY --from=build-prod /app/dist/assets/ dist/assets/
 COPY src/ src/
-COPY static/ static/
 COPY integration/ integration/
 COPY playwright.config.ts .
 
@@ -61,7 +63,6 @@ ENV NODE_ENV=production
 
 COPY --from=npm-prod /app/node_modules/ node_modules/
 COPY --from=build-prod /app/dist/ dist/
-COPY static/ static/
 
 HEALTHCHECK --interval=5s --timeout=1s \
   CMD wget --quiet --tries=1 --spider http://localhost:3000 || exit 1

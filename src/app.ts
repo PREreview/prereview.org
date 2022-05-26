@@ -89,7 +89,7 @@ export const app = (deps: AppEnv) => {
 
       next()
     })
-    .use(express.static('static'))
+    .use(express.static('dist/assets'))
     .use(express.urlencoded({ extended: true }))
     .use(pipe(appMiddleware(deps), toRequestHandler))
 

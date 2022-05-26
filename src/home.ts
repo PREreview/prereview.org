@@ -20,6 +20,7 @@ function createPage() {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <link href="style.css" rel="stylesheet" />
+  <script src="main.js" type="module"></script>
 
   <title>PREreview</title>
 

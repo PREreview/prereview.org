@@ -29,6 +29,8 @@
     "zenodo-ts": "^0.1.4"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-typescript": "^7.17.12",
     "@playwright/test": "^1.22.2",
     "@prettier/plugin-xml": "^2.2.0",
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
@@ -42,6 +44,7 @@
     "@types/node-fetch": "^2.6.1",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",
+    "babel-loader": "^8.2.5",
     "cookie-signature": "^1.2.0",
     "del-cli": "^4.0.1",
     "dotenv": "^16.0.1",
@@ -65,17 +68,23 @@
     "stylelint-use-logical-spec": "^3.2.2",
     "ts-jest": "^28.0.3",
     "ts-node-dev": "^1.1.8",
-    "typescript": "^4.7.2"
+    "typescript": "^4.7.2",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"
   },
   "scripts": {
     "prebuild": "del dist",
-    "build": "tsc --project tsconfig.build.json",
+    "build": "run-p build:*",
+    "build:app": "tsc --project tsconfig.build.json",
+    "build:assets": "webpack build --mode production",
     "format": "prettier --ignore-unknown --check '**'",
     "format:fix": "npm run format -- --write",
     "lint": "run-p --aggregate-output lint:*",
     "lint:css": "stylelint '**/*.css'",
     "lint:ts": "eslint .",
-    "start": "ts-node-dev --require dotenv/config --transpile-only src/index.ts",
+    "start": "run-p start:*",
+    "start:app": "ts-node-dev --require dotenv/config --transpile-only src/index.ts",
+    "start:assets": "webpack watch --mode development",
     "test": "jest",
     "test:integration": "docker run --rm --volume \"$(pwd)\"/integration/snapshots:/app/integration/snapshots --volume \"$(pwd)\"/integration-results:/app/integration-results \"$(docker build --quiet --target test-integration .)\"",
     "typecheck": "tsc --noEmit"
