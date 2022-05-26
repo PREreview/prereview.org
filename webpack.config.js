@@ -4,6 +4,7 @@ const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const PurgeCssPlugin = require('purgecss-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
 
 module.exports = {
   mode: process.env.NODE_ENV,
@@ -66,7 +67,16 @@ module.exports = {
     publicPath: '/',
   },
   optimization: {
-    minimizer: [`...`, new CssMinimizerPlugin()],
+    minimizer: [
+      `...`,
+      new CssMinimizerPlugin(),
+      new ImageMinimizerPlugin({
+        minimizer: {
+          implementation: ImageMinimizerPlugin.imageminMinify,
+          options: { plugins: [['svgo']] },
+        },
+      }),
+    ],
   },
   plugins: [
     new MiniCssExtractPlugin({
