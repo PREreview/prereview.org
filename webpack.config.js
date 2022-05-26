@@ -25,6 +25,7 @@ module.exports = {
                         'logical-properties-and-values': {
                           dir: 'ltr',
                         },
+                        'nesting-rules': true,
                       },
                       preserve: false,
                     },
