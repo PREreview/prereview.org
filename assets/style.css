@@ -3,7 +3,7 @@
 @import url('space.css');
 @import url('step.css');
 
-.visually-hidden:not(:focus):not(:active) {
+.visually-hidden:not(:focus, :active) {
   position: absolute;
   white-space: nowrap;
   overflow: hidden;
