@@ -153,6 +153,8 @@ jobs:
         with:
           load: true
           target: test-integration
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: 'Run Playwright'
         id: 'playwright'
