@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&family=IBM+Plex+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Regular.css');
+@import url('@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Bold.css');
+@import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-Regular.css');
+@import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-Italic.css');
+@import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-Bold.css');
+@import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-BoldItalic.css');
 @import url('open-color/open-color.css');
 @import url('space.css');
 @import url('step.css');

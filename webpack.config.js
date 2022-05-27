@@ -83,6 +83,7 @@ module.exports = {
       filename: '[name].[contenthash].css',
     }),
     new PurgeCssPlugin({
+      fontFace: true,
       paths: glob.sync(`src/**/*`, { nodir: true }),
       safelist: ['body', /^:/],
       variables: true,
