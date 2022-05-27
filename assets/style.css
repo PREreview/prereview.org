@@ -118,6 +118,15 @@ body > header {
     flex-grow: 1;
     block-size: 100%;
     padding-block: var(--space-m);
+
+    & > a {
+      display: inline-flex;
+      block-size: 100%;
+    }
+
+    & img {
+      block-size: 100%;
+    }
   }
 }
 

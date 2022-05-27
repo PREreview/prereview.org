@@ -19,9 +19,11 @@ export function page(page: Page): string {
   <title>${page.title}</title>
 
   <header>
-    <a href="${format(homeMatch.formatter, {})}" class="logo">
-      <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
-    </a>
+    <div class="logo">
+      <a href="${format(homeMatch.formatter, {})}">
+        <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
+      </a>
+    </div>
   </header>
 
   ${page.content}
