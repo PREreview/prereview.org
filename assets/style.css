@@ -114,8 +114,10 @@ body > header {
   column-gap: var(--space-m);
   block-size: var(--space-3xl);
 
-  & img {
-    inline-size: 100%;
+  & > .logo {
+    flex-grow: 1;
+    block-size: 100%;
+    padding-block: var(--space-m);
   }
 }
 

@@ -11,6 +11,10 @@ const config: PlaywrightTestConfig = {
       use: { ...devices['Desktop Chrome'] },
     },
     {
+      name: 'Desktop Firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
       name: 'iPhone 11',
       use: { ...devices['iPhone 11'] },
     },
