@@ -34,53 +34,56 @@ const showFailureMessage = pipe(
 function failureMessage() {
   return page({
     title: 'Sorry, we’re having problems',
-    content: `
-  <main>
-    <h1>Sorry, we’re having problems</h1>
+    content: /* HTML */ `
+      <main>
+        <h1>Sorry, we’re having problems</h1>
 
-    <p>We’re unable to show the preprint and its reviews now.</p>
+        <p>We’re unable to show the preprint and its reviews now.</p>
 
-    <p>Please try again later.</p>
-  </main>
-`,
+        <p>Please try again later.</p>
+      </main>
+    `,
   })
 }
 
 function createPage(reviews: Records) {
   return page({
     title: "Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
-    content: `
+    content: /* HTML */ `
+      <article>
+        <h1>The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i></h1>
+      </article>
 
-  <article>
-    <h1>The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i></h1>
-  </article>
+      <main>
+        <h2>${reviews.hits.hits.length} PREreview${reviews.hits.hits.length !== 1 ? 's' : ''}</h2>
 
-  <main>
-    <h2>${reviews.hits.hits.length} PREreview${reviews.hits.hits.length !== 1 ? 's' : ''}</h2>
+        <a href="${format(writeReviewMatch.formatter, {})}" class="button">Write a PREreview</a>
 
-    <a href="${format(writeReviewMatch.formatter, {})}" class="button">Write a PREreview</a>
-
-    <ol class="cards">
-      ${reviews.hits.hits.map(showReview).join('\n')}
-    </ol>
-  </main>
-`,
+        <ol class="cards">
+          ${reviews.hits.hits.map(showReview).join('\n')}
+        </ol>
+      </main>
+    `,
   })
 }
 
 function showReview(review: Record) {
-  return `
-  <li>
-    <article>
-      <ol aria-label="Authors of this review" role="list" class="author-list">
-        ${review.metadata.creators.map(author => `<li>${author.name}</li>`).join('\n')}
-      </ol>
-      ${textClipper(review.metadata.description, 300, { html: true, maxLines: 5 })}
-      <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
-        Read <span class="visually-hidden">the review by ${review.metadata.creators[0].name}
-        ${review.metadata.creators.length > 1 ? 'et al.' : ''}</span>
-      </a>
-    </article>
-  </li>
-`
+  return /* HTML */ `
+    <li>
+      <article>
+        <ol aria-label="Authors of this review" role="list" class="author-list">
+          ${review.metadata.creators.map(author => /* HTML */ `<li>${author.name}</li>`).join('\n')}
+        </ol>
+
+        ${textClipper(review.metadata.description, 300, { html: true, maxLines: 5 })}
+
+        <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
+          Read
+          <span class="visually-hidden">
+            the review by ${review.metadata.creators[0].name} ${review.metadata.creators.length > 1 ? 'et al.' : ''}
+          </span>
+        </a>
+      </article>
+    </li>
+  `
 }

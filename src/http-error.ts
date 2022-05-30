@@ -17,10 +17,10 @@ export function handleError<N extends H.Status>(error: HttpError<N>) {
 function errorPage(message: string) {
   return page({
     title: message,
-    content: `
-  <main>
-    <h1>${message}</h1>
-  </main>
-`,
+    content: /* HTML */ `
+      <main>
+        <h1>${message}</h1>
+      </main>
+    `,
   })
 }

@@ -41,17 +41,17 @@ const showFailureMessage = pipe(
 function failureMessage() {
   return page({
     title: 'Sorry, we’re having problems',
-    content: `
-  <main>
-    <h1>Sorry, we’re having problems</h1>
+    content: /* HTML */ `
+      <main>
+        <h1>Sorry, we’re having problems</h1>
 
-    <p>We’re unable to show the PREreview now.</p>
+        <p>We’re unable to show the PREreview now.</p>
 
-    <p>Please try again later.</p>
+        <p>Please try again later.</p>
 
-    <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
-  </main>
-`,
+        <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
+      </main>
+    `,
   })
 }
 
@@ -59,27 +59,27 @@ function createPage(review: Record) {
   return page({
     title:
       "Review of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' by Jingfang Hao et al.",
-    content: `
-  <nav>
-    <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>
-  </nav>
+    content: /* HTML */ `
+      <nav>
+        <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>
+      </nav>
 
-  <main>
-    <h1>Review of 'The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'</h1>
+      <main>
+        <h1>Review of 'The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'</h1>
 
-    <ol aria-label="Authors of this review" class="author-list">
-      ${review.metadata.creators.map(author => `<li>${displayAuthor(author)}</li>`).join('\n')}
-    </ol>
+        <ol aria-label="Authors of this review" class="author-list">
+          ${review.metadata.creators.map(author => /* HTML */ `<li>${displayAuthor(author)}</li>`).join('\n')}
+        </ol>
 
-    ${review.metadata.description}
-  </main>
-`,
+        ${review.metadata.description}
+      </main>
+    `,
   })
 }
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: string }) {
   if (orcid) {
-    return `<a href="https://orcid.org/${orcid}">${name}</a>`
+    return /* HTML */ `<a href="https://orcid.org/${orcid}">${name}</a>`
   }
 
   return name

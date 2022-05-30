@@ -8,25 +8,26 @@ type Page = {
 }
 
 export function page(page: Page): string {
-  return `<!DOCTYPE html>
-<html lang="en">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  return /* HTML */ `
+    <!DOCTYPE html>
+    <html lang="en">
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <link href="${assets['main.css']}" rel="stylesheet" />
-  <script src="${assets['main.js']}" type="module"></script>
+      <link href="${assets['main.css']}" rel="stylesheet" />
+      <script src="${assets['main.js']}" type="module"></script>
 
-  <title>${page.title}</title>
+      <title>${page.title}</title>
 
-  <header>
-    <div class="logo">
-      <a href="${format(homeMatch.formatter, {})}">
-        <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
-      </a>
-    </div>
-  </header>
+      <header>
+        <div class="logo">
+          <a href="${format(homeMatch.formatter, {})}">
+            <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
+          </a>
+        </div>
+      </header>
 
-  ${page.content}
-</html>
-`
+      ${page.content}
+    </html>
+  `
 }

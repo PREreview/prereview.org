@@ -119,67 +119,67 @@ const redirectToLogInPage = pipe(
 function successMessage(doi: Doi) {
   return page({
     title: 'PREreview posted',
-    content: `
-  <main>
-    <div class="panel">
-      <h1>PREreview posted</h1>
+    content: /* HTML */ `
+      <main>
+        <div class="panel">
+          <h1>PREreview posted</h1>
 
-      <p>
-        Your DOI <br />
-        <strong class="doi">${doi}</strong>
-      </p>
-    </div>
+          <p>
+            Your DOI <br />
+            <strong class="doi">${doi}</strong>
+          </p>
+        </div>
 
-    <h2>What happens next</h2>
+        <h2>What happens next</h2>
 
-    <p>You’ll be able to see your PREreview shortly.</p>
+        <p>You’ll be able to see your PREreview shortly.</p>
 
-    <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
-  </main>
-`,
+        <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
+      </main>
+    `,
   })
 }
 
 function failureMessage() {
   return page({
     title: 'Sorry, we’re having problems',
-    content: `
-  <main>
-    <h1>Sorry, we’re having problems</h1>
+    content: /* HTML */ `
+      <main>
+        <h1>Sorry, we’re having problems</h1>
 
-    <p>We’re unable to post your PREreview now.</p>
+        <p>We’re unable to post your PREreview now.</p>
 
-    <p>Please try again later.</p>
+        <p>Please try again later.</p>
 
-    <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
-  </main>
-`,
+        <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
+      </main>
+    `,
   })
 }
 
 function form(user: User) {
   return page({
     title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
-    content: `
-  <main>
-    <h1>
-      Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>”
-    </h1>
+    content: /* HTML */ `
+      <main>
+        <h1>
+          Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>”
+        </h1>
 
-    <form method="post">
-      <label>
-        Name
-        <input type="text" value="${user.name}" readonly>
-      </label>
+        <form method="post">
+          <label>
+            Name
+            <input type="text" value="${user.name}" readonly />
+          </label>
 
-      <label class="textarea">
-        Text
-        <textarea id="review" name="review" rows="20"></textarea>
-      </label>
+          <label class="textarea">
+            Text
+            <textarea id="review" name="review" rows="20"></textarea>
+          </label>
 
-      <button>Post PREreview</button>
-    </form>
-  </main>
-`,
+          <button>Post PREreview</button>
+        </form>
+      </main>
+    `,
   })
 }
