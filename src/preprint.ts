@@ -1,19 +1,18 @@
 import { format } from 'fp-ts-routing'
 import { flow, pipe } from 'fp-ts/function'
-import { MediaType, Status } from 'hyper-ts'
+import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import textClipper from 'text-clipper'
 import { Record, Records, getRecords } from 'zenodo-ts'
+import { sendHtml } from './html'
 import { page } from './page'
 import { reviewMatch, writeReviewMatch } from './routes'
 
 const sendPage = flow(
   (records: Records) => M.of(records),
   M.ichainFirst(() => M.status(Status.OK)),
-  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-  M.ichainFirst(() => M.closeHeaders()),
-  M.ichainW(flow(createPage, M.send)),
+  M.ichainW(flow(createPage, sendHtml)),
 )
 
 export const preprint = pipe(
@@ -29,9 +28,7 @@ export const preprint = pipe(
 
 const showFailureMessage = pipe(
   M.status(Status.ServiceUnavailable),
-  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-  M.ichainFirst(() => M.closeHeaders()),
-  M.ichain(() => pipe(failureMessage(), M.send)),
+  M.ichain(() => pipe(failureMessage(), sendHtml)),
 )
 
 function failureMessage() {

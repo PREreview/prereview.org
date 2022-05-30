@@ -4,10 +4,11 @@ import * as O from 'fp-ts/Option'
 import { Predicate } from 'fp-ts/Predicate'
 import { flow, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
-import { MediaType, Status } from 'hyper-ts'
+import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Record, getRecord } from 'zenodo-ts'
+import { sendHtml } from './html'
 import { handleError } from './http-error'
 import { page } from './page'
 import { preprintMatch } from './routes'
@@ -22,9 +23,7 @@ const sendPage = flow(
   (record: Record) => M.of(record),
   M.filterOrElse(isInCommunity, () => new NotFound()),
   M.ichainFirst(() => M.status(Status.OK)),
-  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-  M.ichainFirst(() => M.closeHeaders()),
-  M.ichainW(flow(createPage, M.send)),
+  M.ichainW(flow(createPage, sendHtml)),
   M.orElseW(handleError),
 )
 
@@ -36,9 +35,7 @@ export const review = flow(
 
 const showFailureMessage = pipe(
   M.status(Status.ServiceUnavailable),
-  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-  M.ichainFirst(() => M.closeHeaders()),
-  M.ichain(() => pipe(failureMessage(), M.send)),
+  M.ichain(() => pipe(failureMessage(), sendHtml)),
 )
 
 function failureMessage() {

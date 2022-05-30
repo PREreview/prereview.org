@@ -3,7 +3,7 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { MediaType, Status } from 'hyper-ts'
+import { Status } from 'hyper-ts'
 import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -11,6 +11,7 @@ import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
 import { match } from 'ts-pattern'
 import { DepositMetadata, createDeposition, publishDeposition, uploadFile } from 'zenodo-ts'
+import { sendHtml } from './html'
 import { page } from './page'
 import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
 import { NonEmptyStringC } from './string'
@@ -92,9 +93,7 @@ const showForm = pipe(
   getSession(),
   RM.chainEitherKW(UserC.decode),
   RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainFirst(() => RM.contentType(MediaType.textHTML)),
-  RM.ichainFirst(() => RM.closeHeaders()),
-  RM.ichainW(flow(form, RM.send)),
+  RM.ichainMiddlewareKW(flow(form, sendHtml)),
   RM.orElseMiddlewareK(() => redirectToLogInPage),
 )
 
@@ -102,17 +101,13 @@ const showSuccessMessage = (doi: Doi) =>
   pipe(
     RM.status(Status.OK),
     RM.ichainFirst(() => endSession()),
-    RM.ichainFirst(() => RM.contentType(MediaType.textHTML)),
-    RM.ichainFirst(() => RM.closeHeaders()),
-    RM.ichainW(() => pipe(successMessage(doi), RM.send)),
+    RM.ichainMiddlewareK(() => pipe(successMessage(doi), sendHtml)),
   )
 
 const showFailureMessage = pipe(
   RM.status(Status.ServiceUnavailable),
   RM.ichainFirst(() => endSession()),
-  RM.ichainFirst(() => RM.contentType(MediaType.textHTML)),
-  RM.ichainFirst(() => RM.closeHeaders()),
-  RM.ichainW(() => pipe(failureMessage(), RM.send)),
+  RM.ichainMiddlewareK(() => pipe(failureMessage(), sendHtml)),
 )
 
 const redirectToLogInPage = pipe(

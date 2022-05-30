@@ -1,18 +1,12 @@
 import { format } from 'fp-ts-routing'
 import { flow, pipe } from 'fp-ts/function'
-import { MediaType, Status } from 'hyper-ts'
+import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
+import { sendHtml } from './html'
 import * as assets from './manifest.json'
 import { lookupDoiMatch } from './routes'
 
-const sendPage = flow(createPage, M.send)
-
-export const home = pipe(
-  M.status(Status.OK),
-  M.ichainFirst(() => M.contentType(MediaType.textHTML)),
-  M.ichainFirst(() => M.closeHeaders()),
-  M.ichain(sendPage),
-)
+export const home = pipe(M.status(Status.OK), M.ichain(flow(createPage, sendHtml)))
 
 function createPage() {
   return `<!DOCTYPE html>
