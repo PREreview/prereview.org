@@ -62,10 +62,6 @@ describe('write-review', () => {
             fc.uuid(),
             fc.string(),
             fc.string(),
-            fc.record({
-              name: fc.string(),
-              orcid: fc.string(),
-            }),
             async (connection, sessionId, secret, zenodoApiKey) => {
               const sessionStore = new Keyv()
 
