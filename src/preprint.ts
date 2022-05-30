@@ -5,7 +5,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import textClipper from 'text-clipper'
 import { Record, Records, getRecords } from 'zenodo-ts'
-import { html, sendHtml } from './html'
+import { html, rawHtml, sendHtml } from './html'
 import { page } from './page'
 import { reviewMatch, writeReviewMatch } from './routes'
 
@@ -60,7 +60,7 @@ function createPage(reviews: Records) {
         <a href="${format(writeReviewMatch.formatter, {})}" class="button">Write a PREreview</a>
 
         <ol class="cards">
-          ${reviews.hits.hits.map(showReview).join('\n')}
+          ${reviews.hits.hits.map(showReview)}
         </ol>
       </main>
     `,
@@ -72,10 +72,10 @@ function showReview(review: Record) {
     <li>
       <article>
         <ol aria-label="Authors of this review" role="list" class="author-list">
-          ${review.metadata.creators.map(author => html`<li>${author.name}</li>`).join('\n')}
+          ${review.metadata.creators.map(author => html`<li>${author.name}</li>`)}
         </ol>
 
-        ${textClipper(review.metadata.description, 300, { html: true, maxLines: 5 })}
+        ${rawHtml(textClipper(review.metadata.description, 300, { html: true, maxLines: 5 }))}
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
           Read

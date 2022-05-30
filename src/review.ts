@@ -8,7 +8,7 @@ import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Record, getRecord } from 'zenodo-ts'
-import { html, sendHtml } from './html'
+import { html, rawHtml, sendHtml } from './html'
 import { handleError } from './http-error'
 import { page } from './page'
 import { preprintMatch } from './routes'
@@ -68,10 +68,10 @@ function createPage(review: Record) {
         <h1>Review of 'The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'</h1>
 
         <ol aria-label="Authors of this review" class="author-list">
-          ${review.metadata.creators.map(author => html`<li>${displayAuthor(author)}</li>`).join('\n')}
+          ${review.metadata.creators.map(author => html` <li>${displayAuthor(author)}</li>`)}
         </ol>
 
-        ${review.metadata.description}
+        ${rawHtml(review.metadata.description)}
       </main>
     `,
   })
