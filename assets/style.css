@@ -281,7 +281,8 @@ textarea,
 }
 
 .author-list {
-  display: flow-root;
+  display: flex;
+  flex-wrap: wrap;
   font-style: italic;
   padding-inline-start: 0;
 
@@ -291,6 +292,7 @@ textarea,
 
     &:not(:last-child)::after {
       content: ', ';
+      white-space: pre;
     }
   }
 
