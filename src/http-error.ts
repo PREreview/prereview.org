@@ -3,7 +3,7 @@ import http from 'http'
 import { HttpError } from 'http-errors'
 import * as H from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import { sendHtml } from './html'
+import { html, sendHtml } from './html'
 import { page } from './page'
 
 export function handleError<N extends H.Status>(error: HttpError<N>) {
@@ -17,7 +17,7 @@ export function handleError<N extends H.Status>(error: HttpError<N>) {
 function errorPage(message: string) {
   return page({
     title: message,
-    content: /* HTML */ `
+    content: html`
       <main>
         <h1>${message}</h1>
       </main>

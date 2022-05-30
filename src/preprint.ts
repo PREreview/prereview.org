@@ -5,7 +5,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import textClipper from 'text-clipper'
 import { Record, Records, getRecords } from 'zenodo-ts'
-import { sendHtml } from './html'
+import { html, sendHtml } from './html'
 import { page } from './page'
 import { reviewMatch, writeReviewMatch } from './routes'
 
@@ -34,7 +34,7 @@ const showFailureMessage = pipe(
 function failureMessage() {
   return page({
     title: 'Sorry, we’re having problems',
-    content: /* HTML */ `
+    content: html`
       <main>
         <h1>Sorry, we’re having problems</h1>
 
@@ -49,7 +49,7 @@ function failureMessage() {
 function createPage(reviews: Records) {
   return page({
     title: "Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
-    content: /* HTML */ `
+    content: html`
       <article>
         <h1>The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i></h1>
       </article>
@@ -68,11 +68,11 @@ function createPage(reviews: Records) {
 }
 
 function showReview(review: Record) {
-  return /* HTML */ `
+  return html`
     <li>
       <article>
         <ol aria-label="Authors of this review" role="list" class="author-list">
-          ${review.metadata.creators.map(author => /* HTML */ `<li>${author.name}</li>`).join('\n')}
+          ${review.metadata.creators.map(author => html`<li>${author.name}</li>`).join('\n')}
         </ol>
 
         ${textClipper(review.metadata.description, 300, { html: true, maxLines: 5 })}

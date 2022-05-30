@@ -11,7 +11,7 @@ import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
 import { match } from 'ts-pattern'
 import { DepositMetadata, createDeposition, publishDeposition, uploadFile } from 'zenodo-ts'
-import { sendHtml } from './html'
+import { html, sendHtml } from './html'
 import { page } from './page'
 import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
 import { NonEmptyStringC } from './string'
@@ -119,7 +119,7 @@ const redirectToLogInPage = pipe(
 function successMessage(doi: Doi) {
   return page({
     title: 'PREreview posted',
-    content: /* HTML */ `
+    content: html`
       <main>
         <div class="panel">
           <h1>PREreview posted</h1>
@@ -143,7 +143,7 @@ function successMessage(doi: Doi) {
 function failureMessage() {
   return page({
     title: 'Sorry, we’re having problems',
-    content: /* HTML */ `
+    content: html`
       <main>
         <h1>Sorry, we’re having problems</h1>
 
@@ -160,7 +160,7 @@ function failureMessage() {
 function form(user: User) {
   return page({
     title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
-    content: /* HTML */ `
+    content: html`
       <main>
         <h1>
           Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>”

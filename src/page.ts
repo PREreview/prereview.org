@@ -1,4 +1,5 @@
 import { format } from 'fp-ts-routing'
+import { html } from './html'
 import * as assets from './manifest.json'
 import { homeMatch } from './routes'
 
@@ -8,7 +9,7 @@ type Page = {
 }
 
 export function page(page: Page): string {
-  return /* HTML */ `
+  return html`
     <!DOCTYPE html>
     <html lang="en">
       <meta charset="utf-8" />

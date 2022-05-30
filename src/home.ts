@@ -2,14 +2,14 @@ import { format } from 'fp-ts-routing'
 import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import { sendHtml } from './html'
+import { html, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { lookupDoiMatch } from './routes'
 
 export const home = pipe(M.status(Status.OK), M.ichain(flow(createPage, sendHtml)))
 
 function createPage() {
-  return /* HTML */ `
+  return html`
     <!DOCTYPE html>
     <html lang="en">
       <meta charset="utf-8" />
