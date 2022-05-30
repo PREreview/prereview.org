@@ -1,14 +1,14 @@
 import { format } from 'fp-ts-routing'
-import { html } from './html'
+import { Html, html } from './html'
 import * as assets from './manifest.json'
 import { homeMatch } from './routes'
 
 type Page = {
   readonly title: string
-  readonly content: string
+  readonly content: Html
 }
 
-export function page(page: Page): string {
+export function page(page: Page): Html {
   return html`
     <!DOCTYPE html>
     <html lang="en">
