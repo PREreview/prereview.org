@@ -1,3 +1,4 @@
+/.webpack/
 /dist/
 /integration-results/
 /*.js

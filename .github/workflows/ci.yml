@@ -24,6 +24,14 @@ jobs:
       - name: 'Install dependencies'
         run: npm ci
 
+      - name: 'Set up assets cache'
+        uses: actions/cache@v3.0.3
+        if: ${{ !env.ACT }}
+        with:
+          path: .webpack
+          key: webpack-${{ github.head_ref || github.ref_name }}
+          restore-keys: webpack-
+
       - name: 'Build assets'
         run: npm run build:assets
 

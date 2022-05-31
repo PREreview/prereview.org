@@ -7,6 +7,12 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
 
 module.exports = {
+  cache: {
+    buildDependencies: { config: [__filename] },
+    cacheDirectory: path.resolve(__dirname, '.webpack'),
+    compression: false,
+    type: 'filesystem',
+  },
   mode: process.env.NODE_ENV,
   entry: path.resolve('assets', 'main.ts'),
   module: {

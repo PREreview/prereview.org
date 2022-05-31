@@ -1,5 +1,6 @@
 /.git/
 /.github/
+/.webpack/
 /dist/
 /integration-results/
 /node_modules/
