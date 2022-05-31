@@ -1,23 +1,59 @@
 import { Doi } from 'doi-ts'
 import { Status } from 'hyper-ts'
 import { URL } from 'url'
-import { RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
+import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
 import { expect, test } from './test'
 
 test('can post a full PREreview', async ({ fetch, page }) => {
+  const record: Record = {
+    conceptdoi: '10.5072/zenodo.1055805' as Doi,
+    conceptrecid: 1055805,
+    id: 1055806,
+    links: {
+      latest: new URL('http://example.com/latest'),
+      latest_html: new URL('http://example.com/latest_html'),
+    },
+    metadata: {
+      communities: [{ id: 'prereview-reviews' }],
+      creators: [
+        {
+          name: 'Josiah Carberry',
+          orcid: '0000-0002-1825-0097',
+        },
+      ],
+      description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+      doi: '10.5072/zenodo.1055806' as Doi,
+      license: {
+        id: 'CC-BY-4.0',
+      },
+      related_identifiers: [
+        {
+          identifier: '10.1101/2022.01.13.476201',
+          relation: 'reviews',
+          resource_type: 'publication-preprint',
+          scheme: 'doi',
+        },
+        {
+          identifier: '10.5072/zenodo.1061863',
+          relation: 'isVersionOf',
+          scheme: 'doi',
+        },
+      ],
+      resource_type: {
+        type: 'publication',
+        subtype: 'article',
+      },
+      title: 'Review of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+    },
+  }
+
   fetch
     .get(
       {
         url: 'http://zenodo.test/api/records/',
         query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
       },
-      {
-        body: RecordsC.encode({
-          hits: {
-            hits: [],
-          },
-        }),
-      },
+      { body: RecordsC.encode({ hits: { hits: [] } }) },
     )
     .postOnce('http://orcid.test/token', {
       status: Status.OK,
@@ -42,18 +78,17 @@ test('can post a full PREreview', async ({ fetch, page }) => {
   fetch
     .postOnce('http://zenodo.test/api/deposit/depositions', {
       body: UnsubmittedDepositionC.encode({
-        id: 1,
+        ...record,
         links: {
           bucket: new URL('http://example.com/bucket'),
           publish: new URL('http://example.com/publish'),
         },
         metadata: {
-          creators: [{ name: 'PREreviewer' }],
-          description: 'Description',
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
           prereserve_doi: {
-            doi: '10.5072/zenodo.1055806' as Doi,
+            doi: record.metadata.doi,
           },
-          title: 'Title',
           upload_type: 'publication',
           publication_type: 'article',
         },
@@ -67,12 +102,10 @@ test('can post a full PREreview', async ({ fetch, page }) => {
     })
     .postOnce('http://example.com/publish', {
       body: SubmittedDepositionC.encode({
-        id: 1,
+        ...record,
         metadata: {
-          creators: [{ name: 'PREreviewer' }],
-          description: 'Description',
-          doi: '10.5072/zenodo.1055806' as Doi,
-          title: 'Title',
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
           upload_type: 'publication',
           publication_type: 'article',
         },
@@ -96,50 +129,7 @@ test('can post a full PREreview', async ({ fetch, page }) => {
       url: 'http://zenodo.test/api/records/',
       query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
-    {
-      body: RecordsC.encode({
-        hits: {
-          hits: [
-            {
-              conceptdoi: '10.5072/zenodo.1061863' as Doi,
-              conceptrecid: 1061863,
-              id: 1061864,
-              links: {
-                latest: new URL('http://example.com/latest'),
-                latest_html: new URL('http://example.com/latest_html'),
-              },
-              metadata: {
-                communities: [{ id: 'prereview-reviews' }],
-                creators: [{ name: 'PREreviewer' }],
-                description: 'Lorem ipsum dolor sit amet',
-                doi: '10.5281/zenodo.1061864' as Doi,
-                license: {
-                  id: 'CC-BY-4.0',
-                },
-                related_identifiers: [
-                  {
-                    identifier: '10.1101/2022.01.13.476201',
-                    relation: 'reviews',
-                    resource_type: 'publication-preprint',
-                    scheme: 'doi',
-                  },
-                  {
-                    identifier: '10.5072/zenodo.1061863',
-                    relation: 'isVersionOf',
-                    scheme: 'doi',
-                  },
-                ],
-                resource_type: {
-                  type: 'publication',
-                  subtype: 'article',
-                },
-                title: 'Review of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-              },
-            },
-          ],
-        },
-      }),
-    },
+    { body: RecordsC.encode({ hits: { hits: [record] } }) },
     { overwriteRoutes: true },
   )
 
