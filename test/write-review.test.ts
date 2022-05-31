@@ -84,14 +84,14 @@ describe('write-review', () => {
     })
 
     describe('POST request', () => {
-      test('with a string', async () => {
+      test('as a public persona', async () => {
         await fc.assert(
           fc.asyncProperty(
             fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
               fc.tuple(
                 fc.constant(review),
                 fc.connection({
-                  body: fc.constant({ review }),
+                  body: fc.constant({ persona: 'public', review }),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),
@@ -209,12 +209,10 @@ describe('write-review', () => {
       test("when there isn't a session", async () => {
         await fc.assert(
           fc.asyncProperty(
-            fc.lorem().chain(review =>
-              fc.connection({
-                body: fc.constant({ review }),
-                method: fc.constant('POST'),
-              }),
-            ),
+            fc.connection({
+              body: fc.record({ persona: fc.constant('public'), review: fc.lorem() }),
+              method: fc.constant('POST'),
+            }),
             fc.string(),
             fc.string(),
             async (connection, secret, zenodoApiKey) => {
@@ -242,13 +240,53 @@ describe('write-review', () => {
         )
       })
 
-      test('with an empty string', async () => {
+      test('with an empty review', async () => {
         await fc.assert(
           fc.asyncProperty(
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
-                  body: fc.record({ review: fc.constant('') }),
+                  body: fc.record({ persona: fc.constant('public'), review: fc.constant('') }),
+                  headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                  method: fc.constant('POST'),
+                }),
+                fc.constant(sessionId),
+                fc.constant(secret),
+              ),
+            ),
+            fc.string(),
+            fc.record({
+              name: fc.string(),
+              orcid: fc.string(),
+            }),
+            async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              const sessionStore = new Keyv()
+              await sessionStore.set(sessionId, user)
+
+              const actual = await runMiddleware(
+                _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                connection,
+              )()
+
+              expect(actual).toStrictEqual(
+                E.right([
+                  { type: 'setStatus', status: Status.SeeOther },
+                  { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
+                  { type: 'endResponse' },
+                ]),
+              )
+            },
+          ),
+        )
+      })
+
+      test('without a persona', async () => {
+        await fc.assert(
+          fc.asyncProperty(
+            fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+              fc.tuple(
+                fc.connection({
+                  body: fc.record({ persona: fc.lorem(), review: fc.lorem() }, { requiredKeys: ['review'] }),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),
@@ -288,7 +326,7 @@ describe('write-review', () => {
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
-                  body: fc.record({ review: fc.nonEmptyString() }),
+                  body: fc.record({ persona: fc.constant('public'), review: fc.nonEmptyString() }),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),

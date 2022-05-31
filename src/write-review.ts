@@ -18,6 +18,7 @@ import { NonEmptyStringC } from './string'
 import { User, UserC } from './user'
 
 const NewReviewD = D.struct({
+  persona: D.literal('public'),
   review: NonEmptyStringC,
 })
 
@@ -167,10 +168,17 @@ function form(user: User) {
         </h1>
 
         <form method="post">
-          <label>
-            Name
-            <input type="text" value="${user.name}" readonly />
-          </label>
+          <fieldset role="group">
+            <legend>Publish as</legend>
+            <ol>
+              <li>
+                <label>
+                  <input name="persona" type="radio" value="public" checked />
+                  ${user.name}
+                </label>
+              </li>
+            </ol>
+          </fieldset>
 
           <label class="textarea">
             Text

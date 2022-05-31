@@ -165,6 +165,16 @@ ol,
 ul {
   margin-block-start: var(--space-s);
   padding-inline-start: var(--space-m);
+
+  @nest fieldset > & {
+    list-style-type: none;
+    margin-block-start: 0;
+    padding-inline-start: 0;
+
+    & > li {
+      margin-block-start: var(--space-s);
+    }
+  }
 }
 
 p {
@@ -180,6 +190,14 @@ label {
   cursor: pointer;
   touch-action: manipulation;
   margin-block-start: var(--space-m);
+
+  & > [type='radio'] {
+    margin-inline-end: var(--space-2xs-xs);
+  }
+
+  @nest fieldset & {
+    margin-block-start: var(--space-s);
+  }
 }
 
 button,
@@ -235,6 +253,11 @@ button,
   }
 }
 
+fieldset {
+  border: 0;
+  margin-block-start: var(--space-m);
+}
+
 textarea,
 [type='text'] {
   font: inherit;
@@ -252,6 +275,31 @@ textarea,
 
   &:read-only {
     cursor: not-allowed;
+  }
+}
+
+[type='radio'] {
+  appearance: none;
+  display: inline-grid;
+  color: currentcolor;
+  background-color: var(--color-background);
+  border: var(--width-divider) solid currentcolor;
+  border-radius: 50%;
+  cursor: pointer;
+  inline-size: var(--space-m);
+  block-size: var(--space-m);
+  place-content: center;
+
+  &::before {
+    content: '';
+    inline-size: var(--space-xs);
+    block-size: var(--space-xs);
+    background-color: transparent;
+    border-radius: 50%;
+  }
+
+  &:checked::before {
+    background-color: currentcolor;
   }
 }
 
