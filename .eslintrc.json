@@ -37,6 +37,7 @@
     "import/no-extraneous-dependencies": [
       "error",
       { "devDependencies": ["integration/**/*.ts", "test/**/*.ts", "*.ts"] }
-    ]
+    ],
+    "quotes": ["error", "single", { "avoidEscape": true }]
   }
 }

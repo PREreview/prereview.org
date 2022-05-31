@@ -18,7 +18,7 @@ const sendPage = flow(
 export const preprint = pipe(
   new URLSearchParams({
     communities: 'prereview-reviews',
-    q: `related.identifier:"10.1101/2022.01.13.476201"`,
+    q: 'related.identifier:"10.1101/2022.01.13.476201"',
     size: '100',
   }),
   RM.fromReaderTaskEitherK(getRecords),
