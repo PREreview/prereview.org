@@ -206,6 +206,128 @@ describe('write-review', () => {
         )
       })
 
+      test('as an anonymous persona', async () => {
+        await fc.assert(
+          fc.asyncProperty(
+            fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
+              fc.tuple(
+                fc.constant(review),
+                fc.connection({
+                  body: fc.constant({ persona: 'anonymous', review }),
+                  headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                  method: fc.constant('POST'),
+                }),
+                fc.constant(sessionId),
+                fc.constant(secret),
+              ),
+            ),
+            fc.string(),
+            fc.record({
+              name: fc.string(),
+              orcid: fc.string(),
+            }),
+            async ([review, connection, sessionId, secret], zenodoApiKey, user) => {
+              const sessionStore = new Keyv()
+              await sessionStore.set(sessionId, user)
+
+              const unsubmittedDeposition: UnsubmittedDeposition = {
+                id: 1,
+                links: {
+                  bucket: new URL('http://example.com/bucket'),
+                  publish: new URL('http://example.com/publish'),
+                },
+                metadata: {
+                  creators: [{ name: 'PREreviewer' }],
+                  description: 'Description',
+                  prereserve_doi: {
+                    doi: '10.5072/zenodo.1055806' as Doi,
+                  },
+                  title: 'Title',
+                  upload_type: 'publication',
+                  publication_type: 'article',
+                },
+                state: 'unsubmitted',
+                submitted: false,
+              }
+              const submittedDeposition: SubmittedDeposition = {
+                id: 1,
+                metadata: {
+                  creators: [{ name: 'PREreviewer' }],
+                  description: 'Description',
+                  doi: '10.5072/zenodo.1055806' as Doi,
+                  title: 'Title',
+                  upload_type: 'publication',
+                  publication_type: 'article',
+                },
+                state: 'done',
+                submitted: true,
+              }
+              const actual = await runMiddleware(
+                _.writeReview({
+                  fetch: fetchMock
+                    .sandbox()
+                    .postOnce(
+                      {
+                        url: 'https://zenodo.org/api/deposit/depositions',
+                        body: {
+                          metadata: {
+                            upload_type: 'publication',
+                            publication_type: 'article',
+                            title:
+                              'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
+                            creators: [{ name: 'PREreviewer' }],
+                            communities: [{ identifier: 'prereview-reviews' }],
+                            description: `<p>${review}</p>\n`,
+                            related_identifiers: [
+                              {
+                                scheme: 'doi',
+                                identifier: '10.1101/2022.01.13.476201',
+                                relation: 'reviews',
+                                resource_type: 'publication-preprint',
+                              },
+                            ],
+                          },
+                        },
+                      },
+                      {
+                        body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+                        status: Status.Created,
+                      },
+                    )
+                    .putOnce(
+                      {
+                        url: 'http://example.com/bucket/review.txt',
+                        headers: { 'Content-Type': 'text/plain' },
+                        functionMatcher: (_, req: RequestInit) => req.body === review,
+                      },
+                      {
+                        status: Status.Created,
+                      },
+                    )
+                    .postOnce('http://example.com/publish', {
+                      body: SubmittedDepositionC.encode(submittedDeposition),
+                      status: Status.Accepted,
+                    }),
+                  secret,
+                  sessionStore,
+                  zenodoApiKey,
+                }),
+                connection,
+              )()
+
+              expect(actual).toStrictEqual(
+                E.right([
+                  { type: 'setStatus', status: Status.OK },
+                  { type: 'clearCookie', name: 'session', options: expect.anything() },
+                  { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                  { type: 'setBody', body: expect.anything() },
+                ]),
+              )
+            },
+          ),
+        )
+      })
+
       test("when there isn't a session", async () => {
         await fc.assert(
           fc.asyncProperty(
