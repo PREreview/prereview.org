@@ -25,4 +25,14 @@ describe('user', () => {
       )
     })
   })
+
+  test('getPseudonym', async () => {
+    await fc.assert(
+      fc.asyncProperty(fc.string(), async orcid => {
+        const actual = await _.getPseudonym(orcid)()
+
+        expect(actual).toStrictEqual('PREreviewer')
+      }),
+    )
+  })
 })
