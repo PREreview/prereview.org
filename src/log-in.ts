@@ -18,6 +18,7 @@ const OrcidUserD = D.struct({
 
 export const authenticate = flow(
   RM.fromReaderTaskEitherK(exchangeAuthorizationCode(OrcidUserD)),
+  RM.apS('pseudonym', RM.right('PREreviewer')),
   RM.ichainFirst(() => RM.redirect(format(writeReviewMatch.formatter, {}))),
   RM.ichainW(flow(UserC.encode, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
