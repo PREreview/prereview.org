@@ -46,6 +46,7 @@ module.exports = {
                       preserve: false,
                     },
                   ],
+                  ['postcss-font-display', { display: 'fallback', replace: true }],
                 ],
               },
             },
