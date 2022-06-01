@@ -201,14 +201,14 @@ describe('write-review', () => {
         )
       })
 
-      test('as an anonymous persona', async () => {
+      test('as an pseudonym persona', async () => {
         await fc.assert(
           fc.asyncProperty(
             fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
               fc.tuple(
                 fc.constant(review),
                 fc.connection({
-                  body: fc.constant({ persona: 'anonymous', review }),
+                  body: fc.constant({ persona: 'pseudonym', review }),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),
@@ -229,7 +229,7 @@ describe('write-review', () => {
                   publish: new URL('http://example.com/publish'),
                 },
                 metadata: {
-                  creators: [{ name: 'PREreviewer' }],
+                  creators: [{ name: user.pseudonym }],
                   description: 'Description',
                   prereserve_doi: {
                     doi: '10.5072/zenodo.1055806' as Doi,
@@ -244,7 +244,7 @@ describe('write-review', () => {
               const submittedDeposition: SubmittedDeposition = {
                 id: 1,
                 metadata: {
-                  creators: [{ name: 'PREreviewer' }],
+                  creators: [{ name: user.pseudonym }],
                   description: 'Description',
                   doi: '10.5072/zenodo.1055806' as Doi,
                   title: 'Title',
@@ -267,7 +267,7 @@ describe('write-review', () => {
                             publication_type: 'article',
                             title:
                               'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
-                            creators: [{ name: 'PREreviewer' }],
+                            creators: [{ name: user.pseudonym }],
                             communities: [{ identifier: 'prereview-reviews' }],
                             description: `<p>${review}</p>\n`,
                             related_identifiers: [

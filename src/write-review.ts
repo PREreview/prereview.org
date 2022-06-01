@@ -18,7 +18,7 @@ import { NonEmptyStringC } from './string'
 import { User, UserC } from './user'
 
 const NewReviewD = D.struct({
-  persona: D.literal('public', 'anonymous'),
+  persona: D.literal('public', 'pseudonym'),
   review: NonEmptyStringC,
 })
 
@@ -38,7 +38,7 @@ function createDepositMetadata(review: NewReview, user: User): DepositMetadata {
     upload_type: 'publication',
     publication_type: 'article',
     title: 'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
-    creators: [review.persona === 'public' ? user : { name: 'PREreviewer' }],
+    creators: [review.persona === 'public' ? user : { name: user.pseudonym }],
     description: markdownIt().render(review.review),
     communities: [{ identifier: 'prereview-reviews' }],
     related_identifiers: [
@@ -179,8 +179,8 @@ function form(user: User) {
               </li>
               <li>
                 <label>
-                  <input name="persona" type="radio" value="anonymous" />
-                  PREreviewer
+                  <input name="persona" type="radio" value="pseudonym" />
+                  ${user.pseudonym}
                 </label>
               </li>
             </ol>
