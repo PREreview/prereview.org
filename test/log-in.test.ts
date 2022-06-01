@@ -82,9 +82,7 @@ describe('log-in', () => {
           )()
           const sessions = await all(sessionStore.iterator(undefined))
 
-          expect(sessions).toStrictEqual([
-            [expect.anything(), { name: accessToken.name, orcid: accessToken.orcid, pseudonym: 'PREreviewer' }],
-          ])
+          expect(sessions).toStrictEqual([[expect.anything(), { name: accessToken.name, orcid: accessToken.orcid }]])
           expect(actual).toStrictEqual(
             E.right([
               { type: 'setStatus', status: Status.Found },

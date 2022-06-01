@@ -142,7 +142,7 @@ test('can post a full PREreview', async ({ fetch, page }) => {
   await expect(review).toHaveScreenshot()
 })
 
-test('can post a full PREreview with a pseudonym', async ({ fetch, page }) => {
+test('can post a full PREreview anonymously', async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055807' as Doi,
     conceptrecid: 1055807,

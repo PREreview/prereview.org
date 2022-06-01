@@ -1,5 +1,4 @@
 import { format } from 'fp-ts-routing'
-import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow } from 'fp-ts/function'
 import { ServiceUnavailable } from 'http-errors'
 import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
@@ -8,7 +7,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { handleError } from './http-error'
 import { writeReviewMatch } from './routes'
-import { UserC, getPseudonym } from './user'
+import { UserC } from './user'
 
 export const logIn = requestAuthorizationCode('/authenticate')()
 
@@ -17,16 +16,8 @@ const OrcidUserD = D.struct({
   orcid: D.string,
 })
 
-const getUser = flow(
-  exchangeAuthorizationCode(OrcidUserD),
-  RTE.bindW(
-    'pseudonym',
-    RTE.fromTaskK(({ orcid }) => getPseudonym(orcid)),
-  ),
-)
-
 export const authenticate = flow(
-  RM.fromReaderTaskEitherK(getUser),
+  RM.fromReaderTaskEitherK(exchangeAuthorizationCode(OrcidUserD)),
   RM.ichainFirst(() => RM.redirect(format(writeReviewMatch.formatter, {}))),
   RM.ichainW(flow(UserC.encode, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),

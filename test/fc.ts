@@ -74,5 +74,4 @@ export const user = (): fc.Arbitrary<User> =>
   fc.record({
     name: fc.string(),
     orcid: fc.string(),
-    pseudonym: fc.string(),
   })
