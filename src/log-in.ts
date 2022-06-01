@@ -4,14 +4,20 @@ import { ServiceUnavailable } from 'http-errors'
 import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import { handleError } from './http-error'
 import { writeReviewMatch } from './routes'
 import { UserC } from './user'
 
 export const logIn = requestAuthorizationCode('/authenticate')()
 
+const OrcidUserD = D.struct({
+  name: D.string,
+  orcid: D.string,
+})
+
 export const authenticate = flow(
-  RM.fromReaderTaskEitherK(exchangeAuthorizationCode(UserC)),
+  RM.fromReaderTaskEitherK(exchangeAuthorizationCode(OrcidUserD)),
   RM.ichainFirst(() => RM.redirect(format(writeReviewMatch.formatter, {}))),
   RM.ichainW(flow(UserC.encode, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
