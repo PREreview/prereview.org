@@ -21,7 +21,12 @@ module.exports = {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
-          'css-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1,
+            },
+          },
           {
             loader: 'postcss-loader',
             options: {
@@ -31,6 +36,7 @@ module.exports = {
                     'postcss-preset-env',
                     {
                       features: {
+                        'custom-properties': false,
                         'focus-visible-pseudo-class': false,
                         'logical-properties-and-values': {
                           dir: 'ltr',
@@ -89,7 +95,6 @@ module.exports = {
       filename: '[name].[contenthash].css',
     }),
     new PurgeCssPlugin({
-      fontFace: true,
       paths: glob.sync(`src/**/*`, { nodir: true }),
       safelist: ['body', /^:/],
       variables: true,
