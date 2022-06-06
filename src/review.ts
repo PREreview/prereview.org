@@ -7,6 +7,7 @@ import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Orcid } from 'orcid-id-ts'
 import { Record, getRecord } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
 import { handleError } from './http-error'
@@ -77,7 +78,7 @@ function createPage(review: Record) {
   })
 }
 
-function displayAuthor({ name, orcid }: { name: string; orcid?: string }) {
+function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
     return html`<a href="https://orcid.org/${orcid}">${name}</a>`
   }

@@ -28,7 +28,7 @@
     "spectacles-ts": "^1.0.7",
     "text-clipper": "^2.2.0",
     "ts-pattern": "^4.0.2",
-    "zenodo-ts": "^0.1.4"
+    "zenodo-ts": "^0.1.5"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.18.2",

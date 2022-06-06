@@ -1,5 +1,6 @@
 import { Doi } from 'doi-ts'
 import { Status } from 'hyper-ts'
+import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
 import { expect, test } from './test'
@@ -18,7 +19,7 @@ test('can post a full PREreview', async ({ fetch, page }) => {
       creators: [
         {
           name: 'Josiah Carberry',
-          orcid: '0000-0002-1825-0097',
+          orcid: '0000-0002-1825-0097' as Orcid,
         },
       ],
       description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
