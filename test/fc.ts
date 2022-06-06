@@ -84,5 +84,5 @@ export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ mi
 export const user = (): fc.Arbitrary<User> =>
   fc.record({
     name: fc.string(),
-    orcid: fc.string(),
+    orcid: orcid(),
   })
