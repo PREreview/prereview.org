@@ -61,7 +61,7 @@ describe('log-in', () => {
           access_token: fc.string(),
           token_type: fc.string(),
           name: fc.string(),
-          orcid: fc.string(),
+          orcid: fc.orcid(),
         }),
         fc.string(),
         fc.connection(),

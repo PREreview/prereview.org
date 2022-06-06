@@ -5,15 +5,18 @@ import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oa
 import { storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import { isOrcid } from 'orcid-id-ts'
 import { handleError } from './http-error'
 import { writeReviewMatch } from './routes'
 import { UserC } from './user'
 
 export const logIn = requestAuthorizationCode('/authenticate')()
 
+const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
+
 const OrcidUserD = D.struct({
   name: D.string,
-  orcid: D.string,
+  orcid: OrcidD,
 })
 
 export const authenticate = flow(

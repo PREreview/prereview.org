@@ -1,3 +1,4 @@
+import { mod11_2 } from 'cdigit'
 import { Doi, isDoi } from 'doi-ts'
 import { Request, Response } from 'express'
 import * as fc from 'fast-check'
@@ -6,6 +7,7 @@ import * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
 import { Headers as FetchHeaders } from 'node-fetch'
 import { Body, Headers, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
+import { Orcid, isOrcid } from 'orcid-id-ts'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
 
@@ -21,6 +23,15 @@ export const doi = (): fc.Arbitrary<Doi> =>
     )
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
     .filter(isDoi)
+
+export const orcid = (): fc.Arbitrary<Orcid> =>
+  fc
+    .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), {
+      minLength: 4 + 4 + 4 + 3,
+      maxLength: 4 + 4 + 4 + 3,
+    })
+    .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
+    .filter(isOrcid)
 
 export const url = (): fc.Arbitrary<URL> => fc.webUrl().map(url => new URL(url))
 
