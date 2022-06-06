@@ -13,7 +13,7 @@
     "fp-ts": "^2.12.1",
     "fp-ts-contrib": "^0.1.29",
     "fp-ts-routing": "^0.5.4",
-    "http-errors": "^1.8.1",
+    "http-errors": "^2.0.0",
     "hyper-ts": "^0.7.8",
     "hyper-ts-oauth": "^0.1.1",
     "hyper-ts-routing": "^0.1.0",
