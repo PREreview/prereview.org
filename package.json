@@ -21,7 +21,7 @@
     "io-ts": "^2.2.16",
     "keyv": "^4.3.0",
     "logger-fp-ts": "^0.2.0",
-    "markdown-it": "^12.3.2",
+    "markdown-it": "^13.0.1",
     "nanohtml": "^1.10.0",
     "node-fetch": "^2.6.7",
     "orcid-id-ts": "^0.1.0",
