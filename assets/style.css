@@ -8,6 +8,14 @@
 @import url('space.css');
 @import url('step.css');
 
+@custom-selector :--button button, .button;
+
+@custom-selector :--heading h1, h2;
+
+@custom-selector :--input [type='text'], textarea;
+
+@custom-selector :--list ol, ul;
+
 .visually-hidden:not(:focus, :active) {
   position: absolute;
   white-space: nowrap;
@@ -49,7 +57,7 @@
 }
 
 @media screen {
-  :not(input, textarea, button, .button):focus-visible {
+  :not(:--input, :--button):focus-visible {
     outline-offset: var(--width-divider);
   }
 
@@ -146,8 +154,7 @@ article {
   margin-block-start: var(--space-l);
 }
 
-h1,
-h2 {
+:--heading {
   font-weight: 700;
   line-height: 1.2;
   margin-block-start: var(--space-m);
@@ -161,8 +168,7 @@ h2 {
   font-size: var(--step-4);
 }
 
-ol,
-ul {
+:--list {
   margin-block-start: var(--space-s);
   padding-inline-start: var(--space-m);
 
@@ -200,8 +206,7 @@ label {
   }
 }
 
-button,
-.button {
+:--button {
   display: inline-block;
   font-size: var(--step-1);
   font-weight: 700;
@@ -258,8 +263,7 @@ fieldset {
   margin-block-start: var(--space-m);
 }
 
-textarea,
-[type='text'] {
+:--input {
   font: inherit;
   color: inherit;
   background-color: var(--color-background);
