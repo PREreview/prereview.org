@@ -69,10 +69,13 @@ module.exports = {
         test: /\.ts$/,
         loader: 'babel-loader',
         options: {
-          presets: [['@babel/preset-env', { targets: { esmodules: true } }]],
+          presets: [['@babel/preset-env', { targets: { esmodules: true } }], '@babel/preset-typescript'],
         },
       },
     ],
+  },
+  resolve: {
+    extensions: ['.ts'],
   },
   output: {
     assetModuleFilename: '[name].[contenthash][ext]',
