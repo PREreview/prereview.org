@@ -4,7 +4,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import nanohtml from 'nanohtml'
 import raw from 'nanohtml/raw'
 
-export interface Html extends String {
+export interface Html {
   readonly Html: unique symbol
 }
 
@@ -12,7 +12,7 @@ export function html(
   literals: TemplateStringsArray,
   ...placeholders: ReadonlyArray<ReadonlyArray<Html> | Html | string | number>
 ): Html {
-  return nanohtml(literals, ...placeholders) as Html
+  return nanohtml(literals, ...placeholders) as unknown as Html
 }
 
 export function rawHtml(html: string): Html {
