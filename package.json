@@ -27,7 +27,7 @@
     "orcid-id-ts": "^0.1.0",
     "spectacles-ts": "^1.0.7",
     "text-clipper": "^2.2.0",
-    "ts-pattern": "^4.0.2",
+    "ts-pattern": "^4.0.3",
     "zenodo-ts": "^0.1.5"
   },
   "devDependencies": {
