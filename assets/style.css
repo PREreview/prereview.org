@@ -272,6 +272,7 @@ fieldset {
   padding-block: var(--space-3xs);
   padding-inline: var(--space-2xs);
   inline-size: 100%;
+  max-block-size: 30vh;
 
   @nest :not(label) > & {
     margin-block-start: var(--space-m);
@@ -279,6 +280,14 @@ fieldset {
 
   &:read-only {
     cursor: not-allowed;
+  }
+
+  @media screen {
+    max-block-size: 75vh;
+
+    @media (min-width: 50em) {
+      max-block-size: 50vh;
+    }
   }
 }
 
