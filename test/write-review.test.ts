@@ -70,9 +70,9 @@ describe('write-review', () => {
 
               expect(actual).toStrictEqual(
                 E.right([
-                  { type: 'setStatus', status: Status.Found },
-                  { type: 'setHeader', name: 'Location', value: '/log-in' },
-                  { type: 'endResponse' },
+                  { type: 'setStatus', status: Status.OK },
+                  { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                  { type: 'setBody', body: expect.anything() },
                 ]),
               )
             },

@@ -48,25 +48,29 @@ test('can post a full PREreview', async ({ fetch, page }) => {
     },
   }
 
-  fetch
-    .get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { hits: [] } }) },
-    )
-    .postOnce('http://orcid.test/token', {
-      status: Status.OK,
-      body: {
-        access_token: 'access-token',
-        token_type: 'Bearer',
-        name: 'Josiah Carberry',
-        orcid: '0000-0002-1825-0097',
-      },
-    })
+  fetch.get(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { hits: [] } }) },
+  )
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page.click('text="Write a PREreview"')
+
+  await expect(page.locator('main')).toContainText('We will ask you to log in')
+  await expect(page).toHaveScreenshot()
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.click('text="Start now"')
 
   await page.fill('[type=email]', 'test@example.com')
   await page.fill('[type=password]', 'password')
@@ -181,25 +185,26 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
     },
   }
 
-  fetch
-    .get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { hits: [] } }) },
-    )
-    .postOnce('http://orcid.test/token', {
-      status: Status.OK,
-      body: {
-        access_token: 'access-token',
-        token_type: 'Bearer',
-        name: 'Josiah Carberry',
-        orcid: '0000-0002-1825-0097',
-      },
-    })
+  fetch.get(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { hits: [] } }) },
+  )
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page.click('text="Write a PREreview"')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.click('text="Start now"')
 
   await page.fill('[type=email]', 'test@example.com')
   await page.fill('[type=password]', 'password')

@@ -95,7 +95,7 @@ const showForm = pipe(
   RM.chainEitherKW(UserC.decode),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(flow(form, sendHtml)),
-  RM.orElseMiddlewareK(() => redirectToLogInPage),
+  RM.orElseMiddlewareK(() => showStartPage),
 )
 
 const showSuccessMessage = (doi: Doi) =>
@@ -111,10 +111,9 @@ const showFailureMessage = pipe(
   RM.ichainMiddlewareK(() => pipe(failureMessage(), sendHtml)),
 )
 
-const redirectToLogInPage = pipe(
-  M.redirect(format(logInMatch.formatter, {})),
-  M.ichainFirst(() => M.closeHeaders()),
-  M.ichainFirst(() => M.end()),
+const showStartPage = pipe(
+  M.status(Status.OK),
+  M.ichain(() => pipe(startPage(), sendHtml)),
 )
 
 function successMessage(doi: Doi) {
@@ -193,6 +192,26 @@ function form(user: User) {
 
           <button>Post PREreview</button>
         </form>
+      </main>
+    `,
+  })
+}
+
+function startPage() {
+  return page({
+    title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    content: html`
+      <main>
+        <h1>
+          Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>”
+        </h1>
+
+        <p>
+          We will ask you to log in with your <a href="https://orcid.org/">ORCID iD</a>. If you don't have an iD, you
+          can create one.
+        </p>
+
+        <a href="${format(logInMatch.formatter, {})}" role="button" draggable="false">Start now</a>
       </main>
     `,
   })
