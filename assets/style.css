@@ -194,24 +194,27 @@ p {
 }
 
 label {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  inline-size: fit-content;
   cursor: pointer;
   touch-action: manipulation;
-  margin-block-start: var(--space-m);
 
-  & > [type='radio'] {
-    margin-inline-end: var(--space-2xs-xs);
-  }
+  &:not([for]) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    inline-size: fit-content;
+    margin-block-start: var(--space-m);
 
-  & + [role='note'] {
-    margin-inline-start: calc(var(--space-m) + var(--space-2xs-xs));
-  }
+    & > [type='radio'] {
+      margin-inline-end: var(--space-2xs-xs);
+    }
 
-  @nest fieldset & {
-    margin-block-start: var(--space-s);
+    & + [role='note'] {
+      margin-inline-start: calc(var(--space-m) + var(--space-2xs-xs));
+    }
+
+    @nest fieldset & {
+      margin-block-start: var(--space-s);
+    }
   }
 }
 
