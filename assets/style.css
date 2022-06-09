@@ -43,6 +43,7 @@
   --color-primary: var(--oc-red-6);
   --color-background: white;
   --color-text: var(--oc-gray-8);
+  --color-text-light: var(--oc-gray-6);
   --color-focus: var(--oc-yellow-7);
   --color-link: var(--oc-blue-6);
   --color-link-dark: var(--oc-blue-8);
@@ -205,6 +206,10 @@ label {
     margin-inline-end: var(--space-2xs-xs);
   }
 
+  & + [role='note'] {
+    margin-inline-start: calc(var(--space-m) + var(--space-2xs-xs));
+  }
+
   @nest fieldset & {
     margin-block-start: var(--space-s);
   }
@@ -259,6 +264,16 @@ label {
     background-color: var(--color-link-dark);
     border: 0 solid transparent;
     border-block-end-width: var(--width-divider);
+  }
+}
+
+[role='note'] {
+  font-size: var(--step-0);
+  margin-block-start: var(--space-3xs);
+  color: var(--color-text-light);
+
+  @nest fieldset > & {
+    margin-block-start: var(--space-xs);
   }
 }
 
