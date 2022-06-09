@@ -167,6 +167,10 @@ article {
 
 h1 {
   font-size: var(--step-5);
+
+  @nest form & {
+    font-size: var(--step-4);
+  }
 }
 
 h2 {
