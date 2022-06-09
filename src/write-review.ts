@@ -17,11 +17,20 @@ import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
 import { NonEmptyStringC } from './string'
 import { User, UserC } from './user'
 
-const NewReviewD = D.struct({
-  persona: D.literal('public', 'anonymous'),
+const ReviewD = D.struct({
   review: NonEmptyStringC,
 })
 
+const NewReviewD = pipe(
+  ReviewD,
+  D.intersect(
+    D.struct({
+      persona: D.literal('public', 'anonymous'),
+    }),
+  ),
+)
+
+type Review = D.TypeOf<typeof ReviewD>
 type NewReview = D.TypeOf<typeof NewReviewD>
 
 export const writeReview = pipe(
@@ -29,7 +38,7 @@ export const writeReview = pipe(
   RM.ichainW(method =>
     match(method)
       .with('POST', () => handleForm)
-      .otherwise(() => showForm),
+      .otherwise(() => showTextForm),
   ),
 )
 
@@ -61,9 +70,18 @@ const handleNewReview = (review: NewReview) =>
     RM.orElseW(() => showFailureMessage),
   )
 
-const handleForm = pipe(
-  RM.decodeBody(NewReviewD.decode),
-  RM.ichainW(handleNewReview),
+const showPersonaForm = (review: Review) =>
+  pipe(
+    getSession(),
+    RM.chainEitherKW(UserC.decode),
+    RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainMiddlewareKW(flow(user => personaForm(review, user), sendHtml)),
+    RM.orElseMiddlewareK(() => showStartPage),
+  )
+
+const handleTextForm = pipe(
+  RM.decodeBody(ReviewD.decode),
+  RM.ichainW(showPersonaForm),
   RM.orElseMiddlewareK(() =>
     pipe(
       M.status(Status.SeeOther),
@@ -72,6 +90,12 @@ const handleForm = pipe(
       M.ichain(() => M.end()),
     ),
   ),
+)
+
+const handleForm = pipe(
+  RM.decodeBody(NewReviewD.decode),
+  RM.ichainW(handleNewReview),
+  RM.orElseW(() => handleTextForm),
 )
 
 function createRecord(review: NewReview) {
@@ -90,11 +114,11 @@ function createRecord(review: NewReview) {
     )
 }
 
-const showForm = pipe(
+const showTextForm = pipe(
   getSession(),
   RM.chainEitherKW(UserC.decode),
   RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareKW(flow(form, sendHtml)),
+  RM.ichainMiddlewareKW(flow(textForm, sendHtml)),
   RM.orElseMiddlewareK(() => showStartPage),
 )
 
@@ -157,18 +181,17 @@ function failureMessage() {
   })
 }
 
-function form(user: User) {
+function personaForm(review: Review, user: User) {
   return page({
     title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
       <main>
-        <h1>
-          Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>”
-        </h1>
-
         <form method="post">
           <fieldset role="group">
-            <legend>Publish as</legend>
+            <legend>
+              <h1>Publish as</h1>
+            </legend>
+
             <ol>
               <li>
                 <label>
@@ -185,12 +208,31 @@ function form(user: User) {
             </ol>
           </fieldset>
 
-          <label class="textarea">
-            Text
-            <textarea id="review" name="review" rows="20"></textarea>
-          </label>
+          <textarea name="review" hidden>${review.review}</textarea>
 
           <button>Post PREreview</button>
+        </form>
+      </main>
+    `,
+  })
+}
+
+function textForm() {
+  return page({
+    title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    content: html`
+      <main>
+        <form method="post">
+          <h1>
+            <label for="review">
+              Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in
+              <i>Chlamydomonas reinhardtii</i>”
+            </label>
+          </h1>
+
+          <textarea id="review" name="review" rows="20"></textarea>
+
+          <button>Next</button>
         </form>
       </main>
     `,

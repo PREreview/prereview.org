@@ -76,8 +76,13 @@ test('can post a full PREreview', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.fill('textarea', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Next"')
+
   await page.check('text="Josiah Carberry"')
-  await page.fill('text="Text"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
   await expect(page).toHaveScreenshot()
 
@@ -210,8 +215,9 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.fill('textarea', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.click('text="Next"')
   await page.check('text="PREreviewer"')
-  await page.fill('text="Text"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
   fetch
     .postOnce('http://zenodo.test/api/deposit/depositions', {

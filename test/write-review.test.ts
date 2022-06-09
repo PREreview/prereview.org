@@ -418,9 +418,9 @@ describe('write-review', () => {
 
               expect(actual).toStrictEqual(
                 E.right([
-                  { type: 'setStatus', status: Status.SeeOther },
-                  { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
-                  { type: 'endResponse' },
+                  { type: 'setStatus', status: Status.OK },
+                  { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                  { type: 'setBody', body: expect.anything() },
                 ]),
               )
             },
