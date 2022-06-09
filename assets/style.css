@@ -69,6 +69,7 @@
 
 :any-link {
   color: var(--color-link);
+  hyphens: manual;
 
   @media screen {
     text-decoration: underline;

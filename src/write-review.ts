@@ -207,8 +207,8 @@ function startPage() {
         </h1>
 
         <p>
-          We will ask you to log in with your <a href="https://orcid.org/">ORCID iD</a>. If you don't have an iD, you
-          can create one.
+          We will ask you to log in with your <a href="https://orcid.org/">ORCID&nbsp;iD</a>. If you don't have an iD,
+          you can create one.
         </p>
 
         <a href="${format(logInMatch.formatter, {})}" role="button" draggable="false">Start now</a>
