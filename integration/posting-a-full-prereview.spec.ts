@@ -86,6 +86,14 @@ test('can post a full PREreview', async ({ fetch, page }) => {
 
   await expect(page).toHaveScreenshot()
 
+  await page.click('text="Next"')
+
+  const preview = page.locator(':text-is("Preview") + blockquote')
+
+  await expect(preview).toContainText('Josiah Carberry')
+  await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await expect(page).toHaveScreenshot()
+
   fetch
     .postOnce('http://zenodo.test/api/deposit/depositions', {
       body: UnsubmittedDepositionC.encode({
@@ -218,6 +226,12 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
   await page.fill('textarea', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.click('text="Next"')
   await page.check('text="PREreviewer"')
+  await page.click('text="Next"')
+
+  const preview = page.locator(':text-is("Preview") + blockquote')
+
+  await expect(preview).toContainText('PREreviewer')
+  await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
   fetch
     .postOnce('http://zenodo.test/api/deposit/depositions', {

@@ -9,9 +9,10 @@ import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
+import { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { DepositMetadata, createDeposition, publishDeposition, uploadFile } from 'zenodo-ts'
-import { html, sendHtml } from './html'
+import { html, rawHtml, sendHtml } from './html'
 import { page } from './page'
 import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
 import { NonEmptyStringC } from './string'
@@ -21,7 +22,7 @@ const ReviewD = D.struct({
   review: NonEmptyStringC,
 })
 
-const NewReviewD = pipe(
+const PersonaD = pipe(
   ReviewD,
   D.intersect(
     D.struct({
@@ -30,7 +31,17 @@ const NewReviewD = pipe(
   ),
 )
 
+const NewReviewD = pipe(
+  PersonaD,
+  D.intersect(
+    D.struct({
+      action: D.literal('post'),
+    }),
+  ),
+)
+
 type Review = D.TypeOf<typeof ReviewD>
+type Persona = D.TypeOf<typeof PersonaD>
 type NewReview = D.TypeOf<typeof NewReviewD>
 
 export const writeReview = pipe(
@@ -92,10 +103,25 @@ const handleTextForm = pipe(
   ),
 )
 
+const showPreview = (review: Persona) =>
+  pipe(
+    getSession(),
+    RM.chainEitherKW(UserC.decode),
+    RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainMiddlewareKW(user => pipe(preview(review, user), sendHtml)),
+    RM.orElseMiddlewareK(() => showStartPage),
+  )
+
+const handlePersonaForm = pipe(
+  RM.decodeBody(PersonaD.decode),
+  RM.ichainW(showPreview),
+  RM.orElseW(() => handleTextForm),
+)
+
 const handleForm = pipe(
   RM.decodeBody(NewReviewD.decode),
   RM.ichainW(handleNewReview),
-  RM.orElseW(() => handleTextForm),
+  RM.orElseW(() => handlePersonaForm),
 )
 
 function createRecord(review: NewReview) {
@@ -181,6 +207,35 @@ function failureMessage() {
   })
 }
 
+function preview(review: Persona, user: User) {
+  return page({
+    title: "Preview your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    content: html`
+      <main>
+        <h1 id="preview-label">Preview</h1>
+
+        <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
+          <h2>Review of 'The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'</h2>
+
+          <ol aria-label="Authors of this review" class="author-list">
+            <li>${displayAuthor(review.persona === 'public' ? user : { name: 'PREreviewer' })}</li>
+          </ol>
+
+          ${rawHtml(markdownIt().render(review.review))}
+        </blockquote>
+
+        <form method="post">
+          <input name="persona" type="hidden" value="${review.persona}" />
+
+          <textarea name="review" hidden>${review.review}</textarea>
+
+          <button name="action" value="post">Post PREreview</button>
+        </form>
+      </main>
+    `,
+  })
+}
+
 function personaForm(review: Review, user: User) {
   return page({
     title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
@@ -214,7 +269,7 @@ function personaForm(review: Review, user: User) {
 
           <textarea name="review" hidden>${review.review}</textarea>
 
-          <button>Post PREreview</button>
+          <button>Next</button>
         </form>
       </main>
     `,
@@ -261,4 +316,12 @@ function startPage() {
       </main>
     `,
   })
+}
+
+function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
+  if (orcid) {
+    return html`<a href="https://orcid.org/${orcid}">${name}</a>`
+  }
+
+  return name
 }

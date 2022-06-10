@@ -89,7 +89,7 @@ describe('write-review', () => {
               fc.tuple(
                 fc.constant(review),
                 fc.connection({
-                  body: fc.constant({ persona: 'public', review }),
+                  body: fc.constant({ action: 'post', persona: 'public', review }),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),
@@ -208,7 +208,7 @@ describe('write-review', () => {
               fc.tuple(
                 fc.constant(review),
                 fc.connection({
-                  body: fc.constant({ persona: 'anonymous', review }),
+                  body: fc.constant({ action: 'post', persona: 'anonymous', review }),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),
@@ -324,7 +324,7 @@ describe('write-review', () => {
         await fc.assert(
           fc.asyncProperty(
             fc.connection({
-              body: fc.record({ persona: fc.constant('public'), review: fc.lorem() }),
+              body: fc.record({ action: fc.constant('post'), persona: fc.constant('public'), review: fc.lorem() }),
               method: fc.constant('POST'),
             }),
             fc.string(),
@@ -360,7 +360,10 @@ describe('write-review', () => {
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
-                  body: fc.record({ persona: fc.constant('public'), review: fc.constant('') }),
+                  body: fc.record(
+                    { action: fc.constant('post'), persona: fc.constant('public'), review: fc.constant('') },
+                    { requiredKeys: ['review'] },
+                  ),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),
@@ -397,7 +400,10 @@ describe('write-review', () => {
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
-                  body: fc.record({ persona: fc.lorem(), review: fc.lorem() }, { requiredKeys: ['review'] }),
+                  body: fc.record(
+                    { action: fc.constant('post'), persona: fc.lorem(), review: fc.lorem() },
+                    { requiredKeys: ['review'] },
+                  ),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),
@@ -434,7 +440,11 @@ describe('write-review', () => {
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
-                  body: fc.record({ persona: fc.constant('public'), review: fc.nonEmptyString() }),
+                  body: fc.record({
+                    action: fc.constant('post'),
+                    persona: fc.constant('public'),
+                    review: fc.nonEmptyString(),
+                  }),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),

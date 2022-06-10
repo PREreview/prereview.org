@@ -58,7 +58,7 @@
 }
 
 @media screen {
-  :not(:--input, :--button):focus-visible {
+  :not(:--input, :--button, .preview):focus-visible {
     outline-offset: var(--width-divider);
   }
 
@@ -195,6 +195,10 @@ h2 {
 p {
   hyphens: auto;
   margin-block-start: var(--space-xs);
+}
+
+blockquote {
+  margin-block-start: var(--space-s);
 }
 
 label {
@@ -427,6 +431,26 @@ fieldset {
     -moz-osx-font-smoothing: grayscale;
     color: var(--color-background);
     background-color: var(--color-success);
+  }
+}
+
+.preview {
+  border: var(--width-divider) solid currentcolor;
+  padding-block: var(--space-3xs);
+  padding-inline: var(--space-2xs);
+
+  & > :first-child {
+    margin-block-start: 0;
+  }
+
+  @media screen {
+    max-block-size: 75vh;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+
+    @media (min-width: 50em) {
+      max-block-size: 50vh;
+    }
   }
 }
 
