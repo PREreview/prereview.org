@@ -88,7 +88,7 @@ test('can post a full PREreview', async ({ fetch, page }) => {
 
   await page.click('text="Next"')
 
-  const preview = page.locator(':text-is("Preview") + blockquote')
+  const preview = page.locator('role=blockquote[name="Preview"]')
 
   await expect(preview).toContainText('Josiah Carberry')
   await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -228,7 +228,7 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
   await page.check('text="PREreviewer"')
   await page.click('text="Next"')
 
-  const preview = page.locator(':text-is("Preview") + blockquote')
+  const preview = page.locator('role=blockquote[name="Preview"]')
 
   await expect(preview).toContainText('PREreviewer')
   await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
