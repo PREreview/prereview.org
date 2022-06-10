@@ -108,7 +108,7 @@ body {
 
 body > * {
   inline-size: 100%;
-  max-inline-size: 100rem;
+  max-inline-size: 75ch;
   margin-inline: auto;
   padding-inline: var(--space-m);
 }
