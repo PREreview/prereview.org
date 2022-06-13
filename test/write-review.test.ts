@@ -385,9 +385,10 @@ describe('write-review', () => {
 
                 expect(actual).toStrictEqual(
                   E.right([
-                    { type: 'setStatus', status: Status.SeeOther },
-                    { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
-                    { type: 'endResponse' },
+                    { type: 'setStatus', status: Status.ServiceUnavailable },
+                    { type: 'clearCookie', name: 'session', options: expect.anything() },
+                    { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                    { type: 'setBody', body: expect.anything() },
                   ]),
                 )
               },
@@ -425,7 +426,8 @@ describe('write-review', () => {
 
                 expect(actual).toStrictEqual(
                   E.right([
-                    { type: 'setStatus', status: Status.OK },
+                    { type: 'setStatus', status: Status.ServiceUnavailable },
+                    { type: 'clearCookie', name: 'session', options: expect.anything() },
                     { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
                     { type: 'setBody', body: expect.anything() },
                   ]),
@@ -494,7 +496,11 @@ describe('write-review', () => {
               fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
                 fc.tuple(
                   fc.connection({
-                    body: fc.record({ persona: fc.constantFrom('public', 'anonymous'), review: fc.lorem() }),
+                    body: fc.record({
+                      action: fc.constant('persona'),
+                      persona: fc.constantFrom('public', 'anonymous'),
+                      review: fc.lorem(),
+                    }),
                     headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                     method: fc.constant('POST'),
                   }),
@@ -534,7 +540,11 @@ describe('write-review', () => {
           await fc.assert(
             fc.asyncProperty(
               fc.connection({
-                body: fc.record({ persona: fc.constantFrom('public', 'anonymous'), review: fc.lorem() }),
+                body: fc.record({
+                  action: fc.constant('persona'),
+                  persona: fc.constantFrom('public', 'anonymous'),
+                  review: fc.lorem(),
+                }),
                 method: fc.constant('POST'),
               }),
               fc.string(),
@@ -571,8 +581,12 @@ describe('write-review', () => {
                 fc.tuple(
                   fc.connection({
                     body: fc.record(
-                      { persona: fc.constantFrom('public', 'anonymous'), review: fc.constant('') },
-                      { requiredKeys: ['persona'] },
+                      {
+                        action: fc.constant('persona'),
+                        persona: fc.constantFrom('public', 'anonymous'),
+                        review: fc.constant(''),
+                      },
+                      { requiredKeys: ['action', 'persona'] },
                     ),
                     headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                     method: fc.constant('POST'),
@@ -610,7 +624,10 @@ describe('write-review', () => {
               fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
                 fc.tuple(
                   fc.connection({
-                    body: fc.record({ persona: fc.lorem(), review: fc.lorem() }, { requiredKeys: ['review'] }),
+                    body: fc.record(
+                      { action: fc.constant('persona'), persona: fc.lorem(), review: fc.lorem() },
+                      { requiredKeys: ['action', 'review'] },
+                    ),
                     headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                     method: fc.constant('POST'),
                   }),
@@ -641,6 +658,7 @@ describe('write-review', () => {
           )
         })
       })
+
       describe('review action', () => {
         test('with a review', async () => {
           await fc.assert(
@@ -648,7 +666,7 @@ describe('write-review', () => {
               fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
                 fc.tuple(
                   fc.connection({
-                    body: fc.record({ review: fc.lorem() }),
+                    body: fc.record({ action: fc.constant('review'), review: fc.lorem() }),
                     headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                     method: fc.constant('POST'),
                   }),
@@ -688,7 +706,7 @@ describe('write-review', () => {
           await fc.assert(
             fc.asyncProperty(
               fc.connection({
-                body: fc.record({ review: fc.lorem() }),
+                body: fc.record({ action: fc.constant('review'), review: fc.lorem() }),
                 method: fc.constant('POST'),
               }),
               fc.string(),
@@ -724,7 +742,10 @@ describe('write-review', () => {
               fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
                 fc.tuple(
                   fc.connection({
-                    body: fc.record({ review: fc.constant('') }, { withDeletedKeys: true }),
+                    body: fc.record(
+                      { action: fc.constant('review'), review: fc.constant('') },
+                      { requiredKeys: ['action'] },
+                    ),
                     headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                     method: fc.constant('POST'),
                   }),

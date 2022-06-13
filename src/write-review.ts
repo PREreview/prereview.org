@@ -10,6 +10,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
+import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { DepositMetadata, createDeposition, publishDeposition, uploadFile } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
@@ -22,22 +23,21 @@ const ReviewFormD = D.struct({
   review: NonEmptyStringC,
 })
 
-const PersonaFormD = pipe(
-  ReviewFormD,
-  D.intersect(
-    D.struct({
-      persona: D.literal('public', 'anonymous'),
-    }),
-  ),
-)
+const PersonaFormD = D.struct({
+  persona: D.literal('public', 'anonymous'),
+  review: NonEmptyStringC,
+})
 
-const PostFormD = pipe(
-  PersonaFormD,
-  D.intersect(
-    D.struct({
-      action: D.literal('post'),
-    }),
-  ),
+const PostFormD = D.struct({
+  persona: D.literal('public', 'anonymous'),
+  review: NonEmptyStringC,
+})
+
+const ActionD = pipe(
+  D.struct({
+    action: D.literal('review', 'persona', 'post'),
+  }),
+  D.map(get('action')),
 )
 
 type ReviewForm = D.TypeOf<typeof ReviewFormD>
@@ -72,11 +72,10 @@ function createDepositMetadata(review: PostForm, user: User): DepositMetadata {
   }
 }
 
-const handlePostForm = (review: PostForm) =>
+const handlePostForm = (user: User) =>
   pipe(
-    getSession(),
-    RM.chainEitherKW(UserC.decode),
-    RM.chainReaderTaskEitherKW(createRecord(review)),
+    RM.decodeBody(PostFormD.decode),
+    RM.chainReaderTaskEitherK(createRecord(user)),
     RM.ichainW(deposition => showSuccessMessage(deposition.metadata.doi)),
     RM.orElseW(() => showFailureMessage),
   )
@@ -121,12 +120,14 @@ const handlePersonaForm = pipe(
 const handleForm = pipe(
   getSession(),
   RM.chainEitherKW(UserC.decode),
-  RM.ichainW(() =>
-    pipe(
-      RM.decodeBody(PostFormD.decode),
-      RM.ichainW(handlePostForm),
-      RM.orElseW(() => pipe(handlePersonaForm)),
-    ),
+  RM.bindTo('user'),
+  RM.apSW('action', RM.decodeBody(ActionD.decode)),
+  RM.ichainW(({ action, user }) =>
+    match(action)
+      .with('review', () => handleReviewForm)
+      .with('persona', () => handlePersonaForm)
+      .with('post', () => handlePostForm(user))
+      .exhaustive(),
   ),
   RM.orElseMiddlewareK(() =>
     pipe(
@@ -138,8 +139,8 @@ const handleForm = pipe(
   ),
 )
 
-function createRecord(review: PostForm) {
-  return (user: User) =>
+function createRecord(user: User) {
+  return (review: PostForm) =>
     pipe(
       createDepositMetadata(review, user),
       createDeposition,
@@ -283,7 +284,7 @@ function personaForm(review: ReviewForm, user: User) {
 
           <textarea name="review" hidden>${review.review}</textarea>
 
-          <button>Next</button>
+          <button name="action" value="persona">Next</button>
         </form>
       </main>
     `,
@@ -305,7 +306,7 @@ function reviewForm() {
 
           <textarea id="review" name="review" rows="20"></textarea>
 
-          <button>Next</button>
+          <button name="action" value="review">Next</button>
         </form>
       </main>
     `,
