@@ -18,12 +18,12 @@ import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
 import { NonEmptyStringC } from './string'
 import { User, UserC } from './user'
 
-const ReviewD = D.struct({
+const ReviewFormD = D.struct({
   review: NonEmptyStringC,
 })
 
-const PersonaD = pipe(
-  ReviewD,
+const PersonaFormD = pipe(
+  ReviewFormD,
   D.intersect(
     D.struct({
       persona: D.literal('public', 'anonymous'),
@@ -31,8 +31,8 @@ const PersonaD = pipe(
   ),
 )
 
-const NewReviewD = pipe(
-  PersonaD,
+const PostFormD = pipe(
+  PersonaFormD,
   D.intersect(
     D.struct({
       action: D.literal('post'),
@@ -40,20 +40,20 @@ const NewReviewD = pipe(
   ),
 )
 
-type Review = D.TypeOf<typeof ReviewD>
-type Persona = D.TypeOf<typeof PersonaD>
-type NewReview = D.TypeOf<typeof NewReviewD>
+type ReviewForm = D.TypeOf<typeof ReviewFormD>
+type PersonaForm = D.TypeOf<typeof PersonaFormD>
+type PostForm = D.TypeOf<typeof PostFormD>
 
 export const writeReview = pipe(
   RM.decodeMethod(E.right),
   RM.ichainW(method =>
     match(method)
       .with('POST', () => handleForm)
-      .otherwise(() => showTextForm),
+      .otherwise(() => showReviewForm),
   ),
 )
 
-function createDepositMetadata(review: NewReview, user: User): DepositMetadata {
+function createDepositMetadata(review: PostForm, user: User): DepositMetadata {
   return {
     upload_type: 'publication',
     publication_type: 'article',
@@ -72,7 +72,7 @@ function createDepositMetadata(review: NewReview, user: User): DepositMetadata {
   }
 }
 
-const handleNewReview = (review: NewReview) =>
+const handlePostForm = (review: PostForm) =>
   pipe(
     getSession(),
     RM.chainEitherKW(UserC.decode),
@@ -81,7 +81,7 @@ const handleNewReview = (review: NewReview) =>
     RM.orElseW(() => showFailureMessage),
   )
 
-const showPersonaForm = (review: Review) =>
+const showPersonaForm = (review: ReviewForm) =>
   pipe(
     getSession(),
     RM.chainEitherKW(UserC.decode),
@@ -90,8 +90,8 @@ const showPersonaForm = (review: Review) =>
     RM.orElseMiddlewareK(() => showStartPage),
   )
 
-const handleTextForm = pipe(
-  RM.decodeBody(ReviewD.decode),
+const handleReviewForm = pipe(
+  RM.decodeBody(ReviewFormD.decode),
   RM.ichainW(showPersonaForm),
   RM.orElseMiddlewareK(() =>
     pipe(
@@ -103,19 +103,19 @@ const handleTextForm = pipe(
   ),
 )
 
-const showPreview = (review: Persona) =>
+const showPostForm = (review: PersonaForm) =>
   pipe(
     getSession(),
     RM.chainEitherKW(UserC.decode),
     RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareKW(user => pipe(preview(review, user), sendHtml)),
+    RM.ichainMiddlewareKW(user => pipe(postForm(review, user), sendHtml)),
     RM.orElseMiddlewareK(() => showStartPage),
   )
 
 const handlePersonaForm = pipe(
-  RM.decodeBody(PersonaD.decode),
-  RM.ichainW(showPreview),
-  RM.orElseW(() => handleTextForm),
+  RM.decodeBody(PersonaFormD.decode),
+  RM.ichainW(showPostForm),
+  RM.orElseW(() => handleReviewForm),
 )
 
 const handleForm = pipe(
@@ -123,8 +123,8 @@ const handleForm = pipe(
   RM.chainEitherKW(UserC.decode),
   RM.ichainW(() =>
     pipe(
-      RM.decodeBody(NewReviewD.decode),
-      RM.ichainW(handleNewReview),
+      RM.decodeBody(PostFormD.decode),
+      RM.ichainW(handlePostForm),
       RM.orElseW(() => pipe(handlePersonaForm)),
     ),
   ),
@@ -138,7 +138,7 @@ const handleForm = pipe(
   ),
 )
 
-function createRecord(review: NewReview) {
+function createRecord(review: PostForm) {
   return (user: User) =>
     pipe(
       createDepositMetadata(review, user),
@@ -154,11 +154,11 @@ function createRecord(review: NewReview) {
     )
 }
 
-const showTextForm = pipe(
+const showReviewForm = pipe(
   getSession(),
   RM.chainEitherKW(UserC.decode),
   RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareKW(flow(textForm, sendHtml)),
+  RM.ichainMiddlewareKW(flow(reviewForm, sendHtml)),
   RM.orElseMiddlewareK(() => showStartPage),
 )
 
@@ -221,7 +221,7 @@ function failureMessage() {
   })
 }
 
-function preview(review: Persona, user: User) {
+function postForm(review: PersonaForm, user: User) {
   return page({
     title: "Preview your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
@@ -250,7 +250,7 @@ function preview(review: Persona, user: User) {
   })
 }
 
-function personaForm(review: Review, user: User) {
+function personaForm(review: ReviewForm, user: User) {
   return page({
     title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
@@ -290,7 +290,7 @@ function personaForm(review: Review, user: User) {
   })
 }
 
-function textForm() {
+function reviewForm() {
   return page({
     title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
