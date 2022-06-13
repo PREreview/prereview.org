@@ -119,9 +119,23 @@ const handlePersonaForm = pipe(
 )
 
 const handleForm = pipe(
-  RM.decodeBody(NewReviewD.decode),
-  RM.ichainW(handleNewReview),
-  RM.orElseW(() => handlePersonaForm),
+  getSession(),
+  RM.chainEitherKW(UserC.decode),
+  RM.ichainW(() =>
+    pipe(
+      RM.decodeBody(NewReviewD.decode),
+      RM.ichainW(handleNewReview),
+      RM.orElseW(() => pipe(handlePersonaForm)),
+    ),
+  ),
+  RM.orElseMiddlewareK(() =>
+    pipe(
+      M.status(Status.SeeOther),
+      M.ichain(() => M.header('Location', format(writeReviewMatch.formatter, {}))),
+      M.ichain(() => M.closeHeaders()),
+      M.ichain(() => M.end()),
+    ),
+  ),
 )
 
 function createRecord(review: NewReview) {

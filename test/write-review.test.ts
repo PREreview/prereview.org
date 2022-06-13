@@ -324,7 +324,10 @@ describe('write-review', () => {
         await fc.assert(
           fc.asyncProperty(
             fc.connection({
-              body: fc.record({ action: fc.constant('post'), persona: fc.constant('public'), review: fc.lorem() }),
+              body: fc.record(
+                { action: fc.constant('post'), persona: fc.constant('public'), review: fc.lorem() },
+                { requiredKeys: ['review'] },
+              ),
               method: fc.constant('POST'),
             }),
             fc.string(),
@@ -344,9 +347,9 @@ describe('write-review', () => {
 
               expect(actual).toStrictEqual(
                 E.right([
-                  { type: 'setStatus', status: Status.ServiceUnavailable },
-                  { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-                  { type: 'setBody', body: expect.anything() },
+                  { type: 'setStatus', status: Status.SeeOther },
+                  { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
+                  { type: 'endResponse' },
                 ]),
               )
             },
