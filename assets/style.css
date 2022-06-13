@@ -289,8 +289,14 @@ label {
 }
 
 fieldset {
+  display: flex;
+  flex-direction: column;
   border: 0;
   margin-block-start: var(--space-m);
+}
+
+legend {
+  float: inline-start;
 }
 
 :--input {
