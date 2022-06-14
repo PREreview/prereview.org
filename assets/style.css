@@ -214,6 +214,10 @@ label {
     inline-size: fit-content;
     margin-block-start: var(--space-m);
 
+    & span {
+      flex: 1;
+    }
+
     & > [type='radio'] {
       margin-inline-end: var(--space-2xs-xs);
     }
@@ -358,6 +362,7 @@ legend {
 
 [type='radio'] {
   appearance: none;
+  flex-shrink: 0;
   display: inline-grid;
   color: currentcolor;
   background-color: var(--color-background);

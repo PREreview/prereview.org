@@ -29,7 +29,7 @@ function createPage() {
 
         <form method="post" action="${format(lookupDoiMatch.formatter, {})}" novalidate>
           <label>
-            Preprint DOI
+            <span>Preprint DOI</span>
             <input name="doi" type="text" spellcheck="false" value="10.1101/2022.01.13.476201" />
           </label>
 

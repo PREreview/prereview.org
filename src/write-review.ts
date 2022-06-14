@@ -268,14 +268,14 @@ function personaForm(review: ReviewForm, user: User) {
               <li>
                 <label>
                   <input name="persona" type="radio" value="public" aria-describedby="persona-tip-public" />
-                  ${user.name}
+                  <span>${user.name}</span>
                 </label>
                 <div id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID iD.</div>
               </li>
               <li>
                 <label>
                   <input name="persona" type="radio" value="anonymous" aria-describedby="persona-tip-pseudonym" />
-                  PREreviewer
+                  <span>PREreviewer</span>
                 </label>
                 <div id="persona-tip-pseudonym" role="note">Your PREreview will be anonymous.</div>
               </li>
@@ -312,14 +312,14 @@ function personaErrorForm(review: ReviewForm, user: User) {
                 <li>
                   <label>
                     <input name="persona" type="radio" value="public" aria-describedby="persona-tip-public" />
-                    ${user.name}
+                    <span>${user.name}</span>
                   </label>
                   <div id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID iD.</div>
                 </li>
                 <li>
                   <label>
                     <input name="persona" type="radio" value="anonymous" aria-describedby="persona-tip-pseudonym" />
-                    PREreviewer
+                    <span>PREreviewer</span>
                   </label>
                   <div id="persona-tip-pseudonym" role="note">Your PREreview will be anonymous.</div>
                 </li>
