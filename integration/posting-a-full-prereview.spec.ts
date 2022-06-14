@@ -296,3 +296,57 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
 
   await expect(review).toContainText('Vestibulum nulla turpis')
 })
+
+test('have to enter a review', async ({ fetch, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.keyboard.press('Enter')
+
+  await page.click('text="Next"')
+
+  const error = page.locator('form:has([aria-invalid])')
+
+  await expect(error).toContainText('Error: Enter your review.')
+  await expect(error).toHaveScreenshot()
+})
+
+test('have to choose a name', async ({ fetch, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.keyboard.press('Enter')
+
+  await page.fill('textarea', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.click('text="Next"')
+
+  await page.click('text="Next"')
+
+  const error = page.locator('form:has([aria-invalid])')
+
+  await expect(error).toContainText('Error: Select a name.')
+  await expect(error).toHaveScreenshot()
+})

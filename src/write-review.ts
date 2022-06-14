@@ -86,18 +86,18 @@ const showPersonaForm = (user: User) => (review: ReviewForm) =>
     M.ichain(() => pipe(personaForm(review, user), sendHtml)),
   )
 
+const showPersonaErrorForm = (user: User) => (review: ReviewForm) =>
+  pipe(
+    M.status(Status.BadRequest),
+    M.ichain(() => pipe(personaErrorForm(review, user), sendHtml)),
+    M.orElse(() => showStartPage),
+  )
+
 const handleReviewForm = (user: User) =>
   pipe(
     M.decodeBody(ReviewFormD.decode),
     M.ichainW(showPersonaForm(user)),
-    M.orElse(() =>
-      pipe(
-        M.status(Status.SeeOther),
-        M.ichain(() => M.header('Location', format(writeReviewMatch.formatter, {}))),
-        M.ichain(() => M.closeHeaders()),
-        M.ichain(() => M.end()),
-      ),
-    ),
+    M.orElse(() => showReviewErrorForm),
   )
 
 const showPostForm = (user: User) => (review: PersonaForm) =>
@@ -111,7 +111,8 @@ const handlePersonaForm = (user: User) =>
   pipe(
     M.decodeBody(PersonaFormD.decode),
     M.ichainW(showPostForm(user)),
-    M.orElse(() => handleReviewForm(user)),
+    M.orElse(() => pipe(M.decodeBody(ReviewFormD.decode), M.ichainW(showPersonaErrorForm(user)))),
+    M.orElse(() => showReviewErrorForm),
   )
 
 const handleForm = pipe(
@@ -159,6 +160,8 @@ const showReviewForm = pipe(
   RM.ichainMiddlewareKW(flow(reviewForm, sendHtml)),
   RM.orElseMiddlewareK(() => showStartPage),
 )
+
+const showReviewErrorForm = pipe(M.status(Status.BadRequest), M.ichain(flow(reviewErrorForm, sendHtml)))
 
 const showSuccessMessage = (doi: Doi) =>
   pipe(
@@ -236,7 +239,7 @@ function postForm(review: PersonaForm, user: User) {
           ${rawHtml(markdownIt().render(review.review))}
         </blockquote>
 
-        <form method="post">
+        <form method="post" novalidate>
           <input name="persona" type="hidden" value="${review.persona}" />
 
           <textarea name="review" hidden>${review.review}</textarea>
@@ -253,7 +256,7 @@ function personaForm(review: ReviewForm, user: User) {
     title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
       <main>
-        <form method="post">
+        <form method="post" novalidate>
           <fieldset role="group" aria-describedby="persona-tip">
             <legend>
               <h1>Publish as</h1>
@@ -288,12 +291,55 @@ function personaForm(review: ReviewForm, user: User) {
   })
 }
 
+function personaErrorForm(review: ReviewForm, user: User) {
+  return page({
+    title:
+      "Error: Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    content: html`
+      <main>
+        <form method="post" novalidate>
+          <fieldset role="group" aria-describedby="persona-tip" aria-invalid="true" aria-errormessage="persona-error">
+            <legend>
+              <h1>Publish as</h1>
+            </legend>
+
+            <div id="persona-tip" role="note">What name would you like to appear on your PREreview?</div>
+
+            <div id="persona-error" role="alert"><span class="visually-hidden">Error:</span> Select a name.</div>
+
+            <ol>
+              <li>
+                <label>
+                  <input name="persona" type="radio" value="public" aria-describedby="persona-tip-public" />
+                  ${user.name}
+                </label>
+                <div id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID iD.</div>
+              </li>
+              <li>
+                <label>
+                  <input name="persona" type="radio" value="anonymous" aria-describedby="persona-tip-pseudonym" />
+                  PREreviewer
+                </label>
+                <div id="persona-tip-pseudonym" role="note">Your PREreview will be anonymous.</div>
+              </li>
+            </ol>
+          </fieldset>
+
+          <textarea name="review" hidden>${review.review}</textarea>
+
+          <button name="action" value="persona">Next</button>
+        </form>
+      </main>
+    `,
+  })
+}
+
 function reviewForm() {
   return page({
     title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
       <main>
-        <form method="post">
+        <form method="post" novalidate>
           <h1>
             <label for="review">
               Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in
@@ -302,6 +348,31 @@ function reviewForm() {
           </h1>
 
           <textarea id="review" name="review" rows="20"></textarea>
+
+          <button name="action" value="review">Next</button>
+        </form>
+      </main>
+    `,
+  })
+}
+
+function reviewErrorForm() {
+  return page({
+    title:
+      "Error: Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    content: html`
+      <main>
+        <form method="post" novalidate>
+          <h1>
+            <label for="review">
+              Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in
+              <i>Chlamydomonas reinhardtii</i>”
+            </label>
+          </h1>
+
+          <div id="review-error" role="alert"><span class="visually-hidden">Error:</span> Enter your review.</div>
+
+          <textarea id="review" name="review" rows="20" aria-invalid="true" aria-errormessage="review-error"></textarea>
 
           <button name="action" value="review">Next</button>
         </form>
