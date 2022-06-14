@@ -80,42 +80,39 @@ const handlePostForm = (user: User) =>
     RM.orElseW(() => showFailureMessage),
   )
 
-const showPersonaForm = (review: ReviewForm) =>
+const showPersonaForm = (user: User) => (review: ReviewForm) =>
   pipe(
-    getSession(),
-    RM.chainEitherKW(UserC.decode),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareKW(flow(user => personaForm(review, user), sendHtml)),
-    RM.orElseMiddlewareK(() => showStartPage),
+    M.status(Status.OK),
+    M.ichain(() => pipe(personaForm(review, user), sendHtml)),
   )
 
-const handleReviewForm = pipe(
-  RM.decodeBody(ReviewFormD.decode),
-  RM.ichainW(showPersonaForm),
-  RM.orElseMiddlewareK(() =>
-    pipe(
-      M.status(Status.SeeOther),
-      M.ichain(() => M.header('Location', format(writeReviewMatch.formatter, {}))),
-      M.ichain(() => M.closeHeaders()),
-      M.ichain(() => M.end()),
+const handleReviewForm = (user: User) =>
+  pipe(
+    M.decodeBody(ReviewFormD.decode),
+    M.ichainW(showPersonaForm(user)),
+    M.orElse(() =>
+      pipe(
+        M.status(Status.SeeOther),
+        M.ichain(() => M.header('Location', format(writeReviewMatch.formatter, {}))),
+        M.ichain(() => M.closeHeaders()),
+        M.ichain(() => M.end()),
+      ),
     ),
-  ),
-)
-
-const showPostForm = (review: PersonaForm) =>
-  pipe(
-    getSession(),
-    RM.chainEitherKW(UserC.decode),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareKW(user => pipe(postForm(review, user), sendHtml)),
-    RM.orElseMiddlewareK(() => showStartPage),
   )
 
-const handlePersonaForm = pipe(
-  RM.decodeBody(PersonaFormD.decode),
-  RM.ichainW(showPostForm),
-  RM.orElseW(() => handleReviewForm),
-)
+const showPostForm = (user: User) => (review: PersonaForm) =>
+  pipe(
+    M.status(Status.OK),
+    M.ichain(() => pipe(postForm(review, user), sendHtml)),
+    M.orElse(() => showStartPage),
+  )
+
+const handlePersonaForm = (user: User) =>
+  pipe(
+    M.decodeBody(PersonaFormD.decode),
+    M.ichainW(showPostForm(user)),
+    M.orElse(() => handleReviewForm(user)),
+  )
 
 const handleForm = pipe(
   getSession(),
@@ -124,8 +121,8 @@ const handleForm = pipe(
   RM.apSW('action', RM.decodeBody(ActionD.decode)),
   RM.ichainW(({ action, user }) =>
     match(action)
-      .with('review', () => handleReviewForm)
-      .with('persona', () => handlePersonaForm)
+      .with('review', () => RM.fromMiddleware(handleReviewForm(user)))
+      .with('persona', () => RM.fromMiddleware(handlePersonaForm(user)))
       .with('post', () => handlePostForm(user))
       .exhaustive(),
   ),
