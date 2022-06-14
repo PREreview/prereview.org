@@ -60,7 +60,7 @@
 }
 
 @media screen {
-  :not(:--input, :--button, .preview):focus-visible {
+  :not(:--input, :--button, [type='radio'], .preview):focus-visible {
     outline-offset: var(--width-divider);
   }
 
