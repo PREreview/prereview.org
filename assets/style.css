@@ -60,7 +60,7 @@
 }
 
 @media screen {
-  :not(:--input, :--button, [type='radio'], .preview):focus-visible {
+  :not(:--input, :--button, [type='checkbox'], [type='radio'], .preview):focus-visible {
     outline-offset: var(--width-divider);
   }
 
@@ -70,7 +70,8 @@
   }
 }
 
-:any-link {
+:any-link,
+summary {
   color: var(--color-link);
   hyphens: manual;
 
@@ -203,6 +204,20 @@ blockquote {
   margin-block-start: var(--space-s);
 }
 
+details {
+  margin-block-start: var(--space-xs);
+
+  @nest [role='note'] + & {
+    margin-block-start: var(--space-s);
+  }
+}
+
+summary {
+  cursor: pointer;
+  inline-size: fit-content;
+  touch-action: manipulation;
+}
+
 label {
   cursor: pointer;
   touch-action: manipulation;
@@ -218,7 +233,7 @@ label {
       flex: 1;
     }
 
-    & > [type='radio'] {
+    & > :is([type='checkbox'], [type='radio']) {
       margin-inline-end: var(--space-2xs-xs);
     }
 
@@ -228,6 +243,10 @@ label {
 
     @nest fieldset & {
       margin-block-start: var(--space-s);
+    }
+
+    @nest details + & {
+      margin-block-start: var(--space-l);
     }
   }
 }
@@ -290,6 +309,10 @@ label {
   -moz-osx-font-smoothing: grayscale;
   margin-block-start: var(--space-s);
   color: var(--color-error);
+
+  @nest details + & {
+    margin-block-start: var(--space-l);
+  }
 }
 
 [role='note'] {
@@ -360,6 +383,7 @@ legend {
   }
 }
 
+[type='checkbox'],
 [type='radio'] {
   appearance: none;
   flex-shrink: 0;
@@ -367,7 +391,6 @@ legend {
   color: currentcolor;
   background-color: var(--color-background);
   border: var(--width-divider) solid currentcolor;
-  border-radius: 50%;
   cursor: pointer;
   inline-size: var(--space-m);
   block-size: var(--space-m);
@@ -378,11 +401,24 @@ legend {
     inline-size: var(--space-xs);
     block-size: var(--space-xs);
     background-color: transparent;
-    border-radius: 50%;
   }
 
   &:checked::before {
     background-color: currentcolor;
+  }
+}
+
+[type='checkbox'] {
+  &::before {
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  }
+}
+
+[type='radio'] {
+  border-radius: 50%;
+
+  &::before {
+    border-radius: 50%;
   }
 }
 

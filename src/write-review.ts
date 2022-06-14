@@ -28,20 +28,28 @@ const PersonaFormD = D.struct({
   review: NonEmptyStringC,
 })
 
+const CodeOfConductFormD = D.struct({
+  conduct: D.literal('yes'),
+  persona: D.literal('public', 'anonymous'),
+  review: NonEmptyStringC,
+})
+
 const PostFormD = D.struct({
+  conduct: D.literal('yes'),
   persona: D.literal('public', 'anonymous'),
   review: NonEmptyStringC,
 })
 
 const ActionD = pipe(
   D.struct({
-    action: D.literal('review', 'persona', 'post'),
+    action: D.literal('review', 'persona', 'conduct', 'post'),
   }),
   D.map(get('action')),
 )
 
 type ReviewForm = D.TypeOf<typeof ReviewFormD>
 type PersonaForm = D.TypeOf<typeof PersonaFormD>
+type CodeOfConductForm = D.TypeOf<typeof CodeOfConductFormD>
 type PostForm = D.TypeOf<typeof PostFormD>
 
 export const writeReview = pipe(
@@ -93,6 +101,18 @@ const showPersonaErrorForm = (user: User) => (review: ReviewForm) =>
     M.orElse(() => showStartPage),
   )
 
+const showCodeOfConductForm = (review: PersonaForm) =>
+  pipe(
+    M.status(Status.OK),
+    M.ichain(() => pipe(codeOfConductForm(review), sendHtml)),
+  )
+
+const showCodeOfConductErrorForm = (review: PersonaForm) =>
+  pipe(
+    M.status(Status.BadRequest),
+    M.ichain(() => pipe(codeOfConductErrorForm(review), sendHtml)),
+  )
+
 const handleReviewForm = (user: User) =>
   pipe(
     M.decodeBody(ReviewFormD.decode),
@@ -100,7 +120,7 @@ const handleReviewForm = (user: User) =>
     M.orElse(() => showReviewErrorForm),
   )
 
-const showPostForm = (user: User) => (review: PersonaForm) =>
+const showPostForm = (user: User) => (review: CodeOfConductForm) =>
   pipe(
     M.status(Status.OK),
     M.ichain(() => pipe(postForm(review, user), sendHtml)),
@@ -110,7 +130,16 @@ const showPostForm = (user: User) => (review: PersonaForm) =>
 const handlePersonaForm = (user: User) =>
   pipe(
     M.decodeBody(PersonaFormD.decode),
+    M.ichainW(showCodeOfConductForm),
+    M.orElse(() => pipe(M.decodeBody(ReviewFormD.decode), M.ichainW(showPersonaErrorForm(user)))),
+    M.orElse(() => showReviewErrorForm),
+  )
+
+const handleCodeOfConductForm = (user: User) =>
+  pipe(
+    M.decodeBody(CodeOfConductFormD.decode),
     M.ichainW(showPostForm(user)),
+    M.orElse(() => pipe(M.decodeBody(PersonaFormD.decode), M.ichainW(showCodeOfConductErrorForm))),
     M.orElse(() => pipe(M.decodeBody(ReviewFormD.decode), M.ichainW(showPersonaErrorForm(user)))),
     M.orElse(() => showReviewErrorForm),
   )
@@ -124,6 +153,7 @@ const handleForm = pipe(
     match(action)
       .with('review', () => RM.fromMiddleware(handleReviewForm(user)))
       .with('persona', () => RM.fromMiddleware(handlePersonaForm(user)))
+      .with('conduct', () => RM.fromMiddleware(handleCodeOfConductForm(user)))
       .with('post', () => handlePostForm(user))
       .exhaustive(),
   ),
@@ -222,7 +252,7 @@ function failureMessage() {
   })
 }
 
-function postForm(review: PersonaForm, user: User) {
+function postForm(review: CodeOfConductForm, user: User) {
   return page({
     title: "Preview your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
@@ -241,10 +271,111 @@ function postForm(review: PersonaForm, user: User) {
 
         <form method="post" novalidate>
           <input name="persona" type="hidden" value="${review.persona}" />
+          <input name="conduct" type="hidden" value="${review.conduct}" />
 
           <textarea name="review" hidden>${review.review}</textarea>
 
           <button name="action" value="post">Post PREreview</button>
+        </form>
+      </main>
+    `,
+  })
+}
+
+function codeOfConductForm(review: PersonaForm) {
+  return page({
+    title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    content: html`
+      <main>
+        <form method="post" novalidate>
+          <fieldset role="group" aria-describedby="conduct-tip">
+            <legend>
+              <h1>Code of Conduct</h1>
+            </legend>
+
+            <div id="conduct-tip" role="note">
+              As a member of our community, we expect you to abide by the
+              <a href="https://content.prereview.org/coc/">PREreview Code&nbsp;of&nbsp;Conduct</a>.
+            </div>
+
+            <details>
+              <summary>Example behaviors</summary>
+
+              <ul>
+                <li>Using welcoming and inclusive language.</li>
+                <li>Providing feedback that is constructive, i.e. useful, to the receiver.</li>
+                <li>Being respectful of differing viewpoints and experiences.</li>
+                <li>Gracefully accepting constructive criticism.</li>
+                <li>Focusing on what is best for the community.</li>
+                <li>Showing empathy towards other community members.</li>
+              </ul>
+            </details>
+
+            <label>
+              <input name="conduct" type="checkbox" value="yes" />
+              <span>I’m following the Code&nbsp;of&nbsp;Conduct</span>
+            </label>
+          </fieldset>
+
+          <input name="persona" type="hidden" value="${review.persona}" />
+
+          <textarea name="review" hidden>${review.review}</textarea>
+
+          <button name="action" value="conduct">Next</button>
+        </form>
+      </main>
+    `,
+  })
+}
+
+function codeOfConductErrorForm(review: PersonaForm) {
+  return page({
+    title:
+      "Error: Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    content: html`
+      <main>
+        <form method="post" novalidate>
+          <div class="error">
+            <fieldset role="group" aria-describedby="conduct-tip" aria-invalid="true" aria-errormessage="conduct-error">
+              <legend>
+                <h1>Code of Conduct</h1>
+              </legend>
+
+              <div id="conduct-tip" role="note">
+                As a member of our community, we expect you to abide by the
+                <a href="https://content.prereview.org/coc/">PREreview Code&nbsp;of&nbsp;Conduct</a>.
+              </div>
+
+              <details>
+                <summary>Example behaviors</summary>
+
+                <ul>
+                  <li>Using welcoming and inclusive language.</li>
+                  <li>Providing feedback that is constructive, i.e. useful, to the receiver.</li>
+                  <li>Being respectful of differing viewpoints and experiences.</li>
+                  <li>Gracefully accepting constructive criticism.</li>
+                  <li>Focusing on what is best for the community.</li>
+                  <li>Showing empathy towards other community members.</li>
+                </ul>
+              </details>
+
+              <div id="conduct-error" role="alert">
+                <span class="visually-hidden">Error:</span> Confirm that you are following the
+                Code&nbsp;of&nbsp;Conduct.
+              </div>
+
+              <label>
+                <input name="conduct" type="checkbox" value="yes" />
+                <span>I’m following the Code&nbsp;of&nbsp;Conduct</span>
+              </label>
+            </fieldset>
+          </div>
+
+          <input name="persona" type="hidden" value="${review.persona}" />
+
+          <textarea name="review" hidden>${review.review}</textarea>
+
+          <button name="action" value="conduct">Next</button>
         </form>
       </main>
     `,
