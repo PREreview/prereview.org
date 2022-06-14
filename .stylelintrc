@@ -2,6 +2,7 @@
   "extends": ["stylelint-config-standard", "stylelint-config-logic-order", "stylelint-config-prettier"],
   "plugins": ["stylelint-use-logical-spec"],
   "rules": {
+    "custom-property-pattern": "^[a-z]{1,}(-[a-z0-9]+|-{1,2}[0-9][a-z0-9]*)*$",
     "import-notation": "url",
     "liberty/use-logical-spec": true,
     "no-descending-specificity": null,

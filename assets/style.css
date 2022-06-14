@@ -511,9 +511,14 @@ legend {
 }
 
 .preview {
+  font-size: var(--step--1);
   border: var(--width-divider) solid currentcolor;
   padding-block: var(--space-3xs);
   padding-inline: var(--space-2xs);
+
+  & h2 {
+    font-size: var(--step-3);
+  }
 
   & > :first-child {
     margin-block-start: 0;
