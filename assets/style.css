@@ -52,6 +52,7 @@
   --color-error: var(--oc-red-7);
   --color-success: var(--oc-green-7);
   --width-divider: 4px;
+  --width-divider-wide: calc(var(--width-divider) * 1.5);
 
   font-family: var(--font-sans-serif);
   font-weight: 400;
@@ -306,6 +307,13 @@ fieldset {
 
 legend {
   float: inline-start;
+}
+
+.error {
+  @media screen {
+    padding-inline-start: var(--space-s);
+    border-inline-start: var(--width-divider-wide) solid var(--color-error);
+  }
 }
 
 :--input {

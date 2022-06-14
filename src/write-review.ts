@@ -298,32 +298,34 @@ function personaErrorForm(review: ReviewForm, user: User) {
     content: html`
       <main>
         <form method="post" novalidate>
-          <fieldset role="group" aria-describedby="persona-tip" aria-invalid="true" aria-errormessage="persona-error">
-            <legend>
-              <h1>Publish as</h1>
-            </legend>
+          <div class="error">
+            <fieldset role="group" aria-describedby="persona-tip" aria-invalid="true" aria-errormessage="persona-error">
+              <legend>
+                <h1>Publish as</h1>
+              </legend>
 
-            <div id="persona-tip" role="note">What name would you like to appear on your PREreview?</div>
+              <div id="persona-tip" role="note">What name would you like to appear on your PREreview?</div>
 
-            <div id="persona-error" role="alert"><span class="visually-hidden">Error:</span> Select a name.</div>
+              <div id="persona-error" role="alert"><span class="visually-hidden">Error:</span> Select a name.</div>
 
-            <ol>
-              <li>
-                <label>
-                  <input name="persona" type="radio" value="public" aria-describedby="persona-tip-public" />
-                  ${user.name}
-                </label>
-                <div id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID iD.</div>
-              </li>
-              <li>
-                <label>
-                  <input name="persona" type="radio" value="anonymous" aria-describedby="persona-tip-pseudonym" />
-                  PREreviewer
-                </label>
-                <div id="persona-tip-pseudonym" role="note">Your PREreview will be anonymous.</div>
-              </li>
-            </ol>
-          </fieldset>
+              <ol>
+                <li>
+                  <label>
+                    <input name="persona" type="radio" value="public" aria-describedby="persona-tip-public" />
+                    ${user.name}
+                  </label>
+                  <div id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID iD.</div>
+                </li>
+                <li>
+                  <label>
+                    <input name="persona" type="radio" value="anonymous" aria-describedby="persona-tip-pseudonym" />
+                    PREreviewer
+                  </label>
+                  <div id="persona-tip-pseudonym" role="note">Your PREreview will be anonymous.</div>
+                </li>
+              </ol>
+            </fieldset>
+          </div>
 
           <textarea name="review" hidden>${review.review}</textarea>
 
@@ -363,16 +365,24 @@ function reviewErrorForm() {
     content: html`
       <main>
         <form method="post" novalidate>
-          <h1>
-            <label for="review">
-              Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in
-              <i>Chlamydomonas reinhardtii</i>”
-            </label>
-          </h1>
+          <div class="error">
+            <h1>
+              <label for="review">
+                Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in
+                <i>Chlamydomonas reinhardtii</i>”
+              </label>
+            </h1>
 
-          <div id="review-error" role="alert"><span class="visually-hidden">Error:</span> Enter your review.</div>
+            <div id="review-error" role="alert"><span class="visually-hidden">Error:</span> Enter your review.</div>
 
-          <textarea id="review" name="review" rows="20" aria-invalid="true" aria-errormessage="review-error"></textarea>
+            <textarea
+              id="review"
+              name="review"
+              rows="20"
+              aria-invalid="true"
+              aria-errormessage="review-error"
+            ></textarea>
+          </div>
 
           <button name="action" value="review">Next</button>
         </form>
