@@ -254,10 +254,10 @@ function failureMessage() {
 
 function postForm(review: CodeOfConductForm, user: User) {
   return page({
-    title: "Preview your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    title: "Post your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
       <main>
-        <h1 id="preview-label">Preview</h1>
+        <h1 id="preview-label">Check your PREreview</h1>
 
         <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
           <h2>Review of 'The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'</h2>
@@ -274,6 +274,13 @@ function postForm(review: CodeOfConductForm, user: User) {
           <input name="conduct" type="hidden" value="${review.conduct}" />
 
           <textarea name="review" hidden>${review.review}</textarea>
+
+          <h2>Now post your PREreview</h2>
+
+          <p>
+            We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a
+            <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0 license</a>.
+          </p>
 
           <button name="action" value="post">Post PREreview</button>
         </form>
