@@ -537,12 +537,18 @@ function reviewErrorForm() {
 
 function startPage() {
   return page({
-    title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    title: 'Review this preprint',
     content: html`
       <main>
-        <h1>
-          Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>”
-        </h1>
+        <h1>Review this preprint</h1>
+
+        <p>
+          You can write a PREreview of “The role of LHCBM1 in non-photochemical quenching in
+          <i>Chlamydomonas reinhardtii</i>”. A PREreview is a free-text review of a preprint and can vary from a few
+          sentences to a lengthy report, similar to a journal-organized peer-review process.
+        </p>
+
+        <h2>Before you start</h2>
 
         <p>
           We will ask you to log in with your <a href="https://orcid.org/">ORCID&nbsp;iD</a>. If you don't have an iD,
