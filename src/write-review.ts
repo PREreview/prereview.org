@@ -306,7 +306,7 @@ function codeOfConductForm(review: PersonaForm) {
             </div>
 
             <details>
-              <summary>Example behaviors</summary>
+              <summary>Examples of expected behaviors</summary>
 
               <ul>
                 <li>Using welcoming and inclusive language.</li>
@@ -315,6 +315,22 @@ function codeOfConductForm(review: PersonaForm) {
                 <li>Gracefully accepting constructive criticism.</li>
                 <li>Focusing on what is best for the community.</li>
                 <li>Showing empathy towards other community members.</li>
+              </ul>
+            </details>
+
+            <details>
+              <summary>Examples of unacceptable behaviors</summary>
+
+              <ul>
+                <li>Trolling, insulting or derogatory comments, and personal or political attacks.</li>
+                <li>Providing unconstructive or disruptive feedback on PREreview.</li>
+                <li>Public or private harassment.</li>
+                <li>
+                  Publishing others’ confidential information, such as a physical or electronic address, without
+                  explicit permission.
+                </li>
+                <li>Use of sexualized language or imagery and unwelcome sexual attention or advances.</li>
+                <li>Other conduct which could reasonably be considered inappropriate in a professional setting.</li>
               </ul>
             </details>
 
