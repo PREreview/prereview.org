@@ -492,16 +492,11 @@ function personaErrorForm(review: ReviewForm, user: User) {
 
 function reviewForm() {
   return page({
-    title: "Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    title: "Write your review of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
       <main>
         <form method="post" novalidate>
-          <h1>
-            <label for="review">
-              Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in
-              <i>Chlamydomonas reinhardtii</i>”
-            </label>
-          </h1>
+          <h1><label for="review">Write your review</label></h1>
 
           <textarea id="review" name="review" rows="20"></textarea>
 
@@ -515,19 +510,14 @@ function reviewForm() {
 function reviewErrorForm() {
   return page({
     title:
-      "Error: Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+      "Error: Write your review of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
       <main>
         <form method="post" novalidate>
           <div class="error">
-            <h1>
-              <label for="review">
-                Write a PREreview of “The role of LHCBM1 in non-photochemical quenching in
-                <i>Chlamydomonas reinhardtii</i>”
-              </label>
-            </h1>
+            <h1><label for="review">Write your review</label></h1>
 
-            <div id="review-error" role="alert"><span class="visually-hidden">Error:</span> Enter your review.</div>
+            <div id="review-error" role="alert"><span>Error:</span> Enter your review.</div>
 
             <textarea
               id="review"
