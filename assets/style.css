@@ -45,8 +45,8 @@
   --color-text: var(--oc-gray-8);
   --color-text-light: var(--oc-gray-6);
   --color-focus: var(--oc-yellow-7);
-  --color-link: var(--oc-blue-6);
-  --color-link-dark: var(--oc-blue-8);
+  --color-link: var(--oc-red-6);
+  --color-link-dark: var(--oc-red-8);
   --color-divider: var(--oc-gray-3);
   --color-divider-light: var(--oc-gray-1);
   --color-error: var(--oc-red-7);
@@ -72,7 +72,7 @@
 
 :any-link,
 summary {
-  color: var(--color-link);
+  color: var(--color-link-dark);
   hyphens: manual;
 
   @media screen {
