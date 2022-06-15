@@ -517,7 +517,7 @@ function reviewErrorForm() {
           <div class="error">
             <h1><label for="review">Write your review</label></h1>
 
-            <div id="review-error" role="alert"><span>Error:</span> Enter your review.</div>
+            <div id="review-error" role="alert"><span class="visually-hidden">Error:</span> Enter your review.</div>
 
             <textarea
               id="review"
