@@ -43,7 +43,7 @@
     "@types/http-errors": "^1.8.2",
     "@types/jest": "^28.1.1",
     "@types/markdown-it": "^12.2.3",
-    "@types/node": "^16.11.39",
+    "@types/node": "^16.11.41",
     "@types/node-fetch": "^2.6.1",
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
