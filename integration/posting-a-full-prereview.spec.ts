@@ -76,7 +76,7 @@ test('can post a full PREreview', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your review"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
   await expect(page).toHaveScreenshot()
 
@@ -229,7 +229,7 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your review"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.click('text="Next"')
   await page.check('text="PREreviewer"')
   await page.click('text="Next"')
@@ -327,7 +327,7 @@ test('have to enter a review', async ({ fetch, page }) => {
 
   const error = page.locator('form:has([aria-invalid])')
 
-  await expect(error).toContainText('Error: Enter your review.')
+  await expect(error).toContainText('Error: Enter your PREreview.')
   await expect(error).toHaveScreenshot()
 })
 
@@ -348,7 +348,7 @@ test('have to choose a name', async ({ fetch, page }) => {
   })
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your review"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.click('text="Next"')
 
   await page.click('text="Next"')
@@ -376,7 +376,7 @@ test('have to agree to the Code of Conduct', async ({ fetch, page }) => {
   })
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your review"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
