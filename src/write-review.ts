@@ -53,12 +53,29 @@ type CodeOfConductForm = D.TypeOf<typeof CodeOfConductFormD>
 type PostForm = D.TypeOf<typeof PostFormD>
 
 export const writeReview = pipe(
-  RM.decodeMethod(E.right),
-  RM.ichainW(method =>
+  getSession(),
+  RM.chainEitherKW(UserC.decode),
+  RM.bindTo('user'),
+  RM.apSW('method', RM.decodeMethod(E.right)),
+  RM.ichainW(({ user, method }) =>
     match(method)
-      .with('POST', () => handleForm)
-      .otherwise(() => showReviewForm),
+      .with('POST', () => handleForm(user))
+      .otherwise(() => RM.fromMiddleware(showReviewForm)),
   ),
+  RM.orElseMiddlewareKW(() =>
+    pipe(
+      M.decodeMethod(D.literal('POST').decode),
+      M.ichainW(() =>
+        pipe(
+          M.status(Status.SeeOther),
+          M.ichain(() => M.header('Location', format(writeReviewMatch.formatter, {}))),
+          M.ichain(() => M.closeHeaders()),
+          M.ichain(() => M.end()),
+        ),
+      ),
+    ),
+  ),
+  RM.orElseMiddlewareKW(() => showStartPage),
 )
 
 function createDepositMetadata(review: PostForm, user: User): DepositMetadata {
@@ -144,28 +161,27 @@ const handleCodeOfConductForm = (user: User) =>
     M.orElse(() => showReviewErrorForm),
   )
 
-const handleForm = pipe(
-  getSession(),
-  RM.chainEitherKW(UserC.decode),
-  RM.bindTo('user'),
-  RM.apSW('action', RM.decodeBody(ActionD.decode)),
-  RM.ichainW(({ action, user }) =>
-    match(action)
-      .with('review', () => RM.fromMiddleware(handleReviewForm(user)))
-      .with('persona', () => RM.fromMiddleware(handlePersonaForm(user)))
-      .with('conduct', () => RM.fromMiddleware(handleCodeOfConductForm(user)))
-      .with('post', () => handlePostForm(user))
-      .exhaustive(),
-  ),
-  RM.orElseMiddlewareK(() =>
-    pipe(
-      M.status(Status.SeeOther),
-      M.ichain(() => M.header('Location', format(writeReviewMatch.formatter, {}))),
-      M.ichain(() => M.closeHeaders()),
-      M.ichain(() => M.end()),
+const handleForm = (user: User) =>
+  pipe(
+    RM.right({ user }),
+    RM.apSW('action', RM.decodeBody(ActionD.decode)),
+    RM.ichainW(({ action, user }) =>
+      match(action)
+        .with('review', () => RM.fromMiddleware(handleReviewForm(user)))
+        .with('persona', () => RM.fromMiddleware(handlePersonaForm(user)))
+        .with('conduct', () => RM.fromMiddleware(handleCodeOfConductForm(user)))
+        .with('post', () => handlePostForm(user))
+        .exhaustive(),
     ),
-  ),
-)
+    RM.orElseMiddlewareK(() =>
+      pipe(
+        M.status(Status.SeeOther),
+        M.ichain(() => M.header('Location', format(writeReviewMatch.formatter, {}))),
+        M.ichain(() => M.closeHeaders()),
+        M.ichain(() => M.end()),
+      ),
+    ),
+  )
 
 function createRecord(user: User) {
   return (review: PostForm) =>
@@ -184,11 +200,8 @@ function createRecord(user: User) {
 }
 
 const showReviewForm = pipe(
-  getSession(),
-  RM.chainEitherKW(UserC.decode),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareKW(() => pipe(reviewForm(), sendHtml)),
-  RM.orElseMiddlewareK(() => showStartPage),
+  M.status(Status.OK),
+  M.ichain(() => pipe(reviewForm(), sendHtml)),
 )
 
 const showReviewErrorForm = pipe(

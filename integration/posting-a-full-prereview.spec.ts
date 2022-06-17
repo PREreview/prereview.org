@@ -305,6 +305,39 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
   await expect(review).toContainText('Vestibulum nulla turpis')
 })
 
+test("aren't told about ORCID when already logged in", async ({ fetch, page }) => {
+  await page.goto('/log-in')
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+
+  await page.keyboard.press('Enter')
+  await page.locator('text=PREreview').waitFor()
+
+  fetch.getOnce(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { hits: [] } }) },
+  )
+
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.click('text="Write a PREreview"')
+
+  await expect(page.locator('main')).not.toContainText('ORCID')
+  await expect(page.locator('h1')).toContainText('Write your PREreview')
+})
+
 test('have to enter a review', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
   await page.click('text="Start now"')
