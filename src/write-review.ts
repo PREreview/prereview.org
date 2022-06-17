@@ -545,7 +545,7 @@ function startPage() {
         <p>
           You can write a PREreview of “The role of LHCBM1 in non-photochemical quenching in
           <i>Chlamydomonas reinhardtii</i>”. A PREreview is a free-text review of a preprint and can vary from a few
-          sentences to a lengthy report, similar to a journal-organized peer-review process.
+          sentences to a lengthy report, similar to a journal-organized peer-review report.
         </p>
 
         <h2>Before you start</h2>
