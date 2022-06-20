@@ -16,7 +16,7 @@ import { DepositMetadata, createDeposition, publishDeposition, uploadFile } from
 import { html, rawHtml, sendHtml } from './html'
 import { page } from './page'
 import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
-import { NonEmptyStringC } from './string'
+import { NonEmptyString, NonEmptyStringC } from './string'
 import { User, UserC } from './user'
 
 const ReviewFormD = D.struct({
@@ -50,7 +50,13 @@ const ActionD = pipe(
 type ReviewForm = D.TypeOf<typeof ReviewFormD>
 type PersonaForm = D.TypeOf<typeof PersonaFormD>
 type CodeOfConductForm = D.TypeOf<typeof CodeOfConductFormD>
-type PostForm = D.TypeOf<typeof PostFormD>
+
+type NewPrereview = {
+  conduct: 'yes'
+  persona: 'public' | 'anonymous'
+  review: NonEmptyString
+  user: User
+}
 
 export const writeReview = pipe(
   getSession(),
@@ -78,12 +84,12 @@ export const writeReview = pipe(
   RM.orElseMiddlewareKW(() => showStartPage),
 )
 
-function createDepositMetadata(review: PostForm, user: User): DepositMetadata {
+function createDepositMetadata(review: NewPrereview): DepositMetadata {
   return {
     upload_type: 'publication',
     publication_type: 'article',
     title: 'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
-    creators: [review.persona === 'public' ? user : { name: 'PREreviewer' }],
+    creators: [review.persona === 'public' ? review.user : { name: 'PREreviewer' }],
     description: markdownIt().render(review.review),
     communities: [{ identifier: 'prereview-reviews' }],
     related_identifiers: [
@@ -100,7 +106,8 @@ function createDepositMetadata(review: PostForm, user: User): DepositMetadata {
 const handlePostForm = (user: User) =>
   pipe(
     RM.decodeBody(PostFormD.decode),
-    RM.chainReaderTaskEitherK(createRecord(user)),
+    RM.apS('user', RM.right(user)),
+    RM.chainReaderTaskEitherK(createRecord),
     RM.ichainW(deposition => showSuccessMessage(deposition.metadata.doi)),
     RM.orElseW(() => showFailureMessage),
   )
@@ -183,20 +190,19 @@ const handleForm = (user: User) =>
     ),
   )
 
-function createRecord(user: User) {
-  return (review: PostForm) =>
-    pipe(
-      createDepositMetadata(review, user),
-      createDeposition,
-      RTE.chainFirst(
-        uploadFile({
-          name: 'review.txt',
-          type: 'text/plain',
-          content: review.review,
-        }),
-      ),
-      RTE.chain(publishDeposition),
-    )
+function createRecord(review: NewPrereview) {
+  return pipe(
+    createDepositMetadata(review),
+    createDeposition,
+    RTE.chainFirst(
+      uploadFile({
+        name: 'review.txt',
+        type: 'text/plain',
+        content: review.review,
+      }),
+    ),
+    RTE.chain(publishDeposition),
+  )
 }
 
 const showReviewForm = pipe(
