@@ -1,11 +1,9 @@
 import cookieSignature from 'cookie-signature'
 import { Doi } from 'doi-ts'
-import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import Keyv from 'keyv'
-import { RequestInit } from 'node-fetch'
-import { SubmittedDeposition, SubmittedDepositionC, UnsubmittedDeposition, UnsubmittedDepositionC } from 'zenodo-ts'
 import { UserC } from '../src/user'
 import * as _ from '../src/write-review'
 import * as fc from './fc'
@@ -27,14 +25,13 @@ describe('write-review', () => {
                 fc.constant(secret),
               ),
             ),
-            fc.string(),
             fc.user(),
-            async ([connection, sessionId, secret], zenodoApiKey, user) => {
+            async ([connection, sessionId, secret], user) => {
               const sessionStore = new Keyv()
               await sessionStore.set(sessionId, UserC.encode(user))
 
               const actual = await runMiddleware(
-                _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                 connection,
               )()
 
@@ -57,14 +54,12 @@ describe('write-review', () => {
               headers: fc.constant({}),
               method: fc.requestMethod().filter(method => method !== 'POST'),
             }),
-            fc.uuid(),
             fc.string(),
-            fc.string(),
-            async (connection, sessionId, secret, zenodoApiKey) => {
+            async (connection, secret) => {
               const sessionStore = new Keyv()
 
               const actual = await runMiddleware(
-                _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                 connection,
               )()
 
@@ -98,97 +93,35 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([review, connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([review, connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
-                const unsubmittedDeposition: UnsubmittedDeposition = {
-                  id: 1,
-                  links: {
-                    bucket: new URL('http://example.com/bucket'),
-                    publish: new URL('http://example.com/publish'),
-                  },
-                  metadata: {
-                    creators: [user],
-                    description: 'Description',
-                    prereserve_doi: {
+                const createRecord: jest.MockedFunction<_.CreateRecordEnv['createRecord']> = jest.fn(_ =>
+                  TE.right({
+                    id: 1,
+                    metadata: {
+                      creators: [user],
+                      description: 'Description',
                       doi: '10.5072/zenodo.1055806' as Doi,
+                      title: 'Title',
+                      upload_type: 'publication',
+                      publication_type: 'article',
                     },
-                    title: 'Title',
-                    upload_type: 'publication',
-                    publication_type: 'article',
-                  },
-                  state: 'unsubmitted',
-                  submitted: false,
-                }
-                const submittedDeposition: SubmittedDeposition = {
-                  id: 1,
-                  metadata: {
-                    creators: [user],
-                    description: 'Description',
-                    doi: '10.5072/zenodo.1055806' as Doi,
-                    title: 'Title',
-                    upload_type: 'publication',
-                    publication_type: 'article',
-                  },
-                  state: 'done',
-                  submitted: true,
-                }
-                const actual = await runMiddleware(
-                  _.writeReview({
-                    fetch: fetchMock
-                      .sandbox()
-                      .postOnce(
-                        {
-                          url: 'https://zenodo.org/api/deposit/depositions',
-                          body: {
-                            metadata: {
-                              upload_type: 'publication',
-                              publication_type: 'article',
-                              title:
-                                'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
-                              creators: [{ name: user.name, orcid: user.orcid }],
-                              communities: [{ identifier: 'prereview-reviews' }],
-                              description: `<p>${review}</p>\n`,
-                              related_identifiers: [
-                                {
-                                  scheme: 'doi',
-                                  identifier: '10.1101/2022.01.13.476201',
-                                  relation: 'reviews',
-                                  resource_type: 'publication-preprint',
-                                },
-                              ],
-                            },
-                          },
-                        },
-                        {
-                          body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-                          status: Status.Created,
-                        },
-                      )
-                      .putOnce(
-                        {
-                          url: 'http://example.com/bucket/review.txt',
-                          headers: { 'Content-Type': 'text/plain' },
-                          functionMatcher: (_, req: RequestInit) => req.body === review,
-                        },
-                        {
-                          status: Status.Created,
-                        },
-                      )
-                      .postOnce('http://example.com/publish', {
-                        body: SubmittedDepositionC.encode(submittedDeposition),
-                        status: Status.Accepted,
-                      }),
-                    secret,
-                    sessionStore,
-                    zenodoApiKey,
+                    state: 'done',
+                    submitted: true,
                   }),
-                  connection,
-                )()
+                )
 
+                const actual = await runMiddleware(_.writeReview({ createRecord, secret, sessionStore }), connection)()
+
+                expect(createRecord).toHaveBeenCalledWith({
+                  conduct: 'yes',
+                  persona: 'public',
+                  review,
+                  user,
+                })
                 expect(actual).toStrictEqual(
                   E.right([
                     { type: 'setStatus', status: Status.OK },
@@ -217,97 +150,35 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([review, connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([review, connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
-                const unsubmittedDeposition: UnsubmittedDeposition = {
-                  id: 1,
-                  links: {
-                    bucket: new URL('http://example.com/bucket'),
-                    publish: new URL('http://example.com/publish'),
-                  },
-                  metadata: {
-                    creators: [{ name: 'PREreviewer' }],
-                    description: 'Description',
-                    prereserve_doi: {
+                const createRecord: jest.MockedFunction<_.CreateRecordEnv['createRecord']> = jest.fn(_ =>
+                  TE.right({
+                    id: 1,
+                    metadata: {
+                      creators: [{ name: 'PREreviewer' }],
+                      description: 'Description',
                       doi: '10.5072/zenodo.1055806' as Doi,
+                      title: 'Title',
+                      upload_type: 'publication',
+                      publication_type: 'article',
                     },
-                    title: 'Title',
-                    upload_type: 'publication',
-                    publication_type: 'article',
-                  },
-                  state: 'unsubmitted',
-                  submitted: false,
-                }
-                const submittedDeposition: SubmittedDeposition = {
-                  id: 1,
-                  metadata: {
-                    creators: [{ name: 'PREreviewer' }],
-                    description: 'Description',
-                    doi: '10.5072/zenodo.1055806' as Doi,
-                    title: 'Title',
-                    upload_type: 'publication',
-                    publication_type: 'article',
-                  },
-                  state: 'done',
-                  submitted: true,
-                }
-                const actual = await runMiddleware(
-                  _.writeReview({
-                    fetch: fetchMock
-                      .sandbox()
-                      .postOnce(
-                        {
-                          url: 'https://zenodo.org/api/deposit/depositions',
-                          body: {
-                            metadata: {
-                              upload_type: 'publication',
-                              publication_type: 'article',
-                              title:
-                                'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
-                              creators: [{ name: 'PREreviewer' }],
-                              communities: [{ identifier: 'prereview-reviews' }],
-                              description: `<p>${review}</p>\n`,
-                              related_identifiers: [
-                                {
-                                  scheme: 'doi',
-                                  identifier: '10.1101/2022.01.13.476201',
-                                  relation: 'reviews',
-                                  resource_type: 'publication-preprint',
-                                },
-                              ],
-                            },
-                          },
-                        },
-                        {
-                          body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-                          status: Status.Created,
-                        },
-                      )
-                      .putOnce(
-                        {
-                          url: 'http://example.com/bucket/review.txt',
-                          headers: { 'Content-Type': 'text/plain' },
-                          functionMatcher: (_, req: RequestInit) => req.body === review,
-                        },
-                        {
-                          status: Status.Created,
-                        },
-                      )
-                      .postOnce('http://example.com/publish', {
-                        body: SubmittedDepositionC.encode(submittedDeposition),
-                        status: Status.Accepted,
-                      }),
-                    secret,
-                    sessionStore,
-                    zenodoApiKey,
+                    state: 'done',
+                    submitted: true,
                   }),
-                  connection,
-                )()
+                )
 
+                const actual = await runMiddleware(_.writeReview({ createRecord, secret, sessionStore }), connection)()
+
+                expect(createRecord).toHaveBeenCalledWith({
+                  conduct: 'yes',
+                  persona: 'anonymous',
+                  review,
+                  user,
+                })
                 expect(actual).toStrictEqual(
                   E.right([
                     { type: 'setStatus', status: Status.OK },
@@ -334,17 +205,11 @@ describe('write-review', () => {
                 method: fc.constant('POST'),
               }),
               fc.string(),
-              fc.string(),
-              async (connection, secret, zenodoApiKey) => {
+              async (connection, secret) => {
                 const sessionStore = new Keyv()
 
                 const actual = await runMiddleware(
-                  _.writeReview({
-                    fetch: () => Promise.reject(),
-                    secret,
-                    sessionStore,
-                    zenodoApiKey,
-                  }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -382,14 +247,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -428,14 +292,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -474,14 +337,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -517,23 +379,14 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
-              fc.oneof(
-                fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
-                fc.error().map(error => Promise.reject(error)),
-              ),
+              fc.oneof(fc.fetchResponse({ status: fc.integer({ min: 400 }) }), fc.error()),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, response, user) => {
+              async ([connection, sessionId, secret], response, user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({
-                    fetch: () => response,
-                    secret,
-                    sessionStore,
-                    zenodoApiKey,
-                  }),
+                  _.writeReview({ createRecord: () => TE.left(response), secret, sessionStore }),
                   connection,
                 )()
 
@@ -571,19 +424,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({
-                    fetch: () => Promise.reject(),
-                    secret,
-                    sessionStore,
-                    zenodoApiKey,
-                  }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -612,17 +459,11 @@ describe('write-review', () => {
                 method: fc.constant('POST'),
               }),
               fc.string(),
-              fc.string(),
-              async (connection, secret, zenodoApiKey) => {
+              async (connection, secret) => {
                 const sessionStore = new Keyv()
 
                 const actual = await runMiddleware(
-                  _.writeReview({
-                    fetch: () => Promise.reject(),
-                    secret,
-                    sessionStore,
-                    zenodoApiKey,
-                  }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -660,14 +501,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -705,14 +545,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -750,14 +589,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -793,19 +631,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({
-                    fetch: () => Promise.reject(),
-                    secret,
-                    sessionStore,
-                    zenodoApiKey,
-                  }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -833,17 +665,11 @@ describe('write-review', () => {
                 method: fc.constant('POST'),
               }),
               fc.string(),
-              fc.string(),
-              async (connection, secret, zenodoApiKey) => {
+              async (connection, secret) => {
                 const sessionStore = new Keyv()
 
                 const actual = await runMiddleware(
-                  _.writeReview({
-                    fetch: () => Promise.reject(),
-                    secret,
-                    sessionStore,
-                    zenodoApiKey,
-                  }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -880,14 +706,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -920,14 +745,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -959,19 +783,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({
-                    fetch: () => Promise.reject(),
-                    secret,
-                    sessionStore,
-                    zenodoApiKey,
-                  }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -995,17 +813,11 @@ describe('write-review', () => {
                 method: fc.constant('POST'),
               }),
               fc.string(),
-              fc.string(),
-              async (connection, secret, zenodoApiKey) => {
+              async (connection, secret) => {
                 const sessionStore = new Keyv()
 
                 const actual = await runMiddleware(
-                  _.writeReview({
-                    fetch: () => Promise.reject(),
-                    secret,
-                    sessionStore,
-                    zenodoApiKey,
-                  }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 
@@ -1038,14 +850,13 @@ describe('write-review', () => {
                   fc.constant(secret),
                 ),
               ),
-              fc.string(),
               fc.user(),
-              async ([connection, sessionId, secret], zenodoApiKey, user) => {
+              async ([connection, sessionId, secret], user) => {
                 const sessionStore = new Keyv()
                 await sessionStore.set(sessionId, UserC.encode(user))
 
                 const actual = await runMiddleware(
-                  _.writeReview({ fetch: () => Promise.reject(), secret, sessionStore, zenodoApiKey }),
+                  _.writeReview({ createRecord: () => TE.left(''), secret, sessionStore }),
                   connection,
                 )()
 

@@ -1,6 +1,7 @@
 import express from 'express'
 import * as R from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
+import { local } from 'fp-ts/Reader'
 import { constant, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -14,6 +15,7 @@ import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { home } from './home'
 import { handleError } from './http-error'
+import { createRecordOnZenodo } from './infrastructure'
 import { authenticate, logIn } from './log-in'
 import { lookupDoi } from './lookup-doi'
 import { preprint } from './preprint'
@@ -59,7 +61,12 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       writeReviewMatch.parser,
-      R.map(() => writeReview),
+      R.map(() =>
+        pipe(
+          writeReview,
+          local((env: AppEnv) => ({ ...env, createRecord: flipC(createRecordOnZenodo)(env) })),
+        ),
+      ),
     ),
   ],
   M.concatAll(R.getParserMonoid()),
@@ -103,3 +110,10 @@ export const app = (deps: AppEnv) => {
 
   return http.createServer(app)
 }
+
+// https://functionalprogramming.slack.com/archives/CPKPCAGP4/p1655736152988389?thread_ts=1655730853.886439&cid=CPKPCAGP4
+const flipC =
+  <A, B, C>(f: (a: A) => (b: B) => C) =>
+  (b: B) =>
+  (a: A): C =>
+    f(a)(b)

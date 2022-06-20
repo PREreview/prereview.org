@@ -2,6 +2,7 @@ import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import { endSession, getSession } from 'hyper-ts-session'
@@ -12,7 +13,7 @@ import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
-import { DepositMetadata, createDeposition, publishDeposition, uploadFile } from 'zenodo-ts'
+import { SubmittedDeposition } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
 import { page } from './page'
 import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
@@ -51,11 +52,15 @@ type ReviewForm = D.TypeOf<typeof ReviewFormD>
 type PersonaForm = D.TypeOf<typeof PersonaFormD>
 type CodeOfConductForm = D.TypeOf<typeof CodeOfConductFormD>
 
-type NewPrereview = {
+export type NewPrereview = {
   conduct: 'yes'
   persona: 'public' | 'anonymous'
   review: NonEmptyString
   user: User
+}
+
+export interface CreateRecordEnv {
+  createRecord: (newPrereview: NewPrereview) => TE.TaskEither<unknown, SubmittedDeposition>
 }
 
 export const writeReview = pipe(
@@ -83,25 +88,6 @@ export const writeReview = pipe(
   ),
   RM.orElseMiddlewareKW(() => showStartPage),
 )
-
-function createDepositMetadata(review: NewPrereview): DepositMetadata {
-  return {
-    upload_type: 'publication',
-    publication_type: 'article',
-    title: 'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
-    creators: [review.persona === 'public' ? review.user : { name: 'PREreviewer' }],
-    description: markdownIt().render(review.review),
-    communities: [{ identifier: 'prereview-reviews' }],
-    related_identifiers: [
-      {
-        scheme: 'doi',
-        identifier: '10.1101/2022.01.13.476201',
-        relation: 'reviews',
-        resource_type: 'publication-preprint',
-      },
-    ],
-  }
-}
 
 const handlePostForm = (user: User) =>
   pipe(
@@ -190,20 +176,8 @@ const handleForm = (user: User) =>
     ),
   )
 
-function createRecord(review: NewPrereview) {
-  return pipe(
-    createDepositMetadata(review),
-    createDeposition,
-    RTE.chainFirst(
-      uploadFile({
-        name: 'review.txt',
-        type: 'text/plain',
-        content: review.review,
-      }),
-    ),
-    RTE.chain(publishDeposition),
-  )
-}
+const createRecord = (newPrereview: NewPrereview) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ createRecord }: CreateRecordEnv) => createRecord(newPrereview)))
 
 const showReviewForm = pipe(
   M.status(Status.OK),
