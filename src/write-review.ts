@@ -13,7 +13,6 @@ import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
-import * as D from 'io-ts/Decoder'
 import { Store } from 'keyv'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
@@ -30,6 +29,7 @@ import {
   writeReviewMatch,
   writeReviewPersonaMatch,
   writeReviewPostMatch,
+  writeReviewReviewMatch,
 } from './routes'
 import { NonEmptyString, NonEmptyStringC } from './string'
 import { User, UserC } from './user'
@@ -54,13 +54,6 @@ const FormC = C.partial({
 
 const CompletedFormC = pipe(ReviewFormC, C.intersect(PersonaFormC), C.intersect(CodeOfConductFormC))
 
-const ActionD = pipe(
-  D.struct({
-    action: D.literal('review', 'persona'),
-  }),
-  D.map(get('action')),
-)
-
 type Form = C.TypeOf<typeof FormC>
 type CompletedForm = C.TypeOf<typeof CompletedFormC>
 
@@ -79,23 +72,39 @@ export interface FormStoreEnv {
   formStore: Store<JsonRecord>
 }
 
+const showNextForm = (user: User) =>
+  pipe(
+    RM.rightReaderTask(getForm(user.orcid)),
+    RM.ichainMiddlewareK(form =>
+      match(form)
+        .with({ review: P.string, persona: P.string, conduct: P.string }, () =>
+          seeOther(format(writeReviewPostMatch.formatter, {})),
+        )
+        .with({ review: P.string, persona: P.string }, () => seeOther(format(writeReviewConductMatch.formatter, {})))
+        .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, {})))
+        .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, {}))),
+    ),
+  )
+
 export const writeReview = pipe(
   getSession(),
   RM.chainEitherKW(UserC.decode),
-  RM.bindTo('user'),
-  RM.apSW('method', RM.decodeMethod(E.right)),
-  RM.ichainW(({ user, method }) =>
-    match(method)
-      .with('POST', () => handleForm(user))
-      .otherwise(() => showNextForm(user)),
-  ),
-  RM.orElseMiddlewareKW(() =>
-    pipe(
-      M.decodeMethod(D.literal('POST').decode),
-      M.ichain(() => seeOther(format(writeReviewMatch.formatter, {}))),
-    ),
-  ),
+  RM.ichainW(showNextForm),
   RM.orElseMiddlewareKW(() => showStartPage),
+)
+
+export const writeReviewReview = pipe(
+  getSession(),
+  RM.chainEitherKW(UserC.decode),
+  RM.bindTo('user'),
+  RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
+  RM.apSW('method', RM.decodeMethod(E.right)),
+  RM.ichainW(state =>
+    match(state)
+      .with({ method: 'POST' }, handleReviewForm)
+      .otherwise(fromMiddlewareK(() => showReviewForm)),
+  ),
+  RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
 )
 
 export const writeReviewPersona = pipe(
@@ -181,8 +190,14 @@ const handleReviewForm = ({ form, user }: { form: Form; user: User }) =>
   pipe(
     RM.decodeBody(ReviewFormC.decode),
     RM.map(updateForm(form)),
-    RM.chainReaderTaskK(saveForm(user.orcid)),
-    RM.ichainMiddlewareKW(() => showPersonaForm(user)),
+    RM.chainFirstReaderTaskK(saveForm(user.orcid)),
+    RM.ichain(
+      flow(
+        form => RM.fromEither(CompletedFormC.decode(form)),
+        RM.ichainW(() => showNextForm(user)),
+        RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
+      ),
+    ),
     RM.orElseMiddlewareK(() => showReviewErrorForm),
   )
 
@@ -221,34 +236,6 @@ const handleCodeOfConductForm = ({ form, user }: { form: Form; user: User }) =>
       ),
     ),
     RM.orElseMiddlewareK(showCodeOfConductErrorForm),
-  )
-
-const showNextForm = (user: User) =>
-  pipe(
-    RM.rightReaderTask(getForm(user.orcid)),
-    RM.ichainMiddlewareK(form =>
-      match(form)
-        .with({ review: P.string, persona: P.string, conduct: P.string }, () =>
-          seeOther(format(writeReviewPostMatch.formatter, {})),
-        )
-        .with({ review: P.string, persona: P.string }, () => seeOther(format(writeReviewConductMatch.formatter, {})))
-        .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, {})))
-        .otherwise(() => showReviewForm),
-    ),
-  )
-
-const handleForm = (user: User) =>
-  pipe(
-    RM.right({ user }),
-    RM.apSW('action', RM.decodeBody(ActionD.decode)),
-    RM.apSW('form', RM.rightReaderTask(getForm(user.orcid))),
-    RM.ichainW(state =>
-      match(state)
-        .with({ action: 'review' }, handleReviewForm)
-        .with({ action: 'persona' }, handlePersonaForm)
-        .exhaustive(),
-    ),
-    RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
   )
 
 const createRecord = (newPrereview: NewPrereview) =>
@@ -454,7 +441,7 @@ function codeOfConductForm(error = false) {
             </fieldset>
           </div>
 
-          <button name="action">Next</button>
+          <button>Next</button>
         </form>
       </main>
     `,
@@ -508,7 +495,7 @@ function personaForm(user: User, error = false) {
             </fieldset>
           </div>
 
-          <button name="action" value="persona">Next</button>
+          <button>Next</button>
         </form>
       </main>
     `,
@@ -542,7 +529,7 @@ function reviewForm(error = false) {
             ></textarea>
           </div>
 
-          <button name="action" value="review">Next</button>
+          <button>Next</button>
         </form>
       </main>
     `,

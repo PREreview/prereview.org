@@ -31,8 +31,16 @@ import {
   writeReviewMatch,
   writeReviewPersonaMatch,
   writeReviewPostMatch,
+  writeReviewReviewMatch,
 } from './routes'
-import { FormStoreEnv, writeReview, writeReviewConduct, writeReviewPersona, writeReviewPost } from './write-review'
+import {
+  FormStoreEnv,
+  writeReview,
+  writeReviewConduct,
+  writeReviewPersona,
+  writeReviewPost,
+  writeReviewReview,
+} from './write-review'
 
 export type AppEnv = FormStoreEnv & L.LoggerEnv & OAuthEnv & SessionEnv & ZenodoAuthenticatedEnv
 
@@ -67,6 +75,10 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewMatch.parser,
           R.map(() => writeReview),
+        ),
+        pipe(
+          writeReviewReviewMatch.parser,
+          R.map(() => writeReviewReview),
         ),
         pipe(
           writeReviewPersonaMatch.parser,
