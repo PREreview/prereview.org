@@ -16,7 +16,6 @@ import * as C from 'io-ts/Codec'
 import { Store } from 'keyv'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
@@ -100,9 +99,7 @@ export const writeReviewReview = pipe(
   RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
   RM.apSW('method', RM.decodeMethod(E.right)),
   RM.ichainW(state =>
-    match(state)
-      .with({ method: 'POST' }, handleReviewForm)
-      .otherwise(fromMiddlewareK(() => showReviewForm)),
+    match(state).with({ method: 'POST' }, handleReviewForm).otherwise(fromMiddlewareK(showReviewForm)),
   ),
   RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
 )
@@ -114,9 +111,7 @@ export const writeReviewPersona = pipe(
   RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
   RM.apSW('method', RM.decodeMethod(E.right)),
   RM.ichainW(state =>
-    match(state)
-      .with({ method: 'POST' }, handlePersonaForm)
-      .otherwise(fromMiddlewareK(flow(get('user'), showPersonaForm))),
+    match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(fromMiddlewareK(showPersonaForm)),
   ),
   RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
 )
@@ -161,29 +156,29 @@ const handlePostForm = ({ form, user }: { form: Form; user: User }) =>
     RM.orElseW(() => showFailureMessage),
   )
 
-const showPersonaForm = (user: User) =>
+const showPersonaForm = ({ form, user }: { form: Form; user: User }) =>
   pipe(
     M.status(Status.OK),
-    M.ichain(() => pipe(personaForm(user), sendHtml)),
+    M.ichain(() => pipe(personaForm(form, user), sendHtml)),
   )
 
 const showPersonaErrorForm = (user: User) =>
   pipe(
     M.status(Status.BadRequest),
-    M.ichain(() => pipe(personaForm(user, true), sendHtml)),
+    M.ichain(() => pipe(personaForm({}, user, true), sendHtml)),
     M.orElse(() => showStartPage),
   )
 
-const showCodeOfConductForm = () =>
+const showCodeOfConductForm = ({ form }: { form: Form }) =>
   pipe(
     M.status(Status.OK),
-    M.ichain(() => pipe(codeOfConductForm(), sendHtml)),
+    M.ichain(() => pipe(codeOfConductForm(form), sendHtml)),
   )
 
 const showCodeOfConductErrorForm = () =>
   pipe(
     M.status(Status.BadRequest),
-    M.ichain(() => pipe(codeOfConductForm(true), sendHtml)),
+    M.ichain(() => pipe(codeOfConductForm({}, true), sendHtml)),
   )
 
 const handleReviewForm = ({ form, user }: { form: Form; user: User }) =>
@@ -241,14 +236,15 @@ const handleCodeOfConductForm = ({ form, user }: { form: Form; user: User }) =>
 const createRecord = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ createRecord }: CreateRecordEnv) => createRecord(newPrereview)))
 
-const showReviewForm = pipe(
-  M.status(Status.OK),
-  M.ichain(() => pipe(reviewForm(), sendHtml)),
-)
+const showReviewForm = ({ form }: { form: Form }) =>
+  pipe(
+    M.status(Status.OK),
+    M.ichain(() => pipe(reviewForm(form), sendHtml)),
+  )
 
 const showReviewErrorForm = pipe(
   M.status(Status.BadRequest),
-  M.ichain(() => pipe(reviewForm(true), sendHtml)),
+  M.ichain(() => pipe(reviewForm({}, true), sendHtml)),
 )
 
 const showSuccessMessage = (doi: Doi) =>
@@ -373,7 +369,7 @@ function postForm(review: CompletedForm, user: User) {
   })
 }
 
-function codeOfConductForm(error = false) {
+function codeOfConductForm(form: Form, error = false) {
   return page({
     title: `${
       error ? 'Error: ' : ''
@@ -435,7 +431,7 @@ function codeOfConductForm(error = false) {
                 : ''}
 
               <label>
-                <input name="conduct" type="checkbox" value="yes" />
+                <input name="conduct" type="checkbox" value="yes" ${rawHtml(form.conduct === 'yes' ? 'checked' : '')} />
                 <span>I’m following the Code&nbsp;of&nbsp;Conduct</span>
               </label>
             </fieldset>
@@ -448,7 +444,7 @@ function codeOfConductForm(error = false) {
   })
 }
 
-function personaForm(user: User, error = false) {
+function personaForm(form: Form, user: User, error = false) {
   return page({
     title: `${
       error ? 'Error: ' : ''
@@ -479,14 +475,26 @@ function personaForm(user: User, error = false) {
               <ol>
                 <li>
                   <label>
-                    <input name="persona" type="radio" value="public" aria-describedby="persona-tip-public" />
+                    <input
+                      name="persona"
+                      type="radio"
+                      value="public"
+                      aria-describedby="persona-tip-public"
+                      ${rawHtml(form.persona === 'public' ? 'checked' : '')}
+                    />
                     <span>${user.name}</span>
                   </label>
                   <div id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID iD.</div>
                 </li>
                 <li>
                   <label>
-                    <input name="persona" type="radio" value="anonymous" aria-describedby="persona-tip-pseudonym" />
+                    <input
+                      name="persona"
+                      type="radio"
+                      value="anonymous"
+                      aria-describedby="persona-tip-pseudonym"
+                      ${rawHtml(form.persona === 'anonymous' ? 'checked' : '')}
+                    />
                     <span>PREreviewer</span>
                   </label>
                   <div id="persona-tip-pseudonym" role="note">Your PREreview will be anonymous.</div>
@@ -502,7 +510,7 @@ function personaForm(user: User, error = false) {
   })
 }
 
-function reviewForm(error = false) {
+function reviewForm(form: Form, error = false) {
   return page({
     title: `${
       error ? 'Error: ' : ''
@@ -526,7 +534,9 @@ function reviewForm(error = false) {
               name="review"
               rows="20"
               ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
-            ></textarea>
+            >
+${rawHtml(form.review ?? '')}</textarea
+            >
           </div>
 
           <button>Next</button>
