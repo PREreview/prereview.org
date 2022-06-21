@@ -37,6 +37,8 @@ const writeReviewBaseMatch = pipe(
 
 export const writeReviewMatch = pipe(writeReviewBaseMatch, R.then(R.end))
 
+export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, R.then(R.lit('persona')), R.then(R.end))
+
 export const writeReviewConductMatch = pipe(writeReviewBaseMatch, R.then(R.lit('conduct')), R.then(R.end))
 
 export const writeReviewPostMatch = pipe(writeReviewBaseMatch, R.then(R.lit('post')), R.then(R.end))

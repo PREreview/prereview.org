@@ -23,7 +23,14 @@ import { SubmittedDeposition } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
 import { seeOther } from './middleware'
 import { page } from './page'
-import { logInMatch, preprintMatch, writeReviewConductMatch, writeReviewMatch, writeReviewPostMatch } from './routes'
+import {
+  logInMatch,
+  preprintMatch,
+  writeReviewConductMatch,
+  writeReviewMatch,
+  writeReviewPersonaMatch,
+  writeReviewPostMatch,
+} from './routes'
 import { NonEmptyString, NonEmptyStringC } from './string'
 import { User, UserC } from './user'
 
@@ -89,6 +96,20 @@ export const writeReview = pipe(
     ),
   ),
   RM.orElseMiddlewareKW(() => showStartPage),
+)
+
+export const writeReviewPersona = pipe(
+  getSession(),
+  RM.chainEitherKW(UserC.decode),
+  RM.bindTo('user'),
+  RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
+  RM.apSW('method', RM.decodeMethod(E.right)),
+  RM.ichainW(state =>
+    match(state)
+      .with({ method: 'POST' }, handlePersonaForm)
+      .otherwise(fromMiddlewareK(flow(get('user'), showPersonaForm))),
+  ),
+  RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
 )
 
 export const writeReviewConduct = pipe(
@@ -176,8 +197,14 @@ const handlePersonaForm = ({ form, user }: { form: Form; user: User }) =>
   pipe(
     RM.decodeBody(PersonaFormC.decode),
     RM.map(updateForm(form)),
-    RM.chainReaderTaskK(saveForm(user.orcid)),
-    RM.ichainW(() => showNextForm(user)),
+    RM.chainFirstReaderTaskK(saveForm(user.orcid)),
+    RM.ichain(
+      flow(
+        form => RM.fromEither(CompletedFormC.decode(form)),
+        RM.ichainW(() => showNextForm(user)),
+        RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
+      ),
+    ),
     RM.orElseMiddlewareK(() => showPersonaErrorForm(user)),
   )
 
@@ -205,7 +232,7 @@ const showNextForm = (user: User) =>
           seeOther(format(writeReviewPostMatch.formatter, {})),
         )
         .with({ review: P.string, persona: P.string }, () => seeOther(format(writeReviewConductMatch.formatter, {})))
-        .with({ review: P.string }, () => showPersonaForm(user))
+        .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, {})))
         .otherwise(() => showReviewForm),
     ),
   )
