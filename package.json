@@ -100,7 +100,7 @@
     "format:fix": "npm run format -- --write",
     "lint": "run-p --aggregate-output lint:*",
     "lint:css": "stylelint '**/*.css'",
-    "lint:ts": "eslint .",
+    "lint:ts": "eslint . --max-warnings 0",
     "start": "run-p start:*",
     "start:app": "wait-on src/manifest.json && ts-node-dev --require dotenv/config --transpile-only src/index.ts",
     "start:assets": "webpack watch --mode development",
