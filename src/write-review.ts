@@ -18,7 +18,7 @@ import { Store } from 'keyv'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
 import { page } from './page'
@@ -79,7 +79,7 @@ export const writeReview = pipe(
   RM.ichainW(({ user, method }) =>
     match(method)
       .with('POST', () => handleForm(user))
-      .otherwise(() => RM.fromMiddleware(showReviewForm)),
+      .otherwise(() => showNextForm(user)),
   ),
   RM.orElseMiddlewareKW(() =>
     pipe(
@@ -165,6 +165,18 @@ const handleCodeOfConductForm = ({ form, user }: { form: Form; user: User }) =>
     RM.chainEitherK(CompletedFormC.decode),
     RM.ichainMiddlewareKW(showPostForm(user)),
     RM.orElseMiddlewareK(showCodeOfConductErrorForm),
+  )
+
+const showNextForm = (user: User) =>
+  pipe(
+    RM.rightReaderTask(getForm(user.orcid)),
+    RM.ichainMiddlewareK(form =>
+      match(form)
+        .with({ review: P.string, persona: P.string, conduct: P.string }, showPostForm(user))
+        .with({ review: P.string, persona: P.string }, () => showCodeOfConductForm())
+        .with({ review: P.string }, () => showPersonaForm(user))
+        .otherwise(() => showReviewForm),
+    ),
   )
 
 const handleForm = (user: User) =>

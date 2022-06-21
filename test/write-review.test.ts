@@ -12,40 +12,87 @@ import { runMiddleware } from './middleware'
 describe('write-review', () => {
   describe('writeReview', () => {
     describe('non-POST request', () => {
-      test('when there is a session', async () => {
-        await fc.assert(
-          fc.asyncProperty(
-            fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
-              fc.tuple(
-                fc.connection({
-                  headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-                  method: fc.requestMethod().filter(method => method !== 'POST'),
-                }),
-                fc.constant(sessionId),
-                fc.constant(secret),
+      describe('when there is a session', () => {
+        test('there is a form already', async () => {
+          await fc.assert(
+            fc.asyncProperty(
+              fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+                fc.tuple(
+                  fc.connection({
+                    headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                    method: fc.requestMethod().filter(method => method !== 'POST'),
+                  }),
+                  fc.constant(sessionId),
+                  fc.constant(secret),
+                ),
               ),
+              fc.record(
+                {
+                  conduct: fc.constant('yes'),
+                  persona: fc.constantFrom('public', 'anonymous'),
+                  review: fc.lorem(),
+                },
+                { withDeletedKeys: true },
+              ),
+              fc.user(),
+              async ([connection, sessionId, secret], newReview, user) => {
+                const sessionStore = new Keyv()
+                await sessionStore.set(sessionId, UserC.encode(user))
+                const formStore = new Keyv()
+                await formStore.set(user.orcid, newReview)
+
+                const actual = await runMiddleware(
+                  _.writeReview({ createRecord: () => TE.left(''), formStore, secret, sessionStore }),
+                  connection,
+                )()
+
+                expect(actual).toStrictEqual(
+                  E.right([
+                    { type: 'setStatus', status: Status.OK },
+                    { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                    { type: 'setBody', body: expect.anything() },
+                  ]),
+                )
+              },
             ),
-            fc.user(),
-            async ([connection, sessionId, secret], user) => {
-              const sessionStore = new Keyv()
-              await sessionStore.set(sessionId, UserC.encode(user))
-              const formStore = new Keyv()
+          )
+        })
 
-              const actual = await runMiddleware(
-                _.writeReview({ createRecord: () => TE.left(''), formStore, secret, sessionStore }),
-                connection,
-              )()
+        test("there isn't a form", async () => {
+          await fc.assert(
+            fc.asyncProperty(
+              fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+                fc.tuple(
+                  fc.connection({
+                    headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                    method: fc.requestMethod().filter(method => method !== 'POST'),
+                  }),
+                  fc.constant(sessionId),
+                  fc.constant(secret),
+                ),
+              ),
+              fc.user(),
+              async ([connection, sessionId, secret], user) => {
+                const sessionStore = new Keyv()
+                await sessionStore.set(sessionId, UserC.encode(user))
+                const formStore = new Keyv()
 
-              expect(actual).toStrictEqual(
-                E.right([
-                  { type: 'setStatus', status: Status.OK },
-                  { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-                  { type: 'setBody', body: expect.anything() },
-                ]),
-              )
-            },
-          ),
-        )
+                const actual = await runMiddleware(
+                  _.writeReview({ createRecord: () => TE.left(''), formStore, secret, sessionStore }),
+                  connection,
+                )()
+
+                expect(actual).toStrictEqual(
+                  E.right([
+                    { type: 'setStatus', status: Status.OK },
+                    { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                    { type: 'setBody', body: expect.anything() },
+                  ]),
+                )
+              },
+            ),
+          )
+        })
       })
 
       test("when there isn't a session", async () => {
