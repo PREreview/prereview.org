@@ -229,190 +229,190 @@ describe('write-review', () => {
             ),
           )
         })
+      })
 
-        describe('persona action', () => {
-          test('with a persona', async () => {
-            await fc.assert(
-              fc.asyncProperty(
-                fc
-                  .tuple(fc.constantFrom('public', 'anonymous'), fc.uuid(), fc.string())
-                  .chain(([persona, sessionId, secret]) =>
-                    fc.tuple(
-                      fc.constant(persona),
-                      fc.connection({
-                        body: fc.constant({ action: 'persona', persona }),
-                        headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-                        method: fc.constant('POST'),
-                      }),
-                      fc.constant(sessionId),
-                      fc.constant(secret),
-                    ),
+      describe('persona action', () => {
+        test('with a persona', async () => {
+          await fc.assert(
+            fc.asyncProperty(
+              fc
+                .tuple(fc.constantFrom('public', 'anonymous'), fc.uuid(), fc.string())
+                .chain(([persona, sessionId, secret]) =>
+                  fc.tuple(
+                    fc.constant(persona),
+                    fc.connection({
+                      body: fc.constant({ action: 'persona', persona }),
+                      headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                      method: fc.constant('POST'),
+                    }),
+                    fc.constant(sessionId),
+                    fc.constant(secret),
                   ),
-                fc.user(),
-                fc.record(
-                  {
-                    conduct: fc.constant('yes'),
-                    persona: fc.constantFrom('public', 'anonymous'),
-                    review: fc.nonEmptyString(),
-                  },
-                  { withDeletedKeys: true },
                 ),
-                async ([persona, connection, sessionId, secret], user, newReview) => {
-                  const sessionStore = new Keyv()
-                  await sessionStore.set(sessionId, UserC.encode(user))
-                  const formStore = new Keyv()
-                  await formStore.set(user.orcid, newReview)
-
-                  const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
-
-                  expect(await formStore.get(user.orcid)).toMatchObject({ persona })
-                  expect(actual).toStrictEqual(
-                    E.right([
-                      { type: 'setStatus', status: Status.OK },
-                      { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-                      { type: 'setBody', body: expect.anything() },
-                    ]),
-                  )
+              fc.user(),
+              fc.record(
+                {
+                  conduct: fc.constant('yes'),
+                  persona: fc.constantFrom('public', 'anonymous'),
+                  review: fc.nonEmptyString(),
                 },
+                { withDeletedKeys: true },
               ),
-            )
-          })
+              async ([persona, connection, sessionId, secret], user, newReview) => {
+                const sessionStore = new Keyv()
+                await sessionStore.set(sessionId, UserC.encode(user))
+                const formStore = new Keyv()
+                await formStore.set(user.orcid, newReview)
 
-          test("when there isn't a session", async () => {
-            await fc.assert(
-              fc.asyncProperty(
-                fc.connection({
-                  body: fc.record({ action: fc.constant('persona'), persona: fc.constantFrom('public', 'anonymous') }),
-                  method: fc.constant('POST'),
-                }),
-                fc.string(),
-                async (connection, secret) => {
-                  const sessionStore = new Keyv()
-                  const formStore = new Keyv()
+                const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
 
-                  const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
-
-                  expect(actual).toStrictEqual(
-                    E.right([
-                      { type: 'setStatus', status: Status.SeeOther },
-                      { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
-                      { type: 'endResponse' },
-                    ]),
-                  )
-                },
-              ),
-            )
-          })
+                expect(await formStore.get(user.orcid)).toMatchObject({ persona })
+                expect(actual).toStrictEqual(
+                  E.right([
+                    { type: 'setStatus', status: Status.OK },
+                    { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                    { type: 'setBody', body: expect.anything() },
+                  ]),
+                )
+              },
+            ),
+          )
         })
 
-        describe('review action', () => {
-          test('with a review', async () => {
-            await fc.assert(
-              fc.asyncProperty(
-                fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
-                  fc.tuple(
-                    fc.constant(review),
-                    fc.connection({
-                      body: fc.constant({ action: 'review', review }),
-                      headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-                      method: fc.constant('POST'),
-                    }),
-                    fc.constant(sessionId),
-                    fc.constant(secret),
-                  ),
+        test("when there isn't a session", async () => {
+          await fc.assert(
+            fc.asyncProperty(
+              fc.connection({
+                body: fc.record({ action: fc.constant('persona'), persona: fc.constantFrom('public', 'anonymous') }),
+                method: fc.constant('POST'),
+              }),
+              fc.string(),
+              async (connection, secret) => {
+                const sessionStore = new Keyv()
+                const formStore = new Keyv()
+
+                const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
+
+                expect(actual).toStrictEqual(
+                  E.right([
+                    { type: 'setStatus', status: Status.SeeOther },
+                    { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
+                    { type: 'endResponse' },
+                  ]),
+                )
+              },
+            ),
+          )
+        })
+      })
+
+      describe('review action', () => {
+        test('with a review', async () => {
+          await fc.assert(
+            fc.asyncProperty(
+              fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
+                fc.tuple(
+                  fc.constant(review),
+                  fc.connection({
+                    body: fc.constant({ action: 'review', review }),
+                    headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                    method: fc.constant('POST'),
+                  }),
+                  fc.constant(sessionId),
+                  fc.constant(secret),
                 ),
-                fc.user(),
-                fc.record(
-                  {
-                    conduct: fc.constant('yes'),
-                    persona: fc.constantFrom('public', 'anonymous'),
-                    review: fc.nonEmptyString(),
-                  },
-                  { withDeletedKeys: true },
+              ),
+              fc.user(),
+              fc.record(
+                {
+                  conduct: fc.constant('yes'),
+                  persona: fc.constantFrom('public', 'anonymous'),
+                  review: fc.nonEmptyString(),
+                },
+                { withDeletedKeys: true },
+              ),
+              async ([review, connection, sessionId, secret], user, newReview) => {
+                const sessionStore = new Keyv()
+                await sessionStore.set(sessionId, UserC.encode(user))
+                const formStore = new Keyv()
+                await formStore.set(user.orcid, newReview)
+
+                const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
+
+                expect(await formStore.get(user.orcid)).toMatchObject({ review })
+                expect(actual).toStrictEqual(
+                  E.right([
+                    { type: 'setStatus', status: Status.OK },
+                    { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                    { type: 'setBody', body: expect.anything() },
+                  ]),
+                )
+              },
+            ),
+          )
+        })
+
+        test("when there isn't a session", async () => {
+          await fc.assert(
+            fc.asyncProperty(
+              fc.connection({
+                body: fc.record({ action: fc.constant('review'), review: fc.lorem() }),
+                method: fc.constant('POST'),
+              }),
+              fc.string(),
+              async (connection, secret) => {
+                const sessionStore = new Keyv()
+                const formStore = new Keyv()
+
+                const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
+
+                expect(actual).toStrictEqual(
+                  E.right([
+                    { type: 'setStatus', status: Status.SeeOther },
+                    { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
+                    { type: 'endResponse' },
+                  ]),
+                )
+              },
+            ),
+          )
+        })
+
+        test('with an empty review', async () => {
+          await fc.assert(
+            fc.asyncProperty(
+              fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+                fc.tuple(
+                  fc.connection({
+                    body: fc.record(
+                      { action: fc.constant('review'), review: fc.constant('') },
+                      { requiredKeys: ['action'] },
+                    ),
+                    headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                    method: fc.constant('POST'),
+                  }),
+                  fc.constant(sessionId),
+                  fc.constant(secret),
                 ),
-                async ([review, connection, sessionId, secret], user, newReview) => {
-                  const sessionStore = new Keyv()
-                  await sessionStore.set(sessionId, UserC.encode(user))
-                  const formStore = new Keyv()
-                  await formStore.set(user.orcid, newReview)
-
-                  const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
-
-                  expect(await formStore.get(user.orcid)).toMatchObject({ review })
-                  expect(actual).toStrictEqual(
-                    E.right([
-                      { type: 'setStatus', status: Status.OK },
-                      { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-                      { type: 'setBody', body: expect.anything() },
-                    ]),
-                  )
-                },
               ),
-            )
-          })
+              fc.user(),
+              async ([connection, sessionId, secret], user) => {
+                const sessionStore = new Keyv()
+                await sessionStore.set(sessionId, UserC.encode(user))
+                const formStore = new Keyv()
 
-          test("when there isn't a session", async () => {
-            await fc.assert(
-              fc.asyncProperty(
-                fc.connection({
-                  body: fc.record({ action: fc.constant('review'), review: fc.lorem() }),
-                  method: fc.constant('POST'),
-                }),
-                fc.string(),
-                async (connection, secret) => {
-                  const sessionStore = new Keyv()
-                  const formStore = new Keyv()
+                const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
 
-                  const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
-
-                  expect(actual).toStrictEqual(
-                    E.right([
-                      { type: 'setStatus', status: Status.SeeOther },
-                      { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
-                      { type: 'endResponse' },
-                    ]),
-                  )
-                },
-              ),
-            )
-          })
-
-          test('with an empty review', async () => {
-            await fc.assert(
-              fc.asyncProperty(
-                fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
-                  fc.tuple(
-                    fc.connection({
-                      body: fc.record(
-                        { action: fc.constant('review'), review: fc.constant('') },
-                        { requiredKeys: ['action'] },
-                      ),
-                      headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-                      method: fc.constant('POST'),
-                    }),
-                    fc.constant(sessionId),
-                    fc.constant(secret),
-                  ),
-                ),
-                fc.user(),
-                async ([connection, sessionId, secret], user) => {
-                  const sessionStore = new Keyv()
-                  await sessionStore.set(sessionId, UserC.encode(user))
-                  const formStore = new Keyv()
-
-                  const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
-
-                  expect(actual).toStrictEqual(
-                    E.right([
-                      { type: 'setStatus', status: Status.BadRequest },
-                      { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-                      { type: 'setBody', body: expect.anything() },
-                    ]),
-                  )
-                },
-              ),
-            )
-          })
+                expect(actual).toStrictEqual(
+                  E.right([
+                    { type: 'setStatus', status: Status.BadRequest },
+                    { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                    { type: 'setBody', body: expect.anything() },
+                  ]),
+                )
+              },
+            ),
+          )
         })
       })
     })
