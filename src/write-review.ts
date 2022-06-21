@@ -21,6 +21,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
+import { seeOther } from './middleware'
 import { page } from './page'
 import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
 import { NonEmptyString, NonEmptyStringC } from './string'
@@ -84,14 +85,7 @@ export const writeReview = pipe(
   RM.orElseMiddlewareKW(() =>
     pipe(
       M.decodeMethod(D.literal('POST').decode),
-      M.ichainW(() =>
-        pipe(
-          M.status(Status.SeeOther),
-          M.ichain(() => M.header('Location', format(writeReviewMatch.formatter, {}))),
-          M.ichain(() => M.closeHeaders()),
-          M.ichain(() => M.end()),
-        ),
-      ),
+      M.ichain(() => seeOther(format(writeReviewMatch.formatter, {}))),
     ),
   ),
   RM.orElseMiddlewareKW(() => showStartPage),
@@ -192,14 +186,7 @@ const handleForm = (user: User) =>
         .with({ action: 'post' }, handlePostForm)
         .exhaustive(),
     ),
-    RM.orElseMiddlewareK(() =>
-      pipe(
-        M.status(Status.SeeOther),
-        M.ichain(() => M.header('Location', format(writeReviewMatch.formatter, {}))),
-        M.ichain(() => M.closeHeaders()),
-        M.ichain(() => M.end()),
-      ),
-    ),
+    RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
   )
 
 const createRecord = (newPrereview: NewPrereview) =>
