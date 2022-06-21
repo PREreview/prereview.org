@@ -341,6 +341,10 @@ function postForm(review: CompletedForm, user: User) {
   return page({
     title: "Post your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
+      <nav>
+        <a href="${format(writeReviewConductMatch.formatter, {})}" class="back">Back</a>
+      </nav>
+
       <main>
         <h1 id="preview-label">Check your PREreview</h1>
 
@@ -375,6 +379,10 @@ function codeOfConductForm(form: Form, error = false) {
       error ? 'Error: ' : ''
     }Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
     content: html`
+      <nav>
+        <a href="${format(writeReviewPersonaMatch.formatter, {})}" class="back">Back</a>
+      </nav>
+
       <main>
         <form method="post" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
@@ -450,6 +458,10 @@ function personaForm(form: Form, user: User, error = false) {
       error ? 'Error: ' : ''
     }Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
     content: html`
+      <nav>
+        <a href="${format(writeReviewReviewMatch.formatter, {})}" class="back">Back</a>
+      </nav>
+
       <main>
         <form method="post" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
@@ -516,6 +528,10 @@ function reviewForm(form: Form, error = false) {
       error ? 'Error: ' : ''
     }Write your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
     content: html`
+      <nav>
+        <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>
+      </nav>
+
       <main>
         <form method="post" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
@@ -550,6 +566,10 @@ function startPage() {
   return page({
     title: 'Review this preprint',
     content: html`
+      <nav>
+        <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>
+      </nav>
+
       <main>
         <h1>Review this preprint</h1>
 

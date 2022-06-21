@@ -347,7 +347,7 @@ test('can go back through the form', async ({ fetch, page }) => {
   )
 })
 
-test('see existing values when going straight to a step', async ({ fetch, page }) => {
+test('see existing values when going back a step', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
 
   fetch.postOnce('http://orcid.test/token', {
@@ -374,19 +374,19 @@ test('see existing values when going straight to a step', async ({ fetch, page }
 
   await expect(page.locator('h1')).toContainText('Check your PREreview')
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review/review')
+  await page.click('text="Back"')
+
+  await expect(page.locator('text="I’m following the Code of Conduct"')).toBeChecked()
+
+  await page.click('text="Back"')
+
+  await expect(page.locator('text="Josiah Carberry"')).toBeChecked()
+
+  await page.click('text="Back"')
 
   await expect(page.locator('text="Write your PREreview"')).toHaveValue(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review/persona')
-
-  await expect(page.locator('text="Josiah Carberry"')).toBeChecked()
-
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review/conduct')
-
-  await expect(page.locator('text="I’m following the Code of Conduct"')).toBeChecked()
 })
 
 test("aren't told about ORCID when already logged in", async ({ fetch, page }) => {
