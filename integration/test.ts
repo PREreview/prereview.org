@@ -47,6 +47,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     const server = app({
       clock: SystemClock,
       fetch,
+      formStore: new Keyv(),
       logger,
       oauth: {
         authorizeUrl: new URL('https://oauth.mocklab.io/oauth/authorize'),

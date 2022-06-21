@@ -1,14 +1,20 @@
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import { JsonRecord } from 'fp-ts/Json'
+import { ReaderTask } from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as T from 'fp-ts/Task'
 import * as TE from 'fp-ts/TaskEither'
-import { pipe } from 'fp-ts/function'
+import { constVoid, constant, flow, pipe } from 'fp-ts/function'
+import { getAssignSemigroup } from 'fp-ts/struct'
 import { Status } from 'hyper-ts'
 import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+import { Store } from 'keyv'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
@@ -20,26 +26,25 @@ import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
 import { NonEmptyString, NonEmptyStringC } from './string'
 import { User, UserC } from './user'
 
-const ReviewFormD = D.struct({
+const ReviewFormC = C.struct({
   review: NonEmptyStringC,
 })
 
-const PersonaFormD = D.struct({
-  persona: D.literal('public', 'anonymous'),
-  review: NonEmptyStringC,
+const PersonaFormC = C.struct({
+  persona: C.literal('public', 'anonymous'),
 })
 
-const CodeOfConductFormD = D.struct({
-  conduct: D.literal('yes'),
-  persona: D.literal('public', 'anonymous'),
-  review: NonEmptyStringC,
+const CodeOfConductFormC = C.struct({
+  conduct: C.literal('yes'),
 })
 
-const PostFormD = D.struct({
-  conduct: D.literal('yes'),
-  persona: D.literal('public', 'anonymous'),
+const FormC = C.partial({
   review: NonEmptyStringC,
+  persona: C.literal('public', 'anonymous'),
+  conduct: C.literal('yes'),
 })
+
+const CompletedFormC = pipe(ReviewFormC, C.intersect(PersonaFormC), C.intersect(CodeOfConductFormC))
 
 const ActionD = pipe(
   D.struct({
@@ -48,9 +53,8 @@ const ActionD = pipe(
   D.map(get('action')),
 )
 
-type ReviewForm = D.TypeOf<typeof ReviewFormD>
-type PersonaForm = D.TypeOf<typeof PersonaFormD>
-type CodeOfConductForm = D.TypeOf<typeof CodeOfConductFormD>
+type Form = C.TypeOf<typeof FormC>
+type CompletedForm = C.TypeOf<typeof CompletedFormC>
 
 export type NewPrereview = {
   conduct: 'yes'
@@ -61,6 +65,10 @@ export type NewPrereview = {
 
 export interface CreateRecordEnv {
   createRecord: (newPrereview: NewPrereview) => TE.TaskEither<unknown, SubmittedDeposition>
+}
+
+export interface FormStoreEnv {
+  formStore: Store<JsonRecord>
 }
 
 export const writeReview = pipe(
@@ -89,81 +97,87 @@ export const writeReview = pipe(
   RM.orElseMiddlewareKW(() => showStartPage),
 )
 
-const handlePostForm = (user: User) =>
+const handlePostForm = ({ form, user }: { form: Form; user: User }) =>
   pipe(
-    RM.decodeBody(PostFormD.decode),
+    RM.fromEither(CompletedFormC.decode(form)),
     RM.apS('user', RM.right(user)),
-    RM.chainReaderTaskEitherK(createRecord),
+    RM.chainReaderTaskEitherKW(createRecord),
+    RM.chainFirstReaderTaskKW(() => deleteForm(user.orcid)),
     RM.ichainW(deposition => showSuccessMessage(deposition.metadata.doi)),
     RM.orElseW(() => showFailureMessage),
   )
 
-const showPersonaForm = (user: User) => (review: ReviewForm) =>
+const showPersonaForm = (user: User) =>
   pipe(
     M.status(Status.OK),
-    M.ichain(() => pipe(personaForm(review, user), sendHtml)),
+    M.ichain(() => pipe(personaForm(user), sendHtml)),
   )
 
-const showPersonaErrorForm = (user: User) => (review: ReviewForm) =>
+const showPersonaErrorForm = (user: User) =>
   pipe(
     M.status(Status.BadRequest),
-    M.ichain(() => pipe(personaForm(review, user, true), sendHtml)),
+    M.ichain(() => pipe(personaForm(user, true), sendHtml)),
     M.orElse(() => showStartPage),
   )
 
-const showCodeOfConductForm = (review: PersonaForm) =>
+const showCodeOfConductForm = () =>
   pipe(
     M.status(Status.OK),
-    M.ichain(() => pipe(codeOfConductForm(review), sendHtml)),
+    M.ichain(() => pipe(codeOfConductForm(), sendHtml)),
   )
 
-const showCodeOfConductErrorForm = (review: PersonaForm) =>
+const showCodeOfConductErrorForm = () =>
   pipe(
     M.status(Status.BadRequest),
-    M.ichain(() => pipe(codeOfConductForm(review, true), sendHtml)),
+    M.ichain(() => pipe(codeOfConductForm(true), sendHtml)),
   )
 
-const handleReviewForm = (user: User) =>
+const handleReviewForm = ({ form, user }: { form: Form; user: User }) =>
   pipe(
-    M.decodeBody(ReviewFormD.decode),
-    M.ichainW(showPersonaForm(user)),
-    M.orElse(() => showReviewErrorForm),
+    RM.decodeBody(ReviewFormC.decode),
+    RM.map(updateForm(form)),
+    RM.chainReaderTaskK(saveForm(user.orcid)),
+    RM.ichainMiddlewareKW(() => showPersonaForm(user)),
+    RM.orElseMiddlewareK(() => showReviewErrorForm),
   )
 
-const showPostForm = (user: User) => (review: CodeOfConductForm) =>
+const showPostForm = (user: User) => (steps: CompletedForm) =>
   pipe(
     M.status(Status.OK),
-    M.ichain(() => pipe(postForm(review, user), sendHtml)),
+    M.ichain(() => pipe(postForm(steps, user), sendHtml)),
     M.orElse(() => showStartPage),
   )
 
-const handlePersonaForm = (user: User) =>
+const handlePersonaForm = ({ form, user }: { form: Form; user: User }) =>
   pipe(
-    M.decodeBody(PersonaFormD.decode),
-    M.ichainW(showCodeOfConductForm),
-    M.orElse(() => pipe(M.decodeBody(ReviewFormD.decode), M.ichainW(showPersonaErrorForm(user)))),
-    M.orElse(() => showReviewErrorForm),
+    RM.decodeBody(PersonaFormC.decode),
+    RM.map(updateForm(form)),
+    RM.chainReaderTaskK(saveForm(user.orcid)),
+    RM.ichainMiddlewareKW(showCodeOfConductForm),
+    RM.orElseMiddlewareK(() => showPersonaErrorForm(user)),
   )
 
-const handleCodeOfConductForm = (user: User) =>
+const handleCodeOfConductForm = ({ form, user }: { form: Form; user: User }) =>
   pipe(
-    M.decodeBody(CodeOfConductFormD.decode),
-    M.ichainW(showPostForm(user)),
-    M.orElse(() => pipe(M.decodeBody(PersonaFormD.decode), M.ichainW(showCodeOfConductErrorForm))),
-    M.orElse(() => pipe(M.decodeBody(ReviewFormD.decode), M.ichainW(showPersonaErrorForm(user)))),
-    M.orElse(() => showReviewErrorForm),
+    RM.decodeBody(CodeOfConductFormC.decode),
+    RM.map(updateForm(form)),
+    RM.chainFirstReaderTaskK(saveForm(user.orcid)),
+    RM.chainEitherK(CompletedFormC.decode),
+    RM.ichainMiddlewareKW(showPostForm(user)),
+    RM.orElseMiddlewareK(showCodeOfConductErrorForm),
   )
 
 const handleForm = (user: User) =>
   pipe(
     RM.right({ user }),
     RM.apSW('action', RM.decodeBody(ActionD.decode)),
-    RM.ichainW(({ action, user }) =>
-      match(action)
-        .with('review', () => RM.fromMiddleware(handleReviewForm(user)))
-        .with('persona', () => RM.fromMiddleware(handlePersonaForm(user)))
-        .with('conduct', () => RM.fromMiddleware(handleCodeOfConductForm(user)))
-        .with('post', () => handlePostForm(user))
+    RM.apSW('form', RM.rightReaderTask(getForm(user.orcid))),
+    RM.ichainW(state =>
+      match(state)
+        .with({ action: 'review' }, handleReviewForm)
+        .with({ action: 'persona' }, handlePersonaForm)
+        .with({ action: 'conduct' }, handleCodeOfConductForm)
+        .with({ action: 'post' }, handlePostForm)
         .exhaustive(),
     ),
     RM.orElseMiddlewareK(() =>
@@ -207,6 +221,37 @@ const showStartPage = pipe(
   M.ichain(() => pipe(startPage(), sendHtml)),
 )
 
+function getForm(user: Orcid): ReaderTask<FormStoreEnv, Form> {
+  return flow(
+    TE.tryCatchK(async ({ formStore }) => await formStore.get(user), constant('no-new-review')),
+    TE.chainEitherKW(FormC.decode),
+    TE.getOrElse(() => T.of({})),
+  )
+}
+
+function updateForm(originalForm: Form): (newForm: Form) => Form {
+  return newForm => getAssignSemigroup<Form>().concat(originalForm, newForm)
+}
+
+function saveForm(user: Orcid): (form: Form) => ReaderTask<FormStoreEnv, void> {
+  return form =>
+    flow(
+      TE.tryCatchK(async ({ formStore }) => {
+        await formStore.set(user, FormC.encode(form))
+      }, constVoid),
+      TE.toUnion,
+    )
+}
+
+function deleteForm(user: Orcid): ReaderTask<FormStoreEnv, void> {
+  return flow(
+    TE.tryCatchK(async ({ formStore }) => {
+      await formStore.delete(user)
+    }, constVoid),
+    TE.toUnion,
+  )
+}
+
 function successMessage(doi: Doi) {
   return page({
     title: 'PREreview posted',
@@ -248,7 +293,7 @@ function failureMessage() {
   })
 }
 
-function postForm(review: CodeOfConductForm, user: User) {
+function postForm(review: CompletedForm, user: User) {
   return page({
     title: "Post your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
@@ -266,11 +311,6 @@ function postForm(review: CodeOfConductForm, user: User) {
         </blockquote>
 
         <form method="post" novalidate>
-          <input name="persona" type="hidden" value="${review.persona}" />
-          <input name="conduct" type="hidden" value="${review.conduct}" />
-
-          <textarea name="review" hidden>${review.review}</textarea>
-
           <h2>Now post your PREreview</h2>
 
           <p>
@@ -285,7 +325,7 @@ function postForm(review: CodeOfConductForm, user: User) {
   })
 }
 
-function codeOfConductForm(review: PersonaForm, error = false) {
+function codeOfConductForm(error = false) {
   return page({
     title: `${
       error ? 'Error: ' : ''
@@ -353,10 +393,6 @@ function codeOfConductForm(review: PersonaForm, error = false) {
             </fieldset>
           </div>
 
-          <input name="persona" type="hidden" value="${review.persona}" />
-
-          <textarea name="review" hidden>${review.review}</textarea>
-
           <button name="action" value="conduct">Next</button>
         </form>
       </main>
@@ -364,7 +400,7 @@ function codeOfConductForm(review: PersonaForm, error = false) {
   })
 }
 
-function personaForm(review: ReviewForm, user: User, error = false) {
+function personaForm(user: User, error = false) {
   return page({
     title: `${
       error ? 'Error: ' : ''
@@ -410,8 +446,6 @@ function personaForm(review: ReviewForm, user: User, error = false) {
               </ol>
             </fieldset>
           </div>
-
-          <textarea name="review" hidden>${review.review}</textarea>
 
           <button name="action" value="persona">Next</button>
         </form>
