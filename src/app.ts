@@ -28,8 +28,9 @@ import {
   preprintMatch,
   reviewMatch,
   writeReviewMatch,
+  writeReviewPostMatch,
 } from './routes'
-import { FormStoreEnv, writeReview } from './write-review'
+import { FormStoreEnv, writeReview, writeReviewPost } from './write-review'
 
 export type AppEnv = FormStoreEnv & L.LoggerEnv & OAuthEnv & SessionEnv & ZenodoAuthenticatedEnv
 
@@ -60,13 +61,18 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       R.map(({ id }) => review(id)),
     ),
     pipe(
-      writeReviewMatch.parser,
-      R.map(() =>
+      [
         pipe(
-          writeReview,
-          local((env: AppEnv) => ({ ...env, createRecord: flipC(createRecordOnZenodo)(env) })),
+          writeReviewMatch.parser,
+          R.map(() => writeReview),
         ),
-      ),
+        pipe(
+          writeReviewPostMatch.parser,
+          R.map(() => writeReviewPost),
+        ),
+      ],
+      M.concatAll(R.getParserMonoid()),
+      R.map(local((env: AppEnv) => ({ ...env, createRecord: flipC(createRecordOnZenodo)(env) }))),
     ),
   ],
   M.concatAll(R.getParserMonoid()),

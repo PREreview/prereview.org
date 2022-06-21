@@ -23,7 +23,7 @@ import { SubmittedDeposition } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
 import { seeOther } from './middleware'
 import { page } from './page'
-import { logInMatch, preprintMatch, writeReviewMatch } from './routes'
+import { logInMatch, preprintMatch, writeReviewMatch, writeReviewPostMatch } from './routes'
 import { NonEmptyString, NonEmptyStringC } from './string'
 import { User, UserC } from './user'
 
@@ -49,7 +49,7 @@ const CompletedFormC = pipe(ReviewFormC, C.intersect(PersonaFormC), C.intersect(
 
 const ActionD = pipe(
   D.struct({
-    action: D.literal('review', 'persona', 'conduct', 'post'),
+    action: D.literal('review', 'persona', 'conduct'),
   }),
   D.map(get('action')),
 )
@@ -89,6 +89,21 @@ export const writeReview = pipe(
     ),
   ),
   RM.orElseMiddlewareKW(() => showStartPage),
+)
+
+export const writeReviewPost = pipe(
+  getSession(),
+  RM.chainEitherKW(UserC.decode),
+  RM.bindTo('user'),
+  RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
+  RM.apSW('method', RM.decodeMethod(E.right)),
+  RM.ichainW(state =>
+    match(state)
+      .with({ method: 'POST', form: { review: P.string, persona: P.string, conduct: P.string } }, handlePostForm)
+      .with({ form: { review: P.string, persona: P.string, conduct: P.string } }, fromMiddlewareK(showPostForm))
+      .otherwise(fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {})))),
+  ),
+  RM.orElseMiddlewareKW(() => seeOther(format(writeReviewMatch.formatter, {}))),
 )
 
 const handlePostForm = ({ form, user }: { form: Form; user: User }) =>
@@ -135,10 +150,10 @@ const handleReviewForm = ({ form, user }: { form: Form; user: User }) =>
     RM.orElseMiddlewareK(() => showReviewErrorForm),
   )
 
-const showPostForm = (user: User) => (steps: CompletedForm) =>
+const showPostForm = ({ form, user }: { form: CompletedForm; user: User }) =>
   pipe(
     M.status(Status.OK),
-    M.ichain(() => pipe(postForm(steps, user), sendHtml)),
+    M.ichain(() => pipe(postForm(form, user), sendHtml)),
     M.orElse(() => showStartPage),
   )
 
@@ -157,7 +172,7 @@ const handleCodeOfConductForm = ({ form, user }: { form: Form; user: User }) =>
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid)),
     RM.chainEitherK(CompletedFormC.decode),
-    RM.ichainMiddlewareKW(showPostForm(user)),
+    RM.ichainW(() => showNextForm(user)),
     RM.orElseMiddlewareK(showCodeOfConductErrorForm),
   )
 
@@ -166,7 +181,9 @@ const showNextForm = (user: User) =>
     RM.rightReaderTask(getForm(user.orcid)),
     RM.ichainMiddlewareK(form =>
       match(form)
-        .with({ review: P.string, persona: P.string, conduct: P.string }, showPostForm(user))
+        .with({ review: P.string, persona: P.string, conduct: P.string }, () =>
+          seeOther(format(writeReviewPostMatch.formatter, {})),
+        )
         .with({ review: P.string, persona: P.string }, () => showCodeOfConductForm())
         .with({ review: P.string }, () => showPersonaForm(user))
         .otherwise(() => showReviewForm),
@@ -183,7 +200,6 @@ const handleForm = (user: User) =>
         .with({ action: 'review' }, handleReviewForm)
         .with({ action: 'persona' }, handlePersonaForm)
         .with({ action: 'conduct' }, handleCodeOfConductForm)
-        .with({ action: 'post' }, handlePostForm)
         .exhaustive(),
     ),
     RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
@@ -317,7 +333,7 @@ function postForm(review: CompletedForm, user: User) {
             <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0 license</a>.
           </p>
 
-          <button name="action" value="post">Post PREreview</button>
+          <button>Post PREreview</button>
         </form>
       </main>
     `,
@@ -520,3 +536,11 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
 
   return name
 }
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/83
+const fromMiddlewareK =
+  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
+    f: (...a: A) => M.Middleware<I, O, E, B>,
+  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
+  (...a) =>
+    RM.fromMiddleware(f(...a))

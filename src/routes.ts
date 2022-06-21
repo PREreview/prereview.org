@@ -29,12 +29,15 @@ export const preprintMatch = pipe(R.lit('preprints'), R.then(R.lit('doi-10.1101-
 
 export const reviewMatch = pipe(R.lit('reviews'), R.then(type('id', IntegerFromStringC)), R.then(R.end))
 
-export const writeReviewMatch = pipe(
+const writeReviewBaseMatch = pipe(
   R.lit('preprints'),
   R.then(R.lit('doi-10.1101-2022.01.13.476201')),
   R.then(R.lit('review')),
-  R.then(R.end),
 )
+
+export const writeReviewMatch = pipe(writeReviewBaseMatch, R.then(R.end))
+
+export const writeReviewPostMatch = pipe(writeReviewBaseMatch, R.then(R.lit('post')), R.then(R.end))
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
 function query<A>(codec: C.Codec<unknown, Record<string, R.QueryValues>, A>): R.Match<A> {
