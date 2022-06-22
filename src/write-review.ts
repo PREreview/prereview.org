@@ -16,6 +16,7 @@ import * as C from 'io-ts/Codec'
 import { Store } from 'keyv'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
+import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
@@ -71,24 +72,20 @@ export interface FormStoreEnv {
   formStore: Store<JsonRecord>
 }
 
-const showNextForm = (user: User) =>
-  pipe(
-    RM.rightReaderTask(getForm(user.orcid)),
-    RM.ichainMiddlewareK(form =>
-      match(form)
-        .with({ review: P.string, persona: P.string, conduct: P.string }, () =>
-          seeOther(format(writeReviewPostMatch.formatter, {})),
-        )
-        .with({ review: P.string, persona: P.string }, () => seeOther(format(writeReviewConductMatch.formatter, {})))
-        .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, {})))
-        .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, {}))),
-    ),
-  )
+const showNextForm = (form: Form) =>
+  match(form)
+    .with({ review: P.string, persona: P.string, conduct: P.string }, () =>
+      seeOther(format(writeReviewPostMatch.formatter, {})),
+    )
+    .with({ review: P.string, persona: P.string }, () => seeOther(format(writeReviewConductMatch.formatter, {})))
+    .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, {})))
+    .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, {})))
 
 export const writeReview = pipe(
   getSession(),
   RM.chainEitherKW(UserC.decode),
-  RM.ichainW(showNextForm),
+  RM.chainReaderTaskKW(flow(get('orcid'), getForm)),
+  RM.ichainMiddlewareKW(showNextForm),
   RM.orElseMiddlewareK(() => showStartPage),
 )
 
@@ -134,11 +131,11 @@ export const writeReviewPost = pipe(
   RM.bindTo('user'),
   RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
   RM.apSW('method', RM.decodeMethod(E.right)),
-  RM.ichain(state =>
+  RM.ichainW(state =>
     match(state)
       .with({ method: 'POST', form: { review: P.string, persona: P.string, conduct: P.string } }, handlePostForm)
       .with({ form: { review: P.string, persona: P.string, conduct: P.string } }, fromMiddlewareK(showPostForm))
-      .otherwise(fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {})))),
+      .otherwise(flow(get('form'), fromMiddlewareK(showNextForm))),
   ),
   RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
 )
@@ -183,13 +180,7 @@ const handleReviewForm = ({ form, user }: { form: Form; user: User }) =>
     RM.decodeBody(ReviewFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid)),
-    RM.ichain(
-      flow(
-        form => RM.fromEither(CompletedFormC.decode(form)),
-        RM.ichainW(() => showNextForm(user)),
-        RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
-      ),
-    ),
+    RM.ichainMiddlewareKW(showNextForm),
     RM.orElseMiddlewareK(() => showReviewErrorForm),
   )
 
@@ -205,13 +196,7 @@ const handlePersonaForm = ({ form, user }: { form: Form; user: User }) =>
     RM.decodeBody(PersonaFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid)),
-    RM.ichain(
-      flow(
-        form => RM.fromEither(CompletedFormC.decode(form)),
-        RM.ichainW(() => showNextForm(user)),
-        RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
-      ),
-    ),
+    RM.ichainMiddlewareKW(showNextForm),
     RM.orElseMiddlewareK(() => showPersonaErrorForm(user)),
   )
 
@@ -220,13 +205,7 @@ const handleCodeOfConductForm = ({ form, user }: { form: Form; user: User }) =>
     RM.decodeBody(CodeOfConductFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid)),
-    RM.ichain(
-      flow(
-        form => RM.fromEither(CompletedFormC.decode(form)),
-        RM.ichainW(() => showNextForm(user)),
-        RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
-      ),
-    ),
+    RM.ichainMiddlewareKW(showNextForm),
     RM.orElseMiddlewareK(showCodeOfConductErrorForm),
   )
 
