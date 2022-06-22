@@ -21,9 +21,9 @@ export const createRecordOnZenodo: (
     createDeposition,
     RTE.chainFirst(
       uploadFile({
-        name: 'review.txt',
-        type: 'text/plain',
-        content: newPrereview.review,
+        name: 'review.html',
+        type: 'text/html',
+        content: sanitizeHtml(markdownIt({ html: true }).render(newPrereview.review)).toString(),
       }),
     ),
     RTE.chain(publishDeposition),

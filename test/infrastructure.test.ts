@@ -87,9 +87,9 @@ describe('infrastructure', () => {
                 )
                 .putOnce(
                   {
-                    url: 'http://example.com/bucket/review.txt',
-                    headers: { 'Content-Type': 'text/plain' },
-                    functionMatcher: (_, req: RequestInit) => req.body === newPrereview.review,
+                    url: 'http://example.com/bucket/review.html',
+                    headers: { 'Content-Type': 'text/html' },
+                    functionMatcher: (_, req: RequestInit) => req.body === `<p>${newPrereview.review}</p>\n`,
                   },
                   {
                     status: Status.Created,
@@ -184,9 +184,9 @@ describe('infrastructure', () => {
                 )
                 .putOnce(
                   {
-                    url: 'http://example.com/bucket/review.txt',
-                    headers: { 'Content-Type': 'text/plain' },
-                    functionMatcher: (_, req: RequestInit) => req.body === newPrereview.review,
+                    url: 'http://example.com/bucket/review.html',
+                    headers: { 'Content-Type': 'text/html' },
+                    functionMatcher: (_, req: RequestInit) => req.body === `<p>${newPrereview.review}</p>\n`,
                   },
                   {
                     status: Status.Created,

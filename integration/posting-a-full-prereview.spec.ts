@@ -122,7 +122,7 @@ test('can post a full PREreview', async ({ fetch, page }) => {
       }),
       status: Status.Created,
     })
-    .putOnce('http://example.com/bucket/review.txt', {
+    .putOnce('http://example.com/bucket/review.html', {
       status: Status.Created,
     })
     .postOnce('http://example.com/publish', {
@@ -263,7 +263,7 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
       }),
       status: Status.Created,
     })
-    .putOnce('http://example.com/bucket/review.txt', {
+    .putOnce('http://example.com/bucket/review.html', {
       status: Status.Created,
     })
     .postOnce('http://example.com/publish', {
