@@ -270,9 +270,12 @@ label {
   transition: filter 0.2s;
   padding-block: var(--space-2xs);
   padding-inline: var(--space-xs);
-  margin-block-start: var(--space-l);
   touch-action: manipulation;
   user-select: none;
+
+  @nest :not(.button-group) > & {
+    margin-block-start: var(--space-l);
+  }
 
   &::after {
     position: absolute;
@@ -300,6 +303,38 @@ label {
     background-color: var(--color-link-dark);
     border: 0 solid transparent;
     border-block-end-width: var(--width-divider);
+  }
+}
+
+.button-secondary {
+  font-size: var(--step-0);
+  padding-block: var(--space-3xs-2xs);
+  padding-inline: var(--space-2xs-xs);
+
+  &::after {
+    background-color: var(--color-divider-light);
+  }
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+
+  @media screen {
+    color: var(--color-text-light);
+    background-color: var(--color-divider);
+  }
+}
+
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-xs-s);
+  row-gap: var(--space-2xs-xs);
+  margin-block-start: var(--space-l);
+
+  @nest .preview + & {
+    margin-block-start: var(--space-s);
   }
 }
 

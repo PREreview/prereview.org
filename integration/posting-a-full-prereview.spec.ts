@@ -305,6 +305,45 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
   await expect(review).toContainText('Vestibulum nulla turpis')
 })
 
+test('can change the review after previewing', async ({ fetch, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  await page.keyboard.press('Enter')
+
+  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.click('text="Next"')
+  await page.check('text="Josiah Carberry"')
+  await page.click('text="Next"')
+  await page.check('text="I’m following the Code of Conduct"')
+  await page.click('text="Next"')
+
+  await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
+
+  await page.click('text="Change review"')
+
+  await page.fill('text="Write your PREreview"', 'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
+  await page.click('text="Next"')
+
+  await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText(
+    'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
+  )
+})
+
 test('can go back through the form', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
 

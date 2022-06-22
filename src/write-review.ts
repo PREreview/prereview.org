@@ -334,6 +334,10 @@ function postForm(review: CompletedForm, user: User) {
           ${rawHtml(markdownIt().render(review.review))}
         </blockquote>
 
+        <div class="button-group" role="group">
+          <a href="${format(writeReviewReviewMatch.formatter, {})}" class="button button-secondary">Change review</a>
+        </div>
+
         <form method="post" novalidate>
           <h2>Now post your PREreview</h2>
 
