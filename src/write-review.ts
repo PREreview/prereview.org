@@ -122,11 +122,8 @@ export const writeReviewConduct = pipe(
   RM.bindTo('user'),
   RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
   RM.apSW('method', RM.decodeMethod(E.right)),
-  RM.ichainW(
-    state =>
-      match(state).with({ method: 'POST' }, handleCodeOfConductForm).otherwise(fromMiddlewareK(showCodeOfConductForm)),
-    //.with({ form: { review: P.string, persona: P.string } }, fromMiddlewareK(showCodeOfConductForm))
-    //.otherwise(fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {})))),
+  RM.ichainW(state =>
+    match(state).with({ method: 'POST' }, handleCodeOfConductForm).otherwise(fromMiddlewareK(showCodeOfConductForm)),
   ),
   RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
 )
