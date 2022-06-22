@@ -336,6 +336,7 @@ function postForm(review: CompletedForm, user: User) {
 
         <div class="button-group" role="group">
           <a href="${format(writeReviewReviewMatch.formatter, {})}" class="button button-secondary">Change review</a>
+          <a href="${format(writeReviewPersonaMatch.formatter, {})}" class="button button-secondary">Change name</a>
         </div>
 
         <form method="post" novalidate>
