@@ -89,7 +89,7 @@ export const writeReview = pipe(
   getSession(),
   RM.chainEitherKW(UserC.decode),
   RM.ichainW(showNextForm),
-  RM.orElseMiddlewareKW(() => showStartPage),
+  RM.orElseMiddlewareK(() => showStartPage),
 )
 
 export const writeReviewReview = pipe(
@@ -134,20 +134,20 @@ export const writeReviewPost = pipe(
   RM.bindTo('user'),
   RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
   RM.apSW('method', RM.decodeMethod(E.right)),
-  RM.ichainW(state =>
+  RM.ichain(state =>
     match(state)
       .with({ method: 'POST', form: { review: P.string, persona: P.string, conduct: P.string } }, handlePostForm)
       .with({ form: { review: P.string, persona: P.string, conduct: P.string } }, fromMiddlewareK(showPostForm))
       .otherwise(fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {})))),
   ),
-  RM.orElseMiddlewareKW(() => seeOther(format(writeReviewMatch.formatter, {}))),
+  RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
 )
 
 const handlePostForm = ({ form, user }: { form: Form; user: User }) =>
   pipe(
     RM.fromEither(CompletedFormC.decode(form)),
     RM.apS('user', RM.right(user)),
-    RM.chainReaderTaskEitherKW(createRecord),
+    RM.chainReaderTaskEitherK(createRecord),
     RM.chainFirstReaderTaskKW(() => deleteForm(user.orcid)),
     RM.ichainW(deposition => showSuccessMessage(deposition.metadata.doi)),
     RM.orElseW(() => showFailureMessage),
