@@ -10,6 +10,7 @@ import {
   publishDeposition,
   uploadFile,
 } from 'zenodo-ts'
+import { sanitizeHtml } from './html'
 import { NewPrereview } from './write-review'
 
 export const createRecordOnZenodo: (
@@ -34,7 +35,7 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
     publication_type: 'article',
     title: 'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
     creators: [newPrereview.persona === 'public' ? newPrereview.user : { name: 'PREreviewer' }],
-    description: markdownIt().render(newPrereview.review),
+    description: sanitizeHtml(markdownIt({ html: true }).render(newPrereview.review)).toString(),
     communities: [{ identifier: 'prereview-reviews' }],
     related_identifiers: [
       {

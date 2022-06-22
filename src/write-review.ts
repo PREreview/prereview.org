@@ -19,7 +19,7 @@ import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
-import { html, rawHtml, sendHtml } from './html'
+import { html, rawHtml, sanitizeHtml, sendHtml } from './html'
 import { seeOther } from './middleware'
 import { page } from './page'
 import {
@@ -331,7 +331,7 @@ function postForm(review: CompletedForm, user: User) {
             <li>${displayAuthor(review.persona === 'public' ? user : { name: 'PREreviewer' })}</li>
           </ol>
 
-          ${rawHtml(markdownIt().render(review.review))}
+          ${sanitizeHtml(markdownIt({ html: true }).render(review.review))}
         </blockquote>
 
         <div class="button-group" role="group">
