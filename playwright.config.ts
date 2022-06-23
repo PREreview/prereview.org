@@ -18,10 +18,11 @@ const config: PlaywrightTestConfig = {
       name: 'iPhone 11',
       use: { ...devices['iPhone 11'] },
     },
-  ],
+  ].flatMap(env => [env, { name: `${env.name} (no JavaScript)`, use: { ...env.use, javaScriptEnabled: false } }]),
   snapshotDir: path.resolve('integration', 'snapshots'),
   testDir: 'integration',
   use: {
+    javaScriptEnabled: true,
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
