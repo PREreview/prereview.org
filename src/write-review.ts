@@ -526,14 +526,16 @@ function reviewForm(form: Form, error = false) {
                 `
               : ''}
 
-            <textarea
-              id="review"
-              name="review"
-              rows="20"
-              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
-            >
+            <html-editor>
+              <textarea
+                id="review"
+                name="review"
+                rows="20"
+                ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
+              >
 ${rawHtml(form.review ?? '')}</textarea
-            >
+              >
+            </html-editor>
           </div>
 
           <button>Next</button>

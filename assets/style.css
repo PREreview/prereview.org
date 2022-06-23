@@ -419,6 +419,14 @@ legend {
   }
 }
 
+html-editor {
+  display: contents;
+
+  & textarea {
+    block-size: 100vh;
+  }
+}
+
 [type='checkbox'],
 [type='radio'] {
   appearance: none;
