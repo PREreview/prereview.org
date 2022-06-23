@@ -424,6 +424,7 @@ html-editor {
 
   & textarea {
     block-size: 100vh;
+    resize: none;
   }
 }
 
