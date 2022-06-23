@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
+    "lib": ["dom", "dom.iterable"],
     "resolveJsonModule": true
   },
   "include": ["assets", "integration", "src", "test", "*.ts"]

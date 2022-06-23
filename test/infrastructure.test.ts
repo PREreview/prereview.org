@@ -2,7 +2,6 @@ import { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
-import { RequestInit } from 'node-fetch'
 import { SubmittedDeposition, SubmittedDepositionC, UnsubmittedDeposition, UnsubmittedDepositionC } from 'zenodo-ts'
 import * as _ from '../src/infrastructure'
 import { isNonEmptyString } from '../src/string'
@@ -89,7 +88,7 @@ describe('infrastructure', () => {
                   {
                     url: 'http://example.com/bucket/review.html',
                     headers: { 'Content-Type': 'text/html' },
-                    functionMatcher: (_, req: RequestInit) => req.body === `<p>${newPrereview.review}</p>\n`,
+                    functionMatcher: (_, req) => req.body === `<p>${newPrereview.review}</p>\n`,
                   },
                   {
                     status: Status.Created,
@@ -186,7 +185,7 @@ describe('infrastructure', () => {
                   {
                     url: 'http://example.com/bucket/review.html',
                     headers: { 'Content-Type': 'text/html' },
-                    functionMatcher: (_, req: RequestInit) => req.body === `<p>${newPrereview.review}</p>\n`,
+                    functionMatcher: (_, req) => req.body === `<p>${newPrereview.review}</p>\n`,
                   },
                   {
                     status: Status.Created,
