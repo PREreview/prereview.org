@@ -76,7 +76,7 @@ test('can post a full PREreview', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, *consectetur* <b>adipiscing elit</b>.')
 
   await expect(page).toHaveScreenshot()
 
