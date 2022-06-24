@@ -78,6 +78,8 @@ test('can post a full PREreview', async ({ fetch, page }) => {
 
   await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, *consectetur* <b>adipiscing elit</b>.')
 
+  await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
+
   await expect(page).toHaveScreenshot()
 
   await page.click('text="Next"')
