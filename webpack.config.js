@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const PurgeCssPlugin = require('purgecss-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts')
 
 module.exports = {
   cache: {
@@ -14,7 +15,12 @@ module.exports = {
     type: 'filesystem',
   },
   mode: process.env.NODE_ENV,
-  entry: path.resolve('assets', 'main.ts'),
+  entry: {
+    favicon: path.resolve('assets', 'favicon.ico'),
+    'html-editor': path.resolve('assets', 'html-editor.ts'),
+    prereview: path.resolve('assets', 'prereview.svg'),
+    style: path.resolve('assets', 'style.css'),
+  },
   module: {
     rules: [
       {
@@ -103,6 +109,9 @@ module.exports = {
       paths: glob.sync(`src/**/*`, { nodir: true }),
       safelist: ['body', /^:/],
       variables: true,
+    }),
+    new RemoveEmptyScriptsPlugin({
+      extensions: ['css', 'ico', 'svg'],
     }),
     new WebpackManifestPlugin({
       fileName: path.resolve('src', 'manifest.json'),

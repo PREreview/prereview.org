@@ -6,19 +6,20 @@ import { homeMatch } from './routes'
 type Page = {
   readonly title: string
   readonly content: Html
+  readonly js?: ReadonlyArray<Assets<'.js'>>
 }
 
-export function page(page: Page): Html {
+export function page({ title, content, js = [] }: Page): Html {
   return html`
     <!DOCTYPE html>
     <html lang="en">
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-      <link href="${assets['main.css']}" rel="stylesheet" />
-      <script src="${assets['main.js']}" type="module"></script>
+      <link href="${assets['style.css']}" rel="stylesheet" />
+      ${js.map(file => html`<script src="${assets[file]}" type="module"></script>`)}
 
-      <title>${page.title}</title>
+      <title>${title}</title>
 
       <header>
         <div class="logo">
@@ -28,7 +29,16 @@ export function page(page: Page): Html {
         </div>
       </header>
 
-      ${page.content}
+      ${content}
     </html>
   `
 }
+
+type Assets<A extends string> = EndsWith<keyof typeof assets, A>
+
+// https://github.com/gcanti/fp-ts/issues/1680
+type EndsWith<Full extends string, End extends string> = string extends Full
+  ? string extends End
+    ? string
+    : Extract<`${string}${End}`, string>
+  : Extract<Full, `${string}${End}`>

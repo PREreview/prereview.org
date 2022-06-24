@@ -542,6 +542,7 @@ ${rawHtml(form.review ?? '')}</textarea
         </form>
       </main>
     `,
+    js: ['html-editor.js'],
   })
 }
 
