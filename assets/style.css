@@ -12,9 +12,11 @@
 
 @custom-selector :--heading h1, h2;
 
-@custom-selector :--input [type='text'], textarea;
+@custom-selector :--input [type='text'], :--textarea;
 
 @custom-selector :--list ol, ul;
+
+@custom-selector :--textarea textarea, [contenteditable];
 
 .visually-hidden:not(:focus, :active) {
   position: absolute;
@@ -379,7 +381,6 @@ legend {
 }
 
 :--input {
-  display: block;
   font: inherit;
   color: inherit;
   background-color: var(--color-background);
@@ -389,6 +390,10 @@ legend {
   padding-inline: var(--space-2xs);
   inline-size: 100%;
   max-block-size: 30vh;
+
+  &:not([hidden]) {
+    display: block;
+  }
 
   &:is([aria-invalid]) {
     border-color: var(--color-error);
@@ -422,9 +427,19 @@ legend {
 html-editor {
   display: contents;
 
-  & textarea {
+  & :--textarea {
     block-size: 100vh;
     resize: none;
+  }
+}
+
+:--textarea {
+  overflow-y: auto;
+  cursor: text;
+  scrollbar-gutter: stable;
+
+  & > :first-child {
+    margin-block-start: 0;
   }
 }
 

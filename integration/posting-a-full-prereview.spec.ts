@@ -5,7 +5,7 @@ import { URL } from 'url'
 import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
 import { expect, test } from './test'
 
-test('can post a full PREreview', async ({ fetch, page }) => {
+test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055805' as Doi,
     conceptrecid: 1055805,
@@ -76,7 +76,17 @@ test('can post a full PREreview', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, *consectetur* <b>adipiscing elit</b>.')
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+    await page.focus('role=textbox[name="Write your PREreview"]')
+    await page.keyboard.type('Lorem ipsum dolor sit amet, *consectetur* ')
+    await page.keyboard.press('Control+b')
+    await page.keyboard.type('adipiscing elit')
+    await page.keyboard.press('Control+b')
+    await page.keyboard.type('.')
+  } else {
+    await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, *consectetur* <b>adipiscing elit</b>.')
+  }
 
   await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
 
@@ -168,7 +178,7 @@ test('can post a full PREreview', async ({ fetch, page }) => {
   await expect(review).toHaveScreenshot()
 })
 
-test('can post a full PREreview anonymously', async ({ fetch, page }) => {
+test('can post a full PREreview anonymously', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055807' as Doi,
     conceptrecid: 1055807,
@@ -231,7 +241,13 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
   await page.click('text="Next"')
   await page.check('text="PREreviewer"')
   await page.click('text="Next"')
@@ -307,7 +323,7 @@ test('can post a full PREreview anonymously', async ({ fetch, page }) => {
   await expect(review).toContainText('Vestibulum nulla turpis')
 })
 
-test('can change the review after previewing', async ({ fetch, page }) => {
+test('can change the review after previewing', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
 
   fetch.postOnce('http://orcid.test/token', {
@@ -325,7 +341,13 @@ test('can change the review after previewing', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
@@ -338,7 +360,13 @@ test('can change the review after previewing', async ({ fetch, page }) => {
 
   await page.click('text="Change review"')
 
-  await page.fill('text="Write your PREreview"', 'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
+  )
   await page.click('text="Next"')
 
   await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText(
@@ -346,7 +374,7 @@ test('can change the review after previewing', async ({ fetch, page }) => {
   )
 })
 
-test('can change publish-as name after previewing', async ({ fetch, page }) => {
+test('can change publish-as name after previewing', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
 
   fetch.postOnce('http://orcid.test/token', {
@@ -364,7 +392,14 @@ test('can change publish-as name after previewing', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
@@ -381,7 +416,7 @@ test('can change publish-as name after previewing', async ({ fetch, page }) => {
   await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText('PREreviewer')
 })
 
-test('can go back through the form', async ({ fetch, page }) => {
+test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
 
   fetch.postOnce('http://orcid.test/token', {
@@ -399,7 +434,13 @@ test('can go back through the form', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
@@ -418,12 +459,18 @@ test('can go back through the form', async ({ fetch, page }) => {
 
   await page.goBack()
 
-  await expect(page.locator('text="Write your PREreview"')).toHaveValue(
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  )
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toHaveText(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    )
+  } else {
+    await expect(page.locator('text="Write your PREreview"')).toHaveValue(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    )
+  }
 })
 
-test('see existing values when going back a step', async ({ fetch, page }) => {
+test('see existing values when going back a step', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
 
   fetch.postOnce('http://orcid.test/token', {
@@ -441,7 +488,13 @@ test('see existing values when going back a step', async ({ fetch, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
@@ -460,9 +513,15 @@ test('see existing values when going back a step', async ({ fetch, page }) => {
 
   await page.click('text="Back"')
 
-  await expect(page.locator('text="Write your PREreview"')).toHaveValue(
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  )
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toHaveText(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    )
+  } else {
+    await expect(page.locator('text="Write your PREreview"')).toHaveValue(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    )
+  }
 })
 
 test("aren't told about ORCID when already logged in", async ({ fetch, page }) => {
@@ -524,7 +583,7 @@ test('have to enter a review', async ({ fetch, page }) => {
   await expect(error).toHaveScreenshot()
 })
 
-test('have to choose a name', async ({ fetch, page }) => {
+test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
   await page.click('text="Start now"')
 
@@ -541,7 +600,13 @@ test('have to choose a name', async ({ fetch, page }) => {
   })
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
   await page.click('text="Next"')
 
   await page.click('text="Next"')
@@ -552,7 +617,7 @@ test('have to choose a name', async ({ fetch, page }) => {
   await expect(error).toHaveScreenshot()
 })
 
-test('have to agree to the Code of Conduct', async ({ fetch, page }) => {
+test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/review')
   await page.click('text="Start now"')
 
@@ -569,7 +634,13 @@ test('have to agree to the Code of Conduct', async ({ fetch, page }) => {
   })
   await page.keyboard.press('Enter')
 
-  await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')

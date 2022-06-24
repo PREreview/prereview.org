@@ -516,7 +516,7 @@ function reviewForm(form: Form, error = false) {
       <main>
         <form method="post" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
-            <h1><label for="review">Write your PREreview</label></h1>
+            <h1><label id="review-label" for="review">Write your PREreview</label></h1>
 
             ${error
               ? html`
