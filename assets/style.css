@@ -61,14 +61,10 @@
   line-height: 1.5;
 }
 
-@media screen {
-  :not(:--input, :--button, [type='checkbox'], [type='radio'], .preview):focus-visible {
-    outline-offset: var(--width-divider);
-  }
-
-  :focus-visible {
+:focus-visible {
+  @media screen {
     outline: var(--color-focus) solid var(--width-divider);
-    outline-offset: 0;
+    outline-offset: var(--width-divider);
   }
 }
 
@@ -300,6 +296,10 @@ label {
     user-select: auto;
   }
 
+  &:focus-visible {
+    outline-offset: 0;
+  }
+
   &:hover {
     filter: brightness(1.1);
   }
@@ -399,6 +399,10 @@ legend {
     display: block;
   }
 
+  &:focus-visible {
+    outline-offset: 0;
+  }
+
   &:is([aria-invalid]) {
     border-color: var(--color-error);
 
@@ -469,6 +473,10 @@ html-editor {
 
   &:checked::before {
     background-color: currentcolor;
+  }
+
+  &:focus-visible {
+    outline-offset: 0;
   }
 }
 
@@ -579,6 +587,10 @@ html-editor {
   border: var(--width-divider) solid currentcolor;
   padding-block: var(--space-3xs);
   padding-inline: var(--space-2xs);
+
+  &:focus-visible {
+    outline-offset: 0;
+  }
 
   & h2 {
     font-size: var(--step-3);
