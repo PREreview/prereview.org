@@ -107,7 +107,7 @@ module.exports = {
     }),
     new PurgeCssPlugin({
       paths: glob.sync(`src/**/*`, { nodir: true }),
-      safelist: ['body', 'contenteditable', /^:/],
+      safelist: ['contenteditable', /^:/],
       variables: true,
     }),
     new RemoveEmptyScriptsPlugin({

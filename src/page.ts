@@ -1,15 +1,16 @@
 import { format } from 'fp-ts-routing'
-import { Html, html } from './html'
+import { Html, html, rawHtml } from './html'
 import * as assets from './manifest.json'
 import { homeMatch } from './routes'
 
 type Page = {
   readonly title: string
+  readonly type?: 'two-up'
   readonly content: Html
   readonly js?: ReadonlyArray<Assets<'.js'>>
 }
 
-export function page({ title, content, js = [] }: Page): Html {
+export function page({ title, type, content, js = [] }: Page): Html {
   return html`
     <!DOCTYPE html>
     <html lang="en">
@@ -21,15 +22,17 @@ export function page({ title, content, js = [] }: Page): Html {
 
       <title>${title}</title>
 
-      <header>
-        <div class="logo">
-          <a href="${format(homeMatch.formatter, {})}">
-            <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
-          </a>
-        </div>
-      </header>
+      <body ${rawHtml(type ? `class="${type}"` : '')}>
+        <header>
+          <div class="logo">
+            <a href="${format(homeMatch.formatter, {})}">
+              <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
+            </a>
+          </div>
+        </header>
 
-      ${content}
+        ${content}
+      </body>
     </html>
   `
 }

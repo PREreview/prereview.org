@@ -44,6 +44,7 @@
     'Liberation Mono', 'DejaVu Sans Mono', 'Courier New', monospace;
   --color-primary: var(--oc-red-6);
   --color-background: white;
+  --color-background-alt: var(--oc-gray-0);
   --color-text: var(--oc-gray-8);
   --color-text-light: var(--oc-gray-6);
   --color-focus: var(--oc-yellow-7);
@@ -98,7 +99,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding-block-end: var(--space-m);
   font-size: var(--step-0);
 
   @media screen {
@@ -107,7 +107,13 @@ body {
   }
 }
 
-body > * {
+body,
+body > aside {
+  padding-block-end: var(--space-m);
+}
+
+body > :not(aside),
+body > aside > * {
   inline-size: 100%;
   max-inline-size: 75ch;
   margin-inline: auto;
@@ -673,4 +679,33 @@ html-editor {
 
 .textarea {
   inline-size: 100%;
+}
+
+.two-up {
+  @media screen and (min-width: 50em) {
+    margin-inline-start: 50%;
+
+    & > :not(aside),
+    & > aside > * {
+      margin-inline: 0;
+      padding-inline: var(--space-m-xl);
+    }
+
+    & > aside {
+      position: fixed;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      inset-block: 0;
+      inset-inline: 0 50%;
+      background-color: var(--color-background-alt);
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+      scrollbar-gutter: stable;
+
+      &:focus-visible {
+        outline-offset: calc(-1 * var(--width-divider));
+      }
+    }
+  }
 }

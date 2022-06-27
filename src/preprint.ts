@@ -54,7 +54,7 @@ function createPage(reviews: Records) {
         Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'
       </h1>
 
-      <aside aria-label="Preprint details">
+      <aside tabindex="0" aria-label="Preprint details">
         <article>
           <h2>The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i></h2>
 
@@ -95,6 +95,7 @@ function createPage(reviews: Records) {
         </ol>
       </main>
     `,
+    type: 'two-up',
   })
 }
 
