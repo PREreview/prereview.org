@@ -10,7 +10,7 @@
 
 @custom-selector :--button button, [role='button'], .button;
 
-@custom-selector :--heading h1, h2;
+@custom-selector :--heading h1, h2, h3, h4;
 
 @custom-selector :--input [type='text'], :--textarea;
 
@@ -156,7 +156,7 @@ nav {
 }
 
 article {
-  @nest :not(body) > & {
+  @nest :not(aside) > & {
     margin-block-start: var(--space-l);
   }
 }
@@ -180,6 +180,10 @@ h1 {
 
 h2 {
   font-size: var(--step-4);
+
+  @nest aside & {
+    font-size: var(--step-5);
+  }
 }
 
 :--list {

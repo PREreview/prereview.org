@@ -82,10 +82,10 @@ test('can find and view a preprint', async ({ fetch, page }) => {
 
   await page.click('text="Find reviews"')
 
-  const h1 = page.locator('h1')
+  const preprint = page.locator('aside')
   const reviews = page.locator('main')
 
-  await expect(h1).toHaveText('The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii')
+  await expect(preprint).toContainText('The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii')
   await expect(reviews).toContainText('1 PREreview')
   await expect(page).toHaveScreenshot()
 })

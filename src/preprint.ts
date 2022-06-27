@@ -50,15 +50,21 @@ function createPage(reviews: Records) {
   return page({
     title: "Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
     content: html`
-      <article>
-        <h1>The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i></h1>
+      <h1 class="visually-hidden">
+        Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'
+      </h1>
 
-        <ol aria-label="Authors of this prerprint" role="list" class="author-list">
-          <li>Xin Liu</li>
-          <li><a href="https://orcid.org/0000-0001-5124-3000">Wojciech Nawrocki</a></li>
-          <li><a href="https://orcid.org/0000-0003-3469-834X">Roberta Croce</a></li>
-        </ol>
-      </article>
+      <aside aria-label="Preprint details">
+        <article>
+          <h2>The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i></h2>
+
+          <ol aria-label="Authors of this preprint" role="list" class="author-list">
+            <li>Xin Liu</li>
+            <li><a href="https://orcid.org/0000-0001-5124-3000">Wojciech Nawrocki</a></li>
+            <li><a href="https://orcid.org/0000-0003-3469-834X">Roberta Croce</a></li>
+          </ol>
+        </article>
+      </aside>
 
       <main>
         <h2>${reviews.hits.hits.length} PREreview${reviews.hits.hits.length !== 1 ? 's' : ''}</h2>
