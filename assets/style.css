@@ -118,10 +118,6 @@ body > * {
   padding-inline: var(--space-m);
 }
 
-body > :is(article, nav) {
-  margin-block-start: 0;
-}
-
 body > header {
   display: flex;
   justify-content: space-between;
@@ -154,11 +150,15 @@ img {
 }
 
 nav {
-  margin-block-start: var(--space-m);
+  @nest :not(body) > & {
+    margin-block-start: var(--space-m);
+  }
 }
 
 article {
-  margin-block-start: var(--space-l);
+  @nest :not(body) > & {
+    margin-block-start: var(--space-l);
+  }
 }
 
 :--heading {
