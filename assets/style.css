@@ -190,10 +190,6 @@ h1 {
 
 h2 {
   font-size: var(--step-4);
-
-  @nest aside & {
-    font-size: var(--step-5);
-  }
 }
 
 :--list {
