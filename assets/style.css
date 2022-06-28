@@ -538,6 +538,7 @@ html-editor {
 
 .doi {
   font-family: var(--font-monospace);
+  user-select: all;
 }
 
 .back {
