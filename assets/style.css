@@ -196,6 +196,10 @@ h2 {
   margin-block-start: var(--space-s);
   padding-inline-start: var(--space-m);
 
+  @nest header > & {
+    margin-block-start: var(--space-2xs);
+  }
+
   @nest fieldset > & {
     list-style-type: none;
     margin-block-start: 0;
