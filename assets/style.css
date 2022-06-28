@@ -157,6 +157,14 @@ nav {
   }
 }
 
+header {
+  @nest :not(body) > & {
+    & + :not(.visually-hidden), & + .visually-hidden + * {
+      margin-block-start: var(--space-m-l);
+    }
+  }
+}
+
 article {
   @nest :not(aside) > & {
     margin-block-start: var(--space-l);

@@ -56,13 +56,15 @@ function createPage(reviews: Records) {
 
       <aside tabindex="0" aria-label="Preprint details">
         <article>
-          <h2>The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i></h2>
+          <header>
+            <h2>The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i></h2>
 
-          <ol aria-label="Authors of this preprint" role="list" class="author-list">
-            <li>Xin Liu</li>
-            <li><a href="https://orcid.org/0000-0001-5124-3000">Wojciech Nawrocki</a></li>
-            <li><a href="https://orcid.org/0000-0003-3469-834X">Roberta Croce</a></li>
-          </ol>
+            <ol aria-label="Authors of this preprint" role="list" class="author-list">
+              <li>Xin Liu</li>
+              <li><a href="https://orcid.org/0000-0001-5124-3000">Wojciech Nawrocki</a></li>
+              <li><a href="https://orcid.org/0000-0003-3469-834X">Roberta Croce</a></li>
+            </ol>
+          </header>
 
           <h3 class="visually-hidden">Abstract</h3>
 
