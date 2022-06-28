@@ -64,6 +64,21 @@ function createPage(reviews: Records) {
               <li><a href="https://orcid.org/0000-0001-5124-3000">Wojciech Nawrocki</a></li>
               <li><a href="https://orcid.org/0000-0003-3469-834X">Roberta Croce</a></li>
             </ol>
+
+            <dl>
+              <div>
+                <dt>Posted</dt>
+                <dd><time datetime="2022-01-14">January 14, 2022</time></dd>
+              </div>
+              <div>
+                <dt>Server</dt>
+                <dd>bioRxiv</dd>
+              </div>
+              <div>
+                <dt>DOI</dt>
+                <dd class="doi">10.1101/2022.01.13.476201</dd>
+              </div>
+            </dl>
           </header>
 
           <h3 class="visually-hidden">Abstract</h3>
