@@ -82,6 +82,10 @@ function createPage(reviews: Records) {
             NPQ and that LHCBM1 is the interacting partner of LHCSR3. This interaction can either enhance the quenching
             capacity of LHCSR3 or connect this complex with the PSII supercomplex.
           </p>
+
+          <a href="https://www.biorxiv.org/content/10.1101/2022.01.13.476201v1.full" class="button">
+            Read the preprint
+          </a>
         </article>
       </aside>
 
