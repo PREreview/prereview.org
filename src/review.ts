@@ -1,8 +1,11 @@
-import { isDoi } from 'doi-ts'
+import { Doi, isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as A from 'fp-ts/Array'
+import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
-import { Predicate, and } from 'fp-ts/Predicate'
+import { Predicate } from 'fp-ts/Predicate'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
@@ -13,10 +16,14 @@ import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { Record, getRecord } from 'zenodo-ts'
-import { html, plainText, rawHtml, sendHtml } from './html'
+import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { handleError } from './http-error'
 import { page } from './page'
 import { preprintMatch } from './routes'
+
+export interface GetPreprintTitleEnv {
+  getPreprintTitle: (doi: Doi) => TE.TaskEither<unknown, Html>
+}
 
 const DoiD = D.fromRefinement(isDoi, 'DOI')
 
@@ -39,6 +46,12 @@ const getReviewedDoi = flow(
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
 
+const getPreprintTitle = (doi: Doi) =>
+  pipe(
+    RTE.ask<GetPreprintTitleEnv>(),
+    RTE.chainTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(doi)),
+  )
+
 const sendPage = flow(
   createPage,
   M.of,
@@ -48,7 +61,13 @@ const sendPage = flow(
 
 export const review = flow(
   RM.fromReaderTaskEitherK(getRecord),
-  RM.filterOrElseW(pipe(isInCommunity, and(flow(getReviewedDoi, O.isSome))), () => new NotFound()),
+  RM.filterOrElseW(isInCommunity, () => new NotFound()),
+  RM.bindTo('review'),
+  RM.bindW('preprintDoi', ({ review }) => RM.fromEither(E.fromOption(() => new NotFound())(getReviewedDoi(review)))),
+  RM.bindW(
+    'preprintTitle',
+    RM.fromReaderTaskEitherK(({ preprintDoi }) => getPreprintTitle(preprintDoi)),
+  ),
   RM.ichainMiddlewareKW(sendPage),
   RM.orElseMiddlewareK(error =>
     match(error)
@@ -79,9 +98,9 @@ function failureMessage() {
   })
 }
 
-function createPage(review: Record) {
+function createPage({ preprintTitle, review }: { preprintTitle: Html; review: Record }) {
   return page({
-    title: plainText`Review of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' by Jingfang Hao et al.`,
+    title: plainText`Review of '${preprintTitle}'`,
     content: html`
       <nav>
         <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>
@@ -89,7 +108,7 @@ function createPage(review: Record) {
 
       <main>
         <header>
-          <h1>Review of 'The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'</h1>
+          <h1>Review of '${preprintTitle}'</h1>
 
           <ol aria-label="Authors of this review" class="author-list">
             ${review.metadata.creators.map(author => html` <li>${displayAuthor(author)}</li>`)}

@@ -15,7 +15,7 @@ import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { home } from './home'
 import { handleError } from './http-error'
-import { createRecordOnZenodo } from './infrastructure'
+import { createRecordOnZenodo, getPreprintTitle } from './infrastructure'
 import { authenticate, logIn } from './log-in'
 import { lookupDoi } from './lookup-doi'
 import { preprint } from './preprint'
@@ -69,6 +69,7 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       reviewMatch.parser,
       R.map(({ id }) => review(id)),
+      R.map(local((env: AppEnv) => ({ ...env, getPreprintTitle }))),
     ),
     pipe(
       [

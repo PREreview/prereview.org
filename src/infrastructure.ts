@@ -1,6 +1,9 @@
+import { Doi } from 'doi-ts'
 import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { pipe } from 'fp-ts/function'
+import * as RR from 'fp-ts/ReadonlyRecord'
+import * as TE from 'fp-ts/TaskEither'
+import { constant, pipe } from 'fp-ts/function'
 import markdownIt from 'markdown-it'
 import {
   DepositMetadata,
@@ -10,8 +13,10 @@ import {
   publishDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { sanitizeHtml } from './html'
+import { html, sanitizeHtml } from './html'
 import { NewPrereview } from './write-review'
+
+export const getPreprintTitle = TE.fromOptionK(constant('not-found'))((doi: Doi) => RR.lookup(doi, preprintTitles))
 
 export const createRecordOnZenodo: (
   newPrereview: NewPrereview,
@@ -46,4 +51,9 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
       },
     ],
   }
+}
+
+const preprintTitles = {
+  '10.1101/2022.01.13.476201': html`The role of LHCBM1 in non-photochemical quenching in
+    <i>Chlamydomonas reinhardtii</i>`,
 }
