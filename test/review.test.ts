@@ -62,6 +62,35 @@ describe('review', () => {
       )
     })
 
+    test('when the review is not found', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.integer(),
+          fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+          async (id, connection) => {
+            const actual = await runMiddleware(
+              _.review(id)({
+                fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+                  body: undefined,
+                  status: Status.NotFound,
+                }),
+              }),
+              connection,
+            )()
+
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.NotFound },
+                { type: 'setHeader', name: 'cache-control', value: 'no-store, must-revalidate' },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: expect.anything() },
+              ]),
+            )
+          },
+        ),
+      )
+    })
+
     test('when the review cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(

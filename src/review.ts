@@ -8,6 +8,7 @@ import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Orcid } from 'orcid-id-ts'
+import { match } from 'ts-pattern'
 import { Record, getRecord } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
 import { handleError } from './http-error'
@@ -31,7 +32,11 @@ const sendPage = flow(
 export const review = flow(
   RM.fromReaderTaskEitherK(getRecord),
   RM.ichainMiddlewareKW(sendPage),
-  RM.orElseMiddlewareK(() => showFailureMessage),
+  RM.orElseMiddlewareK(error =>
+    match(error)
+      .with({ status: Status.NotFound }, () => handleError(new NotFound()))
+      .otherwise(() => showFailureMessage),
+  ),
 )
 
 const showFailureMessage = pipe(
