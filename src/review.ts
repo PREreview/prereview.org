@@ -22,9 +22,10 @@ const isInCommunity: Predicate<Record> = flow(
 )
 
 const sendPage = flow(
-  (record: Record) => M.of(record),
+  createPage,
+  M.of,
   M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(flow(createPage, sendHtml)),
+  M.ichain(sendHtml),
 )
 
 export const review = flow(

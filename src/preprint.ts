@@ -10,9 +10,10 @@ import { page } from './page'
 import { reviewMatch, writeReviewMatch } from './routes'
 
 const sendPage = flow(
-  (records: Records) => M.of(records),
+  createPage,
+  M.of,
   M.ichainFirst(() => M.status(Status.OK)),
-  M.ichainW(flow(createPage, sendHtml)),
+  M.ichain(sendHtml),
 )
 
 export const preprint = pipe(
