@@ -4,6 +4,7 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import Keyv from 'keyv'
+import { html } from '../src/html'
 import { UserC } from '../src/user'
 import * as _ from '../src/write-review'
 import * as fc from './fc'
@@ -694,6 +695,10 @@ describe('write-review', () => {
             expect(createRecord).toHaveBeenCalledWith({
               conduct: 'yes',
               persona: newReview.persona,
+              preprint: {
+                doi: '10.1101-2022.01.13.476201',
+                title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
+              },
               review: newReview.review,
               user,
             })

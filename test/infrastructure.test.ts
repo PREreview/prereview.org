@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import { SubmittedDeposition, SubmittedDepositionC, UnsubmittedDeposition, UnsubmittedDepositionC } from 'zenodo-ts'
+import { plainText } from '../src/html'
 import * as _ from '../src/infrastructure'
 import { isNonEmptyString } from '../src/string'
 import { NewPrereview } from '../src/write-review'
@@ -16,6 +17,10 @@ describe('infrastructure', () => {
           fc.record<NewPrereview>({
             conduct: fc.constant('yes'),
             persona: fc.constant('public'),
+            preprint: fc.record({
+              doi: fc.doi(),
+              title: fc.html(),
+            }),
             review: fc.lorem().filter(isNonEmptyString),
             user: fc.user(),
           }),
@@ -63,15 +68,14 @@ describe('infrastructure', () => {
                       metadata: {
                         upload_type: 'publication',
                         publication_type: 'article',
-                        title:
-                          'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
+                        title: plainText`Review of “${newPrereview.preprint.title}”`.toString(),
                         creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
                         communities: [{ identifier: 'prereview-reviews' }],
                         description: `<p>${newPrereview.review}</p>\n`,
                         related_identifiers: [
                           {
                             scheme: 'doi',
-                            identifier: '10.1101/2022.01.13.476201',
+                            identifier: newPrereview.preprint.doi,
                             relation: 'reviews',
                             resource_type: 'publication-preprint',
                           },
@@ -113,6 +117,10 @@ describe('infrastructure', () => {
           fc.record<NewPrereview>({
             conduct: fc.constant('yes'),
             persona: fc.constant('anonymous'),
+            preprint: fc.record({
+              doi: fc.doi(),
+              title: fc.html(),
+            }),
             review: fc.lorem().filter(isNonEmptyString),
             user: fc.user(),
           }),
@@ -160,15 +168,14 @@ describe('infrastructure', () => {
                       metadata: {
                         upload_type: 'publication',
                         publication_type: 'article',
-                        title:
-                          'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
+                        title: plainText`Review of “${newPrereview.preprint.title}”`.toString(),
                         creators: [{ name: 'PREreviewer' }],
                         communities: [{ identifier: 'prereview-reviews' }],
                         description: `<p>${newPrereview.review}</p>\n`,
                         related_identifiers: [
                           {
                             scheme: 'doi',
-                            identifier: '10.1101/2022.01.13.476201',
+                            identifier: newPrereview.preprint.doi,
                             relation: 'reviews',
                             resource_type: 'publication-preprint',
                           },
@@ -210,6 +217,10 @@ describe('infrastructure', () => {
           fc.record<NewPrereview>({
             conduct: fc.constant('yes'),
             persona: fc.constantFrom('public', 'anonymous'),
+            preprint: fc.record({
+              doi: fc.doi(),
+              title: fc.html(),
+            }),
             review: fc.lorem().filter(isNonEmptyString),
             user: fc.user(),
           }),

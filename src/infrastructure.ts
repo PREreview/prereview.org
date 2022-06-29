@@ -15,7 +15,7 @@ import {
   publishDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { html, sanitizeHtml } from './html'
+import { html, plainText, sanitizeHtml } from './html'
 import { Preprint } from './preprint'
 import { NewPrereview } from './write-review'
 
@@ -46,14 +46,14 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
   return {
     upload_type: 'publication',
     publication_type: 'article',
-    title: 'Review of “The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii”',
+    title: plainText`Review of “${newPrereview.preprint.title}”`.toString(),
     creators: [newPrereview.persona === 'public' ? newPrereview.user : { name: 'PREreviewer' }],
     description: sanitizeHtml(markdownIt({ html: true }).render(newPrereview.review)).toString(),
     communities: [{ identifier: 'prereview-reviews' }],
     related_identifiers: [
       {
         scheme: 'doi',
-        identifier: '10.1101/2022.01.13.476201',
+        identifier: newPrereview.preprint.doi,
         relation: 'reviews',
         resource_type: 'publication-preprint',
       },

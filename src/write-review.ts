@@ -19,7 +19,7 @@ import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
-import { html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
+import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
 import { seeOther } from './middleware'
 import { page } from './page'
 import {
@@ -60,8 +60,14 @@ type CompletedForm = C.TypeOf<typeof CompletedFormC>
 export type NewPrereview = {
   conduct: 'yes'
   persona: 'public' | 'anonymous'
+  preprint: Preprint
   review: NonEmptyString
   user: User
+}
+
+type Preprint = {
+  doi: Doi
+  title: Html
 }
 
 export interface CreateRecordEnv {
@@ -143,6 +149,13 @@ export const writeReviewPost = pipe(
 const handlePostForm = ({ form, user }: { form: Form; user: User }) =>
   pipe(
     RM.fromEither(CompletedFormC.decode(form)),
+    RM.apS(
+      'preprint',
+      RM.right({
+        doi: '10.1101-2022.01.13.476201' as Doi,
+        title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
+      }),
+    ),
     RM.apS('user', RM.right(user)),
     RM.chainReaderTaskEitherK(createRecord),
     RM.chainFirstReaderTaskKW(() => deleteForm(user.orcid)),
