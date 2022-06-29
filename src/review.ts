@@ -23,14 +23,13 @@ const isInCommunity: Predicate<Record> = flow(
 
 const sendPage = flow(
   (record: Record) => M.of(record),
-  M.filterOrElse(isInCommunity, () => new NotFound()),
   M.ichainFirst(() => M.status(Status.OK)),
-  M.ichainW(flow(createPage, sendHtml)),
-  M.orElseW(handleError),
+  M.ichain(flow(createPage, sendHtml)),
 )
 
 export const review = flow(
   RM.fromReaderTaskEitherK(getRecord),
+  RM.filterOrElseW(isInCommunity, () => new NotFound()),
   RM.ichainMiddlewareKW(sendPage),
   RM.orElseMiddlewareK(error =>
     match(error)
