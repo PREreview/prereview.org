@@ -19,7 +19,7 @@ import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
-import { html, rawHtml, sanitizeHtml, sendHtml } from './html'
+import { html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
 import { seeOther } from './middleware'
 import { page } from './page'
 import {
@@ -274,7 +274,7 @@ function deleteForm(user: Orcid): ReaderTask<FormStoreEnv, void> {
 
 function successMessage(doi: Doi) {
   return page({
-    title: 'PREreview posted',
+    title: plainText`PREreview posted`,
     content: html`
       <main>
         <div class="panel">
@@ -298,7 +298,7 @@ function successMessage(doi: Doi) {
 
 function failureMessage() {
   return page({
-    title: 'Sorry, we’re having problems',
+    title: plainText`Sorry, we’re having problems`,
     content: html`
       <main>
         <h1>Sorry, we’re having problems</h1>
@@ -315,7 +315,7 @@ function failureMessage() {
 
 function postForm(review: CompletedForm, user: User) {
   return page({
-    title: "Post your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    title: plainText`Post your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
     content: html`
       <nav>
         <a href="${format(writeReviewConductMatch.formatter, {})}" class="back">Back</a>
@@ -356,7 +356,7 @@ function postForm(review: CompletedForm, user: User) {
 
 function codeOfConductForm(form: Form, error = false) {
   return page({
-    title: `${
+    title: plainText`${
       error ? 'Error: ' : ''
     }Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
     content: html`
@@ -435,7 +435,7 @@ function codeOfConductForm(form: Form, error = false) {
 
 function personaForm(form: Form, user: User, error = false) {
   return page({
-    title: `${
+    title: plainText`${
       error ? 'Error: ' : ''
     }Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
     content: html`
@@ -505,7 +505,7 @@ function personaForm(form: Form, user: User, error = false) {
 
 function reviewForm(form: Form, error = false) {
   return page({
-    title: `${
+    title: plainText`${
       error ? 'Error: ' : ''
     }Write your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
     content: html`
@@ -548,7 +548,7 @@ ${rawHtml(form.review ?? '')}</textarea
 
 function startPage() {
   return page({
-    title: 'Review this preprint',
+    title: plainText`Review this preprint`,
     content: html`
       <nav>
         <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>

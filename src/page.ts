@@ -1,10 +1,10 @@
 import { format } from 'fp-ts-routing'
-import { Html, html, rawHtml } from './html'
+import { Html, PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
 import { homeMatch } from './routes'
 
 type Page = {
-  readonly title: string
+  readonly title: PlainText
   readonly type?: 'two-up'
   readonly content: Html
   readonly js?: ReadonlyArray<Assets<'.js'>>

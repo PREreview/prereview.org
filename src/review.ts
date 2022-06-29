@@ -13,7 +13,7 @@ import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { Record, getRecord } from 'zenodo-ts'
-import { html, rawHtml, sendHtml } from './html'
+import { html, plainText, rawHtml, sendHtml } from './html'
 import { handleError } from './http-error'
 import { page } from './page'
 import { preprintMatch } from './routes'
@@ -64,7 +64,7 @@ const showFailureMessage = pipe(
 
 function failureMessage() {
   return page({
-    title: 'Sorry, we’re having problems',
+    title: plainText`Sorry, we’re having problems`,
     content: html`
       <main>
         <h1>Sorry, we’re having problems</h1>
@@ -81,8 +81,7 @@ function failureMessage() {
 
 function createPage(review: Record) {
   return page({
-    title:
-      "Review of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' by Jingfang Hao et al.",
+    title: plainText`Review of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' by Jingfang Hao et al.`,
     content: html`
       <nav>
         <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>

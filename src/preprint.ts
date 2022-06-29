@@ -5,7 +5,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import textClipper from 'text-clipper'
 import { Record, Records, getRecords } from 'zenodo-ts'
-import { html, rawHtml, sendHtml } from './html'
+import { html, plainText, rawHtml, sendHtml } from './html'
 import { page } from './page'
 import { reviewMatch, writeReviewMatch } from './routes'
 
@@ -34,7 +34,7 @@ const showFailureMessage = pipe(
 
 function failureMessage() {
   return page({
-    title: 'Sorry, we’re having problems',
+    title: plainText`Sorry, we’re having problems`,
     content: html`
       <main>
         <h1>Sorry, we’re having problems</h1>
@@ -49,7 +49,7 @@ function failureMessage() {
 
 function createPage(reviews: Records) {
   return page({
-    title: "Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'",
+    title: plainText`Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
     content: html`
       <h1 class="visually-hidden">
         Reviews of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'
