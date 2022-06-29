@@ -15,7 +15,8 @@ describe('review', () => {
         fc.asyncProperty(
           fc.integer(),
           fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          async (id, connection) => {
+          fc.doi(),
+          async (id, connection, preprintDoi) => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
               conceptrecid: 1061863,
@@ -32,6 +33,14 @@ describe('review', () => {
                 license: {
                   id: 'CC-BY-4.0',
                 },
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: preprintDoi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
                 resource_type: {
                   type: 'publication',
                   subtype: 'article',
@@ -118,12 +127,75 @@ describe('review', () => {
         ),
       )
     })
-    test('when the record is not in the community', async () => {
+
+    test('when the record does not review a preprint with a DOI', async () => {
       await fc.assert(
         fc.asyncProperty(
           fc.integer(),
           fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
           async (id, connection) => {
+            const record: Record = {
+              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptrecid: 1061863,
+              id,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'PREreviewer' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1061864' as Doi,
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: 'not-a-doi',
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'article',
+                },
+                title: 'Title',
+              },
+            }
+
+            const actual = await runMiddleware(
+              _.review(id)({
+                fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+                  body: RecordC.encode(record),
+                  status: Status.OK,
+                }),
+              }),
+              connection,
+            )()
+
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.NotFound },
+                { type: 'setHeader', name: 'cache-control', value: 'no-store, must-revalidate' },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: expect.anything() },
+              ]),
+            )
+          },
+        ),
+      )
+    })
+
+    test('when the record is not in the community', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.integer(),
+          fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+          fc.doi(),
+          async (id, connection, preprintDoi) => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
               conceptrecid: 1061863,
@@ -139,6 +211,14 @@ describe('review', () => {
                 license: {
                   id: 'CC-BY-4.0',
                 },
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: preprintDoi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
                 resource_type: {
                   type: 'publication',
                   subtype: 'article',

@@ -1,13 +1,16 @@
+import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as A from 'fp-ts/Array'
 import * as O from 'fp-ts/Option'
-import { Predicate } from 'fp-ts/Predicate'
+import { Predicate, and } from 'fp-ts/Predicate'
 import { flow, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import { Orcid } from 'orcid-id-ts'
+import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { Record, getRecord } from 'zenodo-ts'
 import { html, rawHtml, sendHtml } from './html'
@@ -15,10 +18,25 @@ import { handleError } from './http-error'
 import { page } from './page'
 import { preprintMatch } from './routes'
 
+const DoiD = D.fromRefinement(isDoi, 'DOI')
+
 const isInCommunity: Predicate<Record> = flow(
   O.fromNullableK(record => record.metadata.communities),
   O.chain(A.findFirst(community => community.id === 'prereview-reviews')),
   O.isSome,
+)
+
+const getReviewedDoi = flow(
+  O.fromNullableK((record: Record) => record.metadata.related_identifiers),
+  O.chain(
+    A.findFirst(
+      identifier =>
+        identifier.relation === 'reviews' &&
+        identifier.scheme === 'doi' &&
+        identifier.resource_type === 'publication-preprint',
+    ),
+  ),
+  O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
 
 const sendPage = flow(
@@ -30,7 +48,7 @@ const sendPage = flow(
 
 export const review = flow(
   RM.fromReaderTaskEitherK(getRecord),
-  RM.filterOrElseW(isInCommunity, () => new NotFound()),
+  RM.filterOrElseW(pipe(isInCommunity, and(flow(getReviewedDoi, O.isSome))), () => new NotFound()),
   RM.ichainMiddlewareKW(sendPage),
   RM.orElseMiddlewareK(error =>
     match(error)
