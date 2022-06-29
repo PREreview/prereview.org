@@ -3,12 +3,14 @@ import { Doi, isDoi } from 'doi-ts'
 import { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import * as F from 'fetch-fp-ts'
+import { isNonEmpty } from 'fp-ts/Array'
 import * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
 import { Headers as FetchHeaders } from 'node-fetch'
 import { Body, Headers, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
 import { Orcid, isOrcid } from 'orcid-id-ts'
 import { Html, rawHtml } from '../src/html'
+import { Preprint } from '../src/preprint'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
 
@@ -88,4 +90,25 @@ export const user = (): fc.Arbitrary<User> =>
   fc.record({
     name: fc.string(),
     orcid: orcid(),
+  })
+
+export const preprint = (): fc.Arbitrary<Preprint> =>
+  fc.record({
+    abstract: html(),
+    authors: fc
+      .array(
+        fc.record(
+          {
+            name: fc.string(),
+            orcid: orcid(),
+          },
+          { requiredKeys: ['name'] },
+        ),
+        { minLength: 1 },
+      )
+      .filter(isNonEmpty),
+    doi: doi(),
+    posted: fc.date(),
+    title: html(),
+    url: url(),
   })

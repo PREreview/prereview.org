@@ -1,6 +1,7 @@
 import { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import { URL } from 'url'
 import { Records, RecordsC } from 'zenodo-ts'
@@ -12,7 +13,7 @@ describe('preprint', () => {
   describe('preprint', () => {
     test('when the reviews can be loaded', async () => {
       await fc.assert(
-        fc.asyncProperty(fc.connection(), async connection => {
+        fc.asyncProperty(fc.connection(), fc.preprint(), async (connection, preprint) => {
           const records: Records = {
             hits: {
               hits: [
@@ -43,18 +44,21 @@ describe('preprint', () => {
             },
           }
 
+          const getPreprint: jest.MockedFunction<_.GetPreprintEnv['getPreprint']> = jest.fn(_ => TE.right(preprint))
+
           const actual = await runMiddleware(
-            _.preprint({
+            _.preprint(preprint.doi)({
               fetch: fetchMock.sandbox().getOnce(
                 {
                   url: 'https://zenodo.org/api/records/',
-                  query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+                  query: { communities: 'prereview-reviews', q: `related.identifier:"${preprint.doi}"` },
                 },
                 {
                   body: RecordsC.encode(records),
                   status: Status.OK,
                 },
               ),
+              getPreprint,
             }),
             connection,
           )()
@@ -66,25 +70,50 @@ describe('preprint', () => {
               { type: 'setBody', body: expect.anything() },
             ]),
           )
+          expect(getPreprint).toHaveBeenCalledWith(preprint.doi)
+        }),
+      )
+    })
+
+    test('when the preprint cannot be loaded', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.connection(), fc.doi(), fc.anything(), async (connection, preprintDoi, error) => {
+          const actual = await runMiddleware(
+            _.preprint(preprintDoi)({
+              fetch: () => Promise.reject('should not be called'),
+              getPreprint: () => TE.left(error),
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.NotFound },
+              { type: 'setHeader', name: 'cache-control', value: 'no-store, must-revalidate' },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
         }),
       )
     })
 
     test('when the reviews cannot be loaded', async () => {
       await fc.assert(
-        fc.asyncProperty(fc.connection(), async connection => {
+        fc.asyncProperty(fc.connection(), fc.preprint(), async (connection, preprint) => {
           const actual = await runMiddleware(
-            _.preprint({
+            _.preprint(preprint.doi)({
               fetch: fetchMock.sandbox().getOnce(
                 {
                   url: 'https://zenodo.org/api/records/',
-                  query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+                  query: { communities: 'prereview-reviews', q: `related.identifier:"${preprint.doi}"` },
                 },
                 {
                   body: undefined,
                   status: Status.ServiceUnavailable,
                 },
               ),
+              getPreprint: () => TE.right(preprint),
             }),
             connection,
           )()
