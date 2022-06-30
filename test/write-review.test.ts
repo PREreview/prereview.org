@@ -16,6 +16,8 @@ describe('write-review', () => {
       test('there is completed form already', async () => {
         await fc.assert(
           fc.asyncProperty(
+            fc.doi(),
+            fc.html(),
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
@@ -32,13 +34,19 @@ describe('write-review', () => {
               review: fc.lorem(),
             }),
             fc.user(),
-            async ([connection, sessionId, secret], newReview, user) => {
+            async (preprintDoi, preprintTitle, [connection, sessionId, secret], newReview, user) => {
               const sessionStore = new Keyv()
               await sessionStore.set(sessionId, UserC.encode(user))
               const formStore = new Keyv()
               await formStore.set(user.orcid, newReview)
+              const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
+                TE.right(preprintTitle),
+              )
 
-              const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
+              const actual = await runMiddleware(
+                _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+                connection,
+              )()
 
               expect(actual).toStrictEqual(
                 E.right([
@@ -51,6 +59,7 @@ describe('write-review', () => {
                   { type: 'endResponse' },
                 ]),
               )
+              expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
             },
           ),
         )
@@ -59,6 +68,8 @@ describe('write-review', () => {
       test("there isn't a form", async () => {
         await fc.assert(
           fc.asyncProperty(
+            fc.doi(),
+            fc.html(),
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
@@ -70,12 +81,16 @@ describe('write-review', () => {
               ),
             ),
             fc.user(),
-            async ([connection, sessionId, secret], user) => {
+            async (preprintDoi, preprintTitle, [connection, sessionId, secret], user) => {
               const sessionStore = new Keyv()
               await sessionStore.set(sessionId, UserC.encode(user))
               const formStore = new Keyv()
+              const getPreprintTitle = () => TE.right(preprintTitle)
 
-              const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
+              const actual = await runMiddleware(
+                _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+                connection,
+              )()
 
               expect(actual).toStrictEqual(
                 E.right([
@@ -97,20 +112,59 @@ describe('write-review', () => {
     test("when there isn't a session", async () => {
       await fc.assert(
         fc.asyncProperty(
+          fc.doi(),
+          fc.html(),
           fc.connection({
             headers: fc.constant({}),
             method: fc.requestMethod().filter(method => method !== 'POST'),
           }),
           fc.string(),
-          async (connection, secret) => {
+          async (preprintDoi, preprintTitle, connection, secret) => {
             const sessionStore = new Keyv()
             const formStore = new Keyv()
+            const getPreprintTitle = () => TE.right(preprintTitle)
 
-            const actual = await runMiddleware(_.writeReview({ formStore, secret, sessionStore }), connection)()
+            const actual = await runMiddleware(
+              _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+              connection,
+            )()
 
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.OK },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: expect.anything() },
+              ]),
+            )
+          },
+        ),
+      )
+    })
+
+    test('when the preprint cannot be loaded', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.doi(),
+          fc.anything(),
+          fc.connection({
+            headers: fc.constant({}),
+            method: fc.requestMethod().filter(method => method !== 'POST'),
+          }),
+          fc.string(),
+          async (preprintDoi, error, connection, secret) => {
+            const sessionStore = new Keyv()
+            const formStore = new Keyv()
+            const getPreprintTitle = () => TE.left(error)
+
+            const actual = await runMiddleware(
+              _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+              connection,
+            )()
+
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.NotFound },
+                { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
                 { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
                 { type: 'setBody', body: expect.anything() },
               ]),

@@ -1,3 +1,4 @@
+import { Doi } from 'doi-ts'
 import express from 'express'
 import * as R from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
@@ -76,7 +77,7 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       [
         pipe(
           writeReviewMatch.parser,
-          R.map(() => writeReview),
+          R.map(() => writeReview('10.1101/2022.01.13.476201' as Doi)),
         ),
         pipe(
           writeReviewReviewMatch.parser,
@@ -96,7 +97,7 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         ),
       ],
       M.concatAll(R.getParserMonoid()),
-      R.map(local((env: AppEnv) => ({ ...env, createRecord: flipC(createRecordOnZenodo)(env) }))),
+      R.map(local((env: AppEnv) => ({ ...env, createRecord: flipC(createRecordOnZenodo)(env), getPreprintTitle }))),
     ),
   ],
   M.concatAll(R.getParserMonoid()),

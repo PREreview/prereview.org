@@ -8,6 +8,7 @@ import * as T from 'fp-ts/Task'
 import * as TE from 'fp-ts/TaskEither'
 import { constVoid, constant, flow, pipe } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
+import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
@@ -20,6 +21,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
+import { handleError } from './http-error'
 import { seeOther } from './middleware'
 import { page } from './page'
 import {
@@ -74,9 +76,21 @@ export interface CreateRecordEnv {
   createRecord: (newPrereview: NewPrereview) => TE.TaskEither<unknown, SubmittedDeposition>
 }
 
+export interface GetPreprintTitleEnv {
+  getPreprintTitle: (doi: Doi) => TE.TaskEither<unknown, Html>
+}
+
 export interface FormStoreEnv {
   formStore: Store<JsonRecord>
 }
+
+const getPreprint = (doi: Doi) =>
+  pipe(
+    RTE.ask<GetPreprintTitleEnv>(),
+    RTE.chainTaskEitherK(({ getPreprintTitle }) =>
+      pipe(TE.Do, TE.apS('doi', TE.right(doi)), TE.apS('title', getPreprintTitle(doi))),
+    ),
+  )
 
 const showNextForm = (form: Form) =>
   match(form)
@@ -87,12 +101,18 @@ const showNextForm = (form: Form) =>
     .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, {})))
     .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, {})))
 
-export const writeReview = pipe(
-  getSession(),
-  RM.chainEitherKW(UserC.decode),
-  RM.chainReaderTaskKW(flow(get('orcid'), getForm)),
-  RM.ichainMiddlewareKW(showNextForm),
-  RM.orElseMiddlewareK(() => showStartPage),
+export const writeReview = flow(
+  RM.fromReaderTaskEitherK(getPreprint),
+  RM.ichainW(preprint =>
+    pipe(
+      getSession(),
+      RM.chainEitherKW(UserC.decode),
+      RM.chainReaderTaskKW(flow(get('orcid'), getForm)),
+      RM.ichainMiddlewareKW(showNextForm),
+      RM.orElseMiddlewareK(() => showStartPage(preprint)),
+    ),
+  ),
+  RM.orElseMiddlewareK(() => handleError(new NotFound())),
 )
 
 export const writeReviewReview = pipe(
@@ -247,10 +267,11 @@ const showFailureMessage = pipe(
   RM.ichainMiddlewareK(() => pipe(failureMessage(), sendHtml)),
 )
 
-const showStartPage = pipe(
-  M.status(Status.OK),
-  M.ichain(() => pipe(startPage(), sendHtml)),
-)
+const showStartPage = (preprint: Preprint) =>
+  pipe(
+    M.status(Status.OK),
+    M.ichain(() => pipe(startPage(preprint), sendHtml)),
+  )
 
 function getForm(user: Orcid): ReaderTask<FormStoreEnv, Form> {
   return flow(
@@ -563,23 +584,20 @@ ${rawHtml(form.review ?? '')}</textarea
   })
 }
 
-function startPage() {
+function startPage(preprint: Preprint) {
   return page({
     title: plainText`Review this preprint`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="back">
-          Back to preprint
-        </a>
+        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
       <main>
         <h1>Review this preprint</h1>
 
         <p>
-          You can write a PREreview of “The role of LHCBM1 in non-photochemical quenching in
-          <i>Chlamydomonas reinhardtii</i>”. A PREreview is a free-text review of a preprint and can vary from a few
-          sentences to a lengthy report, similar to a journal-organized peer-review report.
+          You can write a PREreview of “${preprint.title}”. A PREreview is a free-text review of a preprint and can vary
+          from a few sentences to a lengthy report, similar to a journal-organized peer-review report.
         </p>
 
         <h2>Before you start</h2>
