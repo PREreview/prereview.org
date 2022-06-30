@@ -173,7 +173,6 @@ const showPersonaErrorForm = (user: User) =>
   pipe(
     M.status(Status.BadRequest),
     M.ichain(() => pipe(personaForm({}, user, true), sendHtml)),
-    M.orElse(() => showStartPage),
   )
 
 const showCodeOfConductForm = ({ form }: { form: Form }) =>
@@ -201,7 +200,6 @@ const showPostForm = ({ form, user }: { form: CompletedForm; user: User }) =>
   pipe(
     M.status(Status.OK),
     M.ichain(() => pipe(postForm(form, user), sendHtml)),
-    M.orElse(() => showStartPage),
   )
 
 const handlePersonaForm = ({ form, user }: { form: Form; user: User }) =>
