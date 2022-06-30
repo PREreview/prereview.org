@@ -93,7 +93,7 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         ),
         pipe(
           writeReviewPostMatch.parser,
-          R.map(() => writeReviewPost),
+          R.map(() => writeReviewPost('10.1101/2022.01.13.476201' as Doi)),
         ),
       ],
       M.concatAll(R.getParserMonoid()),
