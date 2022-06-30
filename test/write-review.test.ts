@@ -53,7 +53,9 @@ describe('write-review', () => {
                   {
                     type: 'setHeader',
                     name: 'Location',
-                    value: '/preprints/doi-10.1101-2022.01.13.476201/review/post',
+                    value: `/preprints/doi-${encodeURIComponent(
+                      preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                    )}/review/post`,
                   },
                   { type: 'endResponse' },
                 ]),
@@ -97,7 +99,9 @@ describe('write-review', () => {
                   {
                     type: 'setHeader',
                     name: 'Location',
-                    value: '/preprints/doi-10.1101-2022.01.13.476201/review/review',
+                    value: `/preprints/doi-${encodeURIComponent(
+                      preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                    )}/review/review`,
                   },
                   { type: 'endResponse' },
                 ]),
@@ -221,7 +225,9 @@ describe('write-review', () => {
                 {
                   type: 'setHeader',
                   name: 'Location',
-                  value: '/preprints/doi-10.1101-2022.01.13.476201/review/post',
+                  value: `/preprints/doi-${encodeURIComponent(
+                    preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                  )}/review/post`,
                 },
                 { type: 'endResponse' },
               ]),
@@ -285,7 +291,9 @@ describe('write-review', () => {
                 {
                   type: 'setHeader',
                   name: 'Location',
-                  value: expect.stringMatching(/^\/preprints\/doi-10\.1101-2022\.01\.13\.476201\/review\//),
+                  value: expect.stringContaining(
+                    `/preprints/doi-${encodeURIComponent(preprintDoi.replace(/-/g, '+').replace(/\//g, '-'))}/review/`,
+                  ),
                 },
                 { type: 'endResponse' },
               ]),
@@ -364,7 +372,13 @@ describe('write-review', () => {
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
-                { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
+                {
+                  type: 'setHeader',
+                  name: 'Location',
+                  value: `/preprints/doi-${encodeURIComponent(
+                    preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                  )}/review`,
+                },
                 { type: 'endResponse' },
               ]),
             )
@@ -472,7 +486,9 @@ describe('write-review', () => {
                 {
                   type: 'setHeader',
                   name: 'Location',
-                  value: '/preprints/doi-10.1101-2022.01.13.476201/review/post',
+                  value: `/preprints/doi-${encodeURIComponent(
+                    preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                  )}/review/post`,
                 },
                 { type: 'endResponse' },
               ]),
@@ -538,7 +554,9 @@ describe('write-review', () => {
                 {
                   type: 'setHeader',
                   name: 'Location',
-                  value: expect.stringMatching(/^\/preprints\/doi-10\.1101-2022\.01\.13\.476201\/review\//),
+                  value: expect.stringContaining(
+                    `/preprints/doi-${encodeURIComponent(preprintDoi.replace(/-/g, '+').replace(/\//g, '-'))}/review/`,
+                  ),
                 },
                 { type: 'endResponse' },
               ]),
@@ -620,7 +638,13 @@ describe('write-review', () => {
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
-                { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
+                {
+                  type: 'setHeader',
+                  name: 'Location',
+                  value: `/preprints/doi-${encodeURIComponent(
+                    preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                  )}/review`,
+                },
                 { type: 'endResponse' },
               ]),
             )
@@ -726,7 +750,9 @@ describe('write-review', () => {
                 {
                   type: 'setHeader',
                   name: 'Location',
-                  value: '/preprints/doi-10.1101-2022.01.13.476201/review/post',
+                  value: `/preprints/doi-${encodeURIComponent(
+                    preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                  )}/review/post`,
                 },
                 { type: 'endResponse' },
               ]),
@@ -789,7 +815,9 @@ describe('write-review', () => {
                 {
                   type: 'setHeader',
                   name: 'Location',
-                  value: expect.stringMatching(/^\/preprints\/doi-10\.1101-2022\.01\.13\.476201\/review\//),
+                  value: expect.stringContaining(
+                    `/preprints/doi-${encodeURIComponent(preprintDoi.replace(/-/g, '+').replace(/\//g, '-'))}/review/`,
+                  ),
                 },
                 { type: 'endResponse' },
               ]),
@@ -869,7 +897,13 @@ describe('write-review', () => {
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
-                { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
+                {
+                  type: 'setHeader',
+                  name: 'Location',
+                  value: `/preprints/doi-${encodeURIComponent(
+                    preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                  )}/review`,
+                },
                 { type: 'endResponse' },
               ]),
             )
@@ -1069,7 +1103,9 @@ describe('write-review', () => {
                 {
                   type: 'setHeader',
                   name: 'Location',
-                  value: expect.stringMatching(/^\/preprints\/doi-10\.1101-2022\.01\.13\.476201\/review\//),
+                  value: expect.stringContaining(
+                    `/preprints/doi-${encodeURIComponent(preprintDoi.replace(/-/g, '+').replace(/\//g, '-'))}/review/`,
+                  ),
                 },
                 { type: 'endResponse' },
               ]),
@@ -1155,7 +1191,13 @@ describe('write-review', () => {
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
-                { type: 'setHeader', name: 'Location', value: '/preprints/doi-10.1101-2022.01.13.476201/review' },
+                {
+                  type: 'setHeader',
+                  name: 'Location',
+                  value: `/preprints/doi-${encodeURIComponent(
+                    preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                  )}/review`,
+                },
                 { type: 'endResponse' },
               ]),
             )

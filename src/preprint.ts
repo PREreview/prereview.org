@@ -133,7 +133,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
       <main>
         <h2>${reviews.hits.hits.length} PREreview${reviews.hits.hits.length !== 1 ? 's' : ''}</h2>
 
-        <a href="${format(writeReviewMatch.formatter, {})}" class="button">Write a PREreview</a>
+        <a href="${format(writeReviewMatch.formatter, { doi: preprint.doi })}" class="button">Write a PREreview</a>
 
         <ol class="cards">
           ${reviews.hits.hits.map(showReview)}

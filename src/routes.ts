@@ -54,11 +54,7 @@ export const preprintMatch = pipe(R.lit('preprints'), R.then(type('doi', Preprin
 
 export const reviewMatch = pipe(R.lit('reviews'), R.then(type('id', IntegerFromStringC)), R.then(R.end))
 
-const writeReviewBaseMatch = pipe(
-  R.lit('preprints'),
-  R.then(R.lit('doi-10.1101-2022.01.13.476201')),
-  R.then(R.lit('review')),
-)
+const writeReviewBaseMatch = pipe(R.lit('preprints'), R.then(type('doi', PreprintDoiC)), R.then(R.lit('review')))
 
 export const writeReviewMatch = pipe(writeReviewBaseMatch, R.then(R.end))
 

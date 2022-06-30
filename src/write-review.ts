@@ -92,14 +92,16 @@ const getPreprint = (doi: Doi) =>
     ),
   )
 
-const showNextForm = (form: Form) =>
+const showNextForm = (preprint: Preprint) => (form: Form) =>
   match(form)
     .with({ review: P.string, persona: P.string, conduct: P.string }, () =>
-      seeOther(format(writeReviewPostMatch.formatter, {})),
+      seeOther(format(writeReviewPostMatch.formatter, { doi: preprint.doi })),
     )
-    .with({ review: P.string, persona: P.string }, () => seeOther(format(writeReviewConductMatch.formatter, {})))
-    .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, {})))
-    .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, {})))
+    .with({ review: P.string, persona: P.string }, () =>
+      seeOther(format(writeReviewConductMatch.formatter, { doi: preprint.doi })),
+    )
+    .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })))
+    .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint.doi })))
 
 export const writeReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -108,7 +110,7 @@ export const writeReview = flow(
       getSession(),
       RM.chainEitherKW(UserC.decode),
       RM.chainReaderTaskKW(flow(get('orcid'), getForm)),
-      RM.ichainMiddlewareKW(showNextForm),
+      RM.ichainMiddlewareKW(showNextForm(preprint)),
       RM.orElseMiddlewareK(() => showStartPage(preprint)),
     ),
   ),
@@ -117,17 +119,16 @@ export const writeReview = flow(
 
 export const writeReviewReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
-  RM.bindTo('preprint'),
-  RM.ichainW(
-    flow(
-      RM.of,
+  RM.ichainW(preprint =>
+    pipe(
+      RM.right({ preprint }),
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state).with({ method: 'POST' }, handleReviewForm).otherwise(fromMiddlewareK(showReviewForm)),
       ),
-      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
+      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
   RM.orElseMiddlewareK(() => handleError(new NotFound())),
@@ -135,17 +136,16 @@ export const writeReviewReview = flow(
 
 export const writeReviewPersona = flow(
   RM.fromReaderTaskEitherK(getPreprint),
-  RM.bindTo('preprint'),
-  RM.ichainW(
-    flow(
-      RM.of,
+  RM.ichainW(preprint =>
+    pipe(
+      RM.right({ preprint }),
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(fromMiddlewareK(showPersonaForm)),
       ),
-      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
+      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
   RM.orElseMiddlewareK(() => handleError(new NotFound())),
@@ -153,10 +153,9 @@ export const writeReviewPersona = flow(
 
 export const writeReviewConduct = flow(
   RM.fromReaderTaskEitherK(getPreprint),
-  RM.bindTo('preprint'),
-  RM.ichainW(
-    flow(
-      RM.of,
+  RM.ichainW(preprint =>
+    pipe(
+      RM.right({ preprint }),
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
       RM.apSW('method', RM.decodeMethod(E.right)),
@@ -165,7 +164,7 @@ export const writeReviewConduct = flow(
           .with({ method: 'POST' }, handleCodeOfConductForm)
           .otherwise(fromMiddlewareK(showCodeOfConductForm)),
       ),
-      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
+      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
   RM.orElseMiddlewareK(() => handleError(new NotFound())),
@@ -173,10 +172,9 @@ export const writeReviewConduct = flow(
 
 export const writeReviewPost = flow(
   RM.fromReaderTaskEitherK(getPreprint),
-  RM.bindTo('preprint'),
-  RM.ichainW(
-    flow(
-      RM.of,
+  RM.ichainW(preprint =>
+    pipe(
+      RM.right({ preprint }),
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
       RM.apSW('method', RM.decodeMethod(E.right)),
@@ -184,9 +182,9 @@ export const writeReviewPost = flow(
         match(state)
           .with({ method: 'POST', form: { review: P.string, persona: P.string, conduct: P.string } }, handlePostForm)
           .with({ form: { review: P.string, persona: P.string, conduct: P.string } }, fromMiddlewareK(showPostForm))
-          .otherwise(flow(({ form }) => form, fromMiddlewareK(showNextForm))),
+          .otherwise(flow(({ form }) => form, fromMiddlewareK(showNextForm(preprint)))),
       ),
-      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
+      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
   RM.orElseMiddlewareK(() => handleError(new NotFound())),
@@ -232,7 +230,7 @@ const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Prep
     RM.decodeBody(ReviewFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid)),
-    RM.ichainMiddlewareKW(showNextForm),
+    RM.ichainMiddlewareKW(showNextForm(preprint)),
     RM.orElseMiddlewareK(() => showReviewErrorForm(preprint)),
   )
 
@@ -247,7 +245,7 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.decodeBody(PersonaFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid)),
-    RM.ichainMiddlewareKW(showNextForm),
+    RM.ichainMiddlewareKW(showNextForm(preprint)),
     RM.orElseMiddlewareK(() => showPersonaErrorForm(preprint, user)),
   )
 
@@ -256,7 +254,7 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
     RM.decodeBody(CodeOfConductFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid)),
-    RM.ichainMiddlewareKW(showNextForm),
+    RM.ichainMiddlewareKW(showNextForm(preprint)),
     RM.orElseMiddlewareK(() => showCodeOfConductErrorForm(preprint)),
   )
 
@@ -372,7 +370,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
     title: plainText`Post your PREreview of '${preprint.title}'`,
     content: html`
       <nav>
-        <a href="${format(writeReviewConductMatch.formatter, {})}" class="back">Back</a>
+        <a href="${format(writeReviewConductMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
       <main>
@@ -389,8 +387,12 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
         </blockquote>
 
         <div class="button-group" role="group">
-          <a href="${format(writeReviewReviewMatch.formatter, {})}" class="button button-secondary">Change review</a>
-          <a href="${format(writeReviewPersonaMatch.formatter, {})}" class="button button-secondary">Change name</a>
+          <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" class="button button-secondary">
+            Change review
+          </a>
+          <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="button button-secondary">
+            Change name
+          </a>
         </div>
 
         <form method="post" novalidate>
@@ -413,7 +415,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
     title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
     content: html`
       <nav>
-        <a href="${format(writeReviewPersonaMatch.formatter, {})}" class="back">Back</a>
+        <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
       <main>
@@ -490,7 +492,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
     title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
     content: html`
       <nav>
-        <a href="${format(writeReviewReviewMatch.formatter, {})}" class="back">Back</a>
+        <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
       <main>

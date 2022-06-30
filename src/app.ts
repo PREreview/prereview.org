@@ -1,4 +1,3 @@
-import { Doi } from 'doi-ts'
 import express from 'express'
 import * as R from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
@@ -77,23 +76,23 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       [
         pipe(
           writeReviewMatch.parser,
-          R.map(() => writeReview('10.1101/2022.01.13.476201' as Doi)),
+          R.map(({ doi }) => writeReview(doi)),
         ),
         pipe(
           writeReviewReviewMatch.parser,
-          R.map(() => writeReviewReview('10.1101/2022.01.13.476201' as Doi)),
+          R.map(({ doi }) => writeReviewReview(doi)),
         ),
         pipe(
           writeReviewPersonaMatch.parser,
-          R.map(() => writeReviewPersona('10.1101/2022.01.13.476201' as Doi)),
+          R.map(({ doi }) => writeReviewPersona(doi)),
         ),
         pipe(
           writeReviewConductMatch.parser,
-          R.map(() => writeReviewConduct('10.1101/2022.01.13.476201' as Doi)),
+          R.map(({ doi }) => writeReviewConduct(doi)),
         ),
         pipe(
           writeReviewPostMatch.parser,
-          R.map(() => writeReviewPost('10.1101/2022.01.13.476201' as Doi)),
+          R.map(({ doi }) => writeReviewPost(doi)),
         ),
       ],
       M.concatAll(R.getParserMonoid()),
