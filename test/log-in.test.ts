@@ -8,42 +8,87 @@ import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
 describe('log-in', () => {
-  test('logIn', async () => {
-    await fc.assert(
-      fc.asyncProperty(
-        fc.record({
-          authorizeUrl: fc.url(),
-          clientId: fc.string(),
-          clientSecret: fc.string(),
-          redirectUri: fc.url(),
-          tokenUrl: fc.url(),
-        }),
-        fc.connection(),
-        async (oauth, connection) => {
-          const actual = await runMiddleware(_.logIn({ oauth }), connection)()
+  describe('logIn', () => {
+    test('when there is a Referer header', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.record({
+            authorizeUrl: fc.url(),
+            clientId: fc.string(),
+            clientSecret: fc.string(),
+            redirectUri: fc.url(),
+            tokenUrl: fc.url(),
+          }),
+          fc
+            .webUrl()
+            .chain(referer =>
+              fc.tuple(fc.connection({ headers: fc.constant({ Referer: referer }) }), fc.constant(referer)),
+            ),
+          async (oauth, [connection, referer]) => {
+            const actual = await runMiddleware(_.logIn({ oauth }), connection)()
 
-          expect(actual).toStrictEqual(
-            E.right([
-              { type: 'setStatus', status: Status.Found },
-              {
-                type: 'setHeader',
-                name: 'Location',
-                value: new URL(
-                  `?${new URLSearchParams({
-                    client_id: oauth.clientId,
-                    response_type: 'code',
-                    redirect_uri: oauth.redirectUri.href,
-                    scope: '/authenticate',
-                  }).toString()}`,
-                  oauth.authorizeUrl,
-                ).href,
-              },
-              { type: 'endResponse' },
-            ]),
-          )
-        },
-      ),
-    )
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.Found },
+                {
+                  type: 'setHeader',
+                  name: 'Location',
+                  value: new URL(
+                    `?${new URLSearchParams({
+                      client_id: oauth.clientId,
+                      response_type: 'code',
+                      redirect_uri: oauth.redirectUri.href,
+                      scope: '/authenticate',
+                      state: referer,
+                    }).toString()}`,
+                    oauth.authorizeUrl,
+                  ).href,
+                },
+                { type: 'endResponse' },
+              ]),
+            )
+          },
+        ),
+      )
+    })
+
+    test("when there isn't a Referer header", async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.record({
+            authorizeUrl: fc.url(),
+            clientId: fc.string(),
+            clientSecret: fc.string(),
+            redirectUri: fc.url(),
+            tokenUrl: fc.url(),
+          }),
+          fc.connection(),
+          async (oauth, connection) => {
+            const actual = await runMiddleware(_.logIn({ oauth }), connection)()
+
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.Found },
+                {
+                  type: 'setHeader',
+                  name: 'Location',
+                  value: new URL(
+                    `?${new URLSearchParams({
+                      client_id: oauth.clientId,
+                      response_type: 'code',
+                      redirect_uri: oauth.redirectUri.href,
+                      scope: '/authenticate',
+                    }).toString()}`,
+                    oauth.authorizeUrl,
+                  ).href,
+                },
+                { type: 'endResponse' },
+              ]),
+            )
+          },
+        ),
+      )
+    })
   })
 
   test('authenticate', async () => {

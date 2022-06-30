@@ -1,5 +1,8 @@
 import { format } from 'fp-ts-routing'
-import { flow } from 'fp-ts/function'
+import * as E from 'fp-ts/Either'
+import * as O from 'fp-ts/Option'
+import { flow, pipe } from 'fp-ts/function'
+import { isString } from 'fp-ts/string'
 import { ServiceUnavailable } from 'http-errors'
 import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { storeSession } from 'hyper-ts-session'
@@ -10,7 +13,16 @@ import { handleError } from './http-error'
 import { writeReviewMatch } from './routes'
 import { UserC } from './user'
 
-export const logIn = requestAuthorizationCode('/authenticate')()
+export const logIn = pipe(
+  RM.decodeHeader(
+    'Referer',
+    flow(
+      O.fromPredicate(isString),
+      O.matchW(() => E.right(undefined), E.right),
+    ),
+  ),
+  RM.ichainW(requestAuthorizationCode('/authenticate')),
+)
 
 const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
 
