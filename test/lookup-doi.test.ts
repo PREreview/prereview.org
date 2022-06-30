@@ -16,7 +16,11 @@ describe('lookup-doi', () => {
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
-                { type: 'setHeader', name: 'Location', value: `/preprints/doi-${doi.replace('/', '-')}` },
+                {
+                  type: 'setHeader',
+                  name: 'Location',
+                  value: `/preprints/doi-${encodeURIComponent(doi.replace(/-/g, '+').replace(/\//g, '-'))}`,
+                },
                 { type: 'endResponse' },
               ]),
             )

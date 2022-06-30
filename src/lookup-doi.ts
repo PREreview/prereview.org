@@ -5,7 +5,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { seeOther } from './middleware'
-import { homeMatch } from './routes'
+import { homeMatch, preprintMatch } from './routes'
 
 const DoiD = D.fromRefinement(isDoi, 'DOI')
 
@@ -18,6 +18,6 @@ const LookupDoiD = pipe(
 
 export const lookupDoi = pipe(
   M.decodeBody(LookupDoiD.decode),
-  M.ichain(doi => seeOther(`/preprints/doi-${doi.replace('/', '-')}`)),
+  M.ichain(doi => seeOther(format(preprintMatch.formatter, { doi }))),
   M.orElse(() => seeOther(format(homeMatch.formatter, {}))),
 )
