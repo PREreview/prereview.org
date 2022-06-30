@@ -78,6 +78,7 @@ describe('log-in', () => {
                       response_type: 'code',
                       redirect_uri: oauth.redirectUri.href,
                       scope: '/authenticate',
+                      state: '',
                     }).toString()}`,
                     oauth.authorizeUrl,
                   ).href,

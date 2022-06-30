@@ -18,7 +18,7 @@ export const logIn = pipe(
     'Referer',
     flow(
       O.fromPredicate(isString),
-      O.matchW(() => E.right(undefined), E.right),
+      O.match(() => E.right(''), E.right),
     ),
   ),
   RM.ichainW(requestAuthorizationCode('/authenticate')),

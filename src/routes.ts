@@ -44,7 +44,11 @@ export const logInMatch = pipe(R.lit('log-in'), R.then(R.end))
 
 export const lookupDoiMatch = R.lit('lookup-doi').then(R.end)
 
-export const orcidCodeMatch = pipe(R.lit('orcid'), R.then(query(C.struct({ code: C.string }))), R.then(R.end))
+export const orcidCodeMatch = pipe(
+  R.lit('orcid'),
+  R.then(query(C.struct({ code: C.string, state: C.string }))),
+  R.then(R.end),
+)
 
 export const preprintMatch = pipe(R.lit('preprints'), R.then(type('doi', PreprintDoiC)), R.then(R.end))
 
