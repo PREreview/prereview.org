@@ -684,6 +684,8 @@ describe('write-review', () => {
     test('when the form is completed', async () => {
       await fc.assert(
         fc.asyncProperty(
+          fc.doi(),
+          fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -704,13 +706,19 @@ describe('write-review', () => {
             },
             { requiredKeys: ['persona', 'review'] },
           ),
-          async ([connection, sessionId, secret], user, newReview) => {
+          async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
             await formStore.set(user.orcid, newReview)
+            const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
+              TE.right(preprintTitle),
+            )
 
-            const actual = await runMiddleware(_.writeReviewConduct({ formStore, secret, sessionStore }), connection)()
+            const actual = await runMiddleware(
+              _.writeReviewConduct(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+              connection,
+            )()
 
             expect(await formStore.get(user.orcid)).toMatchObject({ conduct: 'yes' })
             expect(actual).toStrictEqual(
@@ -724,6 +732,7 @@ describe('write-review', () => {
                 { type: 'endResponse' },
               ]),
             )
+            expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
           },
         ),
       )
@@ -732,6 +741,8 @@ describe('write-review', () => {
     test('when the form is incomplete', async () => {
       await fc.assert(
         fc.asyncProperty(
+          fc.doi(),
+          fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -760,13 +771,17 @@ describe('write-review', () => {
               { withDeletedKeys: true },
             ),
           ),
-          async ([connection, sessionId, secret], user, newReview) => {
+          async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
             await formStore.set(user.orcid, newReview)
+            const getPreprintTitle = () => TE.right(preprintTitle)
 
-            const actual = await runMiddleware(_.writeReviewConduct({ formStore, secret, sessionStore }), connection)()
+            const actual = await runMiddleware(
+              _.writeReviewConduct(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+              connection,
+            )()
 
             expect(await formStore.get(user.orcid)).toMatchObject({ conduct: 'yes' })
             expect(actual).toStrictEqual(
@@ -785,16 +800,72 @@ describe('write-review', () => {
       )
     })
 
+    test('when the preprint cannot be loaded', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.doi(),
+          fc.anything(),
+          fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+            fc.tuple(
+              fc.connection({
+                body: fc.constant({ conduct: 'yes' }),
+                headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                method: fc.constant('POST'),
+              }),
+              fc.constant(sessionId),
+              fc.constant(secret),
+            ),
+          ),
+          fc.user(),
+          fc.record(
+            {
+              conduct: fc.constant('yes'),
+              persona: fc.constantFrom('public', 'anonymous'),
+              review: fc.nonEmptyString(),
+            },
+            { withDeletedKeys: true },
+          ),
+          async (preprintDoi, error, [connection, sessionId, secret], user, newReview) => {
+            const sessionStore = new Keyv()
+            await sessionStore.set(sessionId, UserC.encode(user))
+            const formStore = new Keyv()
+            await formStore.set(user.orcid, newReview)
+            const getPreprintTitle = () => TE.left(error)
+
+            const actual = await runMiddleware(
+              _.writeReviewConduct(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+              connection,
+            )()
+
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.NotFound },
+                { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: expect.anything() },
+              ]),
+            )
+          },
+        ),
+      )
+    })
+
     test("when there isn't a session", async () => {
       await fc.assert(
         fc.asyncProperty(
+          fc.doi(),
+          fc.html(),
           fc.connection({ body: fc.constant({ conduct: 'yes' }), method: fc.constant('POST') }),
           fc.string(),
-          async (connection, secret) => {
+          async (preprintDoi, preprintTitle, connection, secret) => {
             const sessionStore = new Keyv()
             const formStore = new Keyv()
+            const getPreprintTitle = () => TE.right(preprintTitle)
 
-            const actual = await runMiddleware(_.writeReviewConduct({ formStore, secret, sessionStore }), connection)()
+            const actual = await runMiddleware(
+              _.writeReviewConduct(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+              connection,
+            )()
 
             expect(actual).toStrictEqual(
               E.right([
@@ -811,6 +882,8 @@ describe('write-review', () => {
     test('without agreement to the Code of Conduct', async () => {
       await fc.assert(
         fc.asyncProperty(
+          fc.doi(),
+          fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -831,13 +904,17 @@ describe('write-review', () => {
             },
             { withDeletedKeys: true },
           ),
-          async ([connection, sessionId, secret], user, newReview) => {
+          async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
             await formStore.set(user.orcid, newReview)
+            const getPreprintTitle = () => TE.right(preprintTitle)
 
-            const actual = await runMiddleware(_.writeReviewConduct({ formStore, secret, sessionStore }), connection)()
+            const actual = await runMiddleware(
+              _.writeReviewConduct(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+              connection,
+            )()
 
             expect(actual).toStrictEqual(
               E.right([
