@@ -1,4 +1,3 @@
-import { Doi } from 'doi-ts'
 import express from 'express'
 import * as R from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
@@ -65,7 +64,7 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       preprintMatch.parser,
-      R.map(() => preprint('10.1101/2022.01.13.476201' as Doi)),
+      R.map(({ doi }) => preprint(doi)),
       R.map(local((env: AppEnv) => ({ ...env, getPreprint }))),
     ),
     pipe(

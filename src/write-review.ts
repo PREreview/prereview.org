@@ -303,7 +303,9 @@ function successMessage(doi: Doi) {
 
         <p>You’ll be able to see your PREreview shortly.</p>
 
-        <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="button">
+          Back to preprint
+        </a>
       </main>
     `,
   })
@@ -320,7 +322,9 @@ function failureMessage() {
 
         <p>Please try again later.</p>
 
-        <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="button">
+          Back to preprint
+        </a>
       </main>
     `,
   })
@@ -523,7 +527,9 @@ function reviewForm(form: Form, error = false) {
     }Write your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="back">
+          Back to preprint
+        </a>
       </nav>
 
       <main>
@@ -564,7 +570,9 @@ function startPage() {
     title: plainText`Review this preprint`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="back">
+          Back to preprint
+        </a>
       </nav>
 
       <main>

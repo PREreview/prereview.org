@@ -1,8 +1,11 @@
+import { isDoi } from 'doi-ts'
 import * as R from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import { pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+
+const DoiD = D.fromRefinement(isDoi, 'DOI')
 
 const IntegerFromStringC = C.make(
   pipe(
@@ -17,6 +20,24 @@ const IntegerFromStringC = C.make(
   },
 )
 
+const PreprintDoiC = C.make(
+  pipe(
+    D.string,
+    D.parse(s => {
+      const [, match] = s.match(/^doi-(.+)$/) ?? []
+
+      if (match) {
+        return DoiD.decode(match.replace(/\+/g, '-').replace(/-/g, '/'))
+      }
+
+      return D.failure(s, 'DOI')
+    }),
+  ),
+  {
+    encode: doi => `doi-${doi.replace(/-/g, '+').replace(/\//g, '-')}`,
+  },
+)
+
 export const homeMatch = R.end
 
 export const logInMatch = pipe(R.lit('log-in'), R.then(R.end))
@@ -25,7 +46,7 @@ export const lookupDoiMatch = R.lit('lookup-doi').then(R.end)
 
 export const orcidCodeMatch = pipe(R.lit('orcid'), R.then(query(C.struct({ code: C.string }))), R.then(R.end))
 
-export const preprintMatch = pipe(R.lit('preprints'), R.then(R.lit('doi-10.1101-2022.01.13.476201')), R.then(R.end))
+export const preprintMatch = pipe(R.lit('preprints'), R.then(type('doi', PreprintDoiC)), R.then(R.end))
 
 export const reviewMatch = pipe(R.lit('reviews'), R.then(type('id', IntegerFromStringC)), R.then(R.end))
 

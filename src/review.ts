@@ -92,7 +92,9 @@ function failureMessage() {
 
         <p>Please try again later.</p>
 
-        <a href="${format(preprintMatch.formatter, {})}" class="button">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="button">
+          Back to preprint
+        </a>
       </main>
     `,
   })
@@ -103,7 +105,9 @@ function createPage({ preprintTitle, review }: { preprintTitle: Html; review: Re
     title: plainText`Review of '${preprintTitle}'`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, {})}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="back">
+          Back to preprint
+        </a>
       </nav>
 
       <main>
