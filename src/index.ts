@@ -48,6 +48,7 @@ const deps: AppEnv = {
     redirectUri: new URL('/orcid', env.PUBLIC_URL),
     tokenUrl: new URL('https://orcid.org/oauth/token'),
   },
+  publicUrl: env.PUBLIC_URL,
   secret: env.SECRET,
   sessionStore: new Keyv(),
   zenodoApiKey: env.ZENODO_API_KEY,

@@ -56,6 +56,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         redirectUri: new URL(`http://localhost:${port}/orcid`),
         tokenUrl: new URL('http://orcid.test/token'),
       },
+      publicUrl: new URL(`http://localhost:${port}`),
       secret: '',
       sessionStore: new Keyv(),
       zenodoApiKey: '',

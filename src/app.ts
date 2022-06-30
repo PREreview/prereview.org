@@ -17,7 +17,7 @@ import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { home } from './home'
 import { handleError } from './http-error'
 import { createRecordOnZenodo, getPreprint, getPreprintTitle } from './infrastructure'
-import { authenticate, logIn } from './log-in'
+import { PublicUrlEnv, authenticate, logIn } from './log-in'
 import { lookupDoi } from './lookup-doi'
 import { preprint } from './preprint'
 import { review } from './review'
@@ -43,7 +43,7 @@ import {
   writeReviewReview,
 } from './write-review'
 
-export type AppEnv = FormStoreEnv & L.LoggerEnv & OAuthEnv & SessionEnv & ZenodoAuthenticatedEnv
+export type AppEnv = FormStoreEnv & L.LoggerEnv & OAuthEnv & PublicUrlEnv & SessionEnv & ZenodoAuthenticatedEnv
 
 export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -61,7 +61,7 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       orcidCodeMatch.parser,
-      R.map(({ code }) => authenticate(code)),
+      R.map(({ code, state }) => authenticate(code, state)),
     ),
     pipe(
       preprintMatch.parser,

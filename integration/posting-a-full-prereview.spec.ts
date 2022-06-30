@@ -540,7 +540,7 @@ test("aren't told about ORCID when already logged in", async ({ fetch, page }) =
   })
 
   await page.keyboard.press('Enter')
-  await page.locator('text=PREreview').waitFor()
+  await expect(page).toHaveTitle(/PREreview/)
 
   fetch.getOnce(
     {
