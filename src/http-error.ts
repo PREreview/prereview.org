@@ -9,7 +9,7 @@ import { page } from './page'
 export function handleError<N extends H.Status>(error: HttpError<N>) {
   return pipe(
     M.status(error.status),
-    M.ichain(() => M.header('cache-control', 'no-store, must-revalidate')),
+    M.ichain(() => M.header('Cache-Control', 'no-store, must-revalidate')),
     M.ichain(() => pipe(http.STATUS_CODES[error.status] ?? 'Error', errorPage, sendHtml)),
   )
 }
