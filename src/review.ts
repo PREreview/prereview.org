@@ -21,6 +21,11 @@ import { handleError } from './http-error'
 import { page } from './page'
 import { preprintMatch } from './routes'
 
+type Preprint = {
+  doi: Doi
+  title: Html
+}
+
 export interface GetPreprintTitleEnv {
   getPreprintTitle: (doi: Doi) => TE.TaskEither<unknown, Html>
 }
@@ -46,10 +51,12 @@ const getReviewedDoi = flow(
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
 
-const getPreprintTitle = (doi: Doi) =>
+const getPreprint = (doi: Doi) =>
   pipe(
     RTE.ask<GetPreprintTitleEnv>(),
-    RTE.chainTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(doi)),
+    RTE.chainTaskEitherK(({ getPreprintTitle }) =>
+      pipe(TE.Do, TE.apS('doi', TE.right(doi)), TE.apS('title', getPreprintTitle(doi))),
+    ),
   )
 
 const sendPage = flow(
@@ -65,8 +72,8 @@ export const review = flow(
   RM.bindTo('review'),
   RM.bindW('preprintDoi', ({ review }) => RM.fromEither(E.fromOption(() => new NotFound())(getReviewedDoi(review)))),
   RM.bindW(
-    'preprintTitle',
-    RM.fromReaderTaskEitherK(({ preprintDoi }) => getPreprintTitle(preprintDoi)),
+    'preprint',
+    RM.fromReaderTaskEitherK(({ preprintDoi }) => getPreprint(preprintDoi)),
   ),
   RM.ichainMiddlewareKW(sendPage),
   RM.orElseMiddlewareK(error =>
@@ -100,19 +107,17 @@ function failureMessage() {
   })
 }
 
-function createPage({ preprintTitle, review }: { preprintTitle: Html; review: Record }) {
+function createPage({ preprint, review }: { preprint: Preprint; review: Record }) {
   return page({
-    title: plainText`Review of '${preprintTitle}'`,
+    title: plainText`Review of '${preprint.title}'`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="back">
-          Back to preprint
-        </a>
+        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
       <main>
         <header>
-          <h1>Review of '${preprintTitle}'</h1>
+          <h1>Review of '${preprint.title}'</h1>
 
           <ol aria-label="Authors of this review" class="author-list">
             ${review.metadata.creators.map(author => html` <li>${displayAuthor(author)}</li>`)}
