@@ -90,4 +90,33 @@ const preprints: ReadonlyRecord<string, Preprint> = {
     title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
     url: new URL('https://www.biorxiv.org/content/10.1101/2022.01.13.476201v1.full'),
   },
+  '10.1101/2022.02.14.480364': {
+    abstract: html`
+      <p>
+        BTB domain And CNC Homolog 2 (Bach2) is a transcription repressor that actively participates in T and B
+        lymphocyte development, but it is unknown if Bach2 is also involved in the development of innate immune cells,
+        such as natural killer (NK) cells. Here, we followed the expression of Bach2 during NK cell development, finding
+        that it peaked in CD27<sup>+</sup>CD11b<sup>+</sup> cells and decreased upon further maturation. Bach2
+        expression positively correlated with that of the transcription factor TCF1 and negatively correlated with genes
+        encoding NK effector molecules as well as genes involved in the cell cycle. Bach2-deficient mice showed
+        increased numbers of terminally differentiated NK cells with increased production of granzymes and cytokines. NK
+        cell-mediated control of tumor metastasis was also augmented in the absence of Bach2. Therefore, Bach2 is a key
+        checkpoint protein regulating NK terminal maturation.
+      </p>
+    `,
+    authors: [
+      { name: 'Shasha Li' },
+      { name: 'Michael D. Bern' },
+      { name: 'Benpeng Miao' },
+      { name: 'Takeshi Inoue' },
+      { name: 'Sytse J. Piersma', orcid: '0000-0002-5379-3556' as Orcid },
+      { name: 'Marco Colonna', orcid: '0000-0001-5222-4987' as Orcid },
+      { name: 'Tomohiro Kurosaki', orcid: '0000-0002-6352-304X' as Orcid },
+      { name: 'Wayne M. Yokoyama', orcid: '0000-0002-0566-7264' as Orcid },
+    ],
+    doi: '10.1101/2022.02.14.480364' as Doi,
+    posted: new Date('2022-02-14'),
+    title: html`The Transcription Factor Bach2 Negatively Regulates Natural Killer Cell Maturation and Function`,
+    url: new URL('https://www.biorxiv.org/content/10.1101/2022.02.14.480364v1.full'),
+  },
 }
