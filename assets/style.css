@@ -258,6 +258,35 @@ summary {
   touch-action: manipulation;
 }
 
+sub {
+  vertical-align: baseline;
+  font-size: 50%;
+  font-weight: 700;
+  line-height: 0;
+
+  @supports (font-variant-position: sub) {
+    font-size: inherit;
+    font-weight: inherit;
+    font-variant-position: sub;
+  }
+}
+
+sup {
+  position: relative;
+  inset-block-start: -0.5em;
+  vertical-align: baseline;
+  font-size: 70%;
+  font-weight: 700;
+  line-height: 0;
+
+  @supports (font-variant-position: super) {
+    position: static;
+    font-size: inherit;
+    font-weight: inherit;
+    font-variant-position: super;
+  }
+}
+
 label {
   cursor: pointer;
   touch-action: manipulation;

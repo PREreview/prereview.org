@@ -45,6 +45,7 @@ module.exports = {
                         'custom-properties': false,
                         'custom-selectors': true,
                         'focus-visible-pseudo-class': false,
+                        'font-variant-property': false,
                         'logical-properties-and-values': {
                           dir: 'ltr',
                         },
