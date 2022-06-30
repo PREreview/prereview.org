@@ -133,16 +133,22 @@ export const writeReviewReview = flow(
   RM.orElseMiddlewareK(() => handleError(new NotFound())),
 )
 
-export const writeReviewPersona = pipe(
-  getSession(),
-  RM.chainEitherKW(UserC.decode),
-  RM.bindTo('user'),
-  RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
-  RM.apSW('method', RM.decodeMethod(E.right)),
-  RM.ichainW(state =>
-    match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(fromMiddlewareK(showPersonaForm)),
+export const writeReviewPersona = flow(
+  RM.fromReaderTaskEitherK(getPreprint),
+  RM.bindTo('preprint'),
+  RM.ichainW(
+    flow(
+      RM.of,
+      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
+      RM.apSW('method', RM.decodeMethod(E.right)),
+      RM.ichainW(state =>
+        match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(fromMiddlewareK(showPersonaForm)),
+      ),
+      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
+    ),
   ),
-  RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
+  RM.orElseMiddlewareK(() => handleError(new NotFound())),
 )
 
 export const writeReviewConduct = pipe(
@@ -189,16 +195,16 @@ const handlePostForm = ({ form, user }: { form: Form; user: User }) =>
     RM.orElseW(() => showFailureMessage),
   )
 
-const showPersonaForm = ({ form, user }: { form: Form; user: User }) =>
+const showPersonaForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
     M.status(Status.OK),
-    M.ichain(() => pipe(personaForm(form, user), sendHtml)),
+    M.ichain(() => pipe(personaForm(preprint, form, user), sendHtml)),
   )
 
-const showPersonaErrorForm = (user: User) =>
+const showPersonaErrorForm = (preprint: Preprint, user: User) =>
   pipe(
     M.status(Status.BadRequest),
-    M.ichain(() => pipe(personaForm({}, user, true), sendHtml)),
+    M.ichain(() => pipe(personaForm(preprint, {}, user, true), sendHtml)),
   )
 
 const showCodeOfConductForm = ({ form }: { form: Form }) =>
@@ -228,13 +234,13 @@ const showPostForm = ({ form, user }: { form: CompletedForm; user: User }) =>
     M.ichain(() => pipe(postForm(form, user), sendHtml)),
   )
 
-const handlePersonaForm = ({ form, user }: { form: Form; user: User }) =>
+const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
     RM.decodeBody(PersonaFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid)),
     RM.ichainMiddlewareKW(showNextForm),
-    RM.orElseMiddlewareK(() => showPersonaErrorForm(user)),
+    RM.orElseMiddlewareK(() => showPersonaErrorForm(preprint, user)),
   )
 
 const handleCodeOfConductForm = ({ form, user }: { form: Form; user: User }) =>
@@ -476,11 +482,9 @@ function codeOfConductForm(form: Form, error = false) {
   })
 }
 
-function personaForm(form: Form, user: User, error = false) {
+function personaForm(preprint: Preprint, form: Form, user: User, error = false) {
   return page({
-    title: plainText`${
-      error ? 'Error: ' : ''
-    }Write a PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
+    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
     content: html`
       <nav>
         <a href="${format(writeReviewReviewMatch.formatter, {})}" class="back">Back</a>

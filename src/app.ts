@@ -85,7 +85,7 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         ),
         pipe(
           writeReviewPersonaMatch.parser,
-          R.map(() => writeReviewPersona),
+          R.map(() => writeReviewPersona('10.1101/2022.01.13.476201' as Doi)),
         ),
         pipe(
           writeReviewConductMatch.parser,
