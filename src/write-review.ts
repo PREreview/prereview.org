@@ -115,16 +115,22 @@ export const writeReview = flow(
   RM.orElseMiddlewareK(() => handleError(new NotFound())),
 )
 
-export const writeReviewReview = pipe(
-  getSession(),
-  RM.chainEitherKW(UserC.decode),
-  RM.bindTo('user'),
-  RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
-  RM.apSW('method', RM.decodeMethod(E.right)),
-  RM.ichainW(state =>
-    match(state).with({ method: 'POST' }, handleReviewForm).otherwise(fromMiddlewareK(showReviewForm)),
+export const writeReviewReview = flow(
+  RM.fromReaderTaskEitherK(getPreprint),
+  RM.bindTo('preprint'),
+  RM.ichainW(
+    flow(
+      RM.of,
+      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
+      RM.apSW('method', RM.decodeMethod(E.right)),
+      RM.ichainW(state =>
+        match(state).with({ method: 'POST' }, handleReviewForm).otherwise(fromMiddlewareK(showReviewForm)),
+      ),
+      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
+    ),
   ),
-  RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, {}))),
+  RM.orElseMiddlewareK(() => handleError(new NotFound())),
 )
 
 export const writeReviewPersona = pipe(
@@ -207,13 +213,13 @@ const showCodeOfConductErrorForm = () =>
     M.ichain(() => pipe(codeOfConductForm({}, true), sendHtml)),
   )
 
-const handleReviewForm = ({ form, user }: { form: Form; user: User }) =>
+const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
     RM.decodeBody(ReviewFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid)),
     RM.ichainMiddlewareKW(showNextForm),
-    RM.orElseMiddlewareK(() => showReviewErrorForm),
+    RM.orElseMiddlewareK(() => showReviewErrorForm(preprint)),
   )
 
 const showPostForm = ({ form, user }: { form: CompletedForm; user: User }) =>
@@ -243,16 +249,17 @@ const handleCodeOfConductForm = ({ form, user }: { form: Form; user: User }) =>
 const createRecord = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ createRecord }: CreateRecordEnv) => createRecord(newPrereview)))
 
-const showReviewForm = ({ form }: { form: Form }) =>
+const showReviewForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
   pipe(
     M.status(Status.OK),
-    M.ichain(() => pipe(reviewForm(form), sendHtml)),
+    M.ichain(() => pipe(reviewForm(preprint, form), sendHtml)),
   )
 
-const showReviewErrorForm = pipe(
-  M.status(Status.BadRequest),
-  M.ichain(() => pipe(reviewForm({}, true), sendHtml)),
-)
+const showReviewErrorForm = (preprint: Preprint) =>
+  pipe(
+    M.status(Status.BadRequest),
+    M.ichain(() => pipe(reviewForm(preprint, {}, true), sendHtml)),
+  )
 
 const showSuccessMessage = (doi: Doi) =>
   pipe(
@@ -539,16 +546,12 @@ function personaForm(form: Form, user: User, error = false) {
   })
 }
 
-function reviewForm(form: Form, error = false) {
+function reviewForm(preprint: Preprint, form: Form, error = false) {
   return page({
-    title: plainText`${
-      error ? 'Error: ' : ''
-    }Write your PREreview of 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii'`,
+    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="back">
-          Back to preprint
-        </a>
+        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
       <main>
