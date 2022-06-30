@@ -199,8 +199,8 @@ const handlePostForm = ({ form, preprint, user }: { form: Form; preprint: Prepri
     RM.apS('user', RM.right(user)),
     RM.chainReaderTaskEitherK(createRecord),
     RM.chainFirstReaderTaskKW(() => deleteForm(user.orcid)),
-    RM.ichainW(deposition => showSuccessMessage(deposition.metadata.doi)),
-    RM.orElseW(() => showFailureMessage),
+    RM.ichainW(deposition => showSuccessMessage(preprint, deposition.metadata.doi)),
+    RM.orElseW(() => showFailureMessage(preprint)),
   )
 
 const showPersonaForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -275,18 +275,19 @@ const showReviewErrorForm = (preprint: Preprint) =>
     M.ichain(() => pipe(reviewForm(preprint, {}, true), sendHtml)),
   )
 
-const showSuccessMessage = (doi: Doi) =>
+const showSuccessMessage = (preprint: Preprint, doi: Doi) =>
   pipe(
     RM.status(Status.OK),
     RM.ichainFirst(() => endSession()),
-    RM.ichainMiddlewareK(() => pipe(successMessage(doi), sendHtml)),
+    RM.ichainMiddlewareK(() => pipe(successMessage(preprint, doi), sendHtml)),
   )
 
-const showFailureMessage = pipe(
-  RM.status(Status.ServiceUnavailable),
-  RM.ichainFirst(() => endSession()),
-  RM.ichainMiddlewareK(() => pipe(failureMessage(), sendHtml)),
-)
+const showFailureMessage = (preprint: Preprint) =>
+  pipe(
+    RM.status(Status.ServiceUnavailable),
+    RM.ichainFirst(() => endSession()),
+    RM.ichainMiddlewareK(() => pipe(failureMessage(preprint), sendHtml)),
+  )
 
 const showStartPage = (preprint: Preprint) =>
   pipe(
@@ -325,7 +326,7 @@ function deleteForm(user: Orcid): ReaderTask<FormStoreEnv, void> {
   )
 }
 
-function successMessage(doi: Doi) {
+function successMessage(preprint: Preprint, doi: Doi) {
   return page({
     title: plainText`PREreview posted`,
     content: html`
@@ -343,15 +344,13 @@ function successMessage(doi: Doi) {
 
         <p>You’ll be able to see your PREreview shortly.</p>
 
-        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="button">
-          Back to preprint
-        </a>
+        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
     `,
   })
 }
 
-function failureMessage() {
+function failureMessage(preprint: Preprint) {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
@@ -362,9 +361,7 @@ function failureMessage() {
 
         <p>Please try again later.</p>
 
-        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="button">
-          Back to preprint
-        </a>
+        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
     `,
   })
