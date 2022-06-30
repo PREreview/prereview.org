@@ -98,10 +98,6 @@ function failureMessage() {
         <p>We’re unable to show the PREreview now.</p>
 
         <p>Please try again later.</p>
-
-        <a href="${format(preprintMatch.formatter, { doi: '10.1101/2022.01.13.476201' as Doi })}" class="button">
-          Back to preprint
-        </a>
       </main>
     `,
   })
