@@ -14,7 +14,7 @@ import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
-import { Store } from 'keyv'
+import Keyv from 'keyv'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
@@ -81,7 +81,7 @@ export interface GetPreprintTitleEnv {
 }
 
 export interface FormStoreEnv {
-  formStore: Store<JsonRecord>
+  formStore: Keyv<JsonRecord>
 }
 
 const getPreprint = (doi: Doi) =>
