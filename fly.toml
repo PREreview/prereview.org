@@ -1,7 +1,12 @@
 app = "prereview"
 
 [env]
+DB_PATH = "/data/db.sqlite"
 PUBLIC_URL = "https://prereview.fly.dev/"
+
+[mounts]
+source = "prereview_data"
+destination = "/data"
 
 [[services]]
 internal_port = 3000

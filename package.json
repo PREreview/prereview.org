@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@godaddy/terminus": "^4.11.0",
+    "@keyv/sqlite": "^3.5.2",
     "clock-ts": "^0.1.0",
     "doi-ts": "^0.1.1",
     "express": "^4.18.1",

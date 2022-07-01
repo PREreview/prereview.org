@@ -22,6 +22,7 @@ export const UrlD = pipe(
 )
 
 const EnvD = D.struct({
+  DB_PATH: D.string,
   ORCID_CLIENT_ID: D.string,
   ORCID_CLIENT_SECRET: D.string,
   PUBLIC_URL: UrlD,
@@ -39,7 +40,7 @@ const env = pipe(
 const deps: AppEnv = {
   clock: SystemClock,
   fetch: nodeFetch,
-  formStore: new Keyv(),
+  formStore: new Keyv(`sqlite://${env.DB_PATH}`, { namespace: 'forms' }),
   logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
   oauth: {
     authorizeUrl: new URL('https://orcid.org/oauth/authorize'),
@@ -50,7 +51,7 @@ const deps: AppEnv = {
   },
   publicUrl: env.PUBLIC_URL,
   secret: env.SECRET,
-  sessionStore: new Keyv(),
+  sessionStore: new Keyv(`sqlite://${env.DB_PATH}`, { namespace: 'sessions' }),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: new URL('https://sandbox.zenodo.org/'),
 }
