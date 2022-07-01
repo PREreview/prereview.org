@@ -79,13 +79,16 @@ test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
     await page.focus('role=textbox[name="Write your PREreview"]')
-    await page.keyboard.type('Lorem ipsum dolor sit amet, *consectetur* ')
+    await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
     await page.keyboard.press('Control+b')
     await page.keyboard.type('adipiscing elit')
     await page.keyboard.press('Control+b')
     await page.keyboard.type('.')
   } else {
-    await page.fill('text="Write your PREreview"', 'Lorem ipsum dolor sit amet, *consectetur* <b>adipiscing elit</b>.')
+    await page.fill(
+      'text="Write your PREreview"',
+      'Lorem ipsum dolor sit "amet", *consectetur* <b>adipiscing elit</b>.',
+    )
   }
 
   await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
@@ -109,7 +112,11 @@ test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => 
   const preview = page.locator('role=blockquote[name="Check your PREreview"]')
 
   await expect(preview).toContainText('Josiah Carberry')
-  await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  if (javaScriptEnabled) {
+    await expect(preview).toContainText('Lorem ipsum dolor sit “amet”, consectetur adipiscing elit.')
+  } else {
+    await expect(preview).toContainText('Lorem ipsum dolor sit "amet", consectetur adipiscing elit.')
+  }
   await expect(page).toHaveScreenshot()
 
   fetch

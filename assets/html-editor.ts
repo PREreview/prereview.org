@@ -1,11 +1,13 @@
 void (async () => {
-  const [{ Editor }, { Link }, { Subscript }, { Superscript }, { default: StarterKit }] = await Promise.all([
-    import('@tiptap/core'),
-    import('@tiptap/extension-link'),
-    import('@tiptap/extension-subscript'),
-    import('@tiptap/extension-superscript'),
-    import('@tiptap/starter-kit'),
-  ])
+  const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { default: StarterKit }] =
+    await Promise.all([
+      import('@tiptap/core'),
+      import('@tiptap/extension-link'),
+      import('@tiptap/extension-subscript'),
+      import('@tiptap/extension-superscript'),
+      import('@tiptap/extension-typography'),
+      import('@tiptap/starter-kit'),
+    ])
 
   class HtmlEditor extends HTMLElement {
     static element = 'html-editor' as const
@@ -47,6 +49,7 @@ void (async () => {
           }),
           Subscript,
           Superscript,
+          Typography,
         ],
         content: new DOMParser().parseFromString(textArea.innerHTML, 'text/html').documentElement.textContent,
       })
