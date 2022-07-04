@@ -27,6 +27,8 @@ import {
   orcidCodeMatch,
   preprintMatch,
   reviewMatch,
+  writeReviewAddAuthorsMatch,
+  writeReviewAuthorsMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
@@ -36,6 +38,8 @@ import {
 import {
   FormStoreEnv,
   writeReview,
+  writeReviewAddAuthors,
+  writeReviewAuthors,
   writeReviewConduct,
   writeReviewPersona,
   writeReviewPost,
@@ -85,6 +89,14 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewPersonaMatch.parser,
           R.map(({ doi }) => writeReviewPersona(doi)),
+        ),
+        pipe(
+          writeReviewAuthorsMatch.parser,
+          R.map(({ doi }) => writeReviewAuthors(doi)),
+        ),
+        pipe(
+          writeReviewAddAuthorsMatch.parser,
+          R.map(({ doi }) => writeReviewAddAuthors(doi)),
         ),
         pipe(
           writeReviewConductMatch.parser,

@@ -26,6 +26,8 @@ import { page } from './page'
 import {
   logInMatch,
   preprintMatch,
+  writeReviewAddAuthorsMatch,
+  writeReviewAuthorsMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
@@ -43,6 +45,10 @@ const PersonaFormC = C.struct({
   persona: C.literal('public', 'anonymous'),
 })
 
+const AuthorsFormC = C.struct({
+  moreAuthors: C.literal('yes', 'no'),
+})
+
 const CodeOfConductFormC = C.struct({
   conduct: C.literal('yes'),
 })
@@ -50,10 +56,16 @@ const CodeOfConductFormC = C.struct({
 const FormC = C.partial({
   review: NonEmptyStringC,
   persona: C.literal('public', 'anonymous'),
+  moreAuthors: C.literal('yes', 'no'),
   conduct: C.literal('yes'),
 })
 
-const CompletedFormC = pipe(ReviewFormC, C.intersect(PersonaFormC), C.intersect(CodeOfConductFormC))
+const CompletedFormC = pipe(
+  ReviewFormC,
+  C.intersect(PersonaFormC),
+  C.intersect(AuthorsFormC),
+  C.intersect(CodeOfConductFormC),
+)
 
 type Form = C.TypeOf<typeof FormC>
 type CompletedForm = C.TypeOf<typeof CompletedFormC>
@@ -93,11 +105,14 @@ const getPreprint = (doi: Doi) =>
 
 const showNextForm = (preprint: Preprint) => (form: Form) =>
   match(form)
-    .with({ review: P.string, persona: P.string, conduct: P.string }, () =>
+    .with({ review: P.string, persona: P.string, moreAuthors: P.string, conduct: P.string }, () =>
       seeOther(format(writeReviewPostMatch.formatter, { doi: preprint.doi })),
     )
-    .with({ review: P.string, persona: P.string }, () =>
+    .with({ review: P.string, persona: P.string, moreAuthors: P.string }, () =>
       seeOther(format(writeReviewConductMatch.formatter, { doi: preprint.doi })),
+    )
+    .with({ review: P.string, persona: P.string }, () =>
+      seeOther(format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })),
     )
     .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })))
     .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint.doi })))
@@ -150,6 +165,43 @@ export const writeReviewPersona = flow(
   RM.orElseMiddlewareK(() => handleError(new NotFound())),
 )
 
+export const writeReviewAuthors = flow(
+  RM.fromReaderTaskEitherK(getPreprint),
+  RM.ichainW(preprint =>
+    pipe(
+      RM.right({ preprint }),
+      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
+      RM.apSW('method', RM.decodeMethod(E.right)),
+      RM.ichainW(state =>
+        match(state).with({ method: 'POST' }, handleAuthorsForm).otherwise(fromMiddlewareK(showAuthorsForm)),
+      ),
+      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+    ),
+  ),
+  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+)
+
+export const writeReviewAddAuthors = flow(
+  RM.fromReaderTaskEitherK(getPreprint),
+  RM.ichainW(preprint =>
+    pipe(
+      RM.right({ preprint }),
+      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
+      RM.apSW('method', RM.decodeMethod(E.right)),
+      RM.ichainMiddlewareKW(state =>
+        match(state)
+          .with({ form: P.select({ moreAuthors: 'yes' }), method: 'POST' }, showNextForm(preprint))
+          .with({ form: { moreAuthors: 'yes' } }, showAddAuthorsForm)
+          .otherwise(() => handleError(new NotFound())),
+      ),
+      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+    ),
+  ),
+  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+)
+
 export const writeReviewConduct = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
@@ -179,8 +231,14 @@ export const writeReviewPost = flow(
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state)
-          .with({ method: 'POST', form: { review: P.string, persona: P.string, conduct: P.string } }, handlePostForm)
-          .with({ form: { review: P.string, persona: P.string, conduct: P.string } }, fromMiddlewareK(showPostForm))
+          .with(
+            { method: 'POST', form: { review: P.string, persona: P.string, moreAuthors: P.string, conduct: P.string } },
+            handlePostForm,
+          )
+          .with(
+            { form: { review: P.string, persona: P.string, moreAuthors: P.string, conduct: P.string } },
+            fromMiddlewareK(showPostForm),
+          )
           .otherwise(flow(({ form }) => form, fromMiddlewareK(showNextForm(preprint)))),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
@@ -210,6 +268,24 @@ const showPersonaErrorForm = (preprint: Preprint, user: User) =>
   pipe(
     M.status(Status.BadRequest),
     M.ichain(() => pipe(personaForm(preprint, {}, user, true), sendHtml)),
+  )
+
+const showAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  pipe(
+    M.status(Status.OK),
+    M.ichain(() => pipe(authorsForm(preprint, form, user), sendHtml)),
+  )
+
+const showAuthorsErrorForm = (preprint: Preprint, user: User) =>
+  pipe(
+    M.status(Status.BadRequest),
+    M.ichain(() => pipe(authorsForm(preprint, {}, user, true), sendHtml)),
+  )
+
+const showAddAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  pipe(
+    M.status(Status.OK),
+    M.ichain(() => pipe(addAuthorsForm(preprint, form, user), sendHtml)),
   )
 
 const showCodeOfConductForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
@@ -246,6 +322,21 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint)),
     RM.orElseMiddlewareK(() => showPersonaErrorForm(preprint, user)),
+  )
+
+const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  pipe(
+    RM.decodeBody(AuthorsFormC.decode),
+    RM.map(updateForm(form)),
+    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+    RM.ichainMiddlewareKW(form =>
+      match(form)
+        .with({ moreAuthors: 'yes' }, () =>
+          seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })),
+        )
+        .otherwise(showNextForm(preprint)),
+    ),
+    RM.orElseMiddlewareK(() => showAuthorsErrorForm(preprint, user)),
   )
 
 const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -414,7 +505,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
     title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
     content: html`
       <nav>
-        <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
       <main>
@@ -476,6 +567,90 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
                 <input name="conduct" type="checkbox" value="yes" ${rawHtml(form.conduct === 'yes' ? 'checked' : '')} />
                 <span>I’m following the Code&nbsp;of&nbsp;Conduct</span>
               </label>
+            </fieldset>
+          </div>
+
+          <button>Next</button>
+        </form>
+      </main>
+    `,
+  })
+}
+
+function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = false) {
+  return page({
+    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
+    content: html`
+      <nav>
+        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+      </nav>
+
+      <main>
+        <form method="post" novalidate>
+          <h1>Add more authors</h1>
+
+          <p>Unfortunately, we’re unable to add more authors now.</p>
+
+          <p>Once you have posted your PREreview, please let us know their details, and we’ll add them.</p>
+
+          <button>Next</button>
+        </form>
+      </main>
+    `,
+  })
+}
+
+function authorsForm(preprint: Preprint, form: Form, user: User, error = false) {
+  return page({
+    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
+    content: html`
+      <nav>
+        <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+      </nav>
+
+      <main>
+        <form method="post" novalidate>
+          <div ${rawHtml(error ? 'class="error"' : '')}>
+            <fieldset
+              role="group"
+              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="more-authors-error"' : '')}
+            >
+              <legend>
+                <h1>Did anyone else write the PREreview?</h1>
+              </legend>
+
+              ${error
+                ? html`
+                    <div id="more-authors-error" role="alert">
+                      <span class="visually-hidden">Error:</span> Select yes if someone else wrote the PREreview.
+                    </div>
+                  `
+                : ''}
+
+              <ol>
+                <li>
+                  <label>
+                    <input
+                      name="moreAuthors"
+                      type="radio"
+                      value="no"
+                      ${rawHtml(form.moreAuthors === 'no' ? 'checked' : '')}
+                    />
+                    <span>No, only me</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="moreAuthors"
+                      type="radio"
+                      value="yes"
+                      ${rawHtml(form.moreAuthors === 'yes' ? 'checked' : '')}
+                    />
+                    <span>Yes</span>
+                  </label>
+                </li>
+              </ol>
             </fieldset>
           </div>
 

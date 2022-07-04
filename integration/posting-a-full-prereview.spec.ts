@@ -103,6 +103,12 @@ test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => 
 
   await page.click('text="Next"')
 
+  await page.check('text="No, only me"')
+
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Next"')
+
   await page.check('text="I’m following the Code of Conduct"')
 
   await expect(page).toHaveScreenshot()
@@ -185,6 +191,158 @@ test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => 
   await expect(review).toHaveScreenshot()
 })
 
+test('can post a full PREreview with more authors', async ({ fetch, javaScriptEnabled, page }) => {
+  const record: Record = {
+    conceptdoi: '10.5072/zenodo.1055807' as Doi,
+    conceptrecid: 1055807,
+    id: 1055808,
+    links: {
+      latest: new URL('http://example.com/latest'),
+      latest_html: new URL('http://example.com/latest_html'),
+    },
+    metadata: {
+      communities: [{ id: 'prereview-reviews' }],
+      creators: [{ name: 'PREreviewer' }],
+      description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
+      doi: '10.5072/zenodo.1055808' as Doi,
+      license: {
+        id: 'CC-BY-4.0',
+      },
+      related_identifiers: [
+        {
+          identifier: '10.1101/2022.01.13.476201',
+          relation: 'reviews',
+          resource_type: 'publication-preprint',
+          scheme: 'doi',
+        },
+        {
+          identifier: '10.5072/zenodo.1055807',
+          relation: 'isVersionOf',
+          scheme: 'doi',
+        },
+      ],
+      resource_type: {
+        type: 'publication',
+        subtype: 'article',
+      },
+      title: 'Review of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+    },
+  }
+
+  fetch.get(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { hits: [] } }) },
+  )
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.click('text="Write a PREreview"')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
+  await page.click('text="Next"')
+  await page.check('text="Josiah Carberry"')
+  await page.click('text="Next"')
+  await page.check('text="Yes"')
+  await page.click('text="Next"')
+
+  await expect(page.locator('main')).toContainText('Add more authors')
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Next"')
+
+  await page.check('text="I’m following the Code of Conduct"')
+  await page.click('text="Next"')
+
+  const preview = page.locator('role=blockquote[name="Check your PREreview"]')
+
+  await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+
+  fetch
+    .postOnce('http://zenodo.test/api/deposit/depositions', {
+      body: UnsubmittedDepositionC.encode({
+        ...record,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+        },
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          prereserve_doi: {
+            doi: record.metadata.doi,
+          },
+          upload_type: 'publication',
+          publication_type: 'article',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }),
+      status: Status.Created,
+    })
+    .putOnce('http://example.com/bucket/review.html', {
+      status: Status.Created,
+    })
+    .postOnce('http://example.com/publish', {
+      body: SubmittedDepositionC.encode({
+        ...record,
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          upload_type: 'publication',
+          publication_type: 'article',
+        },
+        state: 'done',
+        submitted: true,
+      }),
+      status: Status.Accepted,
+    })
+
+  await page.click('text="Post PREreview"')
+
+  const main = page.locator('main')
+  const h1 = main.locator('h1')
+
+  await expect(h1).toContainText('PREreview posted')
+  await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
+
+  fetch.get(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { hits: [record] } }) },
+    { overwriteRoutes: true },
+  )
+
+  await page.click('text="Back to preprint"')
+
+  const review = page.locator('main article').first()
+
+  await expect(review).toContainText('Vestibulum nulla turpis')
+})
+
 test('can post a full PREreview anonymously', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055807' as Doi,
@@ -257,6 +415,8 @@ test('can post a full PREreview anonymously', async ({ fetch, javaScriptEnabled,
   )
   await page.click('text="Next"')
   await page.check('text="PREreviewer"')
+  await page.click('text="Next"')
+  await page.check('text="No, only me"')
   await page.click('text="Next"')
   await page.check('text="I’m following the Code of Conduct"')
   await page.click('text="Next"')
@@ -358,6 +518,8 @@ test('can change the review after previewing', async ({ fetch, javaScriptEnabled
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
+  await page.check('text="No, only me"')
+  await page.click('text="Next"')
   await page.check('text="I’m following the Code of Conduct"')
   await page.click('text="Next"')
 
@@ -410,6 +572,8 @@ test('can change publish-as name after previewing', async ({ fetch, javaScriptEn
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
+  await page.check('text="No, only me"')
+  await page.click('text="Next"')
   await page.check('text="I’m following the Code of Conduct"')
   await page.click('text="Next"')
 
@@ -451,6 +615,8 @@ test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) 
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
+  await page.check('text="No, only me"')
+  await page.click('text="Next"')
   await page.check('text="I’m following the Code of Conduct"')
   await page.click('text="Next"')
 
@@ -459,6 +625,10 @@ test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) 
   await page.goBack()
 
   await expect(page.locator('text="I’m following the Code of Conduct"')).toBeChecked()
+
+  await page.goBack()
+
+  await expect(page.locator('text="No, only me"')).toBeChecked()
 
   await page.goBack()
 
@@ -505,6 +675,8 @@ test('see existing values when going back a step', async ({ fetch, javaScriptEna
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
+  await page.check('text="No, only me"')
+  await page.click('text="Next"')
   await page.check('text="I’m following the Code of Conduct"')
   await page.click('text="Next"')
 
@@ -513,6 +685,10 @@ test('see existing values when going back a step', async ({ fetch, javaScriptEna
   await page.click('text="Back"')
 
   await expect(page.locator('text="I’m following the Code of Conduct"')).toBeChecked()
+
+  await page.click('text="Back"')
+
+  await expect(page.locator('text="No, only me"')).toBeChecked()
 
   await page.click('text="Back"')
 
@@ -624,6 +800,44 @@ test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(error).toHaveScreenshot()
 })
 
+test('have to say if there are more authors', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
+  await page.click('text="Next"')
+
+  await page.click('text="Next"')
+  await page.check('text="Josiah Carberry"')
+  await page.click('text="Next"')
+
+  await page.click('text="Next"')
+
+  const error = page.locator('form:has([aria-invalid])')
+
+  await expect(error).toContainText('Error: Select yes if someone else wrote the PREreview.')
+  await expect(error).toHaveScreenshot()
+})
+
 test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
   await page.click('text="Start now"')
@@ -650,6 +864,8 @@ test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, 
   )
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
+  await page.click('text="Next"')
+  await page.check('text="No, only me"')
   await page.click('text="Next"')
 
   await page.click('text="Next"')
