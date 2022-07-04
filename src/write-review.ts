@@ -17,7 +17,6 @@ import * as C from 'io-ts/Codec'
 import Keyv from 'keyv'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
@@ -109,7 +108,7 @@ export const writeReview = flow(
     pipe(
       getSession(),
       RM.chainEitherKW(UserC.decode),
-      RM.chainReaderTaskKW(flow(get('orcid'), getForm)),
+      RM.chainReaderTaskKW(user => getForm(user.orcid, preprint.doi)),
       RM.ichainMiddlewareKW(showNextForm(preprint)),
       RM.orElseMiddlewareK(() => showStartPage(preprint)),
     ),
@@ -123,7 +122,7 @@ export const writeReviewReview = flow(
     pipe(
       RM.right({ preprint }),
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
-      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
+      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state).with({ method: 'POST' }, handleReviewForm).otherwise(fromMiddlewareK(showReviewForm)),
@@ -140,7 +139,7 @@ export const writeReviewPersona = flow(
     pipe(
       RM.right({ preprint }),
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
-      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
+      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(fromMiddlewareK(showPersonaForm)),
@@ -157,7 +156,7 @@ export const writeReviewConduct = flow(
     pipe(
       RM.right({ preprint }),
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
-      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
+      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state)
@@ -176,7 +175,7 @@ export const writeReviewPost = flow(
     pipe(
       RM.right({ preprint }),
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
-      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid))),
+      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state)
@@ -196,7 +195,7 @@ const handlePostForm = ({ form, preprint, user }: { form: Form; preprint: Prepri
     RM.apS('preprint', RM.right(preprint)),
     RM.apS('user', RM.right(user)),
     RM.chainReaderTaskEitherK(createRecord),
-    RM.chainFirstReaderTaskKW(() => deleteForm(user.orcid)),
+    RM.chainFirstReaderTaskKW(() => deleteForm(user.orcid, preprint.doi)),
     RM.ichainW(deposition => showSuccessMessage(preprint, deposition.metadata.doi)),
     RM.orElseW(() => showFailureMessage(preprint)),
   )
@@ -229,7 +228,7 @@ const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Prep
   pipe(
     RM.decodeBody(ReviewFormC.decode),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid)),
+    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint)),
     RM.orElseMiddlewareK(() => showReviewErrorForm(preprint)),
   )
@@ -244,7 +243,7 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
   pipe(
     RM.decodeBody(PersonaFormC.decode),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid)),
+    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint)),
     RM.orElseMiddlewareK(() => showPersonaErrorForm(preprint, user)),
   )
@@ -253,7 +252,7 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
   pipe(
     RM.decodeBody(CodeOfConductFormC.decode),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid)),
+    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint)),
     RM.orElseMiddlewareK(() => showCodeOfConductErrorForm(preprint)),
   )
@@ -293,9 +292,9 @@ const showStartPage = (preprint: Preprint) =>
     M.ichain(() => pipe(startPage(preprint), sendHtml)),
   )
 
-function getForm(user: Orcid): ReaderTask<FormStoreEnv, Form> {
+function getForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv, Form> {
   return flow(
-    TE.tryCatchK(async ({ formStore }) => await formStore.get(user), constant('no-new-review')),
+    TE.tryCatchK(async ({ formStore }) => await formStore.get(`${user}_${preprint}`), constant('no-new-review')),
     TE.chainEitherKW(FormC.decode),
     TE.getOrElse(() => T.of({})),
   )
@@ -305,20 +304,20 @@ function updateForm(originalForm: Form): (newForm: Form) => Form {
   return newForm => getAssignSemigroup<Form>().concat(originalForm, newForm)
 }
 
-function saveForm(user: Orcid): (form: Form) => ReaderTask<FormStoreEnv, void> {
+function saveForm(user: Orcid, preprint: Doi): (form: Form) => ReaderTask<FormStoreEnv, void> {
   return form =>
     flow(
       TE.tryCatchK(async ({ formStore }) => {
-        await formStore.set(user, FormC.encode(form))
+        await formStore.set(`${user}_${preprint}`, FormC.encode(form))
       }, constVoid),
       TE.toUnion,
     )
 }
 
-function deleteForm(user: Orcid): ReaderTask<FormStoreEnv, void> {
+function deleteForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv, void> {
   return flow(
     TE.tryCatchK(async ({ formStore }) => {
-      await formStore.delete(user)
+      await formStore.delete(`${user}_${preprint}`)
     }, constVoid),
     TE.toUnion,
   )

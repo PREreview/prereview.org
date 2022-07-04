@@ -37,7 +37,7 @@ describe('write-review', () => {
               const sessionStore = new Keyv()
               await sessionStore.set(sessionId, UserC.encode(user))
               const formStore = new Keyv()
-              await formStore.set(user.orcid, newReview)
+              await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
               const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
                 TE.right(preprintTitle),
               )
@@ -209,7 +209,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
               TE.right(preprintTitle),
             )
@@ -218,7 +218,7 @@ describe('write-review', () => {
               connection,
             )()
 
-            expect(await formStore.get(user.orcid)).toMatchObject({ review })
+            expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ review })
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
@@ -276,7 +276,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.right(preprintTitle)
 
             const actual = await runMiddleware(
@@ -284,7 +284,7 @@ describe('write-review', () => {
               connection,
             )()
 
-            expect(await formStore.get(user.orcid)).toMatchObject({ review })
+            expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ review })
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
@@ -332,7 +332,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.left(error)
             const actual = await runMiddleware(
               _.writeReviewReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
@@ -416,7 +416,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.right(preprintTitle)
 
             const actual = await runMiddleware(
@@ -470,7 +470,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
               TE.right(preprintTitle),
             )
@@ -479,7 +479,7 @@ describe('write-review', () => {
               connection,
             )()
 
-            expect(await formStore.get(user.orcid)).toMatchObject({ persona })
+            expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ persona })
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
@@ -539,7 +539,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.right(preprintTitle)
 
             const actual = await runMiddleware(
@@ -547,7 +547,7 @@ describe('write-review', () => {
               connection,
             )()
 
-            expect(await formStore.get(user.orcid)).toMatchObject({ persona })
+            expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ persona })
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
@@ -597,7 +597,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.left(error)
 
             const actual = await runMiddleware(
@@ -682,7 +682,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.right(preprintTitle)
 
             const actual = await runMiddleware(
@@ -733,7 +733,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
               TE.right(preprintTitle),
             )
@@ -743,7 +743,7 @@ describe('write-review', () => {
               connection,
             )()
 
-            expect(await formStore.get(user.orcid)).toMatchObject({ conduct: 'yes' })
+            expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ conduct: 'yes' })
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
@@ -800,7 +800,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.right(preprintTitle)
 
             const actual = await runMiddleware(
@@ -808,7 +808,7 @@ describe('write-review', () => {
               connection,
             )()
 
-            expect(await formStore.get(user.orcid)).toMatchObject({ conduct: 'yes' })
+            expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ conduct: 'yes' })
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
@@ -856,7 +856,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.left(error)
 
             const actual = await runMiddleware(
@@ -941,7 +941,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.right(preprintTitle)
 
             const actual = await runMiddleware(
@@ -988,7 +988,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
               TE.right(preprintTitle),
             )
@@ -1083,7 +1083,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newPrereview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newPrereview)
             const getPreprintTitle = () => TE.right(preprintTitle)
 
             const actual = await runMiddleware(
@@ -1143,7 +1143,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.left(error)
             const createRecord = () => () => Promise.reject('should not be called')
 
@@ -1232,7 +1232,7 @@ describe('write-review', () => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
-            await formStore.set(user.orcid, newReview)
+            await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
             const getPreprintTitle = () => TE.right(preprintTitle)
 
             const actual = await runMiddleware(
