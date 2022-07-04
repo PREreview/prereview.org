@@ -256,22 +256,16 @@ describe('write-review', () => {
             ),
           ),
           fc.user(),
-          fc.oneof(
-            fc.record(
+          fc
+            .record(
               {
+                conduct: fc.constant('yes'),
                 persona: fc.constantFrom('public', 'anonymous'),
                 review: fc.nonEmptyString(),
               },
               { withDeletedKeys: true },
-            ),
-            fc.record(
-              {
-                conduct: fc.constant('yes'),
-                review: fc.nonEmptyString(),
-              },
-              { withDeletedKeys: true },
-            ),
-          ),
+            )
+            .filter(newReview => Object.keys(newReview).length < 3),
           async (preprintDoi, preprintTitle, [review, connection, sessionId, secret], user, newReview) => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
@@ -521,22 +515,16 @@ describe('write-review', () => {
               ),
             ),
           fc.user(),
-          fc.oneof(
-            fc.record(
+          fc
+            .record(
               {
                 conduct: fc.constant('yes'),
-                persona: fc.constantFrom('public', 'anonymous'),
-              },
-              { withDeletedKeys: true },
-            ),
-            fc.record(
-              {
                 persona: fc.constantFrom('public', 'anonymous'),
                 review: fc.nonEmptyString(),
               },
               { withDeletedKeys: true },
-            ),
-          ),
+            )
+            .filter(newReview => Object.keys(newReview).length < 3),
           async (preprintDoi, preprintTitle, [persona, connection, sessionId, secret], user, newReview) => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
@@ -587,15 +575,13 @@ describe('write-review', () => {
             ),
           ),
           fc.user(),
-          fc.oneof(
-            fc.record(
-              {
-                conduct: fc.constant('yes'),
-                persona: fc.constantFrom('public', 'anonymous'),
-                review: fc.nonEmptyString(),
-              },
-              { withDeletedKeys: true },
-            ),
+          fc.record(
+            {
+              conduct: fc.constant('yes'),
+              persona: fc.constantFrom('public', 'anonymous'),
+              review: fc.nonEmptyString(),
+            },
+            { withDeletedKeys: true },
           ),
           async (preprintDoi, error, [connection, sessionId, secret], user, newReview) => {
             const sessionStore = new Keyv()
@@ -784,22 +770,16 @@ describe('write-review', () => {
             ),
           ),
           fc.user(),
-          fc.oneof(
-            fc.record(
+          fc
+            .record(
               {
                 conduct: fc.constant('yes'),
                 persona: fc.constantFrom('public', 'anonymous'),
-              },
-              { withDeletedKeys: true },
-            ),
-            fc.record(
-              {
-                conduct: fc.constant('yes'),
                 review: fc.nonEmptyString(),
               },
               { withDeletedKeys: true },
-            ),
-          ),
+            )
+            .filter(newReview => Object.keys(newReview).length < 3),
           async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
@@ -1058,32 +1038,16 @@ describe('write-review', () => {
               fc.constant(secret),
             ),
           ),
-          fc.oneof(
-            fc.record(
+          fc
+            .record(
               {
-                conduct: fc.string(),
-                persona: fc.constantFrom('public', 'anonymous'),
-                review: fc.lorem(),
+                conduct: fc.oneof(fc.constant('yes'), fc.string()),
+                persona: fc.oneof(fc.constantFrom('public', 'anonymous'), fc.string()),
+                review: fc.oneof(fc.lorem(), fc.constant('')),
               },
-              { requiredKeys: ['persona', 'review'] },
-            ),
-            fc.record(
-              {
-                conduct: fc.constant('yes'),
-                persona: fc.string(),
-                review: fc.lorem(),
-              },
-              { requiredKeys: ['conduct', 'review'] },
-            ),
-            fc.record(
-              {
-                conduct: fc.constant('yes'),
-                persona: fc.constantFrom('public', 'anonymous'),
-                review: fc.constant(''),
-              },
-              { requiredKeys: ['conduct', 'persona'] },
-            ),
-          ),
+              { withDeletedKeys: true },
+            )
+            .filter(newReview => Object.keys(newReview).length < 3),
           fc.user(),
           async (preprintDoi, preprintTitle, [connection, sessionId, secret], newPrereview, user) => {
             const sessionStore = new Keyv()
