@@ -55,7 +55,7 @@ describe('write-review', () => {
                     name: 'Location',
                     value: `/preprints/doi-${encodeURIComponent(
                       preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
-                    )}/review/post`,
+                    )}/prereview/check-your-prereview`,
                   },
                   { type: 'endResponse' },
                 ]),
@@ -101,7 +101,7 @@ describe('write-review', () => {
                     name: 'Location',
                     value: `/preprints/doi-${encodeURIComponent(
                       preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
-                    )}/review/review`,
+                    )}/prereview/write-your-prereview`,
                   },
                   { type: 'endResponse' },
                 ]),
@@ -227,7 +227,7 @@ describe('write-review', () => {
                   name: 'Location',
                   value: `/preprints/doi-${encodeURIComponent(
                     preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
-                  )}/review/post`,
+                  )}/prereview/check-your-prereview`,
                 },
                 { type: 'endResponse' },
               ]),
@@ -292,7 +292,9 @@ describe('write-review', () => {
                   type: 'setHeader',
                   name: 'Location',
                   value: expect.stringContaining(
-                    `/preprints/doi-${encodeURIComponent(preprintDoi.replace(/-/g, '+').replace(/\//g, '-'))}/review/`,
+                    `/preprints/doi-${encodeURIComponent(
+                      preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                    )}/prereview/`,
                   ),
                 },
                 { type: 'endResponse' },
@@ -377,7 +379,7 @@ describe('write-review', () => {
                   name: 'Location',
                   value: `/preprints/doi-${encodeURIComponent(
                     preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
-                  )}/review`,
+                  )}/prereview`,
                 },
                 { type: 'endResponse' },
               ]),
@@ -488,7 +490,7 @@ describe('write-review', () => {
                   name: 'Location',
                   value: `/preprints/doi-${encodeURIComponent(
                     preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
-                  )}/review/post`,
+                  )}/prereview/check-your-prereview`,
                 },
                 { type: 'endResponse' },
               ]),
@@ -555,7 +557,9 @@ describe('write-review', () => {
                   type: 'setHeader',
                   name: 'Location',
                   value: expect.stringContaining(
-                    `/preprints/doi-${encodeURIComponent(preprintDoi.replace(/-/g, '+').replace(/\//g, '-'))}/review/`,
+                    `/preprints/doi-${encodeURIComponent(
+                      preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                    )}/prereview/`,
                   ),
                 },
                 { type: 'endResponse' },
@@ -643,7 +647,7 @@ describe('write-review', () => {
                   name: 'Location',
                   value: `/preprints/doi-${encodeURIComponent(
                     preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
-                  )}/review`,
+                  )}/prereview`,
                 },
                 { type: 'endResponse' },
               ]),
@@ -752,7 +756,7 @@ describe('write-review', () => {
                   name: 'Location',
                   value: `/preprints/doi-${encodeURIComponent(
                     preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
-                  )}/review/post`,
+                  )}/prereview/check-your-prereview`,
                 },
                 { type: 'endResponse' },
               ]),
@@ -816,7 +820,9 @@ describe('write-review', () => {
                   type: 'setHeader',
                   name: 'Location',
                   value: expect.stringContaining(
-                    `/preprints/doi-${encodeURIComponent(preprintDoi.replace(/-/g, '+').replace(/\//g, '-'))}/review/`,
+                    `/preprints/doi-${encodeURIComponent(
+                      preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                    )}/prereview/`,
                   ),
                 },
                 { type: 'endResponse' },
@@ -902,7 +908,7 @@ describe('write-review', () => {
                   name: 'Location',
                   value: `/preprints/doi-${encodeURIComponent(
                     preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
-                  )}/review`,
+                  )}/prereview`,
                 },
                 { type: 'endResponse' },
               ]),
@@ -1104,7 +1110,9 @@ describe('write-review', () => {
                   type: 'setHeader',
                   name: 'Location',
                   value: expect.stringContaining(
-                    `/preprints/doi-${encodeURIComponent(preprintDoi.replace(/-/g, '+').replace(/\//g, '-'))}/review/`,
+                    `/preprints/doi-${encodeURIComponent(
+                      preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
+                    )}/prereview/`,
                   ),
                 },
                 { type: 'endResponse' },
@@ -1196,7 +1204,7 @@ describe('write-review', () => {
                   name: 'Location',
                   value: `/preprints/doi-${encodeURIComponent(
                     preprintDoi.replace(/-/g, '+').replace(/\//g, '-'),
-                  )}/review`,
+                  )}/prereview`,
                 },
                 { type: 'endResponse' },
               ]),

@@ -54,17 +54,17 @@ export const preprintMatch = pipe(R.lit('preprints'), R.then(type('doi', Preprin
 
 export const reviewMatch = pipe(R.lit('reviews'), R.then(type('id', IntegerFromStringC)), R.then(R.end))
 
-const writeReviewBaseMatch = pipe(R.lit('preprints'), R.then(type('doi', PreprintDoiC)), R.then(R.lit('review')))
+const writeReviewBaseMatch = pipe(R.lit('preprints'), R.then(type('doi', PreprintDoiC)), R.then(R.lit('prereview')))
 
 export const writeReviewMatch = pipe(writeReviewBaseMatch, R.then(R.end))
 
-export const writeReviewReviewMatch = pipe(writeReviewBaseMatch, R.then(R.lit('review')), R.then(R.end))
+export const writeReviewReviewMatch = pipe(writeReviewBaseMatch, R.then(R.lit('write-your-prereview')), R.then(R.end))
 
-export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, R.then(R.lit('persona')), R.then(R.end))
+export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, R.then(R.lit('publish-as')), R.then(R.end))
 
-export const writeReviewConductMatch = pipe(writeReviewBaseMatch, R.then(R.lit('conduct')), R.then(R.end))
+export const writeReviewConductMatch = pipe(writeReviewBaseMatch, R.then(R.lit('code-of-conduct')), R.then(R.end))
 
-export const writeReviewPostMatch = pipe(writeReviewBaseMatch, R.then(R.lit('post')), R.then(R.end))
+export const writeReviewPostMatch = pipe(writeReviewBaseMatch, R.then(R.lit('check-your-prereview')), R.then(R.end))
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
 function query<A>(codec: C.Codec<unknown, Record<string, R.QueryValues>, A>): R.Match<A> {
