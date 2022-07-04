@@ -169,6 +169,10 @@ article {
   @nest :not(aside) > & {
     margin-block-start: var(--space-l);
   }
+
+  & > header > :first-child {
+    margin-block-start: 0;
+  }
 }
 
 :--heading {
@@ -765,6 +769,7 @@ html-editor {
       overflow-y: auto;
       overscroll-behavior-y: contain;
       scrollbar-gutter: stable;
+      padding-block-start: var(--space-m);
 
       &:focus-visible {
         outline-offset: calc(-1 * var(--width-divider));
