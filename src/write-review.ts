@@ -254,7 +254,7 @@ const handlePostForm = ({ form, preprint, user }: { form: Form; preprint: Prepri
     RM.apS('user', RM.right(user)),
     RM.chainReaderTaskEitherK(createRecord),
     RM.chainFirstReaderTaskKW(() => deleteForm(user.orcid, preprint.doi)),
-    RM.ichainW(deposition => showSuccessMessage(preprint, deposition.metadata.doi)),
+    RM.ichainW(deposition => showSuccessMessage(preprint, deposition.metadata.doi, form.moreAuthors === 'yes')),
     RM.orElseW(() => showFailureMessage(preprint)),
   )
 
@@ -363,11 +363,11 @@ const showReviewErrorForm = (preprint: Preprint) =>
     M.ichain(() => pipe(reviewForm(preprint, {}, true), sendHtml)),
   )
 
-const showSuccessMessage = (preprint: Preprint, doi: Doi) =>
+const showSuccessMessage = (preprint: Preprint, doi: Doi, moreAuthors: boolean) =>
   pipe(
     RM.status(Status.OK),
     RM.ichainFirst(() => endSession()),
-    RM.ichainMiddlewareK(() => pipe(successMessage(preprint, doi), sendHtml)),
+    RM.ichainMiddlewareK(() => pipe(successMessage(preprint, doi, moreAuthors), sendHtml)),
   )
 
 const showFailureMessage = (preprint: Preprint) =>
@@ -414,7 +414,7 @@ function deleteForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv, void> 
   )
 }
 
-function successMessage(preprint: Preprint, doi: Doi) {
+function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
   return page({
     title: plainText`PREreview posted`,
     content: html`
@@ -431,6 +431,17 @@ function successMessage(preprint: Preprint, doi: Doi) {
         <h2>What happens next</h2>
 
         <p>You’ll be able to see your PREreview shortly.</p>
+
+        ${moreAuthors
+          ? html`
+              <div class="inset">
+                <p>
+                  Please let us know the other authors’ details (names and ORCID iDs), and we’ll add them to the
+                  PREreview. Our email address is <a href="mailto:contact@prereview.org">contact@prereview.org</a>.
+                </p>
+              </div>
+            `
+          : ''}
 
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
@@ -592,6 +603,8 @@ function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = fals
           <p>Unfortunately, we’re unable to add more authors now.</p>
 
           <p>Once you have posted your PREreview, please let us know their details, and we’ll add them.</p>
+
+          <p>We’ll remind you to do this.</p>
 
           <button>Next</button>
         </form>

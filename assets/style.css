@@ -455,6 +455,18 @@ legend {
   }
 }
 
+.inset {
+  @media screen {
+    margin-block-start: var(--space-s);
+    padding: var(--space-s);
+    border-inline-start: var(--width-divider-wide) solid var(--color-divider);
+
+    & > :first-child {
+      margin-block-start: 0;
+    }
+  }
+}
+
 :--input {
   font: inherit;
   color: inherit;

@@ -326,6 +326,8 @@ test('can post a full PREreview with more authors', async ({ fetch, javaScriptEn
 
   await expect(h1).toContainText('PREreview posted')
   await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
+  await expect(main).toContainText('other authors’ details')
+  await expect(page).toHaveScreenshot()
 
   fetch.get(
     {
