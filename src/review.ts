@@ -105,7 +105,7 @@ function failureMessage() {
 
 function createPage({ preprint, review }: { preprint: Preprint; review: Record }) {
   return page({
-    title: plainText`Review of '${preprint.title}'`,
+    title: plainText`PREeview of '${preprint.title}'`,
     content: html`
       <nav>
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
@@ -113,9 +113,9 @@ function createPage({ preprint, review }: { preprint: Preprint; review: Record }
 
       <main>
         <header>
-          <h1>Review of '${preprint.title}'</h1>
+          <h1>PREreview of '${preprint.title}'</h1>
 
-          <ol aria-label="Authors of this review" class="author-list">
+          <ol aria-label="Authors of this PREreview" class="author-list">
             ${review.metadata.creators.map(author => html` <li>${displayAuthor(author)}</li>`)}
           </ol>
         </header>

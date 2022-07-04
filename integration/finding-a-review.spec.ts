@@ -60,7 +60,7 @@ test('can find and view a review', async ({ fetch, page }) => {
   fetch.get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-  await page.click('text=Read the review by Jingfang Hao et al')
+  await page.click('text=Read the PREreview by Jingfang Hao et al')
 
   const review = page.locator('main')
 

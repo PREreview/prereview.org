@@ -376,9 +376,9 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
         <h1 id="preview-label">Check your PREreview</h1>
 
         <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
-          <h2>Review of '${preprint.title}'</h2>
+          <h2>PREreview of '${preprint.title}'</h2>
 
-          <ol aria-label="Authors of this review" class="author-list">
+          <ol aria-label="Authors of this PREreview" class="author-list">
             <li>${displayAuthor(review.persona === 'public' ? user : { name: 'PREreviewer' })}</li>
           </ol>
 
@@ -387,7 +387,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
 
         <div class="button-group" role="group">
           <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" class="button button-secondary">
-            Change review
+            Change PREreview
           </a>
           <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="button button-secondary">
             Change name
@@ -597,14 +597,14 @@ ${rawHtml(form.review ?? '')}</textarea
 
 function startPage(preprint: Preprint) {
   return page({
-    title: plainText`Review this preprint`,
+    title: plainText`PREreview this preprint`,
     content: html`
       <nav>
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
       <main>
-        <h1>Review this preprint</h1>
+        <h1>PREreview this preprint</h1>
 
         <p>
           You can write a PREreview of “${preprint.title}”. A PREreview is a free-text review of a preprint and can vary

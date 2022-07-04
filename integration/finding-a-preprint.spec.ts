@@ -7,7 +7,7 @@ import { expect, test } from './test'
 test('might not find anything', async ({ page }) => {
   await page.goto('/')
   await page.fill('text="Preprint DOI"', '10.5555/this-should-not-find-anything')
-  await page.click('text="Find reviews"')
+  await page.click('text="Find PREreviews"')
 
   const h1 = page.locator('h1')
 
@@ -80,7 +80,7 @@ test('can find and view a preprint', async ({ fetch, page }) => {
     },
   )
 
-  await page.click('text="Find reviews"')
+  await page.click('text="Find PREreviews"')
 
   const preprint = page.locator('aside')
   const reviews = page.locator('main')

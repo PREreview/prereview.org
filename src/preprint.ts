@@ -79,7 +79,7 @@ function failureMessage() {
       <main>
         <h1>Sorry, we’re having problems</h1>
 
-        <p>We’re unable to show the preprint and its reviews now.</p>
+        <p>We’re unable to show the preprint and its PREreviews now.</p>
 
         <p>Please try again later.</p>
       </main>
@@ -89,9 +89,9 @@ function failureMessage() {
 
 function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Records }) {
   return page({
-    title: plainText`Reviews of '${preprint.title}'`,
+    title: plainText`PREreviews of '${preprint.title}'`,
     content: html`
-      <h1 class="visually-hidden">Reviews of '${preprint.title}'</h1>
+      <h1 class="visually-hidden">PREreviews of '${preprint.title}'</h1>
 
       <aside tabindex="0" aria-label="Preprint details">
         <article>
@@ -148,7 +148,7 @@ function showReview(review: Record) {
   return html`
     <li>
       <article>
-        <ol aria-label="Authors of this review" role="list" class="author-list">
+        <ol aria-label="Authors of this PREreview" role="list" class="author-list">
           ${review.metadata.creators.map(author => html` <li>${author.name}</li>`)}
         </ol>
 
@@ -157,7 +157,7 @@ function showReview(review: Record) {
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
           Read
           <span class="visually-hidden">
-            the review by ${review.metadata.creators[0].name} ${review.metadata.creators.length > 1 ? 'et al.' : ''}
+            the PREreview by ${review.metadata.creators[0].name} ${review.metadata.creators.length > 1 ? 'et al.' : ''}
           </span>
         </a>
       </article>

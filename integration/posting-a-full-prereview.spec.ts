@@ -365,7 +365,7 @@ test('can change the review after previewing', async ({ fetch, javaScriptEnabled
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
 
-  await page.click('text="Change review"')
+  await page.click('text="Change PREreview"')
 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
