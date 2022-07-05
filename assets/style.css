@@ -121,12 +121,12 @@ body > header {
   justify-content: space-between;
   align-items: center;
   column-gap: var(--space-m);
-  block-size: var(--space-3xl);
+  block-size: var(--space-2xl-3xl);
 
   & > .logo {
     flex-grow: 1;
     block-size: 100%;
-    padding-block: var(--space-m);
+    padding-block: var(--space-s-m);
 
     & > a {
       display: inline-flex;
