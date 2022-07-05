@@ -184,22 +184,6 @@ test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => 
   await expect(h1).toContainText('PREreview posted')
   await expect(main).toContainText('Your DOI 10.5072/zenodo.1055806')
   await expect(page).toHaveScreenshot()
-
-  fetch.get(
-    {
-      url: 'http://zenodo.test/api/records/',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-    },
-    { body: RecordsC.encode({ hits: { hits: [record] } }) },
-    { overwriteRoutes: true },
-  )
-
-  await page.click('text="Back to preprint"')
-
-  const review = page.locator('main article').first()
-
-  await expect(review).toContainText('Lorem ipsum dolor sit amet')
-  await expect(review).toHaveScreenshot()
 })
 
 test('can post a full PREreview with more authors', async ({ fetch, javaScriptEnabled, page }) => {
@@ -350,21 +334,6 @@ test('can post a full PREreview with more authors', async ({ fetch, javaScriptEn
   await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
   await expect(main).toContainText('other authors’ details')
   await expect(page).toHaveScreenshot()
-
-  fetch.get(
-    {
-      url: 'http://zenodo.test/api/records/',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-    },
-    { body: RecordsC.encode({ hits: { hits: [record] } }) },
-    { overwriteRoutes: true },
-  )
-
-  await page.click('text="Back to preprint"')
-
-  const review = page.locator('main article').first()
-
-  await expect(review).toContainText('Vestibulum nulla turpis')
 })
 
 test('can post a full PREreview anonymously', async ({ fetch, javaScriptEnabled, page }) => {
@@ -508,21 +477,6 @@ test('can post a full PREreview anonymously', async ({ fetch, javaScriptEnabled,
 
   await expect(h1).toContainText('PREreview posted')
   await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
-
-  fetch.get(
-    {
-      url: 'http://zenodo.test/api/records/',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-    },
-    { body: RecordsC.encode({ hits: { hits: [record] } }) },
-    { overwriteRoutes: true },
-  )
-
-  await page.click('text="Back to preprint"')
-
-  const review = page.locator('main article').first()
-
-  await expect(review).toContainText('Vestibulum nulla turpis')
 })
 
 test('can change the review after previewing', async ({ fetch, javaScriptEnabled, page }) => {
