@@ -9,6 +9,16 @@ test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => 
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055805' as Doi,
     conceptrecid: 1055805,
+    files: [
+      {
+        links: {
+          self: new URL('http://example.com/file'),
+        },
+        key: 'review.html',
+        type: 'html',
+        size: 58,
+      },
+    ],
     id: 1055806,
     links: {
       latest: new URL('http://example.com/latest'),
@@ -27,6 +37,7 @@ test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => 
       license: {
         id: 'CC-BY-4.0',
       },
+      publication_date: new Date('2022-07-05'),
       related_identifiers: [
         {
           identifier: '10.1101/2022.01.13.476201',
@@ -195,6 +206,16 @@ test('can post a full PREreview with more authors', async ({ fetch, javaScriptEn
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055807' as Doi,
     conceptrecid: 1055807,
+    files: [
+      {
+        links: {
+          self: new URL('http://example.com/file'),
+        },
+        key: 'review.html',
+        type: 'html',
+        size: 58,
+      },
+    ],
     id: 1055808,
     links: {
       latest: new URL('http://example.com/latest'),
@@ -208,6 +229,7 @@ test('can post a full PREreview with more authors', async ({ fetch, javaScriptEn
       license: {
         id: 'CC-BY-4.0',
       },
+      publication_date: new Date('2022-07-05'),
       related_identifiers: [
         {
           identifier: '10.1101/2022.01.13.476201',
@@ -349,6 +371,16 @@ test('can post a full PREreview anonymously', async ({ fetch, javaScriptEnabled,
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055807' as Doi,
     conceptrecid: 1055807,
+    files: [
+      {
+        links: {
+          self: new URL('http://example.com/file'),
+        },
+        key: 'review.html',
+        type: 'html',
+        size: 58,
+      },
+    ],
     id: 1055808,
     links: {
       latest: new URL('http://example.com/latest'),
@@ -362,6 +394,7 @@ test('can post a full PREreview anonymously', async ({ fetch, javaScriptEnabled,
       license: {
         id: 'CC-BY-4.0',
       },
+      publication_date: new Date('2022-07-05'),
       related_identifiers: [
         {
           identifier: '10.1101/2022.01.13.476201',

@@ -118,6 +118,21 @@ function createPage({ preprint, review }: { preprint: Preprint; review: Record }
           <ol aria-label="Authors of this PREreview" class="author-list">
             ${review.metadata.creators.map(author => html` <li>${displayAuthor(author)}</li>`)}
           </ol>
+
+          <dl>
+            <div>
+              <dt>Posted</dt>
+              <dd>
+                <time datetime="${review.metadata.publication_date.toISOString().slice(0, 10)}">
+                  ${review.metadata.publication_date.toLocaleDateString('en', { dateStyle: 'long' })}
+                </time>
+              </dd>
+            </div>
+            <div>
+              <dt>DOI</dt>
+              <dd class="doi">${review.metadata.doi}</dd>
+            </div>
+          </dl>
         </header>
 
         ${rawHtml(review.metadata.description)}

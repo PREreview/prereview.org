@@ -8,6 +8,16 @@ test('can find and view a review', async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
     conceptrecid: 1061863,
+    files: [
+      {
+        links: {
+          self: new URL('http://example.com/file'),
+        },
+        key: 'review.html',
+        type: 'html',
+        size: 58,
+      },
+    ],
     id: 1061864,
     links: {
       latest: new URL('http://example.com/latest'),
@@ -28,6 +38,7 @@ test('can find and view a review', async ({ fetch, page }) => {
       license: {
         id: 'CC-BY-4.0',
       },
+      publication_date: new Date('2022-07-05'),
       related_identifiers: [
         {
           identifier: '10.1101/2022.01.13.476201',

@@ -20,6 +20,16 @@ describe('preprint', () => {
                 {
                   conceptdoi: '10.5072/zenodo.1061863' as Doi,
                   conceptrecid: 1061863,
+                  files: [
+                    {
+                      links: {
+                        self: new URL('http://example.com/file'),
+                      },
+                      key: 'review.html',
+                      type: 'html',
+                      size: 58,
+                    },
+                  ],
                   id: 1061864,
                   links: {
                     latest: new URL('http://example.com/latest'),
@@ -33,6 +43,7 @@ describe('preprint', () => {
                     license: {
                       id: 'CC-BY-4.0',
                     },
+                    publication_date: new Date('2022-07-05'),
                     resource_type: {
                       type: 'publication',
                       subtype: 'article',

@@ -24,6 +24,16 @@ describe('review', () => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
               conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
               id,
               links: {
                 latest: new URL('http://example.com/latest'),
@@ -37,6 +47,7 @@ describe('review', () => {
                 license: {
                   id: 'CC-BY-4.0',
                 },
+                publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
@@ -151,6 +162,16 @@ describe('review', () => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
               conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
               id,
               links: {
                 latest: new URL('http://example.com/latest'),
@@ -164,6 +185,7 @@ describe('review', () => {
                 license: {
                   id: 'CC-BY-4.0',
                 },
+                publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
@@ -213,6 +235,16 @@ describe('review', () => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
               conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
               id,
               links: {
                 latest: new URL('http://example.com/latest'),
@@ -225,6 +257,7 @@ describe('review', () => {
                 license: {
                   id: 'CC-BY-4.0',
                 },
+                publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
@@ -274,6 +307,16 @@ describe('review', () => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
               conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
               id,
               links: {
                 latest: new URL('http://example.com/latest'),
@@ -287,6 +330,7 @@ describe('review', () => {
                 license: {
                   id: 'CC-BY-4.0',
                 },
+                publication_date: new Date('2022-07-05'),
                 related_identifiers: [
                   {
                     scheme: 'doi',
