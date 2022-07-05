@@ -62,7 +62,11 @@ describe('preprint', () => {
               fetch: fetchMock.sandbox().getOnce(
                 {
                   url: 'https://zenodo.org/api/records/',
-                  query: { communities: 'prereview-reviews', q: `related.identifier:"${preprint.doi}"` },
+                  query: {
+                    communities: 'prereview-reviews',
+                    q: `related.identifier:"${preprint.doi}"`,
+                    sort: 'mostrecent',
+                  },
                 },
                 {
                   body: RecordsC.encode(records),

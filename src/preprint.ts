@@ -56,6 +56,7 @@ export const preprint = flow(
               communities: 'prereview-reviews',
               q: `related.identifier:"${preprint.doi}"`,
               size: '100',
+              sort: 'mostrecent',
             }),
           RM.fromReaderTaskEitherK(getRecords),
         ),
