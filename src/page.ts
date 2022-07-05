@@ -5,7 +5,7 @@ import { homeMatch } from './routes'
 
 type Page = {
   readonly title: PlainText
-  readonly type?: 'two-up'
+  readonly type?: 'no-header' | 'two-up'
   readonly content: Html
   readonly js?: ReadonlyArray<Assets<'.js'>>
 }
@@ -23,14 +23,17 @@ export function page({ title, type, content, js = [] }: Page): Html {
       <title>${title}</title>
 
       <body ${rawHtml(type ? `class="${type}"` : '')}>
-        <header>
-          <div class="logo">
-            <a href="${format(homeMatch.formatter, {})}">
-              <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
-            </a>
-          </div>
-        </header>
-
+        ${type !== 'no-header'
+          ? html`
+              <header>
+                <div class="logo">
+                  <a href="${format(homeMatch.formatter, {})}">
+                    <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
+                  </a>
+                </div>
+              </header>
+            `
+          : ''}
         ${content}
       </body>
     </html>
