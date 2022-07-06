@@ -468,7 +468,7 @@ function failureMessage(preprint: Preprint) {
 
 function postForm(preprint: Preprint, review: CompletedForm, user: User) {
   return page({
-    title: plainText`Post your PREreview of '${preprint.title}'`,
+    title: plainText`Post your PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewConductMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -478,7 +478,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
         <h1 id="preview-label">Check your PREreview</h1>
 
         <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
-          <h2>PREreview of '${preprint.title}'</h2>
+          <h2>PREreview of “${preprint.title}”</h2>
 
           <ol aria-label="Authors of this PREreview" class="author-list">
             <li>${displayAuthor(review.persona === 'public' ? user : { name: 'PREreviewer' })}</li>
@@ -513,7 +513,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
 
 function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Code of Conduct – PREreview of '${preprint.title}'`,
+    title: plainText`${error ? 'Error: ' : ''}Code of Conduct – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -590,7 +590,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
 
 function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = false) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Add more authors – PREreview of '${preprint.title}'`,
+    title: plainText`${error ? 'Error: ' : ''}Add more authors – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -615,7 +615,7 @@ function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = fals
 
 function authorsForm(preprint: Preprint, form: Form, user: User, error = false) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Did anyone else write the PREreview? – PREreview of '${preprint.title}'`,
+    title: plainText`${error ? 'Error: ' : ''}Did anyone else write the PREreview? – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -676,7 +676,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
 
 function personaForm(preprint: Preprint, form: Form, user: User, error = false) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of '${preprint.title}'`,
+    title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -738,7 +738,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
 
 function reviewForm(preprint: Preprint, form: Form, error = false) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
+    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
@@ -796,7 +796,7 @@ function startPage(preprint: Preprint) {
         <h2>Before you start</h2>
 
         <p>
-          We will ask you to log in with your <a href="https://orcid.org/">ORCID&nbsp;iD</a>. If you don't have an iD,
+          We will ask you to log in with your <a href="https://orcid.org/">ORCID&nbsp;iD</a>. If you don’t have an iD,
           you can create one.
         </p>
 

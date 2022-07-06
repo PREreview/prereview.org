@@ -90,9 +90,9 @@ function failureMessage() {
 
 function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Records }) {
   return page({
-    title: plainText`PREreviews of '${preprint.title}'`,
+    title: plainText`PREreviews of “${preprint.title}”`,
     content: html`
-      <h1 class="visually-hidden">PREreviews of '${preprint.title}'</h1>
+      <h1 class="visually-hidden">PREreviews of “${preprint.title}”</h1>
 
       <aside tabindex="0" aria-label="Preprint details">
         <article>
