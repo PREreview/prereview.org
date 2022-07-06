@@ -785,7 +785,7 @@ test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
 
   const error = page.locator('form:has([aria-invalid])')
 
-  await expect(error).toContainText('Error: Select a name.')
+  await expect(error).toContainText('Error: Select the name that you would like to use.')
   await expect(error).toHaveScreenshot()
 })
 
