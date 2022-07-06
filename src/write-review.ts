@@ -513,7 +513,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
 
 function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
+    title: plainText`${error ? 'Error: ' : ''}Code of Conduct – PREreview of '${preprint.title}'`,
     content: html`
       <nav>
         <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -590,7 +590,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
 
 function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = false) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
+    title: plainText`${error ? 'Error: ' : ''}Add more authors – PREreview of '${preprint.title}'`,
     content: html`
       <nav>
         <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -615,7 +615,7 @@ function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = fals
 
 function authorsForm(preprint: Preprint, form: Form, user: User, error = false) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
+    title: plainText`${error ? 'Error: ' : ''}Did anyone else write the PREreview? – PREreview of '${preprint.title}'`,
     content: html`
       <nav>
         <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -676,7 +676,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
 
 function personaForm(preprint: Preprint, form: Form, user: User, error = false) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of '${preprint.title}'`,
+    title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of '${preprint.title}'`,
     content: html`
       <nav>
         <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
