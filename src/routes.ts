@@ -60,7 +60,7 @@ export const writeReviewMatch = pipe(writeReviewBaseMatch, R.then(R.end))
 
 export const writeReviewReviewMatch = pipe(writeReviewBaseMatch, R.then(R.lit('write-your-prereview')), R.then(R.end))
 
-export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, R.then(R.lit('publish-as')), R.then(R.end))
+export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, R.then(R.lit('choose-name')), R.then(R.end))
 
 export const writeReviewAuthorsMatch = pipe(writeReviewBaseMatch, R.then(R.lit('more-authors')), R.then(R.end))
 

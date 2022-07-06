@@ -532,7 +532,7 @@ test('can change the review after previewing', async ({ fetch, javaScriptEnabled
   )
 })
 
-test('can change publish-as name after previewing', async ({ fetch, javaScriptEnabled, page }) => {
+test('can change the name after previewing', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
 
   fetch.postOnce('http://orcid.test/token', {

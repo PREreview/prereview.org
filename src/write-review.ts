@@ -685,21 +685,15 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
       <main>
         <form method="post" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
-            <fieldset
-              role="group"
-              aria-describedby="persona-tip"
-              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}
-            >
+            <fieldset role="group" ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}>
               <legend>
-                <h1>Publish as</h1>
+                <h1>What name would you like to use?</h1>
               </legend>
-
-              <div id="persona-tip" role="note">What name would you like to appear on your PREreview?</div>
 
               ${error
                 ? html`
                     <div id="persona-error" role="alert">
-                      <span class="visually-hidden">Error:</span> Select a name.
+                      <span class="visually-hidden">Error:</span> Select the name that you would like to use.
                     </div>
                   `
                 : ''}
