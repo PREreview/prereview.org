@@ -44,7 +44,7 @@
     "@tiptap/extension-subscript": "^2.0.0-beta.13",
     "@tiptap/extension-superscript": "^2.0.0-beta.13",
     "@tiptap/extension-typography": "^2.0.0-beta.22",
-    "@tiptap/starter-kit": "^2.0.0-beta.189",
+    "@tiptap/starter-kit": "^2.0.0-beta.191",
     "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "@tsconfig/node16": "^1.0.3",
     "@types/cookie-signature": "^1.0.4",
