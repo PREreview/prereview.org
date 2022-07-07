@@ -39,7 +39,7 @@
     "@ibm/plex": "^6.0.2",
     "@playwright/test": "^1.23.1",
     "@prettier/plugin-xml": "^2.2.0",
-    "@tiptap/core": "^2.0.0-beta.181",
+    "@tiptap/core": "^2.0.0-beta.182",
     "@tiptap/extension-link": "^2.0.0-beta.42",
     "@tiptap/extension-subscript": "^2.0.0-beta.13",
     "@tiptap/extension-superscript": "^2.0.0-beta.13",
