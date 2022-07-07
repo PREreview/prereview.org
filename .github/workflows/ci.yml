@@ -145,8 +145,12 @@ jobs:
         run: npm run test
 
   test-integration:
-    name: 'Integration test'
+    name: 'Integration test (${{ matrix.shard }}/${{ strategy.job-total }})'
     runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
 
     steps:
       - name: 'Checkout code'
@@ -166,13 +170,13 @@ jobs:
 
       - name: 'Run Playwright'
         id: 'playwright'
-        run: npm run test:integration -- ${{ steps.build.outputs.imageid }} --forbid-only
+        run: npm run test:integration -- ${{ steps.build.outputs.imageid }} --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
         uses: actions/upload-artifact@v3.1.0
         with:
-          name: integration-tests-results
+          name: integration-tests-results-${{ matrix.shard }}
           path: integration-results
 
   test-smoke:
