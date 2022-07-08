@@ -247,9 +247,9 @@ export const writeReviewPost = flow(
   RM.orElseMiddlewareK(() => handleError(new NotFound())),
 )
 
-const handlePostForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
   pipe(
-    RM.fromEither(CompletedFormC.decode(form)),
+    RM.right(form),
     RM.apS('preprint', RM.right(preprint)),
     RM.apS('user', RM.right(user)),
     RM.chainReaderTaskEitherK(createRecord),
