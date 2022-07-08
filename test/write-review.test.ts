@@ -1592,7 +1592,7 @@ describe('write-review', () => {
                 doi: preprintDoi,
                 title: preprintTitle,
               },
-              review: newReview.review,
+              review: expect.stringContaining(newReview.review),
               user,
             })
             expect(actual).toStrictEqual(

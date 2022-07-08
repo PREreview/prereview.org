@@ -5,7 +5,6 @@ import { ReadonlyRecord } from 'fp-ts/ReadonlyRecord'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
-import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import {
   DepositMetadata,
@@ -15,7 +14,7 @@ import {
   publishDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { html, plainText, sanitizeHtml } from './html'
+import { html, plainText } from './html'
 import { Preprint } from './preprint'
 import { NewPrereview } from './write-review'
 
@@ -36,7 +35,7 @@ export const createRecordOnZenodo: (
       uploadFile({
         name: 'review.html',
         type: 'text/html',
-        content: sanitizeHtml(markdownIt({ html: true }).render(newPrereview.review)).toString(),
+        content: newPrereview.review.toString(),
       }),
     ),
     RTE.chain(publishDeposition),
@@ -48,7 +47,7 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
     publication_type: 'article',
     title: plainText`Review of “${newPrereview.preprint.title}”`.toString(),
     creators: [newPrereview.persona === 'public' ? newPrereview.user : { name: 'PREreviewer' }],
-    description: sanitizeHtml(markdownIt({ html: true }).render(newPrereview.review)).toString(),
+    description: newPrereview.review.toString(),
     communities: [{ identifier: 'prereview-reviews' }],
     related_identifiers: [
       {

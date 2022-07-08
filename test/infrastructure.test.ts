@@ -5,7 +5,6 @@ import { Status } from 'hyper-ts'
 import { SubmittedDeposition, SubmittedDepositionC, UnsubmittedDeposition, UnsubmittedDepositionC } from 'zenodo-ts'
 import { plainText } from '../src/html'
 import * as _ from '../src/infrastructure'
-import { isNonEmptyString } from '../src/string'
 import { NewPrereview } from '../src/write-review'
 import * as fc from './fc'
 
@@ -21,7 +20,7 @@ describe('infrastructure', () => {
               doi: fc.doi(),
               title: fc.html(),
             }),
-            review: fc.lorem().filter(isNonEmptyString),
+            review: fc.html(),
             user: fc.user(),
           }),
           fc.string(),
@@ -71,7 +70,7 @@ describe('infrastructure', () => {
                         title: plainText`Review of “${newPrereview.preprint.title}”`.toString(),
                         creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
                         communities: [{ identifier: 'prereview-reviews' }],
-                        description: `<p>${newPrereview.review}</p>\n`,
+                        description: newPrereview.review.toString(),
                         related_identifiers: [
                           {
                             scheme: 'doi',
@@ -92,7 +91,7 @@ describe('infrastructure', () => {
                   {
                     url: 'http://example.com/bucket/review.html',
                     headers: { 'Content-Type': 'text/html' },
-                    functionMatcher: (_, req) => req.body === `<p>${newPrereview.review}</p>\n`,
+                    functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
                   },
                   {
                     status: Status.Created,
@@ -121,7 +120,7 @@ describe('infrastructure', () => {
               doi: fc.doi(),
               title: fc.html(),
             }),
-            review: fc.lorem().filter(isNonEmptyString),
+            review: fc.html(),
             user: fc.user(),
           }),
           fc.string(),
@@ -171,7 +170,7 @@ describe('infrastructure', () => {
                         title: plainText`Review of “${newPrereview.preprint.title}”`.toString(),
                         creators: [{ name: 'PREreviewer' }],
                         communities: [{ identifier: 'prereview-reviews' }],
-                        description: `<p>${newPrereview.review}</p>\n`,
+                        description: newPrereview.review.toString(),
                         related_identifiers: [
                           {
                             scheme: 'doi',
@@ -192,7 +191,7 @@ describe('infrastructure', () => {
                   {
                     url: 'http://example.com/bucket/review.html',
                     headers: { 'Content-Type': 'text/html' },
-                    functionMatcher: (_, req) => req.body === `<p>${newPrereview.review}</p>\n`,
+                    functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
                   },
                   {
                     status: Status.Created,
@@ -221,7 +220,7 @@ describe('infrastructure', () => {
               doi: fc.doi(),
               title: fc.html(),
             }),
-            review: fc.lorem().filter(isNonEmptyString),
+            review: fc.html(),
             user: fc.user(),
           }),
           fc.string(),

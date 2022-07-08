@@ -34,7 +34,7 @@ import {
   writeReviewPostMatch,
   writeReviewReviewMatch,
 } from './routes'
-import { NonEmptyString, NonEmptyStringC } from './string'
+import { NonEmptyStringC } from './string'
 import { User, UserC } from './user'
 
 const ReviewFormC = C.struct({
@@ -74,7 +74,7 @@ export type NewPrereview = {
   conduct: 'yes'
   persona: 'public' | 'anonymous'
   preprint: Preprint
-  review: NonEmptyString
+  review: Html
   user: User
 }
 
@@ -249,9 +249,12 @@ export const writeReviewPost = flow(
 
 const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
   pipe(
-    RM.right(form),
-    RM.apS('preprint', RM.right(preprint)),
-    RM.apS('user', RM.right(user)),
+    RM.right({
+      ...form,
+      preprint,
+      review: renderReview(form),
+      user,
+    }),
     RM.chainReaderTaskEitherK(createRecord),
     RM.chainFirstReaderTaskKW(() => deleteForm(user.orcid, preprint.doi)),
     RM.ichainW(deposition => showSuccessMessage(preprint, deposition.metadata.doi, form.moreAuthors === 'yes')),
@@ -414,6 +417,10 @@ function deleteForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv, void> 
   )
 }
 
+function renderReview(form: CompletedForm) {
+  return sanitizeHtml(markdownIt({ html: true }).render(form.review))
+}
+
 function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
   return page({
     title: plainText`PREreview posted`,
@@ -484,7 +491,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
             <li>${displayAuthor(review.persona === 'public' ? user : { name: 'PREreviewer' })}</li>
           </ol>
 
-          ${sanitizeHtml(markdownIt({ html: true }).render(review.review))}
+          ${renderReview(review)}
         </blockquote>
 
         <div class="button-group" role="group">
