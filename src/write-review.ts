@@ -4,6 +4,7 @@ import * as E from 'fp-ts/Either'
 import { JsonRecord } from 'fp-ts/Json'
 import { ReaderTask } from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as R from 'fp-ts/Refinement'
 import * as T from 'fp-ts/Task'
 import * as TE from 'fp-ts/TaskEither'
 import { constVoid, constant, flow, pipe } from 'fp-ts/function'
@@ -28,6 +29,7 @@ import {
   preprintMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
+  writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
@@ -49,6 +51,10 @@ const AuthorsFormC = C.struct({
   moreAuthors: C.literal('yes', 'no'),
 })
 
+const CompetingInterestsFormC = C.struct({
+  competingInterests: C.literal('yes', 'no'),
+})
+
 const CodeOfConductFormC = C.struct({
   conduct: C.literal('yes'),
 })
@@ -57,6 +63,7 @@ const FormC = C.partial({
   review: NonEmptyStringC,
   persona: C.literal('public', 'anonymous'),
   moreAuthors: C.literal('yes', 'no'),
+  competingInterests: C.literal('yes', 'no'),
   conduct: C.literal('yes'),
 })
 
@@ -64,6 +71,7 @@ const CompletedFormC = pipe(
   ReviewFormC,
   C.intersect(PersonaFormC),
   C.intersect(AuthorsFormC),
+  C.intersect(CompetingInterestsFormC),
   C.intersect(CodeOfConductFormC),
 )
 
@@ -105,11 +113,15 @@ const getPreprint = (doi: Doi) =>
 
 const showNextForm = (preprint: Preprint) => (form: Form) =>
   match(form)
-    .with({ review: P.string, persona: P.string, moreAuthors: P.string, conduct: P.string }, () =>
-      seeOther(format(writeReviewPostMatch.formatter, { doi: preprint.doi })),
+    .with(
+      { review: P.string, persona: P.string, moreAuthors: P.string, competingInterests: P.string, conduct: P.string },
+      () => seeOther(format(writeReviewPostMatch.formatter, { doi: preprint.doi })),
+    )
+    .with({ review: P.string, persona: P.string, moreAuthors: P.string, competingInterests: P.string }, () =>
+      seeOther(format(writeReviewConductMatch.formatter, { doi: preprint.doi })),
     )
     .with({ review: P.string, persona: P.string, moreAuthors: P.string }, () =>
-      seeOther(format(writeReviewConductMatch.formatter, { doi: preprint.doi })),
+      seeOther(format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.doi })),
     )
     .with({ review: P.string, persona: P.string }, () =>
       seeOther(format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })),
@@ -202,6 +214,25 @@ export const writeReviewAddAuthors = flow(
   RM.orElseMiddlewareK(() => handleError(new NotFound())),
 )
 
+export const writeReviewCompetingInterests = flow(
+  RM.fromReaderTaskEitherK(getPreprint),
+  RM.ichainW(preprint =>
+    pipe(
+      RM.right({ preprint }),
+      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
+      RM.apSW('method', RM.decodeMethod(E.right)),
+      RM.ichainW(state =>
+        match(state)
+          .with({ method: 'POST' }, handleCompetingInterestsForm)
+          .otherwise(fromMiddlewareK(showCompetingInterestsForm)),
+      ),
+      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+    ),
+  ),
+  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+)
+
 export const writeReviewConduct = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
@@ -231,14 +262,8 @@ export const writeReviewPost = flow(
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state)
-          .with(
-            { method: 'POST', form: { review: P.string, persona: P.string, moreAuthors: P.string, conduct: P.string } },
-            handlePostForm,
-          )
-          .with(
-            { form: { review: P.string, persona: P.string, moreAuthors: P.string, conduct: P.string } },
-            fromMiddlewareK(showPostForm),
-          )
+          .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePostForm)
+          .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, fromMiddlewareK(showPostForm))
           .otherwise(flow(({ form }) => form, fromMiddlewareK(showNextForm(preprint)))),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
@@ -250,7 +275,8 @@ export const writeReviewPost = flow(
 const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
   pipe(
     RM.right({
-      ...form,
+      conduct: form.conduct,
+      persona: form.persona,
       preprint,
       review: renderReview(form),
       user,
@@ -289,6 +315,18 @@ const showAddAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pr
   pipe(
     M.status(Status.OK),
     M.ichain(() => pipe(addAuthorsForm(preprint, form, user), sendHtml)),
+  )
+
+const showCompetingInterestsForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
+  pipe(
+    M.status(Status.OK),
+    M.ichain(() => pipe(competingInterestsForm(preprint, form), sendHtml)),
+  )
+
+const showCompetingInterestsErrorForm = (preprint: Preprint) =>
+  pipe(
+    M.status(Status.BadRequest),
+    M.ichain(() => pipe(competingInterestsForm(preprint, {}, true), sendHtml)),
   )
 
 const showCodeOfConductForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
@@ -340,6 +378,15 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
         .otherwise(showNextForm(preprint)),
     ),
     RM.orElseMiddlewareK(() => showAuthorsErrorForm(preprint, user)),
+  )
+
+const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  pipe(
+    RM.decodeBody(CompetingInterestsFormC.decode),
+    RM.map(updateForm(form)),
+    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+    RM.ichainMiddlewareKW(showNextForm(preprint)),
+    RM.orElseMiddlewareK(() => showCompetingInterestsErrorForm(preprint)),
   )
 
 const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -418,7 +465,15 @@ function deleteForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv, void> 
 }
 
 function renderReview(form: CompletedForm) {
-  return sanitizeHtml(markdownIt({ html: true }).render(form.review))
+  return html`${sanitizeHtml(markdownIt({ html: true }).render(form.review))}
+
+    <h3>Competing interests</h3>
+
+    <p>
+      ${form.competingInterests === 'yes'
+        ? 'The author declares that they have competing interests.'
+        : 'The author declares that they have no competing interests.'}
+    </p>`
 }
 
 function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
@@ -518,12 +573,92 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
   })
 }
 
+function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
+  return page({
+    title: plainText`${error ? 'Error: ' : ''}Do you have any competing interests? – PREreview of “${preprint.title}”`,
+    content: html`
+      <nav>
+        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+      </nav>
+
+      <main>
+        <form method="post" novalidate>
+          <div ${rawHtml(error ? 'class="error"' : '')}>
+            <fieldset
+              role="group"
+              aria-describedby="competing-interests-tip"
+              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="competing-interests-error"' : '')}
+            >
+              <legend>
+                <h1>Do you have any competing interests?</h1>
+              </legend>
+
+              <div id="competing-interests-tip" role="note">
+                A competing interest is anything that could interfere with the objective of a PREreview.
+              </div>
+
+              <details>
+                <summary>Examples</summary>
+
+                <ul>
+                  <li>You are the author of the preprint.</li>
+                  <li>You have a personal relationship with the author.</li>
+                  <li>You are a rival or competitor of the author</li>
+                  <li>You have recently worked with the author.</li>
+                  <li>You collaborate with the author.</li>
+                  <li>You have published with the author in the last five years.</li>
+                  <li>You hold a grant with the author.</li>
+                </ul>
+              </details>
+
+              ${error
+                ? html`
+                    <div id="competing-interests-error" role="alert">
+                      <span class="visually-hidden">Error:</span> Select yes if you have any competing interests.
+                    </div>
+                  `
+                : ''}
+
+              <ol>
+                <li>
+                  <label>
+                    <input
+                      name="competingInterests"
+                      type="radio"
+                      value="no"
+                      ${rawHtml(form.competingInterests === 'no' ? 'checked' : '')}
+                    />
+                    <span>No</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="competingInterests"
+                      type="radio"
+                      value="yes"
+                      ${rawHtml(form.competingInterests === 'yes' ? 'checked' : '')}
+                    />
+                    <span>Yes</span>
+                  </label>
+                </li>
+              </ol>
+            </fieldset>
+          </div>
+
+          <button>Next</button>
+        </form>
+      </main>
+    `,
+  })
+}
+
 function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}Code of Conduct – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
       <main>

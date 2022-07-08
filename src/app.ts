@@ -29,6 +29,7 @@ import {
   reviewMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
+  writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
@@ -40,6 +41,7 @@ import {
   writeReview,
   writeReviewAddAuthors,
   writeReviewAuthors,
+  writeReviewCompetingInterests,
   writeReviewConduct,
   writeReviewPersona,
   writeReviewPost,
@@ -97,6 +99,10 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewAddAuthorsMatch.parser,
           R.map(({ doi }) => writeReviewAddAuthors(doi)),
+        ),
+        pipe(
+          writeReviewCompetingInterestsMatch.parser,
+          R.map(({ doi }) => writeReviewCompetingInterests(doi)),
         ),
         pipe(
           writeReviewConductMatch.parser,
