@@ -16,6 +16,7 @@ module.exports = {
   },
   mode: process.env.NODE_ENV,
   entry: {
+    'conditional-inputs': path.resolve('assets', 'conditional-inputs.ts'),
     favicon: path.resolve('assets', 'favicon.ico'),
     'html-editor': path.resolve('assets', 'html-editor.ts'),
     prereview: path.resolve('assets', 'prereview.svg'),

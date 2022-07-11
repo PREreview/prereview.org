@@ -591,82 +591,85 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
       <main>
         <form method="post" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
-            <fieldset
-              role="group"
-              aria-describedby="competing-interests-tip"
-              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="competing-interests-error"' : '')}
-            >
-              <legend>
-                <h1>Do you have any competing interests?</h1>
-              </legend>
+            <conditional-inputs>
+              <fieldset
+                role="group"
+                aria-describedby="competing-interests-tip"
+                ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="competing-interests-error"' : '')}
+              >
+                <legend>
+                  <h1>Do you have any competing interests?</h1>
+                </legend>
 
-              <div id="competing-interests-tip" role="note">
-                A competing interest is anything that could interfere with the objective of a PREreview.
-              </div>
+                <div id="competing-interests-tip" role="note">
+                  A competing interest is anything that could interfere with the objective of a PREreview.
+                </div>
 
-              <details>
-                <summary>Examples</summary>
+                <details>
+                  <summary>Examples</summary>
 
-                <ul>
-                  <li>You are the author of the preprint.</li>
-                  <li>You have a personal relationship with the author.</li>
-                  <li>You are a rival or competitor of the author</li>
-                  <li>You have recently worked with the author.</li>
-                  <li>You collaborate with the author.</li>
-                  <li>You have published with the author in the last five years.</li>
-                  <li>You hold a grant with the author.</li>
-                </ul>
-              </details>
+                  <ul>
+                    <li>You are the author of the preprint.</li>
+                    <li>You have a personal relationship with the author.</li>
+                    <li>You are a rival or competitor of the author</li>
+                    <li>You have recently worked with the author.</li>
+                    <li>You collaborate with the author.</li>
+                    <li>You have published with the author in the last five years.</li>
+                    <li>You hold a grant with the author.</li>
+                  </ul>
+                </details>
 
-              ${error
-                ? html`
-                    <div id="competing-interests-error" role="alert">
-                      <span class="visually-hidden">Error:</span> Select yes and provide details if you have any
-                      competing interests.
-                    </div>
-                  `
-                : ''}
+                ${error
+                  ? html`
+                      <div id="competing-interests-error" role="alert">
+                        <span class="visually-hidden">Error:</span> Select yes and provide details if you have any
+                        competing interests.
+                      </div>
+                    `
+                  : ''}
 
-              <ol>
-                <li>
-                  <label>
-                    <input
-                      name="competingInterests"
-                      type="radio"
-                      value="no"
-                      ${rawHtml(form.competingInterests === 'no' ? 'checked' : '')}
-                    />
-                    <span>No</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="competingInterests"
-                      type="radio"
-                      value="yes"
-                      aria-controls="competing-interests-details"
-                      ${rawHtml(form.competingInterests === 'yes' ? 'checked' : '')}
-                    />
-                    <span>Yes</span>
-                  </label>
-                  <div class="conditional" id="competing-interests-details">
-                    <label class="textarea">
-                      <span>What are they?</span>
-                      <textarea name="competingInterestsDetails" rows="5">
-${rawHtml(form.competingInterestsDetails ?? '')}</textarea
-                      >
+                <ol>
+                  <li>
+                    <label>
+                      <input
+                        name="competingInterests"
+                        type="radio"
+                        value="no"
+                        ${rawHtml(form.competingInterests === 'no' ? 'checked' : '')}
+                      />
+                      <span>No</span>
                     </label>
-                  </div>
-                </li>
-              </ol>
-            </fieldset>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="competingInterests"
+                        type="radio"
+                        value="yes"
+                        aria-controls="competing-interests-details"
+                        ${rawHtml(form.competingInterests === 'yes' ? 'checked' : '')}
+                      />
+                      <span>Yes</span>
+                    </label>
+                    <div class="conditional" id="competing-interests-details">
+                      <label class="textarea">
+                        <span>What are they?</span>
+                        <textarea name="competingInterestsDetails" rows="5">
+${rawHtml(form.competingInterestsDetails ?? '')}</textarea
+                        >
+                      </label>
+                    </div>
+                  </li>
+                </ol>
+              </fieldset>
+            </conditional-inputs>
           </div>
 
           <button>Next</button>
         </form>
       </main>
     `,
+    js: ['conditional-inputs.js'],
   })
 }
 
