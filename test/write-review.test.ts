@@ -29,6 +29,7 @@ describe('write-review', () => {
             ),
             fc.record({
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -202,12 +203,13 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
               review: fc.nonEmptyString(),
             },
-            { requiredKeys: ['competingInterests', 'conduct', 'moreAuthors', 'persona'] },
+            { requiredKeys: ['competingInterests', 'competingInterestsDetails', 'conduct', 'moreAuthors', 'persona'] },
           ),
           async (preprintDoi, preprintTitle, [review, connection, sessionId, secret], user, newReview) => {
             const sessionStore = new Keyv()
@@ -264,6 +266,7 @@ describe('write-review', () => {
             .record(
               {
                 competingInterests: fc.constantFrom('yes', 'no'),
+                competingInterestsDetails: fc.lorem(),
                 conduct: fc.constant('yes'),
                 moreAuthors: fc.constantFrom('yes', 'no'),
                 persona: fc.constantFrom('public', 'anonymous'),
@@ -325,6 +328,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -411,6 +415,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -467,12 +472,13 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
               review: fc.nonEmptyString(),
             },
-            { requiredKeys: ['competingInterests', 'conduct', 'moreAuthors', 'review'] },
+            { requiredKeys: ['competingInterests', 'competingInterestsDetails', 'conduct', 'moreAuthors', 'review'] },
           ),
           async (preprintDoi, preprintTitle, [persona, connection, sessionId, secret], user, newReview) => {
             const sessionStore = new Keyv()
@@ -531,6 +537,7 @@ describe('write-review', () => {
             .record(
               {
                 competingInterests: fc.constantFrom('yes', 'no'),
+                competingInterestsDetails: fc.lorem(),
                 conduct: fc.constant('yes'),
                 moreAuthors: fc.constantFrom('yes', 'no'),
                 persona: fc.constantFrom('public', 'anonymous'),
@@ -592,6 +599,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -679,6 +687,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -731,6 +740,7 @@ describe('write-review', () => {
           fc.user(),
           fc.record({
             competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
             persona: fc.constantFrom('public', 'anonymous'),
@@ -790,12 +800,13 @@ describe('write-review', () => {
             fc.record(
               {
                 competingInterests: fc.constantFrom('yes', 'no'),
+                competingInterestsDetails: fc.lorem(),
                 conduct: fc.constant('yes'),
                 moreAuthors: fc.constantFrom('yes', 'no'),
                 persona: fc.constantFrom('public', 'anonymous'),
                 review: fc.nonEmptyString(),
               },
-              { requiredKeys: ['competingInterests', 'conduct', 'persona', 'review'] },
+              { requiredKeys: ['competingInterests', 'competingInterestsDetails', 'conduct', 'persona', 'review'] },
             ),
             async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
               const sessionStore = new Keyv()
@@ -851,6 +862,7 @@ describe('write-review', () => {
               .record(
                 {
                   competingInterests: fc.constantFrom('yes', 'no'),
+                  competingInterestsDetails: fc.lorem(),
                   conduct: fc.constant('yes'),
                   moreAuthors: fc.constantFrom('yes', 'no'),
                   persona: fc.constantFrom('public', 'anonymous'),
@@ -913,6 +925,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -1003,6 +1016,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -1054,6 +1068,7 @@ describe('write-review', () => {
           fc.user(),
           fc.record({
             competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constant('yes'),
             persona: fc.constantFrom('public', 'anonymous'),
@@ -1111,6 +1126,7 @@ describe('write-review', () => {
             .record(
               {
                 competingInterests: fc.constantFrom('yes', 'no'),
+                competingInterestsDetails: fc.lorem(),
                 conduct: fc.constant('yes'),
                 moreAuthors: fc.constant('yes'),
                 persona: fc.constantFrom('public', 'anonymous'),
@@ -1172,6 +1188,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constant('no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -1223,6 +1240,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -1298,12 +1316,24 @@ describe('write-review', () => {
           fc.doi(),
           fc.html(),
           fc
-            .tuple(fc.constantFrom('yes', 'no'), fc.uuid(), fc.string())
+            .tuple(
+              fc.oneof(
+                fc.constant({
+                  competingInterests: 'no',
+                }),
+                fc.record({
+                  competingInterests: fc.constant('yes'),
+                  competingInterestsDetails: fc.lorem(),
+                }),
+              ),
+              fc.uuid(),
+              fc.string(),
+            )
             .chain(([competingInterests, sessionId, secret]) =>
               fc.tuple(
                 fc.constant(competingInterests),
                 fc.connection({
-                  body: fc.constant({ competingInterests }),
+                  body: fc.constant(competingInterests),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),
@@ -1314,6 +1344,7 @@ describe('write-review', () => {
           fc.user(),
           fc.record({
             competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
             persona: fc.constantFrom('public', 'anonymous'),
@@ -1333,7 +1364,7 @@ describe('write-review', () => {
               connection,
             )()
 
-            expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ competingInterests })
+            expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject(competingInterests)
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
@@ -1359,12 +1390,24 @@ describe('write-review', () => {
           fc.doi(),
           fc.html(),
           fc
-            .tuple(fc.constantFrom('yes', 'no'), fc.uuid(), fc.string())
+            .tuple(
+              fc.oneof(
+                fc.constant({
+                  competingInterests: 'no',
+                }),
+                fc.record({
+                  competingInterests: fc.constant('yes'),
+                  competingInterestsDetails: fc.lorem(),
+                }),
+              ),
+              fc.uuid(),
+              fc.string(),
+            )
             .chain(([competingInterests, sessionId, secret]) =>
               fc.tuple(
                 fc.constant(competingInterests),
                 fc.connection({
-                  body: fc.constant({ competingInterests }),
+                  body: fc.constant(competingInterests),
                   headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                   method: fc.constant('POST'),
                 }),
@@ -1396,7 +1439,7 @@ describe('write-review', () => {
               connection,
             )()
 
-            expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ competingInterests })
+            expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject(competingInterests)
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
@@ -1425,7 +1468,10 @@ describe('write-review', () => {
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
-                body: fc.record({ competingInterests: fc.constantFrom('yes', 'no') }),
+                body: fc.record({
+                  competingInterests: fc.constantFrom('yes', 'no'),
+                  competingInterestsDetails: fc.lorem(),
+                }),
                 headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                 method: fc.constant('POST'),
               }),
@@ -1437,6 +1483,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -1475,7 +1522,10 @@ describe('write-review', () => {
           fc.doi(),
           fc.html(),
           fc.connection({
-            body: fc.record({ competingInterests: fc.constantFrom('yes', 'no') }),
+            body: fc.record({
+              competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
+            }),
             method: fc.constant('POST'),
           }),
           fc.string(),
@@ -1515,7 +1565,13 @@ describe('write-review', () => {
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
-                body: fc.record({ competingInterests: fc.string() }, { withDeletedKeys: true }),
+                body: fc.oneof(
+                  fc.record({ competingInterests: fc.string() }, { withDeletedKeys: true }),
+                  fc.record(
+                    { competingInterests: fc.constant('yes'), competingInterestsDetails: fc.constant('') },
+                    { withDeletedKeys: true },
+                  ),
+                ),
                 headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
                 method: fc.constant('POST'),
               }),
@@ -1527,6 +1583,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -1580,12 +1637,13 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
               review: fc.nonEmptyString(),
             },
-            { requiredKeys: ['competingInterests', 'moreAuthors', 'persona', 'review'] },
+            { requiredKeys: ['competingInterests', 'competingInterestsDetails', 'moreAuthors', 'persona', 'review'] },
           ),
           async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
             const sessionStore = new Keyv()
@@ -1642,6 +1700,7 @@ describe('write-review', () => {
             .record(
               {
                 competingInterests: fc.constantFrom('yes', 'no'),
+                competingInterestsDetails: fc.lorem(),
                 conduct: fc.constant('yes'),
                 moreAuthors: fc.constantFrom('yes', 'no'),
                 persona: fc.constantFrom('public', 'anonymous'),
@@ -1703,6 +1762,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -1790,6 +1850,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -1840,6 +1901,7 @@ describe('write-review', () => {
           ),
           fc.record({
             competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
             persona: fc.constantFrom('public', 'anonymous'),
@@ -1918,6 +1980,7 @@ describe('write-review', () => {
             .record(
               {
                 competingInterests: fc.constantFrom('yes', 'no'),
+                competingInterestsDetails: fc.lorem(),
                 conduct: fc.oneof(fc.constant('yes'), fc.string()),
                 moreAuthors: fc.oneof(fc.constantFrom('yes', 'no'), fc.string()),
                 persona: fc.oneof(fc.constantFrom('public', 'anonymous'), fc.string()),
@@ -1983,6 +2046,7 @@ describe('write-review', () => {
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
+              competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
               persona: fc.constantFrom('public', 'anonymous'),
@@ -2076,6 +2140,7 @@ describe('write-review', () => {
           fc.oneof(fc.fetchResponse({ status: fc.integer({ min: 400 }) }), fc.error()),
           fc.record({
             competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
             persona: fc.constantFrom('public', 'anonymous'),

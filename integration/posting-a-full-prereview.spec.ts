@@ -431,15 +431,21 @@ test('can post a full PREreview with competing interests', async ({ fetch, javaS
   await page.click('text="Next"')
   await page.check('text="No, only me"')
   await page.click('text="Next"')
+
   await page.check('text="Yes"')
+  await page.fill('role=textbox[name="What are they?"]', 'Maecenas sed dapibus massa.')
+
+  await expect(page).toHaveScreenshot()
+
   await page.click('text="Next"')
+
   await page.check('text="I’m following the Code of Conduct"')
   await page.click('text="Next"')
 
   const preview = page.locator('role=blockquote[name="Check your PREreview"]')
 
   await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-  await expect(preview).toContainText('The author declares that they have competing interests.')
+  await expect(preview).toContainText('Maecenas sed dapibus massa.')
   await expect(page).toHaveScreenshot()
 
   fetch
@@ -1032,10 +1038,19 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
 
   await page.click('text="Next"')
 
-  const error = page.locator('form:has([aria-invalid])')
+  const error1 = page.locator('form:has([aria-invalid])')
 
-  await expect(error).toContainText('Error: Select yes if you have any competing interests.')
-  await expect(error).toHaveScreenshot()
+  await expect(error1).toContainText('Error: Select yes and provide details if you have any competing interests.')
+  await expect(error1).toHaveScreenshot()
+
+  await page.check('text="Yes"')
+
+  await page.click('text="Next"')
+
+  const error2 = page.locator('form:has([aria-invalid])')
+
+  await expect(error2).toContainText('Error: Select yes and provide details if you have any competing interests.')
+  await expect(error2).toHaveScreenshot()
 })
 
 test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, page }) => {

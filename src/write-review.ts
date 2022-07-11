@@ -51,8 +51,14 @@ const AuthorsFormC = C.struct({
   moreAuthors: C.literal('yes', 'no'),
 })
 
-const CompetingInterestsFormC = C.struct({
-  competingInterests: C.literal('yes', 'no'),
+const CompetingInterestsFormC = C.sum('competingInterests')({
+  yes: C.struct({
+    competingInterests: C.literal('yes'),
+    competingInterestsDetails: NonEmptyStringC,
+  }),
+  no: C.struct({
+    competingInterests: C.literal('no'),
+  }),
 })
 
 const CodeOfConductFormC = C.struct({
@@ -64,6 +70,7 @@ const FormC = C.partial({
   persona: C.literal('public', 'anonymous'),
   moreAuthors: C.literal('yes', 'no'),
   competingInterests: C.literal('yes', 'no'),
+  competingInterestsDetails: NonEmptyStringC,
   conduct: C.literal('yes'),
 })
 
@@ -471,7 +478,7 @@ function renderReview(form: CompletedForm) {
 
     <p>
       ${form.competingInterests === 'yes'
-        ? 'The author declares that they have competing interests.'
+        ? form.competingInterestsDetails
         : 'The author declares that they have no competing interests.'}
     </p>`
 }
@@ -614,7 +621,8 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
               ${error
                 ? html`
                     <div id="competing-interests-error" role="alert">
-                      <span class="visually-hidden">Error:</span> Select yes if you have any competing interests.
+                      <span class="visually-hidden">Error:</span> Select yes and provide details if you have any
+                      competing interests.
                     </div>
                   `
                 : ''}
@@ -637,10 +645,19 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
                       name="competingInterests"
                       type="radio"
                       value="yes"
+                      aria-controls="competing-interests-details"
                       ${rawHtml(form.competingInterests === 'yes' ? 'checked' : '')}
                     />
                     <span>Yes</span>
                   </label>
+                  <div class="conditional" id="competing-interests-details">
+                    <label class="textarea">
+                      <span>What are they?</span>
+                      <textarea name="competingInterestsDetails" rows="5">
+${rawHtml(form.competingInterestsDetails ?? '')}</textarea
+                      >
+                    </label>
+                  </div>
                 </li>
               </ol>
             </fieldset>

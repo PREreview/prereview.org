@@ -303,6 +303,10 @@ label {
     inline-size: fit-content;
     margin-block-start: var(--space-m);
 
+    &.textarea {
+      inline-size: 100%;
+    }
+
     & span {
       flex: 1;
     }
@@ -527,10 +531,30 @@ html-editor {
 
 :--textarea {
   overflow-y: auto;
+  resize: block;
   cursor: text;
   scrollbar-gutter: stable;
 
   & > :first-child {
+    margin-block-start: 0;
+  }
+}
+
+.conditional {
+  position: relative;
+  margin-block-start: var(--space-3xs);
+  padding-block-end: var(--space-2xs);
+  padding-inline-start: calc(var(--space-m) + var(--space-2xs-xs));
+
+  &::before {
+    position: absolute;
+    content: '';
+    border-inline-start: var(--width-divider) solid var(--color-text-light);
+    block-size: 100%;
+    inset-inline-start: calc((var(--space-m) - var(--width-divider)) / 2);
+  }
+
+  & label {
     margin-block-start: 0;
   }
 }
@@ -755,10 +779,6 @@ html-editor {
   &:any-link {
     color: inherit;
   }
-}
-
-.textarea {
-  inline-size: 100%;
 }
 
 .two-up {
