@@ -1040,7 +1040,7 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
 
   const error1 = page.locator('form:has([aria-invalid])')
 
-  await expect(error1).toContainText('Error: Select yes and provide details if you have any competing interests.')
+  await expect(error1).toContainText('Error: Select yes if you have any competing interests.')
   await expect(error1).toHaveScreenshot()
 
   await page.check('text="Yes"')
@@ -1049,7 +1049,7 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
 
   const error2 = page.locator('form:has([aria-invalid])')
 
-  await expect(error2).toContainText('Error: Select yes and provide details if you have any competing interests.')
+  await expect(error2).toContainText('Error: Enter details of your competing interests.')
   await expect(error2).toHaveScreenshot()
 })
 

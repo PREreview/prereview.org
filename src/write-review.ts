@@ -51,6 +51,10 @@ const AuthorsFormC = C.struct({
   moreAuthors: C.literal('yes', 'no'),
 })
 
+const PartialCompetingInterestsFormC = C.struct({
+  competingInterests: C.literal('yes', 'no'),
+})
+
 const CompetingInterestsFormC = C.sum('competingInterests')({
   yes: C.struct({
     competingInterests: C.literal('yes'),
@@ -330,10 +334,10 @@ const showCompetingInterestsForm = ({ form, preprint }: { form: Form; preprint: 
     M.ichain(() => pipe(competingInterestsForm(preprint, form), sendHtml)),
   )
 
-const showCompetingInterestsErrorForm = (preprint: Preprint) =>
+const showCompetingInterestsErrorForm = (preprint: Preprint) => (form: Form) =>
   pipe(
     M.status(Status.BadRequest),
-    M.ichain(() => pipe(competingInterestsForm(preprint, {}, true), sendHtml)),
+    M.ichain(() => pipe(competingInterestsForm(preprint, form, true), sendHtml)),
   )
 
 const showCodeOfConductForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
@@ -393,7 +397,17 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint)),
-    RM.orElseMiddlewareK(() => showCompetingInterestsErrorForm(preprint)),
+    RM.orElseMiddlewareK(() =>
+      pipe(
+        M.decodeBody(
+          flow(
+            PartialCompetingInterestsFormC.decode,
+            E.altW(() => E.right({})),
+          ),
+        ),
+        M.ichain(showCompetingInterestsErrorForm(preprint)),
+      ),
+    ),
   )
 
 const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -590,12 +604,16 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
 
       <main>
         <form method="post" novalidate>
-          <div ${rawHtml(error ? 'class="error"' : '')}>
+          <div ${rawHtml(error && form.competingInterests !== 'yes' ? 'class="error"' : '')}>
             <conditional-inputs>
               <fieldset
                 role="group"
                 aria-describedby="competing-interests-tip"
-                ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="competing-interests-error"' : '')}
+                ${rawHtml(
+                  error && form.competingInterests !== 'yes'
+                    ? 'aria-invalid="true" aria-errormessage="competing-interests-error"'
+                    : '',
+                )}
               >
                 <legend>
                   <h1>Do you have any competing interests?</h1>
@@ -619,11 +637,10 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
                   </ul>
                 </details>
 
-                ${error
+                ${error && form.competingInterests !== 'yes'
                   ? html`
                       <div id="competing-interests-error" role="alert">
-                        <span class="visually-hidden">Error:</span> Select yes and provide details if you have any
-                        competing interests.
+                        <span class="visually-hidden">Error:</span> Select yes if you have any competing interests.
                       </div>
                     `
                   : ''}
@@ -646,18 +663,36 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
                         name="competingInterests"
                         type="radio"
                         value="yes"
-                        aria-controls="competing-interests-details"
+                        aria-controls="competing-interests-details-control"
                         ${rawHtml(form.competingInterests === 'yes' ? 'checked' : '')}
                       />
                       <span>Yes</span>
                     </label>
-                    <div class="conditional" id="competing-interests-details">
-                      <label class="textarea">
-                        <span>What are they?</span>
-                        <textarea name="competingInterestsDetails" rows="5">
+                    <div class="conditional" id="competing-interests-details-control">
+                      <div ${rawHtml(error && form.competingInterests === 'yes' ? 'class="error"' : '')}>
+                        <label for="competing-interests-details" class="textarea">What are they?</label>
+
+                        ${error && form.competingInterests === 'yes'
+                          ? html`
+                              <div id="competing-interests-details-error" role="alert">
+                                <span class="visually-hidden">Error:</span> Enter details of your competing interests.
+                              </div>
+                            `
+                          : ''}
+
+                        <textarea
+                          name="competingInterestsDetails"
+                          id="competing-interests-details"
+                          rows="5"
+                          ${rawHtml(
+                            error && form.competingInterests === 'yes'
+                              ? 'aria-invalid="true" aria-errormessage="competing-interests-details-error"'
+                              : '',
+                          )}
+                        >
 ${rawHtml(form.competingInterestsDetails ?? '')}</textarea
                         >
-                      </label>
+                      </div>
                     </div>
                   </li>
                 </ol>

@@ -424,8 +424,12 @@ label {
   font-weight: 700;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  margin-block-start: var(--space-s);
+  margin-block-start: var(--space-3xs);
   color: var(--color-error);
+
+  @nest :not(label) + & {
+    margin-block-start: var(--space-s);
+  }
 
   @nest details + & {
     margin-block-start: var(--space-l);
@@ -499,7 +503,7 @@ legend {
     }
   }
 
-  @nest :not(label) > & {
+  @nest :not(label) > &:first-child {
     margin-block-start: var(--space-m);
   }
 
