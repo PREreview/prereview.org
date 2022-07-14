@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { Doi, isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as A from 'fp-ts/Array'
@@ -21,6 +22,8 @@ import { handleError } from './http-error'
 import { page } from './page'
 import { preprintMatch } from './routes'
 import { renderDate } from './time'
+
+import PlainDate = Temporal.PlainDate
 
 type Preprint = {
   doi: Doi
@@ -123,7 +126,7 @@ function createPage({ preprint, review }: { preprint: Preprint; review: Record }
           <dl>
             <div>
               <dt>Posted</dt>
-              <dd>${renderDate(review.metadata.publication_date)}</dd>
+              <dd>${renderDate(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0]))}</dd>
             </div>
             <div>
               <dt>DOI</dt>

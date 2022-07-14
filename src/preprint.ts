@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -17,6 +18,8 @@ import { page } from './page'
 import { reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
 
+import PlainDate = Temporal.PlainDate
+
 export type Preprint = {
   abstract: Html
   authors: ReadonlyNonEmptyArray<{
@@ -24,7 +27,7 @@ export type Preprint = {
     orcid?: Orcid
   }>
   doi: Doi
-  posted: Date
+  posted: PlainDate
   title: Html
   url: URL
 }

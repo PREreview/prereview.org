@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -17,6 +18,8 @@ import {
 import { html, plainText } from './html'
 import { Preprint } from './preprint'
 import { NewPrereview } from './write-review'
+
+import PlainDate = Temporal.PlainDate
 
 export const getPreprint = TE.fromOptionK(constant('not-found'))((doi: Doi) => RR.lookup(doi, preprints))
 
@@ -85,7 +88,7 @@ const preprints: ReadonlyRecord<string, Preprint> = {
       { name: 'Roberta Croce', orcid: '0000-0003-3469-834X' as Orcid },
     ],
     doi: '10.1101/2022.01.13.476201' as Doi,
-    posted: new Date('2022-01-14'),
+    posted: PlainDate.from('2022-01-14'),
     title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
     url: new URL('https://www.biorxiv.org/content/10.1101/2022.01.13.476201v1.full'),
   },
@@ -114,7 +117,7 @@ const preprints: ReadonlyRecord<string, Preprint> = {
       { name: 'Wayne M. Yokoyama', orcid: '0000-0002-0566-7264' as Orcid },
     ],
     doi: '10.1101/2022.02.14.480364' as Doi,
-    posted: new Date('2022-02-14'),
+    posted: PlainDate.from('2022-02-14'),
     title: html`The Transcription Factor Bach2 Negatively Regulates Natural Killer Cell Maturation and Function`,
     url: new URL('https://www.biorxiv.org/content/10.1101/2022.02.14.480364v1.full'),
   },

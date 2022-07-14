@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { mod11_2 } from 'cdigit'
 import { Doi, isDoi } from 'doi-ts'
 import { Request, Response } from 'express'
@@ -37,6 +38,17 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     })
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcid)
+
+const year = (): fc.Arbitrary<number> => fc.integer({ min: -271820, max: 275759 })
+
+export const plainDate = (): fc.Arbitrary<Temporal.PlainDate> =>
+  fc
+    .record({
+      year: year(),
+      month: fc.integer({ min: 1, max: 12 }),
+      day: fc.integer({ min: 1, max: 31 }),
+    })
+    .map(args => Temporal.PlainDate.from(args))
 
 export const url = (): fc.Arbitrary<URL> => fc.webUrl().map(url => new URL(url))
 
@@ -108,7 +120,7 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
       )
       .filter(isNonEmpty),
     doi: doi(),
-    posted: fc.date(),
+    posted: plainDate(),
     title: html(),
     url: url(),
   })

@@ -4,10 +4,10 @@ import * as fc from './fc'
 describe('time', () => {
   test('renderTime', () => {
     fc.assert(
-      fc.property(fc.date(), date => {
+      fc.property(fc.plainDate(), date => {
         const actual = _.renderDate(date)
 
-        expect(actual.toString()).toContain(`<time datetime="${date.toISOString().split('T')[0]}"`)
+        expect(actual.toString()).toContain(`<time datetime="${date.toString()}"`)
       }),
     )
   })

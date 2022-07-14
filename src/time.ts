@@ -1,9 +1,8 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { Html, html } from './html'
 
-export function renderDate(date: Date): Html {
-  return html`<time datetime="${toISODateString(date)}">${date.toLocaleDateString('en', { dateStyle: 'long' })}</time>`
-}
+import PlainDate = Temporal.PlainDate
 
-function toISODateString(date: Date): string {
-  return date.toISOString().split('T')[0]
+export function renderDate(date: PlainDate): Html {
+  return html`<time datetime="${date.toString()}">${date.toLocaleString('en', { dateStyle: 'long' })}</time>`
 }
