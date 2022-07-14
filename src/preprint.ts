@@ -123,7 +123,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
             </dl>
           </header>
 
-          <h3 class="visually-hidden">Abstract</h3>
+          <h3>Abstract</h3>
 
           ${preprint.abstract}
 
