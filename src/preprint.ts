@@ -15,6 +15,7 @@ import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { handleError } from './http-error'
 import { page } from './page'
 import { reviewMatch, writeReviewMatch } from './routes'
+import { renderDate } from './time'
 
 export type Preprint = {
   abstract: Html
@@ -106,11 +107,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
             <dl>
               <div>
                 <dt>Posted</dt>
-                <dd>
-                  <time datetime="${preprint.posted.toISOString().slice(0, 10)}">
-                    ${preprint.posted.toLocaleDateString('en', { dateStyle: 'long' })}
-                  </time>
-                </dd>
+                <dd>${renderDate(preprint.posted)}</dd>
               </div>
               <div>
                 <dt>Server</dt>

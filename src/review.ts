@@ -20,6 +20,7 @@ import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { handleError } from './http-error'
 import { page } from './page'
 import { preprintMatch } from './routes'
+import { renderDate } from './time'
 
 type Preprint = {
   doi: Doi
@@ -122,11 +123,7 @@ function createPage({ preprint, review }: { preprint: Preprint; review: Record }
           <dl>
             <div>
               <dt>Posted</dt>
-              <dd>
-                <time datetime="${review.metadata.publication_date.toISOString().slice(0, 10)}">
-                  ${review.metadata.publication_date.toLocaleDateString('en', { dateStyle: 'long' })}
-                </time>
-              </dd>
+              <dd>${renderDate(review.metadata.publication_date)}</dd>
             </div>
             <div>
               <dt>DOI</dt>
