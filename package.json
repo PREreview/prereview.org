@@ -94,7 +94,7 @@
     "stylelint-config-prettier": "^9.0.3",
     "stylelint-config-standard": "^26.0.0",
     "stylelint-use-logical-spec": "^4.1.0",
-    "ts-jest": "^28.0.5",
+    "ts-jest": "^28.0.6",
     "ts-node-dev": "^2.0.0",
     "typescript": "^4.7.4",
     "wait-on": "^6.0.1",
