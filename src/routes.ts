@@ -1,11 +1,12 @@
-import { isDoi } from 'doi-ts'
+import { hasRegistrant, isDoi } from 'doi-ts'
 import * as R from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
+import { compose } from 'fp-ts/Refinement'
 import { pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 
-const DoiD = D.fromRefinement(isDoi, 'DOI')
+const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI')
 
 const IntegerFromStringC = C.make(
   pipe(

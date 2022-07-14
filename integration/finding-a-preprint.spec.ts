@@ -6,7 +6,7 @@ import { expect, test } from './test'
 
 test('might not find anything', async ({ page }) => {
   await page.goto('/')
-  await page.fill('text="Preprint DOI"', '10.5555/this-should-not-find-anything')
+  await page.fill('text="Preprint DOI"', '10.1101/this-should-not-find-anything')
   await page.click('text="Find PREreviews"')
 
   const h1 = page.locator('h1')

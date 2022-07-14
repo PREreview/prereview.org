@@ -1,11 +1,12 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi, isDoi } from 'doi-ts'
+import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as A from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { Predicate } from 'fp-ts/Predicate'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import { compose } from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
@@ -26,15 +27,15 @@ import { renderDate } from './time'
 import PlainDate = Temporal.PlainDate
 
 type Preprint = {
-  doi: Doi
+  doi: Doi<'1101'>
   title: Html
 }
 
 export interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: Doi) => TE.TaskEither<unknown, Html>
+  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, Html>
 }
 
-const DoiD = D.fromRefinement(isDoi, 'DOI')
+const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI')
 
 const isInCommunity: Predicate<Record> = flow(
   O.fromNullableK(record => record.metadata.communities),
@@ -55,7 +56,7 @@ const getReviewedDoi = flow(
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
 
-const getPreprint = (doi: Doi) =>
+const getPreprint = (doi: Doi<'1101'>) =>
   pipe(
     RTE.ask<GetPreprintTitleEnv>(),
     RTE.chainTaskEitherK(({ getPreprintTitle }) =>

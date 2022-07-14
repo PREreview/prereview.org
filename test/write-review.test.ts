@@ -15,7 +15,7 @@ describe('write-review', () => {
       test('there is completed form already', async () => {
         await fc.assert(
           fc.asyncProperty(
-            fc.doi(),
+            fc.preprintDoi(),
             fc.html(),
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
@@ -72,7 +72,7 @@ describe('write-review', () => {
       test("there isn't a form", async () => {
         await fc.assert(
           fc.asyncProperty(
-            fc.doi(),
+            fc.preprintDoi(),
             fc.html(),
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
@@ -118,7 +118,7 @@ describe('write-review', () => {
     test("when there isn't a session", async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.connection({
             headers: fc.constant({}),
@@ -150,7 +150,7 @@ describe('write-review', () => {
     test('when the preprint cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.anything(),
           fc.connection({
             headers: fc.constant({}),
@@ -185,7 +185,7 @@ describe('write-review', () => {
     test('when the form is completed', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
             fc.tuple(
@@ -247,7 +247,7 @@ describe('write-review', () => {
     test('when the form is incomplete', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
             fc.tuple(
@@ -311,7 +311,7 @@ describe('write-review', () => {
     test('when the preprint cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.anything(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -363,7 +363,7 @@ describe('write-review', () => {
     test("when there isn't a session", async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.connection({ body: fc.record({ review: fc.lorem() }), method: fc.constant('POST') }),
           fc.string(),
@@ -398,7 +398,7 @@ describe('write-review', () => {
     test('without a review', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -452,7 +452,7 @@ describe('write-review', () => {
     test('when the form is completed', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc
             .tuple(fc.constantFrom('public', 'anonymous'), fc.uuid(), fc.string())
@@ -516,7 +516,7 @@ describe('write-review', () => {
     test('when the form is incomplete', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc
             .tuple(fc.constantFrom('public', 'anonymous'), fc.uuid(), fc.string())
@@ -582,7 +582,7 @@ describe('write-review', () => {
     test('when the preprint cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.anything(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -635,7 +635,7 @@ describe('write-review', () => {
     test("when there isn't a session", async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.connection({ body: fc.constant({ conduct: 'yes' }), method: fc.constant('POST') }),
           fc.string(),
@@ -670,7 +670,7 @@ describe('write-review', () => {
     test('without a persona', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -724,7 +724,7 @@ describe('write-review', () => {
     test('when there are more authors', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -783,7 +783,7 @@ describe('write-review', () => {
       test('when the form is completed', async () => {
         await fc.assert(
           fc.asyncProperty(
-            fc.doi(),
+            fc.preprintDoi(),
             fc.html(),
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
@@ -844,7 +844,7 @@ describe('write-review', () => {
       test('when the form is incomplete', async () => {
         await fc.assert(
           fc.asyncProperty(
-            fc.doi(),
+            fc.preprintDoi(),
             fc.html(),
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
@@ -908,7 +908,7 @@ describe('write-review', () => {
     test('when the preprint cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.anything(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -961,7 +961,7 @@ describe('write-review', () => {
     test("when there isn't a session", async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.connection({
             body: fc.record({ moreAuthors: fc.constantFrom('yes', 'no') }),
@@ -999,7 +999,7 @@ describe('write-review', () => {
     test('without a moreAuthors', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1053,7 +1053,7 @@ describe('write-review', () => {
     test('when the form is completed', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1109,7 +1109,7 @@ describe('write-review', () => {
     test('when the form is incomplete', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1172,7 +1172,7 @@ describe('write-review', () => {
     test('when there are no more authors', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1224,7 +1224,7 @@ describe('write-review', () => {
     test('when the preprint cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.anything(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1276,7 +1276,7 @@ describe('write-review', () => {
     test("when there isn't a session", async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.connection({ method: fc.constant('POST') }),
           fc.string(),
@@ -1313,7 +1313,7 @@ describe('write-review', () => {
     test('when the form is completed', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc
             .tuple(
@@ -1387,7 +1387,7 @@ describe('write-review', () => {
     test('when the form is incomplete', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc
             .tuple(
@@ -1463,7 +1463,7 @@ describe('write-review', () => {
     test('when the preprint cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.anything(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1519,7 +1519,7 @@ describe('write-review', () => {
     test("when there isn't a session", async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.connection({
             body: fc.record({
@@ -1560,7 +1560,7 @@ describe('write-review', () => {
     test('without declaring any competing interests', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1620,7 +1620,7 @@ describe('write-review', () => {
     test('when the form is completed', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1682,7 +1682,7 @@ describe('write-review', () => {
     test('when the form is incomplete', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1745,7 +1745,7 @@ describe('write-review', () => {
     test('when the preprint cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.anything(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1798,7 +1798,7 @@ describe('write-review', () => {
     test("when there isn't a session", async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.connection({ body: fc.constant({ conduct: 'yes' }), method: fc.constant('POST') }),
           fc.string(),
@@ -1833,7 +1833,7 @@ describe('write-review', () => {
     test('without agreement to the Code of Conduct', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1887,7 +1887,7 @@ describe('write-review', () => {
     test('when the form is complete', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -1964,7 +1964,7 @@ describe('write-review', () => {
     test('when the form is incomplete', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -2031,7 +2031,7 @@ describe('write-review', () => {
     test('when the preprint cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.anything(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
@@ -2084,7 +2084,7 @@ describe('write-review', () => {
     test("when there isn't a session", async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.connection({ method: fc.constant('POST') }),
           fc.string(),
@@ -2125,7 +2125,7 @@ describe('write-review', () => {
     test('Zenodo is unavailable', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi(),
+          fc.preprintDoi(),
           fc.html(),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(

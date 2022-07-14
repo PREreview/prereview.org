@@ -17,7 +17,7 @@ describe('infrastructure', () => {
             conduct: fc.constant('yes'),
             persona: fc.constant('public'),
             preprint: fc.record({
-              doi: fc.doi(),
+              doi: fc.preprintDoi(),
               title: fc.html(),
             }),
             review: fc.html(),
@@ -117,7 +117,7 @@ describe('infrastructure', () => {
             conduct: fc.constant('yes'),
             persona: fc.constant('anonymous'),
             preprint: fc.record({
-              doi: fc.doi(),
+              doi: fc.preprintDoi(),
               title: fc.html(),
             }),
             review: fc.html(),
@@ -217,7 +217,7 @@ describe('infrastructure', () => {
             conduct: fc.constant('yes'),
             persona: fc.constantFrom('public', 'anonymous'),
             preprint: fc.record({
-              doi: fc.doi(),
+              doi: fc.preprintDoi(),
               title: fc.html(),
             }),
             review: fc.html(),

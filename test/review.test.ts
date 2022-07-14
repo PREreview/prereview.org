@@ -17,7 +17,7 @@ describe('review', () => {
           fc.integer(),
           fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
           fc.record({
-            doi: fc.doi(),
+            doi: fc.preprintDoi(),
             title: fc.html(),
           }),
           async (id, connection, preprint) => {
@@ -156,7 +156,7 @@ describe('review', () => {
         fc.asyncProperty(
           fc.integer(),
           fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          fc.doi(),
+          fc.preprintDoi(),
           fc.anything(),
           async (id, connection, preprintDoi, error) => {
             const record: Record = {
@@ -230,7 +230,7 @@ describe('review', () => {
         fc.asyncProperty(
           fc.integer(),
           fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          fc.doi(),
+          fc.preprintDoi(),
           async (id, connection, preprintDoi) => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -298,12 +298,13 @@ describe('review', () => {
       )
     })
 
-    test('when the record does not review a preprint with a DOI', async () => {
+    test('when the record does not review a preprint with a preprint DOI', async () => {
       await fc.assert(
         fc.asyncProperty(
           fc.integer(),
+          fc.oneof(fc.string(), fc.doi()),
           fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          async (id, connection) => {
+          async (id, identifier, connection) => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
               conceptrecid: 1061863,
@@ -334,7 +335,7 @@ describe('review', () => {
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: 'not-a-doi',
+                    identifier,
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },

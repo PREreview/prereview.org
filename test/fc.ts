@@ -1,10 +1,12 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { mod11_2 } from 'cdigit'
-import { Doi, isDoi } from 'doi-ts'
+import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import * as F from 'fetch-fp-ts'
 import { isNonEmpty } from 'fp-ts/Array'
+import { compose } from 'fp-ts/Refinement'
+import { pipe } from 'fp-ts/function'
 import * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
 import { Headers as FetchHeaders } from 'node-fetch'
@@ -29,6 +31,12 @@ export const doi = (): fc.Arbitrary<Doi> =>
     )
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
     .filter(isDoi)
+
+export const preprintDoi = (): fc.Arbitrary<Doi<'1101'>> =>
+  fc
+    .unicodeString({ minLength: 1 })
+    .map(suffix => `10.1101/${suffix}`)
+    .filter(pipe(isDoi, compose(hasRegistrant('1101'))))
 
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc
@@ -119,7 +127,7 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
         { minLength: 1 },
       )
       .filter(isNonEmpty),
-    doi: doi(),
+    doi: preprintDoi(),
     posted: plainDate(),
     title: html(),
     url: url(),

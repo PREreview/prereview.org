@@ -26,14 +26,14 @@ export type Preprint = {
     name: string
     orcid?: Orcid
   }>
-  doi: Doi
+  doi: Doi<'1101'>
   posted: PlainDate
   title: Html
   url: URL
 }
 
 export interface GetPreprintEnv {
-  getPreprint: (doi: Doi) => TE.TaskEither<unknown, Preprint>
+  getPreprint: (doi: Doi<'1101'>) => TE.TaskEither<unknown, Preprint>
 }
 
 const sendPage = flow(
@@ -43,7 +43,7 @@ const sendPage = flow(
   M.ichain(sendHtml),
 )
 
-const getPreprint = (doi: Doi) =>
+const getPreprint = (doi: Doi<'1101'>) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(doi)))
 
 export const preprint = flow(

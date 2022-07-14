@@ -6,10 +6,10 @@ import { runMiddleware } from './middleware'
 
 describe('lookup-doi', () => {
   describe('lookupDoi', () => {
-    test('with a DOI', async () => {
+    test('with a preprint DOI', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.doi().chain(doi => fc.tuple(fc.constant(doi), fc.connection({ body: fc.constant({ doi }) }))),
+          fc.preprintDoi().chain(doi => fc.tuple(fc.constant(doi), fc.connection({ body: fc.constant({ doi }) }))),
           async ([doi, connection]) => {
             const actual = await runMiddleware(_.lookupDoi, connection)()
 
@@ -29,10 +29,10 @@ describe('lookup-doi', () => {
       )
     })
 
-    test('with a non-DOI', async () => {
+    test('with a non-preprint DOI', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc.connection({ body: fc.record({ doi: fc.string() }, { withDeletedKeys: true }) }),
+          fc.connection({ body: fc.record({ doi: fc.oneof(fc.string(), fc.doi()) }, { withDeletedKeys: true }) }),
           async connection => {
             const actual = await runMiddleware(_.lookupDoi, connection)()
 

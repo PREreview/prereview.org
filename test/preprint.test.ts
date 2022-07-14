@@ -92,7 +92,7 @@ describe('preprint', () => {
 
     test('when the preprint cannot be loaded', async () => {
       await fc.assert(
-        fc.asyncProperty(fc.connection(), fc.doi(), fc.anything(), async (connection, preprintDoi, error) => {
+        fc.asyncProperty(fc.connection(), fc.preprintDoi(), fc.anything(), async (connection, preprintDoi, error) => {
           const actual = await runMiddleware(
             _.preprint(preprintDoi)({
               fetch: () => Promise.reject('should not be called'),

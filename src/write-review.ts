@@ -98,7 +98,7 @@ export type NewPrereview = {
 }
 
 type Preprint = {
-  doi: Doi
+  doi: Doi<'1101'>
   title: Html
 }
 
@@ -107,14 +107,14 @@ export interface CreateRecordEnv {
 }
 
 export interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: Doi) => TE.TaskEither<unknown, Html>
+  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, Html>
 }
 
 export interface FormStoreEnv {
   formStore: Keyv<JsonRecord>
 }
 
-const getPreprint = (doi: Doi) =>
+const getPreprint = (doi: Doi<'1101'>) =>
   pipe(
     RTE.ask<GetPreprintTitleEnv>(),
     RTE.chainTaskEitherK(({ getPreprintTitle }) =>
