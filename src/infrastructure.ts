@@ -64,6 +64,94 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
 }
 
 const preprints: ReadonlyRecord<string, Preprint> = {
+  '10.1101/2021.02.04.21251134': {
+    abstract: html`<h4>Background</h4>
+      <p>
+        Multiple early hospital cohorts of coronavirus disease 2019 (COVID-19) showed that patients with chronic
+        respiratory disease were significantly under-represented. We hypothesised that the widespread use of inhaled
+        glucocorticoids was responsible for this finding and tested if inhaled glucorticoids would be an effective
+        treatment for early COVID-19 illness.
+      </p>
+      <h4>Methods</h4>
+      <p>
+        We conducted a randomised, open label trial of inhaled budesonide, compared to usual care, in adults within 7
+        days of the onset of mild Covid-19 symptoms. The primary end point was COVID-19-related urgent care visit,
+        emergency department assessment or hospitalisation. The trial was stopped early after independent statistical
+        review concluded that study outcome would not change with further participant enrolment.
+      </p>
+      <h4>Results</h4>
+      <p>
+        146 patients underwent randomisation. For the per protocol population (n=139), the primary outcome occurred in
+        10 participants and 1 participant in the usual care and budesonide arms respectively (difference in proportion
+        0.131, p=0.004). The number needed to treat with inhaled budesonide to reduce COVID-19 deterioration was 8.
+        Clinical recovery was 1 day shorter in the budesonide arm compared to the usual care arm (median of 7 days
+        versus 8 days respectively, logrank test p=0.007). Proportion of days with a fever and proportion of
+        participants with at least 1 day of fever was lower in the budesonide arm. Fewer participants randomised to
+        budesonide had persistent symptoms at day 14 and day 28 compared to participants receiving usual care.
+      </p>
+      <h4>Conclusion</h4>
+      <p>
+        Early administration of inhaled budesonide reduced the likelihood of needing urgent medical care and reduced
+        time to recovery following early COVID-19 infection.
+      </p>
+      <p>
+        (Funded by Oxford NIHR Biomedical Research Centre and AstraZeneca;
+        <a href="http://ClinicalTrials.gov">ClinicalTrials.gov</a>
+        number, NCT04416399)
+      </p>
+      <h4>Research in context</h4>
+      <h5>Evidence before this study</h5>
+      <p>
+        The majority of interventions studied for the COVID-19 pandemic are focused on hospitalised patients. Widely
+        available and broadly relevant interventions for mild COVID-19 are urgently needed.
+      </p>
+      <h5>Added value of this study</h5>
+      <p>
+        In this open label randomised controlled trial, inhaled budesonide, when given to adults with early COVID-19
+        illness, reduces the likelihood of requiring urgent care, emergency department consultation or hospitalisation.
+        There was also a quicker resolution of fever, a known poor prognostic marker in COVID-19 and a faster
+        self-reported and questionnaire reported symptom resolution. There were fewer participants with persistent
+        COVID-19 symptoms at 14 and 28 days after budesonide therapy compared to usual care.
+      </p>
+      <h5>Implications of all the available evidence</h5>
+      <p>
+        The STOIC trial potentially provides the first easily accessible effective intervention in early COVID-19. By
+        assessing health care resource utilisation, the study provides an exciting option to help with the worldwide
+        pressure on health care systems due to the COVID-19 pandemic. Data from this study also suggests a potentially
+        effective treatment to prevent the long term morbidity from persistent COVID-19 symptoms.
+      </p>`,
+    authors: [
+      { name: 'Sanjay Ramakrishnan', orcid: '0000-0002-3003-7918' as Orcid },
+      { name: 'Dan V. Nicolau Jr.' },
+      { name: 'Beverly Langford' },
+      { name: 'Mahdi Mahdi' },
+      { name: 'Helen Jeffers' },
+      { name: 'Christine Mwasuku' },
+      { name: 'Karolina Krassowska' },
+      { name: 'Robin Fox' },
+      { name: 'Ian Binnian' },
+      { name: 'Victoria Glover' },
+      { name: 'Stephen Bright' },
+      { name: 'Christopher Butler' },
+      { name: 'Jennifer L Cane' },
+      { name: 'Andreas Halner' },
+      { name: 'Philippa C Matthews', orcid: '0000-0002-4036-4269' as Orcid },
+      { name: 'Louise E Donnelly' },
+      { name: 'Jodie L Simpson' },
+      { name: 'Jonathan R Baker' },
+      { name: 'Nabil T Fadai', orcid: '0000-0001-7717-5421' as Orcid },
+      { name: 'Stefan Peterson' },
+      { name: 'Thomas Bengtsson' },
+      { name: 'Peter J Barnes' },
+      { name: 'Richard EK Russell' },
+      { name: 'Mona Bafadhel', orcid: '0000-0002-9993-2478' as Orcid },
+    ],
+    doi: '10.1101/2021.02.04.21251134' as Doi<'1101'>,
+    posted: PlainDate.from('2021-02-08'),
+    server: 'medRxiv',
+    title: html`Inhaled budesonide in the treatment of early COVID-19 illness: a randomised controlled trial`,
+    url: new URL('https://www.medrxiv.org/content/10.1101/2021.02.04.21251134v1'),
+  },
   '10.1101/2022.01.13.476201': {
     abstract: html`
       <p>
@@ -89,6 +177,7 @@ const preprints: ReadonlyRecord<string, Preprint> = {
     ],
     doi: '10.1101/2022.01.13.476201' as Doi<'1101'>,
     posted: PlainDate.from('2022-01-14'),
+    server: 'bioRxiv',
     title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
     url: new URL('https://www.biorxiv.org/content/10.1101/2022.01.13.476201v1.full'),
   },
@@ -118,6 +207,7 @@ const preprints: ReadonlyRecord<string, Preprint> = {
     ],
     doi: '10.1101/2022.02.14.480364' as Doi<'1101'>,
     posted: PlainDate.from('2022-02-14'),
+    server: 'bioRxiv',
     title: html`The Transcription Factor Bach2 Negatively Regulates Natural Killer Cell Maturation and Function`,
     url: new URL('https://www.biorxiv.org/content/10.1101/2022.02.14.480364v1.full'),
   },

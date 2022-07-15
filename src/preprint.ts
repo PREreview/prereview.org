@@ -28,6 +28,7 @@ export type Preprint = {
   }>
   doi: Doi<'1101'>
   posted: PlainDate
+  server: 'bioRxiv' | 'medRxiv'
   title: Html
   url: URL
 }
@@ -114,7 +115,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
               </div>
               <div>
                 <dt>Server</dt>
-                <dd>bioRxiv</dd>
+                <dd>${preprint.server}</dd>
               </div>
               <div>
                 <dt>DOI</dt>

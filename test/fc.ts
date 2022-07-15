@@ -129,6 +129,7 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
       .filter(isNonEmpty),
     doi: preprintDoi(),
     posted: plainDate(),
+    server: fc.constantFrom('bioRxiv', 'medRxiv'),
     title: html(),
     url: url(),
   })
