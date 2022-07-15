@@ -71,12 +71,12 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       preprintMatch.parser,
       R.map(({ doi }) => preprint(doi)),
-      R.map(local((env: AppEnv) => ({ ...env, getPreprint }))),
+      R.map(local((env: AppEnv) => ({ ...env, getPreprint: flipC(getPreprint)(env) }))),
     ),
     pipe(
       reviewMatch.parser,
       R.map(({ id }) => review(id)),
-      R.map(local((env: AppEnv) => ({ ...env, getPreprintTitle }))),
+      R.map(local((env: AppEnv) => ({ ...env, getPreprintTitle: flipC(getPreprintTitle)(env) }))),
     ),
     pipe(
       [
@@ -114,7 +114,13 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         ),
       ],
       M.concatAll(R.getParserMonoid()),
-      R.map(local((env: AppEnv) => ({ ...env, createRecord: flipC(createRecordOnZenodo)(env), getPreprintTitle }))),
+      R.map(
+        local((env: AppEnv) => ({
+          ...env,
+          createRecord: flipC(createRecordOnZenodo)(env),
+          getPreprintTitle: flipC(getPreprintTitle)(env),
+        })),
+      ),
     ),
   ],
   M.concatAll(R.getParserMonoid()),

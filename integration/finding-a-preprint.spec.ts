@@ -1,12 +1,16 @@
 import { Doi } from 'doi-ts'
+import { Status } from 'hyper-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordsC } from 'zenodo-ts'
 import { expect, test } from './test'
 
-test('might not find anything', async ({ page }) => {
+test('might not find anything', async ({ fetch, page }) => {
   await page.goto('/')
   await page.fill('text="Preprint DOI"', '10.1101/this-should-not-find-anything')
+
+  fetch.get('https://api.crossref.org/works/10.1101/this-should-not-find-anything', { status: Status.NotFound })
+
   await page.click('text="Find PREreviews"')
 
   const h1 = page.locator('h1')

@@ -9,6 +9,7 @@
     "@js-temporal/polyfill": "^0.4.1",
     "@keyv/sqlite": "^3.5.2",
     "clock-ts": "^0.1.0",
+    "crossref-ts": "^0.1.2",
     "doi-ts": "^0.1.1",
     "express": "^4.18.1",
     "fetch-fp-ts": "^0.1.3",
