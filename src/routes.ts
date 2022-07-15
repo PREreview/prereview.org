@@ -28,7 +28,7 @@ const PreprintDoiC = C.make(
       const [, match] = s.match(/^doi-(.+)$/) ?? []
 
       if (match) {
-        return DoiD.decode(match.replace(/\+/g, '-').replace(/-/g, '/'))
+        return DoiD.decode(match.replace(/-/g, '/').replace(/\+/g, '-'))
       }
 
       return D.failure(s, 'DOI')
