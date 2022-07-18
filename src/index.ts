@@ -39,7 +39,14 @@ const env = pipe(
 
 const deps: AppEnv = {
   clock: SystemClock,
-  fetch: nodeFetch,
+  fetch: (url, init) =>
+    nodeFetch(url, {
+      ...init,
+      headers: {
+        ...init.headers,
+        'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
+      },
+    }),
   formStore: new Keyv(`sqlite://${env.DB_PATH}`, { namespace: 'forms' }),
   logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
   oauth: {
