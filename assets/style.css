@@ -303,6 +303,10 @@ summary {
   touch-action: manipulation;
 }
 
+dfn {
+  font-style: normal;
+}
+
 sub {
   vertical-align: baseline;
   font-size: 50%;

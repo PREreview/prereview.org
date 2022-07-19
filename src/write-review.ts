@@ -996,10 +996,16 @@ function startPage(preprint: Preprint) {
 
         <h2>Before you start</h2>
 
-        <p>
-          We will ask you to log in with your <a href="https://orcid.org/">ORCID&nbsp;iD</a>. If you don’t have an iD,
-          you can create one.
-        </p>
+        <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
+
+        <details>
+          <summary>What is an ORCID&nbsp;iD?</summary>
+
+          <p>
+            An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a persistent digital identifier you own and
+            control, distinguishing you from every other researcher.
+          </p>
+        </details>
 
         <a href="${format(logInMatch.formatter, {})}" role="button" draggable="false">Start now</a>
       </main>
