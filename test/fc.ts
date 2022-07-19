@@ -12,7 +12,7 @@ import { ExpressConnection } from 'hyper-ts/lib/express'
 import { Headers as FetchHeaders } from 'node-fetch'
 import { Body, Headers, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
 import { Orcid, isOrcid } from 'orcid-id-ts'
-import { Html, rawHtml } from '../src/html'
+import { Html, rawHtml, sanitizeHtml } from '../src/html'
 import { Preprint } from '../src/preprint'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
@@ -22,6 +22,8 @@ export * from 'fast-check'
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
 
 export const html = (): fc.Arbitrary<Html> => fc.string().map(rawHtml)
+
+export const sanitisedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeHtml)
 
 export const doi = (): fc.Arbitrary<Doi> =>
   fc
