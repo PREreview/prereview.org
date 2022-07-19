@@ -274,6 +274,7 @@ export const writeReviewPost = flow(
       RM.ichainW(state =>
         match(state)
           .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePostForm)
+          .with({ method: 'POST', preprint: P.select() }, showFailureMessage)
           .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, fromMiddlewareK(showPostForm))
           .otherwise(flow(({ form }) => form, fromMiddlewareK(showNextForm(preprint)))),
       ),
