@@ -633,7 +633,7 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
                   <ul>
                     <li>You are the author of the preprint.</li>
                     <li>You have a personal relationship with the author.</li>
-                    <li>You are a rival or competitor of the author</li>
+                    <li>You are a rival or competitor of the author.</li>
                     <li>You have recently worked with the author.</li>
                     <li>You collaborate with the author.</li>
                     <li>You have published with the author in the last five years.</li>
