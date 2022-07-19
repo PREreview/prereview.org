@@ -383,9 +383,7 @@ label {
   color: var(--color-link-dark);
   border: var(--width-divider) solid var(--color-link-dark);
   border-radius: calc(var(--width-divider) * 5);
-  cursor: pointer;
   transform: translateZ(0);
-  transition: filter 0.2s;
   padding-block: var(--space-2xs);
   padding-inline: var(--space-xs);
   touch-action: manipulation;
@@ -416,8 +414,18 @@ label {
     outline-offset: 0;
   }
 
-  &:hover {
-    filter: brightness(1.1);
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled) {
+    cursor: pointer;
+    transition: filter 0.2s;
+
+    &:hover {
+      filter: brightness(1.1);
+    }
   }
 
   @media screen {

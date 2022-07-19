@@ -580,18 +580,21 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
           </a>
         </div>
 
-        <form method="post" novalidate>
-          <h2>Now post your PREreview</h2>
+        <single-use-form>
+          <form method="post" novalidate>
+            <h2>Now post your PREreview</h2>
 
-          <p>
-            We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a
-            <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0 license</a>.
-          </p>
+            <p>
+              We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a
+              <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0 license</a>.
+            </p>
 
-          <button>Post PREreview</button>
-        </form>
+            <button>Post PREreview</button>
+          </form>
+        </single-use-form>
       </main>
     `,
+    js: ['single-use-form.js'],
   })
 }
 
