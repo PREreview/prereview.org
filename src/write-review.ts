@@ -286,15 +286,15 @@ export const writeReviewPost = flow(
 
 const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
   pipe(
-    RM.right({
+    RM.rightReaderTask(deleteForm(user.orcid, preprint.doi)),
+    RM.map(() => ({
       conduct: form.conduct,
       persona: form.persona,
       preprint,
       review: renderReview(form),
       user,
-    }),
-    RM.chainReaderTaskEitherK(createRecord),
-    RM.chainFirstReaderTaskKW(() => deleteForm(user.orcid, preprint.doi)),
+    })),
+    RM.chainReaderTaskEitherKW(createRecord),
     RM.ichainW(deposition => showSuccessMessage(preprint, deposition.metadata.doi, form.moreAuthors === 'yes')),
     RM.orElseW(() => showFailureMessage(preprint)),
   )
