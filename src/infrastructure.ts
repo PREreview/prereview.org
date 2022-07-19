@@ -6,6 +6,7 @@ import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
+import { isString } from 'fp-ts/string'
 import * as D from 'io-ts/Decoder'
 import sanitize from 'sanitize-html'
 import { get } from 'spectacles-ts'
@@ -87,7 +88,7 @@ function workToPreprint(work: Work): E.Either<unknown, Preprint> {
               name: author.name,
             }))
             .with({ family: P.string }, author => ({
-              name: [author.prefix, author.given, author.family, author.suffix].join(' '),
+              name: [author.prefix, author.given, author.family, author.suffix].filter(isString).join(' '),
               orcid: author.ORCID,
             }))
             .exhaustive(),
