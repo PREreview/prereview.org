@@ -630,15 +630,17 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
                 <details>
                   <summary>Examples</summary>
 
-                  <ul>
-                    <li>You are the author of the preprint.</li>
-                    <li>You have a personal relationship with the author.</li>
-                    <li>You are a rival or competitor of the author.</li>
-                    <li>You have recently worked with the author.</li>
-                    <li>You collaborate with the author.</li>
-                    <li>You have published with the author in the last five years.</li>
-                    <li>You hold a grant with the author.</li>
-                  </ul>
+                  <div>
+                    <ul>
+                      <li>You are the author of the preprint.</li>
+                      <li>You have a personal relationship with the author.</li>
+                      <li>You are a rival or competitor of the author.</li>
+                      <li>You have recently worked with the author.</li>
+                      <li>You collaborate with the author.</li>
+                      <li>You have published with the author in the last five years.</li>
+                      <li>You hold a grant with the author.</li>
+                    </ul>
+                  </div>
                 </details>
 
                 ${error && form.competingInterests !== 'yes'
@@ -740,30 +742,34 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
               <details>
                 <summary>Examples of expected behaviors</summary>
 
-                <ul>
-                  <li>Using welcoming and inclusive language.</li>
-                  <li>Providing feedback that is constructive, i.e. useful, to the receiver.</li>
-                  <li>Being respectful of differing viewpoints and experiences.</li>
-                  <li>Gracefully accepting constructive criticism.</li>
-                  <li>Focusing on what is best for the community.</li>
-                  <li>Showing empathy towards other community members.</li>
-                </ul>
+                <div>
+                  <ul>
+                    <li>Using welcoming and inclusive language.</li>
+                    <li>Providing feedback that is constructive, i.e. useful, to the receiver.</li>
+                    <li>Being respectful of differing viewpoints and experiences.</li>
+                    <li>Gracefully accepting constructive criticism.</li>
+                    <li>Focusing on what is best for the community.</li>
+                    <li>Showing empathy towards other community members.</li>
+                  </ul>
+                </div>
               </details>
 
               <details>
                 <summary>Examples of unacceptable behaviors</summary>
 
-                <ul>
-                  <li>Trolling, insulting or derogatory comments, and personal or political attacks.</li>
-                  <li>Providing unconstructive or disruptive feedback on PREreview.</li>
-                  <li>Public or private harassment.</li>
-                  <li>
-                    Publishing others’ confidential information, such as a physical or electronic address, without
-                    explicit permission.
-                  </li>
-                  <li>Use of sexualized language or imagery and unwelcome sexual attention or advances.</li>
-                  <li>Other conduct which could reasonably be considered inappropriate in a professional setting.</li>
-                </ul>
+                <div>
+                  <ul>
+                    <li>Trolling, insulting or derogatory comments, and personal or political attacks.</li>
+                    <li>Providing unconstructive or disruptive feedback on PREreview.</li>
+                    <li>Public or private harassment.</li>
+                    <li>
+                      Publishing others’ confidential information, such as a physical or electronic address, without
+                      explicit permission.
+                    </li>
+                    <li>Use of sexualized language or imagery and unwelcome sexual attention or advances.</li>
+                    <li>Other conduct which could reasonably be considered inappropriate in a professional setting.</li>
+                  </ul>
+                </div>
               </details>
 
               ${error
@@ -1001,10 +1007,12 @@ function startPage(preprint: Preprint) {
         <details>
           <summary>What is an ORCID&nbsp;iD?</summary>
 
-          <p>
-            An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a persistent digital identifier you own and
-            control, distinguishing you from every other researcher.
-          </p>
+          <div>
+            <p>
+              An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a persistent digital identifier you own
+              and control, distinguishing you from every other researcher.
+            </p>
+          </div>
         </details>
 
         <a href="${format(logInMatch.formatter, {})}" role="button" draggable="false">Start now</a>

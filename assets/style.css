@@ -295,6 +295,19 @@ details {
   @nest [role='note'] + & {
     margin-block-start: var(--space-s);
   }
+
+  & > div {
+    position: relative;
+    padding-inline-start: var(--space-s);
+
+    &::before {
+      position: absolute;
+      content: '';
+      border-inline-start: var(--width-divider) solid var(--color-divider-light);
+      block-size: 100%;
+      inset-inline-start: calc((0.6em - var(--width-divider)) / 2);
+    }
+  }
 }
 
 summary {
