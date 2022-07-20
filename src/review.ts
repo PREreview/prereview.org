@@ -18,7 +18,7 @@ import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { Record, getRecord } from 'zenodo-ts'
-import { Html, html, plainText, rawHtml, sendHtml } from './html'
+import { Html, html, plainText, sanitizeHtml, sendHtml } from './html'
 import { handleError } from './http-error'
 import { page } from './page'
 import { preprintMatch } from './routes'
@@ -136,7 +136,7 @@ function createPage({ preprint, review }: { preprint: Preprint; review: Record }
           </dl>
         </header>
 
-        ${rawHtml(review.metadata.description)}
+        ${sanitizeHtml(review.metadata.description)}
       </main>
     `,
   })

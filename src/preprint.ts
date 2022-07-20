@@ -12,7 +12,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Orcid } from 'orcid-id-ts'
 import textClipper from 'text-clipper'
 import { Record, Records, getRecords } from 'zenodo-ts'
-import { Html, html, plainText, rawHtml, sendHtml } from './html'
+import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
 import { handleError } from './http-error'
 import { page } from './page'
 import { reviewMatch, writeReviewMatch } from './routes'
@@ -154,7 +154,7 @@ function showReview(review: Record) {
           ${review.metadata.creators.map(author => html` <li>${author.name}</li>`)}
         </ol>
 
-        ${rawHtml(textClipper(review.metadata.description, 300, { html: true, maxLines: 5 }))}
+        ${rawHtml(textClipper(sanitizeHtml(review.metadata.description).toString(), 300, { html: true, maxLines: 5 }))}
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
           Read
