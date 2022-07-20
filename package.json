@@ -68,7 +68,7 @@
     "dotenv": "^16.0.1",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-import-resolver-typescript": "^3.2.6",
+    "eslint-import-resolver-typescript": "^3.3.0",
     "eslint-plugin-fp-ts": "^0.3.2",
     "eslint-plugin-import": "^2.26.0",
     "fast-check": "^3.0.1",
