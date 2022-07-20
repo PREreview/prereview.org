@@ -396,7 +396,7 @@ label {
   text-decoration-line: none;
   line-height: 1.5;
   letter-spacing: -0.5px;
-  white-space: nowrap;
+  min-inline-size: 4em;
   color: var(--color-link-dark);
   border: var(--width-divider) solid var(--color-link-dark);
   border-radius: calc(var(--width-divider) * 5);
