@@ -14,10 +14,12 @@ import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { home } from './home'
+import { html } from './html'
 import { handleError } from './http-error'
 import { createRecordOnZenodo, getPreprint, getPreprintTitle } from './infrastructure'
 import { PublicUrlEnv, authenticate, logIn } from './log-in'
 import { lookupDoi } from './lookup-doi'
+import { PhaseEnv } from './page'
 import { preprint } from './preprint'
 import { review } from './review'
 import {
@@ -50,11 +52,11 @@ import {
 
 export type AppEnv = FormStoreEnv & L.LoggerEnv & OAuthEnv & PublicUrlEnv & SessionEnv & ZenodoAuthenticatedEnv
 
-export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
+export const router: R.Parser<RM.ReaderMiddleware<AppEnv & PhaseEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       homeMatch.parser,
-      R.map(() => RM.fromMiddleware(home)),
+      R.map(() => home),
     ),
     pipe(
       logInMatch.parser,
@@ -128,7 +130,7 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
 
 const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
 
-const appMiddleware = pipe(routerMiddleware, RM.orElseMiddlewareK(handleError))
+const appMiddleware = pipe(routerMiddleware, RM.orElseW(handleError))
 
 export const app = (deps: AppEnv) => {
   const app = express()
@@ -160,7 +162,12 @@ export const app = (deps: AppEnv) => {
       }),
     )
     .use(express.urlencoded({ extended: true }))
-    .use(pipe(appMiddleware(deps), toRequestHandler))
+    .use(
+      pipe(
+        appMiddleware({ ...deps, phase: { tag: 'sandbox', text: html`This version is a sandbox.` } }),
+        toRequestHandler,
+      ),
+    )
 
   return http.createServer(app)
 }

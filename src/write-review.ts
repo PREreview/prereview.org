@@ -2,6 +2,7 @@ import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { JsonRecord } from 'fp-ts/Json'
+import { Reader } from 'fp-ts/Reader'
 import { ReaderTask } from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as R from 'fp-ts/Refinement'
@@ -10,7 +11,7 @@ import * as TE from 'fp-ts/TaskEither'
 import { constVoid, constant, flow, pipe } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
 import { NotFound } from 'http-errors'
-import { Status } from 'hyper-ts'
+import { Status, StatusOpen } from 'hyper-ts'
 import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -148,10 +149,10 @@ export const writeReview = flow(
       RM.chainEitherKW(UserC.decode),
       RM.chainReaderTaskKW(user => getForm(user.orcid, preprint.doi)),
       RM.ichainMiddlewareKW(showNextForm(preprint)),
-      RM.orElseMiddlewareK(() => showStartPage(preprint)),
+      RM.orElseW(() => showStartPage(preprint)),
     ),
   ),
-  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+  RM.orElseW(() => handleError(new NotFound())),
 )
 
 export const writeReviewReview = flow(
@@ -162,13 +163,11 @@ export const writeReviewReview = flow(
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
-      RM.ichainW(state =>
-        match(state).with({ method: 'POST' }, handleReviewForm).otherwise(fromMiddlewareK(showReviewForm)),
-      ),
+      RM.ichainW(state => match(state).with({ method: 'POST' }, handleReviewForm).otherwise(showReviewForm)),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+  RM.orElseW(() => handleError(new NotFound())),
 )
 
 export const writeReviewPersona = flow(
@@ -179,13 +178,11 @@ export const writeReviewPersona = flow(
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
-      RM.ichainW(state =>
-        match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(fromMiddlewareK(showPersonaForm)),
-      ),
+      RM.ichainW(state => match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(showPersonaForm)),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+  RM.orElseW(() => handleError(new NotFound())),
 )
 
 export const writeReviewAuthors = flow(
@@ -196,13 +193,11 @@ export const writeReviewAuthors = flow(
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
-      RM.ichainW(state =>
-        match(state).with({ method: 'POST' }, handleAuthorsForm).otherwise(fromMiddlewareK(showAuthorsForm)),
-      ),
+      RM.ichainW(state => match(state).with({ method: 'POST' }, handleAuthorsForm).otherwise(showAuthorsForm)),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+  RM.orElseW(() => handleError(new NotFound())),
 )
 
 export const writeReviewAddAuthors = flow(
@@ -213,16 +208,16 @@ export const writeReviewAddAuthors = flow(
       RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
-      RM.ichainMiddlewareKW(state =>
+      RM.ichainW(state =>
         match(state)
-          .with({ form: P.select({ moreAuthors: 'yes' }), method: 'POST' }, showNextForm(preprint))
+          .with({ form: P.select({ moreAuthors: 'yes' }), method: 'POST' }, fromMiddlewareK(showNextForm(preprint)))
           .with({ form: { moreAuthors: 'yes' } }, showAddAuthorsForm)
           .otherwise(() => handleError(new NotFound())),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+  RM.orElseW(() => handleError(new NotFound())),
 )
 
 export const writeReviewCompetingInterests = flow(
@@ -234,14 +229,12 @@ export const writeReviewCompetingInterests = flow(
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
-        match(state)
-          .with({ method: 'POST' }, handleCompetingInterestsForm)
-          .otherwise(fromMiddlewareK(showCompetingInterestsForm)),
+        match(state).with({ method: 'POST' }, handleCompetingInterestsForm).otherwise(showCompetingInterestsForm),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+  RM.orElseW(() => handleError(new NotFound())),
 )
 
 export const writeReviewConduct = flow(
@@ -253,14 +246,12 @@ export const writeReviewConduct = flow(
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
-        match(state)
-          .with({ method: 'POST' }, handleCodeOfConductForm)
-          .otherwise(fromMiddlewareK(showCodeOfConductForm)),
+        match(state).with({ method: 'POST' }, handleCodeOfConductForm).otherwise(showCodeOfConductForm),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+  RM.orElseW(() => handleError(new NotFound())),
 )
 
 export const writeReviewPost = flow(
@@ -275,13 +266,13 @@ export const writeReviewPost = flow(
         match(state)
           .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePostForm)
           .with({ method: 'POST', preprint: P.select() }, showFailureMessage)
-          .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, fromMiddlewareK(showPostForm))
+          .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, showPostForm)
           .otherwise(flow(({ form }) => form, fromMiddlewareK(showNextForm(preprint)))),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+  RM.orElseW(() => handleError(new NotFound())),
 )
 
 const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
@@ -300,67 +291,64 @@ const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprin
   )
 
 const showPersonaForm = flow(
-  ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) => personaForm(preprint, form, user),
-  M.of,
-  M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(sendHtml),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+    personaForm(preprint, form, user),
+  ),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const showPersonaErrorForm = flow(
-  (preprint: Preprint, user: User) => personaForm(preprint, {}, user, true),
-  M.of,
-  M.ichainFirst(() => M.status(Status.BadRequest)),
-  M.ichain(sendHtml),
+  fromReaderK((preprint: Preprint, user: User) => personaForm(preprint, {}, user, true)),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const showAuthorsForm = flow(
-  ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) => authorsForm(preprint, form, user),
-  M.of,
-  M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(sendHtml),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+    authorsForm(preprint, form, user),
+  ),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const showAuthorsErrorForm = flow(
-  (preprint: Preprint, user: User) => authorsForm(preprint, {}, user, true),
-  M.of,
-  M.ichainFirst(() => M.status(Status.BadRequest)),
-  M.ichain(sendHtml),
+  fromReaderK((preprint: Preprint, user: User) => authorsForm(preprint, {}, user, true)),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const showAddAuthorsForm = flow(
-  ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) => addAuthorsForm(preprint, form, user),
-  M.of,
-  M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(sendHtml),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+    addAuthorsForm(preprint, form, user),
+  ),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const showCompetingInterestsForm = flow(
-  ({ form, preprint }: { form: Form; preprint: Preprint }) => competingInterestsForm(preprint, form),
-  M.of,
-  M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(sendHtml),
+  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) => competingInterestsForm(preprint, form)),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const showCompetingInterestsErrorForm = (preprint: Preprint) => (form: Form) =>
   pipe(
-    competingInterestsForm(preprint, form, true),
-    M.of,
-    M.ichainFirst(() => M.status(Status.BadRequest)),
-    M.ichain(sendHtml),
+    RM.rightReader(competingInterestsForm(preprint, form, true)),
+    RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
   )
 
 const showCodeOfConductForm = flow(
-  ({ form, preprint }: { form: Form; preprint: Preprint }) => codeOfConductForm(preprint, form),
-  M.of,
-  M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(sendHtml),
+  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) => codeOfConductForm(preprint, form)),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const showCodeOfConductErrorForm = flow(
-  (preprint: Preprint) => codeOfConductForm(preprint, {}, true),
-  M.of,
-  M.ichainFirst(() => M.status(Status.BadRequest)),
-  M.ichain(sendHtml),
+  fromReaderK((preprint: Preprint) => codeOfConductForm(preprint, {}, true)),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -369,14 +357,15 @@ const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Prep
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint)),
-    RM.orElseMiddlewareK(() => showReviewErrorForm(preprint)),
+    RM.orElseW(() => showReviewErrorForm(preprint)),
   )
 
 const showPostForm = flow(
-  ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) => postForm(preprint, form, user),
-  M.of,
-  M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(sendHtml),
+  fromReaderK(({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
+    postForm(preprint, form, user),
+  ),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -385,7 +374,7 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint)),
-    RM.orElseMiddlewareK(() => showPersonaErrorForm(preprint, user)),
+    RM.orElseW(() => showPersonaErrorForm(preprint, user)),
   )
 
 const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -400,7 +389,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
         )
         .otherwise(showNextForm(preprint)),
     ),
-    RM.orElseMiddlewareK(() => showAuthorsErrorForm(preprint, user)),
+    RM.orElseW(() => showAuthorsErrorForm(preprint, user)),
   )
 
 const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -409,15 +398,15 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint)),
-    RM.orElseMiddlewareK(() =>
+    RM.orElseW(() =>
       pipe(
-        M.decodeBody(
+        RM.decodeBody(
           flow(
             PartialCompetingInterestsFormC.decode,
             E.altW(() => E.right({})),
           ),
         ),
-        M.ichain(showCompetingInterestsErrorForm(preprint)),
+        RM.ichain(showCompetingInterestsErrorForm(preprint)),
       ),
     ),
   )
@@ -428,47 +417,42 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint)),
-    RM.orElseMiddlewareK(() => showCodeOfConductErrorForm(preprint)),
+    RM.orElseW(() => showCodeOfConductErrorForm(preprint)),
   )
 
 const createRecord = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ createRecord }: CreateRecordEnv) => createRecord(newPrereview)))
 
 const showReviewForm = flow(
-  ({ form, preprint }: { form: Form; preprint: Preprint }) => reviewForm(preprint, form),
-  M.of,
-  M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(sendHtml),
+  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) => reviewForm(preprint, form)),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const showReviewErrorForm = flow(
-  (preprint: Preprint) => reviewForm(preprint, {}, true),
-  M.of,
-  M.ichainFirst(() => M.status(Status.BadRequest)),
-  M.ichain(sendHtml),
+  fromReaderK((preprint: Preprint) => reviewForm(preprint, {}, true)),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const showSuccessMessage = flow(
-  successMessage,
-  RM.of,
+  fromReaderK(successMessage),
   RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainFirst(() => endSession()),
+  RM.ichainFirstW(() => endSession()),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showFailureMessage = flow(
-  failureMessage,
-  RM.of,
+  fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
-  RM.ichainFirst(() => endSession()),
+  RM.ichainFirstW(() => endSession()),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showStartPage = flow(
-  startPage,
-  M.of,
-  M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(sendHtml),
+  fromReaderK(startPage),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 function getForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv, Form> {
@@ -546,7 +530,7 @@ function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
     `,
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function failureMessage(preprint: Preprint) {
@@ -563,7 +547,7 @@ function failureMessage(preprint: Preprint) {
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
     `,
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function postForm(preprint: Preprint, review: CompletedForm, user: User) {
@@ -611,7 +595,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
       </main>
     `,
     js: ['single-use-form.js'],
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
@@ -727,7 +711,7 @@ ${rawHtml(form.competingInterestsDetails ?? '')}</textarea
       </main>
     `,
     js: ['conditional-inputs.js'],
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
@@ -808,7 +792,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
         </form>
       </main>
     `,
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = false) {
@@ -833,7 +817,7 @@ function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = fals
         </form>
       </main>
     `,
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function authorsForm(preprint: Preprint, form: Form, user: User, error = false) {
@@ -894,7 +878,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
         </form>
       </main>
     `,
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function personaForm(preprint: Preprint, form: Form, user: User, error = false) {
@@ -956,7 +940,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
         </form>
       </main>
     `,
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function reviewForm(preprint: Preprint, form: Form, error = false) {
@@ -997,7 +981,7 @@ ${rawHtml(form.review ?? '')}</textarea
       </main>
     `,
     js: ['html-editor.js'],
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function startPage(preprint: Preprint) {
@@ -1034,7 +1018,7 @@ function startPage(preprint: Preprint) {
         <a href="${format(logInMatch.formatter, {})}" role="button" draggable="false">Start now</a>
       </main>
     `,
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
@@ -1052,3 +1036,10 @@ const fromMiddlewareK =
   ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
   (...a) =>
     RM.fromMiddleware(f(...a))
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
+  f: (...a: A) => Reader<R, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return (...a) => RM.rightReader(f(...a))
+}

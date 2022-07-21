@@ -8,7 +8,7 @@ describe('home', () => {
   test('home', async () => {
     await fc.assert(
       fc.asyncProperty(fc.connection(), async connection => {
-        const actual = await runMiddleware(_.home, connection)()
+        const actual = await runMiddleware(_.home({}), connection)()
 
         expect(actual).toStrictEqual(
           E.right([

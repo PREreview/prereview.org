@@ -1,13 +1,13 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
+import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
-import { Status } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
+import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Orcid } from 'orcid-id-ts'
 import textClipper from 'text-clipper'
@@ -38,10 +38,9 @@ export interface GetPreprintEnv {
 }
 
 const sendPage = flow(
-  createPage,
-  M.of,
-  M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(sendHtml),
+  fromReaderK(createPage),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 const getPreprint = (doi: Doi<'1101'>) =>
@@ -66,18 +65,17 @@ export const preprint = flow(
           RM.fromReaderTaskEitherK(getRecords),
         ),
       ),
-      RM.ichainMiddlewareKW(sendPage),
-      RM.orElseMiddlewareK(() => showFailureMessage),
+      RM.ichainW(sendPage),
+      RM.orElseW(() => showFailureMessage),
     ),
   ),
-  RM.orElseMiddlewareK(() => handleError(new NotFound())),
+  RM.orElseW(() => handleError(new NotFound())),
 )
 
 const showFailureMessage = pipe(
-  failureMessage(),
-  M.of,
-  M.ichainFirst(() => M.status(Status.ServiceUnavailable)),
-  M.ichain(sendHtml),
+  RM.rightReader(failureMessage()),
+  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 function failureMessage() {
@@ -92,7 +90,7 @@ function failureMessage() {
         <p>Please try again later.</p>
       </main>
     `,
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Records }) {
@@ -145,7 +143,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
       </main>
     `,
     type: 'two-up',
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function showReview(review: Record) {
@@ -175,4 +173,11 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   }
 
   return name
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
+  f: (...a: A) => Reader<R, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return (...a) => RM.rightReader(f(...a))
 }

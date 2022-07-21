@@ -1,13 +1,17 @@
 import { format } from 'fp-ts-routing'
-import { flow, pipe } from 'fp-ts/function'
+import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
+import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { html, plainText, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { page } from './page'
 import { lookupDoiMatch } from './routes'
 
-export const home = pipe(M.status(Status.OK), M.ichain(flow(createPage, sendHtml)))
+export const home = pipe(
+  RM.rightReader(createPage()),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
+)
 
 function createPage() {
   return page({
@@ -31,5 +35,5 @@ function createPage() {
       </main>
     `,
     type: 'no-header',
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }

@@ -5,13 +5,13 @@ import * as A from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { Predicate } from 'fp-ts/Predicate'
+import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { compose } from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
-import { Status } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
+import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { Orcid } from 'orcid-id-ts'
@@ -65,10 +65,9 @@ const getPreprint = (doi: Doi<'1101'>) =>
   )
 
 const sendPage = flow(
-  createPage,
-  M.of,
-  M.ichainFirst(() => M.status(Status.OK)),
-  M.ichain(sendHtml),
+  fromReaderK(createPage),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 export const review = flow(
@@ -80,8 +79,8 @@ export const review = flow(
     'preprint',
     RM.fromReaderTaskEitherK(({ preprintDoi }) => getPreprint(preprintDoi)),
   ),
-  RM.ichainMiddlewareKW(sendPage),
-  RM.orElseMiddlewareK(error =>
+  RM.ichainW(sendPage),
+  RM.orElseW(error =>
     match(error)
       .with({ status: Status.NotFound }, () => handleError(new NotFound()))
       .otherwise(() => showFailureMessage),
@@ -89,10 +88,9 @@ export const review = flow(
 )
 
 const showFailureMessage = pipe(
-  failureMessage(),
-  M.of,
-  M.ichainFirst(() => M.status(Status.ServiceUnavailable)),
-  M.ichain(sendHtml),
+  RM.rightReader(failureMessage()),
+  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
+  RM.ichainMiddlewareK(sendHtml),
 )
 
 function failureMessage() {
@@ -107,7 +105,7 @@ function failureMessage() {
         <p>Please try again later.</p>
       </main>
     `,
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function createPage({ preprint, review }: { preprint: Preprint; review: Record }) {
@@ -141,7 +139,7 @@ function createPage({ preprint, review }: { preprint: Preprint; review: Record }
         ${sanitizeHtml(review.metadata.description)}
       </main>
     `,
-  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
+  })
 }
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
@@ -150,4 +148,11 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   }
 
   return name
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
+  f: (...a: A) => Reader<R, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return (...a) => RM.rightReader(f(...a))
 }

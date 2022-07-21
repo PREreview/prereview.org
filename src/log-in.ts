@@ -46,7 +46,7 @@ export const authenticate = flow(
   RM.ichainW(flow(get('user'), UserC.encode, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichainFirst(() => RM.end()),
-  RM.orElseMiddlewareKW(() => handleError(new ServiceUnavailable())),
+  RM.orElseW(() => handleError(new ServiceUnavailable())),
 )
 
 function getReferer(state: string) {
