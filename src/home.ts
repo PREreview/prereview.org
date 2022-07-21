@@ -31,5 +31,5 @@ function createPage() {
       </main>
     `,
     type: 'no-header',
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }

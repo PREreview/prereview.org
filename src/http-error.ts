@@ -22,5 +22,5 @@ function errorPage(message: string) {
         <h1>${message}</h1>
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }

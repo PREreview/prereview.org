@@ -530,7 +530,7 @@ function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function failureMessage(preprint: Preprint) {
@@ -547,7 +547,7 @@ function failureMessage(preprint: Preprint) {
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function postForm(preprint: Preprint, review: CompletedForm, user: User) {
@@ -595,7 +595,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
       </main>
     `,
     js: ['single-use-form.js'],
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
@@ -711,7 +711,7 @@ ${rawHtml(form.competingInterestsDetails ?? '')}</textarea
       </main>
     `,
     js: ['conditional-inputs.js'],
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
@@ -792,7 +792,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
         </form>
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = false) {
@@ -817,7 +817,7 @@ function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = fals
         </form>
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function authorsForm(preprint: Preprint, form: Form, user: User, error = false) {
@@ -878,7 +878,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
         </form>
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function personaForm(preprint: Preprint, form: Form, user: User, error = false) {
@@ -940,7 +940,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
         </form>
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function reviewForm(preprint: Preprint, form: Form, error = false) {
@@ -981,7 +981,7 @@ ${rawHtml(form.review ?? '')}</textarea
       </main>
     `,
     js: ['html-editor.js'],
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function startPage(preprint: Preprint) {
@@ -1018,7 +1018,7 @@ function startPage(preprint: Preprint) {
         <a href="${format(logInMatch.formatter, {})}" role="button" draggable="false">Start now</a>
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {

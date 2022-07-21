@@ -105,7 +105,7 @@ function failureMessage() {
         <p>Please try again later.</p>
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function createPage({ preprint, review }: { preprint: Preprint; review: Record }) {
@@ -139,7 +139,7 @@ function createPage({ preprint, review }: { preprint: Preprint; review: Record }
         ${sanitizeHtml(review.metadata.description)}
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {

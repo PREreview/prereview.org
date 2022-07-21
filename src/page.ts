@@ -1,7 +1,15 @@
 import { format } from 'fp-ts-routing'
+import * as R from 'fp-ts/Reader'
 import { Html, PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
 import { homeMatch } from './routes'
+
+export interface PhaseEnv {
+  readonly phase?: {
+    readonly tag: string
+    readonly text: Html
+  }
+}
 
 type Page = {
   readonly title: PlainText
@@ -10,41 +18,50 @@ type Page = {
   readonly js?: ReadonlyArray<Assets<'.js'>>
 }
 
-export function page({ title, type, content, js = [] }: Page): Html {
-  return html`
-    <!DOCTYPE html>
-    <html lang="en">
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
+export function page({ title, type, content, js = [] }: Page): R.Reader<PhaseEnv, Html> {
+  return R.asks(
+    ({ phase }) => html`
+      <!DOCTYPE html>
+      <html lang="en">
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-      <link href="${assets['style.css']}" rel="stylesheet" />
-      ${js.map(file => html`<script src="${assets[file]}" type="module"></script>`)}
+        <link href="${assets['style.css']}" rel="stylesheet" />
+        ${js.map(file => html` <script src="${assets[file]}" type="module"></script>`)}
 
-      <title>${title}</title>
+        <title>${title}</title>
 
-      <body ${rawHtml(type ? `class="${type}"` : '')}>
-        <header>
-          <div class="phase-banner">
-            <strong class="tag">sandbox</strong>
-            <span>This version is a sandbox.</span>
-          </div>
-          ${type !== 'no-header'
+        <body ${rawHtml(type ? `class="${type}"` : '')}>
+          ${phase || type !== 'no-header'
             ? html`
-                <div class="header">
-                  <div class="logo">
-                    <a href="${format(homeMatch.formatter, {})}">
-                      <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
-                    </a>
-                  </div>
-                </div>
+                <header>
+                  ${phase
+                    ? html`
+                        <div class="phase-banner">
+                          <strong class="tag">${phase.tag}</strong>
+                          <span>${phase.text}</span>
+                        </div>
+                      `
+                    : ''}
+                  ${type !== 'no-header'
+                    ? html`
+                        <div class="header">
+                          <div class="logo">
+                            <a href="${format(homeMatch.formatter, {})}">
+                              <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
+                            </a>
+                          </div>
+                        </div>
+                      `
+                    : ''}
+                </header>
               `
             : ''}
-        </header>
-
-        ${content}
-      </body>
-    </html>
-  `
+          ${content}
+        </body>
+      </html>
+    `,
+  )
 }
 
 type Assets<A extends string> = EndsWith<keyof typeof assets, A>

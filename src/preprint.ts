@@ -90,7 +90,7 @@ function failureMessage() {
         <p>Please try again later.</p>
       </main>
     `,
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Records }) {
@@ -143,7 +143,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
       </main>
     `,
     type: 'two-up',
-  })
+  })({ phase: { tag: 'sandbox', text: html`This version is a sandbox.` } })
 }
 
 function showReview(review: Record) {
