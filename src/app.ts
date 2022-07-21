@@ -14,7 +14,6 @@ import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { home } from './home'
-import { html } from './html'
 import { handleError } from './http-error'
 import { createRecordOnZenodo, getPreprint, getPreprintTitle } from './infrastructure'
 import { PublicUrlEnv, authenticate, logIn } from './log-in'
@@ -50,9 +49,15 @@ import {
   writeReviewReview,
 } from './write-review'
 
-export type AppEnv = FormStoreEnv & L.LoggerEnv & OAuthEnv & PublicUrlEnv & SessionEnv & ZenodoAuthenticatedEnv
+export type AppEnv = FormStoreEnv &
+  L.LoggerEnv &
+  OAuthEnv &
+  PhaseEnv &
+  PublicUrlEnv &
+  SessionEnv &
+  ZenodoAuthenticatedEnv
 
-export const router: R.Parser<RM.ReaderMiddleware<AppEnv & PhaseEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
+export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       homeMatch.parser,
@@ -162,12 +167,7 @@ export const app = (deps: AppEnv) => {
       }),
     )
     .use(express.urlencoded({ extended: true }))
-    .use(
-      pipe(
-        appMiddleware({ ...deps, phase: { tag: 'sandbox', text: html`This version is a sandbox.` } }),
-        toRequestHandler,
-      ),
-    )
+    .use(pipe(appMiddleware(deps), toRequestHandler))
 
   return http.createServer(app)
 }

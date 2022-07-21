@@ -10,6 +10,7 @@ import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import nodeFetch from 'node-fetch'
 import { AppEnv, app } from './app'
+import { rawHtml } from './html'
 
 export const UrlD = pipe(
   D.string,
@@ -21,14 +22,24 @@ export const UrlD = pipe(
   ),
 )
 
-const EnvD = D.struct({
-  DB_PATH: D.string,
-  ORCID_CLIENT_ID: D.string,
-  ORCID_CLIENT_SECRET: D.string,
-  PUBLIC_URL: UrlD,
-  SECRET: D.string,
-  ZENODO_API_KEY: D.string,
-})
+export const HtmlD = pipe(D.string, D.map(rawHtml))
+
+const EnvD = pipe(
+  D.struct({
+    DB_PATH: D.string,
+    ORCID_CLIENT_ID: D.string,
+    ORCID_CLIENT_SECRET: D.string,
+    PUBLIC_URL: UrlD,
+    SECRET: D.string,
+    ZENODO_API_KEY: D.string,
+  }),
+  D.intersect(
+    D.partial({
+      PHASE_TAG: D.string,
+      PHASE_TEXT: HtmlD,
+    }),
+  ),
+)
 
 const env = pipe(
   process.env,
@@ -56,6 +67,13 @@ const deps: AppEnv = {
     redirectUri: new URL('/orcid', env.PUBLIC_URL),
     tokenUrl: new URL('https://orcid.org/oauth/token'),
   },
+  phase:
+    env.PHASE_TAG && env.PHASE_TEXT
+      ? {
+          tag: env.PHASE_TAG,
+          text: env.PHASE_TEXT,
+        }
+      : undefined,
   publicUrl: env.PUBLIC_URL,
   secret: env.SECRET,
   sessionStore: new Keyv(`sqlite://${env.DB_PATH}`, { namespace: 'sessions' }),
