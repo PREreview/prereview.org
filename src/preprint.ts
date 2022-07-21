@@ -74,8 +74,10 @@ export const preprint = flow(
 )
 
 const showFailureMessage = pipe(
-  M.status(Status.ServiceUnavailable),
-  M.ichain(() => pipe(failureMessage(), sendHtml)),
+  failureMessage(),
+  M.of,
+  M.ichainFirst(() => M.status(Status.ServiceUnavailable)),
+  M.ichain(sendHtml),
 )
 
 function failureMessage() {

@@ -299,59 +299,69 @@ const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprin
     RM.orElseW(() => showFailureMessage(preprint)),
   )
 
-const showPersonaForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
-  pipe(
-    M.status(Status.OK),
-    M.ichain(() => pipe(personaForm(preprint, form, user), sendHtml)),
-  )
+const showPersonaForm = flow(
+  ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) => personaForm(preprint, form, user),
+  M.of,
+  M.ichainFirst(() => M.status(Status.OK)),
+  M.ichain(sendHtml),
+)
 
-const showPersonaErrorForm = (preprint: Preprint, user: User) =>
-  pipe(
-    M.status(Status.BadRequest),
-    M.ichain(() => pipe(personaForm(preprint, {}, user, true), sendHtml)),
-  )
+const showPersonaErrorForm = flow(
+  (preprint: Preprint, user: User) => personaForm(preprint, {}, user, true),
+  M.of,
+  M.ichainFirst(() => M.status(Status.BadRequest)),
+  M.ichain(sendHtml),
+)
 
-const showAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
-  pipe(
-    M.status(Status.OK),
-    M.ichain(() => pipe(authorsForm(preprint, form, user), sendHtml)),
-  )
+const showAuthorsForm = flow(
+  ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) => authorsForm(preprint, form, user),
+  M.of,
+  M.ichainFirst(() => M.status(Status.OK)),
+  M.ichain(sendHtml),
+)
 
-const showAuthorsErrorForm = (preprint: Preprint, user: User) =>
-  pipe(
-    M.status(Status.BadRequest),
-    M.ichain(() => pipe(authorsForm(preprint, {}, user, true), sendHtml)),
-  )
+const showAuthorsErrorForm = flow(
+  (preprint: Preprint, user: User) => authorsForm(preprint, {}, user, true),
+  M.of,
+  M.ichainFirst(() => M.status(Status.BadRequest)),
+  M.ichain(sendHtml),
+)
 
-const showAddAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
-  pipe(
-    M.status(Status.OK),
-    M.ichain(() => pipe(addAuthorsForm(preprint, form, user), sendHtml)),
-  )
+const showAddAuthorsForm = flow(
+  ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) => addAuthorsForm(preprint, form, user),
+  M.of,
+  M.ichainFirst(() => M.status(Status.OK)),
+  M.ichain(sendHtml),
+)
 
-const showCompetingInterestsForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
-  pipe(
-    M.status(Status.OK),
-    M.ichain(() => pipe(competingInterestsForm(preprint, form), sendHtml)),
-  )
+const showCompetingInterestsForm = flow(
+  ({ form, preprint }: { form: Form; preprint: Preprint }) => competingInterestsForm(preprint, form),
+  M.of,
+  M.ichainFirst(() => M.status(Status.OK)),
+  M.ichain(sendHtml),
+)
 
 const showCompetingInterestsErrorForm = (preprint: Preprint) => (form: Form) =>
   pipe(
-    M.status(Status.BadRequest),
-    M.ichain(() => pipe(competingInterestsForm(preprint, form, true), sendHtml)),
+    competingInterestsForm(preprint, form, true),
+    M.of,
+    M.ichainFirst(() => M.status(Status.BadRequest)),
+    M.ichain(sendHtml),
   )
 
-const showCodeOfConductForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
-  pipe(
-    M.status(Status.OK),
-    M.ichain(() => pipe(codeOfConductForm(preprint, form), sendHtml)),
-  )
+const showCodeOfConductForm = flow(
+  ({ form, preprint }: { form: Form; preprint: Preprint }) => codeOfConductForm(preprint, form),
+  M.of,
+  M.ichainFirst(() => M.status(Status.OK)),
+  M.ichain(sendHtml),
+)
 
-const showCodeOfConductErrorForm = (preprint: Preprint) =>
-  pipe(
-    M.status(Status.BadRequest),
-    M.ichain(() => pipe(codeOfConductForm(preprint, {}, true), sendHtml)),
-  )
+const showCodeOfConductErrorForm = flow(
+  (preprint: Preprint) => codeOfConductForm(preprint, {}, true),
+  M.of,
+  M.ichainFirst(() => M.status(Status.BadRequest)),
+  M.ichain(sendHtml),
+)
 
 const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
@@ -362,11 +372,12 @@ const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Prep
     RM.orElseMiddlewareK(() => showReviewErrorForm(preprint)),
   )
 
-const showPostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
-  pipe(
-    M.status(Status.OK),
-    M.ichain(() => pipe(postForm(preprint, form, user), sendHtml)),
-  )
+const showPostForm = flow(
+  ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) => postForm(preprint, form, user),
+  M.of,
+  M.ichainFirst(() => M.status(Status.OK)),
+  M.ichain(sendHtml),
+)
 
 const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
@@ -423,37 +434,42 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
 const createRecord = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ createRecord }: CreateRecordEnv) => createRecord(newPrereview)))
 
-const showReviewForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
-  pipe(
-    M.status(Status.OK),
-    M.ichain(() => pipe(reviewForm(preprint, form), sendHtml)),
-  )
+const showReviewForm = flow(
+  ({ form, preprint }: { form: Form; preprint: Preprint }) => reviewForm(preprint, form),
+  M.of,
+  M.ichainFirst(() => M.status(Status.OK)),
+  M.ichain(sendHtml),
+)
 
-const showReviewErrorForm = (preprint: Preprint) =>
-  pipe(
-    M.status(Status.BadRequest),
-    M.ichain(() => pipe(reviewForm(preprint, {}, true), sendHtml)),
-  )
+const showReviewErrorForm = flow(
+  (preprint: Preprint) => reviewForm(preprint, {}, true),
+  M.of,
+  M.ichainFirst(() => M.status(Status.BadRequest)),
+  M.ichain(sendHtml),
+)
 
-const showSuccessMessage = (preprint: Preprint, doi: Doi, moreAuthors: boolean) =>
-  pipe(
-    RM.status(Status.OK),
-    RM.ichainFirst(() => endSession()),
-    RM.ichainMiddlewareK(() => pipe(successMessage(preprint, doi, moreAuthors), sendHtml)),
-  )
+const showSuccessMessage = flow(
+  successMessage,
+  RM.of,
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainFirst(() => endSession()),
+  RM.ichainMiddlewareK(sendHtml),
+)
 
-const showFailureMessage = (preprint: Preprint) =>
-  pipe(
-    RM.status(Status.ServiceUnavailable),
-    RM.ichainFirst(() => endSession()),
-    RM.ichainMiddlewareK(() => pipe(failureMessage(preprint), sendHtml)),
-  )
+const showFailureMessage = flow(
+  failureMessage,
+  RM.of,
+  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
+  RM.ichainFirst(() => endSession()),
+  RM.ichainMiddlewareK(sendHtml),
+)
 
-const showStartPage = (preprint: Preprint) =>
-  pipe(
-    M.status(Status.OK),
-    M.ichain(() => pipe(startPage(preprint), sendHtml)),
-  )
+const showStartPage = flow(
+  startPage,
+  M.of,
+  M.ichainFirst(() => M.status(Status.OK)),
+  M.ichain(sendHtml),
+)
 
 function getForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv, Form> {
   return flow(
