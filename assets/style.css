@@ -121,7 +121,7 @@ body > aside > * {
   padding-inline: var(--space-m);
 }
 
-body > header {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -880,4 +880,34 @@ html-editor {
       }
     }
   }
+}
+
+.phase-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-2xs);
+  background-color: var(--color-background-alt);
+  padding-block: var(--space-2xs);
+  padding-inline: var(--space-xs-s);
+  margin-inline: calc(-1 * var(--space-xs-s));
+
+  & > span {
+    flex: 1;
+    font-size: var(--step--1);
+  }
+}
+
+.tag {
+  display: inline-block;
+  font-size: var(--step--2);
+  font-weight: 700;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-background);
+  background-color: var(--color-primary);
+  padding-block: var(--space-4xs);
+  padding-inline: var(--space-3xs-2xs);
 }
