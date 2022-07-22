@@ -54,7 +54,7 @@
     "@types/http-errors": "^1.8.2",
     "@types/jest": "^28.1.6",
     "@types/markdown-it": "^12.2.3",
-    "@types/node": "^16.11.44",
+    "@types/node": "^16.11.45",
     "@types/node-fetch": "^2.6.1",
     "@types/sanitize-html": "^2.6.2",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
