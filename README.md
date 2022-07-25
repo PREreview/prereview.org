@@ -1,6 +1,6 @@
 # prereview.org
 
-The source code for [prereview.fly.dev].
+The source code for [beta.prereview.org].
 
 🌱️ This site is under active development and will become [prereview.org].
 
@@ -23,10 +23,10 @@ You can now access the app at <http://localhost:3000>.
 
 ## Operations
 
-Once it passes CI, we deploy every commit on the `main` branch to [prereview.fly.dev] and [prereview-sandbox.fly.dev], which [Fly.io] hosts.
+Once it passes CI, we deploy every commit on the `main` branch to [beta.prereview.org] and [sandbox.prereview.org], which [Fly.io] hosts.
 
+[beta.prereview.org]: https://beta.prereview.org/
 [fly.io]: https://fly.io/
 [node.js]: https://nodejs.org/
-[prereview.fly.dev]: https://prereview.fly.dev/
-[prereview-sandbox.fly.dev]: https://prereview-sandbox.fly.dev/
 [prereview.org]: https://prereview.org/
+[sandbox.prereview.org]: https://sandbox.prereview.org/
