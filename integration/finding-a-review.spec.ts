@@ -68,7 +68,11 @@ test('can find and view a review', async ({ fetch, page }) => {
     { body: RecordsC.encode({ hits: { hits: [record] } }) },
   )
 
-  fetch.get('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
+  fetch
+    .getOnce('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
+    .getOnce('http://example.com/file', {
+      body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+    })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page.click('text=Read the PREreview by Jingfang Hao et al')

@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi, hasRegistrant, isDoi } from 'doi-ts'
+import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as A from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
@@ -7,9 +8,10 @@ import * as O from 'fp-ts/Option'
 import { Predicate } from 'fp-ts/Predicate'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as RA from 'fp-ts/ReadonlyArray'
 import { compose } from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
-import { flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -41,6 +43,20 @@ const isInCommunity: Predicate<Record> = flow(
   O.fromNullableK(record => record.metadata.communities),
   O.chain(A.findFirst(community => community.id === 'prereview-reviews')),
   O.isSome,
+)
+
+const getReviewUrl = flow(
+  (record: Record) => record.files,
+  RA.findFirst(file => file.type === 'html'),
+  O.map(get('links.self')),
+)
+
+const getReviewText = flow(
+  RTE.fromOptionK(() => ({ status: Status.NotFound }))(getReviewUrl),
+  RTE.chainW(flow(F.Request('GET'), F.send)),
+  RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'no text'),
+  RTE.chainTaskEitherK(F.getText(identity)),
+  RTE.map(sanitizeHtml),
 )
 
 const getReviewedDoi = flow(
@@ -75,6 +91,10 @@ export const review = flow(
   RM.filterOrElseW(isInCommunity, () => new NotFound()),
   RM.bindTo('review'),
   RM.bindW('preprintDoi', ({ review }) => RM.fromEither(E.fromOption(() => new NotFound())(getReviewedDoi(review)))),
+  RM.bind(
+    'reviewText',
+    RM.fromReaderTaskEitherK(({ review }) => getReviewText(review)),
+  ),
   RM.bindW(
     'preprint',
     RM.fromReaderTaskEitherK(({ preprintDoi }) => getPreprint(preprintDoi)),
@@ -108,7 +128,7 @@ function failureMessage() {
   })
 }
 
-function createPage({ preprint, review }: { preprint: Preprint; review: Record }) {
+function createPage({ preprint, review, reviewText }: { preprint: Preprint; review: Record; reviewText: Html }) {
   return page({
     title: plainText`PREeview of “${preprint.title}”`,
     content: html`
@@ -136,7 +156,7 @@ function createPage({ preprint, review }: { preprint: Preprint; review: Record }
           </dl>
         </header>
 
-        ${sanitizeHtml(review.metadata.description)}
+        ${reviewText}
       </main>
     `,
   })
