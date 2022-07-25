@@ -36,6 +36,7 @@ export function sanitizeHtml(html: string): Html {
       em: 'i',
       strong: 'b',
     },
+    exclusiveFilter: frame => ['h1', 'h2', 'h3', 'li', 'ol', 'p', 'ul'].includes(frame.tag) && frame.text.trim() === '',
   })
 
   return rawHtml(sanitized)
