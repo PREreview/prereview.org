@@ -32,6 +32,7 @@ const EnvD = pipe(
     PUBLIC_URL: UrlD,
     SECRET: D.string,
     ZENODO_API_KEY: D.string,
+    ZENODO_URL: UrlD,
   }),
   D.intersect(
     D.partial({
@@ -78,7 +79,7 @@ const deps: AppEnv = {
   secret: env.SECRET,
   sessionStore: new Keyv(`sqlite://${env.DB_PATH}`, { namespace: 'sessions' }),
   zenodoApiKey: env.ZENODO_API_KEY,
-  zenodoUrl: new URL('https://sandbox.zenodo.org/'),
+  zenodoUrl: env.ZENODO_URL,
 }
 
 const server = app(deps)

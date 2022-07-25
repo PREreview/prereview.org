@@ -5,6 +5,7 @@ DB_PATH = "/data/db.sqlite"
 PUBLIC_URL = "https://prereview.fly.dev/"
 PHASE_TAG = "sandbox"
 PHASE_TEXT = "This version is a sandbox."
+ZENODO_URL = "https://sandbox.zenodo.org/"
 
 [mounts]
 source = "prereview_data"
