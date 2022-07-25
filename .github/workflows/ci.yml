@@ -281,7 +281,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        instance: ['prod', 'staging']
+        instance: ['prod', 'sandbox']
 
     steps:
       - name: 'Checkout code'
