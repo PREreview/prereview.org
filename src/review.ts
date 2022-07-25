@@ -130,7 +130,7 @@ function failureMessage() {
 
 function createPage({ preprint, review, reviewText }: { preprint: Preprint; review: Record; reviewText: Html }) {
   return page({
-    title: plainText`PREeview of “${preprint.title}”`,
+    title: plainText`PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
