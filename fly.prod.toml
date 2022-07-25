@@ -1,6 +1,7 @@
 app = "prereview"
 
 [env]
+CACHE_PATH = "/data/cache"
 DB_PATH = "/data/db.sqlite"
 PUBLIC_URL = "https://prereview.fly.dev/"
 PHASE_TAG = "beta"

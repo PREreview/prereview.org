@@ -8,7 +8,7 @@ import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
-import nodeFetch from 'node-fetch'
+import fetch from 'make-fetch-happen'
 import { AppEnv, app } from './app'
 import { rawHtml } from './html'
 
@@ -26,6 +26,7 @@ export const HtmlD = pipe(D.string, D.map(rawHtml))
 
 const EnvD = pipe(
   D.struct({
+    CACHE_PATH: D.string,
     DB_PATH: D.string,
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
@@ -51,14 +52,12 @@ const env = pipe(
 
 const deps: AppEnv = {
   clock: SystemClock,
-  fetch: (url, init) =>
-    nodeFetch(url, {
-      ...init,
-      headers: {
-        ...init.headers,
-        'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
-      },
-    }),
+  fetch: fetch.defaults({
+    cachePath: env.CACHE_PATH,
+    headers: {
+      'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
+    },
+  }),
   formStore: new Keyv(`sqlite://${env.DB_PATH}`, { namespace: 'forms' }),
   logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
   oauth: {

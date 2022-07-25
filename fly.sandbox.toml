@@ -1,6 +1,7 @@
 app = "prereview-sandbox"
 
 [env]
+CACHE_PATH = "/data/cache"
 DB_PATH = "/data/db.sqlite"
 PUBLIC_URL = "https://prereview-sandbox.fly.dev/"
 PHASE_TAG = "sandbox"
