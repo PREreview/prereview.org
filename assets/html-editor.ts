@@ -39,7 +39,7 @@ void (async () => {
             codeBlock: false,
             hardBreak: false,
             heading: {
-              levels: [1, 2],
+              levels: [1, 2, 3],
             },
             horizontalRule: false,
             strike: false,

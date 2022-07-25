@@ -27,7 +27,7 @@ export function rawHtml(html: string): Html {
 
 export function sanitizeHtml(html: string): Html {
   const sanitized = sanitize(html, {
-    allowedTags: ['h1', 'h2', 'li', 'ol', 'p', 'ul', 'a', 'b', 'i', 'sub', 'sup'],
+    allowedTags: ['h1', 'h2', 'h3', 'li', 'ol', 'p', 'ul', 'a', 'b', 'i', 'sub', 'sup'],
     allowedAttributes: {
       '*': ['dir', 'lang'],
       a: ['href'],
