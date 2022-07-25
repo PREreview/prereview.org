@@ -3,9 +3,9 @@ app = "prereview"
 [env]
 DB_PATH = "/data/db.sqlite"
 PUBLIC_URL = "https://prereview.fly.dev/"
-PHASE_TAG = "sandbox"
-PHASE_TEXT = "This version is a sandbox."
-ZENODO_URL = "https://sandbox.zenodo.org/"
+PHASE_TAG = "beta"
+PHASE_TEXT = "This is the new version of PREreview. The <a href=\"https://prereview.org/\">current website</a> is still available."
+ZENODO_URL = "https://zenodo.org/"
 
 [mounts]
 source = "prereview_data"

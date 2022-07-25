@@ -273,11 +273,15 @@ jobs:
         run: docker push ${{ steps.image.outputs.image }}
 
   deploy:
-    name: 'Deploy'
+    name: 'Deploy (${{ matrix.instance }})'
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/main'
     needs:
       - push
+    strategy:
+      fail-fast: false
+      matrix:
+        instance: ['prod', 'staging']
 
     steps:
       - name: 'Checkout code'
@@ -287,6 +291,6 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: 'Deploy app'
-        run: flyctl deploy --image ${{ needs.push.outputs.image }}
+        run: flyctl deploy --config fly.${{ matrix.instance }}.toml --image ${{ needs.push.outputs.image }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

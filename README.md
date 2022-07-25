@@ -23,9 +23,10 @@ You can now access the app at <http://localhost:3000>.
 
 ## Operations
 
-Once it passes CI, we deploy every commit on the `main` branch to [prereview.fly.dev], which [Fly.io] hosts.
+Once it passes CI, we deploy every commit on the `main` branch to [prereview.fly.dev] and [prereview-sandbox.fly.dev], which [Fly.io] hosts.
 
 [fly.io]: https://fly.io/
 [node.js]: https://nodejs.org/
 [prereview.fly.dev]: https://prereview.fly.dev/
+[prereview-sandbox.fly.dev]: https://prereview-sandbox.fly.dev/
 [prereview.org]: https://prereview.org/
