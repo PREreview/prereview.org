@@ -129,7 +129,8 @@ function transformJatsToHtml(jats: string): Html {
       a: ['href'],
     },
     exclusiveFilter: frame =>
-      frame.tag === 'jats:title' && (frame.text === 'Abstract' || frame.text === 'Graphical abstract'),
+      frame.tag === 'jats:title' &&
+      (frame.text.toLowerCase() === 'abstract' || frame.text.toLowerCase() === 'graphical abstract'),
     transformTags: {
       'jats:ext-link': (_, attribs) => {
         if (attribs['ext-link-type'] !== 'uri') {
