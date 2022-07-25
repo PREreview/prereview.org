@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
+import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
@@ -91,13 +92,12 @@ export const review = flow(
   RM.filterOrElseW(isInCommunity, () => new NotFound()),
   RM.bindTo('review'),
   RM.bindW('preprintDoi', ({ review }) => RM.fromEither(E.fromOption(() => new NotFound())(getReviewedDoi(review)))),
-  RM.bind(
-    'reviewText',
-    RM.fromReaderTaskEitherK(({ review }) => getReviewText(review)),
-  ),
-  RM.bindW(
-    'preprint',
-    RM.fromReaderTaskEitherK(({ preprintDoi }) => getPreprint(preprintDoi)),
+  RM.chainReaderTaskEitherKW(({ review, preprintDoi }) =>
+    sequenceS(RTE.ApplyPar)({
+      review: RTE.right(review),
+      reviewText: getReviewText(review),
+      preprint: getPreprint(preprintDoi),
+    }),
   ),
   RM.ichainW(sendPage),
   RM.orElseW(error =>

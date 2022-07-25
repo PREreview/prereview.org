@@ -189,7 +189,7 @@ describe('review', () => {
                     status: Status.OK,
                   })
                   .getOnce('http://example.com/file', { status: textStatus }),
-                getPreprintTitle: () => () => Promise.reject('should not be called'),
+                getPreprintTitle: () => TE.right(preprint.title),
               }),
               connection,
             )()
@@ -522,7 +522,7 @@ describe('review', () => {
                   body: RecordC.encode(record),
                   status: Status.OK,
                 }),
-                getPreprintTitle: () => () => Promise.reject('should not be called'),
+                getPreprintTitle: () => TE.right(preprint.title),
               }),
               connection,
             )()
