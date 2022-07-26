@@ -462,8 +462,10 @@ label {
     background-color: var(--color-divider-light);
   }
 
-  &:hover {
-    filter: brightness(0.9);
+  &:not(:disabled) {
+    &:hover {
+      filter: brightness(0.9);
+    }
   }
 
   @media screen {
