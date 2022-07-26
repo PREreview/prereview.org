@@ -643,7 +643,7 @@ test('can post a full PREreview anonymously', async ({ fetch, javaScriptEnabled,
 })
 
 test('can change the review after previewing', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
 
   fetch.postOnce('http://orcid.test/token', {
     status: Status.OK,
@@ -698,7 +698,7 @@ test('can change the review after previewing', async ({ fetch, javaScriptEnabled
 })
 
 test('can change the name after previewing', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
 
   fetch.postOnce('http://orcid.test/token', {
     status: Status.OK,
@@ -744,7 +744,7 @@ test('can change the name after previewing', async ({ fetch, javaScriptEnabled, 
 })
 
 test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
 
   fetch.postOnce('http://orcid.test/token', {
     status: Status.OK,
@@ -810,7 +810,7 @@ test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) 
 })
 
 test('see existing values when going back a step', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
 
   fetch.postOnce('http://orcid.test/token', {
     status: Status.OK,
@@ -909,7 +909,7 @@ test("aren't told about ORCID when already logged in", async ({ fetch, page }) =
 })
 
 test('have to enter a review', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
 
   await page.fill('[type=email]', 'test@example.com')
@@ -935,7 +935,7 @@ test('have to enter a review', async ({ fetch, page }) => {
 })
 
 test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
 
   await page.fill('[type=email]', 'test@example.com')
@@ -969,7 +969,7 @@ test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
 })
 
 test('have to say if there are more authors', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
 
   await page.fill('[type=email]', 'test@example.com')
@@ -1007,7 +1007,7 @@ test('have to say if there are more authors', async ({ fetch, javaScriptEnabled,
 })
 
 test('have to declare any competing interests', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
 
   await page.fill('[type=email]', 'test@example.com')
@@ -1054,7 +1054,7 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
 })
 
 test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/prereview')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
 
   await page.fill('[type=email]', 'test@example.com')
