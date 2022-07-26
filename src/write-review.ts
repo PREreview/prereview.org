@@ -706,7 +706,7 @@ ${rawHtml(form.competingInterestsDetails ?? '')}</textarea
             </conditional-inputs>
           </div>
 
-          <button>Next</button>
+          <button>Continue</button>
         </form>
       </main>
     `,
@@ -788,7 +788,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
             </fieldset>
           </div>
 
-          <button>Next</button>
+          <button>Continue</button>
         </form>
       </main>
     `,
@@ -813,7 +813,7 @@ function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = fals
 
           <p>We’ll remind you to do this.</p>
 
-          <button>Next</button>
+          <button>Continue</button>
         </form>
       </main>
     `,
@@ -877,7 +877,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
             </fieldset>
           </div>
 
-          <button>Next</button>
+          <button>Continue</button>
         </form>
       </main>
     `,
@@ -939,7 +939,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
             </fieldset>
           </div>
 
-          <button>Next</button>
+          <button>Continue</button>
         </form>
       </main>
     `,
@@ -979,7 +979,7 @@ ${rawHtml(form.review ?? '')}</textarea
             </html-editor>
           </div>
 
-          <button>Next</button>
+          <button>Continue</button>
         </form>
       </main>
     `,
