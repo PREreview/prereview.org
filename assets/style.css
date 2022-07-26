@@ -416,11 +416,11 @@ label {
     background-clip: padding-box;
     background-color: var(--color-link);
     border: 0 solid transparent;
-    border-block-end-width: 4px;
-    border-radius: 16px;
+    border-block-end-width: var(--width-divider);
+    border-radius: calc(var(--width-divider) * 4);
     z-index: -1;
     inset: 0;
-    inset-block-end: -4px;
+    inset-block-end: calc(-1 * var(--width-divider));
   }
 
   &:focus {
