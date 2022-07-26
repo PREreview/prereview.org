@@ -114,7 +114,7 @@ test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => 
 
   await page.click('text="Next"')
 
-  await page.check('text="No, only me"')
+  await page.check('text="No, by myself"')
 
   await expect(page).toHaveScreenshot()
 
@@ -429,7 +429,7 @@ test('can post a full PREreview with competing interests', async ({ fetch, javaS
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
-  await page.check('text="No, only me"')
+  await page.check('text="No, by myself"')
   await page.click('text="Next"')
 
   await page.check('text="Yes"')
@@ -581,7 +581,7 @@ test('can post a full PREreview anonymously', async ({ fetch, javaScriptEnabled,
   await page.click('text="Next"')
   await page.check('text="PREreviewer"')
   await page.click('text="Next"')
-  await page.check('text="No, only me"')
+  await page.check('text="No, by myself"')
   await page.click('text="Next"')
   await page.check('text="No"')
   await page.click('text="Next"')
@@ -670,7 +670,7 @@ test('can change the review after previewing', async ({ fetch, javaScriptEnabled
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
-  await page.check('text="No, only me"')
+  await page.check('text="No, by myself"')
   await page.click('text="Next"')
   await page.check('text="No"')
   await page.click('text="Next"')
@@ -726,7 +726,7 @@ test('can change the name after previewing', async ({ fetch, javaScriptEnabled, 
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
-  await page.check('text="No, only me"')
+  await page.check('text="No, by myself"')
   await page.click('text="Next"')
   await page.check('text="No"')
   await page.click('text="Next"')
@@ -771,7 +771,7 @@ test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) 
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
-  await page.check('text="No, only me"')
+  await page.check('text="No, by myself"')
   await page.click('text="Next"')
   await page.check('text="No"')
   await page.click('text="Next"')
@@ -790,7 +790,7 @@ test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) 
 
   await page.goBack()
 
-  await expect(page.locator('text="No, only me"')).toBeChecked()
+  await expect(page.locator('text="No, by myself"')).toBeChecked()
 
   await page.goBack()
 
@@ -837,7 +837,7 @@ test('see existing values when going back a step', async ({ fetch, javaScriptEna
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
-  await page.check('text="No, only me"')
+  await page.check('text="No, by myself"')
   await page.click('text="Next"')
   await page.check('text="No"')
   await page.click('text="Next"')
@@ -856,7 +856,7 @@ test('see existing values when going back a step', async ({ fetch, javaScriptEna
 
   await page.click('text="Back"')
 
-  await expect(page.locator('text="No, only me"')).toBeChecked()
+  await expect(page.locator('text="No, by myself"')).toBeChecked()
 
   await page.click('text="Back"')
 
@@ -1002,7 +1002,7 @@ test('have to say if there are more authors', async ({ fetch, javaScriptEnabled,
 
   const error = page.locator('form:has([aria-invalid])')
 
-  await expect(error).toContainText('Error: Select yes if someone else wrote the PREreview.')
+  await expect(error).toContainText('Error: Select yes if you wrote the PREreview with someone else.')
   await expect(error).toHaveScreenshot()
 })
 
@@ -1033,7 +1033,7 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
-  await page.check('text="No, only me"')
+  await page.check('text="No, by myself"')
   await page.click('text="Next"')
 
   await page.click('text="Next"')
@@ -1080,7 +1080,7 @@ test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, 
   await page.click('text="Next"')
   await page.check('text="Josiah Carberry"')
   await page.click('text="Next"')
-  await page.check('text="No, only me"')
+  await page.check('text="No, by myself"')
   await page.click('text="Next"')
   await page.check('text="No"')
   await page.click('text="Next"')

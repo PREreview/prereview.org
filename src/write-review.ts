@@ -822,7 +822,9 @@ function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = fals
 
 function authorsForm(preprint: Preprint, form: Form, user: User, error = false) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Did anyone else write the PREreview? – PREreview of “${preprint.title}”`,
+    title: plainText`${error ? 'Error: ' : ''}Did you write the PREreview with anyone else? – PREreview of “${
+      preprint.title
+    }”`,
     content: html`
       <nav>
         <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -836,13 +838,14 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
               ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="more-authors-error"' : '')}
             >
               <legend>
-                <h1>Did anyone else write the PREreview?</h1>
+                <h1>Did you write the PREreview with anyone&nbsp;else?</h1>
               </legend>
 
               ${error
                 ? html`
                     <div id="more-authors-error" role="alert">
-                      <span class="visually-hidden">Error:</span> Select yes if someone else wrote the PREreview.
+                      <span class="visually-hidden">Error:</span> Select yes if you wrote the PREreview with someone
+                      else.
                     </div>
                   `
                 : ''}
@@ -856,7 +859,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
                       value="no"
                       ${rawHtml(form.moreAuthors === 'no' ? 'checked' : '')}
                     />
-                    <span>No, only me</span>
+                    <span>No, by myself</span>
                   </label>
                 </li>
                 <li>
