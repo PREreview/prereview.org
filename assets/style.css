@@ -417,7 +417,7 @@ label {
     background-color: var(--color-link);
     border: 0 solid transparent;
     border-block-end-width: var(--width-divider);
-    border-radius: calc(var(--width-divider) * 4);
+    border-radius: calc(var(--width-divider) * 5);
     z-index: -1;
     inset: 0;
     inset-block-end: calc(-1 * var(--width-divider));
