@@ -387,6 +387,7 @@ label {
 }
 
 :--button {
+  position: relative;
   display: inline-block;
   font-size: var(--step-1);
   font-weight: 700;
@@ -448,8 +449,15 @@ label {
   @media screen {
     color: var(--color-background);
     background-color: var(--color-link-dark);
+    -webkit-tap-highlight-color: transparent;
     border: 0 solid transparent;
     border-block-end-width: var(--width-divider);
+
+    &:active {
+      margin-block-end: calc(var(--width-divider) / 2);
+      inset-block-start: calc(var(--width-divider) / 2);
+      border-block-end-width: calc(var(--width-divider) / 2);
+    }
   }
 }
 
