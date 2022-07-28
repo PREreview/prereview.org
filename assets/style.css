@@ -118,7 +118,7 @@ body > aside > * {
   inline-size: 100%;
   max-inline-size: 75ch;
   margin-inline: auto;
-  padding-inline: var(--space-m);
+  padding-inline: var(--space-s-m);
 }
 
 .header {
@@ -900,8 +900,8 @@ html-editor {
   column-gap: var(--space-2xs);
   background-color: var(--color-background-alt);
   padding-block: var(--space-2xs);
-  padding-inline: var(--space-xs-s);
-  margin-inline: calc(-1 * var(--space-xs-s));
+  padding-inline: var(--space-2xs-s);
+  margin-inline: calc(-1 * var(--space-2xs-s));
 
   & > span {
     flex: 1;
