@@ -181,7 +181,7 @@ article {
   line-height: 1.2;
 
   @nest :not(legend) > & {
-    margin-block-start: var(--space-m);
+    margin-block-start: var(--space-s-m);
   }
 
   @nest :--heading + & {
@@ -286,14 +286,14 @@ p {
 }
 
 blockquote {
-  margin-block-start: var(--space-s);
+  margin-block-start: var(--space-xs-s);
 }
 
 details {
-  margin-block-start: var(--space-xs);
+  margin-block-start: var(--space-2xs-xs);
 
   @nest [role='note'] + & {
-    margin-block-start: var(--space-s);
+    margin-block-start: var(--space-xs-s);
   }
 
   & > div {
@@ -381,7 +381,7 @@ label {
     }
 
     @nest details + & {
-      margin-block-start: var(--space-l);
+      margin-block-start: var(--space-m-l);
     }
   }
 }
@@ -408,7 +408,7 @@ label {
   user-select: none;
 
   @nest :not(.button-group) > & {
-    margin-block-start: var(--space-l);
+    margin-block-start: var(--space-m-l);
   }
 
   &::after {
@@ -486,9 +486,9 @@ label {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  column-gap: var(--space-xs-s);
+  column-gap: var(--space-2xs-s);
   row-gap: var(--space-2xs-xs);
-  margin-block-start: var(--space-l);
+  margin-block-start: var(--space-m-l);
 
   @nest .preview + & {
     margin-block-start: var(--space-s);
@@ -507,13 +507,13 @@ label {
   }
 
   @nest details + & {
-    margin-block-start: var(--space-l);
+    margin-block-start: var(--space-m-l);
   }
 }
 
 [role='note'] {
   font-size: var(--step-0);
-  margin-block-start: var(--space-3xs);
+  margin-block-start: var(--space-4xs-3xs);
   color: var(--color-text-light);
 
   @nest fieldset > & {
@@ -525,7 +525,7 @@ fieldset {
   display: flex;
   flex-direction: column;
   border: 0;
-  margin-block-start: var(--space-m);
+  margin-block-start: var(--space-s-m);
 }
 
 legend {
@@ -579,7 +579,7 @@ legend {
   }
 
   @nest :not(label) > &:first-child {
-    margin-block-start: var(--space-m);
+    margin-block-start: var(--space-s-m);
   }
 
   @nest [role='alert'] + & {
