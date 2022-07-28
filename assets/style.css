@@ -168,7 +168,7 @@ header {
 
 article {
   @nest :not(aside) > & {
-    margin-block-start: var(--space-l);
+    margin-block-start: var(--space-s-l);
   }
 
   & > header > :first-child {
@@ -797,6 +797,7 @@ html-editor {
 
 .cards {
   list-style-type: none;
+  margin-block-start: var(--space-m-l);
   padding-inline-start: 0;
 
   & article {
