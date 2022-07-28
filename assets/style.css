@@ -105,7 +105,7 @@ body {
   flex-direction: column;
   align-items: stretch;
   font-size: var(--step-0);
-  padding-block-end: var(--space-m);
+  padding-block-end: var(--space-xl-2xl);
 
   @media screen {
     min-block-size: 100%;
@@ -883,7 +883,7 @@ html-editor {
       overflow-y: auto;
       overscroll-behavior-y: contain;
       scrollbar-gutter: stable;
-      padding-block: var(--space-m);
+      padding-block: var(--space-m) var(--space-xl-2xl);
 
       &:focus-visible {
         outline-offset: calc(-1 * var(--width-divider));
