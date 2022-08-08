@@ -10,6 +10,7 @@ import { Predicate } from 'fp-ts/Predicate'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
+import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { compose } from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
@@ -29,9 +30,13 @@ import { renderDate } from './time'
 
 import PlainDate = Temporal.PlainDate
 
-type Preprint = {
-  doi: Doi<'1101'>
-  title: Html
+export type Prereview = {
+  authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+  doi: Doi
+  postedDate: PlainDate
+  preprintDoi: Doi<'1101'>
+  preprintTitle: Html
+  text: Html
 }
 
 export interface GetPreprintTitleEnv {
@@ -73,12 +78,10 @@ const getReviewedDoi = flow(
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
 
-const getPreprint = (doi: Doi<'1101'>) =>
+const getPreprintTitle = (doi: Doi<'1101'>) =>
   pipe(
     RTE.ask<GetPreprintTitleEnv>(),
-    RTE.chainTaskEitherK(({ getPreprintTitle }) =>
-      pipe(TE.Do, TE.apS('doi', TE.right(doi)), TE.apS('title', getPreprintTitle(doi))),
-    ),
+    RTE.chainTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(doi)),
   )
 
 const sendPage = flow(
@@ -90,13 +93,16 @@ const sendPage = flow(
 export const review = flow(
   RM.fromReaderTaskEitherK(getRecord),
   RM.filterOrElseW(isInCommunity, () => new NotFound()),
-  RM.bindTo('review'),
-  RM.bindW('preprintDoi', ({ review }) => RM.fromEither(E.fromOption(() => new NotFound())(getReviewedDoi(review)))),
-  RM.chainReaderTaskEitherKW(({ review, preprintDoi }) =>
+  RM.bindW('preprintDoi', review => RM.fromEither(E.fromOption(() => new NotFound())(getReviewedDoi(review)))),
+  RM.bindW('reviewTextUrl', review => RM.fromEither(E.fromOption(() => new NotFound())(getReviewUrl(review)))),
+  RM.chainReaderTaskEitherKW(review =>
     sequenceS(RTE.ApplyPar)({
-      review: RTE.right(review),
-      reviewText: getReviewText(review),
-      preprint: getPreprint(preprintDoi),
+      authors: RTE.right(review.metadata.creators),
+      doi: RTE.right(review.metadata.doi),
+      postedDate: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
+      preprintDoi: RTE.right(review.preprintDoi),
+      preprintTitle: getPreprintTitle(review.preprintDoi),
+      text: getReviewText(review),
     }),
   ),
   RM.ichainW(sendPage),
@@ -128,35 +134,35 @@ function failureMessage() {
   })
 }
 
-function createPage({ preprint, review, reviewText }: { preprint: Preprint; review: Record; reviewText: Html }) {
+function createPage(review: Prereview) {
   return page({
-    title: plainText`PREreview of “${preprint.title}”`,
+    title: plainText`PREreview of “${review.preprintTitle}”`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: review.preprintDoi })}" class="back">Back to preprint</a>
       </nav>
 
       <main>
         <header>
-          <h1>PREreview of “${preprint.title}”</h1>
+          <h1>PREreview of “${review.preprintTitle}”</h1>
 
           <ol aria-label="Authors of this PREreview" class="author-list">
-            ${review.metadata.creators.map(author => html` <li>${displayAuthor(author)}</li>`)}
+            ${review.authors.map(author => html`<li>${displayAuthor(author)}</li>`)}
           </ol>
 
           <dl>
             <div>
               <dt>Posted</dt>
-              <dd>${renderDate(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0]))}</dd>
+              <dd>${renderDate(review.postedDate)}</dd>
             </div>
             <div>
               <dt>DOI</dt>
-              <dd class="doi">${review.metadata.doi}</dd>
+              <dd class="doi">${review.doi}</dd>
             </div>
           </dl>
         </header>
 
-        ${reviewText}
+        ${review.text}
       </main>
     `,
   })
