@@ -1,28 +1,16 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi, hasRegistrant, isDoi } from 'doi-ts'
-import * as F from 'fetch-fp-ts'
+import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import { sequenceS } from 'fp-ts/Apply'
-import * as A from 'fp-ts/Array'
-import * as E from 'fp-ts/Either'
-import * as O from 'fp-ts/Option'
-import { Predicate } from 'fp-ts/Predicate'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
-import { compose } from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
-import { flow, identity, pipe } from 'fp-ts/function'
-import { NotFound } from 'http-errors'
+import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import * as D from 'io-ts/Decoder'
 import { Orcid } from 'orcid-id-ts'
-import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
-import { Record, getRecord } from 'zenodo-ts'
-import { Html, html, plainText, sanitizeHtml, sendHtml } from './html'
+import { Html, html, plainText, sendHtml } from './html'
 import { notFound } from './middleware'
 import { page } from './page'
 import { preprintMatch } from './routes'
@@ -39,49 +27,14 @@ export type Prereview = {
   text: Html
 }
 
-export interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, Html>
+export interface GetPrereviewEnv {
+  getPrereview: (id: number) => TE.TaskEither<unknown, Prereview>
 }
 
-const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI')
-
-const isInCommunity: Predicate<Record> = flow(
-  O.fromNullableK(record => record.metadata.communities),
-  O.chain(A.findFirst(community => community.id === 'prereview-reviews')),
-  O.isSome,
-)
-
-const getReviewUrl = flow(
-  (record: Record) => record.files,
-  RA.findFirst(file => file.type === 'html'),
-  O.map(get('links.self')),
-)
-
-const getReviewText = flow(
-  RTE.fromOptionK(() => ({ status: Status.NotFound }))(getReviewUrl),
-  RTE.chainW(flow(F.Request('GET'), F.send)),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'no text'),
-  RTE.chainTaskEitherK(F.getText(identity)),
-  RTE.map(sanitizeHtml),
-)
-
-const getReviewedDoi = flow(
-  O.fromNullableK((record: Record) => record.metadata.related_identifiers),
-  O.chain(
-    A.findFirst(
-      identifier =>
-        identifier.relation === 'reviews' &&
-        identifier.scheme === 'doi' &&
-        identifier.resource_type === 'publication-preprint',
-    ),
-  ),
-  O.chainEitherK(flow(get('identifier'), DoiD.decode)),
-)
-
-const getPreprintTitle = (doi: Doi<'1101'>) =>
+const getPrereview = (id: number) =>
   pipe(
-    RTE.ask<GetPreprintTitleEnv>(),
-    RTE.chainTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(doi)),
+    RTE.ask<GetPrereviewEnv>(),
+    RTE.chainTaskEitherK(({ getPrereview }) => getPrereview(id)),
   )
 
 const sendPage = flow(
@@ -91,20 +44,7 @@ const sendPage = flow(
 )
 
 export const review = flow(
-  RM.fromReaderTaskEitherK(getRecord),
-  RM.filterOrElseW(isInCommunity, () => new NotFound()),
-  RM.bindW('preprintDoi', review => RM.fromEither(E.fromOption(() => new NotFound())(getReviewedDoi(review)))),
-  RM.bindW('reviewTextUrl', review => RM.fromEither(E.fromOption(() => new NotFound())(getReviewUrl(review)))),
-  RM.chainReaderTaskEitherKW(review =>
-    sequenceS(RTE.ApplyPar)({
-      authors: RTE.right(review.metadata.creators),
-      doi: RTE.right(review.metadata.doi),
-      postedDate: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
-      preprintDoi: RTE.right(review.preprintDoi),
-      preprintTitle: getPreprintTitle(review.preprintDoi),
-      text: getReviewText(review),
-    }),
-  ),
+  RM.fromReaderTaskEitherK(getPrereview),
   RM.ichainW(sendPage),
   RM.orElseW(error =>
     match(error)

@@ -1,35 +1,56 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Work, getWork } from 'crossref-ts'
-import { hasRegistrant } from 'doi-ts'
+import { Doi, hasRegistrant, isDoi } from 'doi-ts'
+import * as F from 'fetch-fp-ts'
+import { sequenceS } from 'fp-ts/Apply'
+import * as A from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
+import * as O from 'fp-ts/Option'
 import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import { flow, pipe } from 'fp-ts/function'
+import { compose } from 'fp-ts/Refinement'
+import * as TE from 'fp-ts/TaskEither'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
+import { NotFound } from 'http-errors'
+import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import sanitize from 'sanitize-html'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
   DepositMetadata,
+  Record,
   SubmittedDeposition,
   ZenodoAuthenticatedEnv,
   createDeposition,
+  getRecord,
   publishDeposition,
   uploadFile,
 } from 'zenodo-ts'
 import { Html, plainText, rawHtml, sanitizeHtml } from './html'
 import { Preprint } from './preprint'
+import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
 import PlainDate = Temporal.PlainDate
+
+interface GetPreprintTitleEnv {
+  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, Html>
+}
 
 export const getPreprint = flow(getWork, RTE.chainEitherK(workToPreprint))
 
 export const getPreprintTitle = flow(
   getPreprint,
   RTE.map(preprint => preprint.title),
+)
+
+export const getPrereview = flow(
+  getRecord,
+  RTE.filterOrElseW(isInCommunity, () => new NotFound()),
+  RTE.chain(recordToPrereview),
 )
 
 export const createRecordOnZenodo: (
@@ -122,6 +143,26 @@ function workToPreprint(work: Work): E.Either<unknown, Preprint> {
   )
 }
 
+function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & GetPreprintTitleEnv, unknown, Prereview> {
+  return pipe(
+    RTE.of(record),
+    RTE.bindW('preprintDoi', RTE.fromOptionK(() => new NotFound())(getReviewedDoi)),
+    RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
+    RTE.chain(review =>
+      sequenceS(RTE.ApplyPar)({
+        authors: RTE.right(review.metadata.creators),
+        doi: RTE.right(review.metadata.doi),
+        postedDate: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
+        preprintDoi: RTE.right(review.preprintDoi),
+        preprintTitle: RTE.asksReaderTaskEither(
+          RTE.fromTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(review.preprintDoi)),
+        ),
+        text: getReviewText(review),
+      }),
+    ),
+  )
+}
+
 function transformJatsToHtml(jats: string): Html {
   const sanitized = sanitize(jats, {
     allowedAttributes: {
@@ -167,4 +208,41 @@ function toHttps(url: URL): URL {
 const ServerD = pipe(
   D.struct({ institution: D.tuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })) }),
   D.map(get('institution.[0].name')),
+)
+
+const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI')
+
+function isInCommunity(record: Record) {
+  return pipe(
+    O.fromNullable(record.metadata.communities),
+    O.chain(A.findFirst(community => community.id === 'prereview-reviews')),
+    O.isSome,
+  )
+}
+
+const getReviewUrl = flow(
+  (record: Record) => record.files,
+  RA.findFirst(file => file.type === 'html'),
+  O.map(get('links.self')),
+)
+
+const getReviewText = flow(
+  RTE.fromOptionK(() => ({ status: Status.NotFound }))(getReviewUrl),
+  RTE.chainW(flow(F.Request('GET'), F.send)),
+  RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'no text'),
+  RTE.chainTaskEitherK(F.getText(identity)),
+  RTE.map(sanitizeHtml),
+)
+
+const getReviewedDoi = flow(
+  O.fromNullableK((record: Record) => record.metadata.related_identifiers),
+  O.chain(
+    A.findFirst(
+      identifier =>
+        identifier.relation === 'reviews' &&
+        identifier.scheme === 'doi' &&
+        identifier.resource_type === 'publication-preprint',
+    ),
+  ),
+  O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
