@@ -5,7 +5,7 @@ import { URL } from 'url'
 import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
 import { expect, test } from './test'
 
-test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => {
+test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055805' as Doi,
     conceptrecid: 1055805,
@@ -193,7 +193,7 @@ test('can post a full PREreview', async ({ fetch, javaScriptEnabled, page }) => 
   await expect(page).toHaveScreenshot()
 })
 
-test('can post a full PREreview with more authors', async ({ fetch, javaScriptEnabled, page }) => {
+test('can post a PREreview with more authors', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055807' as Doi,
     conceptrecid: 1055807,
@@ -345,7 +345,7 @@ test('can post a full PREreview with more authors', async ({ fetch, javaScriptEn
   await expect(page).toHaveScreenshot()
 })
 
-test('can post a full PREreview with competing interests', async ({ fetch, javaScriptEnabled, page }) => {
+test('can post a PREreview with competing interests', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055807' as Doi,
     conceptrecid: 1055807,
@@ -497,7 +497,7 @@ test('can post a full PREreview with competing interests', async ({ fetch, javaS
   await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
 })
 
-test('can post a full PREreview anonymously', async ({ fetch, javaScriptEnabled, page }) => {
+test('can post a PREreview anonymously', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055807' as Doi,
     conceptrecid: 1055807,
