@@ -52,7 +52,7 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
   return {
     upload_type: 'publication',
     publication_type: 'article',
-    title: plainText`Review of “${newPrereview.preprint.title}”`.toString(),
+    title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
     creators: [newPrereview.persona === 'public' ? newPrereview.user : { name: 'PREreviewer' }],
     description: newPrereview.review.toString(),
     communities: [{ identifier: 'prereview-reviews' }],

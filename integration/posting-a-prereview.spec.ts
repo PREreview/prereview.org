@@ -55,7 +55,7 @@ test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
         type: 'publication',
         subtype: 'article',
       },
-      title: 'Review of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
     },
   }
 
@@ -238,7 +238,7 @@ test('can post a PREreview with more authors', async ({ fetch, javaScriptEnabled
         type: 'publication',
         subtype: 'article',
       },
-      title: 'Review of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
     },
   }
 
@@ -390,7 +390,7 @@ test('can post a PREreview with competing interests', async ({ fetch, javaScript
         type: 'publication',
         subtype: 'article',
       },
-      title: 'Review of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
     },
   }
 
@@ -542,7 +542,7 @@ test('can post a PREreview anonymously', async ({ fetch, javaScriptEnabled, page
         type: 'publication',
         subtype: 'article',
       },
-      title: 'Review of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
     },
   }
 

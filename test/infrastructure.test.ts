@@ -550,7 +550,7 @@ describe('infrastructure', () => {
                       metadata: {
                         upload_type: 'publication',
                         publication_type: 'article',
-                        title: plainText`Review of “${newPrereview.preprint.title}”`.toString(),
+                        title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
                         creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
                         communities: [{ identifier: 'prereview-reviews' }],
                         description: newPrereview.review.toString(),
@@ -650,7 +650,7 @@ describe('infrastructure', () => {
                       metadata: {
                         upload_type: 'publication',
                         publication_type: 'article',
-                        title: plainText`Review of “${newPrereview.preprint.title}”`.toString(),
+                        title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
                         creators: [{ name: 'PREreviewer' }],
                         communities: [{ identifier: 'prereview-reviews' }],
                         description: newPrereview.review.toString(),

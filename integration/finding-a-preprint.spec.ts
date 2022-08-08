@@ -86,7 +86,7 @@ test('can find and view a preprint', async ({ fetch, page }) => {
                   type: 'publication',
                   subtype: 'article',
                 },
-                title: 'Review of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+                title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
               },
             },
           ],
