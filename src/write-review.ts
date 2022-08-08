@@ -10,7 +10,6 @@ import * as T from 'fp-ts/Task'
 import * as TE from 'fp-ts/TaskEither'
 import { constVoid, constant, flow, pipe } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
-import { NotFound } from 'http-errors'
 import { Status, StatusOpen } from 'hyper-ts'
 import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
@@ -22,8 +21,7 @@ import { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
-import { handleError } from './http-error'
-import { seeOther } from './middleware'
+import { notFound, seeOther } from './middleware'
 import { page } from './page'
 import {
   logInMatch,
@@ -152,7 +150,7 @@ export const writeReview = flow(
       RM.orElseW(() => showStartPage(preprint)),
     ),
   ),
-  RM.orElseW(() => handleError(new NotFound())),
+  RM.orElseW(() => notFound),
 )
 
 export const writeReviewReview = flow(
@@ -167,7 +165,7 @@ export const writeReviewReview = flow(
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseW(() => handleError(new NotFound())),
+  RM.orElseW(() => notFound),
 )
 
 export const writeReviewPersona = flow(
@@ -182,7 +180,7 @@ export const writeReviewPersona = flow(
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseW(() => handleError(new NotFound())),
+  RM.orElseW(() => notFound),
 )
 
 export const writeReviewAuthors = flow(
@@ -197,7 +195,7 @@ export const writeReviewAuthors = flow(
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseW(() => handleError(new NotFound())),
+  RM.orElseW(() => notFound),
 )
 
 export const writeReviewAddAuthors = flow(
@@ -212,12 +210,12 @@ export const writeReviewAddAuthors = flow(
         match(state)
           .with({ form: P.select({ moreAuthors: 'yes' }), method: 'POST' }, fromMiddlewareK(showNextForm(preprint)))
           .with({ form: { moreAuthors: 'yes' } }, showAddAuthorsForm)
-          .otherwise(() => handleError(new NotFound())),
+          .otherwise(() => notFound),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseW(() => handleError(new NotFound())),
+  RM.orElseW(() => notFound),
 )
 
 export const writeReviewCompetingInterests = flow(
@@ -234,7 +232,7 @@ export const writeReviewCompetingInterests = flow(
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseW(() => handleError(new NotFound())),
+  RM.orElseW(() => notFound),
 )
 
 export const writeReviewConduct = flow(
@@ -251,7 +249,7 @@ export const writeReviewConduct = flow(
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseW(() => handleError(new NotFound())),
+  RM.orElseW(() => notFound),
 )
 
 export const writeReviewPost = flow(
@@ -272,7 +270,7 @@ export const writeReviewPost = flow(
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseW(() => handleError(new NotFound())),
+  RM.orElseW(() => notFound),
 )
 
 const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>

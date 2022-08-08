@@ -6,14 +6,13 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { NotFound } from 'http-errors'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Orcid } from 'orcid-id-ts'
 import textClipper from 'text-clipper'
 import { Record, Records, getRecords } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
-import { handleError } from './http-error'
+import { notFound } from './middleware'
 import { page } from './page'
 import { reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
@@ -69,7 +68,7 @@ export const preprint = flow(
       RM.orElseW(() => showFailureMessage),
     ),
   ),
-  RM.orElseW(() => handleError(new NotFound())),
+  RM.orElseW(() => notFound),
 )
 
 const showFailureMessage = pipe(

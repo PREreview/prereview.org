@@ -22,7 +22,7 @@ import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { Record, getRecord } from 'zenodo-ts'
 import { Html, html, plainText, sanitizeHtml, sendHtml } from './html'
-import { handleError } from './http-error'
+import { notFound } from './middleware'
 import { page } from './page'
 import { preprintMatch } from './routes'
 import { renderDate } from './time'
@@ -102,7 +102,7 @@ export const review = flow(
   RM.ichainW(sendPage),
   RM.orElseW(error =>
     match(error)
-      .with({ status: Status.NotFound }, () => handleError(new NotFound()))
+      .with({ status: Status.NotFound }, () => notFound)
       .otherwise(() => showFailureMessage),
   ),
 )
