@@ -1,5 +1,6 @@
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
+import { sequenceS } from 'fp-ts/Apply'
 import * as E from 'fp-ts/Either'
 import { JsonRecord } from 'fp-ts/Json'
 import { Reader } from 'fp-ts/Reader'
@@ -113,13 +114,14 @@ export interface FormStoreEnv {
   formStore: Keyv<JsonRecord>
 }
 
+const getPreprintTitle = (doi: Doi<'1101'>) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(doi)))
+
 const getPreprint = (doi: Doi<'1101'>) =>
-  pipe(
-    RTE.ask<GetPreprintTitleEnv>(),
-    RTE.chainTaskEitherK(({ getPreprintTitle }) =>
-      pipe(TE.Do, TE.apS('doi', TE.right(doi)), TE.apS('title', getPreprintTitle(doi))),
-    ),
-  )
+  sequenceS(RTE.ApplyPar)({
+    doi: RTE.right(doi),
+    title: getPreprintTitle(doi),
+  })
 
 const showNextForm = (preprint: Preprint) => (form: Form) =>
   match(form)

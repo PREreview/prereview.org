@@ -32,10 +32,7 @@ export interface GetPrereviewEnv {
 }
 
 const getPrereview = (id: number) =>
-  pipe(
-    RTE.ask<GetPrereviewEnv>(),
-    RTE.chainTaskEitherK(({ getPrereview }) => getPrereview(id)),
-  )
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereview }: GetPrereviewEnv) => getPrereview(id)))
 
 const sendPage = flow(
   fromReaderK(createPage),
