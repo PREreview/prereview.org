@@ -280,6 +280,7 @@ jobs:
       - push
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         instance: ['prod', 'sandbox']
 
