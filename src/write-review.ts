@@ -1,6 +1,5 @@
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import { sequenceS } from 'fp-ts/Apply'
 import * as E from 'fp-ts/Either'
 import { JsonRecord } from 'fp-ts/Json'
 import { Reader } from 'fp-ts/Reader'
@@ -99,6 +98,7 @@ export type NewPrereview = {
 
 type Preprint = {
   doi: Doi<'1101'>
+  language: 'en'
   title: Html
 }
 
@@ -107,7 +107,7 @@ export interface CreateRecordEnv {
 }
 
 export interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, Html>
+  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, { title: Html; language: 'en' }>
 }
 
 export interface FormStoreEnv {
@@ -117,11 +117,7 @@ export interface FormStoreEnv {
 const getPreprintTitle = (doi: Doi<'1101'>) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(doi)))
 
-const getPreprint = (doi: Doi<'1101'>) =>
-  sequenceS(RTE.ApplyPar)({
-    doi: RTE.right(doi),
-    title: getPreprintTitle(doi),
-  })
+const getPreprint = (doi: Doi<'1101'>) => pipe(getPreprintTitle(doi), RTE.apS('doi', RTE.right(doi)))
 
 const showNextForm = (preprint: Preprint) => (form: Form) =>
   match(form)

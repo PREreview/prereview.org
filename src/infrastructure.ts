@@ -37,14 +37,14 @@ import { NewPrereview } from './write-review'
 import PlainDate = Temporal.PlainDate
 
 interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, Html>
+  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, { title: Html; language: 'en' }>
 }
 
 export const getPreprint = flow(getWork, RTE.chainEitherK(workToPreprint))
 
 export const getPreprintTitle = flow(
   getPreprint,
-  RTE.map(preprint => preprint.title),
+  RTE.map(preprint => ({ language: preprint.language, title: preprint.title })),
 )
 
 export const getPrereview = flow(
@@ -138,6 +138,7 @@ function workToPreprint(work: Work): E.Either<unknown, Preprint> {
     E.apSW('title', pipe(work.title, E.fromOptionK(() => 'no title')(RA.head), E.map(sanitizeHtml))),
     E.map(preprint => ({
       ...preprint,
+      language: 'en',
       url: toHttps(work.resource.primary.URL),
     })),
   )
@@ -156,7 +157,6 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
         preprint: RTE.asksReaderTaskEither(
           flow(
             RTE.fromTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(review.preprintDoi)),
-            RTE.bindTo('title'),
             RTE.apSW('doi', RTE.right(review.preprintDoi)),
           ),
         ),

@@ -26,6 +26,7 @@ export type Preprint = {
     orcid?: Orcid
   }>
   doi: Doi<'1101'>
+  language: 'en'
   posted: PlainDate
   server: 'bioRxiv' | 'medRxiv'
   title: Html

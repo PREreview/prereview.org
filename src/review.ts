@@ -24,6 +24,7 @@ export type Prereview = {
   postedDate: PlainDate
   preprint: {
     doi: Doi<'1101'>
+    language: 'en'
     title: Html
   }
   text: Html
