@@ -575,8 +575,7 @@ describe('infrastructure', () => {
                 authors: [{ name: 'PREreviewer' }],
                 doi: '10.5281/zenodo.1061864' as Doi,
                 postedDate: PlainDate.from('2022-07-05'),
-                preprintDoi: preprint.doi,
-                preprintTitle: preprint.title,
+                preprint: { doi: preprint.doi, title: preprint.title },
                 text: rawHtml('Some text'),
               }),
             )

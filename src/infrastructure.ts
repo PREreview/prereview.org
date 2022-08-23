@@ -153,9 +153,12 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
         authors: RTE.right(review.metadata.creators),
         doi: RTE.right(review.metadata.doi),
         postedDate: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
-        preprintDoi: RTE.right(review.preprintDoi),
-        preprintTitle: RTE.asksReaderTaskEither(
-          RTE.fromTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(review.preprintDoi)),
+        preprint: RTE.asksReaderTaskEither(
+          flow(
+            RTE.fromTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(review.preprintDoi)),
+            RTE.bindTo('title'),
+            RTE.apSW('doi', RTE.right(review.preprintDoi)),
+          ),
         ),
         text: getReviewText(review),
       }),

@@ -22,8 +22,10 @@ export type Prereview = {
   authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
   doi: Doi
   postedDate: PlainDate
-  preprintDoi: Doi<'1101'>
-  preprintTitle: Html
+  preprint: {
+    doi: Doi<'1101'>
+    title: Html
+  }
   text: Html
 }
 
@@ -73,15 +75,15 @@ function failureMessage() {
 
 function createPage(review: Prereview) {
   return page({
-    title: plainText`PREreview of “${review.preprintTitle}”`,
+    title: plainText`PREreview of “${review.preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: review.preprintDoi })}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: review.preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
       <main>
         <header>
-          <h1>PREreview of “${review.preprintTitle}”</h1>
+          <h1>PREreview of “${review.preprint.title}”</h1>
 
           <ol aria-label="Authors of this PREreview" class="author-list">
             ${review.authors.map(author => html`<li>${displayAuthor(author)}</li>`)}

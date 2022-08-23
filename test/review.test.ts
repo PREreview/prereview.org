@@ -19,8 +19,7 @@ describe('review', () => {
               .filter(isNonEmpty),
             doi: fc.doi(),
             postedDate: fc.plainDate(),
-            preprintDoi: fc.preprintDoi(),
-            preprintTitle: fc.html(),
+            preprint: fc.record({ doi: fc.preprintDoi(), title: fc.html() }),
             text: fc.html(),
           }),
           async (id, connection, prereview) => {
