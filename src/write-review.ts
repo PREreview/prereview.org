@@ -520,7 +520,7 @@ function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
           ? html`
               <div class="inset">
                 <p>
-                  Please let us know the other authors’ details (names and ORCID iDs), and we’ll add them to the
+                  Please let us know the other authors’ details (names and ORCID&nbsp;iDs), and we’ll add them to the
                   PREreview. Our email address is <a href="mailto:contact@prereview.org">contact@prereview.org</a>.
                 </p>
               </div>
@@ -920,7 +920,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
                     />
                     <span>${user.name}</span>
                   </label>
-                  <div id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID iD.</div>
+                  <div id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID&nbsp;iD.</div>
                 </li>
                 <li>
                   <label>
