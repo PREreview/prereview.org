@@ -22,7 +22,7 @@ export function page({ title, type, content, js = [] }: Page): R.Reader<PhaseEnv
   return R.asks(
     ({ phase }) => html`
       <!DOCTYPE html>
-      <html lang="en">
+      <html lang="en" dir="ltr">
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
