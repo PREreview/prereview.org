@@ -16,7 +16,7 @@ describe('write-review', () => {
         await fc.assert(
           fc.asyncProperty(
             fc.preprintDoi(),
-            fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+            fc.record({ title: fc.html(), language: fc.languageCode() }),
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
@@ -73,7 +73,7 @@ describe('write-review', () => {
         await fc.assert(
           fc.asyncProperty(
             fc.preprintDoi(),
-            fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+            fc.record({ title: fc.html(), language: fc.languageCode() }),
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
@@ -119,7 +119,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.connection({
             headers: fc.constant({}),
             method: fc.requestMethod().filter(method => method !== 'POST'),
@@ -186,7 +186,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
             fc.tuple(
               fc.constant(review),
@@ -248,7 +248,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
             fc.tuple(
               fc.constant(review),
@@ -364,7 +364,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.connection({ body: fc.record({ review: fc.lorem() }), method: fc.constant('POST') }),
           fc.string(),
           async (preprintDoi, preprintTitle, connection, secret) => {
@@ -399,7 +399,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -453,7 +453,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc
             .tuple(fc.constantFrom('public', 'anonymous'), fc.uuid(), fc.string())
             .chain(([persona, sessionId, secret]) =>
@@ -517,7 +517,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc
             .tuple(fc.constantFrom('public', 'anonymous'), fc.uuid(), fc.string())
             .chain(([persona, sessionId, secret]) =>
@@ -636,7 +636,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.connection({ body: fc.constant({ conduct: 'yes' }), method: fc.constant('POST') }),
           fc.string(),
           async (preprintDoi, preprintTitle, connection, secret) => {
@@ -671,7 +671,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -725,7 +725,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -784,7 +784,7 @@ describe('write-review', () => {
         await fc.assert(
           fc.asyncProperty(
             fc.preprintDoi(),
-            fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+            fc.record({ title: fc.html(), language: fc.languageCode() }),
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
@@ -845,7 +845,7 @@ describe('write-review', () => {
         await fc.assert(
           fc.asyncProperty(
             fc.preprintDoi(),
-            fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+            fc.record({ title: fc.html(), language: fc.languageCode() }),
             fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
               fc.tuple(
                 fc.connection({
@@ -962,7 +962,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.connection({
             body: fc.record({ moreAuthors: fc.constantFrom('yes', 'no') }),
             method: fc.constant('POST'),
@@ -1000,7 +1000,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -1054,7 +1054,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -1110,7 +1110,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -1173,7 +1173,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -1277,7 +1277,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.connection({ method: fc.constant('POST') }),
           fc.string(),
           async (preprintDoi, preprintTitle, connection, secret) => {
@@ -1314,7 +1314,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc
             .tuple(
               fc.oneof(
@@ -1388,7 +1388,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc
             .tuple(
               fc.oneof(
@@ -1520,7 +1520,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.connection({
             body: fc.record({
               competingInterests: fc.constantFrom('yes', 'no'),
@@ -1561,7 +1561,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -1621,7 +1621,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -1683,7 +1683,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -1799,7 +1799,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.connection({ body: fc.constant({ conduct: 'yes' }), method: fc.constant('POST') }),
           fc.string(),
           async (preprintDoi, preprintTitle, connection, secret) => {
@@ -1834,7 +1834,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -1888,7 +1888,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -1965,7 +1965,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({
@@ -2078,7 +2078,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.connection({ method: fc.constant('POST') }),
           fc.string(),
           async (preprintDoi, preprintTitle, connection, secret) => {
@@ -2119,7 +2119,7 @@ describe('write-review', () => {
       await fc.assert(
         fc.asyncProperty(
           fc.preprintDoi(),
-          fc.record({ title: fc.html(), language: fc.constant('en' as const) }),
+          fc.record({ title: fc.html(), language: fc.languageCode() }),
           fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
             fc.tuple(
               fc.connection({

@@ -16,6 +16,7 @@ import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
+import { LanguageCode } from 'iso-639-1'
 import sanitize from 'sanitize-html'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
@@ -37,7 +38,7 @@ import { NewPrereview } from './write-review'
 import PlainDate = Temporal.PlainDate
 
 interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, { title: Html; language: 'en' }>
+  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
 }
 
 export const getPreprint = flow(getWork, RTE.chainEitherK(workToPreprint))

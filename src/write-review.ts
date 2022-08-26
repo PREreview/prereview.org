@@ -15,9 +15,11 @@ import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
+import { LanguageCode } from 'iso-639-1'
 import Keyv from 'keyv'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
+import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
@@ -98,7 +100,7 @@ export type NewPrereview = {
 
 type Preprint = {
   doi: Doi<'1101'>
-  language: 'en'
+  language: LanguageCode
   title: Html
 }
 
@@ -107,7 +109,7 @@ export interface CreateRecordEnv {
 }
 
 export interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, { title: Html; language: 'en' }>
+  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
 }
 
 export interface FormStoreEnv {
@@ -558,7 +560,11 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
         <h1 id="preview-label">Check your PREreview</h1>
 
         <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
-          <h2>PREreview of “${preprint.title}”</h2>
+          <h2>
+            PREreview of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}"
+              >${preprint.title}</span
+            >”
+          </h2>
 
           <ol aria-label="Authors of this PREreview" class="author-list">
             <li>${displayAuthor(review.persona === 'public' ? user : { name: 'PREreviewer' })}</li>
@@ -995,8 +1001,10 @@ function startPage(preprint: Preprint) {
         <h1>PREreview this preprint</h1>
 
         <p>
-          You can write a PREreview of “${preprint.title}”. A PREreview is a free-text review of a preprint and can vary
-          from a few sentences to a lengthy report, similar to a journal-organized peer-review report.
+          You can write a PREreview of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}"
+            >${preprint.title}</span
+          >”. A PREreview is a free-text review of a preprint and can vary from a few sentences to a lengthy report,
+          similar to a journal-organized peer-review report.
         </p>
 
         <h2>Before you start</h2>

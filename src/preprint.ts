@@ -8,7 +8,9 @@ import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { LanguageCode } from 'iso-639-1'
 import { Orcid } from 'orcid-id-ts'
+import { getLangDir } from 'rtl-detect'
 import textClipper from 'text-clipper'
 import { Record, Records, getRecords } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
@@ -26,7 +28,7 @@ export type Preprint = {
     orcid?: Orcid
   }>
   doi: Doi<'1101'>
-  language: 'en'
+  language: LanguageCode
   posted: PlainDate
   server: 'bioRxiv' | 'medRxiv'
   title: Html
@@ -97,12 +99,15 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
   return page({
     title: plainText`PREreviews of “${preprint.title}”`,
     content: html`
-      <h1 class="visually-hidden">PREreviews of “${preprint.title}”</h1>
+      <h1 class="visually-hidden">
+        PREreviews of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</span
+        >”
+      </h1>
 
       <aside tabindex="0" aria-label="Preprint details">
         <article>
           <header>
-            <h2>${preprint.title}</h2>
+            <h2 lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</h2>
 
             <ol aria-label="Authors of this preprint" role="list" class="author-list">
               ${preprint.authors.map(author => html` <li>${displayAuthor(author)}</li>`)}
@@ -126,7 +131,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
 
           <h3>Abstract</h3>
 
-          ${preprint.abstract}
+          <div lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.abstract}</div>
 
           <a href="${preprint.url.href}" class="button">Read the preprint</a>
         </article>

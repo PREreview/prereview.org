@@ -512,7 +512,7 @@ describe('infrastructure', () => {
           fc.integer(),
           fc.record({
             doi: fc.preprintDoi(),
-            language: fc.constant('en' as const),
+            language: fc.languageCode(),
             title: fc.html(),
           }),
           async (id, preprint) => {
@@ -577,11 +577,7 @@ describe('infrastructure', () => {
                 authors: [{ name: 'PREreviewer' }],
                 doi: '10.5281/zenodo.1061864' as Doi,
                 postedDate: PlainDate.from('2022-07-05'),
-                preprint: {
-                  doi: preprint.doi,
-                  language: 'en',
-                  title: preprint.title,
-                },
+                preprint,
                 text: rawHtml('Some text'),
               }),
             )
@@ -617,7 +613,7 @@ describe('infrastructure', () => {
           fc.integer(),
           fc.record({
             doi: fc.preprintDoi(),
-            language: fc.constant('en' as const),
+            language: fc.languageCode(),
             title: fc.html(),
           }),
           fc.integer({ min: 400, max: 599 }),
@@ -897,7 +893,7 @@ describe('infrastructure', () => {
           fc.integer(),
           fc.record({
             doi: fc.preprintDoi(),
-            language: fc.constant('en' as const),
+            language: fc.languageCode(),
             title: fc.html(),
           }),
           fc
@@ -972,7 +968,7 @@ describe('infrastructure', () => {
             persona: fc.constant('public'),
             preprint: fc.record({
               doi: fc.preprintDoi(),
-              language: fc.constant('en' as const),
+              language: fc.languageCode(),
               title: fc.html(),
             }),
             review: fc.html(),
@@ -1073,7 +1069,7 @@ describe('infrastructure', () => {
             persona: fc.constant('anonymous'),
             preprint: fc.record({
               doi: fc.preprintDoi(),
-              language: fc.constant('en' as const),
+              language: fc.languageCode(),
               title: fc.html(),
             }),
             review: fc.html(),
@@ -1174,7 +1170,7 @@ describe('infrastructure', () => {
             persona: fc.constantFrom('public', 'anonymous'),
             preprint: fc.record({
               doi: fc.preprintDoi(),
-              language: fc.constant('en' as const),
+              language: fc.languageCode(),
               title: fc.html(),
             }),
             review: fc.html(),

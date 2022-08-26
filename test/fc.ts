@@ -9,6 +9,7 @@ import { compose } from 'fp-ts/Refinement'
 import { pipe } from 'fp-ts/function'
 import * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
+import ISO6391, { LanguageCode } from 'iso-639-1'
 import { Headers as FetchHeaders } from 'node-fetch'
 import { Body, Headers, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
 import { Orcid, isOrcid } from 'orcid-id-ts'
@@ -108,6 +109,8 @@ export const connection = <S = H.StatusOpen>(...args: Parameters<typeof request>
 
 export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ minLength: 1 }).filter(isNonEmptyString)
 
+export const languageCode = (): fc.Arbitrary<LanguageCode> => fc.constantFrom(...ISO6391.getAllCodes())
+
 export const user = (): fc.Arbitrary<User> =>
   fc.record({
     name: fc.string(),
@@ -130,7 +133,7 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
       )
       .filter(isNonEmpty),
     doi: preprintDoi(),
-    language: fc.constant('en' as const),
+    language: languageCode(),
     posted: plainDate(),
     server: fc.constantFrom('bioRxiv', 'medRxiv'),
     title: html(),

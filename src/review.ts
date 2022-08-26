@@ -8,7 +8,9 @@ import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { LanguageCode } from 'iso-639-1'
 import { Orcid } from 'orcid-id-ts'
+import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { Html, html, plainText, sendHtml } from './html'
 import { notFound } from './middleware'
@@ -24,7 +26,7 @@ export type Prereview = {
   postedDate: PlainDate
   preprint: {
     doi: Doi<'1101'>
-    language: 'en'
+    language: LanguageCode
     title: Html
   }
   text: Html
@@ -84,7 +86,11 @@ function createPage(review: Prereview) {
 
       <main>
         <header>
-          <h1>PREreview of “${review.preprint.title}”</h1>
+          <h1>
+            PREreview of “<span lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
+              >${review.preprint.title}</span
+            >”
+          </h1>
 
           <ol aria-label="Authors of this PREreview" class="author-list">
             ${review.authors.map(author => html`<li>${displayAuthor(author)}</li>`)}
