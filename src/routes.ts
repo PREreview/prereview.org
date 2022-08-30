@@ -27,7 +27,7 @@ const PreprintDoiC = C.make(
     D.parse(s => {
       const [, match] = s.match(/^doi-(.+)$/) ?? []
 
-      if (match) {
+      if (match && match.toLowerCase() === match) {
         return DoiD.decode(match.replace(/-/g, '/').replace(/\+/g, '-'))
       }
 
@@ -35,7 +35,7 @@ const PreprintDoiC = C.make(
     }),
   ),
   {
-    encode: doi => `doi-${doi.replace(/-/g, '+').replace(/\//g, '-')}`,
+    encode: doi => `doi-${doi.toLowerCase().replace(/-/g, '+').replace(/\//g, '-')}`,
   },
 )
 
