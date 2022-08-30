@@ -1,12 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { mod11_2 } from 'cdigit'
-import { Doi, hasRegistrant, isDoi } from 'doi-ts'
+import { Doi, isDoi } from 'doi-ts'
 import { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import * as F from 'fetch-fp-ts'
 import { isNonEmpty } from 'fp-ts/Array'
-import { compose } from 'fp-ts/Refinement'
-import { pipe } from 'fp-ts/function'
+import { Refinement } from 'fp-ts/Refinement'
 import * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
 import ISO6391, { LanguageCode } from 'iso-639-1'
@@ -34,17 +33,13 @@ export const doiRegistrant = (): fc.Arbitrary<string> =>
     )
     .map(([one, two]) => [one, ...two].join('.'))
 
-export const doi = (): fc.Arbitrary<Doi> =>
+export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbitrary<Doi<R>> =>
   fc
-    .tuple(doiRegistrant(), fc.unicodeString({ minLength: 1 }))
+    .tuple(withRegistrant ?? doiRegistrant(), fc.unicodeString({ minLength: 1 }))
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
-    .filter(isDoi)
+    .filter(isDoi as Refinement<unknown, Doi<R>>)
 
-export const preprintDoi = (): fc.Arbitrary<Doi<'1101'>> =>
-  fc
-    .unicodeString({ minLength: 1 })
-    .map(suffix => `10.1101/${suffix}`)
-    .filter(pipe(isDoi, compose(hasRegistrant('1101'))))
+export const preprintDoi = (): fc.Arbitrary<Doi<'1101'>> => doi(fc.constant('1101'))
 
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc
