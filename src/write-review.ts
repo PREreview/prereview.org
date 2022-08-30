@@ -25,6 +25,7 @@ import { SubmittedDeposition } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
 import { notFound, seeOther } from './middleware'
 import { page } from './page'
+import { PreprintId } from './preprint-id'
 import {
   logInMatch,
   preprintMatch,
@@ -99,7 +100,7 @@ export type NewPrereview = {
 }
 
 type Preprint = {
-  doi: Doi<'1101'>
+  doi: PreprintId['doi']
   language: LanguageCode
   title: Html
 }
@@ -109,17 +110,17 @@ export interface CreateRecordEnv {
 }
 
 export interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
+  getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
 }
 
 export interface FormStoreEnv {
   formStore: Keyv<JsonRecord>
 }
 
-const getPreprintTitle = (doi: Doi<'1101'>) =>
+const getPreprintTitle = (doi: PreprintId['doi']) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(doi)))
 
-const getPreprint = (doi: Doi<'1101'>) => pipe(getPreprintTitle(doi), RTE.apS('doi', RTE.right(doi)))
+const getPreprint = (doi: PreprintId['doi']) => pipe(getPreprintTitle(doi), RTE.apS('doi', RTE.right(doi)))
 
 const showNextForm = (preprint: Preprint) => (form: Form) =>
   match(form)

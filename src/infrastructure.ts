@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Work, getWork } from 'crossref-ts'
-import { Doi, hasRegistrant, isDoi } from 'doi-ts'
+import { hasRegistrant, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
@@ -32,13 +32,14 @@ import {
 } from 'zenodo-ts'
 import { Html, plainText, rawHtml, sanitizeHtml } from './html'
 import { Preprint } from './preprint'
+import { PreprintId } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
 import PlainDate = Temporal.PlainDate
 
 interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: Doi<'1101'>) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
+  getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
 }
 
 export const getPreprint = flow(getWork, RTE.chainEitherK(workToPreprint))
@@ -118,13 +119,7 @@ function workToPreprint(work: Work): E.Either<unknown, Preprint> {
         E.fromPredicate(RA.isNonEmpty, () => 'no authors'),
       ),
     ),
-    E.apSW(
-      'doi',
-      pipe(
-        work.DOI,
-        E.fromPredicate(hasRegistrant('1101'), () => 'not a DOI'),
-      ),
-    ),
+    E.apSW('id', PreprintIdD.decode(work)),
     E.apSW(
       'posted',
       pipe(
@@ -135,7 +130,6 @@ function workToPreprint(work: Work): E.Either<unknown, Preprint> {
         ),
       ),
     ),
-    E.apSW('server', pipe(work, ServerD.decode)),
     E.apSW('title', pipe(work.title, E.fromOptionK(() => 'no title')(RA.head), E.map(sanitizeHtml))),
     E.map(preprint => ({
       ...preprint,
@@ -209,12 +203,27 @@ function toHttps(url: URL): URL {
   return httpsUrl
 }
 
-const ServerD = pipe(
-  D.struct({ institution: D.tuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })) }),
-  D.map(flow(get('institution.[0].name'), toLowerCase)),
-)
-
 const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI')
+
+const PreprintIdD: D.Decoder<Work, PreprintId> = pipe(
+  D.struct({
+    DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI'),
+    publisher: D.literal('Cold Spring Harbor Laboratory'),
+    institution: D.tuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })),
+  }),
+  D.map(work =>
+    match(work)
+      .with(
+        { DOI: P.select(), publisher: 'Cold Spring Harbor Laboratory', institution: [{ name: 'bioRxiv' }] },
+        doi => ({ type: 'biorxiv' as const, doi }),
+      )
+      .with(
+        { DOI: P.select(), publisher: 'Cold Spring Harbor Laboratory', institution: [{ name: 'medRxiv' }] },
+        doi => ({ type: 'medrxiv' as const, doi }),
+      )
+      .exhaustive(),
+  ),
+)
 
 function isInCommunity(record: Record) {
   return pipe(
@@ -250,8 +259,3 @@ const getReviewedDoi = flow(
   ),
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
-
-// https://github.com/gcanti/fp-ts/pull/1476
-function toLowerCase<S extends string>(s: S): Lowercase<S> {
-  return s.toLowerCase() as Lowercase<S>
-}

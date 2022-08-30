@@ -1,5 +1,4 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -17,6 +16,7 @@ import { Record, Records, getRecords } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
 import { notFound } from './middleware'
 import { page } from './page'
+import { PreprintId } from './preprint-id'
 import { reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
 
@@ -28,16 +28,15 @@ export type Preprint = {
     name: string
     orcid?: Orcid
   }>
-  doi: Doi<'1101'>
+  id: PreprintId
   language: LanguageCode
   posted: PlainDate
-  server: 'biorxiv' | 'medrxiv'
   title: Html
   url: URL
 }
 
 export interface GetPreprintEnv {
-  getPreprint: (doi: Doi<'1101'>) => TE.TaskEither<unknown, Preprint>
+  getPreprint: (doi: PreprintId['doi']) => TE.TaskEither<unknown, Preprint>
 }
 
 const sendPage = flow(
@@ -46,7 +45,7 @@ const sendPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const getPreprint = (doi: Doi<'1101'>) =>
+const getPreprint = (doi: PreprintId['doi']) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(doi)))
 
 export const preprint = flow(
@@ -61,7 +60,7 @@ export const preprint = flow(
           ({ preprint }) =>
             new URLSearchParams({
               communities: 'prereview-reviews',
-              q: `related.identifier:"${preprint.doi}"`,
+              q: `related.identifier:"${preprint.id.doi}"`,
               size: '100',
               sort: 'mostrecent',
             }),
@@ -122,7 +121,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
               <div>
                 <dt>Server</dt>
                 <dd>
-                  ${match(preprint.server)
+                  ${match(preprint.id.type)
                     .with('biorxiv', () => 'bioRxiv')
                     .with('medrxiv', () => 'medRxiv')
                     .exhaustive()}
@@ -130,7 +129,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
               </div>
               <div>
                 <dt>DOI</dt>
-                <dd class="doi">${preprint.doi}</dd>
+                <dd class="doi">${preprint.id.doi}</dd>
               </div>
             </dl>
           </header>
@@ -146,7 +145,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
       <main>
         <h2>${reviews.hits.hits.length} PREreview${reviews.hits.hits.length !== 1 ? 's' : ''}</h2>
 
-        <a href="${format(writeReviewMatch.formatter, { doi: preprint.doi })}" class="button">Write a PREreview</a>
+        <a href="${format(writeReviewMatch.formatter, { doi: preprint.id.doi })}" class="button">Write a PREreview</a>
 
         <ol class="cards">
           ${reviews.hits.hits.map(showReview)}

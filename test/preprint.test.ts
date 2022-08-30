@@ -58,13 +58,13 @@ describe('preprint', () => {
           const getPreprint: jest.MockedFunction<_.GetPreprintEnv['getPreprint']> = jest.fn(_ => TE.right(preprint))
 
           const actual = await runMiddleware(
-            _.preprint(preprint.doi)({
+            _.preprint(preprint.id.doi)({
               fetch: fetchMock.sandbox().getOnce(
                 {
                   url: 'https://zenodo.org/api/records/',
                   query: {
                     communities: 'prereview-reviews',
-                    q: `related.identifier:"${preprint.doi}"`,
+                    q: `related.identifier:"${preprint.id.doi}"`,
                     sort: 'mostrecent',
                   },
                 },
@@ -85,7 +85,7 @@ describe('preprint', () => {
               { type: 'setBody', body: expect.anything() },
             ]),
           )
-          expect(getPreprint).toHaveBeenCalledWith(preprint.doi)
+          expect(getPreprint).toHaveBeenCalledWith(preprint.id.doi)
         }),
       )
     })
@@ -117,11 +117,11 @@ describe('preprint', () => {
       await fc.assert(
         fc.asyncProperty(fc.connection(), fc.preprint(), async (connection, preprint) => {
           const actual = await runMiddleware(
-            _.preprint(preprint.doi)({
+            _.preprint(preprint.id.doi)({
               fetch: fetchMock.sandbox().getOnce(
                 {
                   url: 'https://zenodo.org/api/records/',
-                  query: { communities: 'prereview-reviews', q: `related.identifier:"${preprint.doi}"` },
+                  query: { communities: 'prereview-reviews', q: `related.identifier:"${preprint.id.doi}"` },
                 },
                 {
                   body: undefined,

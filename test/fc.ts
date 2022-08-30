@@ -14,6 +14,7 @@ import { Body, Headers, RequestMethod, createRequest, createResponse } from 'nod
 import { Orcid, isOrcid } from 'orcid-id-ts'
 import { Html, rawHtml, sanitizeHtml } from '../src/html'
 import { Preprint } from '../src/preprint'
+import { BiorxivPreprintId, MedrxivPreprintId, PreprintId } from '../src/preprint-id'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
 
@@ -39,7 +40,21 @@ export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbi
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
     .filter(isDoi as Refinement<unknown, Doi<R>>)
 
-export const preprintDoi = (): fc.Arbitrary<Doi<'1101'>> => doi(fc.constant('1101'))
+export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
+  fc.record({
+    type: fc.constant('biorxiv'),
+    doi: doi(fc.constant('1101')),
+  })
+
+export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
+  fc.record({
+    type: fc.constant('medrxiv'),
+    doi: doi(fc.constant('1101')),
+  })
+
+export const preprintId = (): fc.Arbitrary<PreprintId> => fc.oneof(biorxivPreprintId(), medrxivPreprintId())
+
+export const preprintDoi = (): fc.Arbitrary<PreprintId['doi']> => preprintId().map(id => id.doi)
 
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc
@@ -132,7 +147,7 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
         { minLength: 1 },
       )
       .filter(isNonEmpty),
-    doi: preprintDoi(),
+    id: preprintId(),
     language: languageCode(),
     posted: plainDate(),
     server: fc.constantFrom('biorxiv', 'medrxiv'),

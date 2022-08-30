@@ -15,6 +15,7 @@ import { match } from 'ts-pattern'
 import { Html, html, plainText, sendHtml } from './html'
 import { notFound } from './middleware'
 import { page } from './page'
+import { PreprintId } from './preprint-id'
 import { preprintMatch } from './routes'
 import { renderDate } from './time'
 
@@ -25,7 +26,7 @@ export type Prereview = {
   doi: Doi
   postedDate: PlainDate
   preprint: {
-    doi: Doi<'1101'>
+    doi: PreprintId['doi']
     language: LanguageCode
     title: Html
   }
