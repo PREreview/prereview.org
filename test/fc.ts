@@ -150,7 +150,6 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
     id: preprintId(),
     language: languageCode(),
     posted: plainDate(),
-    server: fc.constantFrom('biorxiv', 'medrxiv'),
     title: html(),
     url: url(),
   })
