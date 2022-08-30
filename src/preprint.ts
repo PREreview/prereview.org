@@ -124,6 +124,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
                   ${match(preprint.id.type)
                     .with('biorxiv', () => 'bioRxiv')
                     .with('medrxiv', () => 'medRxiv')
+                    .with('scielo', () => 'SciELO Preprints')
                     .exhaustive()}
                 </dd>
               </div>

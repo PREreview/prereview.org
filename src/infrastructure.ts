@@ -203,7 +203,7 @@ function toHttps(url: URL): URL {
   return httpsUrl
 }
 
-const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI')
+const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590'))), 'DOI')
 
 const PreprintIdD: D.Decoder<Work, PreprintId> = pipe(
   D.struct({

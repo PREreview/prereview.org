@@ -14,7 +14,7 @@ import { Body, Headers, RequestMethod, createRequest, createResponse } from 'nod
 import { Orcid, isOrcid } from 'orcid-id-ts'
 import { Html, rawHtml, sanitizeHtml } from '../src/html'
 import { Preprint } from '../src/preprint'
-import { BiorxivPreprintId, MedrxivPreprintId, PreprintId } from '../src/preprint-id'
+import { BiorxivPreprintId, MedrxivPreprintId, PreprintId, ScieloPreprintId } from '../src/preprint-id'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
 
@@ -40,6 +40,8 @@ export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbi
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
     .filter(isDoi as Refinement<unknown, Doi<R>>)
 
+export const preprintDoi = (): fc.Arbitrary<PreprintId['doi']> => preprintId().map(id => id.doi)
+
 export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
   fc.record({
     type: fc.constant('biorxiv'),
@@ -52,9 +54,14 @@ export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
     doi: doi(fc.constant('1101')),
   })
 
-export const preprintId = (): fc.Arbitrary<PreprintId> => fc.oneof(biorxivPreprintId(), medrxivPreprintId())
+export const scieloPreprintId = (): fc.Arbitrary<ScieloPreprintId> =>
+  fc.record({
+    type: fc.constant('scielo'),
+    doi: doi(fc.constant('1590')),
+  })
 
-export const preprintDoi = (): fc.Arbitrary<PreprintId['doi']> => preprintId().map(id => id.doi)
+export const preprintId = (): fc.Arbitrary<PreprintId> =>
+  fc.oneof(biorxivPreprintId(), medrxivPreprintId(), scieloPreprintId())
 
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc
