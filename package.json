@@ -5,7 +5,7 @@
     "npm": "8"
   },
   "dependencies": {
-    "@godaddy/terminus": "^4.11.1",
+    "@godaddy/terminus": "^4.11.2",
     "@js-temporal/polyfill": "^0.4.2",
     "@keyv/sqlite": "^3.5.3",
     "clock-ts": "^0.1.0",
