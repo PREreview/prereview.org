@@ -9,9 +9,7 @@ describe('lookup-doi', () => {
     test('with a preprint DOI', async () => {
       await fc.assert(
         fc.asyncProperty(
-          fc
-            .doi(fc.constant('1101'))
-            .chain(doi => fc.tuple(fc.constant(doi), fc.connection({ body: fc.constant({ doi }) }))),
+          fc.preprintDoi().chain(doi => fc.tuple(fc.constant(doi), fc.connection({ body: fc.constant({ doi }) }))),
           async ([doi, connection]) => {
             const actual = await runMiddleware(_.lookupDoi, connection)()
 

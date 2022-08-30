@@ -22,7 +22,7 @@ function createPage() {
           <h1><img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" class="home-logo" /></h1>
         </header>
 
-        <h2>Find PREreviews for a bioRxiv or medRxiv preprint</h2>
+        <h2>Find PREreviews for a bioRxiv, medRxiv or SciELO preprint</h2>
 
         <form method="post" action="${format(lookupDoiMatch.formatter, {})}" novalidate>
           <label>

@@ -8,7 +8,7 @@ import { get } from 'spectacles-ts'
 import { seeOther } from './middleware'
 import { homeMatch, preprintMatch } from './routes'
 
-const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI')
+const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590'))), 'DOI')
 
 const LookupDoiD = pipe(
   D.struct({
