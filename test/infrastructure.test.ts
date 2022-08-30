@@ -468,7 +468,7 @@ describe('infrastructure', () => {
                 doi: '10.1101/2022.01.13.476201',
                 language: 'en',
                 posted,
-                server,
+                server: server.toLowerCase(),
                 title,
                 url: new URL('https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201'),
               }),

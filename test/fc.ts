@@ -135,7 +135,7 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
     doi: preprintDoi(),
     language: languageCode(),
     posted: plainDate(),
-    server: fc.constantFrom('bioRxiv', 'medRxiv'),
+    server: fc.constantFrom('biorxiv', 'medrxiv'),
     title: html(),
     url: url(),
   })

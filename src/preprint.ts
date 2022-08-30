@@ -12,6 +12,7 @@ import { LanguageCode } from 'iso-639-1'
 import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import textClipper from 'text-clipper'
+import { match } from 'ts-pattern'
 import { Record, Records, getRecords } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
 import { notFound } from './middleware'
@@ -30,7 +31,7 @@ export type Preprint = {
   doi: Doi<'1101'>
   language: LanguageCode
   posted: PlainDate
-  server: 'bioRxiv' | 'medRxiv'
+  server: 'biorxiv' | 'medrxiv'
   title: Html
   url: URL
 }
@@ -120,7 +121,12 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
               </div>
               <div>
                 <dt>Server</dt>
-                <dd>${preprint.server}</dd>
+                <dd>
+                  ${match(preprint.server)
+                    .with('biorxiv', () => 'bioRxiv')
+                    .with('medrxiv', () => 'medRxiv')
+                    .exhaustive()}
+                </dd>
               </div>
               <div>
                 <dt>DOI</dt>

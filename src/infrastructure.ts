@@ -211,7 +211,7 @@ function toHttps(url: URL): URL {
 
 const ServerD = pipe(
   D.struct({ institution: D.tuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })) }),
-  D.map(get('institution.[0].name')),
+  D.map(flow(get('institution.[0].name'), toLowerCase)),
 )
 
 const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI')
@@ -250,3 +250,8 @@ const getReviewedDoi = flow(
   ),
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
+
+// https://github.com/gcanti/fp-ts/pull/1476
+function toLowerCase<S extends string>(s: S): Lowercase<S> {
+  return s.toLowerCase() as Lowercase<S>
+}
