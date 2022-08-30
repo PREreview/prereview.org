@@ -26,12 +26,17 @@ export const html = (): fc.Arbitrary<Html> => fc.string().map(rawHtml)
 
 export const sanitisedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeHtml)
 
-export const doi = (): fc.Arbitrary<Doi> =>
+export const doiRegistrant = (): fc.Arbitrary<string> =>
   fc
     .tuple(
-      fc.stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), { minLength: 4 }),
-      fc.unicodeString({ minLength: 1 }),
+      fc.stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), { minLength: 2 }),
+      fc.array(fc.stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), { minLength: 1 })),
     )
+    .map(([one, two]) => [one, ...two].join('.'))
+
+export const doi = (): fc.Arbitrary<Doi> =>
+  fc
+    .tuple(doiRegistrant(), fc.unicodeString({ minLength: 1 }))
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
     .filter(isDoi)
 
