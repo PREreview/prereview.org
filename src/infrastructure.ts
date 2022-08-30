@@ -19,6 +19,7 @@ import * as D from 'io-ts/Decoder'
 import { LanguageCode } from 'iso-639-1'
 import sanitize from 'sanitize-html'
 import { get } from 'spectacles-ts'
+import { detect } from 'tinyld'
 import { P, match } from 'ts-pattern'
 import {
   DepositMetadata,
@@ -131,9 +132,17 @@ function workToPreprint(work: Work): E.Either<unknown, Preprint> {
       ),
     ),
     E.apSW('title', pipe(work.title, E.fromOptionK(() => 'no title')(RA.head), E.map(sanitizeHtml))),
+    E.bindW(
+      'language',
+      E.fromOptionK(() => 'unknown language')(preprint =>
+        match(preprint)
+          .with({ id: { type: P.union('biorxiv', 'medrxiv') } }, () => O.some('en' as const))
+          .with({ id: { type: 'scielo' }, abstract: P.select() }, detectLanguage('en', 'es', 'pt'))
+          .exhaustive(),
+      ),
+    ),
     E.map(preprint => ({
       ...preprint,
-      language: 'en',
       url: toHttps(work.resource.primary.URL),
     })),
   )
@@ -206,11 +215,17 @@ function toHttps(url: URL): URL {
 const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590'))), 'DOI')
 
 const PreprintIdD: D.Decoder<Work, PreprintId> = pipe(
-  D.struct({
-    DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI'),
-    publisher: D.literal('Cold Spring Harbor Laboratory'),
-    institution: D.tuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })),
-  }),
+  D.union(
+    D.struct({
+      DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI'),
+      publisher: D.literal('Cold Spring Harbor Laboratory'),
+      institution: D.tuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })),
+    }),
+    D.struct({
+      DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1590'))), 'DOI'),
+      publisher: D.literal('FapUNIFESP (SciELO)'),
+    }),
+  ),
   D.map(work =>
     match(work)
       .with(
@@ -221,6 +236,7 @@ const PreprintIdD: D.Decoder<Work, PreprintId> = pipe(
         { DOI: P.select(), publisher: 'Cold Spring Harbor Laboratory', institution: [{ name: 'medRxiv' }] },
         doi => ({ type: 'medrxiv' as const, doi }),
       )
+      .with({ DOI: P.select(), publisher: 'FapUNIFESP (SciELO)' }, doi => ({ type: 'scielo' as const, doi }))
       .exhaustive(),
   ),
 )
@@ -259,3 +275,10 @@ const getReviewedDoi = flow(
   ),
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
+
+function detectLanguage<L extends LanguageCode>(...languages: ReadonlyArray<L>): (html: Html) => O.Option<L> {
+  return flow(
+    html => detect(plainText`${html}`.toString(), { only: [...languages] }) as L,
+    O.fromPredicate(detected => languages.includes(detected)),
+  )
+}
