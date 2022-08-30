@@ -130,7 +130,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
               </div>
               <div>
                 <dt>DOI</dt>
-                <dd class="doi">${preprint.id.doi}</dd>
+                <dd class="doi" translate="no">${preprint.id.doi}</dd>
               </div>
             </dl>
           </header>

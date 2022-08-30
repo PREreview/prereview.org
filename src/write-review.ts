@@ -507,7 +507,7 @@ function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
 
           <p>
             Your DOI <br />
-            <strong class="doi">${doi}</strong>
+            <strong class="doi" translate="no">${doi}</strong>
           </p>
         </div>
 

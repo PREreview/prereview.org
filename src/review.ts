@@ -104,7 +104,7 @@ function createPage(review: Prereview) {
             </div>
             <div>
               <dt>DOI</dt>
-              <dd class="doi">${review.doi}</dd>
+              <dd class="doi" translate="no">${review.doi}</dd>
             </div>
           </dl>
         </header>
