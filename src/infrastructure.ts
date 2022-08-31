@@ -94,6 +94,10 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
 function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> {
   return pipe(
     E.Do,
+    E.filterOrElse(
+      () => work.type === 'posted-content' && work.subtype === 'preprint',
+      () => 'not a preprint',
+    ),
     E.apS('abstract', pipe(work.abstract, E.fromNullable('no abstract'), E.map(transformJatsToHtml))),
     E.apS(
       'authors',
