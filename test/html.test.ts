@@ -296,3 +296,12 @@ describe('html', () => {
     expect(actual.toString()).toBe(expected)
   })
 })
+
+test('plainText', () => {
+  const actual = _.plainText`a b${_.html`<a>c</a>`}${[_.html`<b>d </b>`, _.html`<i> e</i>`]}${'<p>f</p>'}${[
+    _.plainText`g `,
+    _.plainText` h`,
+  ]}${1}i j`
+
+  expect(actual.toString()).toBe('a bcd  e&lt;p&gt;f&lt;/p&gt;g  h1i j')
+})
