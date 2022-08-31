@@ -1,3 +1,4 @@
+import { Refinement } from 'fp-ts/Refinement'
 import { pipe } from 'fp-ts/function'
 import { HeadersOpen, MediaType, ResponseEnded } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
@@ -45,8 +46,17 @@ export function sanitizeHtml(html: string): Html {
 export function plainText(
   literals: TemplateStringsArray,
   ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>
+): PlainText
+export function plainText(string: Html | string): PlainText
+export function plainText(
+  input: TemplateStringsArray | Html | string,
+  ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>
 ): PlainText {
-  return stripTags(html(literals, ...placeholders).toString()) as unknown as PlainText
+  const isTemplateStringsArray = Array.isArray as unknown as Refinement<unknown, TemplateStringsArray>
+
+  return stripTags(
+    (isTemplateStringsArray(input) ? html(input, ...placeholders) : input).toString(),
+  ) as unknown as PlainText
 }
 
 export function sendHtml(html: Html): M.Middleware<HeadersOpen, ResponseEnded, never, void> {

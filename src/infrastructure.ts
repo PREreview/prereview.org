@@ -278,7 +278,7 @@ const getReviewedDoi = flow(
 
 function detectLanguage<L extends LanguageCode>(...languages: ReadonlyArray<L>): (html: Html) => O.Option<L> {
   return flow(
-    html => detect(plainText`${html}`.toString(), { only: [...languages] }) as L,
+    html => detect(plainText(html).toString(), { only: [...languages] }) as L,
     O.fromPredicate(detected => languages.includes(detected)),
   )
 }

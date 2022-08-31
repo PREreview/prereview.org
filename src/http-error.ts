@@ -17,7 +17,7 @@ export function handleError<N extends H.Status>(error: HttpError<N>) {
 
 function errorPage(message: string) {
   return page({
-    title: plainText`${message}`,
+    title: plainText(message),
     content: html`
       <main>
         <h1>${message}</h1>

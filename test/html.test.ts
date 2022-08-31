@@ -297,11 +297,35 @@ describe('html', () => {
   })
 })
 
-test('plainText', () => {
-  const actual = _.plainText`a b${_.html`<a>c</a>`}${[_.html`<b>d </b>`, _.html`<i> e</i>`]}${'<p>f</p>'}${[
-    _.plainText`g `,
-    _.plainText` h`,
-  ]}${1}i j`
+describe('plainText', () => {
+  test.each([
+    ['tag', 'a b<a>c</a>d e', 'a bcd e'],
+    ['tag with attributes', '<a href="http://example.com/" lang="en" dir="ltr" id="a" foo>a</a>', 'a'],
+    ['mismatched tags', '<b><i>bold italic</b> plain</i>', 'bold italic plain'],
+    ['comment', 'a<!-- comment -->b', 'ab'],
+  ])('with a string (%s)', (_name, input, expected) => {
+    const actual = _.plainText(input)
 
-  expect(actual.toString()).toBe('a bcd  e&lt;p&gt;f&lt;/p&gt;g  h1i j')
+    expect(actual.toString()).toBe(expected)
+  })
+
+  test.each([
+    ['tag', _.html`a b<a>c</a>d e`, 'a bcd e'],
+    ['tag with attributes', _.html`<a href="http://example.com/" lang="en" dir="ltr" id="a" foo>a</a>`, 'a'],
+    ['mismatched tags', _.html`<b><i>bold italic</b> plain</i`, 'bold italic plain'],
+    ['comment', _.html`a<!-- comment -->b`, 'ab'],
+  ])('with HTML (%s)', (_name, input, expected) => {
+    const actual = _.plainText(input)
+
+    expect(actual.toString()).toBe(expected)
+  })
+
+  test('with a template literal', () => {
+    const actual = _.plainText`a b${_.html`<a>c</a>`}${[_.html`<b>d </b>`, _.html`<i> e</i>`]}${'<p>f</p>'}${[
+      _.plainText`g `,
+      _.plainText` h`,
+    ]}${1}i j`
+
+    expect(actual.toString()).toBe('a bcd  e&lt;p&gt;f&lt;/p&gt;g  h1i j')
+  })
 })
