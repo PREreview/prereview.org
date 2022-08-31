@@ -20,7 +20,7 @@ describe('lookup-doi', () => {
                   type: 'setHeader',
                   name: 'Location',
                   value: `/preprints/doi-${encodeURIComponent(
-                    doi.toLowerCase().replace(/-/g, '+').replace(/\//g, '-'),
+                    doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
                   )}`,
                 },
                 { type: 'endResponse' },

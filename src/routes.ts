@@ -28,14 +28,14 @@ const PreprintDoiC = C.make(
       const [, match] = s.match(/^doi-(.+)$/) ?? []
 
       if (match && match.toLowerCase() === match) {
-        return DoiD.decode(match.replace(/-/g, '/').replace(/\+/g, '-'))
+        return DoiD.decode(match.replaceAll('-', '/').replaceAll('+', '-'))
       }
 
       return D.failure(s, 'DOI')
     }),
   ),
   {
-    encode: doi => `doi-${doi.toLowerCase().replace(/-/g, '+').replace(/\//g, '-')}`,
+    encode: doi => `doi-${doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
   },
 )
 
