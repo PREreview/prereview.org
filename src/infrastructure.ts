@@ -43,7 +43,7 @@ interface GetPreprintTitleEnv {
   getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
 }
 
-export const getPreprint = flow(getWork, RTE.chainEitherK(workToPreprint))
+export const getPreprint = flow(getWork, RTE.chainEitherKW(workToPreprint))
 
 export const getPreprintTitle = flow(
   getPreprint,
@@ -91,18 +91,11 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
   }
 }
 
-function workToPreprint(work: Work): E.Either<unknown, Preprint> {
+function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> {
   return pipe(
     E.Do,
+    E.apS('abstract', pipe(work.abstract, E.fromNullable('no abstract'), E.map(transformJatsToHtml))),
     E.apS(
-      'abstract',
-      pipe(
-        work.abstract,
-        E.fromNullable(() => 'no abstract'),
-        E.map(transformJatsToHtml),
-      ),
-    ),
-    E.apSW(
       'authors',
       pipe(
         work.author,
