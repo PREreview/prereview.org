@@ -12,7 +12,7 @@
     "crossref-ts": "^0.1.3",
     "doi-ts": "^0.1.3",
     "express": "^4.18.1",
-    "fetch-fp-ts": "^0.1.3",
+    "fetch-fp-ts": "^0.1.4",
     "fp-ts": "^2.12.3",
     "fp-ts-contrib": "^0.1.29",
     "fp-ts-routing": "^0.5.4",
