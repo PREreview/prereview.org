@@ -32,7 +32,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   fetch: async ({}, use) => {
     const fetch = fetchMock.sandbox()
 
-    fetch.get('https://api.crossref.org/works/10.1101/2022.01.13.476201', {
+    fetch.get('https://api.crossref.org/works/10.1101%2F2022.01.13.476201', {
       body: {
         status: 'ok',
         'message-type': 'work',

@@ -9,7 +9,7 @@ test('might not find anything', async ({ fetch, page }) => {
   await page.goto('/')
   await page.fill('text="Preprint DOI"', '10.1101/this-should-not-find-anything')
 
-  fetch.get('https://api.crossref.org/works/10.1101/this-should-not-find-anything', { status: Status.NotFound })
+  fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
 
   await page.click('text="Find PREreviews"')
 

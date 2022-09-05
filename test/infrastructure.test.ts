@@ -31,7 +31,7 @@ describe('infrastructure', () => {
             fc.plainDate(),
             fc.constantFrom('bioRxiv', 'medRxiv'),
             async (doi, title, posted, server) => {
-              const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${doi}`, {
+              const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
                 body: {
                   status: 'ok',
                   'message-type': 'work',
@@ -484,7 +484,7 @@ describe('infrastructure', () => {
       test('from SciELO', async () => {
         await fc.assert(
           fc.asyncProperty(fc.doi(), fc.sanitisedHtml(), fc.plainDate(), async (doi, title, posted) => {
-            const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${doi}`, {
+            const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
               body: {
                 status: 'ok',
                 'message-type': 'work',
@@ -593,7 +593,7 @@ describe('infrastructure', () => {
         fc.asyncProperty(fc.doi(), async doi => {
           const fetch = fetchMock
             .sandbox()
-            .getOnce(`https://api.crossref.org/works/${doi}`, { status: Status.NotFound })
+            .getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, { status: Status.NotFound })
 
           const actual = await _.getPreprint(doi)({ fetch })()
 
@@ -605,7 +605,9 @@ describe('infrastructure', () => {
     test('when the preprint cannot be loaded', async () => {
       await fc.assert(
         fc.asyncProperty(fc.doi(), fc.record({ status: fc.integer(), body: fc.string() }), async (doi, response) => {
-          const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${doi}`, response)
+          const fetch = fetchMock
+            .sandbox()
+            .getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, response)
 
           const actual = await _.getPreprint(doi)({ fetch })()
 
