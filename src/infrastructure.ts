@@ -47,6 +47,7 @@ export const getPreprint = flow(getWork, RTE.chainEitherKW(workToPreprint))
 
 export const getPreprintTitle = flow(
   getPreprint,
+  RTE.local(useStaleCache),
   RTE.map(preprint => ({ language: preprint.language, title: preprint.title })),
 )
 
@@ -278,4 +279,8 @@ function detectLanguage<L extends LanguageCode>(...languages: ReadonlyArray<L>):
     html => detect(plainText(html).toString(), { only: [...languages] }) as L,
     O.fromPredicate(detected => languages.includes(detected)),
   )
+}
+
+function useStaleCache({ fetch }: F.FetchEnv): F.FetchEnv {
+  return { fetch: (url, init) => fetch(url, { cache: 'force-cache', ...init }) }
 }
