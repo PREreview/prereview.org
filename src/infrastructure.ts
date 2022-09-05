@@ -44,7 +44,12 @@ interface GetPreprintTitleEnv {
   getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
 }
 
-export const getPreprint = flow(getWork, RTE.chainEitherKW(workToPreprint))
+export const getPreprint = flow(
+  getWork,
+  RTE.local(revalidateIfStale),
+  RTE.local(useStaleCache),
+  RTE.chainEitherKW(workToPreprint),
+)
 
 export const getPreprintTitle = flow(
   getPreprint,
