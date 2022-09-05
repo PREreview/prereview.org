@@ -158,11 +158,13 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
         postedDate: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
         preprint: RTE.asksReaderTaskEither(
           flow(
-            RTE.fromTaskEitherK(({ getPreprintTitle }) => getPreprintTitle(review.preprintDoi)),
-            RTE.apSW('doi', RTE.right(review.preprintDoi)),
+            RTE.fromTaskEitherK(({ getPreprintTitle }: F.FetchEnv & GetPreprintTitleEnv) =>
+              getPreprintTitle(review.preprintDoi),
+            ),
+            RTE.apS('doi', RTE.right(review.preprintDoi)),
           ),
         ),
-        text: getReviewText(review),
+        text: getReviewText(review.reviewTextUrl),
       }),
     ),
   )
@@ -254,8 +256,8 @@ const getReviewUrl = flow(
 )
 
 const getReviewText = flow(
-  RTE.fromOptionK(() => ({ status: Status.NotFound }))(getReviewUrl),
-  RTE.chainW(flow(F.Request('GET'), F.send)),
+  F.Request('GET'),
+  F.send,
   RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'no text'),
   RTE.chainTaskEitherK(F.getText(identity)),
   RTE.map(sanitizeHtml),
