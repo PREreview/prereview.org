@@ -258,6 +258,7 @@ const getReviewUrl = flow(
 const getReviewText = flow(
   F.Request('GET'),
   F.send,
+  RTE.local(useStaleCache),
   RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'no text'),
   RTE.chainTaskEitherK(F.getText(identity)),
   RTE.map(sanitizeHtml),

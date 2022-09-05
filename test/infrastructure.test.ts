@@ -678,7 +678,10 @@ describe('infrastructure', () => {
                   body: RecordC.encode(record),
                   status: Status.OK,
                 })
-                .getOnce('http://example.com/file', { body: 'Some text' }),
+                .getOnce(
+                  { url: 'http://example.com/file', functionMatcher: (_, req) => req.cache === 'force-cache' },
+                  { body: 'Some text' },
+                ),
               getPreprintTitle,
             })()
 
