@@ -11,7 +11,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { compose } from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
-import { flow, identity, pipe } from 'fp-ts/function'
+import { constVoid, flow, identity, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
@@ -26,6 +26,7 @@ import {
   Record,
   SubmittedDeposition,
   ZenodoAuthenticatedEnv,
+  ZenodoEnv,
   createDeposition,
   getRecord,
   publishDeposition,
@@ -53,6 +54,8 @@ export const getPreprintTitle = flow(
 
 export const getPrereview = flow(
   getRecord,
+  RTE.local(revalidateIfStale),
+  RTE.local(useStaleCache),
   RTE.filterOrElseW(isInCommunity, () => new NotFound()),
   RTE.chain(recordToPrereview),
 )
@@ -284,6 +287,25 @@ function detectLanguage<L extends LanguageCode>(...languages: ReadonlyArray<L>):
   )
 }
 
-function useStaleCache({ fetch }: F.FetchEnv): F.FetchEnv {
-  return { fetch: (url, init) => fetch(url, { cache: 'force-cache', ...init }) }
+function useStaleCache(env: ZenodoEnv): ZenodoEnv
+function useStaleCache(env: F.FetchEnv): F.FetchEnv
+function useStaleCache<E extends F.FetchEnv>(env: E): E {
+  return { ...env, fetch: (url, init) => env.fetch(url, { cache: 'force-cache', ...init }) }
+}
+
+function revalidateIfStale(env: ZenodoEnv): ZenodoEnv
+function revalidateIfStale(env: F.FetchEnv): F.FetchEnv
+function revalidateIfStale<E extends F.FetchEnv>(env: E): E {
+  return {
+    ...env,
+    fetch: async (url, init) => {
+      const response = await env.fetch(url, init)
+
+      if (response.headers.get('x-local-cache-status') === 'stale') {
+        void env.fetch(url, { ...init, cache: 'no-cache' }).catch(constVoid)
+      }
+
+      return response
+    },
+  }
 }

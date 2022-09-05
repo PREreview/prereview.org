@@ -700,6 +700,87 @@ describe('infrastructure', () => {
       )
     })
 
+    test('revalidates if the PREreview is stale', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.integer(),
+          fc.record({
+            doi: fc.preprintDoi(),
+            language: fc.languageCode(),
+            title: fc.html(),
+          }),
+          async (id, preprint) => {
+            const record: Record = {
+              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
+              id,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'PREreviewer' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1061864' as Doi,
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-05'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: preprint.doi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'article',
+                },
+                title: 'Title',
+              },
+            }
+
+            const fetch = fetchMock
+              .sandbox()
+              .getOnce((url, { cache }) => url === `https://zenodo.org/api/records/${id}` && cache === 'force-cache', {
+                body: RecordC.encode(record),
+                headers: { 'X-Local-Cache-Status': 'stale' },
+              })
+              .getOnce((url, { cache }) => url === `https://zenodo.org/api/records/${id}` && cache === 'no-cache', {
+                throws: new Error('Network error'),
+              })
+              .getOnce('http://example.com/file', { body: 'Some text' })
+
+            const actual = await _.getPrereview(id)({ fetch, getPreprintTitle: () => TE.right(preprint) })()
+
+            expect(actual).toStrictEqual(
+              E.right({
+                authors: [{ name: 'PREreviewer' }],
+                doi: '10.5281/zenodo.1061864' as Doi,
+                postedDate: PlainDate.from('2022-07-05'),
+                preprint,
+                text: rawHtml('Some text'),
+              }),
+            )
+            expect(fetch.done()).toBeTruthy()
+          },
+        ),
+      )
+    })
+
     test('when the review is not found', async () => {
       await fc.assert(
         fc.asyncProperty(
