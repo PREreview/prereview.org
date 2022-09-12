@@ -1,3 +1,4 @@
+import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import * as _ from '../src/user'
@@ -20,7 +21,7 @@ describe('user', () => {
         fc.property(fc.string(), string => {
           const actual = _.UserC.decode(string)
 
-          expect(actual).toStrictEqual(D.failure(expect.anything(), expect.anything()))
+          expect(actual).toStrictEqual(E.left(expect.anything()))
         }),
       )
     })

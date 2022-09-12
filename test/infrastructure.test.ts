@@ -1282,7 +1282,7 @@ describe('infrastructure', () => {
                 publish: new URL('http://example.com/publish'),
               },
               metadata: {
-                creators: [newPrereview.user],
+                creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
                 description: 'Description',
                 prereserve_doi: {
                   doi: '10.5072/zenodo.1055806' as Doi,
@@ -1297,7 +1297,7 @@ describe('infrastructure', () => {
             const submittedDeposition: SubmittedDeposition = {
               id: 1,
               metadata: {
-                creators: [newPrereview.user],
+                creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
                 description: 'Description',
                 doi: '10.5072/zenodo.1055806' as Doi,
                 title: 'Title',

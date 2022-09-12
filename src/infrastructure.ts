@@ -86,7 +86,11 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
     upload_type: 'publication',
     publication_type: 'article',
     title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-    creators: [newPrereview.persona === 'public' ? newPrereview.user : { name: 'PREreviewer' }],
+    creators: [
+      newPrereview.persona === 'public'
+        ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
+        : { name: 'PREreviewer' },
+    ],
     description: newPrereview.review.toString(),
     communities: [{ identifier: 'prereview-reviews' }],
     related_identifiers: [

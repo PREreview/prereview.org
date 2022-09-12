@@ -134,10 +134,14 @@ export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ mi
 export const languageCode = (): fc.Arbitrary<LanguageCode> => fc.constantFrom(...ISO6391.getAllCodes())
 
 export const user = (): fc.Arbitrary<User> =>
-  fc.record({
-    name: fc.string(),
-    orcid: orcid(),
-  })
+  fc.record(
+    {
+      name: fc.string(),
+      orcid: orcid(),
+      pseudonym: fc.string(),
+    },
+    { requiredKeys: ['name', 'orcid'] },
+  )
 
 export const preprint = (): fc.Arbitrary<Preprint> =>
   fc.record({
