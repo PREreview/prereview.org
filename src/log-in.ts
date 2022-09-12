@@ -51,16 +51,7 @@ export const authenticate = flow(
   (code: string, state: string) => RM.of({ code, state }),
   RM.bind('referer', RM.fromReaderTaskK(flow(get('state'), RT.fromReaderK(getReferer)))),
   RM.bindW('user', RM.fromReaderTaskEitherK(flow(get('code'), exchangeAuthorizationCode(OrcidUserD)))),
-  RM.bindW(
-    'pseudonym',
-    RM.fromReaderTaskEitherK(
-      flow(
-        get('user.orcid'),
-        getPseudonym,
-        RTE.altW(() => RTE.right(undefined)),
-      ),
-    ),
-  ),
+  RM.bindW('pseudonym', RM.fromReaderTaskEitherK(flow(get('user.orcid'), getPseudonym))),
   RM.ichainFirstW(flow(get('referer'), RM.redirect)),
   RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), UserC.encode, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),

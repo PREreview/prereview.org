@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
-import { Status } from 'hyper-ts'
+import { MediaType, Status } from 'hyper-ts'
 import all from 'it-all'
 import Keyv from 'keyv'
 import * as _ from '../src/log-in'
@@ -201,18 +201,13 @@ describe('log-in', () => {
             )()
             const sessions = await all(sessionStore.iterator(undefined))
 
-            expect(sessions).toStrictEqual([[expect.anything(), { name: accessToken.name, orcid: accessToken.orcid }]])
+            expect(sessions).toStrictEqual([])
             expect(actual).toStrictEqual(
               E.right([
-                { type: 'setStatus', status: Status.Found },
-                { type: 'setHeader', name: 'Location', value: referer.href },
-                {
-                  type: 'setCookie',
-                  name: 'session',
-                  options: expect.anything(),
-                  value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
-                },
-                { type: 'endResponse' },
+                { type: 'setStatus', status: Status.ServiceUnavailable },
+                { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: expect.anything() },
               ]),
             )
           },
