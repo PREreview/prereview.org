@@ -898,10 +898,36 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
       <main>
         <form method="post" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
-            <fieldset role="group" ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}>
+            <fieldset
+              role="group"
+              aria-describedby="persona-tip"
+              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}
+            >
               <legend>
                 <h1>What name would you like to use?</h1>
               </legend>
+
+              <div id="persona-tip" role="note">
+                You can choose between the name on your ORCID&nbsp;profile or your PREreview&nbsp;pseudonym.
+              </div>
+
+              <details>
+                <summary>What is a PREreview&nbsp;pseudonym?</summary>
+
+                <div>
+                  <p>
+                    A <dfn>PREreview&nbsp;pseudonym</dfn> is an alternate name you can use instead of your
+                    real&nbsp;name. It is unique and combines a random color and animal. Your pseudonym is
+                    ‘${rawHtml(user.pseudonym.replace(' ', '&nbsp;'))}.’
+                  </p>
+
+                  <p>
+                    Using your pseudonym, you can contribute to open preprint review without fearing retribution or
+                    judgment that may occur when using your real name. However, using a pseudonym retains an element of
+                    accountability.
+                  </p>
+                </div>
+              </details>
 
               ${error
                 ? html`
@@ -936,7 +962,9 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
                     />
                     <span>${user.pseudonym}</span>
                   </label>
-                  <div id="persona-tip-pseudonym" role="note">Your PREreview will be pseudonymous.</div>
+                  <div id="persona-tip-pseudonym" role="note">
+                    We’ll only link your PREreview to others that also use your pseudonym.
+                  </div>
                 </li>
               </ol>
             </fieldset>
