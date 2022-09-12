@@ -7,14 +7,15 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
-import { ServiceUnavailable } from 'http-errors'
+import { Status } from 'hyper-ts'
 import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { Orcid, isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
-import { handleError } from './http-error'
+import { html, plainText, sendHtml } from './html'
+import { page } from './page'
 import { homeMatch } from './routes'
 import { UserC } from './user'
 
@@ -56,7 +57,7 @@ export const authenticate = flow(
   RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), UserC.encode, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichainFirst(() => RM.end()),
-  RM.orElseW(() => handleError(new ServiceUnavailable())),
+  RM.orElseW(() => showFailureMessage),
 )
 
 function getReferer(state: string) {
@@ -77,4 +78,26 @@ function ifHasSameOrigin(url: URL) {
       RE.fromPredicate(url => url.origin === publicUrl.origin, constant('different-origin')),
     ),
   )
+}
+
+const showFailureMessage = pipe(
+  RM.rightReader(failureMessage()),
+  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
+  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+function failureMessage() {
+  return page({
+    title: plainText`Sorry, we’re having problems`,
+    content: html`
+      <main>
+        <h1>Sorry, we’re having problems</h1>
+
+        <p>We’re unable to log you in right now.</p>
+
+        <p>Please try again later.</p>
+      </main>
+    `,
+  })
 }
