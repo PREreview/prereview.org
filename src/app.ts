@@ -2,6 +2,7 @@ import express from 'express'
 import * as R from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
 import { local } from 'fp-ts/Reader'
+import * as TE from 'fp-ts/TaskEither'
 import { constant, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -74,6 +75,12 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       orcidCodeMatch.parser,
       R.map(({ code, state }) => authenticate(code, state)),
+      R.map(
+        local((env: AppEnv) => ({
+          ...env,
+          getPseudonym: () => TE.left('unknown'),
+        })),
+      ),
     ),
     pipe(
       preprintMatch.parser,

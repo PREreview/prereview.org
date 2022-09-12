@@ -1,5 +1,6 @@
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import all from 'it-all'
 import Keyv from 'keyv'
@@ -112,8 +113,9 @@ describe('log-in', () => {
             orcid: fc.orcid(),
           }),
           fc.string(),
+          fc.string(),
           fc.connection(),
-          async (code, [referer], oauth, accessToken, secret, connection) => {
+          async (code, [referer], oauth, accessToken, pseudonym, secret, connection) => {
             const sessionStore = new Keyv()
 
             const actual = await runMiddleware(
@@ -125,6 +127,71 @@ describe('log-in', () => {
                   status: Status.OK,
                   body: accessToken,
                 }),
+                getPseudonym: () => TE.right(pseudonym),
+                oauth,
+                publicUrl: new URL('/', referer),
+                secret,
+                sessionStore,
+              }),
+              connection,
+            )()
+            const sessions = await all(sessionStore.iterator(undefined))
+
+            expect(sessions).toStrictEqual([
+              [expect.anything(), { name: accessToken.name, orcid: accessToken.orcid, pseudonym }],
+            ])
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.Found },
+                { type: 'setHeader', name: 'Location', value: referer.href },
+                {
+                  type: 'setCookie',
+                  name: 'session',
+                  options: expect.anything(),
+                  value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
+                },
+                { type: 'endResponse' },
+              ]),
+            )
+          },
+        ),
+      )
+    })
+
+    test('when a pseudonym cannot be found', async () => {
+      await fc.assert(
+        fc.asyncProperty(
+          fc.string(),
+          fc.url().chain(url => fc.tuple(fc.constant(url))),
+          fc.record({
+            authorizeUrl: fc.url(),
+            clientId: fc.string(),
+            clientSecret: fc.string(),
+            redirectUri: fc.url(),
+            tokenUrl: fc.url(),
+          }),
+          fc.record({
+            access_token: fc.string(),
+            token_type: fc.string(),
+            name: fc.string(),
+            orcid: fc.orcid(),
+          }),
+          fc.anything(),
+          fc.string(),
+          fc.connection(),
+          async (code, [referer], oauth, accessToken, error, secret, connection) => {
+            const sessionStore = new Keyv()
+
+            const actual = await runMiddleware(
+              _.authenticate(
+                code,
+                referer.href,
+              )({
+                fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+                  status: Status.OK,
+                  body: accessToken,
+                }),
+                getPseudonym: () => TE.left(error),
                 oauth,
                 publicUrl: new URL('/', referer),
                 secret,
@@ -173,8 +240,9 @@ describe('log-in', () => {
             orcid: fc.orcid(),
           }),
           fc.string(),
+          fc.string(),
           fc.connection(),
-          async (code, publicUrl, state, oauth, accessToken, secret, connection) => {
+          async (code, publicUrl, state, oauth, accessToken, pseudonym, secret, connection) => {
             const sessionStore = new Keyv()
 
             const actual = await runMiddleware(
@@ -186,6 +254,7 @@ describe('log-in', () => {
                   status: Status.OK,
                   body: accessToken,
                 }),
+                getPseudonym: () => TE.right(pseudonym),
                 oauth,
                 publicUrl,
                 secret,
@@ -195,7 +264,9 @@ describe('log-in', () => {
             )()
             const sessions = await all(sessionStore.iterator(undefined))
 
-            expect(sessions).toStrictEqual([[expect.anything(), { name: accessToken.name, orcid: accessToken.orcid }]])
+            expect(sessions).toStrictEqual([
+              [expect.anything(), { name: accessToken.name, orcid: accessToken.orcid, pseudonym }],
+            ])
             expect(actual).toStrictEqual(
               E.right([
                 { type: 'setStatus', status: Status.Found },
