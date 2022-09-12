@@ -46,7 +46,7 @@ const ReviewFormC = C.struct({
 })
 
 const PersonaFormC = C.struct({
-  persona: C.literal('public', 'anonymous'),
+  persona: C.literal('public', 'pseudonym'),
 })
 
 const AuthorsFormC = C.struct({
@@ -73,7 +73,7 @@ const CodeOfConductFormC = C.struct({
 
 const FormC = C.partial({
   review: NonEmptyStringC,
-  persona: C.literal('public', 'anonymous'),
+  persona: C.literal('public', 'pseudonym'),
   moreAuthors: C.literal('yes', 'no'),
   competingInterests: C.literal('yes', 'no'),
   competingInterestsDetails: NonEmptyStringC,
@@ -93,7 +93,7 @@ type CompletedForm = C.TypeOf<typeof CompletedFormC>
 
 export type NewPrereview = {
   conduct: 'yes'
-  persona: 'public' | 'anonymous'
+  persona: 'public' | 'pseudonym'
   preprint: Preprint
   review: Html
   user: User
@@ -568,7 +568,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
           </h2>
 
           <ol aria-label="Authors of this PREreview" class="author-list">
-            <li>${displayAuthor(review.persona === 'public' ? user : { name: 'PREreviewer' })}</li>
+            <li>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</li>
           </ol>
 
           ${renderReview(review)}
@@ -930,13 +930,13 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
                     <input
                       name="persona"
                       type="radio"
-                      value="anonymous"
+                      value="pseudonym"
                       aria-describedby="persona-tip-pseudonym"
-                      ${rawHtml(form.persona === 'anonymous' ? 'checked' : '')}
+                      ${rawHtml(form.persona === 'pseudonym' ? 'checked' : '')}
                     />
-                    <span>PREreviewer</span>
+                    <span>${user.pseudonym}</span>
                   </label>
-                  <div id="persona-tip-pseudonym" role="note">Your PREreview will be anonymous.</div>
+                  <div id="persona-tip-pseudonym" role="note">Your PREreview will be pseudonymous.</div>
                 </li>
               </ol>
             </fieldset>

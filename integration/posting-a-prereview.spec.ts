@@ -214,7 +214,7 @@ test('can post a PREreview with more authors', async ({ fetch, javaScriptEnabled
     },
     metadata: {
       communities: [{ id: 'prereview-reviews' }],
-      creators: [{ name: 'PREreviewer' }],
+      creators: [{ name: 'Orange Panda' }],
       description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
       doi: '10.5072/zenodo.1055808' as Doi,
       license: {
@@ -366,7 +366,7 @@ test('can post a PREreview with competing interests', async ({ fetch, javaScript
     },
     metadata: {
       communities: [{ id: 'prereview-reviews' }],
-      creators: [{ name: 'PREreviewer' }],
+      creators: [{ name: 'Orange Panda' }],
       description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
       doi: '10.5072/zenodo.1055808' as Doi,
       license: {
@@ -497,7 +497,7 @@ test('can post a PREreview with competing interests', async ({ fetch, javaScript
   await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
 })
 
-test('can post a PREreview anonymously', async ({ fetch, javaScriptEnabled, page }) => {
+test('can post a PREreview using a pseudonym', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055807' as Doi,
     conceptrecid: 1055807,
@@ -518,7 +518,7 @@ test('can post a PREreview anonymously', async ({ fetch, javaScriptEnabled, page
     },
     metadata: {
       communities: [{ id: 'prereview-reviews' }],
-      creators: [{ name: 'PREreviewer' }],
+      creators: [{ name: 'Orange Panda' }],
       description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
       doi: '10.5072/zenodo.1055808' as Doi,
       license: {
@@ -579,7 +579,7 @@ test('can post a PREreview anonymously', async ({ fetch, javaScriptEnabled, page
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
   await page.click('text="Continue"')
-  await page.check('text="PREreviewer"')
+  await page.check('text="Orange Panda"')
   await page.click('text="Continue"')
   await page.check('text="No, by myself"')
   await page.click('text="Continue"')
@@ -590,7 +590,7 @@ test('can post a PREreview anonymously', async ({ fetch, javaScriptEnabled, page
 
   const preview = page.locator('role=blockquote[name="Check your PREreview"]')
 
-  await expect(preview).toContainText('PREreviewer')
+  await expect(preview).toContainText('Orange Panda')
   await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
   fetch
@@ -737,10 +737,10 @@ test('can change the name after previewing', async ({ fetch, javaScriptEnabled, 
 
   await page.click('text="Change name"')
 
-  await page.check('text="PREreviewer"')
+  await page.check('text="Orange Panda"')
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText('PREreviewer')
+  await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText('Orange Panda')
 })
 
 test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) => {

@@ -89,7 +89,7 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
     creators: [
       newPrereview.persona === 'public'
         ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
-        : { name: 'PREreviewer' },
+        : { name: newPrereview.user.pseudonym },
     ],
     description: newPrereview.review.toString(),
     communities: [{ identifier: 'prereview-reviews' }],

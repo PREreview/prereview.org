@@ -1360,12 +1360,12 @@ describe('infrastructure', () => {
       )
     })
 
-    test('as an anonymous persona', async () => {
+    test('as an pseudonym persona', async () => {
       await fc.assert(
         fc.asyncProperty(
           fc.record<NewPrereview>({
             conduct: fc.constant('yes'),
-            persona: fc.constant('anonymous'),
+            persona: fc.constant('pseudonym'),
             preprint: fc.record({
               doi: fc.preprintDoi(),
               language: fc.languageCode(),
@@ -1419,7 +1419,7 @@ describe('infrastructure', () => {
                         upload_type: 'publication',
                         publication_type: 'article',
                         title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                        creators: [{ name: 'PREreviewer' }],
+                        creators: [{ name: newPrereview.user.pseudonym }],
                         communities: [{ identifier: 'prereview-reviews' }],
                         description: newPrereview.review.toString(),
                         related_identifiers: [
@@ -1466,7 +1466,7 @@ describe('infrastructure', () => {
         fc.asyncProperty(
           fc.record<NewPrereview>({
             conduct: fc.constant('yes'),
-            persona: fc.constantFrom('public', 'anonymous'),
+            persona: fc.constantFrom('public', 'pseudonym'),
             preprint: fc.record({
               doi: fc.preprintDoi(),
               language: fc.languageCode(),
