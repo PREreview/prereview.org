@@ -2,7 +2,6 @@ import express from 'express'
 import * as R from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
 import { local } from 'fp-ts/Reader'
-import * as TE from 'fp-ts/TaskEither'
 import { constant, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -17,6 +16,7 @@ import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { home } from './home'
 import { handleError } from './http-error'
 import { createRecordOnZenodo, getPreprint, getPreprintTitle, getPrereview } from './infrastructure'
+import { LegacyPrereviewApiEnv, getPseudonymFromLegacyPrereview } from './legacy-prereview'
 import { PublicUrlEnv, authenticate, logIn } from './log-in'
 import { lookupDoi } from './lookup-doi'
 import { PhaseEnv } from './page'
@@ -51,6 +51,7 @@ import {
 } from './write-review'
 
 export type AppEnv = FormStoreEnv &
+  LegacyPrereviewApiEnv &
   L.LoggerEnv &
   OAuthEnv &
   PhaseEnv &
@@ -78,7 +79,7 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       R.map(
         local((env: AppEnv) => ({
           ...env,
-          getPseudonym: () => TE.left('unknown'),
+          getPseudonym: flipC(getPseudonymFromLegacyPrereview)(env),
         })),
       ),
     ),

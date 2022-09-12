@@ -32,6 +32,25 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   fetch: async ({}, use) => {
     const fetch = fetchMock.sandbox()
 
+    fetch.get(
+      {
+        url: 'https://prereview.org/api/v2/users/0000-0002-1825-0097',
+        headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
+      },
+      {
+        body: {
+          data: {
+            personas: [
+              {
+                isAnonymous: true,
+                name: 'Orange Panda',
+              },
+            ],
+          },
+        },
+      },
+    )
+
     fetch.get('https://api.crossref.org/works/10.1101%2F2022.01.13.476201', {
       body: {
         status: 'ok',
@@ -463,6 +482,10 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),
+      legacyPrereviewApi: {
+        app: 'app',
+        key: 'key',
+      },
       logger,
       oauth: {
         authorizeUrl: new URL('https://oauth.mocklab.io/oauth/authorize'),

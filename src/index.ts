@@ -28,6 +28,8 @@ const EnvD = pipe(
   D.struct({
     CACHE_PATH: D.string,
     DB_PATH: D.string,
+    LEGACY_PREREVIEW_API_APP: D.string,
+    LEGACY_PREREVIEW_API_KEY: D.string,
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
     PUBLIC_URL: UrlD,
@@ -59,6 +61,10 @@ const deps: AppEnv = {
     },
   }),
   formStore: new Keyv(`sqlite://${env.DB_PATH}`, { namespace: 'forms' }),
+  legacyPrereviewApi: {
+    app: env.LEGACY_PREREVIEW_API_APP,
+    key: env.LEGACY_PREREVIEW_API_KEY,
+  },
   logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
   oauth: {
     authorizeUrl: new URL('https://orcid.org/oauth/authorize'),
