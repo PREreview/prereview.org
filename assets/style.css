@@ -255,6 +255,12 @@ h6 {
       margin-block-start: var(--space-s);
     }
   }
+
+  @nest details + & {
+    & > :first-child {
+      margin-block-start: var(--space-m-l);
+    }
+  }
 }
 
 dl {
