@@ -14,6 +14,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { Orcid, isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
+import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
 import { homeMatch } from './routes'
@@ -24,7 +25,7 @@ export interface PublicUrlEnv {
 }
 
 export interface GetPseudonymEnv {
-  getPseudonym: (orcid: Orcid) => TE.TaskEither<unknown, string>
+  getPseudonym: (orcid: Orcid) => TE.TaskEither<'no-pseudonym' | unknown, string>
 }
 
 export const logIn = pipe(
@@ -57,7 +58,11 @@ export const authenticate = flow(
   RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), UserC.encode, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichainFirst(() => RM.end()),
-  RM.orElseW(() => showFailureMessage),
+  RM.orElseW(error =>
+    match(error)
+      .with('no-pseudonym', () => showNoPseudonymMessage)
+      .otherwise(() => showFailureMessage),
+  ),
 )
 
 function getReferer(state: string) {
@@ -78,6 +83,29 @@ function ifHasSameOrigin(url: URL) {
       RE.fromPredicate(url => url.origin === publicUrl.origin, constant('different-origin')),
     ),
   )
+}
+
+const showNoPseudonymMessage = pipe(
+  RM.rightReader(noPseudonymMessage()),
+  RM.ichainFirst(() => RM.status(Status.Forbidden)),
+  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+function noPseudonymMessage() {
+  return page({
+    title: plainText`Sorry, you can‘t post a PREreview yet`,
+    content: html`
+      <main>
+        <h1>Sorry, you can’t post a PREreview&nbsp;yet</h1>
+
+        <p>
+          To post a PREreview on the new version of PREreview, you will first need to
+          <a href="https://prereview.org/login">sign up for the current website</a>.
+        </p>
+      </main>
+    `,
+  })
 }
 
 const showFailureMessage = pipe(

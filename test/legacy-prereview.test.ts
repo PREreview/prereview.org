@@ -55,13 +55,27 @@ describe('legacy-prereview', () => {
       )
     })
 
-    test('when the response has a non-200 status code', async () => {
+    test('when the response has a 404 status code', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.orcid(), fc.string(), fc.string(), async (orcid, app, key) => {
+          const fetch = fetchMock
+            .sandbox()
+            .getOnce(`https://prereview.org/api/v2/users/${encodeURIComponent(orcid)}`, Status.NotFound)
+
+          const actual = await _.getPseudonymFromLegacyPrereview(orcid)({ fetch, legacyPrereviewApi: { app, key } })()
+
+          expect(actual).toStrictEqual(E.left('no-pseudonym'))
+        }),
+      )
+    })
+
+    test('when the response has a non-200/404 status code', async () => {
       await fc.assert(
         fc.asyncProperty(
           fc.orcid(),
           fc.string(),
           fc.string(),
-          fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK),
+          fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
           async (orcid, app, key, status) => {
             const fetch = fetchMock
               .sandbox()

@@ -8,6 +8,7 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
+import { match } from 'ts-pattern'
 
 export interface LegacyPrereviewApiEnv {
   legacyPrereviewApi: {
@@ -47,7 +48,13 @@ export const getPseudonymFromLegacyPrereview = flow(
   RTE.chainW(F.send),
   RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
   RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
-  RTE.map(get('data.personas.[0].name')),
+  RTE.bimap(
+    error =>
+      match(error)
+        .with({ status: Status.NotFound }, () => 'no-pseudonym' as const)
+        .otherwise(identity),
+    get('data.personas.[0].name'),
+  ),
 )
 
 function addLegacyPrereviewApiHeaders(request: F.Request) {
