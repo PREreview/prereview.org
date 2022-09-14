@@ -403,7 +403,7 @@ label {
   text-align: center;
   text-decoration-line: none;
   line-height: 1.5;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.025em;
   min-inline-size: 4em;
   color: var(--color-link-dark);
   border: var(--width-divider) solid var(--color-link-dark);
@@ -923,7 +923,7 @@ html-editor {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.05em;
   color: var(--color-background);
   background-color: var(--color-primary);
   padding-block: var(--space-4xs);

@@ -1,7 +1,7 @@
 import express from 'express'
-import * as R from 'fp-ts-routing'
+import * as P from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
-import { local } from 'fp-ts/Reader'
+import * as R from 'fp-ts/Reader'
 import { constant, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -59,25 +59,25 @@ export type AppEnv = FormStoreEnv &
   SessionEnv &
   ZenodoAuthenticatedEnv
 
-export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
+export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       homeMatch.parser,
-      R.map(() => home),
+      P.map(() => home),
     ),
     pipe(
       logInMatch.parser,
-      R.map(() => logIn),
+      P.map(() => logIn),
     ),
     pipe(
       lookupDoiMatch.parser,
-      R.map(() => RM.fromMiddleware(lookupDoi)),
+      P.map(() => RM.fromMiddleware(lookupDoi)),
     ),
     pipe(
       orcidCodeMatch.parser,
-      R.map(({ code, state }) => authenticate(code, state)),
-      R.map(
-        local((env: AppEnv) => ({
+      P.map(({ code, state }) => authenticate(code, state)),
+      P.map(
+        R.local((env: AppEnv) => ({
           ...env,
           getPseudonym: flipC(getPseudonymFromLegacyPrereview)(env),
         })),
@@ -85,14 +85,14 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       preprintMatch.parser,
-      R.map(({ doi }) => preprint(doi)),
-      R.map(local((env: AppEnv) => ({ ...env, getPreprint: flipC(getPreprint)(env) }))),
+      P.map(({ doi }) => preprint(doi)),
+      P.map(R.local((env: AppEnv) => ({ ...env, getPreprint: flipC(getPreprint)(env) }))),
     ),
     pipe(
       reviewMatch.parser,
-      R.map(({ id }) => review(id)),
-      R.map(
-        local((env: AppEnv) => ({
+      P.map(({ id }) => review(id)),
+      P.map(
+        R.local((env: AppEnv) => ({
           ...env,
           getPrereview: flipC(getPrereview)({ ...env, getPreprintTitle: flipC(getPreprintTitle)(env) }),
         })),
@@ -102,40 +102,40 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       [
         pipe(
           writeReviewMatch.parser,
-          R.map(({ doi }) => writeReview(doi)),
+          P.map(({ doi }) => writeReview(doi)),
         ),
         pipe(
           writeReviewReviewMatch.parser,
-          R.map(({ doi }) => writeReviewReview(doi)),
+          P.map(({ doi }) => writeReviewReview(doi)),
         ),
         pipe(
           writeReviewPersonaMatch.parser,
-          R.map(({ doi }) => writeReviewPersona(doi)),
+          P.map(({ doi }) => writeReviewPersona(doi)),
         ),
         pipe(
           writeReviewAuthorsMatch.parser,
-          R.map(({ doi }) => writeReviewAuthors(doi)),
+          P.map(({ doi }) => writeReviewAuthors(doi)),
         ),
         pipe(
           writeReviewAddAuthorsMatch.parser,
-          R.map(({ doi }) => writeReviewAddAuthors(doi)),
+          P.map(({ doi }) => writeReviewAddAuthors(doi)),
         ),
         pipe(
           writeReviewCompetingInterestsMatch.parser,
-          R.map(({ doi }) => writeReviewCompetingInterests(doi)),
+          P.map(({ doi }) => writeReviewCompetingInterests(doi)),
         ),
         pipe(
           writeReviewConductMatch.parser,
-          R.map(({ doi }) => writeReviewConduct(doi)),
+          P.map(({ doi }) => writeReviewConduct(doi)),
         ),
         pipe(
           writeReviewPostMatch.parser,
-          R.map(({ doi }) => writeReviewPost(doi)),
+          P.map(({ doi }) => writeReviewPost(doi)),
         ),
       ],
-      M.concatAll(R.getParserMonoid()),
-      R.map(
-        local((env: AppEnv) => ({
+      M.concatAll(P.getParserMonoid()),
+      P.map(
+        R.local((env: AppEnv) => ({
           ...env,
           createRecord: flipC(createRecordOnZenodo)(env),
           getPreprintTitle: flipC(getPreprintTitle)(env),
@@ -143,7 +143,7 @@ export const router: R.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       ),
     ),
   ],
-  M.concatAll(R.getParserMonoid()),
+  M.concatAll(P.getParserMonoid()),
 )
 
 const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
