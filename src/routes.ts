@@ -1,5 +1,5 @@
 import { hasRegistrant, isDoi } from 'doi-ts'
-import * as R from 'fp-ts-routing'
+import * as P from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import { compose } from 'fp-ts/Refinement'
 import { pipe, tuple } from 'fp-ts/function'
@@ -39,70 +39,70 @@ const PreprintDoiC = C.make(
   },
 )
 
-export const homeMatch = R.end
+export const homeMatch = P.end
 
-export const logInMatch = pipe(R.lit('log-in'), R.then(R.end))
+export const logInMatch = pipe(P.lit('log-in'), P.then(P.end))
 
-export const lookupDoiMatch = R.lit('lookup-doi').then(R.end)
+export const lookupDoiMatch = P.lit('lookup-doi').then(P.end)
 
 export const orcidCodeMatch = pipe(
-  R.lit('orcid'),
-  R.then(query(C.struct({ code: C.string, state: C.string }))),
-  R.then(R.end),
+  P.lit('orcid'),
+  P.then(query(C.struct({ code: C.string, state: C.string }))),
+  P.then(P.end),
 )
 
-export const preprintMatch = pipe(R.lit('preprints'), R.then(type('doi', PreprintDoiC)), R.then(R.end))
+export const preprintMatch = pipe(P.lit('preprints'), P.then(type('doi', PreprintDoiC)), P.then(P.end))
 
-export const reviewMatch = pipe(R.lit('reviews'), R.then(type('id', IntegerFromStringC)), R.then(R.end))
+export const reviewMatch = pipe(P.lit('reviews'), P.then(type('id', IntegerFromStringC)), P.then(P.end))
 
 const writeReviewBaseMatch = pipe(
-  R.lit('preprints'),
-  R.then(type('doi', PreprintDoiC)),
-  R.then(R.lit('write-a-prereview')),
+  P.lit('preprints'),
+  P.then(type('doi', PreprintDoiC)),
+  P.then(P.lit('write-a-prereview')),
 )
 
-export const writeReviewMatch = pipe(writeReviewBaseMatch, R.then(R.end))
+export const writeReviewMatch = pipe(writeReviewBaseMatch, P.then(P.end))
 
-export const writeReviewReviewMatch = pipe(writeReviewBaseMatch, R.then(R.lit('write-your-prereview')), R.then(R.end))
+export const writeReviewReviewMatch = pipe(writeReviewBaseMatch, P.then(P.lit('write-your-prereview')), P.then(P.end))
 
-export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, R.then(R.lit('choose-name')), R.then(R.end))
+export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, P.then(P.lit('choose-name')), P.then(P.end))
 
-export const writeReviewAuthorsMatch = pipe(writeReviewBaseMatch, R.then(R.lit('more-authors')), R.then(R.end))
+export const writeReviewAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('more-authors')), P.then(P.end))
 
-export const writeReviewAddAuthorsMatch = pipe(writeReviewBaseMatch, R.then(R.lit('add-more-authors')), R.then(R.end))
+export const writeReviewAddAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('add-more-authors')), P.then(P.end))
 
 export const writeReviewCompetingInterestsMatch = pipe(
   writeReviewBaseMatch,
-  R.then(R.lit('competing-interests')),
-  R.then(R.end),
+  P.then(P.lit('competing-interests')),
+  P.then(P.end),
 )
 
-export const writeReviewConductMatch = pipe(writeReviewBaseMatch, R.then(R.lit('code-of-conduct')), R.then(R.end))
+export const writeReviewConductMatch = pipe(writeReviewBaseMatch, P.then(P.lit('code-of-conduct')), P.then(P.end))
 
-export const writeReviewPostMatch = pipe(writeReviewBaseMatch, R.then(R.lit('check-your-prereview')), R.then(R.end))
+export const writeReviewPostMatch = pipe(writeReviewBaseMatch, P.then(P.lit('check-your-prereview')), P.then(P.end))
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
-function query<A>(codec: C.Codec<unknown, Record<string, R.QueryValues>, A>): R.Match<A> {
-  return new R.Match(
-    new R.Parser(r =>
-      O.Functor.map(O.fromEither(codec.decode(r.query)), query => tuple(query, new R.Route(r.parts, {}))),
+function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
+  return new P.Match(
+    new P.Parser(r =>
+      O.Functor.map(O.fromEither(codec.decode(r.query)), query => tuple(query, new P.Route(r.parts, {}))),
     ),
-    new R.Formatter((r, query) => new R.Route(r.parts, codec.encode(query))),
+    new P.Formatter((r, query) => new P.Route(r.parts, codec.encode(query))),
   )
 }
 
-function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): R.Match<{ [_ in K]: A }> {
-  return new R.Match(
-    new R.Parser(r => {
+function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Match<{ [_ in K]: A }> {
+  return new P.Match(
+    new P.Parser(r => {
       if (r.parts.length === 0) {
         return O.none
       } else {
         const head = r.parts[0]
         const tail = r.parts.slice(1)
-        return O.Functor.map(O.fromEither(type.decode(head)), a => tuple(singleton(k, a), new R.Route(tail, r.query)))
+        return O.Functor.map(O.fromEither(type.decode(head)), a => tuple(singleton(k, a), new P.Route(tail, r.query)))
       }
     }),
-    new R.Formatter((r, o) => new R.Route(r.parts.concat(type.encode(o[k])), r.query)),
+    new P.Formatter((r, o) => new P.Route(r.parts.concat(type.encode(o[k])), r.query)),
   )
 }
 
