@@ -28,6 +28,7 @@ void (async () => {
               .map(label => label.id)
               .join(' '),
             'aria-multiline': 'true',
+            id: textArea.id,
             role: 'textbox',
             ...extractAttributes(textArea, ['aria-errormessage', 'aria-invalid']),
           },
@@ -62,7 +63,7 @@ void (async () => {
 
       textArea.insertAdjacentElement('afterend', editor.options.element)
       textArea.hidden = true
-      removeAttributes(textArea, ['aria-errormessage', 'aria-invalid'])
+      removeAttributes(textArea, ['aria-errormessage', 'aria-invalid', 'id'])
     }
   }
 
