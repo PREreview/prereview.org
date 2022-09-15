@@ -931,7 +931,7 @@ test('have to enter a review', async ({ fetch, page }) => {
   const error = page.locator('form:has([aria-invalid])')
 
   await expect(error).toContainText('Error: Enter your PREreview.')
-  await expect(error).toHaveScreenshot()
+  await expect(page).toHaveScreenshot()
 })
 
 test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
@@ -965,7 +965,7 @@ test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
   const error = page.locator('form:has([aria-invalid])')
 
   await expect(error).toContainText('Error: Select the name that you would like to use.')
-  await expect(error).toHaveScreenshot()
+  await expect(page).toHaveScreenshot()
 })
 
 test('have to say if there are more authors', async ({ fetch, javaScriptEnabled, page }) => {
@@ -1003,7 +1003,7 @@ test('have to say if there are more authors', async ({ fetch, javaScriptEnabled,
   const error = page.locator('form:has([aria-invalid])')
 
   await expect(error).toContainText('Error: Select yes if you wrote the PREreview with someone else.')
-  await expect(error).toHaveScreenshot()
+  await expect(page).toHaveScreenshot()
 })
 
 test('have to declare any competing interests', async ({ fetch, javaScriptEnabled, page }) => {
@@ -1041,7 +1041,7 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
   const error1 = page.locator('form:has([aria-invalid])')
 
   await expect(error1).toContainText('Error: Select yes if you have any competing interests.')
-  await expect(error1).toHaveScreenshot()
+  await expect(page).toHaveScreenshot()
 
   await page.check('text="Yes"')
 
@@ -1050,7 +1050,7 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
   const error2 = page.locator('form:has([aria-invalid])')
 
   await expect(error2).toContainText('Error: Enter details of your competing interests.')
-  await expect(error2).toHaveScreenshot()
+  await expect(page).toHaveScreenshot()
 })
 
 test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, page }) => {
@@ -1090,5 +1090,5 @@ test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, 
   const error = page.locator('form:has([aria-invalid])')
 
   await expect(error).toContainText('Error: Confirm that you are following the Code of Conduct.')
-  await expect(error).toHaveScreenshot()
+  await expect(page).toHaveScreenshot()
 })
