@@ -705,6 +705,13 @@ html-editor {
     background-color: transparent;
   }
 
+  &:focus {
+    @media screen {
+      outline: var(--color-focus) solid var(--width-divider);
+      outline-offset: 0;
+    }
+  }
+
   &:checked::before {
     background-color: currentcolor;
   }
