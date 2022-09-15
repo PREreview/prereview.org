@@ -62,6 +62,7 @@ void (async () => {
 
       textArea.insertAdjacentElement('afterend', editor.options.element)
       textArea.hidden = true
+      removeAttributes(textArea, ['aria-errormessage', 'aria-invalid'])
     }
   }
 
@@ -92,4 +93,8 @@ function extractAttributes(source: Element, qualifiedNames: ReadonlyArray<string
       return [[qualifiedName, value]]
     }),
   )
+}
+
+function removeAttributes(source: Element, qualifiedNames: ReadonlyArray<string>) {
+  qualifiedNames.forEach(qualifiedName => source.removeAttribute(qualifiedName))
 }
