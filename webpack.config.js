@@ -2,7 +2,7 @@ const path = require('path')
 const glob = require('glob')
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const { PurgeCssPlugin } = require('purgecss-webpack-plugin')
+const { PurgeCSSPlugin } = require('purgecss-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts')
@@ -108,7 +108,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
     }),
-    new PurgeCssPlugin({
+    new PurgeCSSPlugin({
       paths: glob.sync(`src/**/*`, { nodir: true }),
       safelist: ['contenteditable', /^:/],
       variables: true,
