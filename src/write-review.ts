@@ -584,7 +584,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
         </div>
 
         <single-use-form>
-          <form method="post" novalidate>
+          <form method="post" action="${format(writeReviewPostMatch.formatter, { doi: preprint.doi })}" novalidate>
             <h2>Now post your PREreview</h2>
 
             <p>
@@ -610,7 +610,11 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
       </nav>
 
       <main>
-        <form method="post" novalidate>
+        <form
+          method="post"
+          action="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.doi })}"
+          novalidate
+        >
           <div ${rawHtml(error && form.competingInterests !== 'yes' ? 'class="error"' : '')}>
             <conditional-inputs>
               <fieldset
@@ -726,7 +730,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
       </nav>
 
       <main>
-        <form method="post" novalidate>
+        <form method="post" action="${format(writeReviewConductMatch.formatter, { doi: preprint.doi })}" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
             <fieldset
               role="group"
@@ -807,7 +811,7 @@ function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = fals
       </nav>
 
       <main>
-        <form method="post" novalidate>
+        <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })}" novalidate>
           <h1>Add more authors</h1>
 
           <p>Unfortunately, we’re unable to add more authors now.</p>
@@ -834,7 +838,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
       </nav>
 
       <main>
-        <form method="post" novalidate>
+        <form method="post" action="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
             <fieldset
               role="group"
@@ -896,7 +900,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
       </nav>
 
       <main>
-        <form method="post" novalidate>
+        <form method="post" action="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
             <fieldset
               role="group"
@@ -986,7 +990,7 @@ function reviewForm(preprint: Preprint, form: Form, error = false) {
       </nav>
 
       <main>
-        <form method="post" novalidate>
+        <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" novalidate>
           <div ${rawHtml(error ? 'class="error"' : '')}>
             <h1><label id="review-label" for="review">Write your PREreview</label></h1>
 
