@@ -653,7 +653,7 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
                 ${error && form.competingInterests !== 'yes'
                   ? html`
                       <div id="competing-interests-error" role="alert">
-                        <span class="visually-hidden">Error:</span> Select yes if you have any competing interests.
+                        <span class="visually-hidden">Error:</span> Select yes if you have any competing interests
                       </div>
                     `
                   : ''}
@@ -688,7 +688,7 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
                         ${error && form.competingInterests === 'yes'
                           ? html`
                               <div id="competing-interests-details-error" role="alert">
-                                <span class="visually-hidden">Error:</span> Enter details of your competing interests.
+                                <span class="visually-hidden">Error:</span> Enter details of your competing interests
                               </div>
                             `
                           : ''}
@@ -783,7 +783,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
                 ? html`
                     <div id="conduct-error" role="alert">
                       <span class="visually-hidden">Error:</span> Confirm that you are following the
-                      Code&nbsp;of&nbsp;Conduct.
+                      Code&nbsp;of&nbsp;Conduct
                     </div>
                   `
                 : ''}
@@ -852,7 +852,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
                 ? html`
                     <div id="more-authors-error" role="alert">
                       <span class="visually-hidden">Error:</span> Select yes if you wrote the PREreview with someone
-                      else.
+                      else
                     </div>
                   `
                 : ''}
@@ -936,7 +936,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
               ${error
                 ? html`
                     <div id="persona-error" role="alert">
-                      <span class="visually-hidden">Error:</span> Select the name that you would like to use.
+                      <span class="visually-hidden">Error:</span> Select the name that you would like to use
                     </div>
                   `
                 : ''}
@@ -997,7 +997,7 @@ function reviewForm(preprint: Preprint, form: Form, error = false) {
             ${error
               ? html`
                   <div id="review-error" role="alert">
-                    <span class="visually-hidden">Error:</span> Enter your PREreview.
+                    <span class="visually-hidden">Error:</span> Enter your PREreview
                   </div>
                 `
               : ''}
