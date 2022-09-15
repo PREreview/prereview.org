@@ -699,6 +699,7 @@ html-editor {
 .back {
   display: inline-flex;
   align-items: center;
+  font-size: var(--step--1);
 
   &::before {
     content: '‹\00a0';
