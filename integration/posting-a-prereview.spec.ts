@@ -928,8 +928,13 @@ test('have to enter a review', async ({ fetch, page }) => {
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert')).toHaveText('Error: Enter your PREreview')
+  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
   await expect(page.locator('role=textbox[name="Write your PREreview"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Enter your PREreview"')
+
+  await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
 
@@ -961,11 +966,16 @@ test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert')).toHaveText('Error: Select the name that you would like to use')
+  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
   await expect(page.locator('role=group[name="What name would you like to use?"]')).toHaveAttribute(
     'aria-invalid',
     'true',
   )
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Select the name that you would like to use"')
+
+  await expect(page.locator('role=radio[name="Josiah Carberry"]')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
 
@@ -1001,11 +1011,16 @@ test('have to say if there are more authors', async ({ fetch, javaScriptEnabled,
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert')).toHaveText('Error: Select yes if you wrote the PREreview with someone else')
+  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
   await expect(page.locator('role=group[name="Did you write the PREreview with anyone else?"]')).toHaveAttribute(
     'aria-invalid',
     'true',
   )
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Select yes if you wrote the PREreview with someone else"')
+
+  await expect(page.locator('role=radio[name="No, by myself"]')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
 
@@ -1041,19 +1056,29 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert')).toHaveText('Error: Select yes if you have any competing interests')
+  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
   await expect(page.locator('role=group[name="Do you have any competing interests?"]')).toHaveAttribute(
     'aria-invalid',
     'true',
   )
   await expect(page).toHaveScreenshot()
 
+  await page.click('text="Select yes if you have any competing interests"')
+
+  await expect(page.locator('role=radio[name="No"]')).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
   await page.check('text="Yes"')
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert')).toHaveText('Error: Enter details of your competing interests')
+  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
   await expect(page.locator('role=textbox[name="What are they?"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Enter details of your competing interests"')
+
+  await expect(page.locator('role=textbox[name="What are they?"]')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
 
@@ -1091,7 +1116,12 @@ test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, 
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert')).toHaveText('Error: Confirm that you are following the Code of Conduct')
+  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
   await expect(page.locator('role=group[name="Code of Conduct"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Confirm that you are following the Code of Conduct"')
+
+  await expect(page.locator('role=checkbox[name="I’m following the Code of Conduct"]')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })

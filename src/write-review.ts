@@ -615,6 +615,27 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
           action="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.doi })}"
           novalidate
         >
+          ${error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">There is a problem</h2>
+                  <ul>
+                    ${form.competingInterests !== 'yes'
+                      ? html`
+                          <li>
+                            <a href="#competing-interests-no">Select yes if you have any competing interests</a>
+                          </li>
+                        `
+                      : html`
+                          <li>
+                            <a href="#competing-interests-details">Enter details of your competing interests</a>
+                          </li>
+                        `}
+                  </ul>
+                </error-summary>
+              `
+            : ''}
+
           <div ${rawHtml(error && form.competingInterests !== 'yes' ? 'class="error"' : '')}>
             <conditional-inputs>
               <fieldset
@@ -652,7 +673,7 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
 
                 ${error && form.competingInterests !== 'yes'
                   ? html`
-                      <div id="competing-interests-error" role="alert">
+                      <div class="error-message" id="competing-interests-error">
                         <span class="visually-hidden">Error:</span> Select yes if you have any competing interests
                       </div>
                     `
@@ -663,6 +684,7 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
                     <label>
                       <input
                         name="competingInterests"
+                        id="competing-interests-no"
                         type="radio"
                         value="no"
                         ${rawHtml(form.competingInterests === 'no' ? 'checked' : '')}
@@ -687,7 +709,7 @@ function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
 
                         ${error && form.competingInterests === 'yes'
                           ? html`
-                              <div id="competing-interests-details-error" role="alert">
+                              <div class="error-message" id="competing-interests-details-error">
                                 <span class="visually-hidden">Error:</span> Enter details of your competing interests
                               </div>
                             `
@@ -731,6 +753,19 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
 
       <main>
         <form method="post" action="${format(writeReviewConductMatch.formatter, { doi: preprint.doi })}" novalidate>
+          ${error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">There is a problem</h2>
+                  <ul>
+                    <li>
+                      <a href="#conduct-yes">Confirm that you are following the Code&nbsp;of&nbsp;Conduct</a>
+                    </li>
+                  </ul>
+                </error-summary>
+              `
+            : ''}
+
           <div ${rawHtml(error ? 'class="error"' : '')}>
             <fieldset
               role="group"
@@ -781,7 +816,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
 
               ${error
                 ? html`
-                    <div id="conduct-error" role="alert">
+                    <div class="error-message" id="conduct-error">
                       <span class="visually-hidden">Error:</span> Confirm that you are following the
                       Code&nbsp;of&nbsp;Conduct
                     </div>
@@ -789,7 +824,13 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
                 : ''}
 
               <label>
-                <input name="conduct" type="checkbox" value="yes" ${rawHtml(form.conduct === 'yes' ? 'checked' : '')} />
+                <input
+                  name="conduct"
+                  id="conduct-yes"
+                  type="checkbox"
+                  value="yes"
+                  ${rawHtml(form.conduct === 'yes' ? 'checked' : '')}
+                />
                 <span>I’m following the Code&nbsp;of&nbsp;Conduct</span>
               </label>
             </fieldset>
@@ -839,6 +880,19 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
 
       <main>
         <form method="post" action="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" novalidate>
+          ${error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">There is a problem</h2>
+                  <ul>
+                    <li>
+                      <a href="#more-authors-no">Select yes if you wrote the PREreview with someone else</a>
+                    </li>
+                  </ul>
+                </error-summary>
+              `
+            : ''}
+
           <div ${rawHtml(error ? 'class="error"' : '')}>
             <fieldset
               role="group"
@@ -850,7 +904,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
 
               ${error
                 ? html`
-                    <div id="more-authors-error" role="alert">
+                    <div class="error-message" id="more-authors-error">
                       <span class="visually-hidden">Error:</span> Select yes if you wrote the PREreview with someone
                       else
                     </div>
@@ -862,6 +916,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
                   <label>
                     <input
                       name="moreAuthors"
+                      id="more-authors-no"
                       type="radio"
                       value="no"
                       ${rawHtml(form.moreAuthors === 'no' ? 'checked' : '')}
@@ -901,6 +956,19 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
 
       <main>
         <form method="post" action="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" novalidate>
+          ${error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">There is a problem</h2>
+                  <ul>
+                    <li>
+                      <a href="#persona-public">Select the name that you would like to use</a>
+                    </li>
+                  </ul>
+                </error-summary>
+              `
+            : ''}
+
           <div ${rawHtml(error ? 'class="error"' : '')}>
             <fieldset
               role="group"
@@ -935,7 +1003,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
 
               ${error
                 ? html`
-                    <div id="persona-error" role="alert">
+                    <div class="error-message" id="persona-error">
                       <span class="visually-hidden">Error:</span> Select the name that you would like to use
                     </div>
                   `
@@ -946,6 +1014,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
                   <label>
                     <input
                       name="persona"
+                      id="persona-public"
                       type="radio"
                       value="public"
                       aria-describedby="persona-tip-public"
@@ -991,12 +1060,25 @@ function reviewForm(preprint: Preprint, form: Form, error = false) {
 
       <main>
         <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" novalidate>
+          ${error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">There is a problem</h2>
+                  <ul>
+                    <li>
+                      <a href="#review">Enter your PREreview</a>
+                    </li>
+                  </ul>
+                </error-summary>
+              `
+            : ''}
+
           <div ${rawHtml(error ? 'class="error"' : '')}>
             <h1><label id="review-label" for="review">Write your PREreview</label></h1>
 
             ${error
               ? html`
-                  <div id="review-error" role="alert">
+                  <div class="error-message" id="review-error">
                     <span class="visually-hidden">Error:</span> Enter your PREreview
                   </div>
                 `
