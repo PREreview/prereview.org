@@ -908,7 +908,7 @@ test("aren't told about ORCID when already logged in", async ({ fetch, page }) =
   await expect(page.locator('h1')).toContainText('Write your PREreview')
 })
 
-test('have to enter a review', async ({ fetch, page }) => {
+test('have to enter a review', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
 
@@ -928,7 +928,11 @@ test('have to enter a review', async ({ fetch, page }) => {
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
   await expect(page.locator('role=textbox[name="Write your PREreview"]')).toHaveAttribute('aria-invalid', 'true')
   await expect(page).toHaveScreenshot()
 
@@ -966,7 +970,11 @@ test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
   await expect(page.locator('role=group[name="What name would you like to use?"]')).toHaveAttribute(
     'aria-invalid',
     'true',
@@ -1011,7 +1019,11 @@ test('have to say if there are more authors', async ({ fetch, javaScriptEnabled,
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
   await expect(page.locator('role=group[name="Did you write the PREreview with anyone else?"]')).toHaveAttribute(
     'aria-invalid',
     'true',
@@ -1056,7 +1068,11 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
   await expect(page.locator('role=group[name="Do you have any competing interests?"]')).toHaveAttribute(
     'aria-invalid',
     'true',
@@ -1072,7 +1088,11 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
   await expect(page.locator('role=textbox[name="What are they?"]')).toHaveAttribute('aria-invalid', 'true')
   await expect(page).toHaveScreenshot()
 
@@ -1116,7 +1136,11 @@ test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, 
 
   await page.click('text="Continue"')
 
-  await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
   await expect(page.locator('role=group[name="Code of Conduct"]')).toHaveAttribute('aria-invalid', 'true')
   await expect(page).toHaveScreenshot()
 

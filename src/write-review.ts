@@ -597,7 +597,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
         </single-use-form>
       </main>
     `,
-    js: ['single-use-form.js'],
+    js: ['single-use-form.js', 'error-summary.js'],
   })
 }
 
@@ -739,7 +739,7 @@ ${rawHtml(form.competingInterestsDetails ?? '')}</textarea
         </form>
       </main>
     `,
-    js: ['conditional-inputs.js'],
+    js: ['conditional-inputs.js', 'error-summary.js'],
   })
 }
 
@@ -840,6 +840,7 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
         </form>
       </main>
     `,
+    js: ['error-summary.js'],
   })
 }
 
@@ -865,6 +866,7 @@ function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = fals
         </form>
       </main>
     `,
+    js: ['error-summary.js'],
   })
 }
 
@@ -943,6 +945,7 @@ function authorsForm(preprint: Preprint, form: Form, user: User, error = false) 
         </form>
       </main>
     `,
+    js: ['error-summary.js'],
   })
 }
 
@@ -1047,6 +1050,7 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
         </form>
       </main>
     `,
+    js: ['error-summary.js'],
   })
 }
 
@@ -1100,7 +1104,7 @@ ${rawHtml(form.review ?? '')}</textarea
         </form>
       </main>
     `,
-    js: ['html-editor.js'],
+    js: ['html-editor.js', 'error-summary.js'],
   })
 }
 
