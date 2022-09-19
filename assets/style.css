@@ -389,7 +389,7 @@ label {
       margin-inline-end: var(--space-2xs-xs);
     }
 
-    & + [role='note'] {
+    @nest li > & + [role='note'] {
       margin-inline-start: calc(var(--space-m) + var(--space-2xs-xs));
     }
 

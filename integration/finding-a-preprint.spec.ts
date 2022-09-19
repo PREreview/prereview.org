@@ -11,7 +11,7 @@ test('might not find anything', async ({ fetch, page }) => {
 
   fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
 
-  await page.click('text="Find PREreviews"')
+  await page.click('text="Continue"')
 
   const h1 = page.locator('h1')
 
@@ -95,7 +95,7 @@ test('can find and view a preprint', async ({ fetch, page }) => {
     },
   )
 
-  await page.click('text="Find PREreviews"')
+  await page.click('text="Continue"')
 
   const preprint = page.locator('aside')
   const reviews = page.locator('main')

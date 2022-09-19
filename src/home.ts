@@ -22,15 +22,17 @@ function createPage() {
           <h1><img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" class="home-logo" /></h1>
         </header>
 
-        <h2>Find PREreviews for a bioRxiv, medRxiv or SciELO preprint</h2>
+        <h2>Find and post PREreviews</h2>
 
         <form method="post" action="${format(lookupDoiMatch.formatter, {})}" novalidate>
           <label>
             <span>Preprint DOI</span>
-            <input name="doi" type="text" spellcheck="false" />
+            <input name="doi" type="text" spellcheck="false" aria-describedby="doi-tip" />
           </label>
 
-          <button>Find PREreviews</button>
+          <div id="doi-tip" role="note">We support bioRxiv, medRxiv and SciELO preprints.</div>
+
+          <button>Continue</button>
         </form>
       </main>
     `,
