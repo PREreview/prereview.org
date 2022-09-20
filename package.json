@@ -7,7 +7,7 @@
   "dependencies": {
     "@godaddy/terminus": "^4.11.2",
     "@js-temporal/polyfill": "^0.4.2",
-    "@keyv/sqlite": "^3.5.3",
+    "@keyv/sqlite": "^3.6.1",
     "clock-ts": "^0.1.1",
     "crossref-ts": "^0.1.4",
     "doi-ts": "^0.1.4",
