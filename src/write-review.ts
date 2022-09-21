@@ -144,8 +144,7 @@ export const writeReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
-      getSession(),
-      RM.chainEitherKW(UserC.decode),
+      getUser(),
       RM.chainReaderTaskKW(user => getForm(user.orcid, preprint.doi)),
       RM.ichainMiddlewareKW(showNextForm(preprint)),
       RM.orElseW(() => showStartPage(preprint)),
@@ -159,7 +158,7 @@ export const writeReviewReview = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.apSW('user', getUser()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handleReviewForm).otherwise(showReviewForm)),
@@ -174,7 +173,7 @@ export const writeReviewPersona = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.apSW('user', getUser()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(showPersonaForm)),
@@ -189,7 +188,7 @@ export const writeReviewAuthors = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.apSW('user', getUser()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handleAuthorsForm).otherwise(showAuthorsForm)),
@@ -204,7 +203,7 @@ export const writeReviewAddAuthors = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.apSW('user', getUser()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
@@ -224,7 +223,7 @@ export const writeReviewCompetingInterests = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.apSW('user', getUser()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
@@ -241,7 +240,7 @@ export const writeReviewConduct = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.apSW('user', getUser()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
@@ -258,7 +257,7 @@ export const writeReviewPost = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apSW('user', pipe(getSession(), RM.chainEitherKW(UserC.decode))),
+      RM.apSW('user', getUser()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
@@ -1153,6 +1152,10 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   }
 
   return name
+}
+
+function getUser<I = StatusOpen>() {
+  return pipe(getSession<I>(), RM.chainEitherKW(UserC.decode))
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/83
