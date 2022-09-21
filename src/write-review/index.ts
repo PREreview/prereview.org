@@ -22,10 +22,10 @@ import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { SubmittedDeposition } from 'zenodo-ts'
-import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
-import { notFound, seeOther } from './middleware'
-import { page } from './page'
-import { PreprintId } from './preprint-id'
+import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
+import { notFound, seeOther } from '../middleware'
+import { page } from '../page'
+import { PreprintId } from '../preprint-id'
 import {
   logInMatch,
   preprintMatch,
@@ -37,9 +37,9 @@ import {
   writeReviewPersonaMatch,
   writeReviewPostMatch,
   writeReviewReviewMatch,
-} from './routes'
-import { NonEmptyStringC } from './string'
-import { User, UserC } from './user'
+} from '../routes'
+import { NonEmptyStringC } from '../string'
+import { User, UserC } from '../user'
 
 const ReviewFormC = C.struct({
   review: NonEmptyStringC,

@@ -4,12 +4,12 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import Keyv from 'keyv'
-import { UserC } from '../src/user'
-import * as _ from '../src/write-review'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
+import { UserC } from '../../src/user'
+import * as _ from '../../src/write-review'
+import * as fc from '../fc'
+import { runMiddleware } from '../middleware'
 
-describe('write-review', () => {
+describe('index', () => {
   describe('writeReview', () => {
     describe('when there is a session', () => {
       test('there is completed form already', async () => {
