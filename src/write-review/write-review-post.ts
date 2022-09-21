@@ -1,0 +1,244 @@
+import { Doi } from 'doi-ts'
+import { format } from 'fp-ts-routing'
+import * as E from 'fp-ts/Either'
+import { Reader } from 'fp-ts/Reader'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as R from 'fp-ts/Refinement'
+import * as TE from 'fp-ts/TaskEither'
+import { flow, pipe } from 'fp-ts/function'
+import { Status, StatusOpen } from 'hyper-ts'
+import { endSession } from 'hyper-ts-session'
+import * as M from 'hyper-ts/lib/Middleware'
+import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import markdownIt from 'markdown-it'
+import { Orcid } from 'orcid-id-ts'
+import { getLangDir } from 'rtl-detect'
+import { P, match } from 'ts-pattern'
+import { SubmittedDeposition } from 'zenodo-ts'
+import { Html, html, plainText, sanitizeHtml, sendHtml } from '../html'
+import { notFound, seeOther } from '../middleware'
+import { page } from '../page'
+import {
+  preprintMatch,
+  writeReviewConductMatch,
+  writeReviewMatch,
+  writeReviewPersonaMatch,
+  writeReviewPostMatch,
+  writeReviewReviewMatch,
+} from '../routes'
+import { User, getUserFromSession } from '../user'
+import { CompletedForm, CompletedFormC } from './completed-form'
+import { deleteForm, getForm, showNextForm } from './form'
+import { Preprint, getPreprint } from './preprint'
+
+export type NewPrereview = {
+  conduct: 'yes'
+  persona: 'public' | 'pseudonym'
+  preprint: Preprint
+  review: Html
+  user: User
+}
+
+export interface CreateRecordEnv {
+  createRecord: (newPrereview: NewPrereview) => TE.TaskEither<unknown, SubmittedDeposition>
+}
+
+export const writeReviewPost = flow(
+  RM.fromReaderTaskEitherK(getPreprint),
+  RM.ichainW(preprint =>
+    pipe(
+      RM.right({ preprint }),
+      RM.apS('user', getUserFromSession()),
+      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
+      RM.apSW('method', RM.decodeMethod(E.right)),
+      RM.ichainW(state =>
+        match(state)
+          .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePostForm)
+          .with({ method: 'POST', preprint: P.select() }, showFailureMessage)
+          .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, showPostForm)
+          .otherwise(flow(({ form }) => form, fromMiddlewareK(showNextForm(preprint.doi)))),
+      ),
+      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+    ),
+  ),
+  RM.orElseW(() => notFound),
+)
+
+const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
+  pipe(
+    RM.rightReaderTask(deleteForm(user.orcid, preprint.doi)),
+    RM.map(() => ({
+      conduct: form.conduct,
+      persona: form.persona,
+      preprint,
+      review: renderReview(form),
+      user,
+    })),
+    RM.chainReaderTaskEitherKW(createRecord),
+    RM.ichainW(deposition => showSuccessMessage(preprint, deposition.metadata.doi, form.moreAuthors === 'yes')),
+    RM.orElseW(() => showFailureMessage(preprint)),
+  )
+
+const showPostForm = flow(
+  fromReaderK(({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
+    postForm(preprint, form, user),
+  ),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+const createRecord = (newPrereview: NewPrereview) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ createRecord }: CreateRecordEnv) => createRecord(newPrereview)))
+
+const showSuccessMessage = flow(
+  fromReaderK(successMessage),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainFirstW(() => endSession()),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+const showFailureMessage = flow(
+  fromReaderK(failureMessage),
+  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
+  RM.ichainFirstW(() => endSession()),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+function renderReview(form: CompletedForm) {
+  return html`${sanitizeHtml(markdownIt({ html: true }).render(form.review))}
+
+    <h3>Competing interests</h3>
+
+    <p>
+      ${form.competingInterests === 'yes'
+        ? form.competingInterestsDetails
+        : 'The author declares that they have no competing interests.'}
+    </p>`
+}
+
+function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
+  return page({
+    title: plainText`PREreview posted`,
+    content: html`
+      <main>
+        <div class="panel">
+          <h1>PREreview posted</h1>
+
+          <p>
+            Your DOI <br />
+            <strong class="doi" translate="no">${doi}</strong>
+          </p>
+        </div>
+
+        <h2>What happens next</h2>
+
+        <p>You’ll be able to see your PREreview shortly.</p>
+
+        ${moreAuthors
+          ? html`
+              <div class="inset">
+                <p>
+                  Please let us know the other authors’ details (names and ORCID&nbsp;iDs), and we’ll add them to the
+                  PREreview. Our email address is <a href="mailto:contact@prereview.org">contact@prereview.org</a>.
+                </p>
+              </div>
+            `
+          : ''}
+
+        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
+      </main>
+    `,
+  })
+}
+
+function failureMessage(preprint: Preprint) {
+  return page({
+    title: plainText`Sorry, we’re having problems`,
+    content: html`
+      <main>
+        <h1>Sorry, we’re having problems</h1>
+
+        <p>We’re unable to post your PREreview now.</p>
+
+        <p>Please try again later.</p>
+
+        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
+      </main>
+    `,
+  })
+}
+
+function postForm(preprint: Preprint, review: CompletedForm, user: User) {
+  return page({
+    title: plainText`Post your PREreview of “${preprint.title}”`,
+    content: html`
+      <nav>
+        <a href="${format(writeReviewConductMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+      </nav>
+
+      <main>
+        <h1 id="preview-label">Check your PREreview</h1>
+
+        <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
+          <h2>
+            PREreview of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}"
+              >${preprint.title}</span
+            >”
+          </h2>
+
+          <ol aria-label="Authors of this PREreview" class="author-list">
+            <li>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</li>
+          </ol>
+
+          ${renderReview(review)}
+        </blockquote>
+
+        <div class="button-group" role="group">
+          <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" class="button button-secondary">
+            Change PREreview
+          </a>
+          <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="button button-secondary">
+            Change name
+          </a>
+        </div>
+
+        <single-use-form>
+          <form method="post" action="${format(writeReviewPostMatch.formatter, { doi: preprint.doi })}" novalidate>
+            <h2>Now post your PREreview</h2>
+
+            <p>
+              We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a
+              <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0 license</a>.
+            </p>
+
+            <button>Post PREreview</button>
+          </form>
+        </single-use-form>
+      </main>
+    `,
+    js: ['single-use-form.js', 'error-summary.js'],
+  })
+}
+
+function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
+  if (orcid) {
+    return html`<a href="https://orcid.org/${orcid}">${name}</a>`
+  }
+
+  return name
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/83
+const fromMiddlewareK =
+  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
+    f: (...a: A) => M.Middleware<I, O, E, B>,
+  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
+  (...a) =>
+    RM.fromMiddleware(f(...a))
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
+  f: (...a: A) => Reader<R, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return (...a) => RM.rightReader(f(...a))
+}
