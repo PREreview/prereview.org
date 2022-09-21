@@ -1,21 +1,16 @@
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import { JsonRecord } from 'fp-ts/Json'
 import { Reader } from 'fp-ts/Reader'
-import { ReaderTask } from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as R from 'fp-ts/Refinement'
-import * as T from 'fp-ts/Task'
 import * as TE from 'fp-ts/TaskEither'
-import { constVoid, constant, flow, pipe } from 'fp-ts/function'
-import { getAssignSemigroup } from 'fp-ts/struct'
+import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
-import Keyv from 'keyv'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
@@ -24,7 +19,6 @@ import { SubmittedDeposition } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
-import { PreprintId } from '../preprint-id'
 import {
   logInMatch,
   preprintMatch,
@@ -39,6 +33,7 @@ import {
 } from '../routes'
 import { NonEmptyStringC } from '../string'
 import { User, UserC } from '../user'
+import { Form, deleteForm, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 const ReviewFormC = C.struct({
@@ -71,15 +66,6 @@ const CodeOfConductFormC = C.struct({
   conduct: C.literal('yes'),
 })
 
-const FormC = C.partial({
-  review: NonEmptyStringC,
-  persona: C.literal('public', 'pseudonym'),
-  moreAuthors: C.literal('yes', 'no'),
-  competingInterests: C.literal('yes', 'no'),
-  competingInterestsDetails: NonEmptyStringC,
-  conduct: C.literal('yes'),
-})
-
 const CompletedFormC = pipe(
   ReviewFormC,
   C.intersect(PersonaFormC),
@@ -88,7 +74,6 @@ const CompletedFormC = pipe(
   C.intersect(CodeOfConductFormC),
 )
 
-type Form = C.TypeOf<typeof FormC>
 type CompletedForm = C.TypeOf<typeof CompletedFormC>
 
 export type NewPrereview = {
@@ -105,27 +90,7 @@ export interface CreateRecordEnv {
 
 export { GetPreprintTitleEnv } from './preprint'
 
-export interface FormStoreEnv {
-  formStore: Keyv<JsonRecord>
-}
-
-const showNextForm = (preprint: PreprintId['doi']) => (form: Form) =>
-  match(form)
-    .with(
-      { review: P.string, persona: P.string, moreAuthors: P.string, competingInterests: P.string, conduct: P.string },
-      () => seeOther(format(writeReviewPostMatch.formatter, { doi: preprint })),
-    )
-    .with({ review: P.string, persona: P.string, moreAuthors: P.string, competingInterests: P.string }, () =>
-      seeOther(format(writeReviewConductMatch.formatter, { doi: preprint })),
-    )
-    .with({ review: P.string, persona: P.string, moreAuthors: P.string }, () =>
-      seeOther(format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint })),
-    )
-    .with({ review: P.string, persona: P.string }, () =>
-      seeOther(format(writeReviewAuthorsMatch.formatter, { doi: preprint })),
-    )
-    .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, { doi: preprint })))
-    .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint })))
+export { FormStoreEnv } from './form'
 
 export const writeReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -439,37 +404,6 @@ const showStartPage = flow(
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
-
-function getForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv, Form> {
-  return flow(
-    TE.tryCatchK(async ({ formStore }) => await formStore.get(`${user}_${preprint}`), constant('no-new-review')),
-    TE.chainEitherKW(FormC.decode),
-    TE.getOrElse(() => T.of({})),
-  )
-}
-
-function updateForm(originalForm: Form): (newForm: Form) => Form {
-  return newForm => getAssignSemigroup<Form>().concat(originalForm, newForm)
-}
-
-function saveForm(user: Orcid, preprint: Doi): (form: Form) => ReaderTask<FormStoreEnv, void> {
-  return form =>
-    flow(
-      TE.tryCatchK(async ({ formStore }) => {
-        await formStore.set(`${user}_${preprint}`, FormC.encode(form))
-      }, constVoid),
-      TE.toUnion,
-    )
-}
-
-function deleteForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv, void> {
-  return flow(
-    TE.tryCatchK(async ({ formStore }) => {
-      await formStore.delete(`${user}_${preprint}`)
-    }, constVoid),
-    TE.toUnion,
-  )
-}
 
 function renderReview(form: CompletedForm) {
   return html`${sanitizeHtml(markdownIt({ html: true }).render(form.review))}
