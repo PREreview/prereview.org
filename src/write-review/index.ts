@@ -20,7 +20,6 @@ import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import {
   preprintMatch,
-  writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
@@ -64,25 +63,7 @@ export { writeReviewPersona } from './write-review-persona'
 
 export { writeReviewAuthors } from './write-review-authors'
 
-export const writeReviewAddAuthors = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
-  RM.ichainW(preprint =>
-    pipe(
-      RM.right({ preprint }),
-      RM.apS('user', getUserFromSession()),
-      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
-      RM.apSW('method', RM.decodeMethod(E.right)),
-      RM.ichainW(state =>
-        match(state)
-          .with({ form: P.select({ moreAuthors: 'yes' }), method: 'POST' }, fromMiddlewareK(showNextForm(preprint.doi)))
-          .with({ form: { moreAuthors: 'yes' } }, showAddAuthorsForm)
-          .otherwise(() => notFound),
-      ),
-      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
-    ),
-  ),
-  RM.orElseW(() => notFound),
-)
+export { writeReviewAddAuthors } from './write-review-add-authors'
 
 export const writeReviewCompetingInterests = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -153,14 +134,6 @@ const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprin
     RM.ichainW(deposition => showSuccessMessage(preprint, deposition.metadata.doi, form.moreAuthors === 'yes')),
     RM.orElseW(() => showFailureMessage(preprint)),
   )
-
-const showAddAuthorsForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
-    addAuthorsForm(preprint, form, user),
-  ),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
 
 const showCompetingInterestsForm = flow(
   fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) => competingInterestsForm(preprint, form)),
@@ -590,32 +563,6 @@ function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
               </label>
             </fieldset>
           </div>
-
-          <button>Continue</button>
-        </form>
-      </main>
-    `,
-    js: ['error-summary.js'],
-  })
-}
-
-function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = false) {
-  return page({
-    title: plainText`${error ? 'Error: ' : ''}Add more authors – PREreview of “${preprint.title}”`,
-    content: html`
-      <nav>
-        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
-      </nav>
-
-      <main>
-        <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })}" novalidate>
-          <h1>Add more authors</h1>
-
-          <p>Unfortunately, we’re unable to add more authors now.</p>
-
-          <p>Once you have posted your PREreview, please let us know their details, and we’ll add them.</p>
-
-          <p>We’ll remind you to do this.</p>
 
           <button>Continue</button>
         </form>
