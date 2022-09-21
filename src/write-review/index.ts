@@ -31,7 +31,6 @@ import {
 } from '../routes'
 import { User, getUserFromSession } from '../user'
 import {
-  AuthorsFormC,
   CodeOfConductFormC,
   CompetingInterestsFormC,
   CompletedForm,
@@ -63,20 +62,7 @@ export { writeReviewReview } from './write-review-review'
 
 export { writeReviewPersona } from './write-review-persona'
 
-export const writeReviewAuthors = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
-  RM.ichainW(preprint =>
-    pipe(
-      RM.right({ preprint }),
-      RM.apS('user', getUserFromSession()),
-      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
-      RM.apSW('method', RM.decodeMethod(E.right)),
-      RM.ichainW(state => match(state).with({ method: 'POST' }, handleAuthorsForm).otherwise(showAuthorsForm)),
-      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
-    ),
-  ),
-  RM.orElseW(() => notFound),
-)
+export { writeReviewAuthors } from './write-review-authors'
 
 export const writeReviewAddAuthors = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -168,20 +154,6 @@ const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprin
     RM.orElseW(() => showFailureMessage(preprint)),
   )
 
-const showAuthorsForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
-    authorsForm(preprint, form, user),
-  ),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
-
-const showAuthorsErrorForm = flow(
-  fromReaderK((preprint: Preprint, user: User) => authorsForm(preprint, {}, user, true)),
-  RM.ichainFirst(() => RM.status(Status.BadRequest)),
-  RM.ichainMiddlewareK(sendHtml),
-)
-
 const showAddAuthorsForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
     addAuthorsForm(preprint, form, user),
@@ -222,21 +194,6 @@ const showPostForm = flow(
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
-
-const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
-  pipe(
-    RM.decodeBody(AuthorsFormC.decode),
-    RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(form =>
-      match(form)
-        .with({ moreAuthors: 'yes' }, () =>
-          seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })),
-        )
-        .otherwise(showNextForm(preprint.doi)),
-    ),
-    RM.orElseW(() => showAuthorsErrorForm(preprint, user)),
-  )
 
 const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
@@ -659,85 +616,6 @@ function addAuthorsForm(preprint: Preprint, form: Form, user: User, error = fals
           <p>Once you have posted your PREreview, please let us know their details, and we’ll add them.</p>
 
           <p>We’ll remind you to do this.</p>
-
-          <button>Continue</button>
-        </form>
-      </main>
-    `,
-    js: ['error-summary.js'],
-  })
-}
-
-function authorsForm(preprint: Preprint, form: Form, user: User, error = false) {
-  return page({
-    title: plainText`${error ? 'Error: ' : ''}Did you write the PREreview with anyone else? – PREreview of “${
-      preprint.title
-    }”`,
-    content: html`
-      <nav>
-        <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
-      </nav>
-
-      <main>
-        <form method="post" action="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" novalidate>
-          ${error
-            ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
-                  <ul>
-                    <li>
-                      <a href="#more-authors-no">Select yes if you wrote the PREreview with someone else</a>
-                    </li>
-                  </ul>
-                </error-summary>
-              `
-            : ''}
-
-          <div ${rawHtml(error ? 'class="error"' : '')}>
-            <fieldset
-              role="group"
-              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="more-authors-error"' : '')}
-            >
-              <legend>
-                <h1>Did you write the PREreview with anyone&nbsp;else?</h1>
-              </legend>
-
-              ${error
-                ? html`
-                    <div class="error-message" id="more-authors-error">
-                      <span class="visually-hidden">Error:</span> Select yes if you wrote the PREreview with someone
-                      else
-                    </div>
-                  `
-                : ''}
-
-              <ol>
-                <li>
-                  <label>
-                    <input
-                      name="moreAuthors"
-                      id="more-authors-no"
-                      type="radio"
-                      value="no"
-                      ${rawHtml(form.moreAuthors === 'no' ? 'checked' : '')}
-                    />
-                    <span>No, by myself</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="moreAuthors"
-                      type="radio"
-                      value="yes"
-                      ${rawHtml(form.moreAuthors === 'yes' ? 'checked' : '')}
-                    />
-                    <span>Yes</span>
-                  </label>
-                </li>
-              </ol>
-            </fieldset>
-          </div>
 
           <button>Continue</button>
         </form>
