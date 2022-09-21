@@ -10,7 +10,6 @@ import { Status, StatusOpen } from 'hyper-ts'
 import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import * as C from 'io-ts/Codec'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
@@ -31,50 +30,19 @@ import {
   writeReviewPostMatch,
   writeReviewReviewMatch,
 } from '../routes'
-import { NonEmptyStringC } from '../string'
 import { User, UserC } from '../user'
+import {
+  AuthorsFormC,
+  CodeOfConductFormC,
+  CompetingInterestsFormC,
+  CompletedForm,
+  CompletedFormC,
+  PartialCompetingInterestsFormC,
+  PersonaFormC,
+  ReviewFormC,
+} from './completed-form'
 import { Form, deleteForm, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
-
-const ReviewFormC = C.struct({
-  review: NonEmptyStringC,
-})
-
-const PersonaFormC = C.struct({
-  persona: C.literal('public', 'pseudonym'),
-})
-
-const AuthorsFormC = C.struct({
-  moreAuthors: C.literal('yes', 'no'),
-})
-
-const PartialCompetingInterestsFormC = C.struct({
-  competingInterests: C.literal('yes', 'no'),
-})
-
-const CompetingInterestsFormC = C.sum('competingInterests')({
-  yes: C.struct({
-    competingInterests: C.literal('yes'),
-    competingInterestsDetails: NonEmptyStringC,
-  }),
-  no: C.struct({
-    competingInterests: C.literal('no'),
-  }),
-})
-
-const CodeOfConductFormC = C.struct({
-  conduct: C.literal('yes'),
-})
-
-const CompletedFormC = pipe(
-  ReviewFormC,
-  C.intersect(PersonaFormC),
-  C.intersect(AuthorsFormC),
-  C.intersect(CompetingInterestsFormC),
-  C.intersect(CodeOfConductFormC),
-)
-
-type CompletedForm = C.TypeOf<typeof CompletedFormC>
 
 export type NewPrereview = {
   conduct: 'yes'
