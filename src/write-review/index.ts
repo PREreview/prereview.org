@@ -7,7 +7,7 @@ import * as R from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
-import { endSession, getSession } from 'hyper-ts-session'
+import { endSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import markdownIt from 'markdown-it'
@@ -30,7 +30,7 @@ import {
   writeReviewPostMatch,
   writeReviewReviewMatch,
 } from '../routes'
-import { User, UserC } from '../user'
+import { User, getUserFromSession } from '../user'
 import {
   AuthorsFormC,
   CodeOfConductFormC,
@@ -64,7 +64,7 @@ export const writeReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
-      getUser(),
+      getUserFromSession(),
       RM.chainReaderTaskKW(user => getForm(user.orcid, preprint.doi)),
       RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
       RM.orElseW(() => showStartPage(preprint)),
@@ -78,7 +78,7 @@ export const writeReviewReview = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apS('user', getUser()),
+      RM.apS('user', getUserFromSession()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handleReviewForm).otherwise(showReviewForm)),
@@ -93,7 +93,7 @@ export const writeReviewPersona = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apS('user', getUser()),
+      RM.apS('user', getUserFromSession()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(showPersonaForm)),
@@ -108,7 +108,7 @@ export const writeReviewAuthors = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apS('user', getUser()),
+      RM.apS('user', getUserFromSession()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handleAuthorsForm).otherwise(showAuthorsForm)),
@@ -123,7 +123,7 @@ export const writeReviewAddAuthors = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apS('user', getUser()),
+      RM.apS('user', getUserFromSession()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
@@ -143,7 +143,7 @@ export const writeReviewCompetingInterests = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apS('user', getUser()),
+      RM.apS('user', getUserFromSession()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
@@ -160,7 +160,7 @@ export const writeReviewConduct = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apS('user', getUser()),
+      RM.apS('user', getUserFromSession()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
@@ -177,7 +177,7 @@ export const writeReviewPost = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apS('user', getUser()),
+      RM.apS('user', getUserFromSession()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
@@ -1041,10 +1041,6 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   }
 
   return name
-}
-
-function getUser<I = StatusOpen>() {
-  return pipe(getSession<I>(), RM.chainEitherKW(UserC.decode))
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/83

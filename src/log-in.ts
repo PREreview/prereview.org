@@ -9,7 +9,6 @@ import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { Status } from 'hyper-ts'
 import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
-import { storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { Orcid, isOrcid } from 'orcid-id-ts'
@@ -18,7 +17,7 @@ import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
 import { homeMatch } from './routes'
-import { UserC } from './user'
+import { storeUserInSession } from './user'
 
 export interface PublicUrlEnv {
   publicUrl: URL
@@ -55,7 +54,7 @@ export const authenticate = flow(
   RM.bindW('user', RM.fromReaderTaskEitherK(flow(get('code'), exchangeAuthorizationCode(OrcidUserD)))),
   RM.bindW('pseudonym', RM.fromReaderTaskEitherK(flow(get('user.orcid'), getPseudonym))),
   RM.ichainFirstW(flow(get('referer'), RM.redirect)),
-  RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), UserC.encode, storeSession)),
+  RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), storeUserInSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichainFirst(() => RM.end()),
   RM.orElseW(error =>

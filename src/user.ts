@@ -1,3 +1,7 @@
+import { flow, pipe } from 'fp-ts/function'
+import { StatusOpen } from 'hyper-ts'
+import { getSession, storeSession } from 'hyper-ts-session'
+import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
@@ -11,3 +15,9 @@ export const UserC = C.struct({
   orcid: OrcidC,
   pseudonym: C.string,
 })
+
+export const storeUserInSession = flow(UserC.encode, storeSession)
+
+export function getUserFromSession<I = StatusOpen>() {
+  return pipe(getSession<I>(), RM.chainEitherKW(UserC.decode))
+}
