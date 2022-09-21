@@ -27,6 +27,12 @@
       "rules": {
         "no-empty-pattern": "off"
       }
+    },
+    {
+      "files": ["integration/**/*.ts", "test/**/*.ts"],
+      "rules": {
+        "import/no-internal-modules": "off"
+      }
     }
   ],
   "parserOptions": {
@@ -38,6 +44,10 @@
     "import/no-extraneous-dependencies": [
       "error",
       { "devDependencies": ["assets/**/*.ts", "integration/**/*.ts", "test/**/*.ts", "*.ts"] }
+    ],
+    "import/no-internal-modules": [
+      "error",
+      { "allow": ["fp-ts/*", "fp-ts-contrib/*", "io-ts/*", "hyper-ts/lib/*", "nanohtml/*"] }
     ],
     "quotes": ["error", "single", { "avoidEscape": true }]
   }
