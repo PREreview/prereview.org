@@ -19,7 +19,6 @@ import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import {
-  logInMatch,
   preprintMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
@@ -60,18 +59,7 @@ export { GetPreprintTitleEnv } from './preprint'
 
 export { FormStoreEnv } from './form'
 
-export const writeReview = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
-  RM.ichainW(preprint =>
-    pipe(
-      getUserFromSession(),
-      RM.chainReaderTaskKW(user => getForm(user.orcid, preprint.doi)),
-      RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
-      RM.orElseW(() => showStartPage(preprint)),
-    ),
-  ),
-  RM.orElseW(() => notFound),
-)
+export { writeReview } from './write-review'
 
 export const writeReviewReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -364,12 +352,6 @@ const showFailureMessage = flow(
   fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainFirstW(() => endSession()),
-  RM.ichainMiddlewareK(sendHtml),
-)
-
-const showStartPage = flow(
-  fromReaderK(startPage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
@@ -993,45 +975,6 @@ ${rawHtml(form.review ?? '')}</textarea
       </main>
     `,
     js: ['html-editor.js', 'error-summary.js'],
-  })
-}
-
-function startPage(preprint: Preprint) {
-  return page({
-    title: plainText`PREreview this preprint`,
-    content: html`
-      <nav>
-        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
-      </nav>
-
-      <main>
-        <h1>PREreview this preprint</h1>
-
-        <p>
-          You can write a PREreview of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}"
-            >${preprint.title}</span
-          >”. A PREreview is a free-text review of a preprint and can vary from a few sentences to a lengthy report,
-          similar to a journal-organized peer-review report.
-        </p>
-
-        <h2>Before you start</h2>
-
-        <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
-
-        <details>
-          <summary>What is an ORCID&nbsp;iD?</summary>
-
-          <div>
-            <p>
-              An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a persistent digital identifier you own
-              and control, distinguishing you from every other researcher.
-            </p>
-          </div>
-        </details>
-
-        <a href="${format(logInMatch.formatter, {})}" role="button" draggable="false">Start now</a>
-      </main>
-    `,
   })
 }
 
