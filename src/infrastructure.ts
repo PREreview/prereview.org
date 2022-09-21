@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Work, getWork } from 'crossref-ts'
-import { hasRegistrant, isDoi } from 'doi-ts'
+import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
@@ -24,7 +24,6 @@ import { P, match } from 'ts-pattern'
 import {
   DepositMetadata,
   Record,
-  SubmittedDeposition,
   ZenodoAuthenticatedEnv,
   ZenodoEnv,
   createDeposition,
@@ -67,7 +66,7 @@ export const getPrereview = flow(
 
 export const createRecordOnZenodo: (
   newPrereview: NewPrereview,
-) => ReaderTaskEither<ZenodoAuthenticatedEnv, unknown, SubmittedDeposition> = newPrereview =>
+) => ReaderTaskEither<ZenodoAuthenticatedEnv, unknown, Doi> = newPrereview =>
   pipe(
     createDepositMetadata(newPrereview),
     createDeposition,
@@ -79,6 +78,7 @@ export const createRecordOnZenodo: (
       }),
     ),
     RTE.chain(publishDeposition),
+    RTE.map(deposition => deposition.metadata.doi),
   )
 
 function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {

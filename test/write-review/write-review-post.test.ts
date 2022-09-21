@@ -1,5 +1,4 @@
 import cookieSignature from 'cookie-signature'
-import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
@@ -34,7 +33,8 @@ describe('writeReviewPost', () => {
           review: fc.lorem(),
         }),
         fc.user(),
-        async (preprintDoi, preprintTitle, [connection, sessionId, secret], newReview, user) => {
+        fc.doi(),
+        async (preprintDoi, preprintTitle, [connection, sessionId, secret], newReview, user, reviewDoi) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
           const formStore = new Keyv()
@@ -42,28 +42,16 @@ describe('writeReviewPost', () => {
           const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
             TE.right(preprintTitle),
           )
-          const createRecord: jest.MockedFunction<_.CreateRecordEnv['createRecord']> = jest.fn(_ =>
-            TE.right({
-              id: 1,
-              metadata: {
-                creators: [user],
-                description: 'Description',
-                doi: '10.5072/zenodo.1055806' as Doi,
-                title: 'Title',
-                upload_type: 'publication',
-                publication_type: 'article',
-              },
-              state: 'done',
-              submitted: true,
-            }),
+          const postPrereview: jest.MockedFunction<_.PostPrereviewEnv['postPrereview']> = jest.fn(_ =>
+            TE.right(reviewDoi),
           )
 
           const actual = await runMiddleware(
-            _.writeReviewPost(preprintDoi)({ createRecord, formStore, getPreprintTitle, secret, sessionStore }),
+            _.writeReviewPost(preprintDoi)({ formStore, getPreprintTitle, postPrereview, secret, sessionStore }),
             connection,
           )()
 
-          expect(createRecord).toHaveBeenCalledWith({
+          expect(postPrereview).toHaveBeenCalledWith({
             conduct: 'yes',
             persona: newReview.persona,
             preprint: {
@@ -125,9 +113,9 @@ describe('writeReviewPost', () => {
 
           const actual = await runMiddleware(
             _.writeReviewPost(preprintDoi)({
-              createRecord: () => TE.left(''),
               getPreprintTitle,
               formStore,
+              postPrereview: () => TE.left(''),
               secret,
               sessionStore,
             }),
@@ -180,10 +168,10 @@ describe('writeReviewPost', () => {
           const formStore = new Keyv()
           await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
           const getPreprintTitle = () => TE.left(error)
-          const createRecord = () => () => Promise.reject('should not be called')
+          const postPrereview = () => () => Promise.reject('should not be called')
 
           const actual = await runMiddleware(
-            _.writeReviewPost(preprintDoi)({ createRecord, formStore, getPreprintTitle, secret, sessionStore }),
+            _.writeReviewPost(preprintDoi)({ formStore, getPreprintTitle, postPrereview, secret, sessionStore }),
             connection,
           )()
 
@@ -214,9 +202,9 @@ describe('writeReviewPost', () => {
 
           const actual = await runMiddleware(
             _.writeReviewPost(preprintDoi)({
-              createRecord: () => TE.left(''),
               getPreprintTitle,
               formStore,
+              postPrereview: () => TE.left(''),
               secret,
               sessionStore,
             }),
@@ -275,9 +263,9 @@ describe('writeReviewPost', () => {
 
           const actual = await runMiddleware(
             _.writeReviewPost(preprintDoi)({
-              createRecord: () => TE.left(response),
               getPreprintTitle,
               formStore,
+              postPrereview: () => TE.left(response),
               secret,
               sessionStore,
             }),

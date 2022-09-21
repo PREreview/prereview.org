@@ -137,8 +137,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          createRecord: flipC(createRecordOnZenodo)(env),
           getPreprintTitle: flipC(getPreprintTitle)(env),
+          postPrereview: flipC(createRecordOnZenodo)(env),
         })),
       ),
     ),

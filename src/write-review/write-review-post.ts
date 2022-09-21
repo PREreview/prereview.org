@@ -14,7 +14,6 @@ import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { SubmittedDeposition } from 'zenodo-ts'
 import { Html, html, plainText, sanitizeHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
@@ -39,8 +38,8 @@ export type NewPrereview = {
   user: User
 }
 
-export interface CreateRecordEnv {
-  createRecord: (newPrereview: NewPrereview) => TE.TaskEither<unknown, SubmittedDeposition>
+export interface PostPrereviewEnv {
+  postPrereview: (newPrereview: NewPrereview) => TE.TaskEither<unknown, Doi>
 }
 
 export const writeReviewPost = flow(
@@ -74,8 +73,8 @@ const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprin
       review: renderReview(form),
       user,
     })),
-    RM.chainReaderTaskEitherKW(createRecord),
-    RM.ichainW(deposition => showSuccessMessage(preprint, deposition.metadata.doi, form.moreAuthors === 'yes')),
+    RM.chainReaderTaskEitherKW(postPrereview),
+    RM.ichainW(doi => showSuccessMessage(preprint, doi, form.moreAuthors === 'yes')),
     RM.orElseW(() => showFailureMessage(preprint)),
   )
 
@@ -87,8 +86,8 @@ const showPostForm = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const createRecord = (newPrereview: NewPrereview) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ createRecord }: CreateRecordEnv) => createRecord(newPrereview)))
+const postPrereview = (newPrereview: NewPrereview) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ postPrereview }: PostPrereviewEnv) => postPrereview(newPrereview)))
 
 const showSuccessMessage = flow(
   fromReaderK(successMessage),

@@ -1274,7 +1274,8 @@ describe('infrastructure', () => {
             user: fc.user(),
           }),
           fc.string(),
-          async (newPrereview, zenodoApiKey) => {
+          fc.doi(),
+          async (newPrereview, zenodoApiKey, reviewDoi) => {
             const unsubmittedDeposition: UnsubmittedDeposition = {
               id: 1,
               links: {
@@ -1285,7 +1286,7 @@ describe('infrastructure', () => {
                 creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
                 description: 'Description',
                 prereserve_doi: {
-                  doi: '10.5072/zenodo.1055806' as Doi,
+                  doi: reviewDoi,
                 },
                 title: 'Title',
                 upload_type: 'publication',
@@ -1299,7 +1300,7 @@ describe('infrastructure', () => {
               metadata: {
                 creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
                 description: 'Description',
-                doi: '10.5072/zenodo.1055806' as Doi,
+                doi: reviewDoi,
                 title: 'Title',
                 upload_type: 'publication',
                 publication_type: 'article',
@@ -1354,7 +1355,7 @@ describe('infrastructure', () => {
               zenodoApiKey,
             })()
 
-            expect(actual).toStrictEqual(E.right(submittedDeposition))
+            expect(actual).toStrictEqual(E.right(reviewDoi))
           },
         ),
       )
@@ -1375,7 +1376,8 @@ describe('infrastructure', () => {
             user: fc.user(),
           }),
           fc.string(),
-          async (newPrereview, zenodoApiKey) => {
+          fc.doi(),
+          async (newPrereview, zenodoApiKey, reviewDoi) => {
             const unsubmittedDeposition: UnsubmittedDeposition = {
               id: 1,
               links: {
@@ -1386,7 +1388,7 @@ describe('infrastructure', () => {
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
                 prereserve_doi: {
-                  doi: '10.5072/zenodo.1055806' as Doi,
+                  doi: reviewDoi,
                 },
                 title: 'Title',
                 upload_type: 'publication',
@@ -1400,7 +1402,7 @@ describe('infrastructure', () => {
               metadata: {
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
-                doi: '10.5072/zenodo.1055806' as Doi,
+                doi: reviewDoi,
                 title: 'Title',
                 upload_type: 'publication',
                 publication_type: 'article',
@@ -1455,7 +1457,7 @@ describe('infrastructure', () => {
               zenodoApiKey,
             })()
 
-            expect(actual).toStrictEqual(E.right(submittedDeposition))
+            expect(actual).toStrictEqual(E.right(reviewDoi))
           },
         ),
       )
