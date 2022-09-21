@@ -24,6 +24,7 @@ import { SubmittedDeposition } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
+import { PreprintId } from '../preprint-id'
 import {
   logInMatch,
   preprintMatch,
@@ -108,23 +109,23 @@ export interface FormStoreEnv {
   formStore: Keyv<JsonRecord>
 }
 
-const showNextForm = (preprint: Preprint) => (form: Form) =>
+const showNextForm = (preprint: PreprintId['doi']) => (form: Form) =>
   match(form)
     .with(
       { review: P.string, persona: P.string, moreAuthors: P.string, competingInterests: P.string, conduct: P.string },
-      () => seeOther(format(writeReviewPostMatch.formatter, { doi: preprint.doi })),
+      () => seeOther(format(writeReviewPostMatch.formatter, { doi: preprint })),
     )
     .with({ review: P.string, persona: P.string, moreAuthors: P.string, competingInterests: P.string }, () =>
-      seeOther(format(writeReviewConductMatch.formatter, { doi: preprint.doi })),
+      seeOther(format(writeReviewConductMatch.formatter, { doi: preprint })),
     )
     .with({ review: P.string, persona: P.string, moreAuthors: P.string }, () =>
-      seeOther(format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.doi })),
+      seeOther(format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint })),
     )
     .with({ review: P.string, persona: P.string }, () =>
-      seeOther(format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })),
+      seeOther(format(writeReviewAuthorsMatch.formatter, { doi: preprint })),
     )
-    .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })))
-    .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint.doi })))
+    .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, { doi: preprint })))
+    .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint })))
 
 export const writeReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -132,7 +133,7 @@ export const writeReview = flow(
     pipe(
       getUser(),
       RM.chainReaderTaskKW(user => getForm(user.orcid, preprint.doi)),
-      RM.ichainMiddlewareKW(showNextForm(preprint)),
+      RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
       RM.orElseW(() => showStartPage(preprint)),
     ),
   ),
@@ -194,7 +195,7 @@ export const writeReviewAddAuthors = flow(
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state)
-          .with({ form: P.select({ moreAuthors: 'yes' }), method: 'POST' }, fromMiddlewareK(showNextForm(preprint)))
+          .with({ form: P.select({ moreAuthors: 'yes' }), method: 'POST' }, fromMiddlewareK(showNextForm(preprint.doi)))
           .with({ form: { moreAuthors: 'yes' } }, showAddAuthorsForm)
           .otherwise(() => notFound),
       ),
@@ -251,7 +252,7 @@ export const writeReviewPost = flow(
           .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePostForm)
           .with({ method: 'POST', preprint: P.select() }, showFailureMessage)
           .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, showPostForm)
-          .otherwise(flow(({ form }) => form, fromMiddlewareK(showNextForm(preprint)))),
+          .otherwise(flow(({ form }) => form, fromMiddlewareK(showNextForm(preprint.doi)))),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
@@ -340,7 +341,7 @@ const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Prep
     RM.decodeBody(ReviewFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint)),
+    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
     RM.orElseW(() => showReviewErrorForm(preprint)),
   )
 
@@ -357,7 +358,7 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.decodeBody(PersonaFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint)),
+    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
     RM.orElseW(() => showPersonaErrorForm(preprint, user)),
   )
 
@@ -371,7 +372,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
         .with({ moreAuthors: 'yes' }, () =>
           seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })),
         )
-        .otherwise(showNextForm(preprint)),
+        .otherwise(showNextForm(preprint.doi)),
     ),
     RM.orElseW(() => showAuthorsErrorForm(preprint, user)),
   )
@@ -381,7 +382,7 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     RM.decodeBody(CompetingInterestsFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint)),
+    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
     RM.orElseW(() =>
       pipe(
         RM.decodeBody(
@@ -400,7 +401,7 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
     RM.decodeBody(CodeOfConductFormC.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint)),
+    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
     RM.orElseW(() => showCodeOfConductErrorForm(preprint)),
   )
 
