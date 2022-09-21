@@ -15,7 +15,6 @@ import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
-import { LanguageCode } from 'iso-639-1'
 import Keyv from 'keyv'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
@@ -25,7 +24,6 @@ import { SubmittedDeposition } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
-import { PreprintId } from '../preprint-id'
 import {
   logInMatch,
   preprintMatch,
@@ -40,6 +38,7 @@ import {
 } from '../routes'
 import { NonEmptyStringC } from '../string'
 import { User, UserC } from '../user'
+import { Preprint, getPreprint } from './preprint'
 
 const ReviewFormC = C.struct({
   review: NonEmptyStringC,
@@ -99,28 +98,15 @@ export type NewPrereview = {
   user: User
 }
 
-type Preprint = {
-  doi: PreprintId['doi']
-  language: LanguageCode
-  title: Html
-}
-
 export interface CreateRecordEnv {
   createRecord: (newPrereview: NewPrereview) => TE.TaskEither<unknown, SubmittedDeposition>
 }
 
-export interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
-}
+export { GetPreprintTitleEnv } from './preprint'
 
 export interface FormStoreEnv {
   formStore: Keyv<JsonRecord>
 }
-
-const getPreprintTitle = (doi: PreprintId['doi']) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(doi)))
-
-const getPreprint = (doi: PreprintId['doi']) => pipe(getPreprintTitle(doi), RTE.apS('doi', RTE.right(doi)))
 
 const showNextForm = (preprint: Preprint) => (form: Form) =>
   match(form)
