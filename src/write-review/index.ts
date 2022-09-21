@@ -38,7 +38,6 @@ import {
   CompletedFormC,
   PartialCompetingInterestsFormC,
   PersonaFormC,
-  ReviewFormC,
 } from './completed-form'
 import { Form, deleteForm, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
@@ -61,20 +60,7 @@ export { FormStoreEnv } from './form'
 
 export { writeReview } from './write-review'
 
-export const writeReviewReview = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
-  RM.ichainW(preprint =>
-    pipe(
-      RM.right({ preprint }),
-      RM.apS('user', getUserFromSession()),
-      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
-      RM.apSW('method', RM.decodeMethod(E.right)),
-      RM.ichainW(state => match(state).with({ method: 'POST' }, handleReviewForm).otherwise(showReviewForm)),
-      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
-    ),
-  ),
-  RM.orElseW(() => notFound),
-)
+export { writeReviewReview } from './write-review-review'
 
 export const writeReviewPersona = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -257,15 +243,6 @@ const showCodeOfConductErrorForm = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
-  pipe(
-    RM.decodeBody(ReviewFormC.decode),
-    RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
-    RM.orElseW(() => showReviewErrorForm(preprint)),
-  )
-
 const showPostForm = flow(
   fromReaderK(({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
     postForm(preprint, form, user),
@@ -328,18 +305,6 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
 
 const createRecord = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ createRecord }: CreateRecordEnv) => createRecord(newPrereview)))
-
-const showReviewForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) => reviewForm(preprint, form)),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
-
-const showReviewErrorForm = flow(
-  fromReaderK((preprint: Preprint) => reviewForm(preprint, {}, true)),
-  RM.ichainFirst(() => RM.status(Status.BadRequest)),
-  RM.ichainMiddlewareK(sendHtml),
-)
 
 const showSuccessMessage = flow(
   fromReaderK(successMessage),
@@ -921,60 +886,6 @@ function personaForm(preprint: Preprint, form: Form, user: User, error = false) 
       </main>
     `,
     js: ['error-summary.js'],
-  })
-}
-
-function reviewForm(preprint: Preprint, form: Form, error = false) {
-  return page({
-    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of “${preprint.title}”`,
-    content: html`
-      <nav>
-        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
-      </nav>
-
-      <main>
-        <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" novalidate>
-          ${error
-            ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
-                  <ul>
-                    <li>
-                      <a href="#review">Enter your PREreview</a>
-                    </li>
-                  </ul>
-                </error-summary>
-              `
-            : ''}
-
-          <div ${rawHtml(error ? 'class="error"' : '')}>
-            <h1><label id="review-label" for="review">Write your PREreview</label></h1>
-
-            ${error
-              ? html`
-                  <div class="error-message" id="review-error">
-                    <span class="visually-hidden">Error:</span> Enter your PREreview
-                  </div>
-                `
-              : ''}
-
-            <html-editor>
-              <textarea
-                id="review"
-                name="review"
-                rows="20"
-                ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
-              >
-${rawHtml(form.review ?? '')}</textarea
-              >
-            </html-editor>
-          </div>
-
-          <button>Continue</button>
-        </form>
-      </main>
-    `,
-    js: ['html-editor.js', 'error-summary.js'],
   })
 }
 
