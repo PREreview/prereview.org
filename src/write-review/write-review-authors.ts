@@ -35,15 +35,13 @@ export const writeReviewAuthors = flow(
 )
 
 const showAuthorsForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
-    authorsForm(preprint, form, user),
-  ),
+  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) => authorsForm(preprint, form)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showAuthorsErrorForm = flow(
-  fromReaderK((preprint: Preprint, user: User) => authorsForm(preprint, {}, user, true)),
+  fromReaderK((preprint: Preprint) => authorsForm(preprint, {}, true)),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -60,14 +58,14 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
         )
         .otherwise(showNextForm(preprint.doi)),
     ),
-    RM.orElseW(() => showAuthorsErrorForm(preprint, user)),
+    RM.orElseW(() => showAuthorsErrorForm(preprint)),
   )
 
 const AuthorsFormD = D.struct({
   moreAuthors: D.literal('yes', 'no'),
 })
 
-function authorsForm(preprint: Preprint, form: Form, user: User, error = false) {
+function authorsForm(preprint: Preprint, form: Form, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}Did you write the PREreview with anyone else? – PREreview of “${
       preprint.title
