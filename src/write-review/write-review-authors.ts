@@ -61,11 +61,13 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.orElseW(() => showAuthorsErrorForm(preprint)),
   )
 
+type AuthorsForm = D.TypeOf<typeof AuthorsFormD>
+
 const AuthorsFormD = D.struct({
   moreAuthors: D.literal('yes', 'no'),
 })
 
-function authorsForm(preprint: Preprint, form: Form, error = false) {
+function authorsForm(preprint: Preprint, form: Partial<AuthorsForm>, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}Did you write the PREreview with anyone else? – PREreview of “${
       preprint.title

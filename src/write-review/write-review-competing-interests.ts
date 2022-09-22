@@ -64,8 +64,11 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     ),
   )
 
-const PartialCompetingInterestsFormD = D.struct({
+type PartialCompetingInterestsForm = D.TypeOf<typeof PartialCompetingInterestsFormD>
+
+const PartialCompetingInterestsFormD = D.partial({
   competingInterests: D.literal('yes', 'no'),
+  competingInterestsDetails: NonEmptyStringC,
 })
 
 const CompetingInterestsFormD = D.sum('competingInterests')({
@@ -78,7 +81,7 @@ const CompetingInterestsFormD = D.sum('competingInterests')({
   }),
 })
 
-function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
+function competingInterestsForm(preprint: Preprint, form: Partial<PartialCompetingInterestsForm>, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}Do you have any competing interests? – PREreview of “${preprint.title}”`,
     content: html`

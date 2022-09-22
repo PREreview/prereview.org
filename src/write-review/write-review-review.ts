@@ -39,6 +39,8 @@ const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Prep
     RM.orElseW(() => showReviewErrorForm(preprint)),
   )
 
+type ReviewForm = D.TypeOf<typeof ReviewFormD>
+
 const ReviewFormD = D.struct({
   review: NonEmptyStringC,
 })
@@ -55,7 +57,7 @@ const showReviewErrorForm = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function reviewForm(preprint: Preprint, form: Form, error = false) {
+function reviewForm(preprint: Preprint, form: Partial<ReviewForm>, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}Write your PREreview of “${preprint.title}”`,
     content: html`

@@ -52,11 +52,13 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
     RM.orElseW(() => showCodeOfConductErrorForm(preprint)),
   )
 
+type CodeOfConductForm = D.TypeOf<typeof CodeOfConductFormD>
+
 const CodeOfConductFormD = D.struct({
   conduct: D.literal('yes'),
 })
 
-function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
+function codeOfConductForm(preprint: Preprint, form: Partial<CodeOfConductForm>, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}Code of Conduct – PREreview of “${preprint.title}”`,
     content: html`

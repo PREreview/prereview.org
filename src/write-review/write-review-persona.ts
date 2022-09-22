@@ -52,11 +52,13 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.orElseW(() => showPersonaErrorForm(preprint, user)),
   )
 
+type PersonaForm = D.TypeOf<typeof PersonaFormD>
+
 const PersonaFormD = D.struct({
   persona: D.literal('public', 'pseudonym'),
 })
 
-function personaForm(preprint: Preprint, form: Form, user: User, error = false) {
+function personaForm(preprint: Preprint, form: Partial<PersonaForm>, user: User, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of “${preprint.title}”`,
     content: html`

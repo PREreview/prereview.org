@@ -11,7 +11,7 @@ import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
 import { getUserFromSession } from '../user'
-import { Form, getForm, showNextForm } from './form'
+import { getForm, showNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewAddAuthors = flow(
@@ -35,12 +35,12 @@ export const writeReviewAddAuthors = flow(
 )
 
 const showAddAuthorsForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) => addAuthorsForm(preprint, form)),
+  fromReaderK(({ preprint }: { preprint: Preprint }) => addAuthorsForm(preprint)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function addAuthorsForm(preprint: Preprint, form: Form, error = false) {
+function addAuthorsForm(preprint: Preprint, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}Add more authors – PREreview of “${preprint.title}”`,
     content: html`
