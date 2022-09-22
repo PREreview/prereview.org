@@ -4,13 +4,14 @@ import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
+import { NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
-import { CompetingInterestsFormD, PartialCompetingInterestsFormD } from './completed-form'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -62,6 +63,20 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
       ),
     ),
   )
+
+const PartialCompetingInterestsFormD = D.struct({
+  competingInterests: D.literal('yes', 'no'),
+})
+
+const CompetingInterestsFormD = D.sum('competingInterests')({
+  yes: D.struct({
+    competingInterests: D.literal('yes'),
+    competingInterestsDetails: NonEmptyStringC,
+  }),
+  no: D.struct({
+    competingInterests: D.literal('no'),
+  }),
+})
 
 function competingInterestsForm(preprint: Preprint, form: Form, error = false) {
   return page({

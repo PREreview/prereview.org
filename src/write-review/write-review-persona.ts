@@ -4,13 +4,13 @@ import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import { writeReviewMatch, writeReviewPersonaMatch, writeReviewReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { PersonaFormD } from './completed-form'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -51,6 +51,10 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
     RM.orElseW(() => showPersonaErrorForm(preprint, user)),
   )
+
+const PersonaFormD = D.struct({
+  persona: D.literal('public', 'pseudonym'),
+})
 
 function personaForm(preprint: Preprint, form: Form, user: User, error = false) {
   return page({

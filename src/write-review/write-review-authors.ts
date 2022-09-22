@@ -4,6 +4,7 @@ import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
@@ -15,7 +16,6 @@ import {
   writeReviewPersonaMatch,
 } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { AuthorsFormD } from './completed-form'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -62,6 +62,10 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     ),
     RM.orElseW(() => showAuthorsErrorForm(preprint, user)),
   )
+
+const AuthorsFormD = D.struct({
+  moreAuthors: D.literal('yes', 'no'),
+})
 
 function authorsForm(preprint: Preprint, form: Form, user: User, error = false) {
   return page({

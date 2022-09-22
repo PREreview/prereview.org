@@ -4,13 +4,13 @@ import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import { writeReviewCompetingInterestsMatch, writeReviewConductMatch, writeReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { CodeOfConductFormD } from './completed-form'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -51,6 +51,10 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
     RM.orElseW(() => showCodeOfConductErrorForm(preprint)),
   )
+
+const CodeOfConductFormD = D.struct({
+  conduct: D.literal('yes'),
+})
 
 function codeOfConductForm(preprint: Preprint, form: Form, error = false) {
   return page({

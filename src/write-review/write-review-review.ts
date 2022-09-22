@@ -4,13 +4,14 @@ import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import { preprintMatch, writeReviewMatch, writeReviewReviewMatch } from '../routes'
+import { NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
-import { ReviewFormD } from './completed-form'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -37,6 +38,10 @@ const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Prep
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
     RM.orElseW(() => showReviewErrorForm(preprint)),
   )
+
+const ReviewFormD = D.struct({
+  review: NonEmptyStringC,
+})
 
 const showReviewForm = flow(
   fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) => reviewForm(preprint, form)),
