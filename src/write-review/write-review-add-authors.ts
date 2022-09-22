@@ -40,9 +40,9 @@ const showAddAuthorsForm = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function addAuthorsForm(preprint: Preprint, error = false) {
+function addAuthorsForm(preprint: Preprint) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Add more authors – PREreview of “${preprint.title}”`,
+    title: plainText`Add more authors – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
