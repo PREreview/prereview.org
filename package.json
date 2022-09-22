@@ -46,7 +46,7 @@
     "@prettier/plugin-xml": "^2.2.0",
     "@tiptap/core": "^2.0.0-beta.182",
     "@tiptap/extension-link": "^2.0.0-beta.42",
-    "@tiptap/extension-subscript": "^2.0.0-beta.13",
+    "@tiptap/extension-subscript": "^2.0.0-beta.196",
     "@tiptap/extension-superscript": "^2.0.0-beta.13",
     "@tiptap/extension-typography": "^2.0.0-beta.22",
     "@tiptap/starter-kit": "^2.0.0-beta.195",
