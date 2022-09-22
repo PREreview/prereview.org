@@ -35,9 +35,21 @@ export const CodeOfConductFormD = D.struct({
 })
 
 export const CompletedFormD = pipe(
-  ReviewFormD,
-  D.intersect(PersonaFormD),
-  D.intersect(AuthorsFormD),
-  D.intersect(CompetingInterestsFormD),
-  D.intersect(CodeOfConductFormD),
+  D.struct({
+    conduct: D.literal('yes'),
+    moreAuthors: D.literal('yes', 'no'),
+    persona: D.literal('public', 'pseudonym'),
+    review: NonEmptyStringC,
+  }),
+  D.intersect(
+    D.sum('competingInterests')({
+      yes: D.struct({
+        competingInterests: D.literal('yes'),
+        competingInterestsDetails: NonEmptyStringC,
+      }),
+      no: D.struct({
+        competingInterests: D.literal('no'),
+      }),
+    }),
+  ),
 )
