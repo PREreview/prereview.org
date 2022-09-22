@@ -10,7 +10,7 @@ import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import { writeReviewCompetingInterestsMatch, writeReviewConductMatch, writeReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { CodeOfConductFormC } from './completed-form'
+import { CodeOfConductFormD } from './completed-form'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -45,7 +45,7 @@ const showCodeOfConductErrorForm = flow(
 
 const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(CodeOfConductFormC.decode),
+    RM.decodeBody(CodeOfConductFormD.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),

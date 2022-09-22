@@ -10,7 +10,7 @@ import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import { preprintMatch, writeReviewMatch, writeReviewReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { ReviewFormC } from './completed-form'
+import { ReviewFormD } from './completed-form'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -31,7 +31,7 @@ export const writeReviewReview = flow(
 
 const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(ReviewFormC.decode),
+    RM.decodeBody(ReviewFormD.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),

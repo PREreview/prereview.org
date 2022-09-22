@@ -1,43 +1,43 @@
 import { pipe } from 'fp-ts/function'
-import * as C from 'io-ts/Codec'
+import * as D from 'io-ts/Decoder'
 import { NonEmptyStringC } from '../string'
 
-export type CompletedForm = C.TypeOf<typeof CompletedFormC>
+export type CompletedForm = D.TypeOf<typeof CompletedFormD>
 
-export const ReviewFormC = C.struct({
+export const ReviewFormD = D.struct({
   review: NonEmptyStringC,
 })
 
-export const PersonaFormC = C.struct({
-  persona: C.literal('public', 'pseudonym'),
+export const PersonaFormD = D.struct({
+  persona: D.literal('public', 'pseudonym'),
 })
 
-export const AuthorsFormC = C.struct({
-  moreAuthors: C.literal('yes', 'no'),
+export const AuthorsFormD = D.struct({
+  moreAuthors: D.literal('yes', 'no'),
 })
 
-export const PartialCompetingInterestsFormC = C.struct({
-  competingInterests: C.literal('yes', 'no'),
+export const PartialCompetingInterestsFormD = D.struct({
+  competingInterests: D.literal('yes', 'no'),
 })
 
-export const CompetingInterestsFormC = C.sum('competingInterests')({
-  yes: C.struct({
-    competingInterests: C.literal('yes'),
+export const CompetingInterestsFormD = D.sum('competingInterests')({
+  yes: D.struct({
+    competingInterests: D.literal('yes'),
     competingInterestsDetails: NonEmptyStringC,
   }),
-  no: C.struct({
-    competingInterests: C.literal('no'),
+  no: D.struct({
+    competingInterests: D.literal('no'),
   }),
 })
 
-export const CodeOfConductFormC = C.struct({
-  conduct: C.literal('yes'),
+export const CodeOfConductFormD = D.struct({
+  conduct: D.literal('yes'),
 })
 
-export const CompletedFormC = pipe(
-  ReviewFormC,
-  C.intersect(PersonaFormC),
-  C.intersect(AuthorsFormC),
-  C.intersect(CompetingInterestsFormC),
-  C.intersect(CodeOfConductFormC),
+export const CompletedFormD = pipe(
+  ReviewFormD,
+  D.intersect(PersonaFormD),
+  D.intersect(AuthorsFormD),
+  D.intersect(CompetingInterestsFormD),
+  D.intersect(CodeOfConductFormD),
 )

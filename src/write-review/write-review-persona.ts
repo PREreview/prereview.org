@@ -10,7 +10,7 @@ import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import { writeReviewMatch, writeReviewPersonaMatch, writeReviewReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { PersonaFormC } from './completed-form'
+import { PersonaFormD } from './completed-form'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -45,7 +45,7 @@ const showPersonaErrorForm = flow(
 
 const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(PersonaFormC.decode),
+    RM.decodeBody(PersonaFormD.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),

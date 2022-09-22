@@ -10,7 +10,7 @@ import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { CompetingInterestsFormC, PartialCompetingInterestsFormC } from './completed-form'
+import { CompetingInterestsFormD, PartialCompetingInterestsFormD } from './completed-form'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -46,7 +46,7 @@ const showCompetingInterestsErrorForm = (preprint: Preprint) => (form: Form) =>
 
 const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(CompetingInterestsFormC.decode),
+    RM.decodeBody(CompetingInterestsFormD.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
@@ -54,7 +54,7 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
       pipe(
         RM.decodeBody(
           flow(
-            PartialCompetingInterestsFormC.decode,
+            PartialCompetingInterestsFormD.decode,
             E.altW(() => E.right({})),
           ),
         ),

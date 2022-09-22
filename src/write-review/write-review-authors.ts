@@ -15,7 +15,7 @@ import {
   writeReviewPersonaMatch,
 } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { AuthorsFormC } from './completed-form'
+import { AuthorsFormD } from './completed-form'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -50,7 +50,7 @@ const showAuthorsErrorForm = flow(
 
 const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(AuthorsFormC.decode),
+    RM.decodeBody(AuthorsFormD.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(form =>
