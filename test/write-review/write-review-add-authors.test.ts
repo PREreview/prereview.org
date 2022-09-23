@@ -25,14 +25,27 @@ describe('writeReviewAddAuthors', () => {
           ),
         ),
         fc.user(),
-        fc.record({
-          competingInterests: fc.constantFrom('yes', 'no'),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          moreAuthors: fc.constant('yes'),
-          persona: fc.constantFrom('public', 'pseudonym'),
-          review: fc.nonEmptyString(),
-        }),
+        fc.record(
+          {
+            competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
+            conduct: fc.constant('yes'),
+            moreAuthors: fc.constant('yes'),
+            otherAuthors: fc.array(fc.nonEmptyString()),
+            persona: fc.constantFrom('public', 'pseudonym'),
+            review: fc.nonEmptyString(),
+          },
+          {
+            requiredKeys: [
+              'competingInterests',
+              'competingInterestsDetails',
+              'conduct',
+              'moreAuthors',
+              'persona',
+              'review',
+            ],
+          },
+        ),
         async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
@@ -88,6 +101,7 @@ describe('writeReviewAddAuthors', () => {
               competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constant('yes'),
+              otherAuthors: fc.array(fc.nonEmptyString()),
               persona: fc.constantFrom('public', 'pseudonym'),
               review: fc.nonEmptyString(),
             },
@@ -202,6 +216,7 @@ describe('writeReviewAddAuthors', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
+            otherAuthors: fc.array(fc.nonEmptyString()),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },

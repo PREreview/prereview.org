@@ -12,6 +12,17 @@ export const CompletedFormD = pipe(
     review: NonEmptyStringC,
   }),
   D.intersect(
+    D.sum('moreAuthors')({
+      yes: D.struct({
+        moreAuthors: D.literal('yes'),
+        otherAuthors: pipe(D.array(NonEmptyStringC), D.readonly),
+      }),
+      no: D.struct({
+        moreAuthors: D.literal('no'),
+      }),
+    }),
+  ),
+  D.intersect(
     D.sum('competingInterests')({
       yes: D.struct({
         competingInterests: D.literal('yes'),

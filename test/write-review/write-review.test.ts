@@ -30,6 +30,7 @@ describe('writeReview', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
+            otherAuthors: fc.array(fc.nonEmptyString()),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.lorem(),
           }),

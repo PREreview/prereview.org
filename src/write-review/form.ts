@@ -4,7 +4,7 @@ import { JsonRecord } from 'fp-ts/Json'
 import { ReaderTask } from 'fp-ts/ReaderTask'
 import * as T from 'fp-ts/Task'
 import * as TE from 'fp-ts/TaskEither'
-import { constVoid, constant, flow } from 'fp-ts/function'
+import { constVoid, constant, flow, pipe } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
 import * as C from 'io-ts/Codec'
 import Keyv from 'keyv'
@@ -13,6 +13,7 @@ import { P, match } from 'ts-pattern'
 import { seeOther } from '../middleware'
 import { PreprintId } from '../preprint-id'
 import {
+  writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
@@ -70,6 +71,9 @@ export const showNextForm = (preprint: PreprintId['doi']) => (form: Form) =>
     .with({ moreAuthors: P.optional(P.nullish) }, () =>
       seeOther(format(writeReviewAuthorsMatch.formatter, { doi: preprint })),
     )
+    .with({ moreAuthors: 'yes', otherAuthors: P.optional(P.nullish) }, () =>
+      seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint })),
+    )
     .with({ competingInterests: P.optional(P.nullish) }, () =>
       seeOther(format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint })),
     )
@@ -82,6 +86,7 @@ const FormC = C.partial({
   review: NonEmptyStringC,
   persona: C.literal('public', 'pseudonym'),
   moreAuthors: C.literal('yes', 'no'),
+  otherAuthors: pipe(C.array(NonEmptyStringC), C.readonly),
   competingInterests: C.literal('yes', 'no'),
   competingInterestsDetails: NonEmptyStringC,
   conduct: C.literal('yes'),

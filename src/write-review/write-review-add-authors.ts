@@ -3,15 +3,14 @@ import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import { P, match } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
-import { getUserFromSession } from '../user'
-import { getForm, showNextForm } from './form'
+import { User, getUserFromSession } from '../user'
+import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewAddAuthors = flow(
@@ -24,7 +23,7 @@ export const writeReviewAddAuthors = flow(
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state)
-          .with({ form: P.select({ moreAuthors: 'yes' }), method: 'POST' }, fromMiddlewareK(showNextForm(preprint.doi)))
+          .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleAddAuthorsForm)
           .with({ form: { moreAuthors: 'yes' } }, showAddAuthorsForm)
           .otherwise(() => notFound),
       ),
@@ -39,6 +38,15 @@ const showAddAuthorsForm = flow(
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
+
+const handleAddAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  pipe(
+    RM.of({ otherAuthors: [] }),
+    RM.map(updateForm(form)),
+    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
+    RM.orElseW(() => showAddAuthorsForm({ preprint })),
+  )
 
 function addAuthorsForm(preprint: Preprint) {
   return page({
@@ -65,14 +73,6 @@ function addAuthorsForm(preprint: Preprint) {
     js: ['error-summary.js'],
   })
 }
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
