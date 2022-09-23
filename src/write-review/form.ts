@@ -61,21 +61,22 @@ export function deleteForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv,
 
 export const showNextForm = (preprint: PreprintId['doi']) => (form: Form) =>
   match(form)
-    .with(
-      { review: P.string, persona: P.string, moreAuthors: P.string, competingInterests: P.string, conduct: P.string },
-      () => seeOther(format(writeReviewPostMatch.formatter, { doi: preprint })),
+    .with({ review: P.optional(P.nullish) }, () =>
+      seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint })),
     )
-    .with({ review: P.string, persona: P.string, moreAuthors: P.string, competingInterests: P.string }, () =>
-      seeOther(format(writeReviewConductMatch.formatter, { doi: preprint })),
+    .with({ persona: P.optional(P.nullish) }, () =>
+      seeOther(format(writeReviewPersonaMatch.formatter, { doi: preprint })),
     )
-    .with({ review: P.string, persona: P.string, moreAuthors: P.string }, () =>
-      seeOther(format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint })),
-    )
-    .with({ review: P.string, persona: P.string }, () =>
+    .with({ moreAuthors: P.optional(P.nullish) }, () =>
       seeOther(format(writeReviewAuthorsMatch.formatter, { doi: preprint })),
     )
-    .with({ review: P.string }, () => seeOther(format(writeReviewPersonaMatch.formatter, { doi: preprint })))
-    .otherwise(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint })))
+    .with({ competingInterests: P.optional(P.nullish) }, () =>
+      seeOther(format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint })),
+    )
+    .with({ conduct: P.optional(P.nullish) }, () =>
+      seeOther(format(writeReviewConductMatch.formatter, { doi: preprint })),
+    )
+    .otherwise(() => seeOther(format(writeReviewPostMatch.formatter, { doi: preprint })))
 
 const FormC = C.partial({
   review: NonEmptyStringC,
