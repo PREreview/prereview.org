@@ -370,12 +370,16 @@ label {
   cursor: pointer;
   touch-action: manipulation;
 
+  @nest :not(:--heading) > & {
+    display: block;
+    inline-size: fit-content;
+    margin-block-start: var(--space-m);
+  }
+
   &:not([for]) {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    inline-size: fit-content;
-    margin-block-start: var(--space-m);
 
     &.textarea {
       inline-size: 100%;
