@@ -1264,6 +1264,7 @@ describe('infrastructure', () => {
         fc.asyncProperty(
           fc.record<NewPrereview>({
             conduct: fc.constant('yes'),
+            otherAuthors: fc.array(fc.nonEmptyString()),
             persona: fc.constant('public'),
             preprint: fc.record({
               doi: fc.preprintDoi(),
@@ -1319,7 +1320,10 @@ describe('infrastructure', () => {
                         upload_type: 'publication',
                         publication_type: 'article',
                         title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                        creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+                        creators: [
+                          { name: newPrereview.user.name, orcid: newPrereview.user.orcid },
+                          ...newPrereview.otherAuthors.map(name => ({ name })),
+                        ],
                         communities: [{ identifier: 'prereview-reviews' }],
                         description: newPrereview.review.toString(),
                         related_identifiers: [
@@ -1366,6 +1370,7 @@ describe('infrastructure', () => {
         fc.asyncProperty(
           fc.record<NewPrereview>({
             conduct: fc.constant('yes'),
+            otherAuthors: fc.array(fc.nonEmptyString()),
             persona: fc.constant('pseudonym'),
             preprint: fc.record({
               doi: fc.preprintDoi(),
@@ -1421,7 +1426,10 @@ describe('infrastructure', () => {
                         upload_type: 'publication',
                         publication_type: 'article',
                         title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                        creators: [{ name: newPrereview.user.pseudonym }],
+                        creators: [
+                          { name: newPrereview.user.pseudonym },
+                          ...newPrereview.otherAuthors.map(name => ({ name })),
+                        ],
                         communities: [{ identifier: 'prereview-reviews' }],
                         description: newPrereview.review.toString(),
                         related_identifiers: [
@@ -1468,6 +1476,7 @@ describe('infrastructure', () => {
         fc.asyncProperty(
           fc.record<NewPrereview>({
             conduct: fc.constant('yes'),
+            otherAuthors: fc.array(fc.nonEmptyString()),
             persona: fc.constantFrom('public', 'pseudonym'),
             preprint: fc.record({
               doi: fc.preprintDoi(),

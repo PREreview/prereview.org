@@ -54,6 +54,7 @@ describe('writeReviewPost', () => {
 
           expect(postPrereview).toHaveBeenCalledWith({
             conduct: 'yes',
+            otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
             persona: newReview.persona,
             preprint: {
               doi: preprintDoi,

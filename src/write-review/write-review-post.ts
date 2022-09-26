@@ -25,6 +25,7 @@ import {
   writeReviewPostMatch,
   writeReviewReviewMatch,
 } from '../routes'
+import { NonEmptyString } from '../string'
 import { User, getUserFromSession } from '../user'
 import { CompletedForm, CompletedFormD } from './completed-form'
 import { deleteForm, getForm, showNextForm } from './form'
@@ -32,6 +33,7 @@ import { Preprint, getPreprint } from './preprint'
 
 export type NewPrereview = {
   conduct: 'yes'
+  otherAuthors: ReadonlyArray<NonEmptyString>
   persona: 'public' | 'pseudonym'
   preprint: Preprint
   review: Html
@@ -68,6 +70,7 @@ const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprin
     RM.rightReaderTask(deleteForm(user.orcid, preprint.doi)),
     RM.map(() => ({
       conduct: form.conduct,
+      otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
       persona: form.persona,
       preprint,
       review: renderReview(form),
@@ -187,6 +190,9 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
 
           <ol aria-label="Authors of this PREreview" class="author-list">
             <li>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</li>
+            ${review.moreAuthors === 'yes'
+              ? review.otherAuthors.map(name => html`<li>${displayAuthor({ name })}</li>`)
+              : ''}
           </ol>
 
           ${renderReview(review)}
