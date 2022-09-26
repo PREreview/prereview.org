@@ -579,7 +579,9 @@ error-summary {
 }
 
 .error {
-  margin-block-start: var(--space-s-l);
+  @nest error-summary + & {
+    margin-block-start: var(--space-s-l);
+  }
 
   @media screen {
     padding-inline-start: var(--space-s);
