@@ -3,7 +3,7 @@ import { Status } from 'hyper-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
-import { expect, test } from './test'
+import { canAddAuthors, expect, test } from './test'
 
 test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
@@ -343,6 +343,156 @@ test('can post a PREreview with more authors', async ({ fetch, javaScriptEnabled
   await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
   await expect(main).toContainText('other authors’ details')
   await expect(page).toHaveScreenshot()
+})
+
+test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fetch, javaScriptEnabled, page }) => {
+  const record: Record = {
+    conceptdoi: '10.5072/zenodo.1055807' as Doi,
+    conceptrecid: 1055807,
+    files: [
+      {
+        links: {
+          self: new URL('http://example.com/file'),
+        },
+        key: 'review.html',
+        type: 'html',
+        size: 58,
+      },
+    ],
+    id: 1055808,
+    links: {
+      latest: new URL('http://example.com/latest'),
+      latest_html: new URL('http://example.com/latest_html'),
+    },
+    metadata: {
+      communities: [{ id: 'prereview-reviews' }],
+      creators: [{ name: 'Orange Panda' }, { name: 'Jean-Baptiste Botul' }],
+      description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
+      doi: '10.5072/zenodo.1055808' as Doi,
+      license: {
+        id: 'CC-BY-4.0',
+      },
+      publication_date: new Date('2022-07-05'),
+      related_identifiers: [
+        {
+          identifier: '10.1101/2022.01.13.476201',
+          relation: 'reviews',
+          resource_type: 'publication-preprint',
+          scheme: 'doi',
+        },
+        {
+          identifier: '10.5072/zenodo.1055807',
+          relation: 'isVersionOf',
+          scheme: 'doi',
+        },
+      ],
+      resource_type: {
+        type: 'publication',
+        subtype: 'article',
+      },
+      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+    },
+  }
+
+  fetch.get(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { hits: [] } }) },
+  )
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.click('text="Write a PREreview"')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
+  await page.click('text="Continue"')
+  await page.check('text="Josiah Carberry"')
+  await page.click('text="Continue"')
+  await page.check('text="Yes"')
+  await page.click('text="Continue"')
+
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/add-author')
+
+  await expect(page.locator('h1')).toHaveText('Add an author')
+  await expect(page).toHaveScreenshot()
+
+  await page.fill('role=textbox[name="Name"]', 'Jean-Baptiste Botul')
+  await page.click('text="Continue"')
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
+  await page.check('text="I’m following the Code of Conduct"')
+  await page.click('text="Continue"')
+
+  const preview = page.locator('role=blockquote[name="Check your PREreview"]')
+
+  await expect(preview).toContainText('Jean-Baptiste Botul')
+  await expect(page).toHaveScreenshot()
+
+  fetch
+    .postOnce('http://zenodo.test/api/deposit/depositions', {
+      body: UnsubmittedDepositionC.encode({
+        ...record,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+        },
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          prereserve_doi: {
+            doi: record.metadata.doi,
+          },
+          upload_type: 'publication',
+          publication_type: 'article',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }),
+      status: Status.Created,
+    })
+    .putOnce('http://example.com/bucket/review.html', {
+      status: Status.Created,
+    })
+    .postOnce('http://example.com/publish', {
+      body: SubmittedDepositionC.encode({
+        ...record,
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          upload_type: 'publication',
+          publication_type: 'article',
+        },
+        state: 'done',
+        submitted: true,
+      }),
+      status: Status.Accepted,
+    })
+
+  await page.click('text="Post PREreview"')
+
+  await expect(page.locator('h1')).toHaveText('PREreview posted')
 })
 
 test('can post a PREreview with competing interests', async ({ fetch, javaScriptEnabled, page }) => {
@@ -1033,6 +1183,55 @@ test('have to say if there are more authors', async ({ fetch, javaScriptEnabled,
   await page.click('text="Select yes if you wrote the PREreview with someone else"')
 
   await expect(page.locator('role=radio[name="No, by myself"]')).toBeFocused()
+  await expect(page).toHaveScreenshot()
+})
+
+test.extend(canAddAuthors)("have to add the author's name", async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
+  await page.click('text="Continue"')
+
+  await page.click('text="Continue"')
+  await page.check('text="Josiah Carberry"')
+  await page.click('text="Continue"')
+  await page.check('text="Yes"')
+  await page.click('text="Continue"')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/add-author')
+
+  await page.click('text="Continue"')
+
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
+  await expect(page.locator('role=textbox[name="Name"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Enter their name"')
+
+  await expect(page.locator('role=textbox[name="Name"]')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
 

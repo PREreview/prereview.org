@@ -53,6 +53,7 @@ const env = pipe(
 )()
 
 const deps: AppEnv = {
+  canAddAuthors: () => false,
   clock: SystemClock,
   fetch: fetch.defaults({
     cachePath: env.CACHE_PATH,
