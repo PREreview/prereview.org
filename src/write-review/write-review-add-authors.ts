@@ -23,8 +23,8 @@ export const writeReviewAddAuthors = flow(
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
         match(state)
-          .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleAddAuthorsForm)
-          .with({ form: { moreAuthors: 'yes' } }, showAddAuthorsForm)
+          .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleCannotAddAuthorsForm)
+          .with({ form: { moreAuthors: 'yes' } }, showCannotAddAuthorsForm)
           .otherwise(() => notFound),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
@@ -33,22 +33,22 @@ export const writeReviewAddAuthors = flow(
   RM.orElseW(() => notFound),
 )
 
-const showAddAuthorsForm = flow(
-  fromReaderK(({ preprint }: { preprint: Preprint }) => addAuthorsForm(preprint)),
+const showCannotAddAuthorsForm = flow(
+  fromReaderK(({ preprint }: { preprint: Preprint }) => cannotAddAuthorsForm(preprint)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const handleAddAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+const handleCannotAddAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
     RM.of({ otherAuthors: [] }),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
-    RM.orElseW(() => showAddAuthorsForm({ preprint })),
+    RM.orElseW(() => showCannotAddAuthorsForm({ preprint })),
   )
 
-function addAuthorsForm(preprint: Preprint) {
+function cannotAddAuthorsForm(preprint: Preprint) {
   return page({
     title: plainText`Add more authors – PREreview of “${preprint.title}”`,
     content: html`
