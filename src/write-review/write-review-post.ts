@@ -179,36 +179,42 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
       </nav>
 
       <main>
-        <h1 id="preview-label">Check your PREreview</h1>
-
-        <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
-          <h2>
-            PREreview of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}"
-              >${preprint.title}</span
-            >”
-          </h2>
-
-          <ol aria-label="Authors of this PREreview" class="author-list">
-            <li>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</li>
-            ${review.moreAuthors === 'yes'
-              ? review.otherAuthors.map(name => html`<li>${displayAuthor({ name })}</li>`)
-              : ''}
-          </ol>
-
-          ${renderReview(review)}
-        </blockquote>
-
-        <div class="button-group" role="group">
-          <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" class="button button-secondary">
-            Change PREreview
-          </a>
-          <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="button button-secondary">
-            Change name
-          </a>
-        </div>
-
         <single-use-form>
           <form method="post" action="${format(writeReviewPostMatch.formatter, { doi: preprint.doi })}" novalidate>
+            <h1 id="preview-label">Check your PREreview</h1>
+
+            <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
+              <h2>
+                PREreview of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}"
+                  >${preprint.title}</span
+                >”
+              </h2>
+
+              <ol aria-label="Authors of this PREreview" class="author-list">
+                <li>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</li>
+                ${review.moreAuthors === 'yes'
+                  ? review.otherAuthors.map(name => html`<li>${displayAuthor({ name })}</li>`)
+                  : ''}
+              </ol>
+
+              ${renderReview(review)}
+            </blockquote>
+
+            <div class="button-group" role="group">
+              <a
+                href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}"
+                class="button button-secondary"
+              >
+                Change PREreview
+              </a>
+              <a
+                href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}"
+                class="button button-secondary"
+              >
+                Change name
+              </a>
+            </div>
+
             <h2>Now post your PREreview</h2>
 
             <p>
