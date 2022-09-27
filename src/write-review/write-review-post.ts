@@ -14,6 +14,7 @@ import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
+import { canAddAuthors } from '../feature-flags'
 import { Html, html, plainText, sanitizeHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
@@ -50,6 +51,10 @@ export const writeReviewPost = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUserFromSession()),
+      RM.bindW(
+        'canAddAuthors',
+        fromReaderK(({ user }) => canAddAuthors(user)),
+      ),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
       RM.apSW('method', RM.decodeMethod(E.right)),
       RM.ichainW(state =>
@@ -65,7 +70,17 @@ export const writeReviewPost = flow(
   RM.orElseW(() => notFound),
 )
 
-const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
+const handlePostForm = ({
+  canAddAuthors,
+  form,
+  preprint,
+  user,
+}: {
+  canAddAuthors: boolean
+  form: CompletedForm
+  preprint: Preprint
+  user: User
+}) =>
   pipe(
     RM.rightReaderTask(deleteForm(user.orcid, preprint.doi)),
     RM.map(() => ({
@@ -77,7 +92,7 @@ const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprin
       user,
     })),
     RM.chainReaderTaskEitherKW(postPrereview),
-    RM.ichainW(doi => showSuccessMessage(preprint, doi, form.moreAuthors === 'yes')),
+    RM.ichainW(doi => showSuccessMessage(preprint, doi, form.moreAuthors === 'yes' && !canAddAuthors)),
     RM.orElseW(() => showFailureMessage(preprint)),
   )
 

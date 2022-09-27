@@ -497,6 +497,7 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   await page.click('text="Post PREreview"')
 
   await expect(page.locator('h1')).toHaveText('PREreview posted')
+  await expect(page.locator('main')).not.toContainText('other authors’ details')
 })
 
 test('can post a PREreview with competing interests', async ({ fetch, javaScriptEnabled, page }) => {

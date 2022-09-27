@@ -34,8 +34,17 @@ describe('writeReviewPost', () => {
           review: fc.lorem(),
         }),
         fc.user(),
+        fc.boolean(),
         fc.doi(),
-        async (preprintDoi, preprintTitle, [connection, sessionId, secret], newReview, user, reviewDoi) => {
+        async (
+          preprintDoi,
+          preprintTitle,
+          [connection, sessionId, secret],
+          newReview,
+          user,
+          canAddAuthors,
+          reviewDoi,
+        ) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
           const formStore = new Keyv()
@@ -48,7 +57,14 @@ describe('writeReviewPost', () => {
           )
 
           const actual = await runMiddleware(
-            _.writeReviewPost(preprintDoi)({ formStore, getPreprintTitle, postPrereview, secret, sessionStore }),
+            _.writeReviewPost(preprintDoi)({
+              canAddAuthors: () => canAddAuthors,
+              formStore,
+              getPreprintTitle,
+              postPrereview,
+              secret,
+              sessionStore,
+            }),
             connection,
           )()
 
@@ -107,7 +123,8 @@ describe('writeReviewPost', () => {
           )
           .filter(newReview => Object.keys(newReview).length < 5),
         fc.user(),
-        async (preprintDoi, preprintTitle, [connection, sessionId, secret], newPrereview, user) => {
+        fc.boolean(),
+        async (preprintDoi, preprintTitle, [connection, sessionId, secret], newPrereview, user, canAddAuthors) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
           const formStore = new Keyv()
@@ -116,6 +133,7 @@ describe('writeReviewPost', () => {
 
           const actual = await runMiddleware(
             _.writeReviewPost(preprintDoi)({
+              canAddAuthors: () => canAddAuthors,
               getPreprintTitle,
               formStore,
               postPrereview: () => TE.left(''),
@@ -166,7 +184,8 @@ describe('writeReviewPost', () => {
           { withDeletedKeys: true },
         ),
         fc.user(),
-        async (preprintDoi, error, [connection, sessionId, secret], newReview, user) => {
+        fc.boolean(),
+        async (preprintDoi, error, [connection, sessionId, secret], newReview, user, canAddAuthors) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
           const formStore = new Keyv()
@@ -175,7 +194,14 @@ describe('writeReviewPost', () => {
           const postPrereview = () => () => Promise.reject('should not be called')
 
           const actual = await runMiddleware(
-            _.writeReviewPost(preprintDoi)({ formStore, getPreprintTitle, postPrereview, secret, sessionStore }),
+            _.writeReviewPost(preprintDoi)({
+              canAddAuthors: () => canAddAuthors,
+              formStore,
+              getPreprintTitle,
+              postPrereview,
+              secret,
+              sessionStore,
+            }),
             connection,
           )()
 
@@ -206,6 +232,9 @@ describe('writeReviewPost', () => {
 
           const actual = await runMiddleware(
             _.writeReviewPost(preprintDoi)({
+              canAddAuthors: () => {
+                throw 'Should not be called'
+              },
               getPreprintTitle,
               formStore,
               postPrereview: () => TE.left(''),
@@ -259,7 +288,16 @@ describe('writeReviewPost', () => {
           review: fc.lorem(),
         }),
         fc.user(),
-        async (preprintDoi, preprintTitle, [connection, sessionId, secret], response, newReview, user) => {
+        fc.boolean(),
+        async (
+          preprintDoi,
+          preprintTitle,
+          [connection, sessionId, secret],
+          response,
+          newReview,
+          user,
+          canAddAuthors,
+        ) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
           const formStore = new Keyv()
@@ -268,6 +306,7 @@ describe('writeReviewPost', () => {
 
           const actual = await runMiddleware(
             _.writeReviewPost(preprintDoi)({
+              canAddAuthors: () => canAddAuthors,
               getPreprintTitle,
               formStore,
               postPrereview: () => TE.left(response),
