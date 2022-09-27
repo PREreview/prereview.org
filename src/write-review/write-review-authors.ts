@@ -5,11 +5,14 @@ import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
+import { canAddAuthors } from '../feature-flags'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import {
+  writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewMatch,
@@ -51,12 +54,17 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.decodeBody(AuthorsFormD.decode),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(form =>
-      match(form)
-        .with({ moreAuthors: 'yes' }, () =>
+    RM.bindTo('form'),
+    RM.apSW('canAddAuthors', RM.rightReader(canAddAuthors(user))),
+    RM.ichainMiddlewareKW(state =>
+      match(state)
+        .with({ form: { moreAuthors: 'yes' }, canAddAuthors: true }, () =>
+          seeOther(format(writeReviewAddAuthorMatch.formatter, { doi: preprint.doi })),
+        )
+        .with({ form: { moreAuthors: 'yes' } }, () =>
           seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })),
         )
-        .otherwise(showNextForm(preprint.doi)),
+        .otherwise(flow(get('form'), showNextForm(preprint.doi))),
     ),
     RM.orElseW(() => showAuthorsErrorForm(preprint)),
   )

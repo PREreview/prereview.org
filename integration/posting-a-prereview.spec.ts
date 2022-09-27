@@ -432,8 +432,6 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   await page.check('text="Yes"')
   await page.click('text="Continue"')
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/add-author')
-
   await expect(page.locator('h1')).toHaveText('Add an author')
   await expect(page).toHaveScreenshot()
 
@@ -1217,7 +1215,6 @@ test.extend(canAddAuthors)("have to add the author's name", async ({ fetch, java
   await page.click('text="Continue"')
   await page.check('text="Yes"')
   await page.click('text="Continue"')
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/add-author')
 
   await page.click('text="Continue"')
 

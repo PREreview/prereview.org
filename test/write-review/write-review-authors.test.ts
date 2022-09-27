@@ -26,16 +26,16 @@ describe('writeReviewAuthors', () => {
           ),
         ),
         fc.user(),
+        fc.boolean(),
         fc.record({
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
           moreAuthors: fc.constantFrom('yes', 'no'),
-          otherAuthors: fc.array(fc.nonEmptyString()),
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.nonEmptyString(),
         }),
-        async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+        async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, canAddAuthors, newReview) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
           const formStore = new Keyv()
@@ -44,7 +44,13 @@ describe('writeReviewAuthors', () => {
             TE.right(preprintTitle),
           )
           const actual = await runMiddleware(
-            _.writeReviewAuthors(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+            _.writeReviewAuthors(preprintDoi)({
+              canAddAuthors: () => canAddAuthors,
+              formStore,
+              getPreprintTitle,
+              secret,
+              sessionStore,
+            }),
             connection,
           )()
 
@@ -55,9 +61,13 @@ describe('writeReviewAuthors', () => {
               {
                 type: 'setHeader',
                 name: 'Location',
-                value: `/preprints/doi-${encodeURIComponent(
-                  preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-                )}/write-a-prereview/add-more-authors`,
+                value: canAddAuthors
+                  ? `/preprints/doi-${encodeURIComponent(
+                      preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                    )}/write-a-prereview/add-author`
+                  : `/preprints/doi-${encodeURIComponent(
+                      preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                    )}/write-a-prereview/add-more-authors`,
               },
               { type: 'endResponse' },
             ]),
@@ -86,6 +96,7 @@ describe('writeReviewAuthors', () => {
             ),
           ),
           fc.user(),
+          fc.boolean(),
           fc.record(
             {
               competingInterests: fc.constantFrom('yes', 'no'),
@@ -107,7 +118,7 @@ describe('writeReviewAuthors', () => {
               ],
             },
           ),
-          async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+          async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, canAddAuthors, newReview) => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
@@ -116,7 +127,13 @@ describe('writeReviewAuthors', () => {
               TE.right(preprintTitle),
             )
             const actual = await runMiddleware(
-              _.writeReviewAuthors(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+              _.writeReviewAuthors(preprintDoi)({
+                canAddAuthors: () => canAddAuthors,
+                formStore,
+                getPreprintTitle,
+                secret,
+                sessionStore,
+              }),
               connection,
             )()
 
@@ -157,6 +174,7 @@ describe('writeReviewAuthors', () => {
             ),
           ),
           fc.user(),
+          fc.boolean(),
           fc
             .record(
               {
@@ -171,7 +189,7 @@ describe('writeReviewAuthors', () => {
               { withDeletedKeys: true },
             )
             .filter(newReview => Object.keys(newReview).length < 5),
-          async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+          async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, canAddAuthors, newReview) => {
             const sessionStore = new Keyv()
             await sessionStore.set(sessionId, UserC.encode(user))
             const formStore = new Keyv()
@@ -179,7 +197,13 @@ describe('writeReviewAuthors', () => {
             const getPreprintTitle = () => TE.right(preprintTitle)
 
             const actual = await runMiddleware(
-              _.writeReviewAuthors(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+              _.writeReviewAuthors(preprintDoi)({
+                canAddAuthors: () => canAddAuthors,
+                formStore,
+                getPreprintTitle,
+                secret,
+                sessionStore,
+              }),
               connection,
             )()
 
@@ -222,6 +246,7 @@ describe('writeReviewAuthors', () => {
           ),
         ),
         fc.user(),
+        fc.boolean(),
         fc.record(
           {
             competingInterests: fc.constantFrom('yes', 'no'),
@@ -234,7 +259,7 @@ describe('writeReviewAuthors', () => {
           },
           { withDeletedKeys: true },
         ),
-        async (preprintDoi, error, [connection, sessionId, secret], user, newReview) => {
+        async (preprintDoi, error, [connection, sessionId, secret], user, canAddAuthors, newReview) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
           const formStore = new Keyv()
@@ -242,7 +267,13 @@ describe('writeReviewAuthors', () => {
           const getPreprintTitle = () => TE.left(error)
 
           const actual = await runMiddleware(
-            _.writeReviewAuthors(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+            _.writeReviewAuthors(preprintDoi)({
+              canAddAuthors: () => canAddAuthors,
+              formStore,
+              getPreprintTitle,
+              secret,
+              sessionStore,
+            }),
             connection,
           )()
 
@@ -275,7 +306,15 @@ describe('writeReviewAuthors', () => {
           const getPreprintTitle = () => TE.right(preprintTitle)
 
           const actual = await runMiddleware(
-            _.writeReviewAuthors(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+            _.writeReviewAuthors(preprintDoi)({
+              canAddAuthors: () => {
+                throw 'Should not be called'
+              },
+              formStore,
+              getPreprintTitle,
+              secret,
+              sessionStore,
+            }),
             connection,
           )()
 
@@ -314,6 +353,7 @@ describe('writeReviewAuthors', () => {
           ),
         ),
         fc.user(),
+        fc.boolean(),
         fc.record(
           {
             competingInterests: fc.constantFrom('yes', 'no'),
@@ -326,7 +366,7 @@ describe('writeReviewAuthors', () => {
           },
           { withDeletedKeys: true },
         ),
-        async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+        async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, canAddAuthors, newReview) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
           const formStore = new Keyv()
@@ -334,7 +374,13 @@ describe('writeReviewAuthors', () => {
           const getPreprintTitle = () => TE.right(preprintTitle)
 
           const actual = await runMiddleware(
-            _.writeReviewAuthors(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+            _.writeReviewAuthors(preprintDoi)({
+              canAddAuthors: () => canAddAuthors,
+              formStore,
+              getPreprintTitle,
+              secret,
+              sessionStore,
+            }),
             connection,
           )()
 
