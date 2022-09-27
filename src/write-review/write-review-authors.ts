@@ -6,7 +6,7 @@ import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
@@ -58,7 +58,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.apSW('canAddAuthors', RM.rightReader(canAddAuthors(user))),
     RM.ichainMiddlewareKW(state =>
       match(state)
-        .with({ form: { moreAuthors: 'yes' }, canAddAuthors: true }, () =>
+        .with({ form: { moreAuthors: 'yes', otherAuthors: P.optional([]) }, canAddAuthors: true }, () =>
           seeOther(format(writeReviewAddAuthorMatch.formatter, { doi: preprint.doi })),
         )
         .with({ form: { moreAuthors: 'yes' } }, () =>
