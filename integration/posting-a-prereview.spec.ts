@@ -898,6 +898,62 @@ test('can change the name after previewing', async ({ fetch, javaScriptEnabled, 
   await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText('Orange Panda')
 })
 
+test.extend(canAddAuthors)('can change the authors after previewing', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
+  await page.click('text="Continue"')
+  await page.check('text="Josiah Carberry"')
+  await page.click('text="Continue"')
+  await page.check('text="Yes"')
+  await page.click('text="Continue"')
+  await page.fill('role=textbox[name="Name"]', 'Jean-Baptiste Botul')
+  await page.click('text="Continue"')
+  await page.check('text="No"')
+  await page.click('text="Continue"')
+  await page.check('text="No"')
+  await page.click('text="Continue"')
+  await page.check('text="I’m following the Code of Conduct"')
+  await page.click('text="Continue"')
+
+  await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText('Jean-Baptiste Botul')
+
+  await page.click('text="Change authors"')
+
+  await page.check('text="Yes"')
+  await page.click('text="Continue"')
+  await page.fill('role=textbox[name="Name"]', 'Otto Lidenbrock')
+  await page.click('text="Continue"')
+  await page.check('text="No"')
+  await page.click('text="Continue"')
+
+  await expect(page.locator('role=list[name="Authors of this PREreview"] >> role=listitem')).toContainText([
+    'Jean-Baptiste Botul',
+    'Otto Lidenbrock',
+  ])
+})
+
 test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
 

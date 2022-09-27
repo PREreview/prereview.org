@@ -20,6 +20,7 @@ import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
 import {
   preprintMatch,
+  writeReviewAddAuthorsMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
@@ -97,8 +98,18 @@ const handlePostForm = ({
   )
 
 const showPostForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
-    postForm(preprint, form, user),
+  fromReaderK(
+    ({
+      canAddAuthors,
+      form,
+      preprint,
+      user,
+    }: {
+      canAddAuthors: boolean
+      form: CompletedForm
+      preprint: Preprint
+      user: User
+    }) => postForm(preprint, form, user, canAddAuthors),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -185,7 +196,7 @@ function failureMessage(preprint: Preprint) {
   })
 }
 
-function postForm(preprint: Preprint, review: CompletedForm, user: User) {
+function postForm(preprint: Preprint, review: CompletedForm, user: User, canAddAuthors: boolean) {
   return page({
     title: plainText`Post your PREreview of “${preprint.title}”`,
     content: html`
@@ -228,6 +239,16 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
               >
                 Change name
               </a>
+              ${review.moreAuthors === 'yes' && canAddAuthors
+                ? html`
+                    <a
+                      href="${format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })}"
+                      class="button button-secondary"
+                    >
+                      Change authors
+                    </a>
+                  `
+                : ''}
             </div>
 
             <h2>Now post your PREreview</h2>
