@@ -10,10 +10,15 @@ import { canAddAuthors } from '../feature-flags'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther } from '../middleware'
 import { page } from '../page'
-import { writeReviewAddAuthorMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
+import {
+  writeReviewAddAuthorMatch,
+  writeReviewAddAuthorsMatch,
+  writeReviewAuthorsMatch,
+  writeReviewMatch,
+} from '../routes'
 import { NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
-import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
+import { Form, getForm, saveForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewAddAuthor = flow(
@@ -66,7 +71,7 @@ const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: P
     RM.map(({ name }) => ({ otherAuthors: [...(form.otherAuthors ?? []), name] })),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
+    RM.ichainMiddlewareKW(() => seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi }))),
     RM.orElseW(() => showAddAuthorErrorForm(preprint, user)),
   )
 

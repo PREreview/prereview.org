@@ -38,16 +38,7 @@ describe('writeReviewAddAuthor', () => {
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },
-          {
-            requiredKeys: [
-              'competingInterests',
-              'competingInterestsDetails',
-              'conduct',
-              'moreAuthors',
-              'persona',
-              'review',
-            ],
-          },
+          { requiredKeys: ['moreAuthors'] },
         ),
         async (preprintDoi, preprintTitle, [name, connection, sessionId, secret], user, newReview) => {
           const sessionStore = new Keyv()
@@ -80,83 +71,12 @@ describe('writeReviewAddAuthor', () => {
                 name: 'Location',
                 value: `/preprints/doi-${encodeURIComponent(
                   preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-                )}/write-a-prereview/check-your-prereview`,
+                )}/write-a-prereview/add-more-authors`,
               },
               { type: 'endResponse' },
             ]),
           )
           expect(canAddAuthors).toHaveBeenCalledWith(user)
-          expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
-        },
-      ),
-    )
-  })
-
-  test('when the form is incomplete', async () => {
-    await fc.assert(
-      fc.asyncProperty(
-        fc.preprintDoi(),
-        fc.record({ title: fc.html(), language: fc.languageCode() }),
-        fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
-          fc.tuple(
-            fc.connection({
-              body: fc.record({ name: fc.nonEmptyString() }),
-              headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-              method: fc.constant('POST'),
-            }),
-            fc.constant(sessionId),
-            fc.constant(secret),
-          ),
-        ),
-        fc.user(),
-        fc
-          .record(
-            {
-              competingInterests: fc.constantFrom('yes', 'no'),
-              competingInterestsDetails: fc.lorem(),
-              conduct: fc.constant('yes'),
-              moreAuthors: fc.constant('yes'),
-              otherAuthors: fc.array(fc.nonEmptyString()),
-              persona: fc.constantFrom('public', 'pseudonym'),
-              review: fc.nonEmptyString(),
-            },
-            { requiredKeys: ['moreAuthors'] },
-          )
-          .filter(newReview => Object.keys(newReview).length < 4),
-        async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
-          const sessionStore = new Keyv()
-          await sessionStore.set(sessionId, UserC.encode(user))
-          const formStore = new Keyv()
-          await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-          const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
-            TE.right(preprintTitle),
-          )
-          const actual = await runMiddleware(
-            _.writeReviewAddAuthor(preprintDoi)({
-              canAddAuthors: () => true,
-              formStore,
-              getPreprintTitle,
-              secret,
-              sessionStore,
-            }),
-            connection,
-          )()
-
-          expect(actual).toStrictEqual(
-            E.right([
-              { type: 'setStatus', status: Status.SeeOther },
-              {
-                type: 'setHeader',
-                name: 'Location',
-                value: expect.stringContaining(
-                  `/preprints/doi-${encodeURIComponent(
-                    preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-                  )}/write-a-prereview`,
-                ),
-              },
-              { type: 'endResponse' },
-            ]),
-          )
           expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
         },
       ),
@@ -374,6 +294,64 @@ describe('writeReviewAddAuthor', () => {
                 )}/write-a-prereview`,
               },
               { type: 'endResponse' },
+            ]),
+          )
+        },
+      ),
+    )
+  })
+  test('without a name', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.preprintDoi(),
+        fc.record({ title: fc.html(), language: fc.languageCode() }),
+        fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+          fc.tuple(
+            fc.connection({
+              body: fc.constant({}),
+              headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+              method: fc.constant('POST'),
+            }),
+            fc.constant(sessionId),
+            fc.constant(secret),
+          ),
+        ),
+        fc.user(),
+        fc.record(
+          {
+            competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
+            conduct: fc.constant('yes'),
+            moreAuthors: fc.constant('yes'),
+            otherAuthors: fc.array(fc.nonEmptyString()),
+            persona: fc.constantFrom('public', 'pseudonym'),
+            review: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['moreAuthors'] },
+        ),
+        async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+          const sessionStore = new Keyv()
+          await sessionStore.set(sessionId, UserC.encode(user))
+          const formStore = new Keyv()
+          await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+          const getPreprintTitle = () => TE.right(preprintTitle)
+
+          const actual = await runMiddleware(
+            _.writeReviewAddAuthor(preprintDoi)({
+              canAddAuthors: () => true,
+              formStore,
+              getPreprintTitle,
+              secret,
+              sessionStore,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.BadRequest },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
             ]),
           )
         },

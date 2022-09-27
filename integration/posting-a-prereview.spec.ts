@@ -438,6 +438,12 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   await page.fill('role=textbox[name="Name"]', 'Jean-Baptiste Botul')
   await page.click('text="Continue"')
 
+  await expect(page.locator('h1')).toHaveText('Do you need to add another author?')
+  await expect(page).toHaveScreenshot()
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
+
   await page.check('text="No"')
   await page.click('text="Continue"')
   await page.check('text="I’m following the Code of Conduct"')
@@ -1231,6 +1237,62 @@ test.extend(canAddAuthors)("have to add the author's name", async ({ fetch, java
   await expect(page.locator('role=textbox[name="Name"]')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
+
+test.extend(canAddAuthors)(
+  'have to say if you need to add another author',
+  async ({ fetch, javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.click('text="Start now"')
+
+    await page.fill('[type=email]', 'test@example.com')
+    await page.fill('[type=password]', 'password')
+    fetch.postOnce('http://orcid.test/token', {
+      status: Status.OK,
+      body: {
+        access_token: 'access-token',
+        token_type: 'Bearer',
+        name: 'Josiah Carberry',
+        orcid: '0000-0002-1825-0097',
+      },
+    })
+    await page.keyboard.press('Enter')
+
+    if (javaScriptEnabled) {
+      await page.locator('[contenteditable]').waitFor()
+    }
+    await page.fill(
+      'role=textbox[name="Write your PREreview"]',
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    )
+    await page.click('text="Continue"')
+
+    await page.click('text="Continue"')
+    await page.check('text="Josiah Carberry"')
+    await page.click('text="Continue"')
+    await page.check('text="Yes"')
+    await page.click('text="Continue"')
+    await page.fill('role=textbox[name="Name"]', 'Jean-Baptiste Botul')
+    await page.click('text="Continue"')
+
+    await page.click('text="Continue"')
+
+    if (javaScriptEnabled) {
+      await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+    } else {
+      await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+    }
+    await expect(page.locator('role=group[name="Do you need to add another author?"]')).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+    await expect(page).toHaveScreenshot()
+
+    await page.click('text="Select yes if you need to add another author"')
+
+    await expect(page.locator('role=radio[name="No"]')).toBeFocused()
+    await expect(page).toHaveScreenshot()
+  },
+)
 
 test('have to declare any competing interests', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
