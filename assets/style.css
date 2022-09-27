@@ -55,6 +55,7 @@
   --color-divider-light: var(--oc-gray-1);
   --color-error: var(--oc-red-7);
   --color-success: var(--oc-green-7);
+  --width-divider-narrow: calc(var(--width-divider) / 1.5);
   --width-divider: 4px;
   --width-divider-wide: calc(var(--width-divider) * 1.5);
   --radius-divider: calc(var(--width-divider) * 5);
@@ -810,6 +811,21 @@ html-editor {
         text-decoration-line: underline;
       }
     }
+  }
+}
+
+.summary-list {
+  margin-block-start: var(--space-m);
+  list-style-type: none;
+  padding-inline-start: 0;
+
+  & > * {
+    border-block-end: var(--width-divider-narrow) solid var(--color-divider);
+    padding-block: var(--space-3xs-2xs);
+  }
+
+  & + * {
+    margin-block-start: var(--space-l);
   }
 }
 

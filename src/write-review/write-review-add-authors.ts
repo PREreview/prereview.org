@@ -119,7 +119,7 @@ function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<NonEmptyStrin
 
           <h1>You have added ${authors.length} other author${authors.length !== 1 ? 's' : ''}</h1>
 
-          <ol>
+          <ol class="summary-list">
             ${authors.map(name => html`<li>${name}</li>`)}
           </ol>
 
