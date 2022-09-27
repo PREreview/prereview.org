@@ -117,13 +117,19 @@ function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<NonEmptyStrin
               `
             : ''}
 
+          <h1>You have added ${authors.length} other author${authors.length !== 1 ? 's' : ''}</h1>
+
+          <ol>
+            ${authors.map(name => html`<li>${name}</li>`)}
+          </ol>
+
           <div ${rawHtml(error ? 'class="error"' : '')}>
             <fieldset
               role="group"
               ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="another-author-error"' : '')}
             >
               <legend>
-                <h1>Do you need to add another&nbsp;author?</h1>
+                <h2>Do you need to add another&nbsp;author?</h2>
               </legend>
 
               ${error

@@ -438,7 +438,7 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   await page.fill('role=textbox[name="Name"]', 'Jean-Baptiste Botul')
   await page.click('text="Continue"')
 
-  await expect(page.locator('h1')).toHaveText('Do you need to add another author?')
+  await expect(page.locator('h1')).toHaveText('You have added 1 other author')
   await expect(page).toHaveScreenshot()
 
   await page.check('text="No"')
