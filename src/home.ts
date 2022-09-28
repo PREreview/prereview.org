@@ -30,7 +30,7 @@ function createPage() {
             <input name="doi" type="text" spellcheck="false" aria-describedby="doi-tip" />
           </label>
 
-          <div id="doi-tip" role="note">We support bioRxiv, medRxiv and SciELO preprints.</div>
+          <div id="doi-tip" role="note">We support AfricArXiv, bioRxiv, medRxiv and SciELO preprints.</div>
 
           <button>Continue</button>
         </form>
