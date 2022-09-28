@@ -130,6 +130,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
                 <dt>Server</dt>
                 <dd>
                   ${match(preprint.id.type)
+                    .with('africarxiv', () => 'AfricArXiv Preprints')
                     .with('biorxiv', () => 'bioRxiv')
                     .with('medrxiv', () => 'medRxiv')
                     .with('scielo', () => 'SciELO Preprints')

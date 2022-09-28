@@ -33,7 +33,7 @@ import {
 } from 'zenodo-ts'
 import { Html, plainText, rawHtml, sanitizeHtml } from './html'
 import { Preprint } from './preprint'
-import { PreprintId } from './preprint-id'
+import { BiorxivPreprintId, MedrxivPreprintId, PreprintId, ScieloPreprintId } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
@@ -240,9 +240,9 @@ function toHttps(url: URL): URL {
   return httpsUrl
 }
 
-const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590'))), 'DOI')
+const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590', '31730'))), 'DOI')
 
-const PreprintIdD: D.Decoder<Work, PreprintId> = pipe(
+const PreprintIdD: D.Decoder<Work, BiorxivPreprintId | MedrxivPreprintId | ScieloPreprintId> = pipe(
   D.union(
     D.struct({
       DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI'),

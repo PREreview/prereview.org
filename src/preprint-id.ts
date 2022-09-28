@@ -1,6 +1,11 @@
 import { Doi } from 'doi-ts'
 
-export type PreprintId = BiorxivPreprintId | MedrxivPreprintId | ScieloPreprintId
+export type PreprintId = AfricarxivPreprintId | BiorxivPreprintId | MedrxivPreprintId | ScieloPreprintId
+
+export interface AfricarxivPreprintId {
+  readonly type: 'africarxiv'
+  readonly doi: Doi<'31730'>
+}
 
 export interface BiorxivPreprintId {
   readonly type: 'biorxiv'

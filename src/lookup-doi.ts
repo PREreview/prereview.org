@@ -11,7 +11,7 @@ import { homeMatch, preprintMatch } from './routes'
 const DoiD = pipe(
   D.string,
   D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parse(s))),
-  D.refine(hasRegistrant('1101', '1590'), 'DOI'),
+  D.refine(hasRegistrant('1101', '1590', '31730'), 'DOI'),
 )
 
 const LookupDoiD = pipe(
