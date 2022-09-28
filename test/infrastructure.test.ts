@@ -460,7 +460,10 @@ describe('infrastructure', () => {
 
               expect(actual).toStrictEqual(
                 E.right({
-                  abstract: expect.anything(),
+                  abstract: {
+                    language: 'en',
+                    text: expect.anything(),
+                  },
                   authors: [
                     { name: 'Xin Liu', orcid: undefined },
                     { name: 'Wojciech Nawrocki', orcid: '0000-0001-5124-3000' },
@@ -470,7 +473,6 @@ describe('infrastructure', () => {
                     type: server.toLowerCase(),
                     doi: '10.1101/2022.01.13.476201',
                   },
-                  language: 'en',
                   posted,
                   title: {
                     language: 'en',
@@ -569,7 +571,10 @@ describe('infrastructure', () => {
 
             expect(actual).toStrictEqual(
               E.right({
-                abstract: expect.anything(),
+                abstract: {
+                  language: 'es',
+                  text: expect.anything(),
+                },
                 authors: [
                   { name: 'Yudit Rovira Alvarez', orcid: '0000-0003-3232-9372' },
                   { name: 'Aylén Rojas Valdés', orcid: undefined },
@@ -580,7 +585,6 @@ describe('infrastructure', () => {
                   type: 'scielo',
                   doi: '10.1590/scielopreprints.4502',
                 },
-                language: 'es',
                 posted,
                 title: {
                   language: 'es',

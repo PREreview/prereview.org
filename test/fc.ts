@@ -142,7 +142,10 @@ export const user = (): fc.Arbitrary<User> =>
 
 export const preprint = (): fc.Arbitrary<Preprint> =>
   fc.record({
-    abstract: html(),
+    abstract: fc.record({
+      language: languageCode(),
+      text: html(),
+    }),
     authors: fc
       .array(
         fc.record(
@@ -156,7 +159,6 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
       )
       .filter(isNonEmpty),
     id: preprintId(),
-    language: languageCode(),
     posted: plainDate(),
     title: fc.record({
       language: languageCode(),

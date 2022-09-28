@@ -112,7 +112,6 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
       () => work.type === 'posted-content' && work.subtype === 'preprint',
       () => 'not a preprint',
     ),
-    E.apS('abstract', pipe(work.abstract, E.fromNullable('no abstract'), E.map(transformJatsToHtml))),
     E.apS(
       'authors',
       pipe(
@@ -142,13 +141,21 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
         ),
       ),
     ),
-    E.bindW(
-      'language',
-      E.fromOptionK(() => 'unknown language')(preprint =>
-        match(preprint)
-          .with({ id: { type: P.union('biorxiv', 'medrxiv') } }, () => O.some('en' as const))
-          .with({ id: { type: 'scielo' }, abstract: P.select() }, detectLanguage('en', 'es', 'pt'))
-          .exhaustive(),
+    E.bindW('abstract', ({ id: { type } }) =>
+      pipe(
+        work.abstract,
+        E.fromNullable('no abstract'),
+        E.map(transformJatsToHtml),
+        E.bindTo('text'),
+        E.bindW(
+          'language',
+          E.fromOptionK(() => 'unknown language')(({ text }) =>
+            match({ type, text })
+              .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+              .with({ type: 'scielo', text: P.select() }, detectLanguage('en', 'es', 'pt'))
+              .exhaustive(),
+          ),
+        ),
       ),
     ),
     E.bindW('title', preprint =>
@@ -157,7 +164,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
         E.fromOptionK(() => 'no title')(RA.head),
         E.map(sanitizeHtml),
         E.bindTo('text'),
-        E.apS('language', E.right(preprint.language)),
+        E.apS('language', E.right(preprint.abstract.language)),
       ),
     ),
     E.map(preprint => ({
