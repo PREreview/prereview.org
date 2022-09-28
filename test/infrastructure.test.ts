@@ -23,6 +23,101 @@ import PlainDate = Temporal.PlainDate
 describe('infrastructure', () => {
   describe('getPreprint', () => {
     describe('when the preprint can be loaded', () => {
+      test('from AfricArXiv', async () => {
+        await fc.assert(
+          fc.asyncProperty(fc.doi(), fc.plainDate(), async (doi, posted) => {
+            const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
+              body: {
+                status: 'ok',
+                'message-type': 'work',
+                'message-version': '1.0.0',
+                message: {
+                  indexed: {
+                    'date-parts': [[2022, 4, 5]],
+                    'date-time': '2022-04-05T12:39:59Z',
+                    timestamp: 1649162399284,
+                  },
+                  posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+                  'group-title': 'AfricArXiv',
+                  'reference-count': 0,
+                  publisher: 'Center for Open Science',
+                  license: [
+                    {
+                      start: {
+                        'date-parts': [[2019, 9, 10]],
+                        'date-time': '2019-09-10T00:00:00Z',
+                        timestamp: 1568073600000,
+                      },
+                      'content-version': 'unspecified',
+                      'delay-in-days': 0,
+                      URL: 'http://www.gnu.org/licenses/gpl-2.0.txt',
+                    },
+                  ],
+                  'content-domain': { domain: [], 'crossmark-restriction': false },
+                  'short-container-title': [],
+                  abstract:
+                    '<p>The Beninese agricultural sector suffers mainly from a lack of financing. This study, conducted on a random sample of 150 households in Parakou commune, shows that participatory financing with a counterpart in agricultural product is an alternative to financing the production of local farms. Food among the population of Parakou consists mainly of cereals, particularly maize (according to 75% of households surveyed). Non-agricultural households purchase agricultural products according to their purchasing power and the economic situation. This study confirms that people are suffering from social injustice caused by an increase in product prices caused by the agricultural financing activity of loan sharks.  It should be noted that 75% of households are willing to adopt the participatory financing proposed in this article. Households are ready to buy at an average price of 12.172 XOF/Kg.</p>',
+                  DOI: '10.31730/osf.io/yv9az',
+                  type: 'posted-content',
+                  created: {
+                    'date-parts': [[2019, 9, 10]],
+                    'date-time': '2019-09-10T12:36:21Z',
+                    timestamp: 1568118981000,
+                  },
+                  source: 'Crossref',
+                  'is-referenced-by-count': 0,
+                  title: ['LE FINANCEMENT PARTICIPATIF\u00a0: UNE ALTERNATIVE AU FINANCEMENT AGRICOLE AU BENIN'],
+                  prefix: '10.31730',
+                  author: [
+                    { given: 'Abdoul kafid Chabi', family: 'TOKO KOUTOGUI', sequence: 'first', affiliation: [] },
+                  ],
+                  member: '15934',
+                  'container-title': [],
+                  'original-title': [],
+                  deposited: {
+                    'date-parts': [[2019, 9, 10]],
+                    'date-time': '2019-09-10T12:36:22Z',
+                    timestamp: 1568118982000,
+                  },
+                  score: 1,
+                  resource: { primary: { URL: 'https://osf.io/yv9az' } },
+                  subtitle: [],
+                  'short-title': [],
+                  issued: { 'date-parts': [[2019, 9, 10]] },
+                  'references-count': 0,
+                  URL: 'http://dx.doi.org/10.31730/osf.io/yv9az',
+                  relation: {},
+                  published: { 'date-parts': [[2019, 9, 10]] },
+                  subtype: 'preprint',
+                },
+              },
+            })
+
+            const actual = await _.getPreprint(doi)({ fetch })()
+
+            expect(actual).toStrictEqual(
+              E.right({
+                abstract: {
+                  language: 'en',
+                  text: expect.stringContaining('<p>The Beninese agricultural sector'),
+                },
+                authors: [{ name: 'Abdoul kafid Chabi TOKO KOUTOGUI', orcid: undefined }],
+                id: {
+                  type: 'africarxiv',
+                  doi: '10.31730/osf.io/yv9az',
+                },
+                posted,
+                title: {
+                  language: 'fr',
+                  text: expect.stringContaining('LE FINANCEMENT PARTICIPATIF'),
+                },
+                url: new URL('https://osf.io/yv9az'),
+              }),
+            )
+          }),
+        )
+      })
+
       test('from bioRxiv/medRxiv', async () => {
         await fc.assert(
           fc.asyncProperty(
