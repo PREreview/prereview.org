@@ -158,6 +158,9 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
     id: preprintId(),
     language: languageCode(),
     posted: plainDate(),
-    title: html(),
+    title: fc.record({
+      language: languageCode(),
+      text: html(),
+    }),
     url: url(),
   })

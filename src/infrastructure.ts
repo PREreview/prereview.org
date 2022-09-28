@@ -53,7 +53,7 @@ export const getPreprint = flow(
 export const getPreprintTitle = flow(
   getPreprint,
   RTE.local(useStaleCache),
-  RTE.map(preprint => ({ language: preprint.language, title: preprint.title })),
+  RTE.map(preprint => ({ language: preprint.title.language, title: preprint.title.text })),
 )
 
 export const getPrereview = flow(
@@ -142,7 +142,6 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
         ),
       ),
     ),
-    E.apSW('title', pipe(work.title, E.fromOptionK(() => 'no title')(RA.head), E.map(sanitizeHtml))),
     E.bindW(
       'language',
       E.fromOptionK(() => 'unknown language')(preprint =>
@@ -150,6 +149,15 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
           .with({ id: { type: P.union('biorxiv', 'medrxiv') } }, () => O.some('en' as const))
           .with({ id: { type: 'scielo' }, abstract: P.select() }, detectLanguage('en', 'es', 'pt'))
           .exhaustive(),
+      ),
+    ),
+    E.bindW('title', preprint =>
+      pipe(
+        work.title,
+        E.fromOptionK(() => 'no title')(RA.head),
+        E.map(sanitizeHtml),
+        E.bindTo('text'),
+        E.apS('language', E.right(preprint.language)),
       ),
     ),
     E.map(preprint => ({

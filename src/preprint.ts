@@ -31,7 +31,10 @@ export type Preprint = {
   id: PreprintId
   language: LanguageCode
   posted: PlainDate
-  title: Html
+  title: {
+    language: LanguageCode
+    text: Html
+  }
   url: URL
 }
 
@@ -97,17 +100,20 @@ function failureMessage() {
 
 function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Records }) {
   return page({
-    title: plainText`PREreviews of “${preprint.title}”`,
+    title: plainText`PREreviews of “${preprint.title.text}”`,
     content: html`
       <h1 class="visually-hidden">
-        PREreviews of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</span
+        PREreviews of “<span lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
+          >${preprint.title.text}</span
         >”
       </h1>
 
       <aside tabindex="0" aria-label="Preprint details">
         <article>
           <header>
-            <h2 lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</h2>
+            <h2 lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}">
+              ${preprint.title.text}
+            </h2>
 
             <ol aria-label="Authors of this preprint" role="list" class="author-list">
               ${preprint.authors.map(author => html` <li>${displayAuthor(author)}</li>`)}

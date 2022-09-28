@@ -472,7 +472,10 @@ describe('infrastructure', () => {
                   },
                   language: 'en',
                   posted,
-                  title,
+                  title: {
+                    language: 'en',
+                    text: title,
+                  },
                   url: new URL('https://biorxiv.org/lookup/doi/10.1101/2022.01.13.476201'),
                 }),
               )
@@ -579,7 +582,10 @@ describe('infrastructure', () => {
                 },
                 language: 'es',
                 posted,
-                title,
+                title: {
+                  language: 'es',
+                  text: title,
+                },
                 url: new URL('https://preprints.scielo.org/index.php/scielo/preprint/view/4502/version/4765'),
               }),
             )
@@ -684,7 +690,7 @@ describe('infrastructure', () => {
 
             const actual = await _.getPreprint(doi)({ fetch })()
 
-            expect(actual).toStrictEqual(E.right(expect.objectContaining({ title })))
+            expect(actual).toStrictEqual(E.right(expect.objectContaining({ title: { language: 'es', text: title } })))
             expect(fetch.done()).toBeTruthy()
           }),
         )
