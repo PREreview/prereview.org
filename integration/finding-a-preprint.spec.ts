@@ -104,3 +104,23 @@ test('can find and view a preprint', async ({ fetch, page }) => {
   await expect(reviews).toContainText('1 PREreview')
   await expect(page).toHaveScreenshot()
 })
+
+test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/')
+  await page.fill('text="Preprint DOI"', '10.5555/12345678')
+
+  await page.click('text="Continue"')
+
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
+  await expect(page.locator('role=textbox[name="Preprint DOI"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Enter a preprint DOI"')
+
+  await expect(page.locator('role=textbox[name="Preprint DOI"]')).toBeFocused()
+  await expect(page).toHaveScreenshot()
+})

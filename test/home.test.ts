@@ -66,9 +66,9 @@ describe('home', () => {
 
             expect(actual).toStrictEqual(
               E.right([
-                { type: 'setStatus', status: Status.SeeOther },
-                { type: 'setHeader', name: 'Location', value: '/' },
-                { type: 'endResponse' },
+                { type: 'setStatus', status: Status.BadRequest },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: expect.anything() },
               ]),
             )
           },
