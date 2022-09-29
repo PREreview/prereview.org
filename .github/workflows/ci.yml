@@ -18,7 +18,7 @@ jobs:
       - name: 'Set up Node.js'
         uses: actions/setup-node@v3.5.0
         with:
-          node-version: 16
+          node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
@@ -79,7 +79,7 @@ jobs:
       - name: 'Set up Node.js'
         uses: actions/setup-node@v3.5.0
         with:
-          node-version: 16
+          node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
@@ -101,7 +101,7 @@ jobs:
       - name: 'Set up Node.js'
         uses: actions/setup-node@v3.5.0
         with:
-          node-version: 16
+          node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
@@ -129,7 +129,7 @@ jobs:
       - name: 'Set up Node.js'
         uses: actions/setup-node@v3.5.0
         with:
-          node-version: 16
+          node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
@@ -214,7 +214,7 @@ jobs:
       - name: 'Set up Node.js'
         uses: actions/setup-node@v3.5.0
         with:
-          node-version: 16
+          node-version-file: package.json
           cache: ${{ !env.ACT && 'npm' || '' }}
 
       - name: 'Install dependencies'
