@@ -19,14 +19,12 @@ import { handleError } from './http-error'
 import { createRecordOnZenodo, getPreprint, getPreprintTitle, getPrereview } from './infrastructure'
 import { LegacyPrereviewApiEnv, getPseudonymFromLegacyPrereview } from './legacy-prereview'
 import { PublicUrlEnv, authenticate, logIn } from './log-in'
-import { lookupDoi } from './lookup-doi'
 import { PhaseEnv } from './page'
 import { preprint } from './preprint'
 import { review } from './review'
 import {
   homeMatch,
   logInMatch,
-  lookupDoiMatch,
   orcidCodeMatch,
   preprintMatch,
   reviewMatch,
@@ -72,10 +70,6 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       logInMatch.parser,
       P.map(() => logIn),
-    ),
-    pipe(
-      lookupDoiMatch.parser,
-      P.map(() => RM.fromMiddleware(lookupDoi)),
     ),
     pipe(
       orcidCodeMatch.parser,

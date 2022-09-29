@@ -1,16 +1,51 @@
+import { hasRegistrant, parse } from 'doi-ts'
 import { format } from 'fp-ts-routing'
+import * as E from 'fp-ts/Either'
 import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
+import { get } from 'spectacles-ts'
+import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from './html'
 import * as assets from './manifest.json'
+import { seeOther } from './middleware'
 import { page } from './page'
-import { lookupDoiMatch } from './routes'
+import { homeMatch, preprintMatch } from './routes'
 
 export const home = pipe(
+  RM.decodeMethod(E.right),
+  RM.ichain(method =>
+    match(method)
+      .with('POST', () => RM.fromMiddleware(lookupDoi))
+      .otherwise(() => showHomePage),
+  ),
+)
+
+const showHomePage = pipe(
   RM.rightReader(createPage()),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
+)
+
+const DoiD = pipe(
+  D.string,
+  D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parse(s))),
+  D.refine(hasRegistrant('1101', '1590', '31730'), 'DOI'),
+)
+
+const LookupDoiD = pipe(
+  D.struct({
+    doi: DoiD,
+  }),
+  D.map(get('doi')),
+)
+
+const lookupDoi = pipe(
+  M.decodeBody(LookupDoiD.decode),
+  M.ichain(doi => seeOther(format(preprintMatch.formatter, { doi }))),
+  M.orElse(() => seeOther(format(homeMatch.formatter, {}))),
 )
 
 function createPage() {
@@ -24,7 +59,7 @@ function createPage() {
 
         <h2>Find and post PREreviews</h2>
 
-        <form method="post" action="${format(lookupDoiMatch.formatter, {})}" novalidate>
+        <form method="post" action="${format(homeMatch.formatter, {})}" novalidate>
           <label>
             <span>Preprint DOI</span>
             <input name="doi" type="text" spellcheck="false" aria-describedby="doi-tip" />
