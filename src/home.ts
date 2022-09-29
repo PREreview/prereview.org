@@ -60,10 +60,9 @@ function createPage() {
         <h2>Find and post PREreviews</h2>
 
         <form method="post" action="${format(homeMatch.formatter, {})}" novalidate>
-          <label>
-            <span>Preprint DOI</span>
-            <input name="doi" type="text" spellcheck="false" aria-describedby="doi-tip" />
-          </label>
+          <label for="doi">Preprint DOI</label>
+
+          <input id="doi" name="doi" type="text" size="40" spellcheck="false" aria-describedby="doi-tip" />
 
           <div id="doi-tip" role="note">We support AfricArXiv, bioRxiv, medRxiv and SciELO preprints.</div>
 

@@ -618,11 +618,15 @@ error-summary {
   border-radius: 0;
   padding-block: var(--space-3xs);
   padding-inline: var(--space-2xs);
-  inline-size: 100%;
+  max-inline-size: 100%;
   max-block-size: 30vh;
 
   &:not([hidden]) {
     display: block;
+  }
+
+  &:not([size]) {
+    inline-size: 100%;
   }
 
   &:focus-visible {
