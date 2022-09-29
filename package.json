@@ -28,7 +28,7 @@
     "make-fetch-happen": "^10.2.1",
     "markdown-it": "^12.3.2",
     "nanohtml": "^1.10.0",
-    "orcid-id-ts": "^0.1.1",
+    "orcid-id-ts": "^0.1.2",
     "rtl-detect": "^1.0.4",
     "sanitize-html": "^2.7.2",
     "spectacles-ts": "^1.0.7",
