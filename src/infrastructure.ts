@@ -346,7 +346,10 @@ function revalidateIfStale<E extends F.FetchEnv>(env: E): E {
       const response = await env.fetch(url, init)
 
       if (response.headers.get('x-local-cache-status') === 'stale') {
-        void env.fetch(url, { ...init, cache: 'no-cache' }).catch(constVoid)
+        void env
+          .fetch(url, { ...init, cache: 'no-cache' })
+          .then(response => response.text())
+          .catch(constVoid)
       }
 
       return response
