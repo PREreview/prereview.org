@@ -41,7 +41,7 @@ export type Preprint = {
 }
 
 export interface GetPreprintEnv {
-  getPreprint: (doi: PreprintId['doi']) => TE.TaskEither<unknown, Preprint>
+  getPreprint: (doi: PreprintId['doi']) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
 }
 
 const sendPage = flow(
@@ -76,7 +76,12 @@ export const preprint = flow(
       RM.orElseW(() => showFailureMessage),
     ),
   ),
-  RM.orElseW(() => notFound),
+  RM.orElseW(error =>
+    match(error)
+      .with('not-found', () => notFound)
+      .with('unavailable', () => showFailureMessage)
+      .exhaustive(),
+  ),
 )
 
 const showFailureMessage = pipe(

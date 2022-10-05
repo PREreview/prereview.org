@@ -90,13 +90,13 @@ describe('preprint', () => {
       )
     })
 
-    test('when the preprint cannot be loaded', async () => {
+    test('when the preprint is not found', async () => {
       await fc.assert(
-        fc.asyncProperty(fc.connection(), fc.preprintDoi(), fc.anything(), async (connection, preprintDoi, error) => {
+        fc.asyncProperty(fc.connection(), fc.preprintDoi(), async (connection, preprintDoi) => {
           const actual = await runMiddleware(
             _.preprint(preprintDoi)({
               fetch: () => Promise.reject('should not be called'),
-              getPreprint: () => TE.left(error),
+              getPreprint: () => TE.left('not-found'),
             }),
             connection,
           )()
@@ -105,6 +105,28 @@ describe('preprint', () => {
             E.right([
               { type: 'setStatus', status: Status.NotFound },
               { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+        }),
+      )
+    })
+
+    test('when the preprint is unavailable', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.connection(), fc.preprintDoi(), async (connection, preprintDoi) => {
+          const actual = await runMiddleware(
+            _.preprint(preprintDoi)({
+              fetch: () => Promise.reject('should not be called'),
+              getPreprint: () => TE.left('unavailable'),
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.ServiceUnavailable },
               { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
               { type: 'setBody', body: expect.anything() },
             ]),

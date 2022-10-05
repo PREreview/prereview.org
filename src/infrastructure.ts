@@ -49,6 +49,11 @@ export const getPreprint = flow(
   RTE.local(revalidateIfStale),
   RTE.local(useStaleCache),
   RTE.chainEitherKW(workToPreprint),
+  RTE.mapLeft(error =>
+    match(error)
+      .with({ status: Status.NotFound }, () => 'not-found' as const)
+      .otherwise(() => 'unavailable' as const),
+  ),
 )
 
 export const getPreprintTitle = flow(
