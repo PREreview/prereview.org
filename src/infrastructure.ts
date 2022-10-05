@@ -17,6 +17,7 @@ import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { LanguageCode } from 'iso-639-1'
+import * as L from 'logger-fp-ts'
 import sanitize from 'sanitize-html'
 import { get } from 'spectacles-ts'
 import { detect } from 'tinyld'
@@ -349,6 +350,46 @@ function revalidateIfStale<E extends F.FetchEnv>(env: E): E {
       }
 
       return response
+    },
+  }
+}
+
+export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(env: E): E {
+  return {
+    ...env,
+    fetch: async (url, init) => {
+      L.debugP('Sending HTTP request')({
+        url,
+        method: init.method,
+      })(env)()
+
+      const startTime = Date.now()
+      return env
+        .fetch(url, init)
+        .then(response => {
+          const endTime = Date.now()
+
+          L.debugP('Received HTTP response')({
+            url: response.url,
+            method: init.method,
+            status: response.status,
+            headers: [...response.headers],
+            time: endTime - startTime,
+          })(env)()
+
+          return response
+        })
+        .catch(error => {
+          const endTime = Date.now()
+
+          L.debugP('Did not receive a HTTP response')({
+            url,
+            method: init.method,
+            time: endTime - startTime,
+          })(env)()
+
+          throw error
+        })
     },
   }
 }

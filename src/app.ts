@@ -16,7 +16,7 @@ import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { CanAddAuthorsEnv } from './feature-flags'
 import { home } from './home'
 import { handleError } from './http-error'
-import { createRecordOnZenodo, getPreprint, getPreprintTitle, getPrereview } from './infrastructure'
+import { createRecordOnZenodo, getPreprint, getPreprintTitle, getPrereview, logFetch } from './infrastructure'
 import { LegacyPrereviewApiEnv, getPseudonymFromLegacyPrereview } from './legacy-prereview'
 import { PublicUrlEnv, authenticate, logIn } from './log-in'
 import { PhaseEnv } from './page'
@@ -146,6 +146,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
   ],
   M.concatAll(P.getParserMonoid()),
+  P.map(R.local(logFetch)),
 )
 
 const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
