@@ -82,6 +82,8 @@ export const getPrereviews = flow(
       sort: 'mostrecent',
     }),
   getRecords,
+  RTE.local(revalidateIfStale),
+  RTE.local(useStaleCache),
   RTE.bimap(
     () => 'unavailable' as const,
     flow(
