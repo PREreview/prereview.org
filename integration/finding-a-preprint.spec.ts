@@ -105,6 +105,21 @@ test('can find and view a preprint', async ({ fetch, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
+test('might not load the preprint in time', async ({ fetch, page }) => {
+  await page.goto('/')
+  await page.fill('text="Preprint DOI"', '10.1101/this-should-take-too-long')
+
+  fetch.get(
+    'https://api.crossref.org/works/10.1101%2Fthis-should-take-too-long',
+    new Promise(() => setTimeout(() => ({ status: Status.NotFound }), 2000)),
+  )
+
+  await page.click('text="Continue"')
+
+  await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
+  await expect(page).toHaveScreenshot()
+})
+
 test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
   await page.goto('/')
   await page.fill('text="Preprint DOI"', '10.5555/12345678')

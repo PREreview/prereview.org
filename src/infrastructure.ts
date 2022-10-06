@@ -48,6 +48,7 @@ export const getPreprint = flow(
   getWork,
   RTE.local(revalidateIfStale),
   RTE.local(useStaleCache),
+  RTE.local(timeoutRequest(2000)),
   RTE.chainEitherKW(workToPreprint),
   RTE.mapLeft(error =>
     match(error)
@@ -360,6 +361,22 @@ function revalidateIfStale<E extends F.FetchEnv>(env: E): E {
       return response
     },
   }
+}
+
+export function timeoutRequest<E extends F.FetchEnv>(timeout: number): (env: E) => E {
+  return env => ({
+    ...env,
+    fetch: async (url, init) => {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), timeout)
+
+      try {
+        return await env.fetch(url, { signal: controller.signal, ...init })
+      } finally {
+        clearTimeout(timeoutId)
+      }
+    },
+  })
 }
 
 export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(env: E): E {
