@@ -1,7 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
-import { isNonEmpty } from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
@@ -1300,19 +1299,17 @@ describe('infrastructure', () => {
             language: fc.languageCode(),
             title: fc.html(),
           }),
-          fc
-            .array(
-              fc.record({
-                links: fc.record({
-                  self: fc.url(),
-                }),
-                key: fc.string(),
-                type: fc.string().filter(type => type !== 'html'),
-                size: fc.integer(),
+          fc.nonEmptyArray(
+            fc.record({
+              links: fc.record({
+                self: fc.url(),
               }),
-              { minLength: 1 },
-            )
-            .filter(isNonEmpty),
+              key: fc.string(),
+              type: fc.string().filter(type => type !== 'html'),
+              size: fc.integer(),
+            }),
+            { minLength: 1 },
+          ),
           async (id, preprint, files) => {
             const record: Record = {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,

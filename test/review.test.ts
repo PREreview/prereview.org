@@ -1,4 +1,3 @@
-import { isNonEmpty } from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
@@ -14,9 +13,7 @@ describe('review', () => {
           fc.integer(),
           fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
           fc.record({
-            authors: fc
-              .array(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] }), { minLength: 1 })
-              .filter(isNonEmpty),
+            authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
             doi: fc.doi(),
             postedDate: fc.plainDate(),
             preprint: fc.record({

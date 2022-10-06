@@ -5,6 +5,7 @@ import { Request, Response } from 'express'
 import * as fc from 'fast-check'
 import * as F from 'fetch-fp-ts'
 import { isNonEmpty } from 'fp-ts/Array'
+import { NonEmptyArray } from 'fp-ts/NonEmptyArray'
 import { Refinement } from 'fp-ts/Refinement'
 import * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
@@ -141,6 +142,11 @@ export const response = (): fc.Arbitrary<Response> => fc.record({ req: request()
 export const connection = <S = H.StatusOpen>(...args: Parameters<typeof request>): fc.Arbitrary<ExpressConnection<S>> =>
   fc.tuple(request(...args), response()).map(args => new ExpressConnection(...args))
 
+export const nonEmptyArray = <T>(
+  arb: fc.Arbitrary<T>,
+  constraints: fc.ArrayConstraints = {},
+): fc.Arbitrary<NonEmptyArray<T>> => fc.array(arb, { minLength: 1, ...constraints }).filter(isNonEmpty)
+
 export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ minLength: 1 }).filter(isNonEmptyString)
 
 export const languageCode = (): fc.Arbitrary<LanguageCode> => fc.constantFrom(...ISO6391.getAllCodes())
@@ -158,18 +164,15 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
       language: languageCode(),
       text: html(),
     }),
-    authors: fc
-      .array(
-        fc.record(
-          {
-            name: fc.string(),
-            orcid: orcid(),
-          },
-          { requiredKeys: ['name'] },
-        ),
-        { minLength: 1 },
-      )
-      .filter(isNonEmpty),
+    authors: nonEmptyArray(
+      fc.record(
+        {
+          name: fc.string(),
+          orcid: orcid(),
+        },
+        { requiredKeys: ['name'] },
+      ),
+    ),
     id: preprintId(),
     posted: plainDate(),
     title: fc.record({
