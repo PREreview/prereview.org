@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as RA from 'fp-ts/ReadonlyArray'
 import { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
@@ -12,7 +13,7 @@ import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import textClipper from 'text-clipper'
 import { match } from 'ts-pattern'
-import { Record, Records, getRecords } from 'zenodo-ts'
+import { getRecords } from 'zenodo-ts'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
 import { notFound } from './middleware'
 import { page } from './page'
@@ -38,6 +39,12 @@ export type Preprint = {
     text: Html
   }
   url: URL
+}
+
+export type Prereview = {
+  authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+  id: number
+  text: Html
 }
 
 export interface GetPreprintEnv {
@@ -70,6 +77,16 @@ export const preprint = flow(
               sort: 'mostrecent',
             }),
           RM.fromReaderTaskEitherK(getRecords),
+          RM.map(
+            flow(
+              records => records.hits.hits,
+              RA.map(record => ({
+                authors: record.metadata.creators,
+                id: record.id,
+                text: sanitizeHtml(record.metadata.description),
+              })),
+            ),
+          ),
         ),
       ),
       RM.ichainW(sendPage),
@@ -105,7 +122,7 @@ function failureMessage() {
   })
 }
 
-function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Records }) {
+function createPage({ preprint, reviews }: { preprint: Preprint; reviews: ReadonlyArray<Prereview> }) {
   return page({
     title: plainText`PREreviews of “${preprint.title.text}”`,
     content: html`
@@ -160,12 +177,12 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
       </aside>
 
       <main>
-        <h2>${reviews.hits.hits.length} PREreview${reviews.hits.hits.length !== 1 ? 's' : ''}</h2>
+        <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
 
         <a href="${format(writeReviewMatch.formatter, { doi: preprint.id.doi })}" class="button">Write a PREreview</a>
 
         <ol class="cards">
-          ${reviews.hits.hits.map(showReview)}
+          ${reviews.map(showReview)}
         </ol>
       </main>
     `,
@@ -173,20 +190,20 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Record
   })
 }
 
-function showReview(review: Record) {
+function showReview(review: Prereview) {
   return html`
     <li>
       <article>
         <ol aria-label="Authors of this PREreview" role="list" class="author-list">
-          ${review.metadata.creators.map(author => html` <li>${author.name}</li>`)}
+          ${review.authors.map(author => html` <li>${author.name}</li>`)}
         </ol>
 
-        ${rawHtml(textClipper(sanitizeHtml(review.metadata.description).toString(), 300, { html: true, maxLines: 5 }))}
+        ${rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5 }))}
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
           Read
           <span class="visually-hidden">
-            the PREreview by ${review.metadata.creators[0].name} ${review.metadata.creators.length > 1 ? 'et al.' : ''}
+            the PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
           </span>
         </a>
       </article>
