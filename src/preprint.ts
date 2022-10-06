@@ -60,6 +60,27 @@ const sendPage = flow(
 const getPreprint = (doi: PreprintId['doi']) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(doi)))
 
+const getPrereviews = flow(
+  (preprint: PreprintId) =>
+    new URLSearchParams({
+      communities: 'prereview-reviews',
+      q: `related.identifier:"${preprint.doi}"`,
+      size: '100',
+      sort: 'mostrecent',
+    }),
+  getRecords,
+  RTE.map(
+    flow(
+      records => records.hits.hits,
+      RA.map(record => ({
+        authors: record.metadata.creators,
+        id: record.id,
+        text: sanitizeHtml(record.metadata.description),
+      })),
+    ),
+  ),
+)
+
 export const preprint = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.bindTo('preprint'),
@@ -68,26 +89,7 @@ export const preprint = flow(
       RM.of,
       RM.bindW(
         'reviews',
-        flow(
-          ({ preprint }) =>
-            new URLSearchParams({
-              communities: 'prereview-reviews',
-              q: `related.identifier:"${preprint.id.doi}"`,
-              size: '100',
-              sort: 'mostrecent',
-            }),
-          RM.fromReaderTaskEitherK(getRecords),
-          RM.map(
-            flow(
-              records => records.hits.hits,
-              RA.map(record => ({
-                authors: record.metadata.creators,
-                id: record.id,
-                text: sanitizeHtml(record.metadata.description),
-              })),
-            ),
-          ),
-        ),
+        RM.fromReaderTaskEitherK(({ preprint }) => getPrereviews(preprint.id)),
       ),
       RM.ichainW(sendPage),
       RM.orElseW(() => showFailureMessage),
