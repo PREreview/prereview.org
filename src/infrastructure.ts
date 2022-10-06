@@ -84,6 +84,7 @@ export const getPrereviews = flow(
   getRecords,
   RTE.local(revalidateIfStale),
   RTE.local(useStaleCache),
+  RTE.local(timeoutRequest(2000)),
   RTE.bimap(
     () => 'unavailable' as const,
     flow(

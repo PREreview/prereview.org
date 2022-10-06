@@ -120,6 +120,24 @@ test('might not load the preprint in time', async ({ fetch, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
+test('might not load PREreviews in time', async ({ fetch, page }) => {
+  await page.goto('/')
+  await page.fill('text="Preprint DOI"', '10.1101/2022.01.13.476201')
+
+  fetch.getOnce(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    new Promise(() => setTimeout(() => ({ body: RecordsC.encode({ hits: { hits: [] } }) }), 2000)),
+  )
+
+  await page.click('text="Continue"')
+
+  await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
+  await expect(page).toHaveScreenshot()
+})
+
 test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
   await page.goto('/')
   await page.fill('text="Preprint DOI"', '10.5555/12345678')
