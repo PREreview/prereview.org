@@ -67,6 +67,7 @@ export const getPrereview = flow(
   getRecord,
   RTE.local(revalidateIfStale),
   RTE.local(useStaleCache),
+  RTE.local(timeoutRequest(2000)),
   RTE.filterOrElseW(isInCommunity, () => new NotFound()),
   RTE.chain(recordToPrereview),
 )
