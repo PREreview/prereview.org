@@ -69,7 +69,8 @@ const getPrereviews = flow(
       sort: 'mostrecent',
     }),
   getRecords,
-  RTE.map(
+  RTE.bimap(
+    () => 'unavailable' as const,
     flow(
       records => records.hits.hits,
       RA.map(record => ({
@@ -84,17 +85,11 @@ const getPrereviews = flow(
 export const preprint = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.bindTo('preprint'),
-  RM.ichainW(
-    flow(
-      RM.of,
-      RM.bindW(
-        'reviews',
-        RM.fromReaderTaskEitherK(({ preprint }) => getPrereviews(preprint.id)),
-      ),
-      RM.ichainW(sendPage),
-      RM.orElseW(() => showFailureMessage),
-    ),
+  RM.bindW(
+    'reviews',
+    RM.fromReaderTaskEitherK(({ preprint }) => getPrereviews(preprint.id)),
   ),
+  RM.ichainW(sendPage),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)
