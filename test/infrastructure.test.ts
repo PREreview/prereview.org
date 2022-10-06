@@ -806,7 +806,7 @@ describe('infrastructure', () => {
 
           const actual = await _.getPreprint(doi)({ fetch })()
 
-          expect(actual).toStrictEqual(E.left(expect.anything()))
+          expect(actual).toStrictEqual(E.left('not-found'))
         }),
       )
     })
@@ -820,7 +820,7 @@ describe('infrastructure', () => {
 
           const actual = await _.getPreprint(doi)({ fetch })()
 
-          expect(actual).toStrictEqual(E.left(expect.anything()))
+          expect(actual).toStrictEqual(E.left('unavailable'))
         }),
       )
     })
