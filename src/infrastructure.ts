@@ -29,6 +29,7 @@ import {
   ZenodoEnv,
   createDeposition,
   getRecord,
+  getRecords,
   publishDeposition,
   uploadFile,
 } from 'zenodo-ts'
@@ -70,6 +71,28 @@ export const getPrereview = flow(
   RTE.local(timeoutRequest(2000)),
   RTE.filterOrElseW(isInCommunity, () => new NotFound()),
   RTE.chain(recordToPrereview),
+)
+
+export const getPrereviews = flow(
+  (preprint: PreprintId) =>
+    new URLSearchParams({
+      communities: 'prereview-reviews',
+      q: `related.identifier:"${preprint.doi}"`,
+      size: '100',
+      sort: 'mostrecent',
+    }),
+  getRecords,
+  RTE.bimap(
+    () => 'unavailable' as const,
+    flow(
+      records => records.hits.hits,
+      RA.map(record => ({
+        authors: record.metadata.creators,
+        id: record.id,
+        text: sanitizeHtml(record.metadata.description),
+      })),
+    ),
+  ),
 )
 
 export const createRecordOnZenodo: (

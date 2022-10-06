@@ -7,6 +7,8 @@ import { Status } from 'hyper-ts'
 import {
   Record,
   RecordC,
+  Records,
+  RecordsC,
   SubmittedDeposition,
   SubmittedDepositionC,
   UnsubmittedDeposition,
@@ -1356,6 +1358,104 @@ describe('infrastructure', () => {
             expect(actual).toStrictEqual(E.left(expect.anything()))
           },
         ),
+      )
+    })
+  })
+
+  describe('getPrereviews', () => {
+    test('when the PREreviews can be loaded', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.preprintId(), async preprint => {
+          const records: Records = {
+            hits: {
+              hits: [
+                {
+                  conceptdoi: '10.5072/zenodo.1061863' as Doi,
+                  conceptrecid: 1061863,
+                  files: [
+                    {
+                      links: {
+                        self: new URL('http://example.com/file'),
+                      },
+                      key: 'review.html',
+                      type: 'html',
+                      size: 58,
+                    },
+                  ],
+                  id: 1061864,
+                  links: {
+                    latest: new URL('http://example.com/latest'),
+                    latest_html: new URL('http://example.com/latest_html'),
+                  },
+                  metadata: {
+                    communities: [{ id: 'prereview-reviews' }],
+                    creators: [{ name: 'PREreviewer' }],
+                    description: 'Description',
+                    doi: '10.5281/zenodo.1061864' as Doi,
+                    license: {
+                      id: 'CC-BY-4.0',
+                    },
+                    publication_date: new Date('2022-07-05'),
+                    resource_type: {
+                      type: 'publication',
+                      subtype: 'article',
+                    },
+                    title: 'Title',
+                  },
+                },
+              ],
+            },
+          }
+
+          const actual = await _.getPrereviews(preprint)({
+            fetch: fetchMock.sandbox().getOnce(
+              {
+                url: 'https://zenodo.org/api/records/',
+                query: {
+                  communities: 'prereview-reviews',
+                  q: `related.identifier:"${preprint.doi}"`,
+                  sort: 'mostrecent',
+                },
+              },
+              {
+                body: RecordsC.encode(records),
+                status: Status.OK,
+              },
+            ),
+          })()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              {
+                authors: [{ name: 'PREreviewer' }],
+                id: 1061864,
+                text: rawHtml('Description'),
+              },
+            ]),
+          )
+        }),
+      )
+    })
+
+    test('when the PREreviews cannot be loaded', async () => {
+      await fc.assert(
+        fc.asyncProperty(fc.preprintId(), fc.integer({ min: 400, max: 599 }), async (preprint, status) => {
+          const actual = await _.getPrereviews(preprint)({
+            fetch: fetchMock.sandbox().getOnce(
+              {
+                url: 'https://zenodo.org/api/records/',
+                query: {
+                  communities: 'prereview-reviews',
+                  q: `related.identifier:"${preprint.doi}"`,
+                  sort: 'mostrecent',
+                },
+              },
+              { status },
+            ),
+          })()
+
+          expect(actual).toStrictEqual(E.left('unavailable'))
+        }),
       )
     })
   })

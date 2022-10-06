@@ -2,7 +2,6 @@ import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import * as RA from 'fp-ts/ReadonlyArray'
 import { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
@@ -13,8 +12,7 @@ import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import textClipper from 'text-clipper'
 import { match } from 'ts-pattern'
-import { getRecords } from 'zenodo-ts'
-import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from './html'
+import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound } from './middleware'
 import { page } from './page'
 import { PreprintId } from './preprint-id'
@@ -51,6 +49,10 @@ export interface GetPreprintEnv {
   getPreprint: (doi: PreprintId['doi']) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
 }
 
+export interface GetPrereviewsEnv {
+  getPrereviews: (id: PreprintId) => TE.TaskEither<'unavailable', ReadonlyArray<Prereview>>
+}
+
 const sendPage = flow(
   fromReaderK(createPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
@@ -60,27 +62,8 @@ const sendPage = flow(
 const getPreprint = (doi: PreprintId['doi']) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(doi)))
 
-const getPrereviews = flow(
-  (preprint: PreprintId) =>
-    new URLSearchParams({
-      communities: 'prereview-reviews',
-      q: `related.identifier:"${preprint.doi}"`,
-      size: '100',
-      sort: 'mostrecent',
-    }),
-  getRecords,
-  RTE.bimap(
-    () => 'unavailable' as const,
-    flow(
-      records => records.hits.hits,
-      RA.map(record => ({
-        authors: record.metadata.creators,
-        id: record.id,
-        text: sanitizeHtml(record.metadata.description),
-      })),
-    ),
-  ),
-)
+const getPrereviews = (id: PreprintId) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }: GetPrereviewsEnv) => getPrereviews(id)))
 
 export const preprint = flow(
   RM.fromReaderTaskEitherK(getPreprint),

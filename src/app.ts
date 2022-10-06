@@ -16,7 +16,14 @@ import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { CanAddAuthorsEnv } from './feature-flags'
 import { home } from './home'
 import { handleError } from './http-error'
-import { createRecordOnZenodo, getPreprint, getPreprintTitle, getPrereview, logFetch } from './infrastructure'
+import {
+  createRecordOnZenodo,
+  getPreprint,
+  getPreprintTitle,
+  getPrereview,
+  getPrereviews,
+  logFetch,
+} from './infrastructure'
 import { LegacyPrereviewApiEnv, getPseudonymFromLegacyPrereview } from './legacy-prereview'
 import { PublicUrlEnv, authenticate, logIn } from './log-in'
 import { PhaseEnv } from './page'
@@ -84,7 +91,13 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       preprintMatch.parser,
       P.map(({ doi }) => preprint(doi)),
-      P.map(R.local((env: AppEnv) => ({ ...env, getPreprint: flipC(getPreprint)(env) }))),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          getPreprint: flipC(getPreprint)(env),
+          getPrereviews: flipC(getPrereviews)(env),
+        })),
+      ),
     ),
     pipe(
       reviewMatch.parser,
