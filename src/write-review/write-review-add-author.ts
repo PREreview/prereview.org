@@ -8,7 +8,7 @@ import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { html, plainText, rawHtml, sendHtml } from '../html'
-import { notFound, seeOther } from '../middleware'
+import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import {
   writeReviewAddAuthorMatch,
@@ -50,7 +50,12 @@ export const writeReviewAddAuthor = flow(
       ),
     ),
   ),
-  RM.orElseW(() => notFound),
+  RM.orElseW(error =>
+    match(error)
+      .with('not-found', () => notFound)
+      .with('unavailable', () => serviceUnavailable)
+      .exhaustive(),
+  ),
 )
 
 const showAddAuthorForm = flow(

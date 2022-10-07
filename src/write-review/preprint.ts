@@ -12,7 +12,9 @@ export type Preprint = {
 }
 
 export interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
+  getPreprintTitle: (
+    doi: PreprintId['doi'],
+  ) => TE.TaskEither<'not-found' | 'unavailable', { title: Html; language: LanguageCode }>
 }
 
 export const getPreprint = (doi: PreprintId['doi']) => pipe(getPreprintTitle(doi), RTE.apS('doi', RTE.right(doi)))

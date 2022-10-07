@@ -7,7 +7,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
 import { html, plainText, rawHtml, sendHtml } from '../html'
-import { notFound, seeOther } from '../middleware'
+import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
 import { NonEmptyStringC } from '../string'
@@ -29,7 +29,12 @@ export const writeReviewCompetingInterests = flow(
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseW(() => notFound),
+  RM.orElseW(error =>
+    match(error)
+      .with('not-found', () => notFound)
+      .with('unavailable', () => serviceUnavailable)
+      .exhaustive(),
+  ),
 )
 
 const showCompetingInterestsForm = flow(

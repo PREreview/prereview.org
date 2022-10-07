@@ -16,7 +16,7 @@ import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { Html, html, plainText, sanitizeHtml, sendHtml } from '../html'
-import { notFound, seeOther } from '../middleware'
+import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import {
   preprintMatch,
@@ -68,7 +68,12 @@ export const writeReviewPost = flow(
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
   ),
-  RM.orElseW(() => notFound),
+  RM.orElseW(error =>
+    match(error)
+      .with('not-found', () => notFound)
+      .with('unavailable', () => serviceUnavailable)
+      .exhaustive(),
+  ),
 )
 
 const handlePostForm = ({

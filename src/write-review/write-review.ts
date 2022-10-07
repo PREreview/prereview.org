@@ -4,8 +4,9 @@ import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
+import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
-import { notFound } from '../middleware'
+import { notFound, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { logInMatch, preprintMatch } from '../routes'
 import { getUserFromSession } from '../user'
@@ -22,7 +23,12 @@ export const writeReview = flow(
       RM.orElseW(() => showStartPage(preprint)),
     ),
   ),
-  RM.orElseW(() => notFound),
+  RM.orElseW(error =>
+    match(error)
+      .with('not-found', () => notFound)
+      .with('unavailable', () => serviceUnavailable)
+      .exhaustive(),
+  ),
 )
 
 const showStartPage = flow(

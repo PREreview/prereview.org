@@ -149,7 +149,6 @@ describe('writeReviewConduct', () => {
     await fc.assert(
       fc.asyncProperty(
         fc.preprintDoi(),
-        fc.anything(),
         fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
           fc.tuple(
             fc.connection({
@@ -174,12 +173,65 @@ describe('writeReviewConduct', () => {
           },
           { withDeletedKeys: true },
         ),
-        async (preprintDoi, error, [connection, sessionId, secret], user, newReview) => {
+        async (preprintDoi, [connection, sessionId, secret], user, newReview) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
           const formStore = new Keyv()
           await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-          const getPreprintTitle = () => TE.left(error)
+          const getPreprintTitle = () => TE.left('unavailable' as const)
+
+          const actual = await runMiddleware(
+            _.writeReviewConduct(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.ServiceUnavailable },
+              { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+        },
+      ),
+    )
+  })
+
+  test('when the preprint cannot be found', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.preprintDoi(),
+        fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+          fc.tuple(
+            fc.connection({
+              body: fc.constant({ conduct: 'yes' }),
+              headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+              method: fc.constant('POST'),
+            }),
+            fc.constant(sessionId),
+            fc.constant(secret),
+          ),
+        ),
+        fc.user(),
+        fc.record(
+          {
+            competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
+            conduct: fc.constant('yes'),
+            moreAuthors: fc.constantFrom('yes', 'no'),
+            otherAuthors: fc.array(fc.nonEmptyString()),
+            persona: fc.constantFrom('public', 'pseudonym'),
+            review: fc.nonEmptyString(),
+          },
+          { withDeletedKeys: true },
+        ),
+        async (preprintDoi, [connection, sessionId, secret], user, newReview) => {
+          const sessionStore = new Keyv()
+          await sessionStore.set(sessionId, UserC.encode(user))
+          const formStore = new Keyv()
+          await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+          const getPreprintTitle = () => TE.left('not-found' as const)
 
           const actual = await runMiddleware(
             _.writeReviewConduct(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),

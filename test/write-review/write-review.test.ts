@@ -150,16 +150,47 @@ describe('writeReview', () => {
     await fc.assert(
       fc.asyncProperty(
         fc.preprintDoi(),
-        fc.anything(),
         fc.connection({
           headers: fc.constant({}),
           method: fc.requestMethod().filter(method => method !== 'POST'),
         }),
         fc.string(),
-        async (preprintDoi, error, connection, secret) => {
+        async (preprintDoi, connection, secret) => {
           const sessionStore = new Keyv()
           const formStore = new Keyv()
-          const getPreprintTitle = () => TE.left(error)
+          const getPreprintTitle = () => TE.left('unavailable' as const)
+
+          const actual = await runMiddleware(
+            _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.ServiceUnavailable },
+              { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+        },
+      ),
+    )
+  })
+
+  test('when the preprint is not found', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.preprintDoi(),
+        fc.connection({
+          headers: fc.constant({}),
+          method: fc.requestMethod().filter(method => method !== 'POST'),
+        }),
+        fc.string(),
+        async (preprintDoi, connection, secret) => {
+          const sessionStore = new Keyv()
+          const formStore = new Keyv()
+          const getPreprintTitle = () => TE.left('not-found' as const)
 
           const actual = await runMiddleware(
             _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
