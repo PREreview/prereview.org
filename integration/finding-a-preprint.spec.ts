@@ -15,7 +15,7 @@ test('might not find anything', async ({ fetch, page }) => {
 
   const h1 = page.locator('h1')
 
-  await expect(h1).toHaveText('Not Found')
+  await expect(h1).toHaveText('Page not found')
   await expect(page).toHaveScreenshot()
 })
 

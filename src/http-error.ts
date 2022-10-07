@@ -1,21 +1,39 @@
 import { pipe } from 'fp-ts/function'
 import http from 'http'
-import { HttpError } from 'http-errors'
+import { HttpError, NotFound } from 'http-errors'
 import * as H from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
 
 export function handleError<N extends H.Status>(error: HttpError<N>) {
   return pipe(
-    RM.rightReader(pipe(http.STATUS_CODES[error.status] ?? 'Error', errorPage)),
+    RM.rightReader(match(error).with(P.instanceOf(NotFound), notFoundPage).otherwise(genericErrorPage)),
     RM.ichainFirst(() => RM.status(error.status)),
     RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
     RM.ichainMiddlewareK(sendHtml),
   )
 }
 
-function errorPage(message: string) {
+function notFoundPage() {
+  return page({
+    title: plainText`Page not found`,
+    content: html`
+      <main>
+        <h1>Page not found</h1>
+
+        <p>If you typed the web address, check it is correct.</p>
+
+        <p>If you pasted the web address, check you copied the entire address.</p>
+      </main>
+    `,
+  })
+}
+
+function genericErrorPage<N extends H.Status>(error: HttpError<N>) {
+  const message = http.STATUS_CODES[error.status] ?? 'Error'
+
   return page({
     title: plainText(message),
     content: html`
