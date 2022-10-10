@@ -44,7 +44,7 @@ RUN npm run build
 #
 # Stage: Integration test environment
 #
-FROM mcr.microsoft.com/playwright:v1.25.2-focal AS test-integration
+FROM mcr.microsoft.com/playwright:v1.27.0-focal AS test-integration
 WORKDIR /app
 
 COPY --from=npm-dev /app/ .
