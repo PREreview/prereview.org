@@ -13,6 +13,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
+import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { Html, html, plainText, sanitizeHtml, sendHtml } from '../html'
@@ -91,7 +92,7 @@ const handlePostForm = ({
     RM.rightReaderTask(deleteForm(user.orcid, preprint.doi)),
     RM.map(() => ({
       conduct: form.conduct,
-      otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
+      otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors.map(get('name')) : [],
       persona: form.persona,
       preprint,
       review: renderReview(form),
@@ -224,7 +225,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User, canAddA
               <ol aria-label="Authors of this PREreview" class="author-list">
                 <li>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</li>
                 ${review.moreAuthors === 'yes'
-                  ? review.otherAuthors.map(name => html`<li>${displayAuthor({ name })}</li>`)
+                  ? review.otherAuthors.map(({ name }) => html`<li>${displayAuthor({ name })}</li>`)
                   : ''}
               </ol>
 

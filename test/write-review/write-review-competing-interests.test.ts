@@ -46,7 +46,9 @@ describe('writeReviewCompetingInterests', () => {
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
           moreAuthors: fc.constantFrom('yes', 'no'),
-          otherAuthors: fc.array(fc.nonEmptyString()),
+          otherAuthors: fc.array(
+            fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+          ),
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.lorem(),
         }),
@@ -121,7 +123,9 @@ describe('writeReviewCompetingInterests', () => {
             {
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'no'),
-              otherAuthors: fc.array(fc.nonEmptyString()),
+              otherAuthors: fc.array(
+                fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+              ),
               persona: fc.constantFrom('public', 'pseudonym'),
               review: fc.nonEmptyString(),
             },
@@ -186,7 +190,9 @@ describe('writeReviewCompetingInterests', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
-            otherAuthors: fc.array(fc.nonEmptyString()),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },
@@ -242,7 +248,9 @@ describe('writeReviewCompetingInterests', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
-            otherAuthors: fc.array(fc.nonEmptyString()),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },
@@ -343,7 +351,9 @@ describe('writeReviewCompetingInterests', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
-            otherAuthors: fc.array(fc.nonEmptyString()),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },

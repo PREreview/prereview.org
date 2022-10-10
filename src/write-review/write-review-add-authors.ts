@@ -99,7 +99,7 @@ const AddAuthorsFormD = D.struct({
   anotherAuthor: D.literal('yes', 'no'),
 })
 
-function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<NonEmptyString>, error = false) {
+function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<{ name: NonEmptyString }>, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}Do you need to add another author? – PREreview of “${preprint.title}”`,
     content: html`
@@ -125,7 +125,7 @@ function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<NonEmptyStrin
           <h1>You have added ${authors.length} other author${authors.length !== 1 ? 's' : ''}</h1>
 
           <ol class="summary-list">
-            ${authors.map(name => html`<li>${name}</li>`)}
+            ${authors.map(({ name }) => html` <li>${name}</li>`)}
           </ol>
 
           <div ${rawHtml(error ? 'class="error"' : '')}>

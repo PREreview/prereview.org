@@ -5,7 +5,6 @@ import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { html, plainText, rawHtml, sendHtml } from '../html'
@@ -69,7 +68,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
         .with({ form: { moreAuthors: 'yes' } }, () =>
           seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })),
         )
-        .otherwise(flow(get('form'), showNextForm(preprint.doi))),
+        .otherwise(flow(({ form }) => form, showNextForm(preprint.doi))),
     ),
     RM.orElseW(() => showAuthorsErrorForm(preprint)),
   )

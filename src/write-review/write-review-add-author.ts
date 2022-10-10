@@ -73,7 +73,7 @@ const showAddAuthorErrorForm = flow(
 const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
     RM.decodeBody(AddAuthorFormD.decode),
-    RM.map(({ name }) => ({ otherAuthors: [...(form.otherAuthors ?? []), name] })),
+    RM.map(author => ({ otherAuthors: [...(form.otherAuthors ?? []), author] })),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(() => seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi }))),

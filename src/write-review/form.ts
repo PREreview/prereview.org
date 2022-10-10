@@ -7,8 +7,9 @@ import * as TE from 'fp-ts/TaskEither'
 import { constVoid, constant, flow, pipe } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
 import * as C from 'io-ts/Codec'
+import * as D from 'io-ts/Decoder'
 import Keyv from 'keyv'
-import { Orcid } from 'orcid-id-ts'
+import { Orcid, isOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { seeOther } from '../middleware'
 import { PreprintId } from '../preprint-id'
@@ -82,11 +83,16 @@ export const showNextForm = (preprint: PreprintId['doi']) => (form: Form) =>
     )
     .otherwise(() => seeOther(format(writeReviewPostMatch.formatter, { doi: preprint })))
 
+const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
+
 const FormC = C.partial({
   review: NonEmptyStringC,
   persona: C.literal('public', 'pseudonym'),
   moreAuthors: C.literal('yes', 'no'),
-  otherAuthors: pipe(C.array(NonEmptyStringC), C.readonly),
+  otherAuthors: pipe(
+    C.array(pipe(C.struct({ name: NonEmptyStringC }), C.intersect(C.partial({ orcid: OrcidC })))),
+    C.readonly,
+  ),
   competingInterests: C.literal('yes', 'no'),
   competingInterestsDetails: NonEmptyStringC,
   conduct: C.literal('yes'),

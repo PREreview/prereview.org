@@ -34,7 +34,9 @@ describe('writeReviewAddAuthor', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constant('yes'),
-            otherAuthors: fc.array(fc.nonEmptyString()),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },
@@ -61,7 +63,7 @@ describe('writeReviewAddAuthor', () => {
           )()
 
           expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({
-            otherAuthors: [...(newReview.otherAuthors ?? []), name],
+            otherAuthors: [...(newReview.otherAuthors ?? []), { name }],
           })
           expect(actual).toStrictEqual(
             E.right([
@@ -104,7 +106,9 @@ describe('writeReviewAddAuthor', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constant('no'),
-            otherAuthors: fc.array(fc.nonEmptyString()),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },
@@ -163,7 +167,9 @@ describe('writeReviewAddAuthor', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
-            otherAuthors: fc.array(fc.nonEmptyString()),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },
@@ -222,7 +228,9 @@ describe('writeReviewAddAuthor', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
-            otherAuthors: fc.array(fc.nonEmptyString()),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },
@@ -281,7 +289,9 @@ describe('writeReviewAddAuthor', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'no'),
-            otherAuthors: fc.array(fc.nonEmptyString()),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },
@@ -381,7 +391,9 @@ describe('writeReviewAddAuthor', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constant('yes'),
-            otherAuthors: fc.array(fc.nonEmptyString()),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },
