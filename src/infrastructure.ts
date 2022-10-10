@@ -124,7 +124,7 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
       newPrereview.persona === 'public'
         ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
         : { name: newPrereview.user.pseudonym },
-      ...newPrereview.otherAuthors.map(name => ({ name })),
+      ...newPrereview.otherAuthors,
     ],
     description: newPrereview.review.toString(),
     communities: [{ identifier: 'prereview-reviews' }],

@@ -3,7 +3,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import Keyv from 'keyv'
-import { get } from 'spectacles-ts'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
 import * as fc from '../fc'
@@ -73,7 +72,7 @@ describe('writeReviewPost', () => {
 
           expect(postPrereview).toHaveBeenCalledWith({
             conduct: 'yes',
-            otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors.map(get('name')) : [],
+            otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
             persona: newReview.persona,
             preprint: {
               doi: preprintDoi,
