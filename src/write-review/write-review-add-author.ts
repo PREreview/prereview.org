@@ -62,16 +62,14 @@ export const writeReviewAddAuthor = flow(
 )
 
 const showAddAuthorForm = flow(
-  fromReaderK(({ preprint, user }: { preprint: Preprint; user: User }) =>
-    addAuthorForm(preprint, {}, user, { name: false, orcid: false }),
-  ),
+  fromReaderK(({ preprint }: { preprint: Preprint }) => addAuthorForm(preprint, { name: false, orcid: false })),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showAddAuthorErrorForm = (preprint: Preprint, user: User) =>
+const showAddAuthorErrorForm = (preprint: Preprint) =>
   flow(
-    fromReaderK((formErrors: { name: boolean; orcid: boolean }) => addAuthorForm(preprint, {}, user, formErrors)),
+    fromReaderK((formErrors: { name: boolean; orcid: boolean }) => addAuthorForm(preprint, formErrors)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -110,7 +108,7 @@ const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: P
             ),
           ),
         ),
-        RM.ichain(showAddAuthorErrorForm(preprint, user)),
+        RM.ichain(showAddAuthorErrorForm(preprint)),
       ),
     ),
   )
@@ -119,8 +117,6 @@ const OrcidD = pipe(
   D.string,
   D.parse(s => E.fromOption(() => D.error(s, 'ORCID'))(parse(s))),
 )
-
-type AddAuthorForm = D.TypeOf<typeof AddAuthorFormD>
 
 const AddAuthorFormD = D.struct({
   name: NonEmptyStringC,
@@ -135,12 +131,7 @@ const AddAuthorFormOrcidD = D.struct({
   orcid: D.union(OrcidD, pipe(D.literal(''), D.map(constUndefined))),
 })
 
-function addAuthorForm(
-  preprint: Preprint,
-  form: Partial<AddAuthorForm>,
-  user: User,
-  formErrors: { name: boolean; orcid: boolean },
-) {
+function addAuthorForm(preprint: Preprint, formErrors: { name: boolean; orcid: boolean }) {
   const errors = pipe(formErrors, RR.elem(b.Eq)(true))
 
   return page({
