@@ -366,7 +366,11 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
     },
     metadata: {
       communities: [{ id: 'prereview-reviews' }],
-      creators: [{ name: 'Orange Panda' }, { name: 'Jean-Baptiste Botul' }],
+      creators: [
+        { name: 'Orange Panda' },
+        { name: 'Jean-Baptiste Botul' },
+        { name: 'Stephen Hawking', orcid: '0000-0002-9079-593X' as Orcid },
+      ],
       description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
       doi: '10.5072/zenodo.1055808' as Doi,
       license: {
@@ -441,6 +445,16 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   await expect(page.locator('h1')).toHaveText('You have added 1 other author')
   await expect(page).toHaveScreenshot()
 
+  await page.check('text="Yes"')
+  await page.click('text="Continue"')
+
+  await page.fill('role=textbox[name="Name"]', 'Stephen Hawking')
+  await page.fill('role=textbox[name="ORCID iD (optional)"]', '0000-0002-9079-593X')
+  await page.click('text="Continue"')
+
+  await expect(page.locator('h1')).toHaveText('You have added 2 other authors')
+  await expect(page).toHaveScreenshot()
+
   await page.check('text="No"')
   await page.click('text="Continue"')
 
@@ -452,6 +466,7 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   const preview = page.locator('role=blockquote[name="Check your PREreview"]')
 
   await expect(preview).toContainText('Jean-Baptiste Botul')
+  await expect(preview).toContainText('Stephen Hawking')
   await expect(page).toHaveScreenshot()
 
   fetch
@@ -1292,6 +1307,56 @@ test.extend(canAddAuthors)("have to add the author's name", async ({ fetch, java
   await page.click('text="Enter their name"')
 
   await expect(page.locator('role=textbox[name="Name"]')).toBeFocused()
+  await expect(page).toHaveScreenshot()
+})
+
+test.extend(canAddAuthors)('have to add a valid ORCID iD to an author', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
+  await page.click('text="Continue"')
+
+  await page.click('text="Continue"')
+  await page.check('text="Josiah Carberry"')
+  await page.click('text="Continue"')
+  await page.check('text="Yes"')
+  await page.click('text="Continue"')
+
+  await page.fill('role=textbox[name="Name"]', 'Otto Lidenbrock')
+  await page.fill('role=textbox[name="ORCID iD (optional)"]', 'not an ORCID iD')
+  await page.click('text="Continue"')
+
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
+  await expect(page.locator('role=textbox[name="ORCID iD (optional)"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Enter their ORCID iD"')
+
+  await expect(page.locator('role=textbox[name="ORCID iD (optional)"]')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
 

@@ -15,18 +15,24 @@ describe('writeReviewAddAuthor', () => {
       fc.asyncProperty(
         fc.preprintDoi(),
         fc.record({ title: fc.html(), language: fc.languageCode() }),
-        fc.tuple(fc.nonEmptyString(), fc.uuid(), fc.string()).chain(([name, sessionId, secret]) =>
-          fc.tuple(
-            fc.constant(name),
-            fc.connection({
-              body: fc.constant({ name }),
-              headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-              method: fc.constant('POST'),
-            }),
-            fc.constant(sessionId),
-            fc.constant(secret),
+        fc
+          .tuple(
+            fc.record({ name: fc.nonEmptyString(), orcid: fc.option(fc.orcid(), { nil: undefined }) }),
+            fc.uuid(),
+            fc.string(),
+          )
+          .chain(([otherAuthor, sessionId, secret]) =>
+            fc.tuple(
+              fc.constant(otherAuthor),
+              fc.connection({
+                body: fc.constant({ name: otherAuthor.name, orcid: otherAuthor.orcid ?? '' }),
+                headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+                method: fc.constant('POST'),
+              }),
+              fc.constant(sessionId),
+              fc.constant(secret),
+            ),
           ),
-        ),
         fc.user(),
         fc.record(
           {
@@ -42,7 +48,7 @@ describe('writeReviewAddAuthor', () => {
           },
           { requiredKeys: ['moreAuthors'] },
         ),
-        async (preprintDoi, preprintTitle, [name, connection, sessionId, secret], user, newReview) => {
+        async (preprintDoi, preprintTitle, [otherAuthor, connection, sessionId, secret], user, newReview) => {
           const sessionStore = new Keyv()
           await sessionStore.set(sessionId, UserC.encode(user))
           const formStore = new Keyv()
@@ -63,7 +69,10 @@ describe('writeReviewAddAuthor', () => {
           )()
 
           expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({
-            otherAuthors: [...(newReview.otherAuthors ?? []), { name }],
+            otherAuthors: [
+              ...(newReview.otherAuthors ?? []),
+              otherAuthor.orcid ? otherAuthor : { name: otherAuthor.name },
+            ],
           })
           expect(actual).toStrictEqual(
             E.right([
@@ -377,6 +386,67 @@ describe('writeReviewAddAuthor', () => {
           fc.tuple(
             fc.connection({
               body: fc.constant({}),
+              headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+              method: fc.constant('POST'),
+            }),
+            fc.constant(sessionId),
+            fc.constant(secret),
+          ),
+        ),
+        fc.user(),
+        fc.record(
+          {
+            competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
+            conduct: fc.constant('yes'),
+            moreAuthors: fc.constant('yes'),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
+            persona: fc.constantFrom('public', 'pseudonym'),
+            review: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['moreAuthors'] },
+        ),
+        async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+          const sessionStore = new Keyv()
+          await sessionStore.set(sessionId, UserC.encode(user))
+          const formStore = new Keyv()
+          await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+          const getPreprintTitle = () => TE.right(preprintTitle)
+
+          const actual = await runMiddleware(
+            _.writeReviewAddAuthor(preprintDoi)({
+              canAddAuthors: () => true,
+              formStore,
+              getPreprintTitle,
+              secret,
+              sessionStore,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.BadRequest },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+        },
+      ),
+    )
+  })
+
+  test('without an ORCID iD', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.preprintDoi(),
+        fc.record({ title: fc.html(), language: fc.languageCode() }),
+        fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+          fc.tuple(
+            fc.connection({
+              body: fc.record({ name: fc.nonEmptyString(), orcid: fc.nonEmptyString() }, { requiredKeys: ['name'] }),
               headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
               method: fc.constant('POST'),
             }),

@@ -1,10 +1,13 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
-import { flow, pipe } from 'fp-ts/function'
+import * as RR from 'fp-ts/ReadonlyRecord'
+import * as b from 'fp-ts/boolean'
+import { constUndefined, flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import { parse } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { html, plainText, rawHtml, sendHtml } from '../html'
@@ -59,16 +62,19 @@ export const writeReviewAddAuthor = flow(
 )
 
 const showAddAuthorForm = flow(
-  fromReaderK(({ preprint, user }: { preprint: Preprint; user: User }) => addAuthorForm(preprint, {}, user)),
+  fromReaderK(({ preprint, user }: { preprint: Preprint; user: User }) =>
+    addAuthorForm(preprint, {}, user, { name: false, orcid: false }),
+  ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showAddAuthorErrorForm = flow(
-  fromReaderK((preprint: Preprint, user: User) => addAuthorForm(preprint, {}, user, true)),
-  RM.ichainFirst(() => RM.status(Status.BadRequest)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showAddAuthorErrorForm = (preprint: Preprint, user: User) =>
+  flow(
+    fromReaderK((formErrors: { name: boolean; orcid: boolean }) => addAuthorForm(preprint, {}, user, formErrors)),
+    RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
 const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
@@ -77,18 +83,68 @@ const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: P
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(() => seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi }))),
-    RM.orElseW(() => showAddAuthorErrorForm(preprint, user)),
+    RM.orElseW(() =>
+      pipe(
+        RM.of({}),
+        RM.apS(
+          'name',
+          RM.decodeBody(
+            flow(
+              AddAuthorFormNameD.decode,
+              E.match(
+                () => E.right(true),
+                () => E.right(false),
+              ),
+            ),
+          ),
+        ),
+        RM.apS(
+          'orcid',
+          RM.decodeBody(
+            flow(
+              AddAuthorFormOrcidD.decode,
+              E.match(
+                () => E.right(true),
+                () => E.right(false),
+              ),
+            ),
+          ),
+        ),
+        RM.ichain(showAddAuthorErrorForm(preprint, user)),
+      ),
+    ),
   )
+
+const OrcidD = pipe(
+  D.string,
+  D.parse(s => E.fromOption(() => D.error(s, 'ORCID'))(parse(s))),
+)
 
 type AddAuthorForm = D.TypeOf<typeof AddAuthorFormD>
 
 const AddAuthorFormD = D.struct({
   name: NonEmptyStringC,
+  orcid: D.union(OrcidD, pipe(D.literal(''), D.map(constUndefined))),
 })
 
-function addAuthorForm(preprint: Preprint, form: Partial<AddAuthorForm>, user: User, error = false) {
+const AddAuthorFormNameD = D.struct({
+  name: NonEmptyStringC,
+})
+
+const AddAuthorFormOrcidD = D.struct({
+  orcid: D.union(OrcidD, pipe(D.literal(''), D.map(constUndefined))),
+})
+
+function addAuthorForm(
+  preprint: Preprint,
+  form: Partial<AddAuthorForm>,
+  user: User,
+  formErrors: { name: boolean; orcid: boolean },
+) {
+  const errors = pipe(formErrors, RR.elem(b.Eq)(true))
+
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
+    title: plainText`${errors || formErrors.orcid ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -96,14 +152,25 @@ function addAuthorForm(preprint: Preprint, form: Partial<AddAuthorForm>, user: U
 
       <main>
         <form method="post" action="${format(writeReviewAddAuthorMatch.formatter, { doi: preprint.doi })}" novalidate>
-          ${error
+          ${errors
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
                   <h2 id="error-summary-title">There is a problem</h2>
                   <ul>
-                    <li>
-                      <a href="#add-author-name">Enter their name</a>
-                    </li>
+                    ${formErrors.name
+                      ? html`
+                          <li>
+                            <a href="#add-author-name">Enter their name</a>
+                          </li>
+                        `
+                      : ''}
+                    ${formErrors.orcid
+                      ? html`
+                          <li>
+                            <a href="#add-author-orcid">Enter their ORCID iD</a>
+                          </li>
+                        `
+                      : ''}
                   </ul>
                 </error-summary>
               `
@@ -111,10 +178,10 @@ function addAuthorForm(preprint: Preprint, form: Partial<AddAuthorForm>, user: U
 
           <h1>Add an author</h1>
 
-          <div ${rawHtml(error ? 'class="error"' : '')}>
+          <div ${rawHtml(formErrors.name ? 'class="error"' : '')}>
             <label for="add-author-name">Name</label>
 
-            ${error
+            ${formErrors.name
               ? html`
                   <div class="error-message" id="add-author-name-error">
                     <span class="visually-hidden">Error:</span> Enter their name
@@ -127,7 +194,30 @@ function addAuthorForm(preprint: Preprint, form: Partial<AddAuthorForm>, user: U
               name="name"
               type="text"
               spellcheck="false"
-              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="add-author-name-error"' : '')}
+              ${rawHtml(formErrors.name ? 'aria-invalid="true" aria-errormessage="add-author-name-error"' : '')}
+            />
+          </div>
+
+          <div ${rawHtml(formErrors.orcid ? 'class="error"' : '')}>
+            <label for="add-author-orcid">ORCID&nbsp;iD (optional)</label>
+
+            ${formErrors.orcid
+              ? html`
+                  <div class="error-message" id="add-author-orcid-error">
+                    <span class="visually-hidden">Error:</span> Enter their ORCID&nbsp;iD
+                  </div>
+                `
+              : ''}
+
+            <input
+              id="add-author-orcid"
+              name="orcid"
+              class="orcid"
+              type="text"
+              size="19"
+              autocomplete="off"
+              spellcheck="false"
+              ${rawHtml(formErrors.orcid ? 'aria-invalid="true" aria-errormessage="add-author-orcid-error"' : '')}
             />
           </div>
 
