@@ -132,10 +132,10 @@ const AddAuthorFormOrcidD = D.struct({
 })
 
 function addAuthorForm(preprint: Preprint, formErrors: { name: boolean; orcid: boolean }) {
-  const errors = pipe(formErrors, RR.elem(b.Eq)(true))
+  const error = pipe(formErrors, RR.elem(b.Eq)(true))
 
   return page({
-    title: plainText`${errors ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
+    title: plainText`${error ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -143,7 +143,7 @@ function addAuthorForm(preprint: Preprint, formErrors: { name: boolean; orcid: b
 
       <main>
         <form method="post" action="${format(writeReviewAddAuthorMatch.formatter, { doi: preprint.doi })}" novalidate>
-          ${errors
+          ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
                   <h2 id="error-summary-title">There is a problem</h2>
