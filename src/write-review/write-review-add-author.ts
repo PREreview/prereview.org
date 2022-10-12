@@ -135,7 +135,7 @@ function addAuthorForm(preprint: Preprint, formErrors: { name: boolean; orcid: b
   const errors = pipe(formErrors, RR.elem(b.Eq)(true))
 
   return page({
-    title: plainText`${errors || formErrors.orcid ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
+    title: plainText`${errors ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
