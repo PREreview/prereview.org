@@ -7,6 +7,7 @@ import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { Orcid, parse } from 'orcid-id-ts'
+import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { html, plainText, rawHtml, sendHtml } from '../html'
@@ -85,8 +86,8 @@ const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: P
     RM.orElseW(() =>
       pipe(
         RM.of({}),
-        RM.apS('name', RM.decodeBody(flow(AddAuthorFormNameD.decode, E.map(constUndefined), E.right))),
-        RM.apS('orcid', RM.decodeBody(flow(AddAuthorFormOrcidD.decode, E.map(constUndefined), E.right))),
+        RM.apS('name', RM.decodeBody(flow(NameFieldD.decode, E.map(constUndefined), E.right))),
+        RM.apS('orcid', RM.decodeBody(flow(OrcidFieldD.decode, E.map(constUndefined), E.right))),
         RM.ichain(showAddAuthorErrorForm(preprint)),
       ),
     ),
@@ -102,13 +103,12 @@ const AddAuthorFormD = D.struct({
   orcid: D.union(OrcidD, pipe(D.literal(''), D.map(constUndefined))),
 })
 
-const AddAuthorFormNameD = D.struct({
-  name: NonEmptyStringC,
-})
+const NameFieldD = pipe(D.struct({ name: NonEmptyStringC }), D.map(get('name')))
 
-const AddAuthorFormOrcidD = D.struct({
-  orcid: D.union(OrcidD, pipe(D.literal(''), D.map(constUndefined))),
-})
+const OrcidFieldD = pipe(
+  D.struct({ orcid: D.union(OrcidD, pipe(D.literal(''), D.map(constUndefined))) }),
+  D.map(get('orcid')),
+)
 
 type AddAuthorForm = {
   readonly name: E.Either<unknown, NonEmptyString | undefined>
