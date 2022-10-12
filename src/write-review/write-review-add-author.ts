@@ -1,11 +1,15 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import { constUndefined, flow, pipe } from 'fp-ts/function'
+import { isString } from 'fp-ts/string'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as DE from 'io-ts/DecodeError'
 import * as D from 'io-ts/Decoder'
+import * as FS from 'io-ts/FreeSemigroup'
 import { Orcid, parse } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
@@ -86,8 +90,36 @@ const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: P
     RM.orElseW(() =>
       pipe(
         RM.of({}),
-        RM.apS('name', RM.decodeBody(flow(NameFieldD.decode, E.right))),
-        RM.apS('orcid', RM.decodeBody(flow(OrcidFieldD.decode, E.right))),
+        RM.apS(
+          'name',
+          RM.decodeBody(
+            flow(
+              NameFieldD.decode,
+              E.mapLeft(
+                flow(
+                  getInput('name'),
+                  O.getOrElse(() => ''),
+                ),
+              ),
+              E.right,
+            ),
+          ),
+        ),
+        RM.apS(
+          'orcid',
+          RM.decodeBody(
+            flow(
+              OrcidFieldD.decode,
+              E.mapLeft(
+                flow(
+                  getInput('orcid'),
+                  O.getOrElse(() => ''),
+                ),
+              ),
+              E.right,
+            ),
+          ),
+        ),
         RM.ichain(showAddAuthorErrorForm(preprint)),
       ),
     ),
@@ -112,7 +144,7 @@ const OrcidFieldD = pipe(
 
 type AddAuthorForm = {
   readonly name: E.Either<unknown, NonEmptyString | undefined>
-  readonly orcid: E.Either<unknown, Orcid | undefined>
+  readonly orcid: E.Either<string, Orcid | undefined>
 }
 
 function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
@@ -197,6 +229,7 @@ function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
               spellcheck="false"
               ${match(form.orcid)
                 .with(E.right(P.select(P.string)), value => html`value="${value}"`)
+                .with(E.left(P.select(P.string)), value => html`value="${value}"`)
                 .otherwise(() => '')}
               ${rawHtml(E.isLeft(form.orcid) ? 'aria-invalid="true" aria-errormessage="add-author-orcid-error"' : '')}
             />
@@ -209,6 +242,23 @@ function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
     js: ['error-summary.js'],
   })
 }
+
+const getInput: (field: string) => (error: D.DecodeError) => O.Option<string> = field =>
+  FS.fold(
+    DE.fold({
+      Leaf: O.fromPredicate(isString),
+      Key: (key, kind, errors) => (key === field ? getInput(field)(errors) : O.none),
+      Index: (index, kind, errors) => getInput(field)(errors),
+      Member: (index, errors) => getInput(field)(errors),
+      Lazy: (id, errors) => getInput(field)(errors),
+      Wrap: (error, errors) => getInput(field)(errors),
+    }),
+    (left, right) =>
+      pipe(
+        getInput(field)(left),
+        O.alt(() => getInput(field)(right)),
+      ),
+  )
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
