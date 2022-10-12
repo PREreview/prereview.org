@@ -2,13 +2,12 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
 import * as RR from 'fp-ts/ReadonlyRecord'
-import * as b from 'fp-ts/boolean'
 import { constUndefined, flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { parse } from 'orcid-id-ts'
-import { match } from 'ts-pattern'
+import { Orcid, parse } from 'orcid-id-ts'
+import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
@@ -19,7 +18,7 @@ import {
   writeReviewAuthorsMatch,
   writeReviewMatch,
 } from '../routes'
-import { NonEmptyStringC } from '../string'
+import { NonEmptyString, NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
 import { Form, getForm, saveForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
@@ -62,14 +61,16 @@ export const writeReviewAddAuthor = flow(
 )
 
 const showAddAuthorForm = flow(
-  fromReaderK(({ preprint }: { preprint: Preprint }) => addAuthorForm(preprint, { name: false, orcid: false })),
+  fromReaderK(({ preprint }: { preprint: Preprint }) =>
+    addAuthorForm(preprint, { name: E.right(undefined), orcid: E.right(undefined) }),
+  ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showAddAuthorErrorForm = (preprint: Preprint) =>
   flow(
-    fromReaderK((formErrors: { name: boolean; orcid: boolean }) => addAuthorForm(preprint, formErrors)),
+    fromReaderK((form: AddAuthorForm) => addAuthorForm(preprint, form)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -84,30 +85,8 @@ const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: P
     RM.orElseW(() =>
       pipe(
         RM.of({}),
-        RM.apS(
-          'name',
-          RM.decodeBody(
-            flow(
-              AddAuthorFormNameD.decode,
-              E.match(
-                () => E.right(true),
-                () => E.right(false),
-              ),
-            ),
-          ),
-        ),
-        RM.apS(
-          'orcid',
-          RM.decodeBody(
-            flow(
-              AddAuthorFormOrcidD.decode,
-              E.match(
-                () => E.right(true),
-                () => E.right(false),
-              ),
-            ),
-          ),
-        ),
+        RM.apS('name', RM.decodeBody(flow(AddAuthorFormNameD.decode, E.map(constUndefined), E.right))),
+        RM.apS('orcid', RM.decodeBody(flow(AddAuthorFormOrcidD.decode, E.map(constUndefined), E.right))),
         RM.ichain(showAddAuthorErrorForm(preprint)),
       ),
     ),
@@ -131,8 +110,13 @@ const AddAuthorFormOrcidD = D.struct({
   orcid: D.union(OrcidD, pipe(D.literal(''), D.map(constUndefined))),
 })
 
-function addAuthorForm(preprint: Preprint, formErrors: { name: boolean; orcid: boolean }) {
-  const error = pipe(formErrors, RR.elem(b.Eq)(true))
+type AddAuthorForm = {
+  readonly name: E.Either<unknown, NonEmptyString | undefined>
+  readonly orcid: E.Either<unknown, Orcid | undefined>
+}
+
+function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
+  const error = pipe(form, RR.some(E.isLeft))
 
   return page({
     title: plainText`${error ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
@@ -148,14 +132,14 @@ function addAuthorForm(preprint: Preprint, formErrors: { name: boolean; orcid: b
                 <error-summary aria-labelledby="error-summary-title" role="alert">
                   <h2 id="error-summary-title">There is a problem</h2>
                   <ul>
-                    ${formErrors.name
+                    ${E.isLeft(form.name)
                       ? html`
                           <li>
                             <a href="#add-author-name">Enter their name</a>
                           </li>
                         `
                       : ''}
-                    ${formErrors.orcid
+                    ${E.isLeft(form.orcid)
                       ? html`
                           <li>
                             <a href="#add-author-orcid">Enter their ORCID iD</a>
@@ -169,10 +153,10 @@ function addAuthorForm(preprint: Preprint, formErrors: { name: boolean; orcid: b
 
           <h1>Add an author</h1>
 
-          <div ${rawHtml(formErrors.name ? 'class="error"' : '')}>
+          <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
             <label for="add-author-name">Name</label>
 
-            ${formErrors.name
+            ${E.isLeft(form.name)
               ? html`
                   <div class="error-message" id="add-author-name-error">
                     <span class="visually-hidden">Error:</span> Enter their name
@@ -185,14 +169,17 @@ function addAuthorForm(preprint: Preprint, formErrors: { name: boolean; orcid: b
               name="name"
               type="text"
               spellcheck="false"
-              ${rawHtml(formErrors.name ? 'aria-invalid="true" aria-errormessage="add-author-name-error"' : '')}
+              ${match(form.name)
+                .with(E.right(P.select(P.string)), value => html`value="${value}"`)
+                .otherwise(() => '')}
+              ${rawHtml(E.isLeft(form.name) ? 'aria-invalid="true" aria-errormessage="add-author-name-error"' : '')}
             />
           </div>
 
-          <div ${rawHtml(formErrors.orcid ? 'class="error"' : '')}>
+          <div ${rawHtml(E.isLeft(form.orcid) ? 'class="error"' : '')}>
             <label for="add-author-orcid">ORCID&nbsp;iD (optional)</label>
 
-            ${formErrors.orcid
+            ${E.isLeft(form.orcid)
               ? html`
                   <div class="error-message" id="add-author-orcid-error">
                     <span class="visually-hidden">Error:</span> Enter their ORCID&nbsp;iD
@@ -208,7 +195,10 @@ function addAuthorForm(preprint: Preprint, formErrors: { name: boolean; orcid: b
               size="19"
               autocomplete="off"
               spellcheck="false"
-              ${rawHtml(formErrors.orcid ? 'aria-invalid="true" aria-errormessage="add-author-orcid-error"' : '')}
+              ${match(form.orcid)
+                .with(E.right(P.select(P.string)), value => html`value="${value}"`)
+                .otherwise(() => '')}
+              ${rawHtml(E.isLeft(form.orcid) ? 'aria-invalid="true" aria-errormessage="add-author-orcid-error"' : '')}
             />
           </div>
 
