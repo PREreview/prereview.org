@@ -84,21 +84,14 @@ const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: P
   pipe(
     RM.decodeBody(body =>
       E.right({
-        name: pipe(
-          NameFieldD.decode(body),
-          E.mapLeft(
-            flow(
-              getInput('name'),
-              O.getOrElse(() => ''),
-            ),
-          ),
-        ),
+        name: pipe(NameFieldD.decode(body), E.mapLeft(missingE)),
         orcid: pipe(
           OrcidFieldD.decode(body),
           E.mapLeft(
             flow(
               getInput('orcid'),
               O.getOrElse(() => ''),
+              invalidE,
             ),
           ),
         ),
@@ -108,7 +101,7 @@ const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: P
       pipe(
         E.Do,
         E.apS('name', fields.name),
-        E.apS('orcid', fields.orcid),
+        E.apSW('orcid', fields.orcid),
         E.mapLeft(() => fields),
       ),
     ),
@@ -131,13 +124,31 @@ const OrcidFieldD = pipe(
   D.map(get('orcid')),
 )
 
+interface MissingE {
+  readonly _tag: 'MissingE'
+}
+
+const missingE = (): MissingE => ({
+  _tag: 'MissingE',
+})
+
+interface InvalidE {
+  readonly _tag: 'InvalidE'
+  readonly actual: string
+}
+
+const invalidE = (actual: string): InvalidE => ({
+  _tag: 'InvalidE',
+  actual,
+})
+
 type AddAuthorForm = {
-  readonly name: E.Either<unknown, NonEmptyString | undefined>
-  readonly orcid: E.Either<string, Orcid | undefined>
+  readonly name: E.Either<MissingE, NonEmptyString | undefined>
+  readonly orcid: E.Either<InvalidE, Orcid | undefined>
 }
 
 function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
-  const error = pipe(form, RR.some(E.isLeft))
+  const error = pipe(form, RR.some<E.Either<unknown, unknown>>(E.isLeft))
 
   return page({
     title: plainText`${error ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
@@ -156,14 +167,22 @@ function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
                     ${E.isLeft(form.name)
                       ? html`
                           <li>
-                            <a href="#add-author-name">Enter their name</a>
+                            <a href="#add-author-name">
+                              ${match(form.name.left)
+                                .with({ _tag: 'MissingE' }, () => 'Enter their name')
+                                .exhaustive()}
+                            </a>
                           </li>
                         `
                       : ''}
                     ${E.isLeft(form.orcid)
                       ? html`
                           <li>
-                            <a href="#add-author-orcid">Enter their ORCID iD</a>
+                            <a href="#add-author-orcid">
+                              ${match(form.orcid.left)
+                                .with({ _tag: 'InvalidE' }, () => rawHtml('Enter their ORCID&nbsp;iD'))
+                                .exhaustive()}
+                            </a>
                           </li>
                         `
                       : ''}
@@ -180,7 +199,10 @@ function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
             ${E.isLeft(form.name)
               ? html`
                   <div class="error-message" id="add-author-name-error">
-                    <span class="visually-hidden">Error:</span> Enter their name
+                    <span class="visually-hidden">Error:</span>
+                    ${match(form.name.left)
+                      .with({ _tag: 'MissingE' }, () => 'Enter their name')
+                      .exhaustive()}
                   </div>
                 `
               : ''}
@@ -203,7 +225,11 @@ function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
             ${E.isLeft(form.orcid)
               ? html`
                   <div class="error-message" id="add-author-orcid-error">
-                    <span class="visually-hidden">Error:</span> Enter their ORCID&nbsp;iD
+                    <span class="visually-hidden">Error:</span>
+
+                    ${match(form.orcid.left)
+                      .with({ _tag: 'InvalidE' }, () => rawHtml('Enter their ORCID&nbsp;iD'))
+                      .exhaustive()}
                   </div>
                 `
               : ''}
@@ -218,7 +244,7 @@ function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
               spellcheck="false"
               ${match(form.orcid)
                 .with(E.right(P.select(P.string)), value => html`value="${value}"`)
-                .with(E.left(P.select(P.string)), value => html`value="${value}"`)
+                .with(E.left({ actual: P.select() }), value => html`value="${value}"`)
                 .otherwise(() => '')}
               ${rawHtml(E.isLeft(form.orcid) ? 'aria-invalid="true" aria-errormessage="add-author-orcid-error"' : '')}
             />
