@@ -82,58 +82,47 @@ const showAddAuthorErrorForm = (preprint: Preprint) =>
 
 const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(AddAuthorFormD.decode),
+    RM.decodeBody(body =>
+      E.right({
+        name: pipe(
+          NameFieldD.decode(body),
+          E.mapLeft(
+            flow(
+              getInput('name'),
+              O.getOrElse(() => ''),
+            ),
+          ),
+        ),
+        orcid: pipe(
+          OrcidFieldD.decode(body),
+          E.mapLeft(
+            flow(
+              getInput('orcid'),
+              O.getOrElse(() => ''),
+            ),
+          ),
+        ),
+      }),
+    ),
+    RM.chainEitherK(fields =>
+      pipe(
+        E.Do,
+        E.apS('name', fields.name),
+        E.apS('orcid', fields.orcid),
+        E.mapLeft(() => fields),
+      ),
+    ),
     RM.map(author => ({ otherAuthors: [...(form.otherAuthors ?? []), author] })),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(() => seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi }))),
-    RM.orElseW(() =>
-      pipe(
-        RM.of({}),
-        RM.apS(
-          'name',
-          RM.decodeBody(
-            flow(
-              NameFieldD.decode,
-              E.mapLeft(
-                flow(
-                  getInput('name'),
-                  O.getOrElse(() => ''),
-                ),
-              ),
-              E.right,
-            ),
-          ),
-        ),
-        RM.apS(
-          'orcid',
-          RM.decodeBody(
-            flow(
-              OrcidFieldD.decode,
-              E.mapLeft(
-                flow(
-                  getInput('orcid'),
-                  O.getOrElse(() => ''),
-                ),
-              ),
-              E.right,
-            ),
-          ),
-        ),
-        RM.ichain(showAddAuthorErrorForm(preprint)),
-      ),
-    ),
+    RM.ichainMiddlewareK(() => seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi }))),
+    RM.orElseW(showAddAuthorErrorForm(preprint)),
   )
 
 const OrcidD = pipe(
   D.string,
   D.parse(s => E.fromOption(() => D.error(s, 'ORCID'))(parse(s))),
 )
-
-const AddAuthorFormD = D.struct({
-  name: NonEmptyStringC,
-  orcid: D.union(OrcidD, pipe(D.literal(''), D.map(constUndefined))),
-})
 
 const NameFieldD = pipe(D.struct({ name: NonEmptyStringC }), D.map(get('name')))
 
