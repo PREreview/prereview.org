@@ -155,5 +155,6 @@ test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
   await page.click('text="Enter a preprint DOI"')
 
   await expect(page.locator('role=textbox[name="Preprint DOI"]')).toBeFocused()
+  await expect(page.locator('role=textbox[name="Preprint DOI"]')).toHaveValue('10.5555/12345678')
   await expect(page).toHaveScreenshot()
 })

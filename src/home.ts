@@ -1,12 +1,17 @@
-import { hasRegistrant, parse } from 'doi-ts'
+import { Doi, hasRegistrant, parse } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import { pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
+import * as O from 'fp-ts/Option'
+import { Reader } from 'fp-ts/Reader'
+import { flow, pipe } from 'fp-ts/function'
+import { isString } from 'fp-ts/string'
+import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as DE from 'io-ts/DecodeError'
 import * as D from 'io-ts/Decoder'
+import * as FS from 'io-ts/FreeSemigroup'
 import { get } from 'spectacles-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { seeOther } from './middleware'
@@ -23,13 +28,13 @@ export const home = pipe(
 )
 
 const showHomePage = pipe(
-  RM.rightReader(createPage()),
+  RM.rightReader(createPage(E.right(undefined))),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showHomeErrorPage = pipe(
-  RM.rightReader(createPage(true)),
+const showHomeErrorPage = flow(
+  fromReaderK(createPage),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -47,13 +52,35 @@ const LookupDoiD = pipe(
   D.map(get('doi')),
 )
 
+const invalidE = (actual: string): InvalidE => ({
+  _tag: 'InvalidE',
+  actual,
+})
+
 const lookupDoi = pipe(
   RM.decodeBody(LookupDoiD.decode),
   RM.ichainMiddlewareK(doi => seeOther(format(preprintMatch.formatter, { doi }))),
-  RM.orElse(() => showHomeErrorPage),
+  RM.orElse(
+    flow(
+      getInput('doi'),
+      O.getOrElse(() => ''),
+      invalidE,
+      E.left,
+      showHomeErrorPage,
+    ),
+  ),
 )
 
-function createPage(error = false) {
+interface InvalidE {
+  readonly _tag: 'InvalidE'
+  readonly actual: string
+}
+
+type LookupDoi = E.Either<InvalidE, Doi | undefined>
+
+function createPage(lookupDoi: LookupDoi) {
+  const error = E.isLeft(lookupDoi)
+
   return page({
     title: plainText`${error ? 'Error: ' : ''}PREreview`,
     content: html`
@@ -67,9 +94,17 @@ function createPage(error = false) {
               <error-summary aria-labelledby="error-summary-title" role="alert">
                 <h2 id="error-summary-title">There is a problem</h2>
                 <ul>
-                  <li>
-                    <a href="#doi">Enter a preprint DOI</a>
-                  </li>
+                  ${E.isLeft(lookupDoi)
+                    ? html`
+                        <li>
+                          <a href="#doi">
+                            ${match(lookupDoi.left)
+                              .with({ _tag: 'InvalidE' }, () => 'Enter a preprint DOI')
+                              .exhaustive()}
+                          </a>
+                        </li>
+                      `
+                    : ''}
                 </ul>
               </error-summary>
             `
@@ -78,13 +113,16 @@ function createPage(error = false) {
         <h2>Find and post PREreviews</h2>
 
         <form method="post" action="${format(homeMatch.formatter, {})}" novalidate>
-          <div ${rawHtml(error ? 'class="error"' : '')}>
+          <div ${rawHtml(E.isLeft(lookupDoi) ? 'class="error"' : '')}>
             <label for="doi">Preprint DOI</label>
 
             ${error
               ? html`
                   <div class="error-message" id="doi-error">
-                    <span class="visually-hidden">Error:</span> Enter a preprint DOI
+                    <span class="visually-hidden">Error:</span>
+                    ${match(lookupDoi.left)
+                      .with({ _tag: 'InvalidE' }, () => 'Enter a preprint DOI')
+                      .exhaustive()}
                   </div>
                 `
               : ''}
@@ -96,7 +134,11 @@ function createPage(error = false) {
               size="40"
               spellcheck="false"
               aria-describedby="doi-tip"
-              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="doi-error"' : '')}
+              ${match(lookupDoi)
+                .with(E.right(P.select(P.string)), value => html`value="${value}"`)
+                .with(E.left({ actual: P.select() }), value => html`value="${value}"`)
+                .otherwise(() => '')}
+              ${rawHtml(E.isLeft(lookupDoi) ? 'aria-invalid="true" aria-errormessage="doi-error"' : '')}
             />
 
             <div id="doi-tip" role="note">We support AfricArXiv, bioRxiv, medRxiv and SciELO preprints.</div>
@@ -109,4 +151,29 @@ function createPage(error = false) {
     js: error ? ['error-summary.js'] : [],
     type: 'no-header',
   })
+}
+
+function getInput(field: string): (error: D.DecodeError) => O.Option<string> {
+  return FS.fold(
+    DE.fold({
+      Leaf: O.fromPredicate(isString),
+      Key: (key, kind, errors) => (key === field ? getInput(field)(errors) : O.none),
+      Index: (index, kind, errors) => getInput(field)(errors),
+      Member: (index, errors) => getInput(field)(errors),
+      Lazy: (id, errors) => getInput(field)(errors),
+      Wrap: (error, errors) => getInput(field)(errors),
+    }),
+    (left, right) =>
+      pipe(
+        getInput(field)(left),
+        O.alt(() => getInput(field)(right)),
+      ),
+  )
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
+  f: (...a: A) => Reader<R, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return (...a) => RM.rightReader(f(...a))
 }
