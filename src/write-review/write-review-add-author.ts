@@ -86,8 +86,8 @@ const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: P
     RM.orElseW(() =>
       pipe(
         RM.of({}),
-        RM.apS('name', RM.decodeBody(flow(NameFieldD.decode, E.map(constUndefined), E.right))),
-        RM.apS('orcid', RM.decodeBody(flow(OrcidFieldD.decode, E.map(constUndefined), E.right))),
+        RM.apS('name', RM.decodeBody(flow(NameFieldD.decode, E.right))),
+        RM.apS('orcid', RM.decodeBody(flow(OrcidFieldD.decode, E.right))),
         RM.ichain(showAddAuthorErrorForm(preprint)),
       ),
     ),

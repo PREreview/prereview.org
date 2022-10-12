@@ -1352,6 +1352,7 @@ test.extend(canAddAuthors)('have to add a valid ORCID iD to an author', async ({
     await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
   }
   await expect(page.locator('role=textbox[name="ORCID iD (optional)"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page.locator('role=textbox[name="Name"]')).toHaveValue('Otto Lidenbrock')
   await expect(page).toHaveScreenshot()
 
   await page.click('text="Enter their ORCID iD"')
