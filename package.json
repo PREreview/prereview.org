@@ -91,7 +91,7 @@
     "node-mocks-http": "^1.11.0",
     "npm-run-all": "^4.1.5",
     "open-color": "^1.9.1",
-    "postcss": "^8.4.17",
+    "postcss": "^8.4.18",
     "postcss-font-display": "^0.3.0",
     "postcss-loader": "^7.0.1",
     "postcss-preset-env": "^7.8.2",
