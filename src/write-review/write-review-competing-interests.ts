@@ -1,16 +1,20 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as I from 'fp-ts/Identity'
 import { Reader } from 'fp-ts/Reader'
-import { flow, pipe } from 'fp-ts/function'
+import * as RR from 'fp-ts/ReadonlyRecord'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { match } from 'ts-pattern'
+import { get } from 'spectacles-ts'
+import { P, match } from 'ts-pattern'
+import { MissingE, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
-import { NonEmptyStringC } from '../string'
+import { NonEmptyString, NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
@@ -38,54 +42,71 @@ export const writeReviewCompetingInterests = flow(
 )
 
 const showCompetingInterestsForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) => competingInterestsForm(preprint, form)),
+  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
+    competingInterestsForm(preprint, {
+      competingInterests: E.right(form.competingInterests),
+      competingInterestsDetails: E.right(form.competingInterestsDetails),
+    }),
+  ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showCompetingInterestsErrorForm = (preprint: Preprint) => (form: Form) =>
-  pipe(
-    RM.rightReader(competingInterestsForm(preprint, form, true)),
+const showCompetingInterestsErrorForm = (preprint: Preprint) =>
+  flow(
+    fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
 const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(CompetingInterestsFormD.decode),
+    RM.decodeBody(E.right),
+    RM.map(body =>
+      pipe(
+        I.Do,
+        I.apS('competingInterests', pipe(CompetingInterestsFieldD.decode(body), E.mapLeft(missingE))),
+        I.bind('competingInterestsDetails', ({ competingInterests }) =>
+          match(competingInterests)
+            .with(E.right('yes' as const), () =>
+              pipe(CompetingInterestsDetailsFieldD.decode(body), E.mapLeft(missingE)),
+            )
+            .otherwise(() => E.right(undefined)),
+        ),
+      ),
+    ),
+    RM.chainEitherK(fields =>
+      pipe(
+        E.Do,
+        E.apS('competingInterests', fields.competingInterests),
+        E.apSW('competingInterestsDetails', fields.competingInterestsDetails),
+        E.mapLeft(() => fields),
+      ),
+    ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
-    RM.orElseW(() =>
-      pipe(
-        RM.decodeBody(
-          flow(
-            PartialCompetingInterestsFormD.decode,
-            E.altW(() => E.right({})),
-          ),
-        ),
-        RM.ichain(showCompetingInterestsErrorForm(preprint)),
-      ),
-    ),
+    RM.orElseW(showCompetingInterestsErrorForm(preprint)),
   )
 
-type CompetingInterestsForm = D.TypeOf<typeof CompetingInterestsFormD>
+const CompetingInterestsFieldD = pipe(
+  D.struct({ competingInterests: D.literal('yes', 'no') }),
+  D.map(get('competingInterests')),
+)
 
-const PartialCompetingInterestsFormD = D.partial({
-  competingInterests: D.literal('yes', 'no'),
-})
+const CompetingInterestsDetailsFieldD = pipe(
+  D.struct({ competingInterestsDetails: NonEmptyStringC }),
+  D.map(get('competingInterestsDetails')),
+)
 
-const CompetingInterestsFormD = D.sum('competingInterests')({
-  yes: D.struct({
-    competingInterests: D.literal('yes'),
-    competingInterestsDetails: NonEmptyStringC,
-  }),
-  no: D.struct({
-    competingInterests: D.literal('no'),
-  }),
-})
+type CompetingInterestsForm = {
+  readonly competingInterests: E.Either<MissingE, 'yes' | 'no' | undefined>
+  readonly competingInterestsDetails: E.Either<MissingE, NonEmptyString | undefined>
+}
 
-function competingInterestsForm(preprint: Preprint, form: Partial<CompetingInterestsForm>, error = false) {
+function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm) {
+  const error = pipe(form, RR.some<E.Either<unknown, unknown>>(E.isLeft))
+
   return page({
     title: plainText`${error ? 'Error: ' : ''}Do you have any competing interests? – PREreview of “${preprint.title}”`,
     content: html`
@@ -104,29 +125,40 @@ function competingInterestsForm(preprint: Preprint, form: Partial<CompetingInter
                 <error-summary aria-labelledby="error-summary-title" role="alert">
                   <h2 id="error-summary-title">There is a problem</h2>
                   <ul>
-                    ${form.competingInterests !== 'yes'
+                    ${E.isLeft(form.competingInterests)
                       ? html`
                           <li>
-                            <a href="#competing-interests-no">Select yes if you have any competing interests</a>
+                            <a href="#competing-interests-no">
+                              ${match(form.competingInterests.left)
+                                .with({ _tag: 'MissingE' }, () => 'Select yes if you have any competing interests')
+                                .exhaustive()}
+                            </a>
                           </li>
                         `
-                      : html`
+                      : ''}
+                    ${E.isLeft(form.competingInterestsDetails)
+                      ? html`
                           <li>
-                            <a href="#competing-interests-details">Enter details of your competing interests</a>
+                            <a href="#competing-interests-details">
+                              ${match(form.competingInterestsDetails.left)
+                                .with({ _tag: 'MissingE' }, () => 'Enter details of your competing interests')
+                                .exhaustive()}
+                            </a>
                           </li>
-                        `}
+                        `
+                      : ''}
                   </ul>
                 </error-summary>
               `
             : ''}
 
-          <div ${rawHtml(error && form.competingInterests !== 'yes' ? 'class="error"' : '')}>
+          <div ${rawHtml(E.isLeft(form.competingInterests) ? 'class="error"' : '')}>
             <conditional-inputs>
               <fieldset
                 role="group"
                 aria-describedby="competing-interests-tip"
                 ${rawHtml(
-                  error && form.competingInterests !== 'yes'
+                  E.isLeft(form.competingInterests)
                     ? 'aria-invalid="true" aria-errormessage="competing-interests-error"'
                     : '',
                 )}
@@ -155,10 +187,13 @@ function competingInterestsForm(preprint: Preprint, form: Partial<CompetingInter
                   </div>
                 </details>
 
-                ${error && form.competingInterests !== 'yes'
+                ${E.isLeft(form.competingInterests)
                   ? html`
                       <div class="error-message" id="competing-interests-error">
-                        <span class="visually-hidden">Error:</span> Select yes if you have any competing interests
+                        <span class="visually-hidden">Error:</span>
+                        ${match(form.competingInterests.left)
+                          .with({ _tag: 'MissingE' }, () => 'Select yes if you have any competing interests')
+                          .exhaustive()}
                       </div>
                     `
                   : ''}
@@ -171,7 +206,9 @@ function competingInterestsForm(preprint: Preprint, form: Partial<CompetingInter
                         id="competing-interests-no"
                         type="radio"
                         value="no"
-                        ${rawHtml(form.competingInterests === 'no' ? 'checked' : '')}
+                        ${match(form.competingInterests)
+                          .with(E.right('no' as const), () => 'checked')
+                          .otherwise(() => '')}
                       />
                       <span>No</span>
                     </label>
@@ -183,18 +220,23 @@ function competingInterestsForm(preprint: Preprint, form: Partial<CompetingInter
                         type="radio"
                         value="yes"
                         aria-controls="competing-interests-details-control"
-                        ${rawHtml(form.competingInterests === 'yes' ? 'checked' : '')}
+                        ${match(form.competingInterests)
+                          .with(E.right('yes' as const), () => 'checked')
+                          .otherwise(() => '')}
                       />
                       <span>Yes</span>
                     </label>
                     <div class="conditional" id="competing-interests-details-control">
-                      <div ${rawHtml(error && form.competingInterests === 'yes' ? 'class="error"' : '')}>
+                      <div ${rawHtml(E.isLeft(form.competingInterestsDetails) ? 'class="error"' : '')}>
                         <label for="competing-interests-details" class="textarea">What are they?</label>
 
-                        ${error && form.competingInterests === 'yes'
+                        ${E.isLeft(form.competingInterestsDetails)
                           ? html`
                               <div class="error-message" id="competing-interests-details-error">
-                                <span class="visually-hidden">Error:</span> Enter details of your competing interests
+                                <span class="visually-hidden">Error:</span>
+                                ${match(form.competingInterestsDetails.left)
+                                  .with({ _tag: 'MissingE' }, () => 'Enter details of your competing interests')
+                                  .exhaustive()}
                               </div>
                             `
                           : ''}
@@ -204,12 +246,14 @@ function competingInterestsForm(preprint: Preprint, form: Partial<CompetingInter
                           id="competing-interests-details"
                           rows="5"
                           ${rawHtml(
-                            error && form.competingInterests === 'yes'
+                            E.isLeft(form.competingInterestsDetails)
                               ? 'aria-invalid="true" aria-errormessage="competing-interests-details-error"'
                               : '',
                           )}
                         >
-${rawHtml('competingInterestsDetails' in form ? form.competingInterestsDetails ?? '' : '')}</textarea
+${match(form.competingInterestsDetails)
+                            .with(E.right(P.select(P.string)), identity)
+                            .otherwise(() => '')}</textarea
                         >
                       </div>
                     </div>
