@@ -59,7 +59,7 @@
     "@types/jest": "^28.1.7",
     "@types/make-fetch-happen": "^10.0.0",
     "@types/markdown-it": "^12.2.3",
-    "@types/node": "^16.11.64",
+    "@types/node": "^16.11.65",
     "@types/node-fetch": "^2.6.2",
     "@types/rtl-detect": "^1.0.0",
     "@types/sanitize-html": "^2.6.2",
