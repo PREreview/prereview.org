@@ -1,11 +1,14 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
+import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
+import { MissingE, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -36,34 +39,49 @@ export const writeReviewPersona = flow(
 
 const showPersonaForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
-    personaForm(preprint, form, user),
+    personaForm(preprint, { persona: E.right(form.persona) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showPersonaErrorForm = flow(
-  fromReaderK((preprint: Preprint, user: User) => personaForm(preprint, {}, user, true)),
-  RM.ichainFirst(() => RM.status(Status.BadRequest)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showPersonaErrorForm = (preprint: Preprint, user: User) =>
+  flow(
+    fromReaderK((form: PersonaForm) => personaForm(preprint, form, user)),
+    RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
 const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(PersonaFormD.decode),
+    RM.decodeBody(body => E.right({ persona: pipe(PersonaFieldD.decode(body), E.mapLeft(missingE)) })),
+    RM.chainEitherK(fields =>
+      pipe(
+        E.Do,
+        E.apS('persona', fields.persona),
+        E.mapLeft(() => fields),
+      ),
+    ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
-    RM.orElseW(() => showPersonaErrorForm(preprint, user)),
+    RM.orElseW(showPersonaErrorForm(preprint, user)),
   )
 
-type PersonaForm = D.TypeOf<typeof PersonaFormD>
+const PersonaFieldD = pipe(
+  D.struct({
+    persona: D.literal('public', 'pseudonym'),
+  }),
+  D.map(get('persona')),
+)
 
-const PersonaFormD = D.struct({
-  persona: D.literal('public', 'pseudonym'),
-})
+type PersonaForm = {
+  readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>
+}
 
-function personaForm(preprint: Preprint, form: Partial<PersonaForm>, user: User, error = false) {
+function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
+  const error = pipe(form, RR.some<E.Either<unknown, unknown>>(E.isLeft))
+
   return page({
     title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of “${preprint.title}”`,
     content: html`
@@ -78,19 +96,27 @@ function personaForm(preprint: Preprint, form: Partial<PersonaForm>, user: User,
                 <error-summary aria-labelledby="error-summary-title" role="alert">
                   <h2 id="error-summary-title">There is a problem</h2>
                   <ul>
-                    <li>
-                      <a href="#persona-public">Select the name that you would like to use</a>
-                    </li>
+                    ${E.isLeft(form.persona)
+                      ? html`
+                          <li>
+                            <a href="#persona-public">
+                              ${match(form.persona.left)
+                                .with({ _tag: 'MissingE' }, () => 'Select the name that you would like to use')
+                                .exhaustive()}
+                            </a>
+                          </li>
+                        `
+                      : ''}
                   </ul>
                 </error-summary>
               `
             : ''}
 
-          <div ${rawHtml(error ? 'class="error"' : '')}>
+          <div ${rawHtml(E.isLeft(form.persona) ? 'class="error"' : '')}>
             <fieldset
               role="group"
               aria-describedby="persona-tip"
-              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}
+              ${rawHtml(E.isLeft(form.persona) ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}
             >
               <legend>
                 <h1>What name would you like to use?</h1>
@@ -118,10 +144,13 @@ function personaForm(preprint: Preprint, form: Partial<PersonaForm>, user: User,
                 </div>
               </details>
 
-              ${error
+              ${E.isLeft(form.persona)
                 ? html`
                     <div class="error-message" id="persona-error">
-                      <span class="visually-hidden">Error:</span> Select the name that you would like to use
+                      <span class="visually-hidden">Error:</span>
+                      ${match(form.persona.left)
+                        .with({ _tag: 'MissingE' }, () => 'Select the name that you would like to use')
+                        .exhaustive()}
                     </div>
                   `
                 : ''}
@@ -135,7 +164,9 @@ function personaForm(preprint: Preprint, form: Partial<PersonaForm>, user: User,
                       type="radio"
                       value="public"
                       aria-describedby="persona-tip-public"
-                      ${rawHtml(form.persona === 'public' ? 'checked' : '')}
+                      ${match(form.persona)
+                        .with(E.right('public' as const), () => 'checked')
+                        .otherwise(() => '')}
                     />
                     <span>${user.name}</span>
                   </label>
@@ -148,7 +179,9 @@ function personaForm(preprint: Preprint, form: Partial<PersonaForm>, user: User,
                       type="radio"
                       value="pseudonym"
                       aria-describedby="persona-tip-pseudonym"
-                      ${rawHtml(form.persona === 'pseudonym' ? 'checked' : '')}
+                      ${match(form.persona)
+                        .with(E.right('pseudonym' as const), () => 'checked')
+                        .otherwise(() => '')}
                     />
                     <span>${user.pseudonym}</span>
                   </label>
