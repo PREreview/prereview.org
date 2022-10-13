@@ -4,14 +4,12 @@ import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { isString } from 'fp-ts/string'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import * as DE from 'io-ts/DecodeError'
 import * as D from 'io-ts/Decoder'
-import * as FS from 'io-ts/FreeSemigroup'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
+import { InvalidE, getInput, invalidE } from './form'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { seeOther } from './middleware'
@@ -52,11 +50,6 @@ const LookupDoiD = pipe(
   D.map(get('doi')),
 )
 
-const invalidE = (actual: string): InvalidE => ({
-  _tag: 'InvalidE',
-  actual,
-})
-
 const lookupDoi = pipe(
   RM.decodeBody(LookupDoiD.decode),
   RM.ichainMiddlewareK(doi => seeOther(format(preprintMatch.formatter, { doi }))),
@@ -70,11 +63,6 @@ const lookupDoi = pipe(
     ),
   ),
 )
-
-interface InvalidE {
-  readonly _tag: 'InvalidE'
-  readonly actual: string
-}
 
 type LookupDoi = E.Either<InvalidE, Doi | undefined>
 
@@ -151,24 +139,6 @@ function createPage(lookupDoi: LookupDoi) {
     js: error ? ['error-summary.js'] : [],
     type: 'no-header',
   })
-}
-
-function getInput(field: string): (error: D.DecodeError) => O.Option<string> {
-  return FS.fold(
-    DE.fold({
-      Leaf: O.fromPredicate(isString),
-      Key: (key, kind, errors) => (key === field ? getInput(field)(errors) : O.none),
-      Index: (index, kind, errors) => getInput(field)(errors),
-      Member: (index, errors) => getInput(field)(errors),
-      Lazy: (id, errors) => getInput(field)(errors),
-      Wrap: (error, errors) => getInput(field)(errors),
-    }),
-    (left, right) =>
-      pipe(
-        getInput(field)(left),
-        O.alt(() => getInput(field)(right)),
-      ),
-  )
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85

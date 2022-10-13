@@ -4,16 +4,14 @@ import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import { constUndefined, flow, pipe } from 'fp-ts/function'
-import { isString } from 'fp-ts/string'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import * as DE from 'io-ts/DecodeError'
 import * as D from 'io-ts/Decoder'
-import * as FS from 'io-ts/FreeSemigroup'
 import { Orcid, parse } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
+import { InvalidE, MissingE, getInput, invalidE, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -123,24 +121,6 @@ const OrcidFieldD = pipe(
   D.struct({ orcid: D.union(OrcidD, pipe(D.literal(''), D.map(constUndefined))) }),
   D.map(get('orcid')),
 )
-
-interface MissingE {
-  readonly _tag: 'MissingE'
-}
-
-const missingE = (): MissingE => ({
-  _tag: 'MissingE',
-})
-
-interface InvalidE {
-  readonly _tag: 'InvalidE'
-  readonly actual: string
-}
-
-const invalidE = (actual: string): InvalidE => ({
-  _tag: 'InvalidE',
-  actual,
-})
 
 type AddAuthorForm = {
   readonly name: E.Either<MissingE, NonEmptyString | undefined>
@@ -257,23 +237,6 @@ function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
     js: ['error-summary.js'],
   })
 }
-
-const getInput: (field: string) => (error: D.DecodeError) => O.Option<string> = field =>
-  FS.fold(
-    DE.fold({
-      Leaf: O.fromPredicate(isString),
-      Key: (key, kind, errors) => (key === field ? getInput(field)(errors) : O.none),
-      Index: (index, kind, errors) => getInput(field)(errors),
-      Member: (index, errors) => getInput(field)(errors),
-      Lazy: (id, errors) => getInput(field)(errors),
-      Wrap: (error, errors) => getInput(field)(errors),
-    }),
-    (left, right) =>
-      pipe(
-        getInput(field)(left),
-        O.alt(() => getInput(field)(right)),
-      ),
-  )
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
