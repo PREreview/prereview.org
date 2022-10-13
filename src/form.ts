@@ -1,4 +1,6 @@
+import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
+import * as RR from 'fp-ts/ReadonlyRecord'
 import { pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import * as DE from 'io-ts/DecodeError'
@@ -22,6 +24,8 @@ export const invalidE = (actual: string): InvalidE => ({
   _tag: 'InvalidE',
   actual,
 })
+
+export const hasAnError: (form: RR.ReadonlyRecord<string, E.Either<unknown, unknown>>) => boolean = RR.some(E.isLeft)
 
 export function getInput(field: string): (error: D.DecodeError) => O.Option<string> {
   return FS.fold(

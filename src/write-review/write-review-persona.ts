@@ -1,14 +1,13 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
-import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
-import { MissingE, missingE } from '../form'
+import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -80,7 +79,7 @@ type PersonaForm = {
 }
 
 function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
-  const error = pipe(form, RR.some<E.Either<unknown, unknown>>(E.isLeft))
+  const error = hasAnError(form)
 
   return page({
     title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of “${preprint.title}”`,

@@ -1,7 +1,6 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
-import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -9,7 +8,7 @@ import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
-import { MissingE, missingE } from '../form'
+import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -98,7 +97,7 @@ type AuthorsForm = {
 }
 
 function authorsForm(preprint: Preprint, form: AuthorsForm) {
-  const error = pipe(form, RR.some<E.Either<unknown, unknown>>(E.isLeft))
+  const error = hasAnError(form)
 
   return page({
     title: plainText`${error ? 'Error: ' : ''}Did you write the PREreview with anyone else? – PREreview of “${
