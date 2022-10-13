@@ -1,12 +1,15 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
+import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
+import { MissingE, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -54,17 +57,18 @@ export const writeReviewAddAuthors = flow(
 
 const showAddAuthorsForm = flow(
   fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
-    addAuthorsForm(preprint, form.otherAuthors ?? []),
+    addAuthorsForm(preprint, form.otherAuthors ?? [], { anotherAuthor: E.right(undefined) }),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showAddAuthorsErrorForm = flow(
-  fromReaderK((preprint: Preprint, form: Form) => addAuthorsForm(preprint, form.otherAuthors ?? [], true)),
-  RM.ichainFirst(() => RM.status(Status.BadRequest)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showAddAuthorsErrorForm = (preprint: Preprint, form: Form) =>
+  flow(
+    fromReaderK((thisForm: AddAuthorsForm) => addAuthorsForm(preprint, form.otherAuthors ?? [], thisForm)),
+    RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
 const showCannotAddAuthorsForm = flow(
   fromReaderK(({ preprint }: { preprint: Preprint }) => cannotAddAuthorsForm(preprint)),
@@ -74,7 +78,14 @@ const showCannotAddAuthorsForm = flow(
 
 const handleAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
   pipe(
-    RM.decodeBody(AddAuthorsFormD.decode),
+    RM.decodeBody(body => E.right({ anotherAuthor: pipe(AnotherAuthorFieldD.decode(body), E.mapLeft(missingE)) })),
+    RM.chainEitherK(fields =>
+      pipe(
+        E.Do,
+        E.apS('anotherAuthor', fields.anotherAuthor),
+        E.mapLeft(() => fields),
+      ),
+    ),
     RM.ichainMiddlewareKW(state =>
       match(state)
         .with({ anotherAuthor: 'yes' }, () =>
@@ -83,7 +94,7 @@ const handleAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: Prepri
         .with({ anotherAuthor: 'no' }, () => showNextForm(preprint.doi)(form))
         .exhaustive(),
     ),
-    RM.orElseW(() => showAddAuthorsErrorForm(preprint, form)),
+    RM.orElseW(showAddAuthorsErrorForm(preprint, form)),
   )
 
 const handleCannotAddAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -95,11 +106,20 @@ const handleCannotAddAuthorsForm = ({ form, preprint, user }: { form: Form; prep
     RM.orElseW(() => showCannotAddAuthorsForm({ preprint })),
   )
 
-const AddAuthorsFormD = D.struct({
-  anotherAuthor: D.literal('yes', 'no'),
-})
+const AnotherAuthorFieldD = pipe(
+  D.struct({
+    anotherAuthor: D.literal('yes', 'no'),
+  }),
+  D.map(get('anotherAuthor')),
+)
 
-function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<{ name: NonEmptyString }>, error = false) {
+type AddAuthorsForm = {
+  readonly anotherAuthor: E.Either<MissingE, 'yes' | 'no' | undefined>
+}
+
+function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<{ name: NonEmptyString }>, form: AddAuthorsForm) {
+  const error = pipe(form, RR.some<E.Either<unknown, unknown>>(E.isLeft))
+
   return page({
     title: plainText`${error ? 'Error: ' : ''}Do you need to add another author? – PREreview of “${preprint.title}”`,
     content: html`
@@ -114,9 +134,17 @@ function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<{ name: NonEm
                 <error-summary aria-labelledby="error-summary-title" role="alert">
                   <h2 id="error-summary-title">There is a problem</h2>
                   <ul>
-                    <li>
-                      <a href="#another-author-no">Select yes if you need to add another author</a>
-                    </li>
+                    ${E.isLeft(form.anotherAuthor)
+                      ? html`
+                          <li>
+                            <a href="#another-author-no">
+                              ${match(form.anotherAuthor.left)
+                                .with({ _tag: 'MissingE' }, () => 'Select yes if you need to add another author')
+                                .exhaustive()}
+                            </a>
+                          </li>
+                        `
+                      : ''}
                   </ul>
                 </error-summary>
               `
@@ -128,19 +156,24 @@ function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<{ name: NonEm
             ${authors.map(({ name }) => html` <li>${name}</li>`)}
           </ol>
 
-          <div ${rawHtml(error ? 'class="error"' : '')}>
+          <div ${rawHtml(E.isLeft(form.anotherAuthor) ? 'class="error"' : '')}>
             <fieldset
               role="group"
-              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="another-author-error"' : '')}
+              ${rawHtml(
+                E.isLeft(form.anotherAuthor) ? 'aria-invalid="true" aria-errormessage="another-author-error"' : '',
+              )}
             >
               <legend>
                 <h2>Do you need to add another&nbsp;author?</h2>
               </legend>
 
-              ${error
+              ${E.isLeft(form.anotherAuthor)
                 ? html`
                     <div class="error-message" id="another-author-error">
-                      <span class="visually-hidden">Error:</span> Select yes if you need to add another author
+                      <span class="visually-hidden">Error:</span>
+                      ${match(form.anotherAuthor.left)
+                        .with({ _tag: 'MissingE' }, () => 'Select yes if you need to add another author')
+                        .exhaustive()}
                     </div>
                   `
                 : ''}
@@ -148,13 +181,28 @@ function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<{ name: NonEm
               <ol>
                 <li>
                   <label>
-                    <input name="anotherAuthor" id="another-author-no" type="radio" value="no" />
+                    <input
+                      name="anotherAuthor"
+                      id="another-author-no"
+                      type="radio"
+                      value="no"
+                      ${match(form.anotherAuthor)
+                        .with(E.right('no' as const), () => 'checked')
+                        .otherwise(() => '')}
+                    />
                     <span>No</span>
                   </label>
                 </li>
                 <li>
                   <label>
-                    <input name="anotherAuthor" type="radio" value="yes" />
+                    <input
+                      name="anotherAuthor"
+                      type="radio"
+                      value="yes"
+                      ${match(form.anotherAuthor)
+                        .with(E.right('yes' as const), () => 'checked')
+                        .otherwise(() => '')}
+                    />
                     <span>Yes</span>
                   </label>
                 </li>
