@@ -1,11 +1,14 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
+import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
+import { MissingE, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -37,33 +40,50 @@ export const writeReviewConduct = flow(
 )
 
 const showCodeOfConductForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) => codeOfConductForm(preprint, form)),
+  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
+    codeOfConductForm(preprint, { conduct: E.right(form.conduct) }),
+  ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showCodeOfConductErrorForm = flow(
-  fromReaderK((preprint: Preprint) => codeOfConductForm(preprint, {}, true)),
-  RM.ichainFirst(() => RM.status(Status.BadRequest)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showCodeOfConductErrorForm = (preprint: Preprint) =>
+  flow(
+    fromReaderK((form: CodeOfConductForm) => codeOfConductForm(preprint, form)),
+    RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
 const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(CodeOfConductFormD.decode),
+    RM.decodeBody(body => E.right({ conduct: pipe(ConductFieldD.decode(body), E.mapLeft(missingE)) })),
+    RM.chainEitherK(fields =>
+      pipe(
+        E.Do,
+        E.apS('conduct', fields.conduct),
+        E.mapLeft(() => fields),
+      ),
+    ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
-    RM.orElseW(() => showCodeOfConductErrorForm(preprint)),
+    RM.orElseW(showCodeOfConductErrorForm(preprint)),
   )
 
-type CodeOfConductForm = D.TypeOf<typeof CodeOfConductFormD>
+const ConductFieldD = pipe(
+  D.struct({
+    conduct: D.literal('yes'),
+  }),
+  D.map(get('conduct')),
+)
 
-const CodeOfConductFormD = D.struct({
-  conduct: D.literal('yes'),
-})
+type CodeOfConductForm = {
+  readonly conduct: E.Either<MissingE, 'yes' | undefined>
+}
 
-function codeOfConductForm(preprint: Preprint, form: Partial<CodeOfConductForm>, error = false) {
+function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm) {
+  const error = pipe(form, RR.some<E.Either<unknown, unknown>>(E.isLeft))
+
   return page({
     title: plainText`${error ? 'Error: ' : ''}Code of Conduct – PREreview of “${preprint.title}”`,
     content: html`
@@ -78,19 +98,30 @@ function codeOfConductForm(preprint: Preprint, form: Partial<CodeOfConductForm>,
                 <error-summary aria-labelledby="error-summary-title" role="alert">
                   <h2 id="error-summary-title">There is a problem</h2>
                   <ul>
-                    <li>
-                      <a href="#conduct-yes">Confirm that you are following the Code&nbsp;of&nbsp;Conduct</a>
-                    </li>
+                    ${E.isLeft(form.conduct)
+                      ? html`
+                          <li>
+                            <a href="#conduct-yes">
+                              ${match(form.conduct.left)
+                                .with(
+                                  { _tag: 'MissingE' },
+                                  () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`,
+                                )
+                                .exhaustive()}
+                            </a>
+                          </li>
+                        `
+                      : ''}
                   </ul>
                 </error-summary>
               `
             : ''}
 
-          <div ${rawHtml(error ? 'class="error"' : '')}>
+          <div ${rawHtml(E.isLeft(form.conduct) ? 'class="error"' : '')}>
             <fieldset
               role="group"
               aria-describedby="conduct-tip"
-              ${rawHtml(error ? 'aria-invalid="true" aria-errormessage="conduct-error"' : '')}
+              ${rawHtml(E.isLeft(form.conduct) ? 'aria-invalid="true" aria-errormessage="conduct-error"' : '')}
             >
               <legend>
                 <h1>Code of Conduct</h1>
@@ -134,11 +165,16 @@ function codeOfConductForm(preprint: Preprint, form: Partial<CodeOfConductForm>,
                 </div>
               </details>
 
-              ${error
+              ${E.isLeft(form.conduct)
                 ? html`
                     <div class="error-message" id="conduct-error">
-                      <span class="visually-hidden">Error:</span> Confirm that you are following the
-                      Code&nbsp;of&nbsp;Conduct
+                      <span class="visually-hidden">Error:</span>
+                      ${match(form.conduct.left)
+                        .with(
+                          { _tag: 'MissingE' },
+                          () => html`Confirm that you are following the Code&nbsp;of&nbsp;Conduct`,
+                        )
+                        .exhaustive()}
                     </div>
                   `
                 : ''}
@@ -149,7 +185,9 @@ function codeOfConductForm(preprint: Preprint, form: Partial<CodeOfConductForm>,
                   id="conduct-yes"
                   type="checkbox"
                   value="yes"
-                  ${rawHtml(form.conduct === 'yes' ? 'checked' : '')}
+                  ${match(form.conduct)
+                    .with(E.right('yes' as const), () => 'checked')
+                    .otherwise(() => '')}
                 />
                 <span>I’m following the Code&nbsp;of&nbsp;Conduct</span>
               </label>
