@@ -193,7 +193,7 @@ function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm) {
             </fieldset>
           </div>
 
-          <button>Continue</button>
+          <button>Save and continue</button>
         </form>
       </main>
     `,

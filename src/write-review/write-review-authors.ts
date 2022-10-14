@@ -186,7 +186,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
             </fieldset>
           </div>
 
-          <button>Continue</button>
+          <button>Save and continue</button>
         </form>
       </main>
     `,

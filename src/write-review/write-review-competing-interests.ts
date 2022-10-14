@@ -262,7 +262,7 @@ ${match(form.competingInterestsDetails)
             </conditional-inputs>
           </div>
 
-          <button>Continue</button>
+          <button>Save and continue</button>
         </form>
       </main>
     `,

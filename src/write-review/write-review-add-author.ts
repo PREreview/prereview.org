@@ -229,7 +229,7 @@ function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
             />
           </div>
 
-          <button>Continue</button>
+          <button>Save and continue</button>
         </form>
       </main>
     `,

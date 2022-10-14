@@ -192,7 +192,7 @@ function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
             </fieldset>
           </div>
 
-          <button>Continue</button>
+          <button>Save and continue</button>
         </form>
       </main>
     `,

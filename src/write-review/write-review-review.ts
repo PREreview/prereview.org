@@ -140,7 +140,7 @@ ${match(form.review)
             </html-editor>
           </div>
 
-          <button>Continue</button>
+          <button>Save and continue</button>
         </form>
       </main>
     `,

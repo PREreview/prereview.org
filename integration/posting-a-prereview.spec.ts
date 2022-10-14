@@ -106,31 +106,31 @@ test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
 
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await page.check('text="Josiah Carberry"')
 
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await page.check('text="No, by myself"')
 
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await page.check('text="No"')
 
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await page.check('text="I’m following the Code of Conduct"')
 
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   const preview = page.locator('role=blockquote[name="Check your PREreview"]')
 
@@ -274,11 +274,11 @@ test('can post a PREreview with more authors', async ({ fetch, javaScriptEnabled
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Yes"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('main')).toContainText('Add more authors')
   await expect(page).toHaveScreenshot()
@@ -286,9 +286,9 @@ test('can post a PREreview with more authors', async ({ fetch, javaScriptEnabled
   await page.click('text="Continue"')
 
   await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   const preview = page.locator('role=blockquote[name="Check your PREreview"]')
 
@@ -430,17 +430,17 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Yes"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('h1')).toHaveText('Add an author')
   await expect(page).toHaveScreenshot()
 
   await page.fill('role=textbox[name="Name"]', 'Jean-Baptiste Botul')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('h1')).toHaveText('You have added 1 other author')
   await expect(page).toHaveScreenshot()
@@ -450,7 +450,7 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
 
   await page.fill('role=textbox[name="Name"]', 'Stephen Hawking')
   await page.fill('role=textbox[name="ORCID iD (optional)"]', '0000-0002-9079-593X')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('h1')).toHaveText('You have added 2 other authors')
   await expect(page).toHaveScreenshot()
@@ -459,9 +459,9 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   await page.click('text="Continue"')
 
   await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   const preview = page.locator('role=blockquote[name="Check your PREreview"]')
 
@@ -596,21 +596,21 @@ test('can post a PREreview with competing interests', async ({ fetch, javaScript
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No, by myself"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await page.check('text="Yes"')
   await page.fill('role=textbox[name="What are they?"]', 'Maecenas sed dapibus massa.')
 
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   const preview = page.locator('role=blockquote[name="Check your PREreview"]')
 
@@ -748,15 +748,15 @@ test('can post a PREreview using a pseudonym', async ({ fetch, javaScriptEnabled
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Orange Panda"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No, by myself"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   const preview = page.locator('role=blockquote[name="Check your PREreview"]')
 
@@ -837,15 +837,15 @@ test('can change the review after previewing', async ({ fetch, javaScriptEnabled
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No, by myself"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -860,7 +860,7 @@ test('can change the review after previewing', async ({ fetch, javaScriptEnabled
     'role=textbox[name="Write your PREreview"]',
     'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText(
     'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
@@ -893,22 +893,22 @@ test('can change the name after previewing', async ({ fetch, javaScriptEnabled, 
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No, by myself"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText('Josiah Carberry')
 
   await page.click('text="Change name"')
 
   await page.check('text="Orange Panda"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText('Orange Panda')
 })
@@ -938,19 +938,19 @@ test.extend(canAddAuthors)('can change the authors after previewing', async ({ f
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Yes"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.fill('role=textbox[name="Name"]', 'Jean-Baptiste Botul')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No"')
   await page.click('text="Continue"')
   await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText('Jean-Baptiste Botul')
 
@@ -959,7 +959,7 @@ test.extend(canAddAuthors)('can change the authors after previewing', async ({ f
   await page.check('text="Yes"')
   await page.click('text="Continue"')
   await page.fill('role=textbox[name="Name"]', 'Otto Lidenbrock')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No"')
   await page.click('text="Continue"')
 
@@ -994,15 +994,15 @@ test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) 
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No, by myself"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('h1')).toContainText('Check your PREreview')
 
@@ -1060,15 +1060,15 @@ test('see existing values when going back a step', async ({ fetch, javaScriptEna
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No, by myself"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await expect(page.locator('h1')).toContainText('Check your PREreview')
 
@@ -1152,7 +1152,7 @@ test('have to enter a review', async ({ fetch, javaScriptEnabled, page }) => {
   })
   await page.keyboard.press('Enter')
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   if (javaScriptEnabled) {
     await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
@@ -1192,9 +1192,9 @@ test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   if (javaScriptEnabled) {
     await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
@@ -1237,13 +1237,13 @@ test('have to say if there are more authors', async ({ fetch, javaScriptEnabled,
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   if (javaScriptEnabled) {
     await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
@@ -1286,15 +1286,15 @@ test.extend(canAddAuthors)("have to add the author's name", async ({ fetch, java
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Yes"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   if (javaScriptEnabled) {
     await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
@@ -1334,17 +1334,17 @@ test.extend(canAddAuthors)('have to add a valid ORCID iD to an author', async ({
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Yes"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   await page.fill('role=textbox[name="Name"]', 'Otto Lidenbrock')
   await page.fill('role=textbox[name="ORCID iD (optional)"]', 'not an ORCID iD')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   if (javaScriptEnabled) {
     await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
@@ -1388,15 +1388,15 @@ test.extend(canAddAuthors)(
       'role=textbox[name="Write your PREreview"]',
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
-    await page.click('text="Continue"')
+    await page.click('text="Save and continue"')
 
-    await page.click('text="Continue"')
+    await page.click('text="Save and continue"')
     await page.check('text="Josiah Carberry"')
-    await page.click('text="Continue"')
+    await page.click('text="Save and continue"')
     await page.check('text="Yes"')
-    await page.click('text="Continue"')
+    await page.click('text="Save and continue"')
     await page.fill('role=textbox[name="Name"]', 'Jean-Baptiste Botul')
-    await page.click('text="Continue"')
+    await page.click('text="Save and continue"')
 
     await page.click('text="Continue"')
 
@@ -1442,13 +1442,13 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No, by myself"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   if (javaScriptEnabled) {
     await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
@@ -1468,7 +1468,7 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
 
   await page.check('text="Yes"')
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   if (javaScriptEnabled) {
     await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
@@ -1508,15 +1508,15 @@ test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, 
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="Josiah Carberry"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No, by myself"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
   await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
-  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
 
   if (javaScriptEnabled) {
     await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
