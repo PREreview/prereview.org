@@ -1,9 +1,9 @@
 import { createTerminus } from '@godaddy/terminus'
 import { SystemClock } from 'clock-ts'
-import * as RTC from 'fp-ts-contrib/ReaderTask'
 import * as C from 'fp-ts/Console'
 import * as E from 'fp-ts/Either'
 import * as IOE from 'fp-ts/IOEither'
+import * as RT from 'fp-ts/ReaderTask'
 import { flow, pipe } from 'fp-ts/function'
 import { split } from 'fp-ts/string'
 import * as D from 'io-ts/Decoder'
@@ -100,8 +100,8 @@ server.on('listening', () => {
 })
 
 createTerminus(server, {
-  onShutdown: RTC.fromReaderIO(L.debug('Shutting server down'))(deps),
-  onSignal: RTC.fromReaderIO(L.debug('Signal received'))(deps),
+  onShutdown: RT.fromReaderIO(L.debug('Shutting server down'))(deps),
+  onSignal: RT.fromReaderIO(L.debug('Signal received'))(deps),
   signals: ['SIGINT', 'SIGTERM'],
 })
 
