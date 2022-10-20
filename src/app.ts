@@ -2,7 +2,7 @@ import express from 'express'
 import * as P from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
 import * as R from 'fp-ts/Reader'
-import { constant, pipe } from 'fp-ts/function'
+import { constant, flip, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { ResponseEnded, StatusOpen } from 'hyper-ts'
@@ -86,7 +86,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPseudonym: flipC(getPseudonymFromLegacyPrereview)(env),
+          getPseudonym: flip(getPseudonymFromLegacyPrereview)(env),
         })),
       ),
     ),
@@ -96,8 +96,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPreprint: flipC(getPreprint)(env),
-          getPrereviews: flipC(getPrereviews)(env),
+          getPreprint: flip(getPreprint)(env),
+          getPrereviews: flip(getPrereviews)(env),
         })),
       ),
     ),
@@ -107,7 +107,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPrereview: flipC(getPrereview)({ ...env, getPreprintTitle: flipC(getPreprintTitle)(env) }),
+          getPrereview: flip(getPrereview)({ ...env, getPreprintTitle: flip(getPreprintTitle)(env) }),
         })),
       ),
     ),
@@ -158,8 +158,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPreprintTitle: flipC(getPreprintTitle)(env),
-          postPrereview: flipC(createRecordOnZenodo)(env),
+          getPreprintTitle: flip(getPreprintTitle)(env),
+          postPrereview: flip(createRecordOnZenodo)(env),
         })),
       ),
     ),
@@ -206,10 +206,3 @@ export const app = (deps: AppEnv) => {
 
   return http.createServer(app)
 }
-
-// https://functionalprogramming.slack.com/archives/CPKPCAGP4/p1655736152988389?thread_ts=1655730853.886439&cid=CPKPCAGP4
-const flipC =
-  <A, B, C>(f: (a: A) => (b: B) => C) =>
-  (b: B) =>
-  (a: A): C =>
-    f(a)(b)
