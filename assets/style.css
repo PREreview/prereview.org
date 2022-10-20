@@ -828,8 +828,21 @@ html-editor {
   padding-inline-start: 0;
 
   & > * {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: baseline;
+    column-gap: var(--space-s-m);
     border-block-end: var(--width-divider-narrow) solid var(--color-divider);
     padding-block: var(--space-3xs-2xs);
+
+    & > :not(a) {
+      flex-grow: 1;
+    }
+
+    @media (min-width: 40em) {
+      flex-wrap: nowrap;
+    }
   }
 
   & + * {

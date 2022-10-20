@@ -459,7 +459,7 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   await expect(page.locator('h1')).toHaveText('You have added 3 other authors')
   await expect(page).toHaveScreenshot()
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/remove-author/1')
+  await page.click('role=link[name="Remove Otto Lidenbrock"]')
 
   await expect(page.locator('h1')).toHaveText('Are you sure you want to remove Otto Lidenbrock?')
   await expect(page).toHaveScreenshot()
@@ -1411,7 +1411,7 @@ test.extend(canAddAuthors)(
     await page.click('text="Save and continue"')
     await page.fill('role=textbox[name="Name"]', 'Jean-Baptiste Botul')
     await page.click('text="Save and continue"')
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/remove-author/0')
+    await page.click('role=link[name="Remove Jean-Baptiste Botul"]')
 
     await page.click('text="Save and continue"')
 

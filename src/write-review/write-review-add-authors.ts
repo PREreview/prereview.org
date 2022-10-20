@@ -17,6 +17,7 @@ import {
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewMatch,
+  writeReviewRemoveAuthorMatch,
 } from '../routes'
 import { NonEmptyString } from '../string'
 import { User, getUserFromSession } from '../user'
@@ -152,7 +153,20 @@ function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<{ name: NonEm
           <h1>You have added ${authors.length} other author${authors.length !== 1 ? 's' : ''}</h1>
 
           <ol class="summary-list">
-            ${authors.map(({ name }) => html` <li>${name}</li>`)}
+            ${authors.map(
+              ({ name }, index) => html`
+                <li>
+                  <span>${name}</span>
+                  <a
+                    href="${format(writeReviewRemoveAuthorMatch.formatter, {
+                      doi: preprint.doi,
+                      index,
+                    })}"
+                    >Remove<span class="visually-hidden"> ${name}</span></a
+                  >
+                </li>
+              `,
+            )}
           </ol>
 
           <div ${rawHtml(E.isLeft(form.anotherAuthor) ? 'class="error"' : '')}>
