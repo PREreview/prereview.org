@@ -9,7 +9,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
@@ -113,16 +113,22 @@ const handleRemoveAuthorForm = ({
       match(state)
         .with({ removeAuthor: 'yes' }, () =>
           pipe(
-            {
+            RM.of({
               otherAuthors: pipe(
                 form.otherAuthors ?? [],
                 RA.deleteAt(author.index),
                 O.getOrElse(() => form.otherAuthors),
               ),
-            },
-            updateForm(form),
-            RM.fromReaderTaskK(saveForm(user.orcid, preprint.doi)),
-            RM.ichainMiddlewareK(() => seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi }))),
+            }),
+            RM.map(updateForm(form)),
+            RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+            RM.ichainMiddlewareK(form =>
+              match(form)
+                .with({ otherAuthors: P.optional([]) }, () =>
+                  seeOther(format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })),
+                )
+                .otherwise(() => seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi }))),
+            ),
           ),
         )
         .with(

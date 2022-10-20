@@ -36,6 +36,7 @@ describe('writeReviewRemoveAuthor', () => {
               moreAuthors: fc.constant('yes'),
               otherAuthors: fc.nonEmptyArray(
                 fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+                { minLength: 2 },
               ),
               persona: fc.constantFrom('public', 'pseudonym'),
               review: fc.nonEmptyString(),
@@ -161,6 +162,81 @@ describe('writeReviewRemoveAuthor', () => {
                 value: `/preprints/doi-${encodeURIComponent(
                   preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
                 )}/write-a-prereview/add-more-authors`,
+              },
+              { type: 'endResponse' },
+            ]),
+          )
+          expect(canAddAuthors).toHaveBeenCalledWith(user)
+          expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
+        },
+      ),
+    )
+  })
+
+  test('when there are no authors left', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.preprintDoi(),
+        fc.record({ title: fc.html(), language: fc.languageCode() }),
+        fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+          fc.tuple(
+            fc.connection({
+              body: fc.constant({ removeAuthor: 'yes' }),
+              headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+              method: fc.constant('POST'),
+            }),
+            fc.constant(sessionId),
+            fc.constant(secret),
+          ),
+        ),
+        fc.user(),
+        fc.record(
+          {
+            competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
+            conduct: fc.constant('yes'),
+            moreAuthors: fc.constant('yes'),
+            otherAuthors: fc.tuple(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
+            persona: fc.constantFrom('public', 'pseudonym'),
+            review: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['moreAuthors', 'otherAuthors'] },
+        ),
+        async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+          const sessionStore = new Keyv()
+          await sessionStore.set(sessionId, UserC.encode(user))
+          const formStore = new Keyv()
+          await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+          const canAddAuthors: jest.MockedFunction<CanAddAuthorsEnv['canAddAuthors']> = jest.fn(_ => true)
+          const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
+            TE.right(preprintTitle),
+          )
+          const actual = await runMiddleware(
+            _.writeReviewRemoveAuthor(
+              preprintDoi,
+              0,
+            )({
+              canAddAuthors,
+              formStore,
+              getPreprintTitle,
+              secret,
+              sessionStore,
+            }),
+            connection,
+          )()
+
+          expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ otherAuthors: [] })
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.SeeOther },
+              {
+                type: 'setHeader',
+                name: 'Location',
+                value: `/preprints/doi-${encodeURIComponent(
+                  preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                )}/write-a-prereview/more-authors`,
               },
               { type: 'endResponse' },
             ]),
