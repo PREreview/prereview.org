@@ -69,6 +69,13 @@ export const writeReviewAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('
 
 export const writeReviewAddAuthorMatch = pipe(writeReviewBaseMatch, P.then(P.lit('add-author')), P.then(P.end))
 
+export const writeReviewChangeAuthorMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('change-author')),
+  P.then(type('index', IntegerFromStringC)),
+  P.then(P.end),
+)
+
 export const writeReviewRemoveAuthorMatch = pipe(
   writeReviewBaseMatch,
   P.then(P.lit('remove-author')),
