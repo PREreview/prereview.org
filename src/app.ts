@@ -137,7 +137,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         ),
         pipe(
           writeReviewChangeAuthorMatch.parser,
-          P.map(() => writeReviewChangeAuthor()),
+          P.map(({ doi, index }) => writeReviewChangeAuthor(doi, index)),
         ),
         pipe(
           writeReviewRemoveAuthorMatch.parser,

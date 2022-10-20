@@ -459,16 +459,28 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   await expect(page.locator('h1')).toHaveText('You have added 3 other authors')
   await expect(page).toHaveScreenshot()
 
-  await page.click('role=link[name="Remove Otto Lidenbrock"]')
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/change-author/1')
 
-  await expect(page.locator('h1')).toHaveText('Are you sure you want to remove Otto Lidenbrock?')
+  await expect(page.locator('h1')).toHaveText('Change Otto Lidenbrock')
+  await expect(page).toHaveScreenshot()
+
+  await page.fill('role=textbox[name="Name"]', 'Arne Saknussemm')
+  await page.click('text="Save and continue"')
+
+  await expect(page.locator('h1')).toHaveText('You have added 3 other authors')
+  await expect(page.locator('main')).not.toContainText('Otto Lidenbrock')
+  await expect(page).toHaveScreenshot()
+
+  await page.click('role=link[name="Remove Arne Saknussemm"]')
+
+  await expect(page.locator('h1')).toHaveText('Are you sure you want to remove Arne Saknussemm?')
   await expect(page).toHaveScreenshot()
 
   await page.check('text="Yes"')
   await page.click('text="Save and continue"')
 
   await expect(page.locator('h1')).toHaveText('You have added 2 other authors')
-  await expect(page.locator('main')).not.toContainText('Otto Lidenbrock')
+  await expect(page.locator('main')).not.toContainText('Arne Saknussemm')
 
   await page.check('text="No"')
   await page.click('text="Continue"')
@@ -482,7 +494,7 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
 
   await expect(preview).toContainText('Jean-Baptiste Botul')
   await expect(preview).toContainText('Stephen Hawking')
-  await expect(preview).not.toContainText('Otto Lidenbrock')
+  await expect(preview).not.toContainText('Arne Saknussemm')
   await expect(page).toHaveScreenshot()
 
   fetch
@@ -1377,6 +1389,115 @@ test.extend(canAddAuthors)('have to add a valid ORCID iD to an author', async ({
   await expect(page.locator('role=textbox[name="ORCID iD (optional)"]')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
+
+test.extend(canAddAuthors)("have to add the changed author's name", async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+  await page.fill(
+    'role=textbox[name="Write your PREreview"]',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
+  await page.click('text="Save and continue"')
+
+  await page.click('text="Save and continue"')
+  await page.check('text="Josiah Carberry"')
+  await page.click('text="Save and continue"')
+  await page.check('text="Yes"')
+  await page.click('text="Save and continue"')
+  await page.fill('role=textbox[name="Name"]', 'Otto Lidenbrock')
+  await page.click('text="Save and continue"')
+
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/change-author/0')
+  await page.fill('role=textbox[name="Name"]', '')
+  await page.click('text="Save and continue"')
+
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
+  await expect(page.locator('role=textbox[name="Name"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Enter their name"')
+
+  await expect(page.locator('role=textbox[name="Name"]')).toBeFocused()
+  await expect(page).toHaveScreenshot()
+})
+
+test.extend(canAddAuthors)(
+  'have to add a valid ORCID iD to a changed author',
+  async ({ fetch, javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.click('text="Start now"')
+
+    await page.fill('[type=email]', 'test@example.com')
+    await page.fill('[type=password]', 'password')
+    fetch.postOnce('http://orcid.test/token', {
+      status: Status.OK,
+      body: {
+        access_token: 'access-token',
+        token_type: 'Bearer',
+        name: 'Josiah Carberry',
+        orcid: '0000-0002-1825-0097',
+      },
+    })
+    await page.keyboard.press('Enter')
+
+    if (javaScriptEnabled) {
+      await page.locator('[contenteditable]').waitFor()
+    }
+    await page.fill(
+      'role=textbox[name="Write your PREreview"]',
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    )
+    await page.click('text="Save and continue"')
+
+    await page.click('text="Save and continue"')
+    await page.check('text="Josiah Carberry"')
+    await page.click('text="Save and continue"')
+    await page.check('text="Yes"')
+    await page.click('text="Save and continue"')
+    await page.fill('role=textbox[name="Name"]', 'Otto Lidenbrock')
+    await page.click('text="Save and continue"')
+
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/change-author/0')
+    await page.fill('role=textbox[name="ORCID iD (optional)"]', 'not an ORCID iD')
+    await page.click('text="Save and continue"')
+
+    if (javaScriptEnabled) {
+      await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+    } else {
+      await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+    }
+    await expect(page.locator('role=textbox[name="ORCID iD (optional)"]')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page.locator('role=textbox[name="ORCID iD (optional)"]')).toHaveValue('not an ORCID iD')
+    await expect(page.locator('role=textbox[name="Name"]')).toHaveValue('Otto Lidenbrock')
+    await expect(page).toHaveScreenshot()
+
+    await page.click('text="Enter their ORCID iD"')
+
+    await expect(page.locator('role=textbox[name="ORCID iD (optional)"]')).toBeFocused()
+    await expect(page).toHaveScreenshot()
+  },
+)
 
 test.extend(canAddAuthors)(
   'have to confirm if you want to remove an author',
