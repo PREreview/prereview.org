@@ -459,7 +459,7 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   await expect(page.locator('h1')).toHaveText('You have added 3 other authors')
   await expect(page).toHaveScreenshot()
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/change-author/1')
+  await page.click('role=link[name="Change Otto Lidenbrock"]')
 
   await expect(page.locator('h1')).toHaveText('Change Otto Lidenbrock')
   await expect(page).toHaveScreenshot()
@@ -1424,7 +1424,7 @@ test.extend(canAddAuthors)("have to add the changed author's name", async ({ fet
   await page.fill('role=textbox[name="Name"]', 'Otto Lidenbrock')
   await page.click('text="Save and continue"')
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/change-author/0')
+  await page.click('role=link[name="Change Otto Lidenbrock"]')
   await page.fill('role=textbox[name="Name"]', '')
   await page.click('text="Save and continue"')
 
@@ -1478,7 +1478,7 @@ test.extend(canAddAuthors)(
     await page.fill('role=textbox[name="Name"]', 'Otto Lidenbrock')
     await page.click('text="Save and continue"')
 
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/change-author/0')
+    await page.click('role=link[name="Change Otto Lidenbrock"]')
     await page.fill('role=textbox[name="ORCID iD (optional)"]', 'not an ORCID iD')
     await page.click('text="Save and continue"')
 

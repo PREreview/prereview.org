@@ -16,6 +16,7 @@ import {
   writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
+  writeReviewChangeAuthorMatch,
   writeReviewMatch,
   writeReviewRemoveAuthorMatch,
 } from '../routes'
@@ -157,6 +158,13 @@ function addAuthorsForm(preprint: Preprint, authors: ReadonlyArray<{ name: NonEm
               ({ name }, index) => html`
                 <li>
                   <span>${name}</span>
+                  <a
+                    href="${format(writeReviewChangeAuthorMatch.formatter, {
+                      doi: preprint.doi,
+                      index,
+                    })}"
+                    >Change<span class="visually-hidden"> ${name}</span></a
+                  >
                   <a
                     href="${format(writeReviewRemoveAuthorMatch.formatter, {
                       doi: preprint.doi,
