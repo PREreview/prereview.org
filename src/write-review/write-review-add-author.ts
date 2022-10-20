@@ -63,16 +63,19 @@ export const writeReviewAddAuthor = flow(
 )
 
 const showAddAuthorForm = flow(
-  fromReaderK(({ preprint }: { preprint: Preprint }) =>
-    addAuthorForm(preprint, { name: E.right(undefined), orcid: E.right(undefined) }),
+  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
+    addAuthorForm(preprint, form.otherAuthors ? form.otherAuthors.length > 0 : false, {
+      name: E.right(undefined),
+      orcid: E.right(undefined),
+    }),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showAddAuthorErrorForm = (preprint: Preprint) =>
+const showAddAuthorErrorForm = (preprint: Preprint, otherAuthors: boolean) =>
   flow(
-    fromReaderK((form: AddAuthorForm) => addAuthorForm(preprint, form)),
+    fromReaderK((form: AddAuthorForm) => addAuthorForm(preprint, otherAuthors, form)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -106,7 +109,7 @@ const handleAddAuthorForm = ({ form, preprint, user }: { form: Form; preprint: P
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareK(() => seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi }))),
-    RM.orElseW(showAddAuthorErrorForm(preprint)),
+    RM.orElseW(showAddAuthorErrorForm(preprint, form.otherAuthors ? form.otherAuthors.length > 0 : false)),
   )
 
 const OrcidD = pipe(
@@ -126,14 +129,20 @@ type AddAuthorForm = {
   readonly orcid: E.Either<InvalidE, Orcid | undefined>
 }
 
-function addAuthorForm(preprint: Preprint, form: AddAuthorForm) {
+function addAuthorForm(preprint: Preprint, otherAuthors: boolean, form: AddAuthorForm) {
   const error = hasAnError(form)
 
   return page({
     title: plainText`${error ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+        <a
+          href="${otherAuthors
+            ? format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })
+            : format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}"
+          class="back"
+          >Back</a
+        >
       </nav>
 
       <main>

@@ -1136,6 +1136,13 @@ test.extend(canAddAuthors)('see existing values when going back a step', async (
 
   await expect(page.locator('h1')).toContainText('You have added 1 other author')
 
+  await page.check('text="Yes"')
+  await page.click('text="Continue"')
+
+  await page.click('text="Back"')
+
+  await expect(page.locator('h1')).toContainText('You have added 1 other author')
+
   await page.click('text="Back"')
 
   await expect(page.locator('text="Yes"')).toBeChecked()
