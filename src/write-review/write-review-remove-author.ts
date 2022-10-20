@@ -48,7 +48,7 @@ export const writeReviewRemoveAuthor = (doi: PreprintId['doi'], index: number) =
             pipe(
               form.otherAuthors ?? [],
               E.fromOptionK(() => 'not-found')(RA.lookup(index)),
-              E.apS('index', E.right(index)),
+              E.let('index', () => index),
             ),
           ),
         ),

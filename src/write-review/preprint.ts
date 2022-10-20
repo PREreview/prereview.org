@@ -17,7 +17,11 @@ export interface GetPreprintTitleEnv {
   ) => TE.TaskEither<'not-found' | 'unavailable', { title: Html; language: LanguageCode }>
 }
 
-export const getPreprint = (doi: PreprintId['doi']) => pipe(getPreprintTitle(doi), RTE.apS('doi', RTE.right(doi)))
+export const getPreprint = (doi: PreprintId['doi']) =>
+  pipe(
+    getPreprintTitle(doi),
+    RTE.let('doi', () => doi),
+  )
 
 const getPreprintTitle = (doi: PreprintId['doi']) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(doi)))

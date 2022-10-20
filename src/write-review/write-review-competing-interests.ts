@@ -64,8 +64,8 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     RM.map(body =>
       pipe(
         I.Do,
-        I.apS('competingInterests', pipe(CompetingInterestsFieldD.decode(body), E.mapLeft(missingE))),
-        I.bind('competingInterestsDetails', ({ competingInterests }) =>
+        I.let('competingInterests', () => pipe(CompetingInterestsFieldD.decode(body), E.mapLeft(missingE))),
+        I.let('competingInterestsDetails', ({ competingInterests }) =>
           match(competingInterests)
             .with(E.right('yes' as const), () =>
               pipe(CompetingInterestsDetailsFieldD.decode(body), E.mapLeft(missingE)),

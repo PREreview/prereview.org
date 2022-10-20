@@ -209,10 +209,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
         ),
       ),
     ),
-    E.map(preprint => ({
-      ...preprint,
-      url: toHttps(work.resource.primary.URL),
-    })),
+    E.let('url', () => toHttps(work.resource.primary.URL)),
   )
 }
 
@@ -231,7 +228,7 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
             RTE.fromTaskEitherK(({ getPreprintTitle }: F.FetchEnv & GetPreprintTitleEnv) =>
               getPreprintTitle(review.preprintDoi),
             ),
-            RTE.apS('doi', RTE.right(review.preprintDoi)),
+            RTE.let('doi', () => review.preprintDoi),
           ),
         ),
         text: getReviewText(review.reviewTextUrl),
