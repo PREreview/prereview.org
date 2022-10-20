@@ -1063,7 +1063,7 @@ test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) 
   }
 })
 
-test('see existing values when going back a step', async ({ fetch, javaScriptEnabled, page }) => {
+test.extend(canAddAuthors)('see existing values when going back a step', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
 
   fetch.postOnce('http://orcid.test/token', {
@@ -1111,6 +1111,34 @@ test('see existing values when going back a step', async ({ fetch, javaScriptEna
   await page.click('text="Back"')
 
   await expect(page.locator('text="No, by myself"')).toBeChecked()
+
+  await page.check('text="Yes"')
+  await page.click('text="Save and continue"')
+
+  await page.click('text="Back"')
+
+  await expect(page.locator('text="Yes"')).toBeChecked()
+
+  await page.click('text="Save and continue"')
+
+  await page.fill('role=textbox[name="Name"]', 'Otto Lidenbrock')
+  await page.click('text="Save and continue"')
+
+  await page.click('role=link[name="Change Otto Lidenbrock"]')
+
+  await page.click('text="Back"')
+
+  await expect(page.locator('h1')).toContainText('You have added 1 other author')
+
+  await page.click('role=link[name="Remove Otto Lidenbrock"]')
+
+  await page.click('text="Back"')
+
+  await expect(page.locator('h1')).toContainText('You have added 1 other author')
+
+  await page.click('text="Back"')
+
+  await expect(page.locator('text="Yes"')).toBeChecked()
 
   await page.click('text="Back"')
 

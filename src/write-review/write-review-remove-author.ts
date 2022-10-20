@@ -165,7 +165,7 @@ function removeAuthorForm(preprint: Preprint, author: Author, form: RemoveAuthor
     }”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
       <main>
