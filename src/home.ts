@@ -12,12 +12,12 @@ import { P, match } from 'ts-pattern'
 import { InvalidE, getInput, invalidE } from './form'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
-import { seeOther } from './middleware'
+import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { homeMatch, preprintMatch } from './routes'
 
 export const home = pipe(
-  RM.decodeMethod(E.right),
+  RM.fromMiddleware(getMethod),
   RM.ichain(method =>
     match(method)
       .with('POST', () => lookupDoi)

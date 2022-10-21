@@ -13,7 +13,7 @@ import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { InvalidE, MissingE, getInput, hasAnError, invalidE, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
-import { notFound, seeOther, serviceUnavailable } from '../middleware'
+import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { PreprintId } from '../preprint-id'
 import { writeReviewAddAuthorsMatch, writeReviewChangeAuthorMatch, writeReviewMatch } from '../routes'
@@ -47,7 +47,7 @@ export const writeReviewChangeAuthor = (doi: PreprintId['doi'], index: number) =
             ),
           ),
         ),
-        RM.apSW('method', RM.decodeMethod(E.right)),
+        RM.apSW('method', RM.fromMiddleware(getMethod)),
         RM.ichainW(state =>
           match(state)
             .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleChangeAuthorForm)

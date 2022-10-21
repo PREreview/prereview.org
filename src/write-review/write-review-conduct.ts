@@ -9,7 +9,7 @@ import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
-import { notFound, seeOther, serviceUnavailable } from '../middleware'
+import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { writeReviewCompetingInterestsMatch, writeReviewConductMatch, writeReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
@@ -23,7 +23,7 @@ export const writeReviewConduct = flow(
       RM.right({ preprint }),
       RM.apS('user', getUserFromSession()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
-      RM.apSW('method', RM.decodeMethod(E.right)),
+      RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state).with({ method: 'POST' }, handleCodeOfConductForm).otherwise(showCodeOfConductForm),
       ),

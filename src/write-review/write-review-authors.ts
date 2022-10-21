@@ -10,7 +10,7 @@ import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
-import { notFound, seeOther, serviceUnavailable } from '../middleware'
+import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import {
   writeReviewAddAuthorMatch,
@@ -30,7 +30,7 @@ export const writeReviewAuthors = flow(
       RM.right({ preprint }),
       RM.apS('user', getUserFromSession()),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
-      RM.apSW('method', RM.decodeMethod(E.right)),
+      RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handleAuthorsForm).otherwise(showAuthorsForm)),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),

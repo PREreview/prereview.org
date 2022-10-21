@@ -15,3 +15,5 @@ export const seeOther: <E = never>(location: string) => M.Middleware<StatusOpen,
 export const notFound = handleError(new NotFound())
 
 export const serviceUnavailable = handleError(new ServiceUnavailable())
+
+export const getMethod = M.gets(c => c.getMethod())

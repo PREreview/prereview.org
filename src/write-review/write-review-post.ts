@@ -1,6 +1,5 @@
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as R from 'fp-ts/Refinement'
@@ -16,7 +15,7 @@ import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
 import { Html, html, plainText, sanitizeHtml, sendHtml } from '../html'
-import { notFound, seeOther, serviceUnavailable } from '../middleware'
+import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import {
   preprintMatch,
@@ -57,7 +56,7 @@ export const writeReviewPost = flow(
         fromReaderK(({ user }) => canAddAuthors(user)),
       ),
       RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
-      RM.apSW('method', RM.decodeMethod(E.right)),
+      RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
           .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormD.decode)) }, handlePostForm)
