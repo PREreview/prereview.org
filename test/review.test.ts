@@ -7,85 +7,73 @@ import { runMiddleware } from './middleware'
 
 describe('review', () => {
   describe('review', () => {
-    test('when the review can be loaded', async () => {
-      await fc.assert(
-        fc.asyncProperty(
-          fc.integer(),
-          fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          fc.record({
-            authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
-            doi: fc.doi(),
-            postedDate: fc.plainDate(),
-            preprint: fc.record({
-              doi: fc.preprintDoi(),
-              language: fc.languageCode(),
-              title: fc.html(),
-            }),
-            text: fc.html(),
+    fc.test(
+      'when the review can be loaded',
+      [
+        fc.integer(),
+        fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+        fc.record({
+          authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+          doi: fc.doi(),
+          postedDate: fc.plainDate(),
+          preprint: fc.record({
+            doi: fc.preprintDoi(),
+            language: fc.languageCode(),
+            title: fc.html(),
           }),
-          async (id, connection, prereview) => {
-            const getPrereview: jest.MockedFunction<_.GetPrereviewEnv['getPrereview']> = jest.fn(_ =>
-              TE.right(prereview),
-            )
+          text: fc.html(),
+        }),
+      ],
+      async (id, connection, prereview) => {
+        const getPrereview: jest.MockedFunction<_.GetPrereviewEnv['getPrereview']> = jest.fn(_ => TE.right(prereview))
 
-            const actual = await runMiddleware(_.review(id)({ getPrereview }), connection)()
+        const actual = await runMiddleware(_.review(id)({ getPrereview }), connection)()
 
-            expect(actual).toStrictEqual(
-              E.right([
-                { type: 'setStatus', status: Status.OK },
-                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-                { type: 'setBody', body: expect.anything() },
-              ]),
-            )
-            expect(getPrereview).toHaveBeenCalledWith(id)
-          },
-        ),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.OK },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+        expect(getPrereview).toHaveBeenCalledWith(id)
+      },
+    )
 
-    test('when the review is not found', async () => {
-      await fc.assert(
-        fc.asyncProperty(
-          fc.integer(),
-          fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          async (id, connection) => {
-            const actual = await runMiddleware(
-              _.review(id)({ getPrereview: () => TE.left({ status: Status.NotFound }) }),
-              connection,
-            )()
+    fc.test(
+      'when the review is not found',
+      [fc.integer(), fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') })],
+      async (id, connection) => {
+        const actual = await runMiddleware(
+          _.review(id)({ getPrereview: () => TE.left({ status: Status.NotFound }) }),
+          connection,
+        )()
 
-            expect(actual).toStrictEqual(
-              E.right([
-                { type: 'setStatus', status: Status.NotFound },
-                { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-                { type: 'setBody', body: expect.anything() },
-              ]),
-            )
-          },
-        ),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.NotFound },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
 
-    test('when the review cannot be loaded', async () => {
-      await fc.assert(
-        fc.asyncProperty(
-          fc.integer(),
-          fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-          fc.anything(),
-          async (id, connection, error) => {
-            const actual = await runMiddleware(_.review(id)({ getPrereview: () => TE.left(error) }), connection)()
+    fc.test(
+      'when the review cannot be loaded',
+      [fc.integer(), fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }), fc.anything()],
+      async (id, connection, error) => {
+        const actual = await runMiddleware(_.review(id)({ getPrereview: () => TE.left(error) }), connection)()
 
-            expect(actual).toStrictEqual(
-              E.right([
-                { type: 'setStatus', status: Status.ServiceUnavailable },
-                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-                { type: 'setBody', body: expect.anything() },
-              ]),
-            )
-          },
-        ),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
   })
 })

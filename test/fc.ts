@@ -1,8 +1,8 @@
+import { fc } from '@fast-check/jest'
 import { Temporal } from '@js-temporal/polyfill'
 import { mod11_2 } from 'cdigit'
 import { Doi, isDoi } from 'doi-ts'
 import { Request, Response } from 'express'
-import * as fc from 'fast-check'
 import * as F from 'fetch-fp-ts'
 import { isNonEmpty } from 'fp-ts/Array'
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray'
@@ -26,7 +26,25 @@ import {
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
 
-export * from 'fast-check'
+export { testProp as test } from '@fast-check/jest'
+
+export const {
+  anything,
+  array,
+  boolean,
+  constant,
+  constantFrom,
+  integer,
+  jsonValue,
+  lorem,
+  oneof,
+  option,
+  record,
+  string,
+  tuple,
+  uuid,
+  webUrl,
+} = fc
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
 
