@@ -100,7 +100,7 @@ describe('writeReviewAddAuthors', () => {
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
           moreAuthors: fc.constant('yes'),
-          otherAuthors: fc.array(
+          otherAuthors: fc.nonEmptyArray(
             fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
           ),
           persona: fc.constantFrom('public', 'pseudonym'),
@@ -207,6 +207,70 @@ describe('writeReviewAddAuthors', () => {
                   preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
                 )}/write-a-prereview`,
               ),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+        expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
+      },
+    )
+
+    fc.test(
+      'when there are no other authors yet',
+      [
+        fc.preprintDoi(),
+        fc.record({ title: fc.html(), language: fc.languageCode() }),
+        fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+          fc.tuple(
+            fc.connection({
+              headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+            }),
+            fc.constant(sessionId),
+            fc.constant(secret),
+          ),
+        ),
+        fc.user(),
+        fc.record(
+          {
+            competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
+            conduct: fc.constant('yes'),
+            moreAuthors: fc.constant('yes'),
+            otherAuthors: fc.constant([]),
+            persona: fc.constantFrom('public', 'pseudonym'),
+            review: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['moreAuthors'] },
+        ),
+      ],
+      async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+        const sessionStore = new Keyv()
+        await sessionStore.set(sessionId, UserC.encode(user))
+        const formStore = new Keyv()
+        await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+        const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
+          TE.right(preprintTitle),
+        )
+        const actual = await runMiddleware(
+          _.writeReviewAddAuthors(preprintDoi)({
+            canAddAuthors: () => true,
+            formStore,
+            getPreprintTitle,
+            secret,
+            sessionStore,
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: `/preprints/doi-${encodeURIComponent(
+                preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              )}/write-a-prereview/add-author`,
             },
             { type: 'endResponse' },
           ]),
