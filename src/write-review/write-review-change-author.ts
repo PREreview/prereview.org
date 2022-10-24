@@ -1,9 +1,10 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import { fromOption as fromOption_ } from 'fp-ts/FromEither'
 import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RA from 'fp-ts/ReadonlyArray'
-import { constUndefined, flow, pipe } from 'fp-ts/function'
+import { Lazy, constUndefined, flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
@@ -39,11 +40,11 @@ export const writeReviewChangeAuthor = (doi: PreprintId['doi'], index: number) =
         ),
         RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
         RM.bindW('author', ({ form }) =>
-          RM.fromEither(
+          fromOption(() => 'not-found')(
             pipe(
-              form.otherAuthors ?? [],
-              E.fromOptionK(() => 'not-found')(RA.lookup(index)),
-              E.let('index', () => index),
+              O.fromNullable(form.otherAuthors),
+              O.chain(RA.lookup(index)),
+              O.let('index', () => index),
             ),
           ),
         ),
@@ -282,3 +283,7 @@ function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E =
 ): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
   return (...a) => RM.rightReader(f(...a))
 }
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/89
+const fromOption: <E>(onNone: Lazy<E>) => <R, I, A>(ma: O.Option<A>) => RM.ReaderMiddleware<R, I, I, E, A> =
+  fromOption_(RM.FromEither)
