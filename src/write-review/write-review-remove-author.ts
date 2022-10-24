@@ -40,7 +40,7 @@ export const writeReviewRemoveAuthor = (doi: PreprintId['doi'], index: number) =
         ),
         RM.filterOrElseW(
           ({ canAddAuthors }) => canAddAuthors,
-          () => 'not-found',
+          () => 'not-found' as const,
         ),
         RM.bindW(
           'form',
@@ -48,7 +48,7 @@ export const writeReviewRemoveAuthor = (doi: PreprintId['doi'], index: number) =
         ),
         RM.bindW(
           'author',
-          fromOptionK(() => 'not-found')(
+          fromOptionK(() => 'not-found' as const)(
             flow(
               O.fromNullableK(({ form }) => form.otherAuthors),
               O.chain(RA.lookup(index)),
@@ -65,8 +65,12 @@ export const writeReviewRemoveAuthor = (doi: PreprintId['doi'], index: number) =
         ),
         RM.orElseW(error =>
           match(error)
+            .with(
+              'no-session',
+              fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+            )
             .with('not-found', () => notFound)
-            .otherwise(fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi })))),
+            .exhaustive(),
         ),
       ),
     ),

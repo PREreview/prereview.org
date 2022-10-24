@@ -38,7 +38,7 @@ export const writeReviewAddAuthor = flow(
       ),
       RM.filterOrElseW(
         ({ canAddAuthors }) => canAddAuthors,
-        () => 'not-found',
+        () => 'not-found' as const,
       ),
       RM.bindW(
         'form',
@@ -53,8 +53,12 @@ export const writeReviewAddAuthor = flow(
       ),
       RM.orElseW(error =>
         match(error)
+          .with(
+            'no-session',
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+          )
           .with('not-found', () => notFound)
-          .otherwise(fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi })))),
+          .exhaustive(),
       ),
     ),
   ),
