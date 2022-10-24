@@ -1,6 +1,5 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
