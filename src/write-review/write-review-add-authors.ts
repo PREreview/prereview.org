@@ -35,7 +35,10 @@ export const writeReviewAddAuthors = flow(
         'canAddAuthors',
         fromReaderK(({ user }) => canAddAuthors(user)),
       ),
-      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
+      RM.bindW(
+        'form',
+        RM.fromReaderTaskK(({ user }) => getForm(user.orcid, preprint.doi)),
+      ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)

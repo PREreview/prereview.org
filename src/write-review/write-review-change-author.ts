@@ -1,11 +1,11 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import { fromOption as fromOption_ } from 'fp-ts/FromEither'
 import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { Lazy, constUndefined, flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { Orcid, parse } from 'orcid-id-ts'
@@ -38,11 +38,15 @@ export const writeReviewChangeAuthor = (doi: PreprintId['doi'], index: number) =
           ({ canAddAuthors }) => canAddAuthors,
           () => 'not-found',
         ),
-        RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
-        RM.bindW('author', ({ form }) =>
-          fromOption(() => 'not-found')(
-            pipe(
-              O.fromNullable(form.otherAuthors),
+        RM.bindW(
+          'form',
+          RM.fromReaderTaskK(({ user }) => getForm(user.orcid, preprint.doi)),
+        ),
+        RM.bindW(
+          'author',
+          fromOptionK(() => 'not-found')(
+            flow(
+              O.fromNullableK(({ form }) => form.otherAuthors),
               O.chain(RA.lookup(index)),
               O.let('index', () => index),
             ),
@@ -58,7 +62,7 @@ export const writeReviewChangeAuthor = (doi: PreprintId['doi'], index: number) =
         RM.orElseW(error =>
           match(error)
             .with('not-found', () => notFound)
-            .otherwise(() => RM.fromMiddleware(seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi })))),
+            .otherwise(fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi })))),
         ),
       ),
     ),
@@ -277,6 +281,14 @@ function changeAuthorForm(preprint: Preprint, author: Author, form: ChangeAuthor
   })
 }
 
+// https://github.com/DenisFrezzato/hyper-ts/pull/83
+const fromMiddlewareK =
+  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
+    f: (...a: A) => M.Middleware<I, O, E, B>,
+  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
+  (...a) =>
+    RM.fromMiddleware(f(...a))
+
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
   f: (...a: A) => Reader<R, B>,
@@ -284,6 +296,11 @@ function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E =
   return (...a) => RM.rightReader(f(...a))
 }
 
-// https://github.com/DenisFrezzato/hyper-ts/pull/89
-const fromOption: <E>(onNone: Lazy<E>) => <R, I, A>(ma: O.Option<A>) => RM.ReaderMiddleware<R, I, I, E, A> =
-  fromOption_(RM.FromEither)
+// https://github.com/DenisFrezzato/hyper-ts/pull/88
+function fromOptionK<E>(
+  onNone: Lazy<E>,
+): <A extends ReadonlyArray<unknown>, B>(
+  f: (...a: A) => O.Option<B>,
+) => <R, I = StatusOpen>(...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return f => fromMiddlewareK((...a) => M.fromOption(onNone)(f(...a)))
+}

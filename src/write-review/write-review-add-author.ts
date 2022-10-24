@@ -4,6 +4,7 @@ import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import { constUndefined, flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { Orcid, parse } from 'orcid-id-ts'
@@ -39,7 +40,10 @@ export const writeReviewAddAuthor = flow(
         ({ canAddAuthors }) => canAddAuthors,
         () => 'not-found',
       ),
-      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
+      RM.bindW(
+        'form',
+        RM.fromReaderTaskK(({ user }) => getForm(user.orcid, preprint.doi)),
+      ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
@@ -50,7 +54,7 @@ export const writeReviewAddAuthor = flow(
       RM.orElseW(error =>
         match(error)
           .with('not-found', () => notFound)
-          .otherwise(() => RM.fromMiddleware(seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi })))),
+          .otherwise(fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi })))),
       ),
     ),
   ),
@@ -245,6 +249,14 @@ function addAuthorForm(preprint: Preprint, otherAuthors: boolean, form: AddAutho
     js: ['error-summary.js'],
   })
 }
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/83
+const fromMiddlewareK =
+  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
+    f: (...a: A) => M.Middleware<I, O, E, B>,
+  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
+  (...a) =>
+    RM.fromMiddleware(f(...a))
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(

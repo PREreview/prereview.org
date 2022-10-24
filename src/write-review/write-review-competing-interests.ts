@@ -24,7 +24,10 @@ export const writeReviewCompetingInterests = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUserFromSession()),
-      RM.bindW('form', ({ user }) => RM.rightReaderTask(getForm(user.orcid, preprint.doi))),
+      RM.bindW(
+        'form',
+        RM.fromReaderTaskK(({ user }) => getForm(user.orcid, preprint.doi)),
+      ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state).with({ method: 'POST' }, handleCompetingInterestsForm).otherwise(showCompetingInterestsForm),
