@@ -1,3 +1,4 @@
+import * as E from 'fp-ts/Either'
 import { flow, pipe } from 'fp-ts/function'
 import { StatusOpen } from 'hyper-ts'
 import { getSession, storeSession } from 'hyper-ts-session'
@@ -19,5 +20,13 @@ export const UserC = C.struct({
 export const storeUserInSession = flow(UserC.encode, storeSession)
 
 export function getUserFromSession<I = StatusOpen>() {
-  return pipe(getSession<I>(), RM.chainEitherKW(UserC.decode))
+  return pipe(
+    getSession<I>(),
+    RM.chainEitherK(
+      flow(
+        UserC.decode,
+        E.mapLeft(() => 'no-session' as const),
+      ),
+    ),
+  )
 }
