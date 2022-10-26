@@ -709,19 +709,20 @@ html-editor {
 [type='radio'] {
   appearance: none;
   flex-shrink: 0;
-  display: inline-grid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: currentcolor;
   background-color: var(--color-background);
   border: var(--width-divider) solid currentcolor;
   cursor: pointer;
   inline-size: var(--space-m);
   block-size: var(--space-m);
-  place-content: center;
 
   &::before {
     content: '';
-    inline-size: var(--space-xs);
-    block-size: var(--space-xs);
+    inline-size: calc(100% - (var(--width-divider) * 2));
+    block-size: calc(100% - (var(--width-divider) * 2));
     background-color: transparent;
   }
 
