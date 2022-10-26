@@ -1,3 +1,4 @@
+import { describe, expect } from '@jest/globals'
 import * as _ from '../src/time'
 import * as fc from './fc'
 

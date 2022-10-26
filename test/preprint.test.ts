@@ -1,6 +1,8 @@
+import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import type { Mock } from 'jest-mock'
 import * as _ from '../src/preprint'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -29,10 +31,8 @@ describe('preprint', () => {
         ),
       ],
       async (connection, preprint, prereviews) => {
-        const getPreprint: jest.MockedFunction<_.GetPreprintEnv['getPreprint']> = jest.fn(_ => TE.right(preprint))
-        const getPrereviews: jest.MockedFunction<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ =>
-          TE.right(prereviews),
-        )
+        const getPreprint: Mock<_.GetPreprintEnv['getPreprint']> = jest.fn(_ => TE.right(preprint))
+        const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.right(prereviews))
 
         const actual = await runMiddleware(_.preprint(preprint.id.doi)({ getPreprint, getPrereviews }), connection)()
 

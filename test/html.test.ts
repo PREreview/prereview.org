@@ -1,3 +1,4 @@
+import { describe, expect, test } from '@jest/globals'
 import * as _ from '../src/html'
 
 describe('html', () => {

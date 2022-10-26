@@ -50,5 +50,8 @@
       { "allow": ["fp-ts/*", "fp-ts-contrib/*", "io-ts/*", "hyper-ts/lib/*", "nanohtml/*"] }
     ],
     "quotes": ["error", "single", { "avoidEscape": true }]
+  },
+  "settings": {
+    "import/core-modules": ["@jest/globals"]
   }
 }

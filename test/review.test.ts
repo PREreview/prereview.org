@@ -1,6 +1,8 @@
+import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import type { Mock } from 'jest-mock'
 import * as _ from '../src/review'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -25,7 +27,7 @@ describe('review', () => {
         }),
       ],
       async (id, connection, prereview) => {
-        const getPrereview: jest.MockedFunction<_.GetPrereviewEnv['getPrereview']> = jest.fn(_ => TE.right(prereview))
+        const getPrereview: Mock<_.GetPrereviewEnv['getPrereview']> = jest.fn(_ => TE.right(prereview))
 
         const actual = await runMiddleware(_.review(id)({ getPrereview }), connection)()
 

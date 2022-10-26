@@ -1,3 +1,4 @@
+import { describe, expect, test } from '@jest/globals'
 import * as D from 'io-ts/Decoder'
 import * as _ from '../src/string'
 import * as fc from './fc'

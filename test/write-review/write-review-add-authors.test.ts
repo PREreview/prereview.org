@@ -1,7 +1,9 @@
+import { describe, expect, jest } from '@jest/globals'
 import cookieSignature from 'cookie-signature'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
@@ -47,9 +49,7 @@ describe('writeReviewAddAuthors', () => {
         await sessionStore.set(sessionId, UserC.encode(user))
         const formStore = new Keyv()
         await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-        const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
-          TE.right(preprintTitle),
-        )
+        const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
         const actual = await runMiddleware(
           _.writeReviewAddAuthors(preprintDoi)({
             canAddAuthors: () => true,
@@ -112,9 +112,7 @@ describe('writeReviewAddAuthors', () => {
         await sessionStore.set(sessionId, UserC.encode(user))
         const formStore = new Keyv()
         await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-        const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
-          TE.right(preprintTitle),
-        )
+        const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
         const actual = await runMiddleware(
           _.writeReviewAddAuthors(preprintDoi)({
             canAddAuthors: () => true,
@@ -182,9 +180,7 @@ describe('writeReviewAddAuthors', () => {
         await sessionStore.set(sessionId, UserC.encode(user))
         const formStore = new Keyv()
         await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-        const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
-          TE.right(preprintTitle),
-        )
+        const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
         const actual = await runMiddleware(
           _.writeReviewAddAuthors(preprintDoi)({
             canAddAuthors: () => true,
@@ -248,9 +244,7 @@ describe('writeReviewAddAuthors', () => {
         await sessionStore.set(sessionId, UserC.encode(user))
         const formStore = new Keyv()
         await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-        const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
-          TE.right(preprintTitle),
-        )
+        const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
         const actual = await runMiddleware(
           _.writeReviewAddAuthors(preprintDoi)({
             canAddAuthors: () => true,
@@ -326,9 +320,7 @@ describe('writeReviewAddAuthors', () => {
         await sessionStore.set(sessionId, UserC.encode(user))
         const formStore = new Keyv()
         await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-        const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
-          TE.right(preprintTitle),
-        )
+        const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
         const actual = await runMiddleware(
           _.writeReviewAddAuthors(preprintDoi)({
             canAddAuthors: () => false,
@@ -395,9 +387,7 @@ describe('writeReviewAddAuthors', () => {
         await sessionStore.set(sessionId, UserC.encode(user))
         const formStore = new Keyv()
         await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-        const getPreprintTitle: jest.MockedFunction<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ =>
-          TE.right(preprintTitle),
-        )
+        const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
         const actual = await runMiddleware(
           _.writeReviewAddAuthors(preprintDoi)({
             canAddAuthors: () => false,

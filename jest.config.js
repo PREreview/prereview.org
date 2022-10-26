@@ -5,6 +5,7 @@ module.exports = {
       isolatedModules: true,
     },
   },
+  injectGlobals: false,
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['./src/', './test/'],
