@@ -1,4 +1,5 @@
 module.exports = {
+  showSeed: true,
   injectGlobals: false,
   testEnvironment: 'node',
   roots: ['./src/', './test/'],
