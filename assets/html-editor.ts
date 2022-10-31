@@ -1,3 +1,5 @@
+import boldIcon from 'remixicon/icons/Editor/bold.svg'
+
 class HtmlEditor extends HTMLElement {
   static element = 'html-editor' as const
 
@@ -55,6 +57,27 @@ class HtmlEditor extends HTMLElement {
       ],
       content: new DOMParser().parseFromString(textArea.innerHTML, 'text/html').documentElement.textContent,
     })
+
+    if (this.hasAttribute('toolbar')) {
+      const toolbar = document.createElement('tool-bar')
+      toolbar.setAttribute('role', 'toolbar')
+      toolbar.setAttribute('aria-controls', textArea.id)
+      toolbar.setAttribute('aria-label', 'Formatting')
+
+      const bold = document.createElement('button')
+      bold.type = 'button'
+      bold.setAttribute('aria-pressed', 'false')
+      bold.disabled = true
+
+      const boldImage = document.createElement('img')
+      boldImage.alt = 'Bold'
+      boldImage.src = boldIcon
+      bold.append(boldImage)
+
+      toolbar.append(bold)
+
+      editor.options.element.prepend(toolbar)
+    }
 
     editor.on('update', ({ editor }) => {
       const html = editor.getHTML()

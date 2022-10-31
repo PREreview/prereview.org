@@ -110,7 +110,7 @@ module.exports = {
       filename: '[name].[contenthash].css',
     }),
     new PurgeCSSPlugin({
-      paths: glob.sync(`src/**/*`, { nodir: true }),
+      paths: [...glob.sync(`assets/**/*.ts`, { nodir: true }), ...glob.sync(`src/**/*`, { nodir: true })],
       safelist: ['contenteditable', /^:/],
       variables: true,
     }),

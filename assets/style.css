@@ -18,6 +18,8 @@
 
 @custom-selector :--textarea textarea, [contenteditable];
 
+@custom-selector :--toggle-button button[aria-pressed], [role='button'][aria-pressed];
+
 .visually-hidden:not(:focus, :active) {
   position: absolute;
   white-space: nowrap;
@@ -49,6 +51,7 @@
   --color-text-light: var(--oc-gray-6);
   --color-focus: var(--oc-yellow-7);
   --color-selection: var(--oc-indigo-1);
+  --color-pressed: var(--oc-yellow-2);
   --color-link: var(--oc-red-6);
   --color-link-dark: var(--oc-red-8);
   --color-divider: var(--oc-gray-3);
@@ -522,6 +525,54 @@ label {
   }
 }
 
+[role='toolbar'] {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-block-start: var(--space-s);
+  gap: var(--space-3xs-2xs);
+}
+
+:--toggle-button {
+  color: var(--color-text);
+  padding: var(--space-4xs-3xs);
+  background-color: var(--color-background);
+  border: var(--width-divider) solid currentcolor;
+  block-size: var(--space-m-l);
+
+  @nest [role='group'] > & {
+    &:not(:last-child) {
+      margin-inline-end: calc(-1 * var(--width-divider));
+    }
+  }
+
+  &:focus-visible {
+    position: relative;
+    outline-offset: 0;
+    z-index: 1;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+
+    & img {
+      opacity: 0.5;
+    }
+  }
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
+
+  &[aria-pressed='true'] {
+    background-color: var(--color-pressed);
+  }
+
+  & img {
+    block-size: 100%;
+  }
+}
+
 .error-message {
   font-weight: 700;
   -webkit-font-smoothing: antialiased;
@@ -652,6 +703,10 @@ error-summary {
 
   @nest label + & {
     margin-block-start: var(--space-4xs);
+  }
+
+  @nest [role='toolbar'] + & {
+    margin-block-start: var(--space-3xs-2xs);
   }
 
   &:read-only {

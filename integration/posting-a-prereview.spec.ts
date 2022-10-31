@@ -3,7 +3,7 @@ import { Status } from 'hyper-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
-import { canAddAuthors, expect, test } from './test'
+import { canAddAuthors, canUseEditorToolbar, expect, test } from './test'
 
 test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
@@ -190,6 +190,47 @@ test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
 
   await expect(h1).toContainText('PREreview posted')
   await expect(main).toContainText('Your DOI 10.5072/zenodo.1055806')
+  await expect(page).toHaveScreenshot()
+})
+
+test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
+  fetch.get(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { hits: [] } }) },
+  )
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.click('text="Write a PREreview"')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  await page.keyboard.press('Enter')
+
+  await page.locator('role=textbox[name="Write your PREreview"]').waitFor()
+  await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
+
+  if (!javaScriptEnabled) {
+    await expect(page.getByRole('button', { name: 'Bold' })).toBeHidden()
+
+    return
+  }
+
+  await page.locator('[contenteditable]').waitFor()
+
+  await expect(page.getByRole('button', { name: 'Bold' })).toBeDisabled()
   await expect(page).toHaveScreenshot()
 })
 
