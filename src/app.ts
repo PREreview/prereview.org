@@ -13,7 +13,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
-import { CanAddAuthorsEnv } from './feature-flags'
+import { CanAddAuthorsEnv, CanUseEditorToolbarEnv } from './feature-flags'
 import { home } from './home'
 import { handleError } from './http-error'
 import {
@@ -63,6 +63,7 @@ import {
 } from './write-review'
 
 export type AppEnv = CanAddAuthorsEnv &
+  CanUseEditorToolbarEnv &
   FormStoreEnv &
   LegacyPrereviewApiEnv &
   L.LoggerEnv &

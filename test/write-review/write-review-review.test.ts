@@ -52,15 +52,29 @@ describe('writeReviewReview', () => {
           ],
         },
       ),
+      fc.boolean(),
     ],
-    async (preprintDoi, preprintTitle, [review, connection, sessionId, secret], user, newReview) => {
+    async (
+      preprintDoi,
+      preprintTitle,
+      [review, connection, sessionId, secret],
+      user,
+      newReview,
+      canUseEditorToolbar,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const actual = await runMiddleware(
-        _.writeReviewReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+        _.writeReviewReview(preprintDoi)({
+          canUseEditorToolbar: () => canUseEditorToolbar,
+          formStore,
+          getPreprintTitle,
+          secret,
+          sessionStore,
+        }),
         connection,
       )()
 
@@ -116,8 +130,16 @@ describe('writeReviewReview', () => {
           { withDeletedKeys: true },
         )
         .filter(newReview => Object.keys(newReview).length < 5),
+      fc.boolean(),
     ],
-    async (preprintDoi, preprintTitle, [review, connection, sessionId, secret], user, newReview) => {
+    async (
+      preprintDoi,
+      preprintTitle,
+      [review, connection, sessionId, secret],
+      user,
+      newReview,
+      canUseEditorToolbar,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -125,7 +147,13 @@ describe('writeReviewReview', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+        _.writeReviewReview(preprintDoi)({
+          canUseEditorToolbar: () => canUseEditorToolbar,
+          formStore,
+          getPreprintTitle,
+          secret,
+          sessionStore,
+        }),
         connection,
       )()
 
@@ -186,7 +214,15 @@ describe('writeReviewReview', () => {
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle = () => TE.left('unavailable' as const)
       const actual = await runMiddleware(
-        _.writeReviewReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+        _.writeReviewReview(preprintDoi)({
+          canUseEditorToolbar: () => {
+            throw 'Should not be called'
+          },
+          formStore,
+          getPreprintTitle,
+          secret,
+          sessionStore,
+        }),
         connection,
       )()
 
@@ -239,7 +275,15 @@ describe('writeReviewReview', () => {
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle = () => TE.left('not-found' as const)
       const actual = await runMiddleware(
-        _.writeReviewReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+        _.writeReviewReview(preprintDoi)({
+          canUseEditorToolbar: () => {
+            throw 'Should not be called'
+          },
+          formStore,
+          getPreprintTitle,
+          secret,
+          sessionStore,
+        }),
         connection,
       )()
 
@@ -268,7 +312,15 @@ describe('writeReviewReview', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+        _.writeReviewReview(preprintDoi)({
+          canUseEditorToolbar: () => {
+            throw 'Should not be called'
+          },
+          formStore,
+          getPreprintTitle,
+          secret,
+          sessionStore,
+        }),
         connection,
       )()
 
@@ -319,8 +371,9 @@ describe('writeReviewReview', () => {
         },
         { withDeletedKeys: true },
       ),
+      fc.boolean(),
     ],
-    async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+    async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview, canUseEditorToolbar) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -328,7 +381,13 @@ describe('writeReviewReview', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+        _.writeReviewReview(preprintDoi)({
+          canUseEditorToolbar: () => canUseEditorToolbar,
+          formStore,
+          getPreprintTitle,
+          secret,
+          sessionStore,
+        }),
         connection,
       )()
 
