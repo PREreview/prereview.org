@@ -8,7 +8,7 @@
 @import url('space.css');
 @import url('step.css');
 
-@custom-selector :--button button, [role='button'], .button;
+@custom-selector :--button button:not([aria-pressed]), [role='button']:not([aria-pressed]), .button;
 
 @custom-selector :--heading h1, h2, h3, h4, h5, h6;
 
