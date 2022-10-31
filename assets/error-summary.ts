@@ -3,7 +3,9 @@ class ErrorSummary extends HTMLElement {
 
   constructor() {
     super()
+  }
 
+  connectedCallback() {
     forceFocus(this)
 
     this.addEventListener('click', event => {

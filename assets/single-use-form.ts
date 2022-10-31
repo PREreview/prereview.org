@@ -3,7 +3,9 @@ class SingleUseForm extends HTMLElement {
 
   constructor() {
     super()
+  }
 
+  connectedCallback() {
     const form = this.firstElementChild
 
     if (!(form instanceof HTMLFormElement)) {
