@@ -1,5 +1,7 @@
 import boldIcon from 'remixicon/icons/Editor/bold.svg'
 import italicIcon from 'remixicon/icons/Editor/italic.svg'
+import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
+import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
 
 class HtmlEditor extends HTMLElement {
   static element = 'html-editor' as const
@@ -87,9 +89,31 @@ class HtmlEditor extends HTMLElement {
       italicImage.src = italicIcon
       italic.append(italicImage)
 
+      const subscript = document.createElement('button')
+      subscript.type = 'button'
+      subscript.addEventListener('click', () => editor.chain().focus().toggleSubscript().unsetSuperscript().run())
+      subscript.setAttribute('aria-pressed', 'false')
+      subscript.disabled = true
+
+      const subscriptImage = document.createElement('img')
+      subscriptImage.alt = 'Subscript'
+      subscriptImage.src = subscriptIcon
+      subscript.append(subscriptImage)
+
+      const superscript = document.createElement('button')
+      superscript.type = 'button'
+      superscript.addEventListener('click', () => editor.chain().focus().toggleSuperscript().unsetSubscript().run())
+      superscript.setAttribute('aria-pressed', 'false')
+      superscript.disabled = true
+
+      const superscriptImage = document.createElement('img')
+      superscriptImage.alt = 'Superscript'
+      superscriptImage.src = superscriptIcon
+      superscript.append(superscriptImage)
+
       const formatting = document.createElement('div')
       formatting.setAttribute('role', 'group')
-      formatting.append(bold, italic)
+      formatting.append(bold, italic, subscript, superscript)
 
       toolbar.append(formatting)
 
@@ -98,6 +122,10 @@ class HtmlEditor extends HTMLElement {
         bold.disabled = !editor.can().toggleBold()
         italic.setAttribute('aria-pressed', editor.isActive('italic') ? 'true' : 'false')
         italic.disabled = !editor.can().toggleItalic()
+        subscript.setAttribute('aria-pressed', editor.isActive('subscript') ? 'true' : 'false')
+        subscript.disabled = !editor.can().toggleSubscript()
+        superscript.setAttribute('aria-pressed', editor.isActive('superscript') ? 'true' : 'false')
+        superscript.disabled = !editor.can().toggleSuperscript()
       })
 
       editor.options.element.prepend(toolbar)
