@@ -531,6 +531,11 @@ label {
   justify-content: flex-start;
   margin-block-start: var(--space-s);
   gap: var(--space-3xs-2xs);
+
+  & > [role='group'] {
+    display: inline-flex;
+    align-items: center;
+  }
 }
 
 :--toggle-button {

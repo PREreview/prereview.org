@@ -237,20 +237,37 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
   await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
 
   await page.keyboard.press('ArrowDown')
-  await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Italic' })).toBeFocused()
 
   await page.keyboard.press('ArrowUp')
   await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
 
   await page.keyboard.press('ArrowRight')
-  await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Italic' })).toBeFocused()
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Enter')
   await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
-  await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('button', { name: 'Italic' })).toHaveAttribute('aria-pressed', 'true')
 
   await page.keyboard.type('consectetur')
+
+  await page.keyboard.press('Shift+Tab')
+  await expect(page.getByRole('button', { name: 'Italic' })).toBeFocused()
+
+  await page.keyboard.press('Enter')
+  await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+
+  await page.keyboard.type(' ')
+
+  await page.keyboard.press('Shift+Tab')
+  await page.keyboard.press('ArrowLeft')
+  await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
+
+  await page.keyboard.press('Enter')
+  await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+
+  await page.keyboard.type('adipiscing elit')
 
   await page.keyboard.press('Shift+Tab')
   await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()

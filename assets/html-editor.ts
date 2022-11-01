@@ -1,4 +1,5 @@
 import boldIcon from 'remixicon/icons/Editor/bold.svg'
+import italicIcon from 'remixicon/icons/Editor/italic.svg'
 
 class HtmlEditor extends HTMLElement {
   static element = 'html-editor' as const
@@ -75,11 +76,28 @@ class HtmlEditor extends HTMLElement {
       boldImage.src = boldIcon
       bold.append(boldImage)
 
-      toolbar.append(bold)
+      const italic = document.createElement('button')
+      italic.type = 'button'
+      italic.addEventListener('click', () => editor.chain().focus().toggleItalic().run())
+      italic.setAttribute('aria-pressed', 'false')
+      italic.disabled = true
+
+      const italicImage = document.createElement('img')
+      italicImage.alt = 'Italic'
+      italicImage.src = italicIcon
+      italic.append(italicImage)
+
+      const formatting = document.createElement('div')
+      formatting.setAttribute('role', 'group')
+      formatting.append(bold, italic)
+
+      toolbar.append(formatting)
 
       editor.on('transaction', () => {
         bold.setAttribute('aria-pressed', editor.isActive('bold') ? 'true' : 'false')
         bold.disabled = !editor.can().toggleBold()
+        italic.setAttribute('aria-pressed', editor.isActive('italic') ? 'true' : 'false')
+        italic.disabled = !editor.can().toggleItalic()
       })
 
       editor.options.element.prepend(toolbar)
