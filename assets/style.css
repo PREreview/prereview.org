@@ -569,8 +569,13 @@ label {
     cursor: pointer;
   }
 
+  &:is([aria-pressed='false']) {
+    border-block-width: var(--width-divider) var(--width-divider-wide);
+  }
+
   &:is([aria-pressed='true']) {
     background-color: var(--color-pressed);
+    border-block-width: var(--width-divider-wide) var(--width-divider);
   }
 
   & img {
