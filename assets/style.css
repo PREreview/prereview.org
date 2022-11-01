@@ -564,7 +564,7 @@ label {
     cursor: pointer;
   }
 
-  &[aria-pressed='true'] {
+  &:is([aria-pressed='true']) {
     background-color: var(--color-pressed);
   }
 

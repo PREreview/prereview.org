@@ -229,8 +229,31 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
   }
 
   await page.locator('[contenteditable]').waitFor()
+  await page.focus('role=textbox[name="Write your PREreview"]')
 
-  await expect(page.getByRole('button', { name: 'Bold' })).toBeDisabled()
+  await page.keyboard.type('Lorem ipsum dolor sit "amet", ')
+
+  await page.keyboard.press('Shift+Tab')
+  await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+  await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true')
+
+  await page.keyboard.type('consectetur')
+
+  await page.keyboard.press('Shift+Tab')
+  await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
+
+  await page.keyboard.press('Enter')
+  await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'false')
+
+  await page.keyboard.type('.')
+
+  await page.keyboard.press('ArrowLeft')
+  await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page).toHaveScreenshot()
 })
 

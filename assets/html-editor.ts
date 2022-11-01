@@ -66,6 +66,7 @@ class HtmlEditor extends HTMLElement {
 
       const bold = document.createElement('button')
       bold.type = 'button'
+      bold.addEventListener('click', () => editor.chain().focus().toggleBold().run())
       bold.setAttribute('aria-pressed', 'false')
       bold.disabled = true
 
@@ -75,6 +76,11 @@ class HtmlEditor extends HTMLElement {
       bold.append(boldImage)
 
       toolbar.append(bold)
+
+      editor.on('transaction', () => {
+        bold.setAttribute('aria-pressed', editor.isActive('bold') ? 'true' : 'false')
+        bold.disabled = !editor.can().toggleBold()
+      })
 
       editor.options.element.prepend(toolbar)
     }
