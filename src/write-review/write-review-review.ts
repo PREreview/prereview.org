@@ -152,7 +152,7 @@ ${match(form.review)
             </form>
           </main>
         `,
-        js: ['html-editor.js', 'error-summary.js'],
+        js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
       }),
     ),
   )

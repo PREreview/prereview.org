@@ -59,7 +59,7 @@ class HtmlEditor extends HTMLElement {
     })
 
     if (this.hasAttribute('toolbar')) {
-      const toolbar = document.createElement('tool-bar')
+      const toolbar = document.createElement('editor-toolbar')
       toolbar.setAttribute('role', 'toolbar')
       toolbar.setAttribute('aria-controls', textArea.id)
       toolbar.setAttribute('aria-label', 'Formatting')

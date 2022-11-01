@@ -235,6 +235,15 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
 
   await page.keyboard.press('Shift+Tab')
   await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
+
+  await page.keyboard.press('ArrowDown')
+  await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
+
+  await page.keyboard.press('ArrowUp')
+  await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
+
+  await page.keyboard.press('ArrowRight')
+  await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Enter')
