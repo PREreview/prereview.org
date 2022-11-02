@@ -289,12 +289,6 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
   await expect(page.getByRole('button', { name: 'Superscript' })).toBeFocused()
 
   await page.keyboard.press('Enter')
-  await page.keyboard.type(' ')
-
-  await page.keyboard.press('Shift+Tab')
-  await expect(page.getByRole('button', { name: 'Superscript' })).toBeFocused()
-
-  await page.keyboard.press('Enter')
   await page.keyboard.press('Shift+Tab')
   await page.keyboard.press('ArrowUp')
   await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
@@ -308,6 +302,7 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
 
   await page.keyboard.press('ArrowLeft')
   await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('button', { name: 'Superscript' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page).toHaveScreenshot()
 })
 
