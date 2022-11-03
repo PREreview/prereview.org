@@ -530,7 +530,7 @@ label {
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-block-start: var(--space-s);
-  gap: var(--space-3xs-2xs);
+  gap: var(--space-2xs);
 
   & > [role='group'] {
     display: inline-flex;
@@ -543,7 +543,7 @@ label {
   padding: var(--space-4xs-3xs);
   background-color: var(--color-background);
   border: var(--width-divider) solid currentcolor;
-  block-size: var(--space-m-l);
+  block-size: var(--space-l);
   touch-action: manipulation;
   user-select: none;
 
@@ -718,7 +718,7 @@ error-summary {
   }
 
   @nest [role='toolbar'] + & {
-    margin-block-start: var(--space-3xs-2xs);
+    margin-block-start: var(--space-2xs);
   }
 
   &:read-only {
