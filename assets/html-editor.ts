@@ -54,8 +54,12 @@ class HtmlEditor extends HTMLElement {
         Link.configure({
           openOnClick: false,
         }),
-        Subscript,
-        Superscript,
+        Subscript.extend({
+          excludes: 'superscript',
+        }),
+        Superscript.extend({
+          excludes: 'subscript',
+        }),
         Typography,
       ],
       content: new DOMParser().parseFromString(textArea.innerHTML, 'text/html').documentElement.textContent,
@@ -91,7 +95,7 @@ class HtmlEditor extends HTMLElement {
 
       const subscript = document.createElement('button')
       subscript.type = 'button'
-      subscript.addEventListener('click', () => editor.chain().focus().toggleSubscript().unsetSuperscript().run())
+      subscript.addEventListener('click', () => editor.chain().focus().toggleSubscript().run())
       subscript.setAttribute('aria-pressed', 'false')
       subscript.disabled = true
 
@@ -102,7 +106,7 @@ class HtmlEditor extends HTMLElement {
 
       const superscript = document.createElement('button')
       superscript.type = 'button'
-      superscript.addEventListener('click', () => editor.chain().focus().toggleSuperscript().unsetSubscript().run())
+      superscript.addEventListener('click', () => editor.chain().focus().toggleSuperscript().run())
       superscript.setAttribute('aria-pressed', 'false')
       superscript.disabled = true
 
@@ -123,9 +127,9 @@ class HtmlEditor extends HTMLElement {
         italic.setAttribute('aria-pressed', editor.isActive('italic') ? 'true' : 'false')
         italic.disabled = !editor.can().toggleItalic()
         subscript.setAttribute('aria-pressed', editor.isActive('subscript') ? 'true' : 'false')
-        subscript.disabled = !editor.can().toggleSubscript()
+        subscript.disabled = !editor.can().toggleSubscript() && !editor.can().toggleSuperscript()
         superscript.setAttribute('aria-pressed', editor.isActive('superscript') ? 'true' : 'false')
-        superscript.disabled = !editor.can().toggleSuperscript()
+        superscript.disabled = !editor.can().toggleSuperscript() && !editor.can().toggleSubscript()
       })
 
       editor.options.element.prepend(toolbar)
