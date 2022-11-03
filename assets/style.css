@@ -544,6 +544,8 @@ label {
   background-color: var(--color-background);
   border: var(--width-divider) solid currentcolor;
   block-size: var(--space-m-l);
+  touch-action: manipulation;
+  user-select: none;
 
   @nest [role='group'] > & {
     &:not(:last-child) {
