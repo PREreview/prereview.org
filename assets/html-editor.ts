@@ -3,6 +3,7 @@ import heading1Icon from 'remixicon/icons/Editor/h-1.svg'
 import heading2Icon from 'remixicon/icons/Editor/h-2.svg'
 import heading3Icon from 'remixicon/icons/Editor/h-3.svg'
 import italicIcon from 'remixicon/icons/Editor/italic.svg'
+import bulletedListIcon from 'remixicon/icons/Editor/list-unordered.svg'
 import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
 import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
 
@@ -197,9 +198,26 @@ class HtmlEditor extends HTMLElement {
       heading3Image.src = heading3Icon
       heading3.append(heading3Image)
 
+      const bulletedList = document.createElement('button')
+      bulletedList.type = 'button'
+      bulletedList.addEventListener('click', () => {
+        if (bulletedList.getAttribute('aria-disabled') === 'true') {
+          return
+        }
+
+        editor.chain().focus().toggleBulletList().run()
+      })
+      bulletedList.setAttribute('aria-pressed', 'false')
+      bulletedList.setAttribute('aria-disabled', 'true')
+
+      const bulletedListImage = document.createElement('img')
+      bulletedListImage.alt = 'Bulleted list'
+      bulletedListImage.src = bulletedListIcon
+      bulletedList.append(bulletedListImage)
+
       const styles = document.createElement('div')
       styles.setAttribute('role', 'group')
-      styles.append(heading1, heading2, heading3)
+      styles.append(heading1, heading2, heading3, bulletedList)
 
       toolbar.append(formatting, styles)
 
@@ -224,6 +242,8 @@ class HtmlEditor extends HTMLElement {
         heading2.setAttribute('aria-disabled', editor.can().toggleHeading({ level: 2 }) ? 'false' : 'true')
         heading3.setAttribute('aria-pressed', editor.isActive('heading', { level: 3 }) ? 'true' : 'false')
         heading3.setAttribute('aria-disabled', editor.can().toggleHeading({ level: 3 }) ? 'false' : 'true')
+        bulletedList.setAttribute('aria-pressed', editor.isActive('bulletList') ? 'true' : 'false')
+        bulletedList.setAttribute('aria-disabled', editor.can().toggleBulletList() ? 'false' : 'true')
       })
 
       editor.options.element.prepend(toolbar)

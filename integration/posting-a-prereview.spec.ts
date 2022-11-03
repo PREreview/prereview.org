@@ -233,6 +233,7 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
 
   await page.getByRole('button', { name: 'Heading level 1' }).click()
   await expect(page.getByRole('button', { name: 'Heading level 1' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-disabled', 'true')
   await page.keyboard.type('Lorem')
   await expect(page).toHaveScreenshot()
   await page.keyboard.press('Enter')
@@ -258,7 +259,7 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
   await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
 
   await page.keyboard.press('ArrowDown')
-  await expect(page.getByRole('button', { name: 'Heading level 3' })).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Bulleted list' })).toBeFocused()
 
   await page.keyboard.press('ArrowUp')
   await page.keyboard.press('ArrowRight')
@@ -322,6 +323,23 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
   await page.keyboard.press('ArrowLeft')
   await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Superscript' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('ArrowDown')
+  await page.keyboard.press('Enter')
+
+  await page.getByRole('button', { name: 'Bulleted list' }).click()
+
+  await page.keyboard.type('Mauris')
+  await page.keyboard.press('Enter')
+  await page.keyboard.type('In ante')
+  await page.keyboard.press('Enter')
+  await page.keyboard.press('Tab')
+  await page.keyboard.type('turpis')
+  await page.keyboard.press('Enter')
+  await page.keyboard.press('Shift+Tab')
+  await page.keyboard.press('Enter')
+  await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'false')
   await expect(page).toHaveScreenshot()
 })
 
