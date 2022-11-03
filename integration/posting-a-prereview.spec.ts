@@ -259,7 +259,7 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
   await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
 
   await page.keyboard.press('ArrowDown')
-  await expect(page.getByRole('button', { name: 'Bulleted list' })).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Numbered list' })).toBeFocused()
 
   await page.keyboard.press('ArrowUp')
   await page.keyboard.press('ArrowRight')
@@ -340,6 +340,15 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
   await page.keyboard.press('Shift+Tab')
   await page.keyboard.press('Enter')
   await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'false')
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('ArrowUp')
+  await page.keyboard.press('ArrowUp')
+  await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'true')
+
+  await page.getByRole('button', { name: 'Numbered list' }).click()
+  await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.getByRole('button', { name: 'Numbered list' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page).toHaveScreenshot()
 })
 

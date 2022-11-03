@@ -3,6 +3,7 @@ import heading1Icon from 'remixicon/icons/Editor/h-1.svg'
 import heading2Icon from 'remixicon/icons/Editor/h-2.svg'
 import heading3Icon from 'remixicon/icons/Editor/h-3.svg'
 import italicIcon from 'remixicon/icons/Editor/italic.svg'
+import numberedListIcon from 'remixicon/icons/Editor/list-ordered.svg'
 import bulletedListIcon from 'remixicon/icons/Editor/list-unordered.svg'
 import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
 import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
@@ -215,9 +216,26 @@ class HtmlEditor extends HTMLElement {
       bulletedListImage.src = bulletedListIcon
       bulletedList.append(bulletedListImage)
 
+      const numberedList = document.createElement('button')
+      numberedList.type = 'button'
+      numberedList.addEventListener('click', () => {
+        if (numberedList.getAttribute('aria-disabled') === 'true') {
+          return
+        }
+
+        editor.chain().focus().toggleOrderedList().run()
+      })
+      numberedList.setAttribute('aria-pressed', 'false')
+      numberedList.setAttribute('aria-disabled', 'true')
+
+      const numberedListImage = document.createElement('img')
+      numberedListImage.alt = 'Numbered list'
+      numberedListImage.src = numberedListIcon
+      numberedList.append(numberedListImage)
+
       const styles = document.createElement('div')
       styles.setAttribute('role', 'group')
-      styles.append(heading1, heading2, heading3, bulletedList)
+      styles.append(heading1, heading2, heading3, bulletedList, numberedList)
 
       toolbar.append(formatting, styles)
 
@@ -243,7 +261,15 @@ class HtmlEditor extends HTMLElement {
         heading3.setAttribute('aria-pressed', editor.isActive('heading', { level: 3 }) ? 'true' : 'false')
         heading3.setAttribute('aria-disabled', editor.can().toggleHeading({ level: 3 }) ? 'false' : 'true')
         bulletedList.setAttribute('aria-pressed', editor.isActive('bulletList') ? 'true' : 'false')
-        bulletedList.setAttribute('aria-disabled', editor.can().toggleBulletList() ? 'false' : 'true')
+        bulletedList.setAttribute(
+          'aria-disabled',
+          editor.can().toggleBulletList() || editor.can().toggleOrderedList() ? 'false' : 'true',
+        )
+        numberedList.setAttribute('aria-pressed', editor.isActive('orderedList') ? 'true' : 'false')
+        numberedList.setAttribute(
+          'aria-disabled',
+          editor.can().toggleOrderedList() || editor.can().toggleBulletList() ? 'false' : 'true',
+        )
       })
 
       editor.options.element.prepend(toolbar)
