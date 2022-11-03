@@ -76,9 +76,15 @@ class HtmlEditor extends HTMLElement {
 
       const bold = document.createElement('button')
       bold.type = 'button'
-      bold.addEventListener('click', () => editor.chain().focus().toggleBold().run())
+      bold.addEventListener('click', () => {
+        if (bold.getAttribute('aria-disabled') === 'true') {
+          return
+        }
+
+        editor.chain().focus().toggleBold().run()
+      })
       bold.setAttribute('aria-pressed', 'false')
-      bold.disabled = true
+      bold.setAttribute('aria-disabled', 'true')
 
       const boldImage = document.createElement('img')
       boldImage.alt = 'Bold'
@@ -87,9 +93,15 @@ class HtmlEditor extends HTMLElement {
 
       const italic = document.createElement('button')
       italic.type = 'button'
-      italic.addEventListener('click', () => editor.chain().focus().toggleItalic().run())
+      italic.addEventListener('click', () => {
+        if (italic.getAttribute('aria-disabled') === 'true') {
+          return
+        }
+
+        editor.chain().focus().toggleItalic().run()
+      })
       italic.setAttribute('aria-pressed', 'false')
-      italic.disabled = true
+      italic.setAttribute('aria-disabled', 'true')
 
       const italicImage = document.createElement('img')
       italicImage.alt = 'Italic'
@@ -98,9 +110,15 @@ class HtmlEditor extends HTMLElement {
 
       const subscript = document.createElement('button')
       subscript.type = 'button'
-      subscript.addEventListener('click', () => editor.chain().focus().toggleSubscript().run())
+      subscript.addEventListener('click', () => {
+        if (subscript.getAttribute('aria-disabled') === 'true') {
+          return
+        }
+
+        editor.chain().focus().toggleSubscript().run()
+      })
       subscript.setAttribute('aria-pressed', 'false')
-      subscript.disabled = true
+      subscript.setAttribute('aria-disabled', 'true')
 
       const subscriptImage = document.createElement('img')
       subscriptImage.alt = 'Subscript'
@@ -109,9 +127,15 @@ class HtmlEditor extends HTMLElement {
 
       const superscript = document.createElement('button')
       superscript.type = 'button'
-      superscript.addEventListener('click', () => editor.chain().focus().toggleSuperscript().run())
+      superscript.addEventListener('click', () => {
+        if (superscript.getAttribute('aria-disabled') === 'true') {
+          return
+        }
+
+        editor.chain().focus().toggleSuperscript().run()
+      })
       superscript.setAttribute('aria-pressed', 'false')
-      superscript.disabled = true
+      superscript.setAttribute('aria-disabled', 'true')
 
       const superscriptImage = document.createElement('img')
       superscriptImage.alt = 'Superscript'
@@ -124,9 +148,15 @@ class HtmlEditor extends HTMLElement {
 
       const heading1 = document.createElement('button')
       heading1.type = 'button'
-      heading1.addEventListener('click', () => editor.chain().focus().toggleHeading({ level: 1 }).run())
+      heading1.addEventListener('click', () => {
+        if (heading1.getAttribute('aria-disabled') === 'true') {
+          return
+        }
+
+        editor.chain().focus().toggleHeading({ level: 1 }).run()
+      })
       heading1.setAttribute('aria-pressed', 'false')
-      heading1.disabled = true
+      heading1.setAttribute('aria-disabled', 'true')
 
       const heading1Image = document.createElement('img')
       heading1Image.alt = 'Heading level 1'
@@ -135,9 +165,15 @@ class HtmlEditor extends HTMLElement {
 
       const heading2 = document.createElement('button')
       heading2.type = 'button'
-      heading2.addEventListener('click', () => editor.chain().focus().toggleHeading({ level: 2 }).run())
+      heading2.addEventListener('click', () => {
+        if (heading2.getAttribute('aria-disabled') === 'true') {
+          return
+        }
+
+        editor.chain().focus().toggleHeading({ level: 2 }).run()
+      })
       heading2.setAttribute('aria-pressed', 'false')
-      heading2.disabled = true
+      heading2.setAttribute('aria-disabled', 'true')
 
       const heading2Image = document.createElement('img')
       heading2Image.alt = 'Heading level 2'
@@ -146,9 +182,15 @@ class HtmlEditor extends HTMLElement {
 
       const heading3 = document.createElement('button')
       heading3.type = 'button'
-      heading3.addEventListener('click', () => editor.chain().focus().toggleHeading({ level: 3 }).run())
+      heading3.addEventListener('click', () => {
+        if (heading3.getAttribute('aria-disabled') === 'true') {
+          return
+        }
+
+        editor.chain().focus().toggleHeading({ level: 3 }).run()
+      })
       heading3.setAttribute('aria-pressed', 'false')
-      heading3.disabled = true
+      heading3.setAttribute('aria-disabled', 'true')
 
       const heading3Image = document.createElement('img')
       heading3Image.alt = 'Heading level 3'
@@ -163,19 +205,25 @@ class HtmlEditor extends HTMLElement {
 
       editor.on('transaction', () => {
         bold.setAttribute('aria-pressed', editor.isActive('bold') ? 'true' : 'false')
-        bold.disabled = !editor.can().toggleBold()
+        bold.setAttribute('aria-disabled', editor.can().toggleBold() ? 'false' : 'true')
         italic.setAttribute('aria-pressed', editor.isActive('italic') ? 'true' : 'false')
-        italic.disabled = !editor.can().toggleItalic()
+        italic.setAttribute('aria-disabled', editor.can().toggleItalic() ? 'false' : 'true')
         subscript.setAttribute('aria-pressed', editor.isActive('subscript') ? 'true' : 'false')
-        subscript.disabled = !editor.can().toggleSubscript() && !editor.can().toggleSuperscript()
+        subscript.setAttribute(
+          'aria-disabled',
+          editor.can().toggleSubscript() || editor.can().toggleSuperscript() ? 'false' : 'true',
+        )
         superscript.setAttribute('aria-pressed', editor.isActive('superscript') ? 'true' : 'false')
-        superscript.disabled = !editor.can().toggleSuperscript() && !editor.can().toggleSubscript()
+        superscript.setAttribute(
+          'aria-disabled',
+          editor.can().toggleSuperscript() || editor.can().toggleSubscript() ? 'false' : 'true',
+        )
         heading1.setAttribute('aria-pressed', editor.isActive('heading', { level: 1 }) ? 'true' : 'false')
-        heading1.disabled = !editor.can().toggleHeading({ level: 1 })
+        heading1.setAttribute('aria-disabled', editor.can().toggleHeading({ level: 1 }) ? 'false' : 'true')
         heading2.setAttribute('aria-pressed', editor.isActive('heading', { level: 2 }) ? 'true' : 'false')
-        heading2.disabled = !editor.can().toggleHeading({ level: 2 })
+        heading2.setAttribute('aria-disabled', editor.can().toggleHeading({ level: 2 }) ? 'false' : 'true')
         heading3.setAttribute('aria-pressed', editor.isActive('heading', { level: 3 }) ? 'true' : 'false')
-        heading3.disabled = !editor.can().toggleHeading({ level: 3 })
+        heading3.setAttribute('aria-disabled', editor.can().toggleHeading({ level: 3 }) ? 'false' : 'true')
       })
 
       editor.options.element.prepend(toolbar)

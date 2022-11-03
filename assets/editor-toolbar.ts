@@ -91,7 +91,6 @@ class EditorToolbar extends HTMLElement {
     )
 
     buttons.forEach(button => {
-      button.removeAttribute('disabled')
       button.setAttribute('tabindex', '-1')
       button.addEventListener('click', () => setFocusTo(button))
     })

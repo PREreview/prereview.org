@@ -557,7 +557,7 @@ label {
     z-index: 1;
   }
 
-  &:disabled {
+  &:is([aria-disabled='true']) {
     cursor: not-allowed;
 
     & img {
@@ -565,7 +565,7 @@ label {
     }
   }
 
-  &:not(:disabled) {
+  &:not([aria-disabled='true']) {
     cursor: pointer;
   }
 
