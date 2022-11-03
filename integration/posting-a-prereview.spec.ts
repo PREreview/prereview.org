@@ -240,9 +240,9 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
   await expect(page.getByRole('button', { name: 'Heading level 1' })).toHaveAttribute('aria-pressed', 'false')
 
   await page.keyboard.type('Ipsum')
-  await page.getByRole('button', { name: 'Heading level 1' }).click()
+  await page.getByRole('button', { name: 'Heading level 3' }).click()
   await page.getByRole('button', { name: 'Heading level 2' }).click()
-  await expect(page.getByRole('button', { name: 'Heading level 1' })).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.getByRole('button', { name: 'Heading level 3' })).toHaveAttribute('aria-pressed', 'false')
   await expect(page.getByRole('button', { name: 'Heading level 2' })).toHaveAttribute('aria-pressed', 'true')
 
   await page.keyboard.press('Enter')
@@ -258,7 +258,7 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
   await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
 
   await page.keyboard.press('ArrowDown')
-  await expect(page.getByRole('button', { name: 'Heading level 2' })).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Heading level 3' })).toBeFocused()
 
   await page.keyboard.press('ArrowUp')
   await page.keyboard.press('ArrowRight')

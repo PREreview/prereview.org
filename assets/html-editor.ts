@@ -1,6 +1,7 @@
 import boldIcon from 'remixicon/icons/Editor/bold.svg'
 import heading1Icon from 'remixicon/icons/Editor/h-1.svg'
 import heading2Icon from 'remixicon/icons/Editor/h-2.svg'
+import heading3Icon from 'remixicon/icons/Editor/h-3.svg'
 import italicIcon from 'remixicon/icons/Editor/italic.svg'
 import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
 import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
@@ -143,9 +144,20 @@ class HtmlEditor extends HTMLElement {
       heading2Image.src = heading2Icon
       heading2.append(heading2Image)
 
+      const heading3 = document.createElement('button')
+      heading3.type = 'button'
+      heading3.addEventListener('click', () => editor.chain().focus().toggleHeading({ level: 3 }).run())
+      heading3.setAttribute('aria-pressed', 'false')
+      heading3.disabled = true
+
+      const heading3Image = document.createElement('img')
+      heading3Image.alt = 'Heading level 3'
+      heading3Image.src = heading3Icon
+      heading3.append(heading3Image)
+
       const styles = document.createElement('div')
       styles.setAttribute('role', 'group')
-      styles.append(heading1, heading2)
+      styles.append(heading1, heading2, heading3)
 
       toolbar.append(formatting, styles)
 
@@ -162,6 +174,8 @@ class HtmlEditor extends HTMLElement {
         heading1.disabled = !editor.can().toggleHeading({ level: 1 })
         heading2.setAttribute('aria-pressed', editor.isActive('heading', { level: 2 }) ? 'true' : 'false')
         heading2.disabled = !editor.can().toggleHeading({ level: 2 })
+        heading3.setAttribute('aria-pressed', editor.isActive('heading', { level: 3 }) ? 'true' : 'false')
+        heading3.disabled = !editor.can().toggleHeading({ level: 3 })
       })
 
       editor.options.element.prepend(toolbar)
