@@ -91,6 +91,8 @@ class HtmlEditor extends HTMLElement {
       const boldImage = document.createElement('img')
       boldImage.alt = 'Bold'
       boldImage.src = boldIcon
+      boldImage.width = 24
+      boldImage.height = 24
       bold.append(boldImage)
 
       const italic = document.createElement('button')
@@ -108,6 +110,8 @@ class HtmlEditor extends HTMLElement {
       const italicImage = document.createElement('img')
       italicImage.alt = 'Italic'
       italicImage.src = italicIcon
+      italicImage.width = 24
+      italicImage.height = 24
       italic.append(italicImage)
 
       const subscript = document.createElement('button')
@@ -125,6 +129,8 @@ class HtmlEditor extends HTMLElement {
       const subscriptImage = document.createElement('img')
       subscriptImage.alt = 'Subscript'
       subscriptImage.src = subscriptIcon
+      subscriptImage.width = 24
+      subscriptImage.height = 24
       subscript.append(subscriptImage)
 
       const superscript = document.createElement('button')
@@ -142,6 +148,8 @@ class HtmlEditor extends HTMLElement {
       const superscriptImage = document.createElement('img')
       superscriptImage.alt = 'Superscript'
       superscriptImage.src = superscriptIcon
+      superscriptImage.width = 24
+      superscriptImage.height = 24
       superscript.append(superscriptImage)
 
       const formatting = document.createElement('div')
@@ -163,6 +171,8 @@ class HtmlEditor extends HTMLElement {
       const heading1Image = document.createElement('img')
       heading1Image.alt = 'Heading level 1'
       heading1Image.src = heading1Icon
+      heading1Image.width = 24
+      heading1Image.height = 24
       heading1.append(heading1Image)
 
       const heading2 = document.createElement('button')
@@ -180,6 +190,8 @@ class HtmlEditor extends HTMLElement {
       const heading2Image = document.createElement('img')
       heading2Image.alt = 'Heading level 2'
       heading2Image.src = heading2Icon
+      heading2Image.width = 24
+      heading2Image.height = 24
       heading2.append(heading2Image)
 
       const heading3 = document.createElement('button')
@@ -197,6 +209,8 @@ class HtmlEditor extends HTMLElement {
       const heading3Image = document.createElement('img')
       heading3Image.alt = 'Heading level 3'
       heading3Image.src = heading3Icon
+      heading3Image.width = 24
+      heading3Image.height = 24
       heading3.append(heading3Image)
 
       const bulletedList = document.createElement('button')
@@ -214,6 +228,8 @@ class HtmlEditor extends HTMLElement {
       const bulletedListImage = document.createElement('img')
       bulletedListImage.alt = 'Bulleted list'
       bulletedListImage.src = bulletedListIcon
+      bulletedListImage.width = 24
+      bulletedListImage.height = 24
       bulletedList.append(bulletedListImage)
 
       const numberedList = document.createElement('button')
@@ -231,6 +247,8 @@ class HtmlEditor extends HTMLElement {
       const numberedListImage = document.createElement('img')
       numberedListImage.alt = 'Numbered list'
       numberedListImage.src = numberedListIcon
+      numberedListImage.width = 24
+      numberedListImage.height = 24
       numberedList.append(numberedListImage)
 
       const styles = document.createElement('div')
