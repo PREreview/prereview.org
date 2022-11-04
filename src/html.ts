@@ -34,6 +34,16 @@ export function sanitizeHtml(html: string): Html {
       a: ['href'],
     },
     transformTags: {
+      a: (tagName, attribs) => {
+        if (!/^[A-z][A-z0-9+\-.]*:/.test(attribs.href)) {
+          delete attribs.href
+        }
+
+        return {
+          tagName,
+          attribs,
+        }
+      },
       em: 'i',
       strong: 'b',
     },
