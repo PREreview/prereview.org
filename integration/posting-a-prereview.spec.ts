@@ -250,10 +250,43 @@ test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaS
 
   await expect(page.getByRole('button', { name: 'Heading level 2' })).toHaveAttribute('aria-pressed', 'false')
 
-  await page.keyboard.type('Dolor sit "amet", ')
+  await page.keyboard.type('Dolor sit ')
+  await page.keyboard.press('ArrowLeft')
+
+  await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-disabled', 'true')
+
+  await page.keyboard.press('Shift+ArrowLeft')
+
+  await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-disabled', 'false')
+
+  await page.keyboard.press('Shift+ArrowLeft')
+  await page.keyboard.press('Shift+ArrowLeft')
+
+  page.once('dialog', dialog => {
+    void dialog.accept('https://example.com')
+  })
+  await page.getByRole('button', { name: 'Link' }).click()
+
+  await page.keyboard.press('ArrowRight')
+  await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('ArrowRight')
+  await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'false')
+
+  await page.keyboard.press('ArrowLeft')
+  await page.keyboard.press('ArrowLeft')
+  await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'true')
+
+  await page.getByRole('button', { name: 'Link' }).click()
+
+  await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'false')
+
+  await page.keyboard.press('ArrowDown')
+  await page.keyboard.type('"amet", ')
 
   await page.keyboard.press('Shift+Tab')
-  await expect(page.getByRole('button', { name: 'Heading level 2' })).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Link' })).toBeFocused()
 
   await page.keyboard.press('ArrowUp')
   await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()

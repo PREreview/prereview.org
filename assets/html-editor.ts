@@ -3,6 +3,7 @@ import heading1Icon from 'remixicon/icons/Editor/h-1.svg'
 import heading2Icon from 'remixicon/icons/Editor/h-2.svg'
 import heading3Icon from 'remixicon/icons/Editor/h-3.svg'
 import italicIcon from 'remixicon/icons/Editor/italic.svg'
+import linkIcon from 'remixicon/icons/Editor/link.svg'
 import numberedListIcon from 'remixicon/icons/Editor/list-ordered.svg'
 import bulletedListIcon from 'remixicon/icons/Editor/list-unordered.svg'
 import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
@@ -156,6 +157,36 @@ class HtmlEditor extends HTMLElement {
       formatting.setAttribute('role', 'group')
       formatting.append(bold, italic, subscript, superscript)
 
+      const link = document.createElement('button')
+      link.type = 'button'
+      link.addEventListener('click', () => {
+        if (link.getAttribute('aria-disabled') === 'true') {
+          return
+        }
+
+        if (editor.isActive('link')) {
+          editor.chain().focus().extendMarkRange('link').unsetLink().run()
+          return
+        }
+
+        const href = window.prompt('Enter a URL')
+
+        if (!href) {
+          return
+        }
+
+        editor.chain().focus().extendMarkRange('link').setLink({ href }).run()
+      })
+      link.setAttribute('aria-pressed', 'false')
+      link.setAttribute('aria-disabled', 'true')
+
+      const linkImage = document.createElement('img')
+      linkImage.alt = 'link'
+      linkImage.src = linkIcon
+      linkImage.width = 24
+      linkImage.height = 24
+      link.append(linkImage)
+
       const heading1 = document.createElement('button')
       heading1.type = 'button'
       heading1.addEventListener('click', () => {
@@ -255,7 +286,7 @@ class HtmlEditor extends HTMLElement {
       styles.setAttribute('role', 'group')
       styles.append(heading1, heading2, heading3, bulletedList, numberedList)
 
-      toolbar.append(formatting, styles)
+      toolbar.append(formatting, link, styles)
 
       editor.on('transaction', () => {
         bold.setAttribute('aria-pressed', editor.isActive('bold') ? 'true' : 'false')
@@ -271,6 +302,13 @@ class HtmlEditor extends HTMLElement {
         superscript.setAttribute(
           'aria-disabled',
           editor.can().toggleSuperscript() || editor.can().toggleSubscript() ? 'false' : 'true',
+        )
+        link.setAttribute('aria-pressed', editor.isActive('link') ? 'true' : 'false')
+        link.setAttribute(
+          'aria-disabled',
+          editor.can().toggleLink({ href: '' }) && (!editor.state.selection.empty || editor.isActive('link'))
+            ? 'false'
+            : 'true',
         )
         heading1.setAttribute('aria-pressed', editor.isActive('heading', { level: 1 }) ? 'true' : 'false')
         heading1.setAttribute('aria-disabled', editor.can().toggleHeading({ level: 1 }) ? 'false' : 'true')
