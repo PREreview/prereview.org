@@ -2,7 +2,8 @@
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "es2021"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "types": []
   },
   "include": ["assets", "integration", "src", "test", "*.ts"]
 }
