@@ -1,6 +1,5 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import * as R from 'fp-ts/Reader'
 import { Reader } from 'fp-ts/Reader'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
@@ -8,7 +7,6 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { canUseEditorToolbar } from '../feature-flags'
 import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
@@ -43,16 +41,16 @@ export const writeReviewReview = flow(
 )
 
 const showReviewForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
-    reviewForm(preprint, { review: E.right(form.review) }, user),
+  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
+    reviewForm(preprint, { review: E.right(form.review) }),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showReviewErrorForm = (preprint: Preprint, user: User) =>
+const showReviewErrorForm = (preprint: Preprint) =>
   flow(
-    fromReaderK((form: ReviewForm) => reviewForm(preprint, form, user)),
+    fromReaderK((form: ReviewForm) => reviewForm(preprint, form)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -70,7 +68,7 @@ const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Prep
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
-    RM.orElseW(showReviewErrorForm(preprint, user)),
+    RM.orElseW(showReviewErrorForm(preprint)),
   )
 
 const ReviewFieldD = pipe(
@@ -84,78 +82,73 @@ type ReviewForm = {
   readonly review: E.Either<MissingE, NonEmptyString | undefined>
 }
 
-function reviewForm(preprint: Preprint, form: ReviewForm, user: User) {
+function reviewForm(preprint: Preprint, form: ReviewForm) {
   const error = hasAnError(form)
 
-  return pipe(
-    canUseEditorToolbar(user),
-    R.chainW(canUseEditorToolbar =>
-      page({
-        title: plainText`${error ? 'Error: ' : ''}Write your PREreview of “${preprint.title}”`,
-        content: html`
-          <nav>
-            <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
-          </nav>
+  return page({
+    title: plainText`${error ? 'Error: ' : ''}Write your PREreview of “${preprint.title}”`,
+    content: html`
+      <nav>
+        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
+      </nav>
 
-          <main>
-            <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" novalidate>
-              ${error
-                ? html`
-                    <error-summary aria-labelledby="error-summary-title" role="alert">
-                      <h2 id="error-summary-title">There is a problem</h2>
-                      <ul>
-                        ${E.isLeft(form.review)
-                          ? html`
-                              <li>
-                                <a href="#review">
-                                  ${match(form.review.left)
-                                    .with({ _tag: 'MissingE' }, () => 'Enter your PREreview')
-                                    .exhaustive()}
-                                </a>
-                              </li>
-                            `
-                          : ''}
-                      </ul>
-                    </error-summary>
-                  `
-                : ''}
+      <main>
+        <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" novalidate>
+          ${error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">There is a problem</h2>
+                  <ul>
+                    ${E.isLeft(form.review)
+                      ? html`
+                          <li>
+                            <a href="#review">
+                              ${match(form.review.left)
+                                .with({ _tag: 'MissingE' }, () => 'Enter your PREreview')
+                                .exhaustive()}
+                            </a>
+                          </li>
+                        `
+                      : ''}
+                  </ul>
+                </error-summary>
+              `
+            : ''}
 
-              <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
-                <h1><label id="review-label" for="review">Write your PREreview</label></h1>
+          <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
+            <h1><label id="review-label" for="review">Write your PREreview</label></h1>
 
-                ${E.isLeft(form.review)
-                  ? html`
-                      <div class="error-message" id="review-error">
-                        <span class="visually-hidden">Error:</span>
-                        ${match(form.review.left)
-                          .with({ _tag: 'MissingE' }, () => 'Enter your PREreview')
-                          .exhaustive()}
-                      </div>
-                    `
-                  : ''}
+            ${E.isLeft(form.review)
+              ? html`
+                  <div class="error-message" id="review-error">
+                    <span class="visually-hidden">Error:</span>
+                    ${match(form.review.left)
+                      .with({ _tag: 'MissingE' }, () => 'Enter your PREreview')
+                      .exhaustive()}
+                  </div>
+                `
+              : ''}
 
-                <html-editor ${canUseEditorToolbar ? rawHtml('toolbar') : ''}>
-                  <textarea
-                    id="review"
-                    name="review"
-                    rows="20"
-                    ${rawHtml(E.isLeft(form.review) ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
-                  >
+            <html-editor>
+              <textarea
+                id="review"
+                name="review"
+                rows="20"
+                ${rawHtml(E.isLeft(form.review) ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
+              >
 ${match(form.review)
-                      .with(E.right(P.select(P.string)), identity)
-                      .otherwise(() => '')}</textarea
-                  >
-                </html-editor>
-              </div>
+                  .with(E.right(P.select(P.string)), identity)
+                  .otherwise(() => '')}</textarea
+              >
+            </html-editor>
+          </div>
 
-              <button>Save and continue</button>
-            </form>
-          </main>
-        `,
-        js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
-      }),
-    ),
-  )
+          <button>Save and continue</button>
+        </form>
+      </main>
+    `,
+    js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
+  })
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85

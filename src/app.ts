@@ -164,7 +164,6 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          canUseEditorToolbar: () => true,
           getPreprintTitle: flip(getPreprintTitle)(env),
           postPrereview: flip(createRecordOnZenodo)(env),
         })),

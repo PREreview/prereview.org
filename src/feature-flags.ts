@@ -6,10 +6,3 @@ export interface CanAddAuthorsEnv {
 }
 
 export const canAddAuthors = (user: User) => R.asks(({ canAddAuthors }: CanAddAuthorsEnv) => canAddAuthors(user))
-
-export interface CanUseEditorToolbarEnv {
-  canUseEditorToolbar: (user: User) => boolean
-}
-
-export const canUseEditorToolbar = (user: User) =>
-  R.asks(({ canUseEditorToolbar }: CanUseEditorToolbarEnv) => canUseEditorToolbar(user))
