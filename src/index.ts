@@ -59,7 +59,6 @@ const env = pipe(
 
 const deps: AppEnv = {
   canAddAuthors: user => env.CAN_ADD_AUTHORS?.includes(user.orcid) === true,
-  canUseEditorToolbar: () => true,
   clock: SystemClock,
   fetch: fetch.defaults({
     cachePath: env.CACHE_PATH,

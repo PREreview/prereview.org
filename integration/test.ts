@@ -6,7 +6,7 @@ import { Server } from 'http'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { app } from '../src/app'
-import { CanAddAuthorsEnv, CanUseEditorToolbarEnv } from '../src/feature-flags'
+import { CanAddAuthorsEnv } from '../src/feature-flags'
 
 import Logger = L.Logger
 import LogEntry = L.LogEntry
@@ -15,7 +15,6 @@ export { expect } from '@playwright/test'
 
 type AppFixtures = {
   canAddAuthors: CanAddAuthorsEnv['canAddAuthors']
-  canUseEditorToolbar: CanUseEditorToolbarEnv['canUseEditorToolbar']
   fetch: FetchMockSandbox
   logger: Logger
   port: number
@@ -33,9 +32,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(`http://localhost:${address.port}`)
   },
   canAddAuthors: async ({}, use) => {
-    await use(() => false)
-  },
-  canUseEditorToolbar: async ({}, use) => {
     await use(() => false)
   },
   fetch: async ({}, use) => {
@@ -486,10 +482,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
-  server: async ({ canAddAuthors, canUseEditorToolbar, fetch, logger, port }, use) => {
+  server: async ({ canAddAuthors, fetch, logger, port }, use) => {
     const server = app({
       canAddAuthors,
-      canUseEditorToolbar,
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),
@@ -526,16 +521,6 @@ export const canAddAuthors: Fixtures<
   Pick<AppFixtures, 'canAddAuthors'>
 > = {
   canAddAuthors: async ({}, use) => {
-    await use(() => true)
-  },
-}
-
-export const canUseEditorToolbar: Fixtures<
-  Pick<AppFixtures, 'canUseEditorToolbar'>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canUseEditorToolbar'>
-> = {
-  canUseEditorToolbar: async ({}, use) => {
     await use(() => true)
   },
 }

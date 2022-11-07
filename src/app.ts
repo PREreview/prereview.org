@@ -13,7 +13,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
-import { CanAddAuthorsEnv, CanUseEditorToolbarEnv } from './feature-flags'
+import { CanAddAuthorsEnv } from './feature-flags'
 import { home } from './home'
 import { handleError } from './http-error'
 import {
@@ -63,7 +63,6 @@ import {
 } from './write-review'
 
 export type AppEnv = CanAddAuthorsEnv &
-  CanUseEditorToolbarEnv &
   FormStoreEnv &
   LegacyPrereviewApiEnv &
   L.LoggerEnv &
@@ -165,6 +164,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
+          canUseEditorToolbar: () => true,
           getPreprintTitle: flip(getPreprintTitle)(env),
           postPrereview: flip(createRecordOnZenodo)(env),
         })),

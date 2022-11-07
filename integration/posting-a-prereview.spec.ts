@@ -3,7 +3,7 @@ import { Status } from 'hyper-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
-import { canAddAuthors, canUseEditorToolbar, expect, test } from './test'
+import { canAddAuthors, expect, test } from './test'
 
 test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
@@ -193,7 +193,7 @@ test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canUseEditorToolbar)('can format a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
+test('can format a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   fetch.get(
     {
       url: 'http://zenodo.test/api/records/',
