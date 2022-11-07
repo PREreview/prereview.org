@@ -44,7 +44,6 @@ const EnvD = pipe(
   D.intersect(
     D.partial({
       CAN_ADD_AUTHORS: pipe(D.string, D.map(split(',')), D.compose(D.array(OrcidD))),
-      CAN_USE_EDITOR_TOOLBAR: pipe(D.string, D.map(split(',')), D.compose(D.array(OrcidD))),
       PHASE_TAG: D.string,
       PHASE_TEXT: HtmlD,
     }),
@@ -60,7 +59,7 @@ const env = pipe(
 
 const deps: AppEnv = {
   canAddAuthors: user => env.CAN_ADD_AUTHORS?.includes(user.orcid) === true,
-  canUseEditorToolbar: user => env.CAN_USE_EDITOR_TOOLBAR?.includes(user.orcid) === true,
+  canUseEditorToolbar: () => true,
   clock: SystemClock,
   fetch: fetch.defaults({
     cachePath: env.CACHE_PATH,
