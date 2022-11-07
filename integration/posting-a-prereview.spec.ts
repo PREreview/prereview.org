@@ -342,6 +342,9 @@ test('can format a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(page.getByRole('button', { name: 'Superscript' })).toBeFocused()
 
   await page.keyboard.press('Enter')
+  await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Superscript' })).toHaveAttribute('aria-pressed', 'false')
+
   await page.keyboard.press('Shift+Tab')
   await page.keyboard.press('ArrowUp')
   await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
