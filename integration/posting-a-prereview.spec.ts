@@ -271,7 +271,7 @@ test('can format a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page).toHaveScreenshot()
 
-  await page.keyboard.press('ArrowRight')
+  await page.keyboard.press('ArrowDown')
   await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'false')
 
   await page.keyboard.press('ArrowLeft')
