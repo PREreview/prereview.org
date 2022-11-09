@@ -137,8 +137,10 @@ function reviewForm(preprint: Preprint, form: ReviewForm) {
                 ${rawHtml(E.isLeft(form.review) ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
               >
 ${match(form.review)
+                  .with(E.right(undefined), () => '')
                   .with(E.right(P.select(P.string)), identity)
-                  .otherwise(() => '')}</textarea
+                  .with(E.left({ _tag: 'MissingE' }), () => '')
+                  .exhaustive()}</textarea
               >
             </html-editor>
           </div>
