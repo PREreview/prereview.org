@@ -34,12 +34,12 @@ export const writeReviewReview = flow(
             { method: 'POST', form: { alreadyWritten: P.optional(P.nullish), review: P.optional(P.nullish) } },
             handleAlreadyWrittenForm,
           )
-          .with({ method: 'POST' }, handleReviewForm)
+          .with({ method: 'POST' }, handleWriteReviewForm)
           .with(
             { form: { alreadyWritten: P.optional(P.nullish), review: P.optional(P.nullish) } },
             showAlreadyWrittenForm,
           )
-          .otherwise(showReviewForm),
+          .otherwise(showWriteReviewForm),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),
@@ -52,17 +52,17 @@ export const writeReviewReview = flow(
   ),
 )
 
-const showReviewForm = flow(
+const showWriteReviewForm = flow(
   fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
-    reviewForm(preprint, { review: E.right(form.review) }),
+    writeReviewForm(preprint, { review: E.right(form.review) }),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showReviewErrorForm = (preprint: Preprint) =>
+const showWriteReviewErrorForm = (preprint: Preprint) =>
   flow(
-    fromReaderK((form: ReviewForm) => reviewForm(preprint, form)),
+    fromReaderK((form: ReviewForm) => writeReviewForm(preprint, form)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -82,7 +82,7 @@ const showAlreadyWrittenErrorForm = (preprint: Preprint) =>
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
     RM.decodeBody(body => E.right({ review: pipe(ReviewFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
@@ -95,7 +95,7 @@ const handleReviewForm = ({ form, preprint, user }: { form: Form; preprint: Prep
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
-    RM.orElseW(showReviewErrorForm(preprint)),
+    RM.orElseW(showWriteReviewErrorForm(preprint)),
   )
 
 const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -136,7 +136,7 @@ type AlreadyWrittenForm = {
   readonly alreadyWritten: E.Either<MissingE, 'yes' | 'no' | undefined>
 }
 
-function reviewForm(preprint: Preprint, form: ReviewForm) {
+function writeReviewForm(preprint: Preprint, form: ReviewForm) {
   const error = hasAnError(form)
 
   return page({
