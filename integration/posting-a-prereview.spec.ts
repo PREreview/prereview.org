@@ -199,6 +199,43 @@ test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
+test('can paste an already-written PREreview', async ({ fetch, javaScriptEnabled, page }) => {
+  fetch.get(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { hits: [] } }) },
+  )
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.click('text="Write a PREreview"')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  await page.keyboard.press('Enter')
+
+  await page.check('text="Yes"')
+  await page.click('text="Continue"')
+
+  if (javaScriptEnabled) {
+    await page.locator('[contenteditable]').waitFor()
+  }
+
+  await expect(page.locator('h1')).toHaveText('Paste your PREreview')
+  await expect(page).toHaveScreenshot()
+})
+
 test('can format a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   fetch.get(
     {
@@ -1489,6 +1526,43 @@ test('have to enter a review', async ({ fetch, javaScriptEnabled, page }) => {
   await page.click('text="Enter your PREreview"')
 
   await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+  await expect(page).toHaveScreenshot()
+})
+
+test('have to paste a review', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.keyboard.press('Enter')
+
+  await page.check('text="Yes"')
+  await page.click('text="Continue"')
+
+  await page.click('text="Save and continue"')
+
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
+  await expect(page.locator('role=textbox[name="Paste your PREreview"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Paste your PREreview"')
+
+  await expect(page.locator('role=textbox[name="Paste your PREreview"]')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
 

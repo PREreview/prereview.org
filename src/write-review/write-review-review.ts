@@ -34,11 +34,20 @@ export const writeReviewReview = flow(
             { method: 'POST', form: { alreadyWritten: P.optional(P.nullish), review: P.optional(P.nullish) } },
             handleAlreadyWrittenForm,
           )
+          .with(
+            { method: 'POST', form: { alreadyWritten: 'yes', review: P.optional(P.nullish) } },
+            handlePasteReviewForm,
+          )
           .with({ method: 'POST' }, handleWriteReviewForm)
           .with(
             { form: { alreadyWritten: P.optional(P.nullish), review: P.optional(P.nullish) } },
             showAlreadyWrittenForm,
           )
+          .with(
+            { form: { alreadyWritten: P.optional(P.nullish), review: P.optional(P.nullish) } },
+            showAlreadyWrittenForm,
+          )
+          .with({ form: { alreadyWritten: 'yes', review: P.optional(P.nullish) } }, showPasteReviewForm)
           .otherwise(showWriteReviewForm),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
@@ -63,6 +72,21 @@ const showWriteReviewForm = flow(
 const showWriteReviewErrorForm = (preprint: Preprint) =>
   flow(
     fromReaderK((form: ReviewForm) => writeReviewForm(preprint, form)),
+    RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
+
+const showPasteReviewForm = flow(
+  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
+    pasteReviewForm(preprint, { review: E.right(form.review) }),
+  ),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+const showPasteReviewErrorForm = (preprint: Preprint) =>
+  flow(
+    fromReaderK((form: ReviewForm) => pasteReviewForm(preprint, form)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -96,6 +120,22 @@ const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
     RM.orElseW(showWriteReviewErrorForm(preprint)),
+  )
+
+const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  pipe(
+    RM.decodeBody(body => E.right({ review: pipe(ReviewFieldD.decode(body), E.mapLeft(missingE)) })),
+    RM.chainEitherK(fields =>
+      pipe(
+        E.Do,
+        E.apS('review', fields.review),
+        E.mapLeft(() => fields),
+      ),
+    ),
+    RM.map(updateForm(form)),
+    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
+    RM.orElseW(showPasteReviewErrorForm(preprint)),
   )
 
 const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -178,6 +218,77 @@ function writeReviewForm(preprint: Preprint, form: ReviewForm) {
                     <span class="visually-hidden">Error:</span>
                     ${match(form.review.left)
                       .with({ _tag: 'MissingE' }, () => 'Enter your PREreview')
+                      .exhaustive()}
+                  </div>
+                `
+              : ''}
+
+            <html-editor>
+              <textarea
+                id="review"
+                name="review"
+                rows="20"
+                ${rawHtml(E.isLeft(form.review) ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
+              >
+${match(form.review)
+                  .with(E.right(undefined), () => '')
+                  .with(E.right(P.select(P.string)), identity)
+                  .with(E.left({ _tag: 'MissingE' }), () => '')
+                  .exhaustive()}</textarea
+              >
+            </html-editor>
+          </div>
+
+          <button>Save and continue</button>
+        </form>
+      </main>
+    `,
+    js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
+  })
+}
+
+function pasteReviewForm(preprint: Preprint, form: ReviewForm) {
+  const error = hasAnError(form)
+
+  return page({
+    title: plainText`${error ? 'Error: ' : ''}Paste your PREreview of “${preprint.title}”`,
+    content: html`
+      <nav>
+        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
+      </nav>
+
+      <main>
+        <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" novalidate>
+          ${error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">There is a problem</h2>
+                  <ul>
+                    ${E.isLeft(form.review)
+                      ? html`
+                          <li>
+                            <a href="#review">
+                              ${match(form.review.left)
+                                .with({ _tag: 'MissingE' }, () => 'Paste your PREreview')
+                                .exhaustive()}
+                            </a>
+                          </li>
+                        `
+                      : ''}
+                  </ul>
+                </error-summary>
+              `
+            : ''}
+
+          <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
+            <h1><label id="review-label" for="review">Paste your PREreview</label></h1>
+
+            ${E.isLeft(form.review)
+              ? html`
+                  <div class="error-message" id="review-error">
+                    <span class="visually-hidden">Error:</span>
+                    ${match(form.review.left)
+                      .with({ _tag: 'MissingE' }, () => 'Paste your PREreview')
                       .exhaustive()}
                   </div>
                 `
