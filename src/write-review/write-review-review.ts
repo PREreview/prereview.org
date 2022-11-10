@@ -283,6 +283,10 @@ function pasteReviewForm(preprint: Preprint, form: ReviewForm) {
           <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
             <h1><label id="review-label" for="review">Paste your PREreview</label></h1>
 
+            <div id="review-tip" role="note">
+              Copy your PREreview and paste it here. We’ll do our best to preserve how it looks.
+            </div>
+
             ${E.isLeft(form.review)
               ? html`
                   <div class="error-message" id="review-error">
@@ -299,6 +303,7 @@ function pasteReviewForm(preprint: Preprint, form: ReviewForm) {
                 id="review"
                 name="review"
                 rows="20"
+                aria-describedby="review-tip"
                 ${rawHtml(E.isLeft(form.review) ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
               >
 ${match(form.review)
