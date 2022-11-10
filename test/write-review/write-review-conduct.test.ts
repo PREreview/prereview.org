@@ -30,6 +30,7 @@ describe('writeReviewConduct', () => {
       fc.user(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -102,6 +103,7 @@ describe('writeReviewConduct', () => {
       fc
         .record(
           {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
@@ -165,6 +167,7 @@ describe('writeReviewConduct', () => {
       fc.user(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -219,6 +222,7 @@ describe('writeReviewConduct', () => {
       fc.user(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -308,6 +312,7 @@ describe('writeReviewConduct', () => {
       fc.user(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),

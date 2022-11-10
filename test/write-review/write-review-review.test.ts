@@ -29,29 +29,32 @@ describe('writeReviewReview', () => {
         ),
       ),
       fc.user(),
-      fc.record(
-        {
-          competingInterests: fc.constantFrom('yes', 'no'),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          moreAuthors: fc.constantFrom('yes', 'no'),
-          otherAuthors: fc.array(
-            fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
-          ),
-          persona: fc.constantFrom('public', 'pseudonym'),
-          review: fc.nonEmptyString(),
-        },
-        {
-          requiredKeys: [
-            'competingInterests',
-            'competingInterestsDetails',
-            'conduct',
-            'moreAuthors',
-            'otherAuthors',
-            'persona',
-          ],
-        },
-      ),
+      fc
+        .record(
+          {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
+            competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
+            conduct: fc.constant('yes'),
+            moreAuthors: fc.constantFrom('yes', 'no'),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
+            persona: fc.constantFrom('public', 'pseudonym'),
+            review: fc.nonEmptyString(),
+          },
+          {
+            requiredKeys: [
+              'competingInterests',
+              'competingInterestsDetails',
+              'conduct',
+              'moreAuthors',
+              'otherAuthors',
+              'persona',
+            ],
+          },
+        )
+        .filter(newReview => 'alreadyWritten' in newReview || 'review' in newReview),
     ],
     async (preprintDoi, preprintTitle, [review, connection, sessionId, secret], user, newReview) => {
       const sessionStore = new Keyv()
@@ -108,6 +111,7 @@ describe('writeReviewReview', () => {
       fc
         .record(
           {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
@@ -120,7 +124,7 @@ describe('writeReviewReview', () => {
           },
           { withDeletedKeys: true },
         )
-        .filter(newReview => Object.keys(newReview).length < 5),
+        .filter(newReview => 'alreadyWritten' in newReview || 'review' in newReview),
     ],
     async (preprintDoi, preprintTitle, [review, connection, sessionId, secret], user, newReview) => {
       const sessionStore = new Keyv()
@@ -176,6 +180,7 @@ describe('writeReviewReview', () => {
       fc.user(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -234,6 +239,7 @@ describe('writeReviewReview', () => {
       fc.user(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -330,6 +336,68 @@ describe('writeReviewReview', () => {
         ),
       ),
       fc.user(),
+      fc
+        .record(
+          {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
+            competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
+            conduct: fc.constant('yes'),
+            moreAuthors: fc.constantFrom('yes', 'no'),
+            otherAuthors: fc.array(
+              fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
+            ),
+            persona: fc.constantFrom('public', 'pseudonym'),
+            review: fc.nonEmptyString(),
+          },
+          { withDeletedKeys: true },
+        )
+        .filter(newReview => 'alreadyWritten' in newReview || 'review' in newReview),
+    ],
+    async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, UserC.encode(user))
+      const formStore = new Keyv()
+      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      const getPreprintTitle = () => TE.right(preprintTitle)
+
+      const actual = await runMiddleware(
+        _.writeReviewReview(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          secret,
+          sessionStore,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.BadRequest },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
+
+  fc.test(
+    'without saying if you have already written the PREreview',
+    [
+      fc.preprintDoi(),
+      fc.record({ title: fc.html(), language: fc.languageCode() }),
+      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+        fc.tuple(
+          fc.connection({
+            body: fc.record({ alreadyWritten: fc.lorem() }, { withDeletedKeys: true }),
+            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+            method: fc.constant('POST'),
+          }),
+          fc.constant(sessionId),
+          fc.constant(secret),
+        ),
+      ),
+      fc.user(),
       fc.record(
         {
           competingInterests: fc.constantFrom('yes', 'no'),
@@ -340,7 +408,6 @@ describe('writeReviewReview', () => {
             fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
           ),
           persona: fc.constantFrom('public', 'pseudonym'),
-          review: fc.nonEmptyString(),
         },
         { withDeletedKeys: true },
       ),

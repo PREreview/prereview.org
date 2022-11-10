@@ -87,6 +87,12 @@ test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Continue"')
+
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
     await page.focus('role=textbox[name="Write your PREreview"]')
@@ -218,6 +224,9 @@ test('can format a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   await page.fill('[type=email]', 'test@example.com')
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
 
   await page.locator('role=textbox[name="Write your PREreview"]').waitFor()
   await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
@@ -462,6 +471,8 @@ test('can post a PREreview with more authors', async ({ fetch, javaScriptEnabled
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+  await page.click('text="Continue"')
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
@@ -618,6 +629,8 @@ test.extend(canAddAuthors)('can add other authors to the PREreview', async ({ fe
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+  await page.click('text="Continue"')
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
@@ -812,6 +825,8 @@ test('can post a PREreview with competing interests', async ({ fetch, javaScript
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+  await page.click('text="Continue"')
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
@@ -964,6 +979,8 @@ test('can post a PREreview using a pseudonym', async ({ fetch, javaScriptEnabled
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+  await page.click('text="Continue"')
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
@@ -1053,6 +1070,8 @@ test('can change the review after previewing', async ({ fetch, javaScriptEnabled
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+  await page.click('text="Continue"')
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
@@ -1108,10 +1127,11 @@ test('can change the name after previewing', async ({ fetch, javaScriptEnabled, 
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+  await page.click('text="Continue"')
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
-
   await page.fill(
     'role=textbox[name="Write your PREreview"]',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
@@ -1154,6 +1174,8 @@ test.extend(canAddAuthors)('can change the authors after previewing', async ({ f
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+  await page.click('text="Continue"')
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
@@ -1210,6 +1232,8 @@ test('can go back through the form', async ({ fetch, javaScriptEnabled, page }) 
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+  await page.click('text="Continue"')
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
@@ -1276,6 +1300,8 @@ test.extend(canAddAuthors)('see existing values when going back a step', async (
   await page.fill('[type=password]', 'password')
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+  await page.click('text="Continue"')
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
@@ -1389,7 +1415,44 @@ test("aren't told about ORCID when already logged in", async ({ fetch, page }) =
   await page.click('text="Write a PREreview"')
 
   await expect(page.locator('main')).not.toContainText('ORCID')
-  await expect(page.locator('h1')).toContainText('Write your PREreview')
+  await expect(page.locator('h1')).toHaveText('Have you already written your PREreview?')
+})
+
+test('have to say if you have already written your PREreview', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.keyboard.press('Enter')
+
+  await page.click('text="Continue"')
+
+  if (javaScriptEnabled) {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+  } else {
+    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+  }
+  await expect(page.locator('role=group[name="Have you already written your PREreview?"]')).toHaveAttribute(
+    'aria-invalid',
+    'true',
+  )
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Select yes if you have already written your PREreview"')
+
+  await expect(page.locator('role=radio[name="No"]')).toBeFocused()
+  await expect(page).toHaveScreenshot()
 })
 
 test('have to enter a review', async ({ fetch, javaScriptEnabled, page }) => {
@@ -1409,6 +1472,9 @@ test('have to enter a review', async ({ fetch, javaScriptEnabled, page }) => {
     },
   })
   await page.keyboard.press('Enter')
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
 
   await page.click('text="Save and continue"')
 
@@ -1442,6 +1508,9 @@ test('have to choose a name', async ({ fetch, javaScriptEnabled, page }) => {
     },
   })
   await page.keyboard.press('Enter')
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
@@ -1487,6 +1556,9 @@ test('have to say if there are more authors', async ({ fetch, javaScriptEnabled,
     },
   })
   await page.keyboard.press('Enter')
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
@@ -1537,6 +1609,9 @@ test.extend(canAddAuthors)("have to add the author's name", async ({ fetch, java
   })
   await page.keyboard.press('Enter')
 
+  await page.check('text="No"')
+  await page.click('text="Continue"')
+
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
@@ -1584,6 +1659,9 @@ test.extend(canAddAuthors)('have to add a valid ORCID iD to an author', async ({
     },
   })
   await page.keyboard.press('Enter')
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
@@ -1636,6 +1714,9 @@ test.extend(canAddAuthors)("have to add the changed author's name", async ({ fet
     },
   })
   await page.keyboard.press('Enter')
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
@@ -1690,6 +1771,9 @@ test.extend(canAddAuthors)(
       },
     })
     await page.keyboard.press('Enter')
+
+    await page.check('text="No"')
+    await page.click('text="Continue"')
 
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
@@ -1748,6 +1832,9 @@ test.extend(canAddAuthors)(
     })
     await page.keyboard.press('Enter')
 
+    await page.check('text="No"')
+    await page.click('text="Continue"')
+
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
@@ -1802,6 +1889,9 @@ test.extend(canAddAuthors)(
     })
     await page.keyboard.press('Enter')
 
+    await page.check('text="No"')
+    await page.click('text="Continue"')
+
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
@@ -1855,6 +1945,9 @@ test('have to declare any competing interests', async ({ fetch, javaScriptEnable
     },
   })
   await page.keyboard.press('Enter')
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
@@ -1921,6 +2014,9 @@ test('have to agree to the Code of Conduct', async ({ fetch, javaScriptEnabled, 
     },
   })
   await page.keyboard.press('Enter')
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()

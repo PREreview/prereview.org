@@ -86,6 +86,7 @@ export const showNextForm = (preprint: PreprintId['doi']) => (form: Form) =>
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
 const FormC = C.partial({
+  alreadyWritten: C.literal('yes', 'no'),
   review: NonEmptyStringC,
   persona: C.literal('public', 'pseudonym'),
   moreAuthors: C.literal('yes', 'no'),

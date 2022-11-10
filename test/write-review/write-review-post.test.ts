@@ -27,6 +27,7 @@ describe('writeReviewPost', () => {
         ),
       ),
       fc.record({
+        alreadyWritten: fc.constantFrom('yes', 'no'),
         competingInterests: fc.constantFrom('yes', 'no'),
         competingInterestsDetails: fc.lorem(),
         conduct: fc.constant('yes'),
@@ -100,6 +101,7 @@ describe('writeReviewPost', () => {
       fc
         .record(
           {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.oneof(fc.constant('yes'), fc.string()),
@@ -160,6 +162,7 @@ describe('writeReviewPost', () => {
       ),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -222,6 +225,7 @@ describe('writeReviewPost', () => {
       ),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -328,6 +332,7 @@ describe('writeReviewPost', () => {
       ),
       fc.oneof(fc.fetchResponse({ status: fc.integer({ min: 400 }) }), fc.error()),
       fc.record({
+        alreadyWritten: fc.constantFrom('yes', 'no'),
         competingInterests: fc.constantFrom('yes', 'no'),
         competingInterestsDetails: fc.lorem(),
         conduct: fc.constant('yes'),

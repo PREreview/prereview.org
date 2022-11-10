@@ -32,6 +32,7 @@ describe('writeReviewRemoveAuthor', () => {
       fc
         .record(
           {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
@@ -111,6 +112,7 @@ describe('writeReviewRemoveAuthor', () => {
       fc
         .record(
           {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
@@ -188,6 +190,7 @@ describe('writeReviewRemoveAuthor', () => {
       fc.user(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -259,6 +262,7 @@ describe('writeReviewRemoveAuthor', () => {
       fc
         .record(
           {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
@@ -325,6 +329,7 @@ describe('writeReviewRemoveAuthor', () => {
       fc
         .record(
           {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
@@ -389,6 +394,7 @@ describe('writeReviewRemoveAuthor', () => {
       fc.boolean(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -453,6 +459,7 @@ describe('writeReviewRemoveAuthor', () => {
       fc.boolean(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -517,6 +524,7 @@ describe('writeReviewRemoveAuthor', () => {
       fc.user(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -671,6 +679,7 @@ describe('writeReviewRemoveAuthor', () => {
       fc
         .record(
           {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),

@@ -31,6 +31,7 @@ describe('writeReviewAuthors', () => {
         fc.user(),
         fc.boolean(),
         fc.record({
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -98,6 +99,7 @@ describe('writeReviewAuthors', () => {
         fc.boolean(),
         fc.record(
           {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
@@ -179,6 +181,7 @@ describe('writeReviewAuthors', () => {
         fc.boolean(),
         fc.record(
           {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
@@ -257,6 +260,7 @@ describe('writeReviewAuthors', () => {
         fc
           .record(
             {
+              alreadyWritten: fc.constantFrom('yes', 'no'),
               competingInterests: fc.constantFrom('yes', 'no'),
               competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
@@ -328,6 +332,7 @@ describe('writeReviewAuthors', () => {
       fc.boolean(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -389,6 +394,7 @@ describe('writeReviewAuthors', () => {
       fc.boolean(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
@@ -496,6 +502,7 @@ describe('writeReviewAuthors', () => {
       fc.boolean(),
       fc.record(
         {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
