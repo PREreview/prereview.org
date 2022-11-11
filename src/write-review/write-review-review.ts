@@ -71,13 +71,13 @@ const showWriteReviewForm = flow(
 
 const showWriteReviewErrorForm = (preprint: Preprint) =>
   flow(
-    fromReaderK((form: ReviewForm) => writeReviewForm(preprint, form)),
+    fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
 const showPasteReviewForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
+  fromReaderK(({ form, preprint }: { form: Form & Partial<{ review: undefined }>; preprint: Preprint }) =>
     pasteReviewForm(preprint, { review: E.right(form.review) }),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
@@ -86,7 +86,7 @@ const showPasteReviewForm = flow(
 
 const showPasteReviewErrorForm = (preprint: Preprint) =>
   flow(
-    fromReaderK((form: ReviewForm) => pasteReviewForm(preprint, form)),
+    fromReaderK((form: PasteReviewForm) => pasteReviewForm(preprint, form)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -124,12 +124,14 @@ const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
 
 const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(body => E.right({ review: pipe(ReviewFieldD.decode(body), E.mapLeft(missingE)) })),
-    RM.chainEitherK(fields =>
-      pipe(
-        E.Do,
-        E.apS('review', fields.review),
-        E.mapLeft(() => fields),
+    RM.decodeBody(
+      flow(
+        ReviewFieldD.decode,
+        E.mapLeft(missingE),
+        E.bimap(
+          review => ({ review: E.left(review) }),
+          review => ({ review }),
+        ),
       ),
     ),
     RM.map(updateForm(form)),
@@ -161,8 +163,12 @@ const ReviewFieldD = pipe(
   D.map(get('review')),
 )
 
-type ReviewForm = {
+type WriteReviewForm = {
   readonly review: E.Either<MissingE, NonEmptyString | undefined>
+}
+
+type PasteReviewForm = {
+  readonly review: E.Either<MissingE, undefined>
 }
 
 const AlreadyWrittenFieldD = pipe(
@@ -176,7 +182,7 @@ type AlreadyWrittenForm = {
   readonly alreadyWritten: E.Either<MissingE, 'yes' | 'no' | undefined>
 }
 
-function writeReviewForm(preprint: Preprint, form: ReviewForm) {
+function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
   const error = hasAnError(form)
 
   return page({
@@ -247,7 +253,7 @@ ${match(form.review)
   })
 }
 
-function pasteReviewForm(preprint: Preprint, form: ReviewForm) {
+function pasteReviewForm(preprint: Preprint, form: PasteReviewForm) {
   const error = hasAnError(form)
 
   return page({
@@ -308,7 +314,6 @@ function pasteReviewForm(preprint: Preprint, form: ReviewForm) {
               >
 ${match(form.review)
                   .with(E.right(undefined), () => '')
-                  .with(E.right(P.select(P.string)), identity)
                   .with(E.left({ _tag: 'MissingE' }), () => '')
                   .exhaustive()}</textarea
               >
