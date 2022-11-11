@@ -274,12 +274,10 @@ test('can format a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
     return
   }
 
-  await page.locator('[contenteditable]').waitFor()
-  await page.focus('role=textbox[name="Write your PREreview"]')
-
   await page.getByRole('button', { name: 'Heading level 1' }).click()
   await expect(page.getByRole('button', { name: 'Heading level 1' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-disabled', 'true')
+  await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
   await page.keyboard.type('Lorem')
   await expect(page).toHaveScreenshot()
   await page.keyboard.press('Enter')
