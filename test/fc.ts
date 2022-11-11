@@ -7,14 +7,13 @@ import * as F from 'fetch-fp-ts'
 import { isNonEmpty } from 'fp-ts/Array'
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray'
 import { Refinement } from 'fp-ts/Refinement'
-import { escape } from 'html-escaper'
 import * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
 import ISO6391, { LanguageCode } from 'iso-639-1'
 import { Headers as FetchHeaders } from 'node-fetch'
 import { Body, Headers, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
 import { Orcid, isOrcid } from 'orcid-id-ts'
-import { Html, rawHtml, sanitizeHtml } from '../src/html'
+import { Html, sanitizeHtml, html as toHtml } from '../src/html'
 import { Preprint } from '../src/preprint'
 import {
   AfricarxivPreprintId,
@@ -48,7 +47,7 @@ export const {
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
 
-export const html = (): fc.Arbitrary<Html> => fc.string().map(escape).map(rawHtml)
+export const html = (): fc.Arbitrary<Html> => fc.lorem().map(text => toHtml`<p>${text}</p>`)
 
 export const sanitisedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeHtml)
 
