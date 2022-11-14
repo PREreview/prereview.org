@@ -1415,7 +1415,7 @@ test.extend(canAddAuthors)('see existing values when going back a step', async (
     )
   } else {
     await expect(page.locator('text="Write your PREreview"')).toHaveValue(
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>\n',
     )
   }
 })

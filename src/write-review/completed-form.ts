@@ -1,6 +1,7 @@
 import { pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
+import { RawHtmlC } from '../html'
 import { NonEmptyStringC } from '../string'
 
 export type CompletedForm = D.TypeOf<typeof CompletedFormD>
@@ -12,7 +13,7 @@ export const CompletedFormD = pipe(
     conduct: D.literal('yes'),
     moreAuthors: D.literal('yes', 'no'),
     persona: D.literal('public', 'pseudonym'),
-    review: NonEmptyStringC,
+    review: RawHtmlC,
   }),
   D.intersect(
     D.sum('moreAuthors')({

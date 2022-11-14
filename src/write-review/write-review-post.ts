@@ -9,12 +9,11 @@ import { Status, StatusOpen } from 'hyper-ts'
 import { endSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import markdownIt from 'markdown-it'
 import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { canAddAuthors } from '../feature-flags'
-import { Html, html, plainText, sanitizeHtml, sendHtml } from '../html'
+import { Html, html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import {
@@ -140,7 +139,7 @@ const showFailureMessage = flow(
 )
 
 function renderReview(form: CompletedForm) {
-  return html`${sanitizeHtml(markdownIt({ html: true }).render(form.review))}
+  return html`${form.review}
 
     <h3>Competing interests</h3>
 

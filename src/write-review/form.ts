@@ -11,6 +11,7 @@ import * as D from 'io-ts/Decoder'
 import Keyv from 'keyv'
 import { Orcid, isOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
+import { RawHtmlC } from '../html'
 import { seeOther } from '../middleware'
 import { PreprintId } from '../preprint-id'
 import {
@@ -87,7 +88,7 @@ const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
 const FormC = C.partial({
   alreadyWritten: C.literal('yes', 'no'),
-  review: NonEmptyStringC,
+  review: RawHtmlC,
   persona: C.literal('public', 'pseudonym'),
   moreAuthors: C.literal('yes', 'no'),
   otherAuthors: pipe(

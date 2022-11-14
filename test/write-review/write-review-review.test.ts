@@ -16,7 +16,7 @@ describe('writeReviewReview', () => {
     [
       fc.preprintDoi(),
       fc.record({ title: fc.html(), language: fc.languageCode() }),
-      fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
+      fc.tuple(fc.html().map(String), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
         fc.tuple(
           fc.constant(review),
           fc.connection({
@@ -95,7 +95,7 @@ describe('writeReviewReview', () => {
     [
       fc.preprintDoi(),
       fc.record({ title: fc.html(), language: fc.languageCode() }),
-      fc.tuple(fc.lorem(), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
+      fc.tuple(fc.html().map(String), fc.uuid(), fc.string()).chain(([review, sessionId, secret]) =>
         fc.tuple(
           fc.constant(review),
           fc.connection({

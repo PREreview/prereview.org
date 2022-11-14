@@ -2,6 +2,8 @@ import { Refinement } from 'fp-ts/Refinement'
 import { pipe } from 'fp-ts/function'
 import { HeadersOpen, MediaType, ResponseEnded } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
+import * as C from 'io-ts/Codec'
+import * as D from 'io-ts/Decoder'
 import nanohtml from 'nanohtml'
 import raw from 'nanohtml/raw'
 import sanitize from 'sanitize-html'
@@ -76,3 +78,17 @@ export function sendHtml(html: Html): M.Middleware<HeadersOpen, ResponseEnded, n
     M.ichain(() => M.send(html.toString())),
   )
 }
+
+export const RawHtmlC = C.make(
+  pipe(
+    D.union(
+      pipe(D.string),
+      pipe(
+        D.id(),
+        D.parse(s => (s instanceof String ? D.success(s) : D.failure(s, 'String'))),
+      ),
+    ),
+    D.map(html => rawHtml(html as string)),
+  ),
+  { encode: String },
+)

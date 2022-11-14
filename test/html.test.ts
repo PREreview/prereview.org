@@ -1,5 +1,8 @@
 import { describe, expect, test } from '@jest/globals'
+import * as E from 'fp-ts/Either'
+import * as D from 'io-ts/Decoder'
 import * as _ from '../src/html'
+import * as fc from './fc'
 
 describe('html', () => {
   test.each([
@@ -334,5 +337,37 @@ describe('plainText', () => {
     ]}${1}i j`
 
     expect(actual.toString()).toBe('a bcd  e&lt;p&gt;f&lt;/p&gt;g  h1i j')
+  })
+})
+
+describe('RawHtmlC', () => {
+  describe('decode', () => {
+    fc.test('with a string', [fc.string()], string => {
+      const actual = _.RawHtmlC.decode(string)
+
+      expect(actual).toStrictEqual(D.success(_.rawHtml(string)))
+    })
+
+    fc.test('with HTML', [fc.html()], html => {
+      const actual = _.RawHtmlC.decode(html)
+
+      expect(actual).toStrictEqual(D.success(html))
+    })
+
+    fc.test(
+      'with a non-string',
+      [fc.anything().filter(value => typeof value !== 'string' && !(value instanceof String))],
+      value => {
+        const actual = _.RawHtmlC.decode(value)
+
+        expect(actual).toStrictEqual(E.left(expect.anything()))
+      },
+    )
+  })
+
+  fc.test('encode', [fc.html()], html => {
+    const actual = _.RawHtmlC.encode(html)
+
+    expect(actual).toStrictEqual(html.toString())
   })
 })

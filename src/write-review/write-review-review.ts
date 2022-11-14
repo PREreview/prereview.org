@@ -5,14 +5,15 @@ import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import markdownIt from 'markdown-it'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { MissingE, hasAnError, missingE } from '../form'
-import { html, plainText, rawHtml, sendHtml } from '../html'
+import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { preprintMatch, writeReviewMatch, writeReviewReviewMatch } from '../routes'
-import { NonEmptyString, NonEmptyStringC } from '../string'
+import { NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
@@ -160,11 +161,11 @@ const ReviewFieldD = pipe(
   D.struct({
     review: NonEmptyStringC,
   }),
-  D.map(get('review')),
+  D.map(({ review }) => sanitizeHtml(markdownIt({ html: true }).render(review))),
 )
 
 type WriteReviewForm = {
-  readonly review: E.Either<MissingE, NonEmptyString | undefined>
+  readonly review: E.Either<MissingE, Html | undefined>
 }
 
 type PasteReviewForm = {
@@ -238,7 +239,7 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
               >
 ${match(form.review)
                   .with(E.right(undefined), () => '')
-                  .with(E.right(P.select(P.string)), identity)
+                  .with(E.right(P.select(P.not(undefined))), identity)
                   .with(E.left({ _tag: 'MissingE' }), () => '')
                   .exhaustive()}</textarea
               >
