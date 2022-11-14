@@ -741,6 +741,12 @@ html-editor {
     block-size: 100vh;
     resize: none;
   }
+
+  @nest details + & {
+    & > :first-child {
+      margin-block-start: var(--space-m-l);
+    }
+  }
 }
 
 :--textarea {
