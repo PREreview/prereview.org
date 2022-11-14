@@ -33,6 +33,8 @@ class HtmlEditor extends HTMLElement {
       throw new Error('No text area')
     }
 
+    const input = textArea.nextElementSibling instanceof HTMLTextAreaElement ? textArea.nextElementSibling : textArea
+
     const editor = new Editor({
       editorProps: {
         attributes: {
@@ -68,7 +70,7 @@ class HtmlEditor extends HTMLElement {
         }),
         Typography,
       ],
-      content: new DOMParser().parseFromString(textArea.innerHTML, 'text/html').documentElement.textContent,
+      content: new DOMParser().parseFromString(input.innerHTML, 'text/html').documentElement.textContent,
     })
 
     const toolbar = document.createElement('editor-toolbar')

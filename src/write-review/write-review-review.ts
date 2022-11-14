@@ -1,13 +1,14 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
-import { flow, identity, pipe } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
+import TurndownService from 'turndown'
 import { MissingE, hasAnError, missingE } from '../form'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
@@ -17,6 +18,9 @@ import { NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
+
+const turndown = new TurndownService({ emDelimiter: '*', headingStyle: 'atx' })
+turndown.keep(['sub', 'sup'])
 
 export const writeReviewReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -231,18 +235,28 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
               : ''}
 
             <html-editor>
-              <textarea
-                id="review"
-                name="review"
-                rows="20"
-                ${rawHtml(E.isLeft(form.review) ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
-              >
-${match(form.review)
-                  .with(E.right(undefined), () => '')
-                  .with(E.right(P.select(P.not(undefined))), identity)
-                  .with(E.left({ _tag: 'MissingE' }), () => '')
-                  .exhaustive()}</textarea
-              >
+              ${match(form.review)
+                .with(E.right(undefined), () => html`<textarea id="review" name="review" rows="20"></textarea>`)
+                .with(
+                  E.right(P.select(P.not(undefined))),
+                  review => html`
+                    <textarea id="review" name="review" rows="20">${turndown.turndown(review.toString())}</textarea>
+                    <textarea hidden disabled>${review}</textarea>
+                  `,
+                )
+                .with(
+                  E.left({ _tag: 'MissingE' }),
+                  () => html`
+                    <textarea
+                      id="review"
+                      name="review"
+                      rows="20"
+                      aria-invalid="true"
+                      aria-errormessage="review-error"
+                    ></textarea>
+                  `,
+                )
+                .exhaustive()}
             </html-editor>
           </div>
 
