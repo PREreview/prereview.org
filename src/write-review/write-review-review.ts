@@ -19,7 +19,7 @@ import { User, getUserFromSession } from '../user'
 import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
-const turndown = new TurndownService({ emDelimiter: '*', headingStyle: 'atx' })
+const turndown = new TurndownService({ bulletListMarker: '-', emDelimiter: '*', headingStyle: 'atx' })
 turndown.keep(['sub', 'sup'])
 
 export const writeReviewReview = flow(
@@ -236,7 +236,13 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
 
             <html-editor>
               ${match(form.review)
-                .with(E.right(undefined), () => html`<textarea id="review" name="review" rows="20"></textarea>`)
+                .with(
+                  E.right(undefined),
+                  () => html`
+                    <textarea id="review" name="review" rows="20">${template}</textarea>
+                    <textarea hidden disabled>${markdownIt().render(template)}</textarea>
+                  `,
+                )
                 .with(
                   E.right(P.select(P.not(undefined))),
                   review => html`
@@ -442,6 +448,18 @@ function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm) {
     js: ['error-summary.js'],
   })
 }
+
+const template = `
+Write a short summary of the research’s main findings and how this work has moved the field forward.
+
+## Major issues
+
+- List significant concerns about the research, if there are any.
+
+## Minor issues
+
+- List concerns that would improve the overall flow or clarity but are not critical to the understanding and conclusions of the research.
+`.trim()
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
