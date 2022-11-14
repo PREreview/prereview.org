@@ -47,6 +47,7 @@ class HtmlEditor extends HTMLElement {
           ...extractAttributes(textArea, ['aria-errormessage', 'aria-invalid']),
         },
       },
+      element: this,
       extensions: [
         StarterKit.configure({
           blockquote: false,
@@ -329,7 +330,7 @@ class HtmlEditor extends HTMLElement {
       )
     })
 
-    editor.options.element.prepend(toolbar)
+    this.prepend(toolbar)
 
     editor.on('create', () => {
       const html = editor.getHTML()
@@ -343,7 +344,7 @@ class HtmlEditor extends HTMLElement {
       textArea.innerText = html !== '<p></p>' ? html : ''
     })
 
-    textArea.insertAdjacentElement('afterend', editor.options.element)
+    this.append(textArea, input)
     textArea.hidden = true
     removeAttributes(textArea, ['aria-errormessage', 'aria-invalid', 'id'])
   }
