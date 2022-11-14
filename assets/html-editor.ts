@@ -329,6 +329,12 @@ class HtmlEditor extends HTMLElement {
 
     editor.options.element.prepend(toolbar)
 
+    editor.on('create', () => {
+      const html = editor.getHTML()
+
+      textArea.innerText = html !== '<p></p>' ? html : ''
+    })
+
     editor.on('update', ({ editor }) => {
       const html = editor.getHTML()
 
