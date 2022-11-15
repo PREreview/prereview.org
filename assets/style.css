@@ -166,6 +166,10 @@ nav {
 
 header {
   @nest :not(body) > & {
+    & :any-link {
+      color: inherit;
+    }
+
     & + :not(.visually-hidden), & + .visually-hidden + * {
       margin-block-start: var(--space-m-l);
     }

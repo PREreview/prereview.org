@@ -106,6 +106,16 @@ function createPage(review: Prereview) {
               <dt>DOI</dt>
               <dd class="doi" translate="no">${review.doi}</dd>
             </div>
+            <div>
+              <dt>License</dt>
+              <dd>
+                <a href="https://creativecommons.org/licenses/by/4.0/">
+                  <dfn>
+                    <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
+                  </dfn>
+                </a>
+              </dd>
+            </div>
           </dl>
         </header>
 
