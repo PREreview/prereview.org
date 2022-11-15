@@ -880,6 +880,7 @@ describe('infrastructure', () => {
           E.right({
             authors: [{ name: 'PREreviewer' }],
             doi: '10.5281/zenodo.1061864' as Doi,
+            license: 'CC-BY-4.0',
             postedDate: PlainDate.from('2022-07-05'),
             preprint,
             text: rawHtml('Some text'),
@@ -960,6 +961,7 @@ describe('infrastructure', () => {
           E.right({
             authors: [{ name: 'PREreviewer' }],
             doi: '10.5281/zenodo.1061864' as Doi,
+            license: 'CC-BY-4.0',
             postedDate: PlainDate.from('2022-07-05'),
             preprint,
             text: rawHtml('Some text'),
@@ -1178,6 +1180,65 @@ describe('infrastructure', () => {
 
       expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
     })
+
+    fc.test(
+      'when the record does not have a CC-BY-4.0 license',
+      [fc.integer(), fc.preprintDoi(), fc.string()],
+      async (id, preprintDoi, license) => {
+        const record: Record = {
+          conceptdoi: '10.5072/zenodo.1061863' as Doi,
+          conceptrecid: 1061863,
+          files: [
+            {
+              links: {
+                self: new URL('http://example.com/file'),
+              },
+              key: 'review.html',
+              type: 'html',
+              size: 58,
+            },
+          ],
+          id,
+          links: {
+            latest: new URL('http://example.com/latest'),
+            latest_html: new URL('http://example.com/latest_html'),
+          },
+          metadata: {
+            communities: [{ id: 'prereview-reviews' }],
+            creators: [{ name: 'PREreviewer' }],
+            description: 'Description',
+            doi: '10.5281/zenodo.1061864' as Doi,
+            license: {
+              id: license,
+            },
+            publication_date: new Date('2022-07-05'),
+            related_identifiers: [
+              {
+                scheme: 'doi',
+                identifier: preprintDoi,
+                relation: 'reviews',
+                resource_type: 'publication-preprint',
+              },
+            ],
+            resource_type: {
+              type: 'publication',
+              subtype: 'article',
+            },
+            title: 'Title',
+          },
+        }
+
+        const actual = await _.getPrereview(id)({
+          fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+            body: RecordC.encode(record),
+            status: Status.OK,
+          }),
+          getPreprintTitle: () => () => Promise.reject('should not be called'),
+        })()
+
+        expect(actual).toStrictEqual(E.left(expect.anything()))
+      },
+    )
 
     fc.test(
       'when the record does not review a preprint with a preprint DOI',

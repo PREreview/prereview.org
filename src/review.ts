@@ -24,6 +24,7 @@ import PlainDate = Temporal.PlainDate
 export type Prereview = {
   authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
   doi: Doi
+  license: 'CC-BY-4.0'
   postedDate: PlainDate
   preprint: {
     doi: PreprintId['doi']
@@ -109,11 +110,18 @@ function createPage(review: Prereview) {
             <div>
               <dt>License</dt>
               <dd>
-                <a href="https://creativecommons.org/licenses/by/4.0/">
-                  <dfn>
-                    <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
-                  </dfn>
-                </a>
+                ${match(review.license)
+                  .with(
+                    'CC-BY-4.0',
+                    () => html`
+                      <a href="https://creativecommons.org/licenses/by/4.0/">
+                        <dfn>
+                          <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
+                        </dfn>
+                      </a>
+                    `,
+                  )
+                  .exhaustive()}
               </dd>
             </div>
           </dl>

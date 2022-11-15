@@ -17,6 +17,7 @@ describe('review', () => {
         fc.record({
           authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
           doi: fc.doi(),
+          license: fc.constant('CC-BY-4.0' as const),
           postedDate: fc.plainDate(),
           preprint: fc.record({
             doi: fc.preprintDoi(),

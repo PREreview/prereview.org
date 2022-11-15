@@ -218,10 +218,12 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
     RTE.of(record),
     RTE.bindW('preprintDoi', RTE.fromOptionK(() => new NotFound())(getReviewedDoi)),
     RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
+    RTE.bindW('license', RTE.fromEitherK(PrereviewLicenseD.decode)),
     RTE.chain(review =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right(review.metadata.creators),
         doi: RTE.right(review.metadata.doi),
+        license: RTE.right(review.license),
         postedDate: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
         preprint: RTE.asksReaderTaskEither(
           flow(
@@ -317,6 +319,11 @@ const PreprintIdD: D.Decoder<Work, AfricarxivPreprintId | BiorxivPreprintId | Me
         .exhaustive(),
     ),
   )
+
+const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
+  D.fromStruct({ metadata: D.fromStruct({ license: D.fromStruct({ id: D.literal('CC-BY-4.0') }) }) }),
+  D.map(get('metadata.license.id')),
+)
 
 function isInCommunity(record: Record) {
   return pipe(
