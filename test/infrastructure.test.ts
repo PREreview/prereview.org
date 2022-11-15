@@ -571,7 +571,7 @@ describe('infrastructure', () => {
         },
       )
 
-      fc.test('from SciELO', [fc.doi(), fc.sanitisedHtml(), fc.plainDate()], async (doi, title, posted) => {
+      fc.test('from SciELO', [fc.doi(), fc.plainDate()], async (doi, posted) => {
         const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
           body: {
             status: 'ok',
@@ -611,7 +611,7 @@ describe('infrastructure', () => {
               },
               source: 'Crossref',
               'is-referenced-by-count': 0,
-              title: [title.toString()],
+              title: ['Systematization about university extension as a process'],
               prefix: '10.1590',
               author: [
                 {
@@ -670,116 +670,118 @@ describe('infrastructure', () => {
             },
             posted,
             title: {
-              language: 'es',
-              text: title,
+              language: 'en',
+              text: rawHtml('Systematization about university extension as a process'),
             },
             url: new URL('https://preprints.scielo.org/index.php/scielo/preprint/view/4502/version/4765'),
           }),
         )
       })
 
-      fc.test(
-        'when the response is stale',
-        [fc.doi(), fc.sanitisedHtml(), fc.plainDate()],
-        async (doi, title, posted) => {
-          const fetch = fetchMock
-            .sandbox()
-            .getOnce(
-              (url, { cache }) =>
-                url === `https://api.crossref.org/works/${encodeURIComponent(doi)}` && cache === 'force-cache',
-              {
-                body: {
-                  status: 'ok',
-                  'message-type': 'work',
-                  'message-version': '1.0.0',
-                  message: {
-                    indexed: {
-                      'date-parts': [[2022, 8, 5]],
-                      'date-time': '2022-08-05T20:13:26Z',
-                      timestamp: 1659730406209,
-                    },
-                    posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
-                    'reference-count': 0,
-                    publisher: 'FapUNIFESP (SciELO)',
-                    license: [
-                      {
-                        start: {
-                          'date-parts': [[2022, 8, 5]],
-                          'date-time': '2022-08-05T00:00:00Z',
-                          timestamp: 1659657600000,
-                        },
-                        'content-version': 'unspecified',
-                        'delay-in-days': 0,
-                        URL: 'https://creativecommons.org/licenses/by/4.0',
-                      },
-                    ],
-                    'content-domain': { domain: [], 'crossmark-restriction': false },
-                    'short-container-title': [],
-                    abstract:
-                      '<jats:p>El art\u00edculo aborda la extensi\u00f3n universitaria como un proceso formativo en el contexto de la Universidad de Pinar del R\u00edo, Cuba. \u00a0El objetivo estuvo dirigido a su socializar un enfoque reflexivo \u2013 cr\u00edtico acerca del car\u00e1cter formativo de la extensi\u00f3n universitaria fundamentado en cuatro concepciones pedag\u00f3gicas, de las que se presentan sus ejes fundamentales. El estudio se realiz\u00f3 desde el enfoque cualitativo y como m\u00e9todos fundamentales estuvieron el dial\u00e9ctico- materialista como soporte te\u00f3rico, pr\u00e1ctico y metodol\u00f3gico de la investigaci\u00f3n, as\u00ed como te\u00f3ricos como el hist\u00f3rico\u2013l\u00f3gico en correspondencia con cada una de las concepciones dirigidas a la formaci\u00f3n para la promoci\u00f3n de lectura, la formaci\u00f3n de promotores de estilos de vida saludables, la formaci\u00f3n para la labor extensionista del estudiante y la gesti\u00f3n de la extensi\u00f3n en el Departamento Docente. Las conclusiones que se presentan, son de tipo te\u00f3rico y resultan generalizables a contextos universitarios y territoriales de manera general, permitieron corroborar el car\u00e1cter formativo del proceso, dado en la transversalidad, la profesionalizaci\u00f3n, la formaci\u00f3n integral, el Departamento docente, como c\u00e9lula de trabajo extensionista y las relaciones de jerarquizaci\u00f3n, coordinaci\u00f3n, subordinaci\u00f3n entre los diferentes actores universitarios.</jats:p>',
-                    DOI: '10.1590/scielopreprints.4502',
-                    type: 'posted-content',
-                    created: {
-                      'date-parts': [[2022, 8, 5]],
-                      'date-time': '2022-08-05T19:53:57Z',
-                      timestamp: 1659729237000,
-                    },
-                    source: 'Crossref',
-                    'is-referenced-by-count': 0,
-                    title: [title.toString()],
-                    prefix: '10.1590',
-                    author: [
-                      {
-                        ORCID: 'http://orcid.org/0000-0003-3232-9372',
-                        'authenticated-orcid': false,
-                        given: 'Yudit Rovira',
-                        family: 'Alvarez',
-                        sequence: 'first',
-                        affiliation: [],
-                      },
-                      { given: 'Ayl\u00e9n Rojas', family: 'Vald\u00e9s', sequence: 'additional', affiliation: [] },
-                      { given: 'Manuel Vento', family: 'Ruizcalder\u00f3n', sequence: 'additional', affiliation: [] },
-                      { given: 'Osmani Alvarez', family: 'Bencomo', sequence: 'additional', affiliation: [] },
-                    ],
-                    member: '530',
-                    'container-title': [],
-                    'original-title': [],
-                    deposited: {
-                      'date-parts': [[2022, 8, 5]],
-                      'date-time': '2022-08-05T19:55:40Z',
-                      timestamp: 1659729340000,
-                    },
-                    score: 1,
-                    resource: {
-                      primary: {
-                        URL: 'https://preprints.scielo.org/index.php/scielo/preprint/view/4502/version/4765',
-                      },
-                    },
-                    subtitle: [],
-                    'short-title': [],
-                    issued: { 'date-parts': [[2022, 8, 5]] },
-                    'references-count': 0,
-                    URL: 'http://dx.doi.org/10.1590/scielopreprints.4502',
-                    relation: {},
-                    published: { 'date-parts': [[2022, 8, 5]] },
-                    subtype: 'preprint',
+      fc.test('when the response is stale', [fc.doi(), fc.plainDate()], async (doi, posted) => {
+        const fetch = fetchMock
+          .sandbox()
+          .getOnce(
+            (url, { cache }) =>
+              url === `https://api.crossref.org/works/${encodeURIComponent(doi)}` && cache === 'force-cache',
+            {
+              body: {
+                status: 'ok',
+                'message-type': 'work',
+                'message-version': '1.0.0',
+                message: {
+                  indexed: {
+                    'date-parts': [[2022, 8, 5]],
+                    'date-time': '2022-08-05T20:13:26Z',
+                    timestamp: 1659730406209,
                   },
+                  posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+                  'reference-count': 0,
+                  publisher: 'FapUNIFESP (SciELO)',
+                  license: [
+                    {
+                      start: {
+                        'date-parts': [[2022, 8, 5]],
+                        'date-time': '2022-08-05T00:00:00Z',
+                        timestamp: 1659657600000,
+                      },
+                      'content-version': 'unspecified',
+                      'delay-in-days': 0,
+                      URL: 'https://creativecommons.org/licenses/by/4.0',
+                    },
+                  ],
+                  'content-domain': { domain: [], 'crossmark-restriction': false },
+                  'short-container-title': [],
+                  abstract:
+                    '<jats:p>El art\u00edculo aborda la extensi\u00f3n universitaria como un proceso formativo en el contexto de la Universidad de Pinar del R\u00edo, Cuba. \u00a0El objetivo estuvo dirigido a su socializar un enfoque reflexivo \u2013 cr\u00edtico acerca del car\u00e1cter formativo de la extensi\u00f3n universitaria fundamentado en cuatro concepciones pedag\u00f3gicas, de las que se presentan sus ejes fundamentales. El estudio se realiz\u00f3 desde el enfoque cualitativo y como m\u00e9todos fundamentales estuvieron el dial\u00e9ctico- materialista como soporte te\u00f3rico, pr\u00e1ctico y metodol\u00f3gico de la investigaci\u00f3n, as\u00ed como te\u00f3ricos como el hist\u00f3rico\u2013l\u00f3gico en correspondencia con cada una de las concepciones dirigidas a la formaci\u00f3n para la promoci\u00f3n de lectura, la formaci\u00f3n de promotores de estilos de vida saludables, la formaci\u00f3n para la labor extensionista del estudiante y la gesti\u00f3n de la extensi\u00f3n en el Departamento Docente. Las conclusiones que se presentan, son de tipo te\u00f3rico y resultan generalizables a contextos universitarios y territoriales de manera general, permitieron corroborar el car\u00e1cter formativo del proceso, dado en la transversalidad, la profesionalizaci\u00f3n, la formaci\u00f3n integral, el Departamento docente, como c\u00e9lula de trabajo extensionista y las relaciones de jerarquizaci\u00f3n, coordinaci\u00f3n, subordinaci\u00f3n entre los diferentes actores universitarios.</jats:p>',
+                  DOI: '10.1590/scielopreprints.4502',
+                  type: 'posted-content',
+                  created: {
+                    'date-parts': [[2022, 8, 5]],
+                    'date-time': '2022-08-05T19:53:57Z',
+                    timestamp: 1659729237000,
+                  },
+                  source: 'Crossref',
+                  'is-referenced-by-count': 0,
+                  title: ['Systematization about university extension as a process'],
+                  prefix: '10.1590',
+                  author: [
+                    {
+                      ORCID: 'http://orcid.org/0000-0003-3232-9372',
+                      'authenticated-orcid': false,
+                      given: 'Yudit Rovira',
+                      family: 'Alvarez',
+                      sequence: 'first',
+                      affiliation: [],
+                    },
+                    { given: 'Ayl\u00e9n Rojas', family: 'Vald\u00e9s', sequence: 'additional', affiliation: [] },
+                    { given: 'Manuel Vento', family: 'Ruizcalder\u00f3n', sequence: 'additional', affiliation: [] },
+                    { given: 'Osmani Alvarez', family: 'Bencomo', sequence: 'additional', affiliation: [] },
+                  ],
+                  member: '530',
+                  'container-title': [],
+                  'original-title': [],
+                  deposited: {
+                    'date-parts': [[2022, 8, 5]],
+                    'date-time': '2022-08-05T19:55:40Z',
+                    timestamp: 1659729340000,
+                  },
+                  score: 1,
+                  resource: {
+                    primary: {
+                      URL: 'https://preprints.scielo.org/index.php/scielo/preprint/view/4502/version/4765',
+                    },
+                  },
+                  subtitle: [],
+                  'short-title': [],
+                  issued: { 'date-parts': [[2022, 8, 5]] },
+                  'references-count': 0,
+                  URL: 'http://dx.doi.org/10.1590/scielopreprints.4502',
+                  relation: {},
+                  published: { 'date-parts': [[2022, 8, 5]] },
+                  subtype: 'preprint',
                 },
-                headers: { 'X-Local-Cache-Status': 'stale' },
               },
-            )
-            .getOnce(
-              (url, { cache }) =>
-                url === `https://api.crossref.org/works/${encodeURIComponent(doi)}` && cache === 'no-cache',
-              { throws: new Error('Network error') },
-            )
+              headers: { 'X-Local-Cache-Status': 'stale' },
+            },
+          )
+          .getOnce(
+            (url, { cache }) =>
+              url === `https://api.crossref.org/works/${encodeURIComponent(doi)}` && cache === 'no-cache',
+            { throws: new Error('Network error') },
+          )
 
-          const actual = await _.getPreprint(doi)({ fetch })()
+        const actual = await _.getPreprint(doi)({ fetch })()
 
-          expect(actual).toStrictEqual(E.right(expect.objectContaining({ title: { language: 'es', text: title } })))
-          expect(fetch.done()).toBeTruthy()
-        },
-      )
+        expect(actual).toStrictEqual(
+          E.right(
+            expect.objectContaining({
+              title: { language: 'en', text: rawHtml('Systematization about university extension as a process') },
+            }),
+          ),
+        )
+        expect(fetch.done()).toBeTruthy()
+      })
     })
 
     fc.test('when the preprint is not found', [fc.doi()], async doi => {

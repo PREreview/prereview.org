@@ -204,7 +204,9 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
           E.fromOptionK(() => 'unknown language')(({ text }) =>
             match({ type: preprint.id.type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguage('en', 'fr'))
-              .otherwise(() => O.some(preprint.abstract.language)),
+              .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+              .with({ type: 'scielo', text: P.select() }, detectLanguage('en', 'es', 'pt'))
+              .exhaustive(),
           ),
         ),
       ),
