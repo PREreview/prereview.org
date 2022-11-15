@@ -95,6 +95,10 @@ summary {
       text-decoration-skip-ink: none;
       text-decoration-skip: none;
     }
+
+    & abbr {
+      text-decoration-line: none;
+    }
   }
 }
 
