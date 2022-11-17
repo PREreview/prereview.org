@@ -291,6 +291,11 @@ test('can format a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(page.getByRole('button', { name: 'Heading level 1' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-disabled', 'true')
   await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+
+  if (browserName === 'webkit') {
+    await page.locator('role=textbox[name="Write your PREreview"]').scrollIntoViewIfNeeded()
+  }
+
   await page.keyboard.type('Lorem')
   await expect(page).toHaveScreenshot()
   await page.keyboard.press('Enter')
