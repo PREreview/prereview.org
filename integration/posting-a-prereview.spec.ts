@@ -247,7 +247,7 @@ test('can paste an already-written PREreview', async ({ fetch, javaScriptEnabled
   await expect(page).toHaveScreenshot()
 })
 
-test('can format a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
+test('can format a PREreview', async ({ browserName, fetch, javaScriptEnabled, page }) => {
   fetch.get(
     {
       url: 'http://zenodo.test/api/records/',
