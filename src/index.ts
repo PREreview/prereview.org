@@ -45,6 +45,10 @@ const EnvD = pipe(
   D.intersect(
     D.partial({
       CAN_ADD_AUTHORS: pipe(D.string, D.map(split(',')), D.compose(D.array(OrcidD))),
+      LEGACY_PREREVIEW_UPDATE: pipe(
+        D.literal('true', 'false'),
+        D.map(value => value === 'true'),
+      ),
       PHASE_TAG: D.string,
       PHASE_TEXT: HtmlD,
     }),
@@ -72,6 +76,7 @@ const deps: AppEnv = {
     app: env.LEGACY_PREREVIEW_API_APP,
     key: env.LEGACY_PREREVIEW_API_KEY,
     url: env.LEGACY_PREREVIEW_URL,
+    update: env.LEGACY_PREREVIEW_UPDATE ?? false,
   },
   logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
   oauth: {

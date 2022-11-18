@@ -2,6 +2,7 @@ import express from 'express'
 import * as P from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
 import * as R from 'fp-ts/Reader'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { constant, flip, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -24,7 +25,11 @@ import {
   getPrereviews,
   logFetch,
 } from './infrastructure'
-import { LegacyPrereviewApiEnv, getPseudonymFromLegacyPrereview } from './legacy-prereview'
+import {
+  LegacyPrereviewApiEnv,
+  createPrereviewOnLegacyPrereview,
+  getPseudonymFromLegacyPrereview,
+} from './legacy-prereview'
 import { PublicUrlEnv, authenticate, logIn } from './log-in'
 import { PhaseEnv } from './page'
 import { preprint } from './preprint'
@@ -49,6 +54,7 @@ import {
 } from './routes'
 import {
   FormStoreEnv,
+  NewPrereview,
   writeReview,
   writeReviewAddAuthor,
   writeReviewAddAuthors,
@@ -165,7 +171,9 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getPreprintTitle: flip(getPreprintTitle)(env),
-          postPrereview: flip(createRecordOnZenodo)(env),
+          postPrereview: flip((newPrereview: NewPrereview) =>
+            pipe(createRecordOnZenodo(newPrereview), RTE.chainFirstW(createPrereviewOnLegacyPrereview(newPrereview))),
+          )(env),
         })),
       ),
     ),

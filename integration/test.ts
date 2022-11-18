@@ -7,6 +7,7 @@ import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { app } from '../src/app'
 import { CanAddAuthorsEnv } from '../src/feature-flags'
+import { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
 import Logger = L.Logger
 import LogEntry = L.LogEntry
@@ -19,6 +20,7 @@ type AppFixtures = {
   logger: Logger
   port: number
   server: Server
+  updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -482,7 +484,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
-  server: async ({ canAddAuthors, fetch, logger, port }, use) => {
+  server: async ({ canAddAuthors, fetch, logger, port, updatesLegacyPrereview }, use) => {
     const server = app({
       canAddAuthors,
       clock: SystemClock,
@@ -492,6 +494,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         app: 'app',
         key: 'key',
         url: new URL('http://prereview.test'),
+        update: updatesLegacyPrereview,
       },
       logger,
       oauth: {
@@ -514,6 +517,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     server.close()
   },
+  updatesLegacyPrereview: async ({}, use) => {
+    await use(false)
+  },
 }
 
 export const canAddAuthors: Fixtures<
@@ -523,6 +529,16 @@ export const canAddAuthors: Fixtures<
 > = {
   canAddAuthors: async ({}, use) => {
     await use(() => true)
+  },
+}
+
+export const updatesLegacyPrereview: Fixtures<
+  Pick<AppFixtures, 'updatesLegacyPrereview'>,
+  Record<never, never>,
+  Pick<AppFixtures, 'updatesLegacyPrereview'>
+> = {
+  updatesLegacyPrereview: async ({}, use) => {
+    await use(true)
   },
 }
 
