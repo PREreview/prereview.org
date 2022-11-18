@@ -114,6 +114,8 @@ export const plainDate = (): fc.Arbitrary<Temporal.PlainDate> =>
     })
     .map(args => Temporal.PlainDate.from(args))
 
+export const origin = (): fc.Arbitrary<URL> => url().map(url => new URL(url.origin))
+
 export const url = (): fc.Arbitrary<URL> => fc.webUrl().map(url => new URL(url))
 
 export const requestMethod = (): fc.Arbitrary<RequestMethod> =>

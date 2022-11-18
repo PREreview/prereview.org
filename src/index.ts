@@ -34,6 +34,7 @@ const EnvD = pipe(
     DB_PATH: D.string,
     LEGACY_PREREVIEW_API_APP: D.string,
     LEGACY_PREREVIEW_API_KEY: D.string,
+    LEGACY_PREREVIEW_URL: UrlD,
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
     PUBLIC_URL: UrlD,
@@ -70,6 +71,7 @@ const deps: AppEnv = {
   legacyPrereviewApi: {
     app: env.LEGACY_PREREVIEW_API_APP,
     key: env.LEGACY_PREREVIEW_API_KEY,
+    url: env.LEGACY_PREREVIEW_URL,
   },
   logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
   oauth: {

@@ -9,11 +9,13 @@ import * as D from 'io-ts/Decoder'
 import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
+import { URL } from 'url'
 
 export interface LegacyPrereviewApiEnv {
   legacyPrereviewApi: {
     app: string
     key: string
+    url: URL
   }
 }
 
@@ -42,9 +44,8 @@ const LegacyPrereviewUserD = pipe(
 )
 
 export const getPseudonymFromLegacyPrereview = flow(
-  (orcid: Orcid) => new URL(orcid, 'https://prereview.org/api/v2/users/'),
-  F.Request('GET'),
-  RTE.fromReaderK(addLegacyPrereviewApiHeaders),
+  RTE.fromReaderK((orcid: Orcid) => legacyPrereviewUrl(`users/${orcid}`)),
+  RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
   RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
   RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
@@ -62,3 +63,6 @@ function addLegacyPrereviewApiHeaders(request: F.Request) {
     pipe(request, F.setHeaders({ 'X-API-App': app, 'X-API-Key': key })),
   )
 }
+
+const legacyPrereviewUrl = (path: string) =>
+  R.asks(({ legacyPrereviewApi }: LegacyPrereviewApiEnv) => new URL(`/api/v2/${path}`, legacyPrereviewApi.url))

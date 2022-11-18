@@ -39,7 +39,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     fetch.get(
       {
-        url: 'https://prereview.org/api/v2/users/0000-0002-1825-0097',
+        url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
         headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
       },
       {
@@ -491,6 +491,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       legacyPrereviewApi: {
         app: 'app',
         key: 'key',
+        url: new URL('http://prereview.test'),
       },
       logger,
       oauth: {

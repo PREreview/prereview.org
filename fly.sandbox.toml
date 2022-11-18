@@ -3,6 +3,7 @@ app = "prereview-sandbox"
 [env]
 CACHE_PATH = "/data/cache"
 DB_PATH = "/data/db.sqlite"
+LEGACY_PREREVIEW_URL = "https://prereview.org/"
 PUBLIC_URL = "https://sandbox.prereview.org/"
 PHASE_TAG = "sandbox"
 PHASE_TEXT = "This version is a sandbox."
