@@ -1,3 +1,4 @@
+import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import cookieSignature from 'cookie-signature'
 import * as E from 'fp-ts/Either'
@@ -11,35 +12,34 @@ import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 
 describe('writeReviewPost', () => {
-  fc.test(
-    'when the form is complete',
-    [
-      fc.preprintDoi(),
-      fc.record({ title: fc.html(), language: fc.languageCode() }),
-      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
-        fc.tuple(
-          fc.connection({
-            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-            method: fc.constant('POST'),
-          }),
-          fc.constant(sessionId),
-          fc.constant(secret),
-        ),
+  test.prop([
+    fc.preprintDoi(),
+    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+      fc.tuple(
+        fc.connection({
+          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          method: fc.constant('POST'),
+        }),
+        fc.constant(sessionId),
+        fc.constant(secret),
       ),
-      fc.record({
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'no'),
-        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
-        persona: fc.constantFrom('public', 'pseudonym'),
-        review: fc.lorem(),
-      }),
-      fc.user(),
-      fc.boolean(),
-      fc.doi(),
-    ],
+    ),
+    fc.record({
+      alreadyWritten: fc.constantFrom('yes', 'no'),
+      competingInterests: fc.constantFrom('yes', 'no'),
+      competingInterestsDetails: fc.lorem(),
+      conduct: fc.constant('yes'),
+      moreAuthors: fc.constantFrom('yes', 'no'),
+      otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+      persona: fc.constantFrom('public', 'pseudonym'),
+      review: fc.lorem(),
+    }),
+    fc.user(),
+    fc.boolean(),
+    fc.doi(),
+  ])(
+    'when the form is complete',
     async (preprintDoi, preprintTitle, [connection, sessionId, secret], newReview, user, canAddAuthors, reviewDoi) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
@@ -83,39 +83,38 @@ describe('writeReviewPost', () => {
     },
   )
 
-  fc.test(
-    'when the form is incomplete',
-    [
-      fc.preprintDoi(),
-      fc.record({ title: fc.html(), language: fc.languageCode() }),
-      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
-        fc.tuple(
-          fc.connection({
-            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-            method: fc.constant('POST'),
-          }),
-          fc.constant(sessionId),
-          fc.constant(secret),
-        ),
+  test.prop([
+    fc.preprintDoi(),
+    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+      fc.tuple(
+        fc.connection({
+          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          method: fc.constant('POST'),
+        }),
+        fc.constant(sessionId),
+        fc.constant(secret),
       ),
-      fc
-        .record(
-          {
-            alreadyWritten: fc.constantFrom('yes', 'no'),
-            competingInterests: fc.constantFrom('yes', 'no'),
-            competingInterestsDetails: fc.lorem(),
-            conduct: fc.oneof(fc.constant('yes'), fc.string()),
-            moreAuthors: fc.oneof(fc.constantFrom('yes', 'no'), fc.string()),
-            otherAuthors: fc.array(fc.string()),
-            persona: fc.oneof(fc.constantFrom('public', 'pseudonym'), fc.string()),
-            review: fc.oneof(fc.lorem(), fc.constant('')),
-          },
-          { withDeletedKeys: true },
-        )
-        .filter(newReview => Object.keys(newReview).length < 5),
-      fc.user(),
-      fc.boolean(),
-    ],
+    ),
+    fc
+      .record(
+        {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
+          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterestsDetails: fc.lorem(),
+          conduct: fc.oneof(fc.constant('yes'), fc.string()),
+          moreAuthors: fc.oneof(fc.constantFrom('yes', 'no'), fc.string()),
+          otherAuthors: fc.array(fc.string()),
+          persona: fc.oneof(fc.constantFrom('public', 'pseudonym'), fc.string()),
+          review: fc.oneof(fc.lorem(), fc.constant('')),
+        },
+        { withDeletedKeys: true },
+      )
+      .filter(newReview => Object.keys(newReview).length < 5),
+    fc.user(),
+    fc.boolean(),
+  ])(
+    'when the form is incomplete',
     async (preprintDoi, preprintTitle, [connection, sessionId, secret], newPrereview, user, canAddAuthors) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
@@ -146,38 +145,35 @@ describe('writeReviewPost', () => {
     },
   )
 
-  fc.test(
+  test.prop([
+    fc.preprintDoi(),
+    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+      fc.tuple(
+        fc.connection({
+          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          method: fc.constant('POST'),
+        }),
+        fc.constant(sessionId),
+        fc.constant(secret),
+      ),
+    ),
+    fc.record(
+      {
+        alreadyWritten: fc.constantFrom('yes', 'no'),
+        competingInterests: fc.constantFrom('yes', 'no'),
+        competingInterestsDetails: fc.lorem(),
+        conduct: fc.constant('yes'),
+        moreAuthors: fc.constantFrom('yes', 'no'),
+        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        persona: fc.constantFrom('public', 'pseudonym'),
+        review: fc.lorem(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.user(),
+    fc.boolean(),
+  ])(
     'when the preprint cannot be loaded',
-    [
-      fc.preprintDoi(),
-      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
-        fc.tuple(
-          fc.connection({
-            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-            method: fc.constant('POST'),
-          }),
-          fc.constant(sessionId),
-          fc.constant(secret),
-        ),
-      ),
-      fc.record(
-        {
-          alreadyWritten: fc.constantFrom('yes', 'no'),
-          competingInterests: fc.constantFrom('yes', 'no'),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          moreAuthors: fc.constantFrom('yes', 'no'),
-          otherAuthors: fc.array(
-            fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
-          ),
-          persona: fc.constantFrom('public', 'pseudonym'),
-          review: fc.lorem(),
-        },
-        { withDeletedKeys: true },
-      ),
-      fc.user(),
-      fc.boolean(),
-    ],
     async (preprintDoi, [connection, sessionId, secret], newReview, user, canAddAuthors) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
@@ -209,38 +205,35 @@ describe('writeReviewPost', () => {
     },
   )
 
-  fc.test(
+  test.prop([
+    fc.preprintDoi(),
+    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+      fc.tuple(
+        fc.connection({
+          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          method: fc.constant('POST'),
+        }),
+        fc.constant(sessionId),
+        fc.constant(secret),
+      ),
+    ),
+    fc.record(
+      {
+        alreadyWritten: fc.constantFrom('yes', 'no'),
+        competingInterests: fc.constantFrom('yes', 'no'),
+        competingInterestsDetails: fc.lorem(),
+        conduct: fc.constant('yes'),
+        moreAuthors: fc.constantFrom('yes', 'no'),
+        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        persona: fc.constantFrom('public', 'pseudonym'),
+        review: fc.lorem(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.user(),
+    fc.boolean(),
+  ])(
     'when the preprint cannot be found',
-    [
-      fc.preprintDoi(),
-      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
-        fc.tuple(
-          fc.connection({
-            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-            method: fc.constant('POST'),
-          }),
-          fc.constant(sessionId),
-          fc.constant(secret),
-        ),
-      ),
-      fc.record(
-        {
-          alreadyWritten: fc.constantFrom('yes', 'no'),
-          competingInterests: fc.constantFrom('yes', 'no'),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          moreAuthors: fc.constantFrom('yes', 'no'),
-          otherAuthors: fc.array(
-            fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
-          ),
-          persona: fc.constantFrom('public', 'pseudonym'),
-          review: fc.lorem(),
-        },
-        { withDeletedKeys: true },
-      ),
-      fc.user(),
-      fc.boolean(),
-    ],
     async (preprintDoi, [connection, sessionId, secret], newReview, user, canAddAuthors) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
@@ -272,78 +265,73 @@ describe('writeReviewPost', () => {
     },
   )
 
-  fc.test(
-    "when there isn't a session",
-    [
-      fc.preprintDoi(),
-      fc.record({ title: fc.html(), language: fc.languageCode() }),
-      fc.connection({ method: fc.constant('POST') }),
-      fc.string(),
-    ],
-    async (preprintDoi, preprintTitle, connection, secret) => {
-      const sessionStore = new Keyv()
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
+  test.prop([
+    fc.preprintDoi(),
+    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.connection({ method: fc.constant('POST') }),
+    fc.string(),
+  ])("when there isn't a session", async (preprintDoi, preprintTitle, connection, secret) => {
+    const sessionStore = new Keyv()
+    const formStore = new Keyv()
+    const getPreprintTitle = () => TE.right(preprintTitle)
 
-      const actual = await runMiddleware(
-        _.writeReviewPost(preprintDoi)({
-          canAddAuthors: () => {
-            throw 'Should not be called'
-          },
-          getPreprintTitle,
-          formStore,
-          postPrereview: () => TE.left(''),
-          secret,
-          sessionStore,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/write-a-prereview`,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
-
-  fc.test(
-    'Zenodo is unavailable',
-    [
-      fc.preprintDoi(),
-      fc.record({ title: fc.html(), language: fc.languageCode() }),
-      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
-        fc.tuple(
-          fc.connection({
-            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-            method: fc.constant('POST'),
-          }),
-          fc.constant(sessionId),
-          fc.constant(secret),
-        ),
-      ),
-      fc.oneof(fc.fetchResponse({ status: fc.integer({ min: 400 }) }), fc.error()),
-      fc.record({
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'no'),
-        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
-        persona: fc.constantFrom('public', 'pseudonym'),
-        review: fc.lorem(),
+    const actual = await runMiddleware(
+      _.writeReviewPost(preprintDoi)({
+        canAddAuthors: () => {
+          throw 'Should not be called'
+        },
+        getPreprintTitle,
+        formStore,
+        postPrereview: () => TE.left(''),
+        secret,
+        sessionStore,
       }),
-      fc.user(),
-      fc.boolean(),
-    ],
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.SeeOther },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: `/preprints/doi-${encodeURIComponent(
+            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+          )}/write-a-prereview`,
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+  })
+
+  test.prop([
+    fc.preprintDoi(),
+    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+      fc.tuple(
+        fc.connection({
+          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          method: fc.constant('POST'),
+        }),
+        fc.constant(sessionId),
+        fc.constant(secret),
+      ),
+    ),
+    fc.oneof(fc.fetchResponse({ status: fc.integer({ min: 400 }) }), fc.error()),
+    fc.record({
+      alreadyWritten: fc.constantFrom('yes', 'no'),
+      competingInterests: fc.constantFrom('yes', 'no'),
+      competingInterestsDetails: fc.lorem(),
+      conduct: fc.constant('yes'),
+      moreAuthors: fc.constantFrom('yes', 'no'),
+      otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+      persona: fc.constantFrom('public', 'pseudonym'),
+      review: fc.lorem(),
+    }),
+    fc.user(),
+    fc.boolean(),
+  ])(
+    'Zenodo is unavailable',
     async (preprintDoi, preprintTitle, [connection, sessionId, secret], response, newReview, user, canAddAuthors) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))

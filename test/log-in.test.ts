@@ -1,3 +1,4 @@
+import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
@@ -11,110 +12,101 @@ import { runMiddleware } from './middleware'
 
 describe('log-in', () => {
   describe('logIn', () => {
-    fc.test(
-      'when there is a Referer header',
-      [
-        fc.record({
-          authorizeUrl: fc.url(),
-          clientId: fc.string(),
-          clientSecret: fc.string(),
-          redirectUri: fc.url(),
-          tokenUrl: fc.url(),
-        }),
-        fc
-          .webUrl()
-          .chain(referer =>
-            fc.tuple(fc.connection({ headers: fc.constant({ Referer: referer }) }), fc.constant(referer)),
-          ),
-      ],
-      async (oauth, [connection, referer]) => {
-        const actual = await runMiddleware(_.logIn({ oauth }), connection)()
+    test.prop([
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc
+        .webUrl()
+        .chain(referer =>
+          fc.tuple(fc.connection({ headers: fc.constant({ Referer: referer }) }), fc.constant(referer)),
+        ),
+    ])('when there is a Referer header', async (oauth, [connection, referer]) => {
+      const actual = await runMiddleware(_.logIn({ oauth }), connection)()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.Found },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: new URL(
-                `?${new URLSearchParams({
-                  client_id: oauth.clientId,
-                  response_type: 'code',
-                  redirect_uri: oauth.redirectUri.href,
-                  scope: '/authenticate',
-                  state: referer,
-                }).toString()}`,
-                oauth.authorizeUrl,
-              ).href,
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: new URL(
+              `?${new URLSearchParams({
+                client_id: oauth.clientId,
+                response_type: 'code',
+                redirect_uri: oauth.redirectUri.href,
+                scope: '/authenticate',
+                state: referer,
+              }).toString()}`,
+              oauth.authorizeUrl,
+            ).href,
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
 
-    fc.test(
-      "when there isn't a Referer header",
-      [
-        fc.record({
-          authorizeUrl: fc.url(),
-          clientId: fc.string(),
-          clientSecret: fc.string(),
-          redirectUri: fc.url(),
-          tokenUrl: fc.url(),
-        }),
-        fc.connection(),
-      ],
-      async (oauth, connection) => {
-        const actual = await runMiddleware(_.logIn({ oauth }), connection)()
+    test.prop([
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc.connection(),
+    ])("when there isn't a Referer header", async (oauth, connection) => {
+      const actual = await runMiddleware(_.logIn({ oauth }), connection)()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.Found },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: new URL(
-                `?${new URLSearchParams({
-                  client_id: oauth.clientId,
-                  response_type: 'code',
-                  redirect_uri: oauth.redirectUri.href,
-                  scope: '/authenticate',
-                  state: '',
-                }).toString()}`,
-                oauth.authorizeUrl,
-              ).href,
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: new URL(
+              `?${new URLSearchParams({
+                client_id: oauth.clientId,
+                response_type: 'code',
+                redirect_uri: oauth.redirectUri.href,
+                scope: '/authenticate',
+                state: '',
+              }).toString()}`,
+              oauth.authorizeUrl,
+            ).href,
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
   })
 
   describe('authenticate', () => {
-    fc.test(
+    test.prop([
+      fc.string(),
+      fc.url().chain(url => fc.tuple(fc.constant(url))),
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc.record({
+        access_token: fc.string(),
+        token_type: fc.string(),
+        name: fc.string(),
+        orcid: fc.orcid(),
+      }),
+      fc.string(),
+      fc.string(),
+      fc.connection(),
+    ])(
       'when the state contains a valid referer',
-      [
-        fc.string(),
-        fc.url().chain(url => fc.tuple(fc.constant(url))),
-        fc.record({
-          authorizeUrl: fc.url(),
-          clientId: fc.string(),
-          clientSecret: fc.string(),
-          redirectUri: fc.url(),
-          tokenUrl: fc.url(),
-        }),
-        fc.record({
-          access_token: fc.string(),
-          token_type: fc.string(),
-          name: fc.string(),
-          orcid: fc.orcid(),
-        }),
-        fc.string(),
-        fc.string(),
-        fc.connection(),
-      ],
       async (code, [referer], oauth, accessToken, pseudonym, secret, connection) => {
         const sessionStore = new Keyv()
 
@@ -156,83 +148,78 @@ describe('log-in', () => {
       },
     )
 
-    fc.test(
-      'when a pseudonym cannot be found',
-      [
-        fc.string(),
-        fc.url().chain(url => fc.tuple(fc.constant(url))),
-        fc.record({
-          authorizeUrl: fc.url(),
-          clientId: fc.string(),
-          clientSecret: fc.string(),
-          redirectUri: fc.url(),
-          tokenUrl: fc.url(),
-        }),
-        fc.record({
-          access_token: fc.string(),
-          token_type: fc.string(),
-          name: fc.string(),
-          orcid: fc.orcid(),
-        }),
-        fc.string(),
-        fc.connection(),
-      ],
-      async (code, [referer], oauth, accessToken, secret, connection) => {
-        const sessionStore = new Keyv()
+    test.prop([
+      fc.string(),
+      fc.url().chain(url => fc.tuple(fc.constant(url))),
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc.record({
+        access_token: fc.string(),
+        token_type: fc.string(),
+        name: fc.string(),
+        orcid: fc.orcid(),
+      }),
+      fc.string(),
+      fc.connection(),
+    ])('when a pseudonym cannot be found', async (code, [referer], oauth, accessToken, secret, connection) => {
+      const sessionStore = new Keyv()
 
-        const actual = await runMiddleware(
-          _.authenticate(
-            code,
-            referer.href,
-          )({
-            fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-              status: Status.OK,
-              body: accessToken,
-            }),
-            getPseudonym: () => TE.left('no-pseudonym'),
-            oauth,
-            publicUrl: new URL('/', referer),
-            secret,
-            sessionStore,
+      const actual = await runMiddleware(
+        _.authenticate(
+          code,
+          referer.href,
+        )({
+          fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+            status: Status.OK,
+            body: accessToken,
           }),
-          connection,
-        )()
-        const sessions = await all(sessionStore.iterator(undefined))
+          getPseudonym: () => TE.left('no-pseudonym'),
+          oauth,
+          publicUrl: new URL('/', referer),
+          secret,
+          sessionStore,
+        }),
+        connection,
+      )()
+      const sessions = await all(sessionStore.iterator(undefined))
 
-        expect(sessions).toStrictEqual([])
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.Forbidden },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
+      expect(sessions).toStrictEqual([])
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Forbidden },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
 
-    fc.test(
+    test.prop([
+      fc.string(),
+      fc.url().chain(url => fc.tuple(fc.constant(url))),
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc.record({
+        access_token: fc.string(),
+        token_type: fc.string(),
+        name: fc.string(),
+        orcid: fc.orcid(),
+      }),
+      fc.anything(),
+      fc.string(),
+      fc.connection(),
+    ])(
       'when a pseudonym cannot be retrieved',
-      [
-        fc.string(),
-        fc.url().chain(url => fc.tuple(fc.constant(url))),
-        fc.record({
-          authorizeUrl: fc.url(),
-          clientId: fc.string(),
-          clientSecret: fc.string(),
-          redirectUri: fc.url(),
-          tokenUrl: fc.url(),
-        }),
-        fc.record({
-          access_token: fc.string(),
-          token_type: fc.string(),
-          name: fc.string(),
-          orcid: fc.orcid(),
-        }),
-        fc.anything(),
-        fc.string(),
-        fc.connection(),
-      ],
       async (code, [referer], oauth, accessToken, error, secret, connection) => {
         const sessionStore = new Keyv()
 
@@ -267,29 +254,28 @@ describe('log-in', () => {
       },
     )
 
-    fc.test(
+    test.prop([
+      fc.string(),
+      fc.url(),
+      fc.oneof(fc.webUrl(), fc.string()),
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc.record({
+        access_token: fc.string(),
+        token_type: fc.string(),
+        name: fc.string(),
+        orcid: fc.orcid(),
+      }),
+      fc.string(),
+      fc.string(),
+      fc.connection(),
+    ])(
       'when the state contains an invalid referer',
-      [
-        fc.string(),
-        fc.url(),
-        fc.oneof(fc.webUrl(), fc.string()),
-        fc.record({
-          authorizeUrl: fc.url(),
-          clientId: fc.string(),
-          clientSecret: fc.string(),
-          redirectUri: fc.url(),
-          tokenUrl: fc.url(),
-        }),
-        fc.record({
-          access_token: fc.string(),
-          token_type: fc.string(),
-          name: fc.string(),
-          orcid: fc.orcid(),
-        }),
-        fc.string(),
-        fc.string(),
-        fc.connection(),
-      ],
       async (code, publicUrl, state, oauth, accessToken, pseudonym, secret, connection) => {
         const sessionStore = new Keyv()
 

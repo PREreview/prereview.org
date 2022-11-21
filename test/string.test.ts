@@ -1,4 +1,5 @@
-import { describe, expect, test } from '@jest/globals'
+import { test } from '@fast-check/jest'
+import { describe, expect } from '@jest/globals'
 import * as D from 'io-ts/Decoder'
 import * as _ from '../src/string'
 import * as fc from './fc'
@@ -6,7 +7,7 @@ import * as fc from './fc'
 describe('string', () => {
   describe('NonEmptyStringC', () => {
     describe('decode', () => {
-      fc.test('with a non-empty string', [fc.string({ minLength: 1 })], string => {
+      test.prop([fc.string({ minLength: 1 })])('with a non-empty string', string => {
         const actual = _.NonEmptyStringC.decode(string)
 
         expect(actual).toStrictEqual(D.success(string))
@@ -18,14 +19,14 @@ describe('string', () => {
         expect(actual).toStrictEqual(D.failure('', 'NonEmptyString'))
       })
 
-      fc.test('with a non-string', [fc.anything().filter(value => typeof value !== 'string')], value => {
+      test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
         const actual = _.NonEmptyStringC.decode(value)
 
         expect(actual).toStrictEqual(D.failure(value, 'string'))
       })
     })
 
-    fc.test('encode', [fc.nonEmptyString()], string => {
+    test.prop([fc.nonEmptyString()])('encode', string => {
       const actual = _.NonEmptyStringC.encode(string)
 
       expect(actual).toStrictEqual(string)
@@ -34,7 +35,7 @@ describe('string', () => {
 
   describe('isNonEmptyString', () => {
     describe('decode', () => {
-      fc.test('with a non-empty string', [fc.string({ minLength: 1 })], string => {
+      test.prop([fc.string({ minLength: 1 })])('with a non-empty string', string => {
         expect(_.isNonEmptyString(string)).toBe(true)
       })
 

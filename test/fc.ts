@@ -25,8 +25,6 @@ import {
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
 
-export { testProp as test } from '@fast-check/jest'
-
 export const {
   anything,
   array,

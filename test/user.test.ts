@@ -1,3 +1,4 @@
+import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import cookieSignature from 'cookie-signature'
 import * as E from 'fp-ts/Either'
@@ -13,22 +14,21 @@ import { runMiddleware } from './middleware'
 
 describe('user', () => {
   describe('UserC', () => {
-    fc.test('when the user can be decoded', [fc.user()], user => {
+    test.prop([fc.user()])('when the user can be decoded', user => {
       const actual = pipe(user, _.UserC.encode, _.UserC.decode)
 
       expect(actual).toStrictEqual(D.success(user))
     })
 
-    fc.test('when the user cannot be decoded', [fc.string()], string => {
+    test.prop([fc.string()])('when the user cannot be decoded', string => {
       const actual = _.UserC.decode(string)
 
       expect(actual).toStrictEqual(E.left(expect.anything()))
     })
   })
 
-  fc.test(
+  test.prop([fc.user(), fc.string(), fc.connection<HeadersOpen>()])(
     'storeUserInSession',
-    [fc.user(), fc.string(), fc.connection<HeadersOpen>()],
     async (user, secret, connection) => {
       const sessionStore = new Keyv()
 
@@ -56,69 +56,20 @@ describe('user', () => {
   )
 
   describe('getUserFromSession', () => {
-    fc.test(
-      'when the user can be decoded',
-      [
-        fc.user(),
-        fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
-          fc.tuple(
-            fc.connection({
-              headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-            }),
-            fc.constant(sessionId),
-            fc.constant(secret),
-          ),
-        ),
-      ],
-      async (user, [connection, sessionId, secret]) => {
-        const sessionStore = new Keyv()
-        await sessionStore.set(sessionId, _.UserC.encode(user))
-
-        const actual = await M.evalMiddleware(
-          _.getUserFromSession()({
-            secret,
-            sessionStore,
+    test.prop([
+      fc.user(),
+      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+        fc.tuple(
+          fc.connection({
+            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
           }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(E.right(user))
-      },
-    )
-
-    fc.test(
-      'when the user cannot be decoded',
-      [
-        fc.user(),
-        fc.jsonValue(),
-        fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
-          fc.tuple(
-            fc.connection({
-              headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-            }),
-            fc.constant(sessionId),
-            fc.constant(secret),
-          ),
+          fc.constant(sessionId),
+          fc.constant(secret),
         ),
-      ],
-      async (user, value, [connection, sessionId, secret]) => {
-        const sessionStore = new Keyv()
-        await sessionStore.set(sessionId, value)
-
-        const actual = await M.evalMiddleware(
-          _.getUserFromSession()({
-            secret,
-            sessionStore,
-          }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(E.left(expect.anything()))
-      },
-    )
-
-    fc.test('when there is no session', [fc.user(), fc.string(), fc.connection()], async (user, secret, connection) => {
+      ),
+    ])('when the user can be decoded', async (user, [connection, sessionId, secret]) => {
       const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, _.UserC.encode(user))
 
       const actual = await M.evalMiddleware(
         _.getUserFromSession()({
@@ -128,7 +79,51 @@ describe('user', () => {
         connection,
       )()
 
-      expect(actual).toStrictEqual(E.left('no-session'))
+      expect(actual).toStrictEqual(E.right(user))
     })
+
+    test.prop([
+      fc.user(),
+      fc.jsonValue(),
+      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+        fc.tuple(
+          fc.connection({
+            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          }),
+          fc.constant(sessionId),
+          fc.constant(secret),
+        ),
+      ),
+    ])('when the user cannot be decoded', async (user, value, [connection, sessionId, secret]) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, value)
+
+      const actual = await M.evalMiddleware(
+        _.getUserFromSession()({
+          secret,
+          sessionStore,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(E.left(expect.anything()))
+    })
+
+    test.prop([fc.user(), fc.string(), fc.connection()])(
+      'when there is no session',
+      async (user, secret, connection) => {
+        const sessionStore = new Keyv()
+
+        const actual = await M.evalMiddleware(
+          _.getUserFromSession()({
+            secret,
+            sessionStore,
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(E.left('no-session'))
+      },
+    )
   })
 })

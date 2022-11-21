@@ -1,3 +1,4 @@
+import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
@@ -25,7 +26,7 @@ import PlainDate = Temporal.PlainDate
 describe('infrastructure', () => {
   describe('getPreprint', () => {
     describe('when the preprint can be loaded', () => {
-      fc.test('from AfricArXiv', [fc.doi(), fc.plainDate()], async (doi, posted) => {
+      test.prop([fc.doi(), fc.plainDate()])('from AfricArXiv', async (doi, posted) => {
         const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
           body: {
             status: 'ok',
@@ -114,9 +115,8 @@ describe('infrastructure', () => {
         )
       })
 
-      fc.test(
+      test.prop([fc.doi(), fc.sanitisedHtml(), fc.plainDate(), fc.constantFrom('bioRxiv', 'medRxiv')])(
         'from bioRxiv/medRxiv',
-        [fc.doi(), fc.sanitisedHtml(), fc.plainDate(), fc.constantFrom('bioRxiv', 'medRxiv')],
         async (doi, title, posted, server) => {
           const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
             body: {
@@ -571,7 +571,7 @@ describe('infrastructure', () => {
         },
       )
 
-      fc.test('from SciELO', [fc.doi(), fc.plainDate()], async (doi, posted) => {
+      test.prop([fc.doi(), fc.plainDate()])('from SciELO', async (doi, posted) => {
         const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
           body: {
             status: 'ok',
@@ -678,7 +678,7 @@ describe('infrastructure', () => {
         )
       })
 
-      fc.test('when the response is stale', [fc.doi(), fc.plainDate()], async (doi, posted) => {
+      test.prop([fc.doi(), fc.plainDate()])('when the response is stale', async (doi, posted) => {
         const fetch = fetchMock
           .sandbox()
           .getOnce(
@@ -784,7 +784,7 @@ describe('infrastructure', () => {
       })
     })
 
-    fc.test('when the preprint is not found', [fc.doi()], async doi => {
+    test.prop([fc.doi()])('when the preprint is not found', async doi => {
       const fetch = fetchMock
         .sandbox()
         .getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, { status: Status.NotFound })
@@ -794,9 +794,8 @@ describe('infrastructure', () => {
       expect(actual).toStrictEqual(E.left('not-found'))
     })
 
-    fc.test(
+    test.prop([fc.doi(), fc.record({ status: fc.integer(), body: fc.string() })])(
       'when the preprint cannot be loaded',
-      [fc.doi(), fc.record({ status: fc.integer(), body: fc.string() })],
       async (doi, response) => {
         const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, response)
 
@@ -808,172 +807,164 @@ describe('infrastructure', () => {
   })
 
   describe('getPrereview', () => {
-    fc.test(
-      'when the PREreview can be loaded',
-      [
-        fc.integer(),
-        fc.record({
-          doi: fc.preprintDoi(),
-          language: fc.languageCode(),
-          title: fc.html(),
-        }),
-      ],
-      async (id, preprint) => {
-        const record: Record = {
-          conceptdoi: '10.5072/zenodo.1061863' as Doi,
-          conceptrecid: 1061863,
-          files: [
+    test.prop([
+      fc.integer(),
+      fc.record({
+        doi: fc.preprintDoi(),
+        language: fc.languageCode(),
+        title: fc.html(),
+      }),
+    ])('when the PREreview can be loaded', async (id, preprint) => {
+      const record: Record = {
+        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptrecid: 1061863,
+        files: [
+          {
+            links: {
+              self: new URL('http://example.com/file'),
+            },
+            key: 'review.html',
+            type: 'html',
+            size: 58,
+          },
+        ],
+        id,
+        links: {
+          latest: new URL('http://example.com/latest'),
+          latest_html: new URL('http://example.com/latest_html'),
+        },
+        metadata: {
+          communities: [{ id: 'prereview-reviews' }],
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          doi: '10.5281/zenodo.1061864' as Doi,
+          license: {
+            id: 'CC-BY-4.0',
+          },
+          publication_date: new Date('2022-07-05'),
+          related_identifiers: [
             {
-              links: {
-                self: new URL('http://example.com/file'),
-              },
-              key: 'review.html',
-              type: 'html',
-              size: 58,
+              scheme: 'doi',
+              identifier: preprint.doi,
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
             },
           ],
-          id,
-          links: {
-            latest: new URL('http://example.com/latest'),
-            latest_html: new URL('http://example.com/latest_html'),
+          resource_type: {
+            type: 'publication',
+            subtype: 'article',
           },
-          metadata: {
-            communities: [{ id: 'prereview-reviews' }],
-            creators: [{ name: 'PREreviewer' }],
-            description: 'Description',
-            doi: '10.5281/zenodo.1061864' as Doi,
-            license: {
-              id: 'CC-BY-4.0',
-            },
-            publication_date: new Date('2022-07-05'),
-            related_identifiers: [
-              {
-                scheme: 'doi',
-                identifier: preprint.doi,
-                relation: 'reviews',
-                resource_type: 'publication-preprint',
-              },
-            ],
-            resource_type: {
-              type: 'publication',
-              subtype: 'article',
-            },
-            title: 'Title',
-          },
-        }
+          title: 'Title',
+        },
+      }
 
-        const getPreprintTitle = jest.fn(_ => TE.right(preprint))
+      const getPreprintTitle = jest.fn(_ => TE.right(preprint))
 
-        const actual = await _.getPrereview(id)({
-          fetch: fetchMock
-            .sandbox()
-            .getOnce(`https://zenodo.org/api/records/${id}`, {
-              body: RecordC.encode(record),
-              status: Status.OK,
-            })
-            .getOnce(
-              { url: 'http://example.com/file', functionMatcher: (_, req) => req.cache === 'force-cache' },
-              { body: 'Some text' },
-            ),
-          getPreprintTitle,
-        })()
-
-        expect(actual).toStrictEqual(
-          E.right({
-            authors: [{ name: 'PREreviewer' }],
-            doi: '10.5281/zenodo.1061864' as Doi,
-            license: 'CC-BY-4.0',
-            postedDate: PlainDate.from('2022-07-05'),
-            preprint,
-            text: rawHtml('Some text'),
-          }),
-        )
-        expect(getPreprintTitle).toHaveBeenCalledWith(preprint.doi)
-      },
-    )
-
-    fc.test(
-      'revalidates if the PREreview is stale',
-      [
-        fc.integer(),
-        fc.record({
-          doi: fc.preprintDoi(),
-          language: fc.languageCode(),
-          title: fc.html(),
-        }),
-      ],
-      async (id, preprint) => {
-        const record: Record = {
-          conceptdoi: '10.5072/zenodo.1061863' as Doi,
-          conceptrecid: 1061863,
-          files: [
-            {
-              links: {
-                self: new URL('http://example.com/file'),
-              },
-              key: 'review.html',
-              type: 'html',
-              size: 58,
-            },
-          ],
-          id,
-          links: {
-            latest: new URL('http://example.com/latest'),
-            latest_html: new URL('http://example.com/latest_html'),
-          },
-          metadata: {
-            communities: [{ id: 'prereview-reviews' }],
-            creators: [{ name: 'PREreviewer' }],
-            description: 'Description',
-            doi: '10.5281/zenodo.1061864' as Doi,
-            license: {
-              id: 'CC-BY-4.0',
-            },
-            publication_date: new Date('2022-07-05'),
-            related_identifiers: [
-              {
-                scheme: 'doi',
-                identifier: preprint.doi,
-                relation: 'reviews',
-                resource_type: 'publication-preprint',
-              },
-            ],
-            resource_type: {
-              type: 'publication',
-              subtype: 'article',
-            },
-            title: 'Title',
-          },
-        }
-
-        const fetch = fetchMock
+      const actual = await _.getPrereview(id)({
+        fetch: fetchMock
           .sandbox()
-          .getOnce((url, { cache }) => url === `https://zenodo.org/api/records/${id}` && cache === 'force-cache', {
+          .getOnce(`https://zenodo.org/api/records/${id}`, {
             body: RecordC.encode(record),
-            headers: { 'X-Local-Cache-Status': 'stale' },
+            status: Status.OK,
           })
-          .getOnce((url, { cache }) => url === `https://zenodo.org/api/records/${id}` && cache === 'no-cache', {
-            throws: new Error('Network error'),
-          })
-          .getOnce('http://example.com/file', { body: 'Some text' })
+          .getOnce(
+            { url: 'http://example.com/file', functionMatcher: (_, req) => req.cache === 'force-cache' },
+            { body: 'Some text' },
+          ),
+        getPreprintTitle,
+      })()
 
-        const actual = await _.getPrereview(id)({ fetch, getPreprintTitle: () => TE.right(preprint) })()
+      expect(actual).toStrictEqual(
+        E.right({
+          authors: [{ name: 'PREreviewer' }],
+          doi: '10.5281/zenodo.1061864' as Doi,
+          license: 'CC-BY-4.0',
+          postedDate: PlainDate.from('2022-07-05'),
+          preprint,
+          text: rawHtml('Some text'),
+        }),
+      )
+      expect(getPreprintTitle).toHaveBeenCalledWith(preprint.doi)
+    })
 
-        expect(actual).toStrictEqual(
-          E.right({
-            authors: [{ name: 'PREreviewer' }],
-            doi: '10.5281/zenodo.1061864' as Doi,
-            license: 'CC-BY-4.0',
-            postedDate: PlainDate.from('2022-07-05'),
-            preprint,
-            text: rawHtml('Some text'),
-          }),
-        )
-        expect(fetch.done()).toBeTruthy()
-      },
-    )
+    test.prop([
+      fc.integer(),
+      fc.record({
+        doi: fc.preprintDoi(),
+        language: fc.languageCode(),
+        title: fc.html(),
+      }),
+    ])('revalidates if the PREreview is stale', async (id, preprint) => {
+      const record: Record = {
+        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptrecid: 1061863,
+        files: [
+          {
+            links: {
+              self: new URL('http://example.com/file'),
+            },
+            key: 'review.html',
+            type: 'html',
+            size: 58,
+          },
+        ],
+        id,
+        links: {
+          latest: new URL('http://example.com/latest'),
+          latest_html: new URL('http://example.com/latest_html'),
+        },
+        metadata: {
+          communities: [{ id: 'prereview-reviews' }],
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          doi: '10.5281/zenodo.1061864' as Doi,
+          license: {
+            id: 'CC-BY-4.0',
+          },
+          publication_date: new Date('2022-07-05'),
+          related_identifiers: [
+            {
+              scheme: 'doi',
+              identifier: preprint.doi,
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
+            },
+          ],
+          resource_type: {
+            type: 'publication',
+            subtype: 'article',
+          },
+          title: 'Title',
+        },
+      }
 
-    fc.test('when the review is not found', [fc.integer()], async id => {
+      const fetch = fetchMock
+        .sandbox()
+        .getOnce((url, { cache }) => url === `https://zenodo.org/api/records/${id}` && cache === 'force-cache', {
+          body: RecordC.encode(record),
+          headers: { 'X-Local-Cache-Status': 'stale' },
+        })
+        .getOnce((url, { cache }) => url === `https://zenodo.org/api/records/${id}` && cache === 'no-cache', {
+          throws: new Error('Network error'),
+        })
+        .getOnce('http://example.com/file', { body: 'Some text' })
+
+      const actual = await _.getPrereview(id)({ fetch, getPreprintTitle: () => TE.right(preprint) })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          authors: [{ name: 'PREreviewer' }],
+          doi: '10.5281/zenodo.1061864' as Doi,
+          license: 'CC-BY-4.0',
+          postedDate: PlainDate.from('2022-07-05'),
+          preprint,
+          text: rawHtml('Some text'),
+        }),
+      )
+      expect(fetch.done()).toBeTruthy()
+    })
+
+    test.prop([fc.integer()])('when the review is not found', async id => {
       const actual = await _.getPrereview(id)({
         fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
           body: undefined,
@@ -985,77 +976,73 @@ describe('infrastructure', () => {
       expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
     })
 
-    fc.test(
-      'when the review text cannot be loaded',
-      [
-        fc.integer(),
-        fc.record({
-          doi: fc.preprintDoi(),
-          language: fc.languageCode(),
-          title: fc.html(),
-        }),
-        fc.integer({ min: 400, max: 599 }),
-      ],
-      async (id, preprint, textStatus) => {
-        const record: Record = {
-          conceptdoi: '10.5072/zenodo.1061863' as Doi,
-          conceptrecid: 1061863,
-          files: [
+    test.prop([
+      fc.integer(),
+      fc.record({
+        doi: fc.preprintDoi(),
+        language: fc.languageCode(),
+        title: fc.html(),
+      }),
+      fc.integer({ min: 400, max: 599 }),
+    ])('when the review text cannot be loaded', async (id, preprint, textStatus) => {
+      const record: Record = {
+        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptrecid: 1061863,
+        files: [
+          {
+            links: {
+              self: new URL('http://example.com/file'),
+            },
+            key: 'review.html',
+            type: 'html',
+            size: 58,
+          },
+        ],
+        id,
+        links: {
+          latest: new URL('http://example.com/latest'),
+          latest_html: new URL('http://example.com/latest_html'),
+        },
+        metadata: {
+          communities: [{ id: 'prereview-reviews' }],
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          doi: '10.5281/zenodo.1061864' as Doi,
+          license: {
+            id: 'CC-BY-4.0',
+          },
+          publication_date: new Date('2022-07-05'),
+          related_identifiers: [
             {
-              links: {
-                self: new URL('http://example.com/file'),
-              },
-              key: 'review.html',
-              type: 'html',
-              size: 58,
+              scheme: 'doi',
+              identifier: preprint.doi,
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
             },
           ],
-          id,
-          links: {
-            latest: new URL('http://example.com/latest'),
-            latest_html: new URL('http://example.com/latest_html'),
+          resource_type: {
+            type: 'publication',
+            subtype: 'article',
           },
-          metadata: {
-            communities: [{ id: 'prereview-reviews' }],
-            creators: [{ name: 'PREreviewer' }],
-            description: 'Description',
-            doi: '10.5281/zenodo.1061864' as Doi,
-            license: {
-              id: 'CC-BY-4.0',
-            },
-            publication_date: new Date('2022-07-05'),
-            related_identifiers: [
-              {
-                scheme: 'doi',
-                identifier: preprint.doi,
-                relation: 'reviews',
-                resource_type: 'publication-preprint',
-              },
-            ],
-            resource_type: {
-              type: 'publication',
-              subtype: 'article',
-            },
-            title: 'Title',
-          },
-        }
+          title: 'Title',
+        },
+      }
 
-        const actual = await _.getPrereview(id)({
-          fetch: fetchMock
-            .sandbox()
-            .getOnce(`https://zenodo.org/api/records/${id}`, {
-              body: RecordC.encode(record),
-              status: Status.OK,
-            })
-            .getOnce('http://example.com/file', { status: textStatus }),
-          getPreprintTitle: () => TE.right(preprint),
-        })()
+      const actual = await _.getPrereview(id)({
+        fetch: fetchMock
+          .sandbox()
+          .getOnce(`https://zenodo.org/api/records/${id}`, {
+            body: RecordC.encode(record),
+            status: Status.OK,
+          })
+          .getOnce('http://example.com/file', { status: textStatus }),
+        getPreprintTitle: () => TE.right(preprint),
+      })()
 
-        expect(actual).toStrictEqual(E.left(expect.anything()))
-      },
-    )
+      expect(actual).toStrictEqual(E.left(expect.anything()))
+    })
 
-    fc.test('when the review cannot be loaded', [fc.integer()], async id => {
+    test.prop([fc.integer()])('when the review cannot be loaded', async id => {
       const actual = await _.getPrereview(id)({
         fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
           body: undefined,
@@ -1067,9 +1054,8 @@ describe('infrastructure', () => {
       expect(actual).toStrictEqual(E.left(expect.anything()))
     })
 
-    fc.test(
+    test.prop([fc.integer(), fc.preprintDoi(), fc.anything()])(
       'when the preprint cannot be loaded',
-      [fc.integer(), fc.preprintDoi(), fc.anything()],
       async (id, preprintDoi, error) => {
         const record: Record = {
           conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -1129,7 +1115,7 @@ describe('infrastructure', () => {
       },
     )
 
-    fc.test('when the record is not in the community', [fc.integer(), fc.preprintDoi()], async (id, preprintDoi) => {
+    test.prop([fc.integer(), fc.preprintDoi()])('when the record is not in the community', async (id, preprintDoi) => {
       const record: Record = {
         conceptdoi: '10.5072/zenodo.1061863' as Doi,
         conceptrecid: 1061863,
@@ -1183,9 +1169,8 @@ describe('infrastructure', () => {
       expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
     })
 
-    fc.test(
+    test.prop([fc.integer(), fc.preprintDoi(), fc.string()])(
       'when the record does not have a CC-BY-4.0 license',
-      [fc.integer(), fc.preprintDoi(), fc.string()],
       async (id, preprintDoi, license) => {
         const record: Record = {
           conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -1242,9 +1227,8 @@ describe('infrastructure', () => {
       },
     )
 
-    fc.test(
+    test.prop([fc.integer(), fc.oneof(fc.string(), fc.doi())])(
       'when the record does not review a preprint with a preprint DOI',
-      [fc.integer(), fc.oneof(fc.string(), fc.doi())],
       async (id, identifier) => {
         const record: Record = {
           conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -1301,77 +1285,73 @@ describe('infrastructure', () => {
       },
     )
 
-    fc.test(
-      'when the record does not have a HTML file',
-      [
-        fc.integer(),
+    test.prop([
+      fc.integer(),
+      fc.record({
+        doi: fc.preprintDoi(),
+        language: fc.languageCode(),
+        title: fc.html(),
+      }),
+      fc.nonEmptyArray(
         fc.record({
-          doi: fc.preprintDoi(),
-          language: fc.languageCode(),
-          title: fc.html(),
+          links: fc.record({
+            self: fc.url(),
+          }),
+          key: fc.string(),
+          type: fc.string().filter(type => type !== 'html'),
+          size: fc.integer(),
         }),
-        fc.nonEmptyArray(
-          fc.record({
-            links: fc.record({
-              self: fc.url(),
-            }),
-            key: fc.string(),
-            type: fc.string().filter(type => type !== 'html'),
-            size: fc.integer(),
-          }),
-          { minLength: 1 },
-        ),
-      ],
-      async (id, preprint, files) => {
-        const record: Record = {
-          conceptdoi: '10.5072/zenodo.1061863' as Doi,
-          conceptrecid: 1061863,
-          files,
-          id,
-          links: {
-            latest: new URL('http://example.com/latest'),
-            latest_html: new URL('http://example.com/latest_html'),
+        { minLength: 1 },
+      ),
+    ])('when the record does not have a HTML file', async (id, preprint, files) => {
+      const record: Record = {
+        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptrecid: 1061863,
+        files,
+        id,
+        links: {
+          latest: new URL('http://example.com/latest'),
+          latest_html: new URL('http://example.com/latest_html'),
+        },
+        metadata: {
+          communities: [{ id: 'prereview-reviews' }],
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          doi: '10.5281/zenodo.1061864' as Doi,
+          license: {
+            id: 'CC-BY-4.0',
           },
-          metadata: {
-            communities: [{ id: 'prereview-reviews' }],
-            creators: [{ name: 'PREreviewer' }],
-            description: 'Description',
-            doi: '10.5281/zenodo.1061864' as Doi,
-            license: {
-              id: 'CC-BY-4.0',
+          publication_date: new Date('2022-07-05'),
+          related_identifiers: [
+            {
+              scheme: 'doi',
+              identifier: preprint.doi,
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
             },
-            publication_date: new Date('2022-07-05'),
-            related_identifiers: [
-              {
-                scheme: 'doi',
-                identifier: preprint.doi,
-                relation: 'reviews',
-                resource_type: 'publication-preprint',
-              },
-            ],
-            resource_type: {
-              type: 'publication',
-              subtype: 'article',
-            },
-            title: 'Title',
+          ],
+          resource_type: {
+            type: 'publication',
+            subtype: 'article',
           },
-        }
+          title: 'Title',
+        },
+      }
 
-        const actual = await _.getPrereview(id)({
-          fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
-            body: RecordC.encode(record),
-            status: Status.OK,
-          }),
-          getPreprintTitle: () => TE.right(preprint),
-        })()
+      const actual = await _.getPrereview(id)({
+        fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+          body: RecordC.encode(record),
+          status: Status.OK,
+        }),
+        getPreprintTitle: () => TE.right(preprint),
+      })()
 
-        expect(actual).toStrictEqual(E.left(expect.anything()))
-      },
-    )
+      expect(actual).toStrictEqual(E.left(expect.anything()))
+    })
   })
 
   describe('getPrereviews', () => {
-    fc.test('when the PREreviews can be loaded', [fc.preprintId()], async preprint => {
+    test.prop([fc.preprintId()])('when the PREreviews can be loaded', async preprint => {
       const records: Records = {
         hits: {
           hits: [
@@ -1441,7 +1421,7 @@ describe('infrastructure', () => {
       )
     })
 
-    fc.test('revalidates if the PREreviews are stale', [fc.preprintId()], async preprint => {
+    test.prop([fc.preprintId()])('revalidates if the PREreviews are stale', async preprint => {
       const records: Records = {
         hits: {
           hits: [
@@ -1525,9 +1505,8 @@ describe('infrastructure', () => {
       expect(fetch.done()).toBeTruthy()
     })
 
-    fc.test(
+    test.prop([fc.preprintId(), fc.integer({ min: 400, max: 599 })])(
       'when the PREreviews cannot be loaded',
-      [fc.preprintId(), fc.integer({ min: 400, max: 599 })],
       async (preprint, status) => {
         const actual = await _.getPrereviews(preprint)({
           fetch: fetchMock.sandbox().getOnce(
@@ -1549,248 +1528,230 @@ describe('infrastructure', () => {
   })
 
   describe('createRecordOnZenodo', () => {
-    fc.test(
-      'as a public persona',
-      [
-        fc.record<NewPrereview>({
-          conduct: fc.constant('yes'),
-          otherAuthors: fc.array(
-            fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
-          ),
-          persona: fc.constant('public'),
-          preprint: fc.record({
-            doi: fc.preprintDoi(),
-            language: fc.languageCode(),
-            title: fc.html(),
-          }),
-          review: fc.html(),
-          user: fc.user(),
+    test.prop([
+      fc.record<NewPrereview>({
+        conduct: fc.constant('yes'),
+        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        persona: fc.constant('public'),
+        preprint: fc.record({
+          doi: fc.preprintDoi(),
+          language: fc.languageCode(),
+          title: fc.html(),
         }),
-        fc.string(),
-        fc.doi(),
-      ],
-      async (newPrereview, zenodoApiKey, reviewDoi) => {
-        const unsubmittedDeposition: UnsubmittedDeposition = {
-          id: 1,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-          },
-          metadata: {
-            creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
-            description: 'Description',
-            prereserve_doi: {
-              doi: reviewDoi,
-            },
-            title: 'Title',
-            upload_type: 'publication',
-            publication_type: 'article',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }
-        const submittedDeposition: SubmittedDeposition = {
-          id: 1,
-          metadata: {
-            creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
-            description: 'Description',
+        review: fc.html(),
+        user: fc.user(),
+      }),
+      fc.string(),
+      fc.doi(),
+    ])('as a public persona', async (newPrereview, zenodoApiKey, reviewDoi) => {
+      const unsubmittedDeposition: UnsubmittedDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+        },
+        metadata: {
+          creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+          description: 'Description',
+          prereserve_doi: {
             doi: reviewDoi,
-            title: 'Title',
-            upload_type: 'publication',
-            publication_type: 'article',
           },
-          state: 'done',
-          submitted: true,
-        }
-        const actual = await _.createRecordOnZenodo(newPrereview)({
-          fetch: fetchMock
-            .sandbox()
-            .postOnce(
-              {
-                url: 'https://zenodo.org/api/deposit/depositions',
-                body: {
-                  metadata: {
-                    upload_type: 'publication',
-                    publication_type: 'article',
-                    title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                    creators: [
-                      { name: newPrereview.user.name, orcid: newPrereview.user.orcid },
-                      ...newPrereview.otherAuthors,
-                    ],
-                    communities: [{ identifier: 'prereview-reviews' }],
-                    description: newPrereview.review.toString(),
-                    related_identifiers: [
-                      {
-                        scheme: 'doi',
-                        identifier: newPrereview.preprint.doi,
-                        relation: 'reviews',
-                        resource_type: 'publication-preprint',
-                      },
-                    ],
-                  },
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'article',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const submittedDeposition: SubmittedDeposition = {
+        id: 1,
+        metadata: {
+          creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+          description: 'Description',
+          doi: reviewDoi,
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'article',
+        },
+        state: 'done',
+        submitted: true,
+      }
+      const actual = await _.createRecordOnZenodo(newPrereview)({
+        fetch: fetchMock
+          .sandbox()
+          .postOnce(
+            {
+              url: 'https://zenodo.org/api/deposit/depositions',
+              body: {
+                metadata: {
+                  upload_type: 'publication',
+                  publication_type: 'article',
+                  title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
+                  creators: [
+                    { name: newPrereview.user.name, orcid: newPrereview.user.orcid },
+                    ...newPrereview.otherAuthors,
+                  ],
+                  communities: [{ identifier: 'prereview-reviews' }],
+                  description: newPrereview.review.toString(),
+                  related_identifiers: [
+                    {
+                      scheme: 'doi',
+                      identifier: newPrereview.preprint.doi,
+                      relation: 'reviews',
+                      resource_type: 'publication-preprint',
+                    },
+                  ],
                 },
               },
-              {
-                body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-                status: Status.Created,
-              },
-            )
-            .putOnce(
-              {
-                url: 'http://example.com/bucket/review.html',
-                headers: { 'Content-Type': 'text/html' },
-                functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
-              },
-              {
-                status: Status.Created,
-              },
-            )
-            .postOnce('http://example.com/publish', {
-              body: SubmittedDepositionC.encode(submittedDeposition),
-              status: Status.Accepted,
-            }),
-          zenodoApiKey,
-        })()
-
-        expect(actual).toStrictEqual(E.right(reviewDoi))
-      },
-    )
-
-    fc.test(
-      'as an pseudonym persona',
-      [
-        fc.record<NewPrereview>({
-          conduct: fc.constant('yes'),
-          otherAuthors: fc.array(
-            fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
-          ),
-          persona: fc.constant('pseudonym'),
-          preprint: fc.record({
-            doi: fc.preprintDoi(),
-            language: fc.languageCode(),
-            title: fc.html(),
-          }),
-          review: fc.html(),
-          user: fc.user(),
-        }),
-        fc.string(),
-        fc.doi(),
-      ],
-      async (newPrereview, zenodoApiKey, reviewDoi) => {
-        const unsubmittedDeposition: UnsubmittedDeposition = {
-          id: 1,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-          },
-          metadata: {
-            creators: [{ name: 'PREreviewer' }],
-            description: 'Description',
-            prereserve_doi: {
-              doi: reviewDoi,
             },
-            title: 'Title',
-            upload_type: 'publication',
-            publication_type: 'article',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }
-        const submittedDeposition: SubmittedDeposition = {
-          id: 1,
-          metadata: {
-            creators: [{ name: 'PREreviewer' }],
-            description: 'Description',
+            {
+              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+              status: Status.Created,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/bucket/review.html',
+              headers: { 'Content-Type': 'text/html' },
+              functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
+            },
+            {
+              status: Status.Created,
+            },
+          )
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
+          }),
+        zenodoApiKey,
+      })()
+
+      expect(actual).toStrictEqual(E.right(reviewDoi))
+    })
+
+    test.prop([
+      fc.record<NewPrereview>({
+        conduct: fc.constant('yes'),
+        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        persona: fc.constant('pseudonym'),
+        preprint: fc.record({
+          doi: fc.preprintDoi(),
+          language: fc.languageCode(),
+          title: fc.html(),
+        }),
+        review: fc.html(),
+        user: fc.user(),
+      }),
+      fc.string(),
+      fc.doi(),
+    ])('as an pseudonym persona', async (newPrereview, zenodoApiKey, reviewDoi) => {
+      const unsubmittedDeposition: UnsubmittedDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+        },
+        metadata: {
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          prereserve_doi: {
             doi: reviewDoi,
-            title: 'Title',
-            upload_type: 'publication',
-            publication_type: 'article',
           },
-          state: 'done',
-          submitted: true,
-        }
-        const actual = await _.createRecordOnZenodo(newPrereview)({
-          fetch: fetchMock
-            .sandbox()
-            .postOnce(
-              {
-                url: 'https://zenodo.org/api/deposit/depositions',
-                body: {
-                  metadata: {
-                    upload_type: 'publication',
-                    publication_type: 'article',
-                    title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                    creators: [{ name: newPrereview.user.pseudonym }, ...newPrereview.otherAuthors],
-                    communities: [{ identifier: 'prereview-reviews' }],
-                    description: newPrereview.review.toString(),
-                    related_identifiers: [
-                      {
-                        scheme: 'doi',
-                        identifier: newPrereview.preprint.doi,
-                        relation: 'reviews',
-                        resource_type: 'publication-preprint',
-                      },
-                    ],
-                  },
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'article',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const submittedDeposition: SubmittedDeposition = {
+        id: 1,
+        metadata: {
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          doi: reviewDoi,
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'article',
+        },
+        state: 'done',
+        submitted: true,
+      }
+      const actual = await _.createRecordOnZenodo(newPrereview)({
+        fetch: fetchMock
+          .sandbox()
+          .postOnce(
+            {
+              url: 'https://zenodo.org/api/deposit/depositions',
+              body: {
+                metadata: {
+                  upload_type: 'publication',
+                  publication_type: 'article',
+                  title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
+                  creators: [{ name: newPrereview.user.pseudonym }, ...newPrereview.otherAuthors],
+                  communities: [{ identifier: 'prereview-reviews' }],
+                  description: newPrereview.review.toString(),
+                  related_identifiers: [
+                    {
+                      scheme: 'doi',
+                      identifier: newPrereview.preprint.doi,
+                      relation: 'reviews',
+                      resource_type: 'publication-preprint',
+                    },
+                  ],
                 },
               },
-              {
-                body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-                status: Status.Created,
-              },
-            )
-            .putOnce(
-              {
-                url: 'http://example.com/bucket/review.html',
-                headers: { 'Content-Type': 'text/html' },
-                functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
-              },
-              {
-                status: Status.Created,
-              },
-            )
-            .postOnce('http://example.com/publish', {
-              body: SubmittedDepositionC.encode(submittedDeposition),
-              status: Status.Accepted,
-            }),
-          zenodoApiKey,
-        })()
-
-        expect(actual).toStrictEqual(E.right(reviewDoi))
-      },
-    )
-
-    fc.test(
-      'Zenodo is unavailable',
-      [
-        fc.record<NewPrereview>({
-          conduct: fc.constant('yes'),
-          otherAuthors: fc.array(
-            fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] }),
-          ),
-          persona: fc.constantFrom('public', 'pseudonym'),
-          preprint: fc.record({
-            doi: fc.preprintDoi(),
-            language: fc.languageCode(),
-            title: fc.html(),
+            },
+            {
+              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+              status: Status.Created,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/bucket/review.html',
+              headers: { 'Content-Type': 'text/html' },
+              functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
+            },
+            {
+              status: Status.Created,
+            },
+          )
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
           }),
-          review: fc.html(),
-          user: fc.user(),
-        }),
-        fc.string(),
-        fc.oneof(
-          fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
-          fc.error().map(error => Promise.reject(error)),
-        ),
-      ],
-      async (newPrereview, zenodoApiKey, response) => {
-        const actual = await _.createRecordOnZenodo(newPrereview)({
-          fetch: () => response,
-          zenodoApiKey,
-        })()
+        zenodoApiKey,
+      })()
 
-        expect(actual).toStrictEqual(E.left(expect.anything()))
-      },
-    )
+      expect(actual).toStrictEqual(E.right(reviewDoi))
+    })
+
+    test.prop([
+      fc.record<NewPrereview>({
+        conduct: fc.constant('yes'),
+        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        persona: fc.constantFrom('public', 'pseudonym'),
+        preprint: fc.record({
+          doi: fc.preprintDoi(),
+          language: fc.languageCode(),
+          title: fc.html(),
+        }),
+        review: fc.html(),
+        user: fc.user(),
+      }),
+      fc.string(),
+      fc.oneof(
+        fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
+        fc.error().map(error => Promise.reject(error)),
+      ),
+    ])('Zenodo is unavailable', async (newPrereview, zenodoApiKey, response) => {
+      const actual = await _.createRecordOnZenodo(newPrereview)({
+        fetch: () => response,
+        zenodoApiKey,
+      })()
+
+      expect(actual).toStrictEqual(E.left(expect.anything()))
+    })
   })
 })

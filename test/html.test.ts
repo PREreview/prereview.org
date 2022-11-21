@@ -1,4 +1,5 @@
-import { describe, expect, test } from '@jest/globals'
+import { test } from '@fast-check/jest'
+import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import * as D from 'io-ts/Decoder'
 import * as _ from '../src/html'
@@ -342,21 +343,20 @@ describe('plainText', () => {
 
 describe('RawHtmlC', () => {
   describe('decode', () => {
-    fc.test('with a string', [fc.string()], string => {
+    test.prop([fc.string()])('with a string', string => {
       const actual = _.RawHtmlC.decode(string)
 
       expect(actual).toStrictEqual(D.success(_.rawHtml(string)))
     })
 
-    fc.test('with HTML', [fc.html()], html => {
+    test.prop([fc.html()])('with HTML', html => {
       const actual = _.RawHtmlC.decode(html)
 
       expect(actual).toStrictEqual(D.success(html))
     })
 
-    fc.test(
+    test.prop([fc.anything().filter(value => typeof value !== 'string' && !(value instanceof String))])(
       'with a non-string',
-      [fc.anything().filter(value => typeof value !== 'string' && !(value instanceof String))],
       value => {
         const actual = _.RawHtmlC.decode(value)
 
@@ -365,7 +365,7 @@ describe('RawHtmlC', () => {
     )
   })
 
-  fc.test('encode', [fc.html()], html => {
+  test.prop([fc.html()])('encode', html => {
     const actual = _.RawHtmlC.encode(html)
 
     expect(actual).toStrictEqual(html.toString())

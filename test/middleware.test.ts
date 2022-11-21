@@ -1,3 +1,4 @@
+import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import { MediaType, Status } from 'hyper-ts'
@@ -6,7 +7,7 @@ import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
 describe('middleware', () => {
-  fc.test('seeOther', [fc.connection(), fc.string()], async (connection, location) => {
+  test.prop([fc.connection(), fc.string()])('seeOther', async (connection, location) => {
     const actual = await runMiddleware(_.seeOther(location), connection)()
 
     expect(actual).toStrictEqual(
@@ -18,7 +19,7 @@ describe('middleware', () => {
     )
   })
 
-  fc.test('notFound', [fc.connection()], async connection => {
+  test.prop([fc.connection()])('notFound', async connection => {
     const actual = await runMiddleware(_.notFound({}), connection)()
 
     expect(actual).toStrictEqual(
@@ -31,7 +32,7 @@ describe('middleware', () => {
     )
   })
 
-  fc.test('serviceUnavailable', [fc.connection()], async connection => {
+  test.prop([fc.connection()])('serviceUnavailable', async connection => {
     const actual = await runMiddleware(_.serviceUnavailable({}), connection)()
 
     expect(actual).toStrictEqual(
