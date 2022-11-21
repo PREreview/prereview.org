@@ -135,6 +135,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
                     .with('africarxiv', () => 'AfricArXiv Preprints')
                     .with('biorxiv', () => 'bioRxiv')
                     .with('medrxiv', () => 'medRxiv')
+                    .with('research-square', () => 'Research Square')
                     .with('scielo', () => 'SciELO Preprints')
                     .exhaustive()}
                 </dd>

@@ -20,6 +20,7 @@ import {
   BiorxivPreprintId,
   MedrxivPreprintId,
   PreprintId,
+  ResearchSquarePreprintId,
   ScieloPreprintId,
 } from '../src/preprint-id'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
@@ -83,6 +84,12 @@ export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
     doi: doi(fc.constant('1101')),
   })
 
+export const researchSquarePreprintId = (): fc.Arbitrary<ResearchSquarePreprintId> =>
+  fc.record({
+    type: fc.constant('research-square'),
+    doi: doi(fc.constant('21203')),
+  })
+
 export const scieloPreprintId = (): fc.Arbitrary<ScieloPreprintId> =>
   fc.record({
     type: fc.constant('scielo'),
@@ -90,7 +97,13 @@ export const scieloPreprintId = (): fc.Arbitrary<ScieloPreprintId> =>
   })
 
 export const preprintId = (): fc.Arbitrary<PreprintId> =>
-  fc.oneof(africarxivPreprintId(), biorxivPreprintId(), medrxivPreprintId(), scieloPreprintId())
+  fc.oneof(
+    africarxivPreprintId(),
+    biorxivPreprintId(),
+    medrxivPreprintId(),
+    researchSquarePreprintId(),
+    scieloPreprintId(),
+  )
 
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc

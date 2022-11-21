@@ -571,6 +571,414 @@ describe('infrastructure', () => {
         },
       )
 
+      test.prop([fc.doi(), fc.plainDate()])('from Research Square', async (doi, posted) => {
+        const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
+          body: {
+            status: 'ok',
+            'message-type': 'work',
+            'message-version': '1.0.0',
+            message: {
+              institution: [{ name: 'Research Square' }],
+              indexed: {
+                'date-parts': [[2022, 7, 28]],
+                'date-time': '2022-07-28T17:43:48Z',
+                timestamp: 1659030228294,
+              },
+              posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+              'group-title': 'In Review',
+              'reference-count': 0,
+              publisher: 'Research Square Platform LLC',
+              license: [
+                {
+                  start: {
+                    'date-parts': [[2018, 10, 18]],
+                    'date-time': '2018-10-18T00:00:00Z',
+                    timestamp: 1539820800000,
+                  },
+                  'content-version': 'unspecified',
+                  'delay-in-days': 0,
+                  URL: 'https://creativecommons.org/licenses/by/4.0/',
+                },
+              ],
+              'content-domain': {
+                domain: [],
+                'crossmark-restriction': false,
+              },
+              'short-container-title': [],
+              accepted: {
+                'date-parts': [[2018, 10, 18]],
+              },
+              abstract:
+                '<jats:title>Abstract</jats:title>\n        <jats:p>The evidence base available to trialists to support trial process decisions– e.g. how best to recruit and retain participants, how to collect data or how to share the results with participants – is thin. One way to fill gaps in evidence is to run Studies Within A Trial, or SWATs. These are self-contained research studies embedded within a host trial that aim to evaluate or explore alternative ways of delivering or organising a particular trial process.\nSWATs are increasingly being supported by funders and considered by trialists, especially in the UK and Ireland. At some point, increasing SWAT evidence will lead funders and trialists to ask : given the current body of evidence for a SWAT, do we need a further evaluation in a another host trial? A framework for answering such a question is needed to avoid SWATs themselves contributing to research waste.\nThis paper presents criteria on when enough evidence is available for SWATs that use randomised allocation to compare different interventions.</jats:p>',
+              DOI: '10.21203/rs.1.1/v1',
+              type: 'posted-content',
+              created: {
+                'date-parts': [[2018, 10, 22]],
+                'date-time': '2018-10-22T18:43:21Z',
+                timestamp: 1540233801000,
+              },
+              source: 'Crossref',
+              'is-referenced-by-count': 1,
+              title: ['Trial Forge Guidance 2: How to decide if a further Study Within A Trial (SWAT) is needed'],
+              prefix: '10.21203',
+              author: [
+                {
+                  ORCID: 'http://orcid.org/0000-0002-7239-7241',
+                  'authenticated-orcid': false,
+                  given: 'Shaun',
+                  family: 'Treweek',
+                  sequence: 'first',
+                  affiliation: [{ name: 'University of Aberdeen' }],
+                },
+                {
+                  given: 'Simon',
+                  family: 'Bevan',
+                  sequence: 'additional',
+                  affiliation: [
+                    {
+                      name: 'National Institute for Health Research Evaluation, Trials and Studies Coordinating Centre',
+                    },
+                  ],
+                },
+                {
+                  given: 'Peter',
+                  family: 'Bower',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of Manchester' }],
+                },
+                {
+                  given: 'Matthias',
+                  family: 'Briel',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University Hospital Basel' }],
+                },
+                {
+                  given: 'Marion',
+                  family: 'Campbell',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of Aberdeen' }],
+                },
+                {
+                  given: 'Jacquie',
+                  family: 'Christie',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'GSK Medicines Research Centre' }],
+                },
+                {
+                  given: 'Clive',
+                  family: 'Collett',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'Health Research Authority' }],
+                },
+                {
+                  given: 'Seonaidh',
+                  family: 'Cotton',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of Aberdeen' }],
+                },
+                {
+                  given: 'Declan',
+                  family: 'Devane',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'National University of Ireland Galway' }],
+                },
+                {
+                  given: 'Adel El',
+                  family: 'Feky',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of Aberdeen' }],
+                },
+                {
+                  given: 'Sandra',
+                  family: 'Galvin',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'National University of Ireland Galway' }],
+                },
+                {
+                  given: 'Heidi',
+                  family: 'Gardner',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of Aberdeen' }],
+                },
+                {
+                  given: 'Katie',
+                  family: 'Gillies',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of Aberdeen' }],
+                },
+                {
+                  given: 'Kerenza',
+                  family: 'Hood',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'Cardiff University' }],
+                },
+                {
+                  given: 'Jan',
+                  family: 'Jansen',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of Alabama at Birmingham' }],
+                },
+                {
+                  given: 'Roberta',
+                  family: 'Littleford',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of Dundee' }],
+                },
+                {
+                  given: 'Adwoa',
+                  family: 'Parker',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of York' }],
+                },
+                {
+                  given: 'Craig',
+                  family: 'Ramsay',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of Aberdeen' }],
+                },
+                {
+                  given: 'Lynne',
+                  family: 'Restrup',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'Public and Patient Representative' }],
+                },
+                {
+                  given: 'Frank',
+                  family: 'Sullivan',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of St Andrews' }],
+                },
+                {
+                  given: 'David',
+                  family: 'Torgerson',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of York' }],
+                },
+                {
+                  given: 'Liz',
+                  family: 'Tremain',
+                  sequence: 'additional',
+                  affiliation: [
+                    {
+                      name: 'National Institute for Health Research Evaluation, Trials and Studies Coordinating Centre',
+                    },
+                  ],
+                },
+                {
+                  given: 'Erik',
+                  family: 'von Elm',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'Lausanne University Hospital' }],
+                },
+                {
+                  given: 'Matthew',
+                  family: 'Westmore',
+                  sequence: 'additional',
+                  affiliation: [
+                    {
+                      name: 'National Institute for Health Research Evaluation Trials and Studies Coordinating Centre',
+                    },
+                  ],
+                },
+                {
+                  given: 'Hywel',
+                  family: 'Williams',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'Nottingham University Hospitals NHS Trust' }],
+                },
+                {
+                  given: 'Paula R',
+                  family: 'Williamson',
+                  sequence: 'additional',
+                  affiliation: [{ name: 'University of Liverpool' }],
+                },
+                {
+                  given: 'Mike',
+                  family: 'Clarke',
+                  sequence: 'additional',
+                  affiliation: [{ name: "Queen's University Belfast" }],
+                },
+              ],
+              member: '8761',
+              'container-title': [],
+              'original-title': [],
+              link: [
+                {
+                  URL: 'https://www.researchsquare.com/article/rs-2/v1',
+                  'content-type': 'text/html',
+                  'content-version': 'vor',
+                  'intended-application': 'text-mining',
+                },
+                {
+                  URL: 'https://www.researchsquare.com/article/rs-2/v1.html',
+                  'content-type': 'unspecified',
+                  'content-version': 'vor',
+                  'intended-application': 'similarity-checking',
+                },
+              ],
+              deposited: {
+                'date-parts': [[2022, 7, 28]],
+                'date-time': '2022-07-28T17:17:54Z',
+                timestamp: 1659028674000,
+              },
+              score: 1,
+              resource: {
+                primary: {
+                  URL: 'https://www.researchsquare.com/article/rs-2/v1',
+                },
+              },
+              subtitle: [],
+              'short-title': [],
+              issued: { 'date-parts': [[2018, 10, 18]] },
+              'references-count': 0,
+              URL: 'http://dx.doi.org/10.21203/rs.1.1/v1',
+              relation: {
+                'is-preprint-of': [
+                  {
+                    'id-type': 'doi',
+                    id: '10.1186/s13063-019-3980-5',
+                    'asserted-by': 'subject',
+                  },
+                ],
+              },
+              published: { 'date-parts': [[2018, 10, 18]] },
+              subtype: 'preprint',
+            },
+          },
+        })
+
+        const actual = await _.getPreprint(doi)({ fetch })()
+
+        expect(actual).toStrictEqual(
+          E.right({
+            abstract: {
+              language: 'en',
+              text: expect.anything(),
+            },
+            authors: [
+              {
+                name: 'Shaun Treweek',
+                orcid: '0000-0002-7239-7241',
+              },
+              {
+                name: 'Simon Bevan',
+                orcid: undefined,
+              },
+              {
+                name: 'Peter Bower',
+                orcid: undefined,
+              },
+              {
+                name: 'Matthias Briel',
+                orcid: undefined,
+              },
+              {
+                name: 'Marion Campbell',
+                orcid: undefined,
+              },
+              {
+                name: 'Jacquie Christie',
+                orcid: undefined,
+              },
+              {
+                name: 'Clive Collett',
+                orcid: undefined,
+              },
+              {
+                name: 'Seonaidh Cotton',
+                orcid: undefined,
+              },
+              {
+                name: 'Declan Devane',
+                orcid: undefined,
+              },
+              {
+                name: 'Adel El Feky',
+                orcid: undefined,
+              },
+              {
+                name: 'Sandra Galvin',
+                orcid: undefined,
+              },
+              {
+                name: 'Heidi Gardner',
+                orcid: undefined,
+              },
+              {
+                name: 'Katie Gillies',
+                orcid: undefined,
+              },
+              {
+                name: 'Kerenza Hood',
+                orcid: undefined,
+              },
+              {
+                name: 'Jan Jansen',
+                orcid: undefined,
+              },
+              {
+                name: 'Roberta Littleford',
+                orcid: undefined,
+              },
+              {
+                name: 'Adwoa Parker',
+                orcid: undefined,
+              },
+              {
+                name: 'Craig Ramsay',
+                orcid: undefined,
+              },
+              {
+                name: 'Lynne Restrup',
+                orcid: undefined,
+              },
+              {
+                name: 'Frank Sullivan',
+                orcid: undefined,
+              },
+              {
+                name: 'David Torgerson',
+                orcid: undefined,
+              },
+              {
+                name: 'Liz Tremain',
+                orcid: undefined,
+              },
+              {
+                name: 'Erik von Elm',
+                orcid: undefined,
+              },
+              {
+                name: 'Matthew Westmore',
+                orcid: undefined,
+              },
+              {
+                name: 'Hywel Williams',
+                orcid: undefined,
+              },
+              {
+                name: 'Paula R Williamson',
+                orcid: undefined,
+              },
+              {
+                name: 'Mike Clarke',
+                orcid: undefined,
+              },
+            ],
+            id: {
+              type: 'research-square',
+              doi: '10.21203/rs.1.1/v1',
+            },
+            posted,
+            title: {
+              language: 'en',
+              text: rawHtml('Trial Forge Guidance 2: How to decide if a further Study Within A Trial (SWAT) is needed'),
+            },
+            url: new URL('https://www.researchsquare.com/article/rs-2/v1'),
+          }),
+        )
+      })
+
       test.prop([fc.doi(), fc.plainDate()])('from SciELO', async (doi, posted) => {
         const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
           body: {

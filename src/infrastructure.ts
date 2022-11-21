@@ -35,7 +35,14 @@ import {
 } from 'zenodo-ts'
 import { Html, plainText, rawHtml, sanitizeHtml } from './html'
 import { Preprint } from './preprint'
-import { AfricarxivPreprintId, BiorxivPreprintId, MedrxivPreprintId, PreprintId, ScieloPreprintId } from './preprint-id'
+import {
+  AfricarxivPreprintId,
+  BiorxivPreprintId,
+  MedrxivPreprintId,
+  PreprintId,
+  ResearchSquarePreprintId,
+  ScieloPreprintId,
+} from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
@@ -187,6 +194,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguage('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+              .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguage('en', 'es', 'pt'))
               .exhaustive(),
           ),
@@ -205,6 +213,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
             match({ type: preprint.id.type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguage('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+              .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguage('en', 'es', 'pt'))
               .exhaustive(),
           ),
@@ -283,44 +292,55 @@ function toHttps(url: URL): URL {
   return httpsUrl
 }
 
-const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590', '31730'))), 'DOI')
+const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31730'))), 'DOI')
 
-const PreprintIdD: D.Decoder<Work, AfricarxivPreprintId | BiorxivPreprintId | MedrxivPreprintId | ScieloPreprintId> =
-  pipe(
-    D.union(
-      D.struct({
-        DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('31730'))), 'DOI'),
-        publisher: D.literal('Center for Open Science'),
-        'group-title': D.literal('AfricArXiv'),
-      }),
-      D.struct({
-        DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI'),
-        publisher: D.literal('Cold Spring Harbor Laboratory'),
-        institution: D.tuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })),
-      }),
-      D.struct({
-        DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1590'))), 'DOI'),
-        publisher: D.literal('FapUNIFESP (SciELO)'),
-      }),
-    ),
-    D.map(work =>
-      match(work)
-        .with({ DOI: P.select(), publisher: 'Center for Open Science', 'group-title': 'AfricArXiv' }, doi => ({
-          type: 'africarxiv' as const,
-          doi,
-        }))
-        .with(
-          { DOI: P.select(), publisher: 'Cold Spring Harbor Laboratory', institution: [{ name: 'bioRxiv' }] },
-          doi => ({ type: 'biorxiv' as const, doi }),
-        )
-        .with(
-          { DOI: P.select(), publisher: 'Cold Spring Harbor Laboratory', institution: [{ name: 'medRxiv' }] },
-          doi => ({ type: 'medrxiv' as const, doi }),
-        )
-        .with({ DOI: P.select(), publisher: 'FapUNIFESP (SciELO)' }, doi => ({ type: 'scielo' as const, doi }))
-        .exhaustive(),
-    ),
-  )
+const PreprintIdD: D.Decoder<
+  Work,
+  AfricarxivPreprintId | BiorxivPreprintId | MedrxivPreprintId | ResearchSquarePreprintId | ScieloPreprintId
+> = pipe(
+  D.union(
+    D.struct({
+      DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('31730'))), 'DOI'),
+      publisher: D.literal('Center for Open Science'),
+      'group-title': D.literal('AfricArXiv'),
+    }),
+    D.struct({
+      DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI'),
+      publisher: D.literal('Cold Spring Harbor Laboratory'),
+      institution: D.tuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })),
+    }),
+    D.struct({
+      DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('21203'))), 'DOI'),
+      publisher: D.literal('Research Square Platform LLC'),
+      institution: D.tuple(D.struct({ name: D.literal('Research Square') })),
+    }),
+    D.struct({
+      DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1590'))), 'DOI'),
+      publisher: D.literal('FapUNIFESP (SciELO)'),
+    }),
+  ),
+  D.map(work =>
+    match(work)
+      .with({ DOI: P.select(), publisher: 'Center for Open Science', 'group-title': 'AfricArXiv' }, doi => ({
+        type: 'africarxiv' as const,
+        doi,
+      }))
+      .with(
+        { DOI: P.select(), publisher: 'Cold Spring Harbor Laboratory', institution: [{ name: 'bioRxiv' }] },
+        doi => ({ type: 'biorxiv' as const, doi }),
+      )
+      .with(
+        { DOI: P.select(), publisher: 'Cold Spring Harbor Laboratory', institution: [{ name: 'medRxiv' }] },
+        doi => ({ type: 'medrxiv' as const, doi }),
+      )
+      .with(
+        { DOI: P.select(), publisher: 'Research Square Platform LLC', institution: [{ name: 'Research Square' }] },
+        doi => ({ type: 'research-square' as const, doi }),
+      )
+      .with({ DOI: P.select(), publisher: 'FapUNIFESP (SciELO)' }, doi => ({ type: 'scielo' as const, doi }))
+      .exhaustive(),
+  ),
+)
 
 const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
   D.fromStruct({ metadata: D.fromStruct({ license: D.fromStruct({ id: D.literal('CC-BY-4.0') }) }) }),

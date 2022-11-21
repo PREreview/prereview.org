@@ -40,7 +40,7 @@ const showHomeErrorPage = flow(
 const DoiD = pipe(
   D.string,
   D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parse(s))),
-  D.refine(hasRegistrant('1101', '1590', '31730'), 'DOI'),
+  D.refine(hasRegistrant('1101', '1590', '21203', '31730'), 'DOI'),
 )
 
 const LookupDoiD = pipe(
@@ -129,7 +129,9 @@ function createPage(lookupDoi: LookupDoi) {
               ${rawHtml(E.isLeft(lookupDoi) ? 'aria-invalid="true" aria-errormessage="doi-error"' : '')}
             />
 
-            <div id="doi-tip" role="note">We support AfricArXiv, bioRxiv, medRxiv and SciELO preprints.</div>
+            <div id="doi-tip" role="note">
+              We support AfricArXiv, bioRxiv, medRxiv, Research Square and SciELO preprints.
+            </div>
           </div>
 
           <button>Continue</button>
