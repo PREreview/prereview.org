@@ -192,10 +192,10 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
           'language',
           E.fromOptionK(() => 'unknown language')(({ text }) =>
             match({ type, text })
-              .with({ type: 'africarxiv', text: P.select() }, detectLanguage('en', 'fr'))
+              .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
-              .with({ type: 'scielo', text: P.select() }, detectLanguage('en', 'es', 'pt'))
+              .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
               .exhaustive(),
           ),
         ),
@@ -211,10 +211,10 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
           'language',
           E.fromOptionK(() => 'unknown language')(({ text }) =>
             match({ type: preprint.id.type, text })
-              .with({ type: 'africarxiv', text: P.select() }, detectLanguage('en', 'fr'))
+              .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
-              .with({ type: 'scielo', text: P.select() }, detectLanguage('en', 'es', 'pt'))
+              .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
               .exhaustive(),
           ),
         ),
@@ -383,7 +383,7 @@ const getReviewedDoi = flow(
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
 
-function detectLanguage<L extends LanguageCode>(...languages: ReadonlyArray<L>): (html: Html) => O.Option<L> {
+function detectLanguageFrom<L extends LanguageCode>(...languages: ReadonlyArray<L>): (html: Html) => O.Option<L> {
   return flow(
     html => detect(plainText(html).toString(), { only: [...languages] }) as L,
     O.fromPredicate(detected => languages.includes(detected)),
