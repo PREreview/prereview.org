@@ -297,48 +297,60 @@ const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590', 
 const PreprintIdD: D.Decoder<
   Work,
   AfricarxivPreprintId | BiorxivPreprintId | MedrxivPreprintId | ResearchSquarePreprintId | ScieloPreprintId
-> = pipe(
-  D.union(
+> = D.union(
+  pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('31730'), 'DOI'),
       publisher: D.literal('Center for Open Science'),
       'group-title': D.literal('AfricArXiv'),
     }),
+    D.map(work => ({
+      type: 'africarxiv' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('1101'), 'DOI'),
       publisher: D.literal('Cold Spring Harbor Laboratory'),
-      institution: D.fromTuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })),
+      institution: D.fromTuple(D.struct({ name: D.literal('bioRxiv') })),
     }),
+    D.map(work => ({
+      type: 'biorxiv' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('1101'), 'DOI'),
+      publisher: D.literal('Cold Spring Harbor Laboratory'),
+      institution: D.fromTuple(D.struct({ name: D.literal('medRxiv') })),
+    }),
+    D.map(work => ({
+      type: 'medrxiv' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('21203'), 'DOI'),
       publisher: D.literal('Research Square Platform LLC'),
       institution: D.fromTuple(D.struct({ name: D.literal('Research Square') })),
     }),
+    D.map(work => ({
+      type: 'research-square' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('1590'), 'DOI'),
       publisher: D.literal('FapUNIFESP (SciELO)'),
     }),
-  ),
-  D.map(work =>
-    match(work)
-      .with({ DOI: P.select(), publisher: 'Center for Open Science', 'group-title': 'AfricArXiv' }, doi => ({
-        type: 'africarxiv' as const,
-        doi,
-      }))
-      .with(
-        { DOI: P.select(), publisher: 'Cold Spring Harbor Laboratory', institution: [{ name: 'bioRxiv' }] },
-        doi => ({ type: 'biorxiv' as const, doi }),
-      )
-      .with(
-        { DOI: P.select(), publisher: 'Cold Spring Harbor Laboratory', institution: [{ name: 'medRxiv' }] },
-        doi => ({ type: 'medrxiv' as const, doi }),
-      )
-      .with(
-        { DOI: P.select(), publisher: 'Research Square Platform LLC', institution: [{ name: 'Research Square' }] },
-        doi => ({ type: 'research-square' as const, doi }),
-      )
-      .with({ DOI: P.select(), publisher: 'FapUNIFESP (SciELO)' }, doi => ({ type: 'scielo' as const, doi }))
-      .exhaustive(),
+    D.map(work => ({
+      type: 'scielo' as const,
+      doi: work.DOI,
+    })),
   ),
 )
 
