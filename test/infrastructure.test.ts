@@ -571,6 +571,98 @@ describe('infrastructure', () => {
         },
       )
 
+      test.prop([fc.doi(), fc.plainDate()])('from OSF', async (doi, posted) => {
+        const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
+          body: {
+            status: 'ok',
+            'message-type': 'work',
+            'message-version': '1.0.0',
+            message: {
+              indexed: { 'date-parts': [[2022, 8, 30]], 'date-time': '2022-08-30T22:12:51Z', timestamp: 1661897571277 },
+              posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+              'group-title': 'Open Science Framework',
+              'reference-count': 0,
+              publisher: 'Center for Open Science',
+              license: [
+                {
+                  start: {
+                    'date-parts': [[2021, 10, 11]],
+                    'date-time': '2021-10-11T00:00:00Z',
+                    timestamp: 1633910400000,
+                  },
+                  'content-version': 'unspecified',
+                  'delay-in-days': 0,
+                  URL: 'https://creativecommons.org/publicdomain/zero/1.0/legalcode',
+                },
+              ],
+              'content-domain': { domain: [], 'crossmark-restriction': false },
+              'short-container-title': [],
+              abstract:
+                '<p>This article takes a look at the state of preservation in Hoi An, which is a world heritage and a famous tourist attraction in central Vietnam.</p>',
+              DOI: '10.31219/osf.io/t9gbj',
+              type: 'posted-content',
+              created: {
+                'date-parts': [[2021, 10, 11]],
+                'date-time': '2021-10-11T09:19:19Z',
+                timestamp: 1633943959000,
+              },
+              source: 'Crossref',
+              'is-referenced-by-count': 0,
+              title: ['Quy ho\u1ea1ch di s\u1ea3n: M\u1ed9t g\u00f3c nh\u00ecn t\u1eeb H\u1ed9i An'],
+              prefix: '10.31219',
+              author: [{ given: 'Tran Duc Hung', family: 'Long', sequence: 'first', affiliation: [] }],
+              member: '15934',
+              'container-title': [],
+              'original-title': [],
+              deposited: {
+                'date-parts': [[2022, 8, 30]],
+                'date-time': '2022-08-30T21:53:41Z',
+                timestamp: 1661896421000,
+              },
+              score: 1,
+              resource: { primary: { URL: 'https://osf.io/t9gbj' } },
+              subtitle: [],
+              'short-title': [],
+              issued: { 'date-parts': [[2021, 10, 11]] },
+              'references-count': 0,
+              URL: 'http://dx.doi.org/10.31219/osf.io/t9gbj',
+              relation: {},
+              published: { 'date-parts': [[2021, 10, 11]] },
+              subtype: 'preprint',
+            },
+          },
+        })
+
+        const actual = await _.getPreprint(doi)({ fetch })()
+
+        expect(actual).toStrictEqual(
+          E.right({
+            abstract: {
+              language: 'en',
+              text: rawHtml(
+                '<p>This article takes a look at the state of preservation in Hoi An, which is a world heritage and a famous tourist attraction in central Vietnam.</p>',
+              ),
+            },
+            authors: [
+              {
+                name: 'Tran Duc Hung Long',
+                orcid: undefined,
+              },
+            ],
+            id: {
+              type: 'osf',
+              doi: '10.31219/osf.io/t9gbj',
+            },
+            posted,
+            title: {
+              language: 'vi',
+              text: rawHtml('Quy hoạch di sản: Một góc nhìn từ Hội An'),
+            },
+            url: new URL('https://osf.io/t9gbj'),
+          }),
+        )
+      })
+
       test.prop([fc.doi(), fc.plainDate()])('from Research Square', async (doi, posted) => {
         const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
           body: {

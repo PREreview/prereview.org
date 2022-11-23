@@ -40,7 +40,7 @@ const showHomeErrorPage = flow(
 const DoiD = pipe(
   D.string,
   D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parse(s))),
-  D.refine(hasRegistrant('1101', '1590', '21203', '31730'), 'DOI'),
+  D.refine(hasRegistrant('1101', '1590', '21203', '31219', '31730'), 'DOI'),
 )
 
 const LookupDoiD = pipe(
@@ -130,7 +130,7 @@ function createPage(lookupDoi: LookupDoi) {
             />
 
             <div id="doi-tip" role="note">
-              We support AfricArXiv, bioRxiv, medRxiv, Research Square and SciELO preprints.
+              We support AfricArXiv, bioRxiv, medRxiv, OSF, Research Square and SciELO preprints.
             </div>
           </div>
 

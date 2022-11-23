@@ -16,7 +16,7 @@ import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
-import { LanguageCode } from 'iso-639-1'
+import iso6391, { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
 import sanitize from 'sanitize-html'
 import { get } from 'spectacles-ts'
@@ -39,6 +39,7 @@ import {
   AfricarxivPreprintId,
   BiorxivPreprintId,
   MedrxivPreprintId,
+  OsfPreprintId,
   PreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
@@ -194,6 +195,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+              .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
               .exhaustive(),
@@ -213,6 +215,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
             match({ type: preprint.id.type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+              .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
               .exhaustive(),
@@ -292,11 +295,16 @@ function toHttps(url: URL): URL {
   return httpsUrl
 }
 
-const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31730'))), 'DOI')
+const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31730'))), 'DOI')
 
 const PreprintIdD: D.Decoder<
   Work,
-  AfricarxivPreprintId | BiorxivPreprintId | MedrxivPreprintId | ResearchSquarePreprintId | ScieloPreprintId
+  | AfricarxivPreprintId
+  | BiorxivPreprintId
+  | MedrxivPreprintId
+  | OsfPreprintId
+  | ResearchSquarePreprintId
+  | ScieloPreprintId
 > = D.union(
   pipe(
     D.fromStruct({
@@ -328,6 +336,17 @@ const PreprintIdD: D.Decoder<
     }),
     D.map(work => ({
       type: 'medrxiv' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('31219'), 'DOI'),
+      publisher: D.literal('Center for Open Science', 'CABI Publishing'),
+      'group-title': D.literal('Open Science Framework'),
+    }),
+    D.map(work => ({
+      type: 'osf' as const,
       doi: work.DOI,
     })),
   ),
@@ -400,6 +419,10 @@ function detectLanguageFrom<L extends LanguageCode>(...languages: ReadonlyArray<
     html => detect(plainText(html).toString(), { only: [...languages] }) as L,
     O.fromPredicate(detected => languages.includes(detected)),
   )
+}
+
+function detectLanguage(html: Html): O.Option<LanguageCode> {
+  return pipe(detect(plainText(html).toString()), O.fromPredicate(iso6391Validate))
 }
 
 function useStaleCache(env: ZenodoEnv): ZenodoEnv
@@ -483,3 +506,6 @@ export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(env: E): E {
     },
   }
 }
+
+// https://github.com/meikidd/iso-639-1/pull/61
+const iso6391Validate = iso6391.validate as (code: string) => code is LanguageCode
