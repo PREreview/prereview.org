@@ -299,23 +299,23 @@ const PreprintIdD: D.Decoder<
   AfricarxivPreprintId | BiorxivPreprintId | MedrxivPreprintId | ResearchSquarePreprintId | ScieloPreprintId
 > = pipe(
   D.union(
-    D.struct({
-      DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('31730'))), 'DOI'),
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('31730'), 'DOI'),
       publisher: D.literal('Center for Open Science'),
       'group-title': D.literal('AfricArXiv'),
     }),
-    D.struct({
-      DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101'))), 'DOI'),
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('1101'), 'DOI'),
       publisher: D.literal('Cold Spring Harbor Laboratory'),
-      institution: D.tuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })),
+      institution: D.fromTuple(D.struct({ name: D.literal('bioRxiv', 'medRxiv') })),
     }),
-    D.struct({
-      DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('21203'))), 'DOI'),
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('21203'), 'DOI'),
       publisher: D.literal('Research Square Platform LLC'),
-      institution: D.tuple(D.struct({ name: D.literal('Research Square') })),
+      institution: D.fromTuple(D.struct({ name: D.literal('Research Square') })),
     }),
-    D.struct({
-      DOI: D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1590'))), 'DOI'),
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('1590'), 'DOI'),
       publisher: D.literal('FapUNIFESP (SciELO)'),
     }),
   ),
