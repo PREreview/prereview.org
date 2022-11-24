@@ -66,6 +66,8 @@ export function page({ title, type, content, js = [] }: Page): R.Reader<PhaseEnv
                 >Attribution&nbsp;4.0 International license</a
               >, except where otherwise stated.
             </small>
+
+            <img src="${assets['prereview-footer.svg']}" width="107" height="97" alt="PREreview" />
           </footer>
         </body>
       </html>

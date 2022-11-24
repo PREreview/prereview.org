@@ -22,6 +22,7 @@ module.exports = {
     favicon: path.resolve('assets', 'favicon.ico'),
     'html-editor': path.resolve('assets', 'html-editor.ts'),
     prereview: path.resolve('assets', 'prereview.svg'),
+    'prereview-footer': path.resolve('assets', 'prereview-footer.svg'),
     'single-use-form': path.resolve('assets', 'single-use-form.ts'),
     style: path.resolve('assets', 'style.css'),
   },

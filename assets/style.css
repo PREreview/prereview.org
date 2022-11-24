@@ -158,12 +158,24 @@ body > main {
 }
 
 body > footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-end;
+  column-gap: var(--space-xl-3xl);
+  row-gap: var(--space-s-l);
   border-block-start: var(--width-divider-narrow) solid var(--color-divider-light);
   margin-block-start: var(--space-2xl-3xl);
   padding-block: var(--space-xs-s) var(--space-s-l);
 
-  & small {
+  & > small {
+    flex-grow: 1;
+    flex-basis: 20em;
     font-size: var(--step--2);
+  }
+
+  & > img {
+    max-block-size: var(--space-xl-2xl);
   }
 
   & :any-link {
