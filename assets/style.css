@@ -115,7 +115,6 @@ body {
   flex-direction: column;
   align-items: stretch;
   font-size: var(--step-0);
-  padding-block-end: var(--space-xl-2xl);
 
   @media screen {
     min-block-size: 100%;
@@ -151,6 +150,24 @@ body > aside > * {
     & img {
       block-size: 100%;
     }
+  }
+}
+
+body > main {
+  flex-grow: 1;
+}
+
+body > footer {
+  border-block-start: var(--width-divider-narrow) solid var(--color-divider-light);
+  margin-block-start: var(--space-2xl-3xl);
+  padding-block: var(--space-xs-s) var(--space-s-l);
+
+  & small {
+    font-size: var(--step--2);
+  }
+
+  & :any-link {
+    color: currentcolor;
   }
 }
 

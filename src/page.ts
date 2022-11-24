@@ -58,6 +58,15 @@ export function page({ title, type, content, js = [] }: Page): R.Reader<PhaseEnv
               `
             : ''}
           ${content}
+
+          <footer>
+            <small>
+              All content is available under a Creative&nbsp;Commons
+              <a href="https://creativecommons.org/licenses/by/4.0/" rel="license"
+                >Attribution&nbsp;4.0 International license</a
+              >, except where otherwise stated.
+            </small>
+          </footer>
         </body>
       </html>
     `,
