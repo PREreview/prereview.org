@@ -2,6 +2,7 @@
 /.github/
 /.webpack/
 /dist/
+/integration/snapshots/
 /integration-results/
 /node_modules/
 /src/manifest.json
