@@ -168,10 +168,28 @@ body > footer {
   margin-block-start: var(--space-2xl-3xl);
   padding-block: var(--space-xs-s) var(--space-s-l);
 
-  & > small {
+  & > div {
     flex-grow: 1;
     flex-basis: 20em;
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--space-2xs-xs);
     font-size: var(--step--2);
+
+    & > * {
+      margin-block-start: 0;
+    }
+
+    & > ul {
+      display: flex;
+      flex-wrap: wrap;
+      padding-inline-start: 0;
+      list-style-type: none;
+
+      & > :not(:last-child) {
+        margin-inline-end: var(--space-xs-s);
+      }
+    }
   }
 
   & > img {
@@ -381,6 +399,10 @@ summary {
 
 dfn {
   font-style: normal;
+}
+
+small {
+  font-size: inherit;
 }
 
 sub {

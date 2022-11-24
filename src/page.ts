@@ -60,12 +60,20 @@ export function page({ title, type, content, js = [] }: Page): R.Reader<PhaseEnv
           ${content}
 
           <footer>
-            <small>
-              All content is available under a Creative&nbsp;Commons
-              <a href="https://creativecommons.org/licenses/by/4.0/" rel="license"
-                >Attribution&nbsp;4.0 International license</a
-              >, except where otherwise stated.
-            </small>
+            <div>
+              <ul aria-label="Support links">
+                <li><a href="https://content.prereview.org/coc/">Code of Conduct</a></li>
+                <li><a href="https://content.prereview.org/privacypolicy/">Privacy</a></li>
+                <li><a href="mailto:contact@prereview.org">Contact</a></li>
+              </ul>
+
+              <small>
+                All content is available under a Creative&nbsp;Commons
+                <a href="https://creativecommons.org/licenses/by/4.0/" rel="license"
+                  >Attribution&nbsp;4.0 International license</a
+                >, except where otherwise stated.
+              </small>
+            </div>
 
             <img src="${assets['prereview-footer.svg']}" width="107" height="97" alt="PREreview" />
           </footer>
