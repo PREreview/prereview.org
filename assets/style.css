@@ -1032,6 +1032,41 @@ html-editor {
   }
 }
 
+skip-link {
+  display: contents;
+
+  & :any-link {
+    position: fixed;
+    color: var(--color-text);
+    background-color: var(--color-focus);
+    z-index: 999;
+    inset-inline: 0;
+    padding-block: var(--space-2xs) var(--space-xs);
+    padding-inline: var(--space-s-m);
+    inline-size: fit-content;
+    margin-inline: auto;
+
+    &:focus-visible {
+      outline-offset: 0;
+      outline-color: transparent;
+    }
+
+    &:not(:active, :focus) {
+      position: fixed;
+      white-space: nowrap;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      block-size: 1px;
+      inline-size: 1px;
+    }
+
+    &:not(:hover) {
+      text-decoration-line: none;
+    }
+  }
+}
+
 .cards {
   list-style-type: none;
   margin-block-start: var(--space-m-l);

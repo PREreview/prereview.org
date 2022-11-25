@@ -15,10 +15,11 @@ type Page = {
   readonly title: PlainText
   readonly type?: 'no-header' | 'two-up'
   readonly content: Html
+  readonly skipLinks?: ReadonlyArray<[Html, string]>
   readonly js?: ReadonlyArray<Assets<'.js'>>
 }
 
-export function page({ title, type, content, js = [] }: Page): R.Reader<PhaseEnv, Html> {
+export function page({ title, type, content, skipLinks = [], js = [] }: Page): R.Reader<PhaseEnv, Html> {
   return R.asks(
     ({ phase }) => html`
       <!DOCTYPE html>
@@ -27,11 +28,15 @@ export function page({ title, type, content, js = [] }: Page): R.Reader<PhaseEnv
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link href="${assets['style.css']}" rel="stylesheet" />
+        ${skipLinks.length > 0 ? html` <script src="${assets['skip-link.js']}" type="module"></script>` : ''}
         ${js.map(file => html` <script src="${assets[file]}" type="module"></script>`)}
 
         <title>${title}</title>
 
         <body ${rawHtml(type ? `class="${type}"` : '')}>
+          ${skipLinks.length > 0
+            ? html` <skip-link>${skipLinks.map(([text, link]) => html`<a href="${link}">${text}</a>`)}</skip-link>`
+            : ''}
           ${phase || type !== 'no-header'
             ? html`
                 <header>

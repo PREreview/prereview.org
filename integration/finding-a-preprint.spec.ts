@@ -158,3 +158,26 @@ test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
   await expect(page.locator('role=textbox[name="Preprint DOI"]')).toHaveValue('10.5555/12345678')
   await expect(page).toHaveScreenshot()
 })
+
+test('can skip to the preprint details', async ({ fetch, javaScriptEnabled, page }) => {
+  fetch.getOnce(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { hits: [] } }) },
+  )
+
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to preprint details' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('complementary', { name: 'Preprint details' })).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})

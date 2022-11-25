@@ -112,7 +112,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
         >”
       </h1>
 
-      <aside tabindex="0" aria-label="Preprint details">
+      <aside id="preprint-details" tabindex="0" aria-label="Preprint details">
         <article>
           <header>
             <h2 lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}">
@@ -158,7 +158,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
         </article>
       </aside>
 
-      <main>
+      <main id="prereviews">
         <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
 
         <a href="${format(writeReviewMatch.formatter, { doi: preprint.id.doi })}" class="button">Write a PREreview</a>
@@ -168,6 +168,10 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
         </ol>
       </main>
     `,
+    skipLinks: [
+      [html`Skip to preprint details`, '#preprint-details'],
+      [html`Skip to PREreviews`, '#prereviews'],
+    ],
     type: 'two-up',
   })
 }
