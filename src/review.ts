@@ -86,7 +86,7 @@ function createPage(review: Prereview) {
         <a href="${format(preprintMatch.formatter, { doi: review.preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
-      <main>
+      <main id="prereview">
         <header>
           <h1>
             PREreview of “<span lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
@@ -130,6 +130,7 @@ function createPage(review: Prereview) {
         ${review.text}
       </main>
     `,
+    skipLinks: [[html`Skip to PREreview`, '#prereview']],
   })
 }
 
