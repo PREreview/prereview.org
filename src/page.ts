@@ -37,32 +37,35 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
           ${skipLinks.length > 0
             ? html` <skip-link>${skipLinks.map(([text, link]) => html`<a href="${link}">${text}</a>`)}</skip-link>`
             : ''}
-          ${phase || type !== 'no-header'
-            ? html`
-                <header>
-                  ${phase
-                    ? html`
-                        <div class="phase-banner">
-                          <strong class="tag">${phase.tag}</strong>
-                          <span>${phase.text}</span>
-                        </div>
-                      `
-                    : ''}
-                  ${type !== 'no-header'
-                    ? html`
-                        <div class="header">
-                          <div class="logo">
-                            <a href="${format(homeMatch.formatter, {})}">
-                              <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
-                            </a>
+
+          <div class="contents">
+            ${phase || type !== 'no-header'
+              ? html`
+                  <header>
+                    ${phase
+                      ? html`
+                          <div class="phase-banner">
+                            <strong class="tag">${phase.tag}</strong>
+                            <span>${phase.text}</span>
                           </div>
-                        </div>
-                      `
-                    : ''}
-                </header>
-              `
-            : ''}
-          ${content}
+                        `
+                      : ''}
+                    ${type !== 'no-header'
+                      ? html`
+                          <div class="header">
+                            <div class="logo">
+                              <a href="${format(homeMatch.formatter, {})}">
+                                <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
+                              </a>
+                            </div>
+                          </div>
+                        `
+                      : ''}
+                  </header>
+                `
+              : ''}
+            ${content}
+          </div>
 
           <footer>
             <div>

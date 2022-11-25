@@ -123,8 +123,9 @@ body {
   }
 }
 
-body > :not(aside),
-body > aside > * {
+body > :not(.contents),
+.contents > :not(aside),
+.contents > aside > * {
   inline-size: 100%;
   max-inline-size: 75ch;
   margin-inline: auto;
@@ -154,7 +155,7 @@ body > aside > * {
   }
 }
 
-body > main {
+body > .contents {
   flex-grow: 1;
 }
 
@@ -211,13 +212,13 @@ img {
 }
 
 nav {
-  @nest :not(body) > & {
+  @nest :not(.contents) > & {
     margin-block-start: var(--space-m);
   }
 }
 
 header {
-  @nest :not(body) > & {
+  @nest :not(.contents) > & {
     & :any-link {
       color: inherit;
     }
@@ -1130,40 +1131,49 @@ skip-link {
 
 .two-up {
   @media screen and (min-width: 50em) {
-    margin-inline-start: 50%;
+    & > * {
+      margin-inline-start: 50%;
+    }
 
-    & > main {
-      &,
-      & > :first-child {
-        margin-block-start: 0;
+    & > :not(.contents) {
+      inline-size: calc(50% - var(--space-m-xl));
+      margin-inline-start: calc(50% + var(--space-m-xl) - var(--space-s-m));
+    }
+
+    & > .contents {
+      & > main {
+        &,
+        & > :first-child {
+          margin-block-start: 0;
+        }
       }
-    }
 
-    & > :not(aside) {
-      inline-size: calc(100% - var(--space-m-xl));
-      margin-inline-start: calc(var(--space-m-xl) - var(--space-s-m));
-    }
+      & > :not(aside) {
+        inline-size: calc(100% - var(--space-m-xl));
+        margin-inline-start: calc(var(--space-m-xl) - var(--space-s-m));
+      }
 
-    & > aside > * {
-      margin-inline: 0;
-      padding-inline: var(--space-m-xl);
-    }
+      & > aside > * {
+        margin-inline: 0;
+        padding-inline: var(--space-m-xl);
+      }
 
-    & > aside {
-      position: fixed;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      inset-block: 0;
-      inset-inline: 0 50%;
-      background-color: var(--color-background-alt);
-      overflow-y: auto;
-      overscroll-behavior-y: contain;
-      scrollbar-gutter: stable;
-      padding-block: var(--space-m) var(--space-xl-2xl);
+      & > aside {
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        inset-block: 0;
+        inset-inline: 0 50%;
+        background-color: var(--color-background-alt);
+        overflow-y: auto;
+        overscroll-behavior-y: contain;
+        scrollbar-gutter: stable;
+        padding-block: var(--space-m) var(--space-xl-2xl);
 
-      &:focus-visible {
-        outline-offset: calc(-1 * var(--width-divider));
+        &:focus-visible {
+          outline-offset: calc(-1 * var(--width-divider));
+        }
       }
     }
   }
