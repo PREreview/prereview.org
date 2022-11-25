@@ -1104,7 +1104,11 @@ html-editor {
       }
     }
 
-    & > :not(aside),
+    & > :not(aside) {
+      inline-size: calc(100% - var(--space-m-xl));
+      margin-inline-start: calc(var(--space-m-xl) - var(--space-s-m));
+    }
+
     & > aside > * {
       margin-inline: 0;
       padding-inline: var(--space-m-xl);
