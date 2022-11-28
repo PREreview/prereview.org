@@ -139,6 +139,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
                     .with('psyarxiv', () => 'PsyArXiv')
                     .with('research-square', () => 'Research Square')
                     .with('scielo', () => 'SciELO Preprints')
+                    .with('socarxiv', () => 'SocArXiv')
                     .exhaustive()}
                 </dd>
               </div>

@@ -24,6 +24,7 @@ import {
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
+  SocarxivPreprintId,
 } from '../src/preprint-id'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
@@ -110,6 +111,12 @@ export const scieloPreprintId = (): fc.Arbitrary<ScieloPreprintId> =>
     doi: doi(fc.constant('1590')),
   })
 
+export const socarxivPreprintId = (): fc.Arbitrary<SocarxivPreprintId> =>
+  fc.record({
+    type: fc.constant('socarxiv'),
+    doi: doi(fc.constant('31235')),
+  })
+
 export const preprintId = (): fc.Arbitrary<PreprintId> =>
   fc.oneof(
     africarxivPreprintId(),
@@ -119,6 +126,7 @@ export const preprintId = (): fc.Arbitrary<PreprintId> =>
     psyarxivPreprintId(),
     researchSquarePreprintId(),
     scieloPreprintId(),
+    socarxivPreprintId(),
   )
 
 export const orcid = (): fc.Arbitrary<Orcid> =>

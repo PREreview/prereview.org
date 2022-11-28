@@ -44,6 +44,7 @@ import {
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
+  SocarxivPreprintId,
 } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
@@ -200,6 +201,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
+              .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
         ),
@@ -221,6 +223,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
+              .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
         ),
@@ -299,7 +302,7 @@ function toHttps(url: URL): URL {
 }
 
 const DoiD = D.fromRefinement(
-  pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31234', '31730'))),
+  pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31234', '31235', '31730'))),
   'DOI',
 )
 
@@ -312,6 +315,7 @@ const PreprintIdD: D.Decoder<
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
   | ScieloPreprintId
+  | SocarxivPreprintId
 > = D.union(
   pipe(
     D.fromStruct({
@@ -386,6 +390,17 @@ const PreprintIdD: D.Decoder<
     }),
     D.map(work => ({
       type: 'scielo' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('31235'), 'DOI'),
+      publisher: D.literal('Center for Open Science'),
+      'group-title': D.literal('SocArXiv'),
+    }),
+    D.map(work => ({
+      type: 'socarxiv' as const,
       doi: work.DOI,
     })),
   ),

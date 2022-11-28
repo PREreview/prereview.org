@@ -8,6 +8,7 @@ export type PreprintId =
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
   | ScieloPreprintId
+  | SocarxivPreprintId
 
 export interface AfricarxivPreprintId {
   readonly type: 'africarxiv'
@@ -42,4 +43,9 @@ export interface ResearchSquarePreprintId {
 export interface ScieloPreprintId {
   readonly type: 'scielo'
   readonly doi: Doi<'1590'>
+}
+
+export interface SocarxivPreprintId {
+  readonly type: 'socarxiv'
+  readonly doi: Doi<'31235'>
 }

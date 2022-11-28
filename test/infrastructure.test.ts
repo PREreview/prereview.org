@@ -1273,6 +1273,113 @@ describe('infrastructure', () => {
         )
       })
 
+      test.prop([fc.doi(), fc.plainDate()])('from SocArXiv', async (doi, posted) => {
+        const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
+          body: {
+            status: 'ok',
+            'message-type': 'work',
+            'message-version': '1.0.0',
+            message: {
+              indexed: {
+                'date-parts': [[2022, 11, 28]],
+                'date-time': '2022-11-28T05:27:53Z',
+                timestamp: 1669613273003,
+              },
+              posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+              'group-title': 'SocArXiv',
+              'reference-count': 0,
+              publisher: 'Center for Open Science',
+              license: [
+                {
+                  start: {
+                    'date-parts': [[2022, 11, 26]],
+                    'date-time': '2022-11-26T00:00:00Z',
+                    timestamp: 1669420800000,
+                  },
+                  'content-version': 'unspecified',
+                  'delay-in-days': 0,
+                  URL: 'https://creativecommons.org/licenses/by/4.0/legalcode',
+                },
+              ],
+              'content-domain': { domain: [], 'crossmark-restriction': false },
+              'short-container-title': [],
+              abstract:
+                '<p>The restitution of a S\u00e1mi drum confiscated in 1691 in Karasjok, present-day  Norway, was made in early 2022. This good incorporates historical meaning, culture and own values as well as marks of colonization and inequalities in S\u00e1pmi. It can talk about the long coloniality and racist invisibilization in the far north of Europe and about the historical resistances and current processes for justice andreparation. A bibliographical synthesis is presented on the Eurocentric invention of races operated from the center of Europe in which it aimed particularly at the S\u00e1mi populations, their lands and cultures, with colonial, patriarchal and capacitist demarcations. Possible lines of intervention and reconfiguration of the work on biographical and bibliographical sources that sustain, encourage anddisseminate the incorporation of knowledge inherited and to be passed on by originary cultures with recognition and justice.</p>',
+              DOI: '10.31235/osf.io/ny6h2',
+              type: 'posted-content',
+              created: {
+                'date-parts': [[2022, 11, 27]],
+                'date-time': '2022-11-27T05:00:33Z',
+                timestamp: 1669525233000,
+              },
+              source: 'Crossref',
+              'is-referenced-by-count': 0,
+              title: [
+                'Um tambor s\u00e1mi restitu\u00eddo: culturas origin\u00e1rias europeias e colonialismo no \u00c1rtico',
+              ],
+              prefix: '10.31235',
+              author: [
+                {
+                  ORCID: 'http://orcid.org/0000-0003-2069-5631',
+                  'authenticated-orcid': true,
+                  given: 'Paula',
+                  family: 'Sequeiros',
+                  sequence: 'first',
+                  affiliation: [],
+                },
+              ],
+              member: '15934',
+              'container-title': [],
+              'original-title': [],
+              deposited: {
+                'date-parts': [[2022, 11, 27]],
+                'date-time': '2022-11-27T05:00:34Z',
+                timestamp: 1669525234000,
+              },
+              score: 1,
+              resource: { primary: { URL: 'https://osf.io/ny6h2' } },
+              subtitle: [],
+              'short-title': [],
+              issued: { 'date-parts': [[2022, 11, 26]] },
+              'references-count': 0,
+              URL: 'http://dx.doi.org/10.31235/osf.io/ny6h2',
+              relation: {},
+              published: { 'date-parts': [[2022, 11, 26]] },
+              subtype: 'preprint',
+            },
+          },
+        })
+
+        const actual = await _.getPreprint(doi)({ fetch })()
+
+        expect(actual).toStrictEqual(
+          E.right({
+            abstract: {
+              language: 'en',
+              text: rawHtml(
+                '<p>The restitution of a Sámi drum confiscated in 1691 in Karasjok, present-day  Norway, was made in early 2022. This good incorporates historical meaning, culture and own values as well as marks of colonization and inequalities in Sápmi. It can talk about the long coloniality and racist invisibilization in the far north of Europe and about the historical resistances and current processes for justice andreparation. A bibliographical synthesis is presented on the Eurocentric invention of races operated from the center of Europe in which it aimed particularly at the Sámi populations, their lands and cultures, with colonial, patriarchal and capacitist demarcations. Possible lines of intervention and reconfiguration of the work on biographical and bibliographical sources that sustain, encourage anddisseminate the incorporation of knowledge inherited and to be passed on by originary cultures with recognition and justice.</p>',
+              ),
+            },
+            authors: [
+              {
+                name: 'Paula Sequeiros',
+                orcid: '0000-0003-2069-5631',
+              },
+            ],
+            id: {
+              type: 'socarxiv',
+              doi: '10.31235/osf.io/ny6h2',
+            },
+            posted,
+            title: {
+              language: 'pt',
+              text: rawHtml('Um tambor sámi restituído: culturas originárias europeias e colonialismo no Ártico'),
+            },
+            url: new URL('https://osf.io/ny6h2'),
+          }),
+        )
+      })
+
       test.prop([fc.doi(), fc.plainDate()])('when the response is stale', async (doi, posted) => {
         const fetch = fetchMock
           .sandbox()

@@ -7,7 +7,7 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 
 const DoiD = D.fromRefinement(
-  pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31234', '31730'))),
+  pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31234', '31235', '31730'))),
   'DOI',
 )
 
