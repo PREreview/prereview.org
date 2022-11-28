@@ -4,6 +4,7 @@ export type PreprintId =
   | AfricarxivPreprintId
   | BiorxivPreprintId
   | EarthArXivPreprintId
+  | EdarxivPreprintId
   | MedrxivPreprintId
   | OsfPreprintId
   | PsyarxivPreprintId
@@ -24,6 +25,11 @@ export interface BiorxivPreprintId {
 export interface EarthArXivPreprintId {
   readonly type: 'eartharxiv'
   readonly doi: Doi<'31223'>
+}
+
+export interface EdarxivPreprintId {
+  readonly type: 'edarxiv'
+  readonly doi: Doi<'35542'>
 }
 
 export interface MedrxivPreprintId {

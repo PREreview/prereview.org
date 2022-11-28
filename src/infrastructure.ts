@@ -39,6 +39,7 @@ import {
   AfricarxivPreprintId,
   BiorxivPreprintId,
   EarthArXivPreprintId,
+  EdarxivPreprintId,
   MedrxivPreprintId,
   OsfPreprintId,
   PreprintId,
@@ -199,6 +200,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
+              .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
               .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
@@ -222,6 +224,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
+              .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
               .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
@@ -305,7 +308,7 @@ function toHttps(url: URL): URL {
 }
 
 const DoiD = D.fromRefinement(
-  pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31223', '31234', '31235', '31730'))),
+  pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31223', '31234', '31235', '31730', '35542'))),
   'DOI',
 )
 
@@ -314,6 +317,7 @@ const PreprintIdD: D.Decoder<
   | AfricarxivPreprintId
   | BiorxivPreprintId
   | EarthArXivPreprintId
+  | EdarxivPreprintId
   | MedrxivPreprintId
   | OsfPreprintId
   | PsyarxivPreprintId
@@ -350,6 +354,17 @@ const PreprintIdD: D.Decoder<
     }),
     D.map(work => ({
       type: 'eartharxiv' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('35542'), 'DOI'),
+      publisher: D.literal('Center for Open Science'),
+      'group-title': D.literal('EdArXiv'),
+    }),
+    D.map(work => ({
+      type: 'edarxiv' as const,
       doi: work.DOI,
     })),
   ),
