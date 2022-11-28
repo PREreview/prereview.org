@@ -441,6 +441,7 @@ test('can format a PREreview', async ({ browserName, fetch, javaScriptEnabled, p
     return
   }
 
+  await page.locator('[contenteditable]').waitFor()
   await page.fill('role=textbox[name="Write your PREreview"]', '')
 
   await page.getByRole('button', { name: 'Heading level 1' }).click()
