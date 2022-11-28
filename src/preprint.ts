@@ -134,6 +134,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
                   ${match(preprint.id.type)
                     .with('africarxiv', () => 'AfricArXiv Preprints')
                     .with('biorxiv', () => 'bioRxiv')
+                    .with('eartharxiv', () => 'EarthArXiv')
                     .with('medrxiv', () => 'medRxiv')
                     .with('osf', () => 'OSF Preprints')
                     .with('psyarxiv', () => 'PsyArXiv')

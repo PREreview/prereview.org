@@ -38,6 +38,7 @@ import { Preprint } from './preprint'
 import {
   AfricarxivPreprintId,
   BiorxivPreprintId,
+  EarthArXivPreprintId,
   MedrxivPreprintId,
   OsfPreprintId,
   PreprintId,
@@ -197,6 +198,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+              .with({ type: 'eartharxiv' }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
@@ -219,6 +221,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
             match({ type: preprint.id.type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+              .with({ type: 'eartharxiv' }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
@@ -302,7 +305,7 @@ function toHttps(url: URL): URL {
 }
 
 const DoiD = D.fromRefinement(
-  pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31234', '31235', '31730'))),
+  pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31223', '31234', '31235', '31730'))),
   'DOI',
 )
 
@@ -310,6 +313,7 @@ const PreprintIdD: D.Decoder<
   Work,
   | AfricarxivPreprintId
   | BiorxivPreprintId
+  | EarthArXivPreprintId
   | MedrxivPreprintId
   | OsfPreprintId
   | PsyarxivPreprintId
@@ -336,6 +340,16 @@ const PreprintIdD: D.Decoder<
     }),
     D.map(work => ({
       type: 'biorxiv' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('31223'), 'DOI'),
+      publisher: D.literal('California Digital Library (CDL)'),
+    }),
+    D.map(work => ({
+      type: 'eartharxiv' as const,
       doi: work.DOI,
     })),
   ),
