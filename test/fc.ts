@@ -21,6 +21,7 @@ import {
   MedrxivPreprintId,
   OsfPreprintId,
   PreprintId,
+  PsyarxivPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
 } from '../src/preprint-id'
@@ -91,6 +92,12 @@ export const osfPreprintId = (): fc.Arbitrary<OsfPreprintId> =>
     doi: doi(fc.constant('31219')),
   })
 
+export const psyarxivPreprintId = (): fc.Arbitrary<PsyarxivPreprintId> =>
+  fc.record({
+    type: fc.constant('psyarxiv'),
+    doi: doi(fc.constant('31234')),
+  })
+
 export const researchSquarePreprintId = (): fc.Arbitrary<ResearchSquarePreprintId> =>
   fc.record({
     type: fc.constant('research-square'),
@@ -109,6 +116,7 @@ export const preprintId = (): fc.Arbitrary<PreprintId> =>
     biorxivPreprintId(),
     medrxivPreprintId(),
     osfPreprintId(),
+    psyarxivPreprintId(),
     researchSquarePreprintId(),
     scieloPreprintId(),
   )

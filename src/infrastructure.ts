@@ -41,6 +41,7 @@ import {
   MedrxivPreprintId,
   OsfPreprintId,
   PreprintId,
+  PsyarxivPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
 } from './preprint-id'
@@ -196,6 +197,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
+              .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
               .exhaustive(),
@@ -216,6 +218,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
+              .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
               .exhaustive(),
@@ -295,7 +298,10 @@ function toHttps(url: URL): URL {
   return httpsUrl
 }
 
-const DoiD = D.fromRefinement(pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31730'))), 'DOI')
+const DoiD = D.fromRefinement(
+  pipe(isDoi, compose(hasRegistrant('1101', '1590', '21203', '31219', '31234', '31730'))),
+  'DOI',
+)
 
 const PreprintIdD: D.Decoder<
   Work,
@@ -303,6 +309,7 @@ const PreprintIdD: D.Decoder<
   | BiorxivPreprintId
   | MedrxivPreprintId
   | OsfPreprintId
+  | PsyarxivPreprintId
   | ResearchSquarePreprintId
   | ScieloPreprintId
 > = D.union(
@@ -347,6 +354,17 @@ const PreprintIdD: D.Decoder<
     }),
     D.map(work => ({
       type: 'osf' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('31234'), 'DOI'),
+      publisher: D.literal('Center for Open Science'),
+      'group-title': D.literal('PsyArXiv'),
+    }),
+    D.map(work => ({
+      type: 'psyarxiv' as const,
       doi: work.DOI,
     })),
   ),

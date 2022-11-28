@@ -5,6 +5,7 @@ export type PreprintId =
   | BiorxivPreprintId
   | MedrxivPreprintId
   | OsfPreprintId
+  | PsyarxivPreprintId
   | ResearchSquarePreprintId
   | ScieloPreprintId
 
@@ -26,6 +27,11 @@ export interface MedrxivPreprintId {
 export interface OsfPreprintId {
   readonly type: 'osf'
   readonly doi: Doi<'31219'>
+}
+
+export interface PsyarxivPreprintId {
+  readonly type: 'psyarxiv'
+  readonly doi: Doi<'31234'>
 }
 
 export interface ResearchSquarePreprintId {
