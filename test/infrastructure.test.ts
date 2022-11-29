@@ -785,6 +785,94 @@ describe('infrastructure', () => {
         )
       })
 
+      test.prop([fc.doi(), fc.plainDate()])('from engrXiv', async (doi, posted) => {
+        const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
+          body: {
+            status: 'ok',
+            'message-type': 'work',
+            'message-version': '1.0.0',
+            message: {
+              indexed: {
+                'date-parts': [[2022, 10, 21]],
+                'date-time': '2022-10-21T05:34:45Z',
+                timestamp: 1666330485379,
+              },
+              posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+              'reference-count': 0,
+              publisher: 'Open Engineering Inc',
+              license: [
+                {
+                  start: {
+                    'date-parts': [[2022, 10, 20]],
+                    'date-time': '2022-10-20T00:00:00Z',
+                    timestamp: 1666224000000,
+                  },
+                  'content-version': 'unspecified',
+                  'delay-in-days': 0,
+                  URL: 'https://creativecommons.org/licenses/by/4.0',
+                },
+              ],
+              'content-domain': { domain: [], 'crossmark-restriction': false },
+              'short-container-title': [],
+              DOI: '10.31224/2632',
+              type: 'posted-content',
+              created: {
+                'date-parts': [[2022, 10, 20]],
+                'date-time': '2022-10-20T20:55:48Z',
+                timestamp: 1666299348000,
+              },
+              source: 'Crossref',
+              'is-referenced-by-count': 0,
+              title: ['Study of FPGA logic reconfiguration during operation'],
+              prefix: '10.31224',
+              author: [{ given: 'Yoji', family: 'Yamato', sequence: 'first', affiliation: [] }],
+              member: '33966',
+              'container-title': [],
+              'original-title': [],
+              deposited: {
+                'date-parts': [[2022, 10, 20]],
+                'date-time': '2022-10-20T20:55:49Z',
+                timestamp: 1666299349000,
+              },
+              score: 1,
+              resource: { primary: { URL: 'https://engrxiv.org/preprint/view/2632/version/3806' } },
+              subtitle: [],
+              'short-title': [],
+              issued: { 'date-parts': [[2022, 10, 20]] },
+              'references-count': 0,
+              URL: 'http://dx.doi.org/10.31224/2632',
+              relation: {},
+              published: { 'date-parts': [[2022, 10, 20]] },
+              subtype: 'preprint',
+            },
+          },
+        })
+
+        const actual = await _.getPreprint(doi)({ fetch })()
+
+        expect(actual).toStrictEqual(
+          E.right({
+            abstract: undefined,
+            authors: [
+              {
+                name: 'Yoji Yamato',
+                orcid: undefined,
+              },
+            ],
+            id: {
+              type: 'engrxiv',
+              doi: '10.31224/2632',
+            },
+            posted,
+            title: {
+              language: 'en',
+              text: rawHtml('Study of FPGA logic reconfiguration during operation'),
+            },
+            url: new URL('https://engrxiv.org/preprint/view/2632/version/3806'),
+          }),
+        )
+      })
+
       test.prop([fc.doi(), fc.plainDate()])('from OSF', async (doi, posted) => {
         const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, {
           body: {

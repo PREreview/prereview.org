@@ -136,6 +136,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
                     .with('biorxiv', () => 'bioRxiv')
                     .with('eartharxiv', () => 'EarthArXiv')
                     .with('edarxiv', () => 'EdArXiv')
+                    .with('engrxiv', () => 'engrXiv')
                     .with('medrxiv', () => 'medRxiv')
                     .with('osf', () => 'OSF Preprints')
                     .with('psyarxiv', () => 'PsyArXiv')
