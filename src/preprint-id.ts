@@ -3,7 +3,7 @@ import { Doi } from 'doi-ts'
 export type PreprintId =
   | AfricarxivPreprintId
   | BiorxivPreprintId
-  | EarthArXivPreprintId
+  | EartharxivPreprintId
   | EdarxivPreprintId
   | EngrxivPreprintId
   | MedrxivPreprintId
@@ -23,7 +23,7 @@ export interface BiorxivPreprintId {
   readonly doi: Doi<'1101'>
 }
 
-export interface EarthArXivPreprintId {
+export interface EartharxivPreprintId {
   readonly type: 'eartharxiv'
   readonly doi: Doi<'31223'>
 }

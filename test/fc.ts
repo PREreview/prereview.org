@@ -18,7 +18,7 @@ import { Preprint } from '../src/preprint'
 import {
   AfricarxivPreprintId,
   BiorxivPreprintId,
-  EarthArXivPreprintId,
+  EartharxivPreprintId,
   EdarxivPreprintId,
   EngrxivPreprintId,
   MedrxivPreprintId,
@@ -84,7 +84,7 @@ export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
     doi: doi(fc.constant('1101')),
   })
 
-export const eartharxivPreprintId = (): fc.Arbitrary<EarthArXivPreprintId> =>
+export const eartharxivPreprintId = (): fc.Arbitrary<EartharxivPreprintId> =>
   fc.record({
     type: fc.constant('eartharxiv'),
     doi: doi(fc.constant('31223')),

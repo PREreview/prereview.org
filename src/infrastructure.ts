@@ -38,7 +38,7 @@ import { Preprint } from './preprint'
 import {
   AfricarxivPreprintId,
   BiorxivPreprintId,
-  EarthArXivPreprintId,
+  EartharxivPreprintId,
   EdarxivPreprintId,
   EngrxivPreprintId,
   MedrxivPreprintId,
@@ -328,7 +328,7 @@ const PreprintIdD: D.Decoder<
   Work,
   | AfricarxivPreprintId
   | BiorxivPreprintId
-  | EarthArXivPreprintId
+  | EartharxivPreprintId
   | EdarxivPreprintId
   | EngrxivPreprintId
   | MedrxivPreprintId
