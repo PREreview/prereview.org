@@ -230,25 +230,28 @@ export const user = (): fc.Arbitrary<User> =>
   })
 
 export const preprint = (): fc.Arbitrary<Preprint> =>
-  fc.record({
-    abstract: fc.record({
-      language: languageCode(),
-      text: html(),
-    }),
-    authors: nonEmptyArray(
-      fc.record(
-        {
-          name: fc.string(),
-          orcid: orcid(),
-        },
-        { requiredKeys: ['name'] },
+  fc.record(
+    {
+      abstract: fc.record({
+        language: languageCode(),
+        text: html(),
+      }),
+      authors: nonEmptyArray(
+        fc.record(
+          {
+            name: fc.string(),
+            orcid: orcid(),
+          },
+          { requiredKeys: ['name'] },
+        ),
       ),
-    ),
-    id: preprintId(),
-    posted: plainDate(),
-    title: fc.record({
-      language: languageCode(),
-      text: html(),
-    }),
-    url: url(),
-  })
+      id: preprintId(),
+      posted: plainDate(),
+      title: fc.record({
+        language: languageCode(),
+        text: html(),
+      }),
+      url: url(),
+    },
+    { requiredKeys: ['authors', 'id', 'posted', 'title', 'url'] },
+  )

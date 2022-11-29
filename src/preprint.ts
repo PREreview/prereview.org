@@ -22,7 +22,7 @@ import { renderDate } from './time'
 import PlainDate = Temporal.PlainDate
 
 export type Preprint = {
-  abstract: {
+  abstract?: {
     language: LanguageCode
     text: Html
   }
@@ -152,11 +152,15 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
             </dl>
           </header>
 
-          <h3>Abstract</h3>
+          ${preprint.abstract
+            ? html`
+                <h3>Abstract</h3>
 
-          <div lang="${preprint.abstract.language}" dir="${getLangDir(preprint.abstract.language)}">
-            ${preprint.abstract.text}
-          </div>
+                <div lang="${preprint.abstract.language}" dir="${getLangDir(preprint.abstract.language)}">
+                  ${preprint.abstract.text}
+                </div>
+              `
+            : ''}
 
           <a href="${preprint.url.href}" class="button">Read the preprint</a>
         </article>
