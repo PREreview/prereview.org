@@ -190,12 +190,12 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
     E.bindW('abstract', ({ id: { type } }) =>
       pipe(
         work.abstract,
-        E.fromNullable('no abstract'),
+        E.fromNullable('no abstract' as const),
         E.map(transformJatsToHtml),
         E.bindTo('text'),
         E.bindW(
           'language',
-          E.fromOptionK(() => 'unknown language')(({ text }) =>
+          E.fromOptionK(() => 'unknown language' as const)(({ text }) =>
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
@@ -208,6 +208,12 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
+        ),
+        E.orElseW(error =>
+          match(error)
+            .with('no abstract', () => E.right(undefined))
+            .with('unknown language', E.left)
+            .exhaustive(),
         ),
       ),
     ),
