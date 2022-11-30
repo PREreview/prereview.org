@@ -159,6 +159,21 @@ test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
+test('can skip to the main content', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
+
 test('can skip to the preprint details', async ({ fetch, javaScriptEnabled, page }) => {
   fetch.getOnce(
     {

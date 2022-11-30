@@ -75,7 +75,7 @@ function createPage(lookupDoi: LookupDoi) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}PREreview`,
     content: html`
-      <main>
+      <main id="main-content">
         <header>
           <h1><img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" class="home-logo" /></h1>
         </header>
@@ -143,6 +143,7 @@ function createPage(lookupDoi: LookupDoi) {
       </main>
     `,
     js: error ? ['error-summary.js'] : [],
+    skipLinks: [[html`Skip to main content`, '#main-content']],
     type: 'no-header',
   })
 }
