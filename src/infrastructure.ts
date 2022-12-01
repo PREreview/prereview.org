@@ -11,13 +11,12 @@ import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { compose } from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
-import { constVoid, flow, identity, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { LanguageCode } from 'iso-639-1'
-import * as L from 'logger-fp-ts'
 import sanitize from 'sanitize-html'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
@@ -25,7 +24,6 @@ import {
   DepositMetadata,
   Record,
   ZenodoAuthenticatedEnv,
-  ZenodoEnv,
   createDeposition,
   getRecord,
   getRecords,
@@ -33,6 +31,7 @@ import {
   uploadFile,
 } from 'zenodo-ts'
 import { detectLanguage, detectLanguageFrom } from './detect-language'
+import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { Html, plainText, rawHtml, sanitizeHtml } from './html'
 import { Preprint } from './preprint'
 import {
@@ -497,85 +496,3 @@ const getReviewedDoi = flow(
   ),
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
-
-function useStaleCache(env: ZenodoEnv): ZenodoEnv
-function useStaleCache(env: F.FetchEnv): F.FetchEnv
-function useStaleCache<E extends F.FetchEnv>(env: E): E {
-  return { ...env, fetch: (url, init) => env.fetch(url, { cache: 'force-cache', ...init }) }
-}
-
-function revalidateIfStale(env: ZenodoEnv): ZenodoEnv
-function revalidateIfStale(env: F.FetchEnv): F.FetchEnv
-function revalidateIfStale<E extends F.FetchEnv>(env: E): E {
-  return {
-    ...env,
-    fetch: async (url, init) => {
-      const response = await env.fetch(url, init)
-
-      if (response.headers.get('x-local-cache-status') === 'stale') {
-        void env
-          .fetch(url, { ...init, cache: 'no-cache' })
-          .then(response => response.text())
-          .catch(constVoid)
-      }
-
-      return response
-    },
-  }
-}
-
-export function timeoutRequest<E extends F.FetchEnv>(timeout: number): (env: E) => E {
-  return env => ({
-    ...env,
-    fetch: async (url, init) => {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), timeout)
-
-      try {
-        return await env.fetch(url, { signal: controller.signal, ...init })
-      } finally {
-        clearTimeout(timeoutId)
-      }
-    },
-  })
-}
-
-export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(env: E): E {
-  return {
-    ...env,
-    fetch: async (url, init) => {
-      L.debugP('Sending HTTP request')({
-        url,
-        method: init.method,
-      })(env)()
-
-      const startTime = Date.now()
-      return env
-        .fetch(url, init)
-        .then(response => {
-          const endTime = Date.now()
-
-          L.debugP('Received HTTP response')({
-            url: response.url,
-            method: init.method,
-            status: response.status,
-            headers: [...response.headers],
-            time: endTime - startTime,
-          })(env)()
-
-          return response
-        })
-        .catch(error => {
-          const endTime = Date.now()
-
-          L.debugP('Did not receive a HTTP response')({
-            url,
-            method: init.method,
-            time: endTime - startTime,
-          })(env)()
-
-          throw error
-        })
-    },
-  }
-}

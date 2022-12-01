@@ -14,16 +14,10 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
+import { logFetch } from './fetch'
 import { home } from './home'
 import { handleError } from './http-error'
-import {
-  createRecordOnZenodo,
-  getPreprint,
-  getPreprintTitle,
-  getPrereview,
-  getPrereviews,
-  logFetch,
-} from './infrastructure'
+import { createRecordOnZenodo, getPreprint, getPreprintTitle, getPrereview, getPrereviews } from './infrastructure'
 import {
   LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
