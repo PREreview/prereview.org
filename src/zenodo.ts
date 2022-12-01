@@ -37,7 +37,7 @@ interface GetPreprintTitleEnv {
   getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
 }
 
-export const getPrereview = flow(
+export const getPrereviewFromZenodo = flow(
   getRecord,
   RTE.local(revalidateIfStale),
   RTE.local(useStaleCache),
@@ -46,7 +46,7 @@ export const getPrereview = flow(
   RTE.chain(recordToPrereview),
 )
 
-export const getPrereviews = flow(
+export const getPrereviewsFromZenodo = flow(
   (preprint: PreprintId) =>
     new URLSearchParams({
       communities: 'prereview-reviews',

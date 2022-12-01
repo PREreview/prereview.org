@@ -18,7 +18,6 @@ import { getPreprintFromCrossref, getPreprintTitleFromCrossref } from './crossre
 import { logFetch } from './fetch'
 import { home } from './home'
 import { handleError } from './http-error'
-import { createRecordOnZenodo, getPrereview, getPrereviews } from './infrastructure'
 import {
   LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
@@ -55,6 +54,7 @@ import {
   writeReviewPost,
   writeReviewReview,
 } from './write-review'
+import { createRecordOnZenodo, getPrereviewFromZenodo, getPrereviewsFromZenodo } from './zenodo'
 
 export type AppEnv = FormStoreEnv &
   LegacyPrereviewApiEnv &
@@ -92,7 +92,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getPreprint: flip(getPreprintFromCrossref)(env),
-          getPrereviews: flip(getPrereviews)(env),
+          getPrereviews: flip(getPrereviewsFromZenodo)(env),
         })),
       ),
     ),
@@ -102,7 +102,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPrereview: flip(getPrereview)({ ...env, getPreprintTitle: flip(getPreprintTitleFromCrossref)(env) }),
+          getPrereview: flip(getPrereviewFromZenodo)({
+            ...env,
+            getPreprintTitle: flip(getPreprintTitleFromCrossref)(env),
+          }),
         })),
       ),
     ),
