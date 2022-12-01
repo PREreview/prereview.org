@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
@@ -24,12 +25,13 @@ import {
   publishDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { PlainDate } from './crossref'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { Html, plainText, sanitizeHtml } from './html'
 import { PreprintId } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
+
+import PlainDate = Temporal.PlainDate
 
 interface GetPreprintTitleEnv {
   getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>

@@ -29,7 +29,7 @@ import {
   SocarxivPreprintId,
 } from './preprint-id'
 
-export import PlainDate = Temporal.PlainDate
+import PlainDate = Temporal.PlainDate
 
 export const getPreprintFromCrossref = flow(
   getWork,
