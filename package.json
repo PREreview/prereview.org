@@ -57,7 +57,7 @@
     "@types/cookie-signature": "^1.0.4",
     "@types/express": "^4.17.14",
     "@types/http-errors": "^2.0.1",
-    "@types/make-fetch-happen": "^10.0.0",
+    "@types/make-fetch-happen": "^10.0.1",
     "@types/markdown-it": "^12.2.3",
     "@types/node": "^18.11.9",
     "@types/node-fetch": "^2.6.2",
