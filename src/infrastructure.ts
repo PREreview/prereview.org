@@ -16,11 +16,10 @@ import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
-import iso6391, { LanguageCode } from 'iso-639-1'
+import { LanguageCode } from 'iso-639-1'
 import * as L from 'logger-fp-ts'
 import sanitize from 'sanitize-html'
 import { get } from 'spectacles-ts'
-import { detect } from 'tinyld'
 import { P, match } from 'ts-pattern'
 import {
   DepositMetadata,
@@ -33,6 +32,7 @@ import {
   publishDeposition,
   uploadFile,
 } from 'zenodo-ts'
+import { detectLanguage, detectLanguageFrom } from './detect-language'
 import { Html, plainText, rawHtml, sanitizeHtml } from './html'
 import { Preprint } from './preprint'
 import {
@@ -498,17 +498,6 @@ const getReviewedDoi = flow(
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
 
-function detectLanguageFrom<L extends LanguageCode>(...languages: ReadonlyArray<L>): (html: Html) => O.Option<L> {
-  return flow(
-    html => detect(plainText(html).toString(), { only: [...languages] }) as L,
-    O.fromPredicate(detected => languages.includes(detected)),
-  )
-}
-
-function detectLanguage(html: Html): O.Option<LanguageCode> {
-  return pipe(detect(plainText(html).toString()), O.fromPredicate(iso6391Validate))
-}
-
 function useStaleCache(env: ZenodoEnv): ZenodoEnv
 function useStaleCache(env: F.FetchEnv): F.FetchEnv
 function useStaleCache<E extends F.FetchEnv>(env: E): E {
@@ -590,6 +579,3 @@ export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(env: E): E {
     },
   }
 }
-
-// https://github.com/meikidd/iso-639-1/pull/61
-const iso6391Validate = iso6391.validate as (code: string) => code is LanguageCode
