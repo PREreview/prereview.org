@@ -128,7 +128,6 @@ describe('legacy-prereview', () => {
 
           const actual = await _.createPrereviewOnLegacyPrereview({
             conduct: 'yes',
-            otherAuthors: [],
             persona: 'public',
             preprint: {
               doi: preprintDoi,
@@ -178,7 +177,6 @@ describe('legacy-prereview', () => {
 
           const actual = await _.createPrereviewOnLegacyPrereview({
             conduct: 'yes',
-            otherAuthors: [],
             persona: 'public',
             preprint: {
               doi: preprintDoi,
@@ -212,7 +210,6 @@ describe('legacy-prereview', () => {
 
           const actual = await _.createPrereviewOnLegacyPrereview({
             conduct: 'yes',
-            otherAuthors: [],
             persona: 'public',
             preprint: {
               doi: preprintDoi,
@@ -235,7 +232,6 @@ describe('legacy-prereview', () => {
         async (orcid, app, key, url, preprintDoi, reviewDoi, error) => {
           const actual = await _.createPrereviewOnLegacyPrereview({
             conduct: 'yes',
-            otherAuthors: [],
             persona: 'public',
             preprint: {
               doi: preprintDoi,
@@ -259,7 +255,6 @@ describe('legacy-prereview', () => {
       async (app, key, url, orcid, preprintDoi, preprintId, reviewDoi) => {
         const actual = await _.createPrereviewOnLegacyPrereview({
           conduct: 'yes',
-          otherAuthors: [],
           persona: 'public',
           preprint: {
             doi: preprintDoi,

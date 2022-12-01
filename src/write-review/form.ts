@@ -4,18 +4,16 @@ import { JsonRecord } from 'fp-ts/Json'
 import { ReaderTask } from 'fp-ts/ReaderTask'
 import * as T from 'fp-ts/Task'
 import * as TE from 'fp-ts/TaskEither'
-import { constVoid, constant, flow, pipe } from 'fp-ts/function'
+import { constVoid, constant, flow } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
 import * as C from 'io-ts/Codec'
-import * as D from 'io-ts/Decoder'
 import Keyv from 'keyv'
-import { Orcid, isOrcid } from 'orcid-id-ts'
+import { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { RawHtmlC } from '../html'
 import { seeOther } from '../middleware'
 import { PreprintId } from '../preprint-id'
 import {
-  writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
@@ -73,9 +71,6 @@ export const showNextForm = (preprint: PreprintId['doi']) => (form: Form) =>
     .with({ moreAuthors: P.optional(P.nullish) }, () =>
       seeOther(format(writeReviewAuthorsMatch.formatter, { doi: preprint })),
     )
-    .with({ moreAuthors: 'yes', otherAuthors: P.optional(P.nullish) }, () =>
-      seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint })),
-    )
     .with({ competingInterests: P.optional(P.nullish) }, () =>
       seeOther(format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint })),
     )
@@ -84,17 +79,11 @@ export const showNextForm = (preprint: PreprintId['doi']) => (form: Form) =>
     )
     .otherwise(() => seeOther(format(writeReviewPostMatch.formatter, { doi: preprint })))
 
-const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
-
 const FormC = C.partial({
   alreadyWritten: C.literal('yes', 'no'),
   review: RawHtmlC,
   persona: C.literal('public', 'pseudonym'),
   moreAuthors: C.literal('yes', 'no'),
-  otherAuthors: pipe(
-    C.array(pipe(C.struct({ name: NonEmptyStringC }), C.intersect(C.partial({ orcid: OrcidC })))),
-    C.readonly,
-  ),
   competingInterests: C.literal('yes', 'no'),
   competingInterestsDetails: NonEmptyStringC,
   conduct: C.literal('yes'),

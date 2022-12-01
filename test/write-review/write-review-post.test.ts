@@ -31,16 +31,14 @@ describe('writeReviewPost', () => {
       competingInterestsDetails: fc.lorem(),
       conduct: fc.constant('yes'),
       moreAuthors: fc.constantFrom('yes', 'no'),
-      otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
       persona: fc.constantFrom('public', 'pseudonym'),
       review: fc.lorem(),
     }),
     fc.user(),
-    fc.boolean(),
     fc.doi(),
   ])(
     'when the form is complete',
-    async (preprintDoi, preprintTitle, [connection, sessionId, secret], newReview, user, canAddAuthors, reviewDoi) => {
+    async (preprintDoi, preprintTitle, [connection, sessionId, secret], newReview, user, reviewDoi) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -50,7 +48,6 @@ describe('writeReviewPost', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPost(preprintDoi)({
-          canAddAuthors: () => canAddAuthors,
           formStore,
           getPreprintTitle,
           postPrereview,
@@ -62,7 +59,6 @@ describe('writeReviewPost', () => {
 
       expect(postPrereview).toHaveBeenCalledWith({
         conduct: 'yes',
-        otherAuthors: newReview.moreAuthors === 'yes' ? newReview.otherAuthors : [],
         persona: newReview.persona,
         preprint: {
           doi: preprintDoi,
@@ -104,7 +100,6 @@ describe('writeReviewPost', () => {
           competingInterestsDetails: fc.lorem(),
           conduct: fc.oneof(fc.constant('yes'), fc.string()),
           moreAuthors: fc.oneof(fc.constantFrom('yes', 'no'), fc.string()),
-          otherAuthors: fc.array(fc.string()),
           persona: fc.oneof(fc.constantFrom('public', 'pseudonym'), fc.string()),
           review: fc.oneof(fc.lorem(), fc.constant('')),
         },
@@ -112,10 +107,9 @@ describe('writeReviewPost', () => {
       )
       .filter(newReview => Object.keys(newReview).length < 5),
     fc.user(),
-    fc.boolean(),
   ])(
     'when the form is incomplete',
-    async (preprintDoi, preprintTitle, [connection, sessionId, secret], newPrereview, user, canAddAuthors) => {
+    async (preprintDoi, preprintTitle, [connection, sessionId, secret], newPrereview, user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -124,7 +118,6 @@ describe('writeReviewPost', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPost(preprintDoi)({
-          canAddAuthors: () => canAddAuthors,
           getPreprintTitle,
           formStore,
           postPrereview: () => TE.left(''),
@@ -164,46 +157,40 @@ describe('writeReviewPost', () => {
         competingInterestsDetails: fc.lorem(),
         conduct: fc.constant('yes'),
         moreAuthors: fc.constantFrom('yes', 'no'),
-        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
         persona: fc.constantFrom('public', 'pseudonym'),
         review: fc.lorem(),
       },
       { withDeletedKeys: true },
     ),
     fc.user(),
-    fc.boolean(),
-  ])(
-    'when the preprint cannot be loaded',
-    async (preprintDoi, [connection, sessionId, secret], newReview, user, canAddAuthors) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
-      const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-      const getPreprintTitle = () => TE.left('unavailable' as const)
-      const postPrereview = () => () => Promise.reject('should not be called')
+  ])('when the preprint cannot be loaded', async (preprintDoi, [connection, sessionId, secret], newReview, user) => {
+    const sessionStore = new Keyv()
+    await sessionStore.set(sessionId, UserC.encode(user))
+    const formStore = new Keyv()
+    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+    const getPreprintTitle = () => TE.left('unavailable' as const)
+    const postPrereview = () => () => Promise.reject('should not be called')
 
-      const actual = await runMiddleware(
-        _.writeReviewPost(preprintDoi)({
-          canAddAuthors: () => canAddAuthors,
-          formStore,
-          getPreprintTitle,
-          postPrereview,
-          secret,
-          sessionStore,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewPost(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        postPrereview,
+        secret,
+        sessionStore,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 
   test.prop([
     fc.preprintDoi(),
@@ -224,46 +211,40 @@ describe('writeReviewPost', () => {
         competingInterestsDetails: fc.lorem(),
         conduct: fc.constant('yes'),
         moreAuthors: fc.constantFrom('yes', 'no'),
-        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
         persona: fc.constantFrom('public', 'pseudonym'),
         review: fc.lorem(),
       },
       { withDeletedKeys: true },
     ),
     fc.user(),
-    fc.boolean(),
-  ])(
-    'when the preprint cannot be found',
-    async (preprintDoi, [connection, sessionId, secret], newReview, user, canAddAuthors) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
-      const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-      const getPreprintTitle = () => TE.left('not-found' as const)
-      const postPrereview = () => () => Promise.reject('should not be called')
+  ])('when the preprint cannot be found', async (preprintDoi, [connection, sessionId, secret], newReview, user) => {
+    const sessionStore = new Keyv()
+    await sessionStore.set(sessionId, UserC.encode(user))
+    const formStore = new Keyv()
+    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+    const getPreprintTitle = () => TE.left('not-found' as const)
+    const postPrereview = () => () => Promise.reject('should not be called')
 
-      const actual = await runMiddleware(
-        _.writeReviewPost(preprintDoi)({
-          canAddAuthors: () => canAddAuthors,
-          formStore,
-          getPreprintTitle,
-          postPrereview,
-          secret,
-          sessionStore,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewPost(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        postPrereview,
+        secret,
+        sessionStore,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.NotFound },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 
   test.prop([
     fc.preprintDoi(),
@@ -277,9 +258,6 @@ describe('writeReviewPost', () => {
 
     const actual = await runMiddleware(
       _.writeReviewPost(preprintDoi)({
-        canAddAuthors: () => {
-          throw 'Should not be called'
-        },
         getPreprintTitle,
         formStore,
         postPrereview: () => TE.left(''),
@@ -324,15 +302,13 @@ describe('writeReviewPost', () => {
       competingInterestsDetails: fc.lorem(),
       conduct: fc.constant('yes'),
       moreAuthors: fc.constantFrom('yes', 'no'),
-      otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
       persona: fc.constantFrom('public', 'pseudonym'),
       review: fc.lorem(),
     }),
     fc.user(),
-    fc.boolean(),
   ])(
     'Zenodo is unavailable',
-    async (preprintDoi, preprintTitle, [connection, sessionId, secret], response, newReview, user, canAddAuthors) => {
+    async (preprintDoi, preprintTitle, [connection, sessionId, secret], response, newReview, user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -341,7 +317,6 @@ describe('writeReviewPost', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPost(preprintDoi)({
-          canAddAuthors: () => canAddAuthors,
           getPreprintTitle,
           formStore,
           postPrereview: () => TE.left(response),

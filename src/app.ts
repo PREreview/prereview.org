@@ -14,7 +14,6 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
-import { CanAddAuthorsEnv } from './feature-flags'
 import { home } from './home'
 import { handleError } from './http-error'
 import {
@@ -40,36 +39,29 @@ import {
   orcidCodeMatch,
   preprintMatch,
   reviewMatch,
-  writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
-  writeReviewChangeAuthorMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
   writeReviewPostMatch,
-  writeReviewRemoveAuthorMatch,
   writeReviewReviewMatch,
 } from './routes'
 import {
   FormStoreEnv,
   NewPrereview,
   writeReview,
-  writeReviewAddAuthor,
   writeReviewAddAuthors,
   writeReviewAuthors,
-  writeReviewChangeAuthor,
   writeReviewCompetingInterests,
   writeReviewConduct,
   writeReviewPersona,
   writeReviewPost,
-  writeReviewRemoveAuthor,
   writeReviewReview,
 } from './write-review'
 
-export type AppEnv = CanAddAuthorsEnv &
-  FormStoreEnv &
+export type AppEnv = FormStoreEnv &
   LegacyPrereviewApiEnv &
   L.LoggerEnv &
   OAuthEnv &
@@ -136,18 +128,6 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewAuthorsMatch.parser,
           P.map(({ doi }) => writeReviewAuthors(doi)),
-        ),
-        pipe(
-          writeReviewAddAuthorMatch.parser,
-          P.map(({ doi }) => writeReviewAddAuthor(doi)),
-        ),
-        pipe(
-          writeReviewChangeAuthorMatch.parser,
-          P.map(({ doi, index }) => writeReviewChangeAuthor(doi, index)),
-        ),
-        pipe(
-          writeReviewRemoveAuthorMatch.parser,
-          P.map(({ doi, index }) => writeReviewRemoveAuthor(doi, index)),
         ),
         pipe(
           writeReviewAddAuthorsMatch.parser,

@@ -12,20 +12,17 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { canAddAuthors } from '../feature-flags'
 import { Html, html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import {
   preprintMatch,
-  writeReviewAddAuthorsMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
   writeReviewPostMatch,
   writeReviewReviewMatch,
 } from '../routes'
-import { NonEmptyString } from '../string'
 import { User, getUserFromSession } from '../user'
 import { CompletedForm, CompletedFormD } from './completed-form'
 import { deleteForm, getForm, showNextForm } from './form'
@@ -33,7 +30,6 @@ import { Preprint, getPreprint } from './preprint'
 
 export type NewPrereview = {
   conduct: 'yes'
-  otherAuthors: ReadonlyArray<{ name: NonEmptyString; orcid?: Orcid }>
   persona: 'public' | 'pseudonym'
   preprint: Preprint
   review: Html
@@ -50,10 +46,6 @@ export const writeReviewPost = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUserFromSession()),
-      RM.bindW(
-        'canAddAuthors',
-        fromReaderK(({ user }) => canAddAuthors(user)),
-      ),
       RM.bindW(
         'form',
         RM.fromReaderTaskK(({ user }) => getForm(user.orcid, preprint.doi)),
@@ -77,45 +69,24 @@ export const writeReviewPost = flow(
   ),
 )
 
-const handlePostForm = ({
-  canAddAuthors,
-  form,
-  preprint,
-  user,
-}: {
-  canAddAuthors: boolean
-  form: CompletedForm
-  preprint: Preprint
-  user: User
-}) =>
+const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
   pipe(
     RM.rightReaderTask(deleteForm(user.orcid, preprint.doi)),
     RM.map(() => ({
       conduct: form.conduct,
-      otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
       persona: form.persona,
       preprint,
       review: renderReview(form),
       user,
     })),
     RM.chainReaderTaskEitherKW(postPrereview),
-    RM.ichainW(doi => showSuccessMessage(preprint, doi, form.moreAuthors === 'yes' && !canAddAuthors)),
+    RM.ichainW(doi => showSuccessMessage(preprint, doi, form.moreAuthors === 'yes')),
     RM.orElseW(() => showFailureMessage(preprint)),
   )
 
 const showPostForm = flow(
-  fromReaderK(
-    ({
-      canAddAuthors,
-      form,
-      preprint,
-      user,
-    }: {
-      canAddAuthors: boolean
-      form: CompletedForm
-      preprint: Preprint
-      user: User
-    }) => postForm(preprint, form, user, canAddAuthors),
+  fromReaderK(({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
+    postForm(preprint, form, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -202,7 +173,7 @@ function failureMessage(preprint: Preprint) {
   })
 }
 
-function postForm(preprint: Preprint, review: CompletedForm, user: User, canAddAuthors: boolean) {
+function postForm(preprint: Preprint, review: CompletedForm, user: User) {
   return page({
     title: plainText`Post your PREreview of “${preprint.title}”`,
     content: html`
@@ -224,9 +195,6 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User, canAddA
 
               <ol aria-label="Authors of this PREreview" class="author-list">
                 <li>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</li>
-                ${review.moreAuthors === 'yes'
-                  ? review.otherAuthors.map(author => html`<li>${displayAuthor(author)}</li>`)
-                  : ''}
               </ol>
 
               ${renderReview(review)}
@@ -245,16 +213,6 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User, canAddA
               >
                 Change name
               </a>
-              ${review.moreAuthors === 'yes' && canAddAuthors
-                ? html`
-                    <a
-                      href="${format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })}"
-                      class="button button-secondary"
-                    >
-                      Change authors
-                    </a>
-                  `
-                : ''}
             </div>
 
             <h2>Now post your PREreview</h2>

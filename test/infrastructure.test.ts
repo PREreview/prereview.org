@@ -2535,7 +2535,6 @@ describe('infrastructure', () => {
     test.prop([
       fc.record<NewPrereview>({
         conduct: fc.constant('yes'),
-        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
         persona: fc.constant('public'),
         preprint: fc.record({
           doi: fc.preprintDoi(),
@@ -2591,10 +2590,7 @@ describe('infrastructure', () => {
                   upload_type: 'publication',
                   publication_type: 'article',
                   title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                  creators: [
-                    { name: newPrereview.user.name, orcid: newPrereview.user.orcid },
-                    ...newPrereview.otherAuthors,
-                  ],
+                  creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
                   communities: [{ identifier: 'prereview-reviews' }],
                   description: newPrereview.review.toString(),
                   related_identifiers: [
@@ -2636,7 +2632,6 @@ describe('infrastructure', () => {
     test.prop([
       fc.record<NewPrereview>({
         conduct: fc.constant('yes'),
-        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
         persona: fc.constant('pseudonym'),
         preprint: fc.record({
           doi: fc.preprintDoi(),
@@ -2692,7 +2687,7 @@ describe('infrastructure', () => {
                   upload_type: 'publication',
                   publication_type: 'article',
                   title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                  creators: [{ name: newPrereview.user.pseudonym }, ...newPrereview.otherAuthors],
+                  creators: [{ name: newPrereview.user.pseudonym }],
                   communities: [{ identifier: 'prereview-reviews' }],
                   description: newPrereview.review.toString(),
                   related_identifiers: [
@@ -2734,7 +2729,6 @@ describe('infrastructure', () => {
     test.prop([
       fc.record<NewPrereview>({
         conduct: fc.constant('yes'),
-        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
         persona: fc.constantFrom('public', 'pseudonym'),
         preprint: fc.record({
           doi: fc.preprintDoi(),

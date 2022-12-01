@@ -32,7 +32,6 @@ describe('writeReview', () => {
         competingInterestsDetails: fc.lorem(),
         conduct: fc.constant('yes'),
         moreAuthors: fc.constantFrom('yes', 'no'),
-        otherAuthors: fc.array(fc.record({ name: fc.nonEmptyString(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
         persona: fc.constantFrom('public', 'pseudonym'),
         review: fc.lorem(),
       }),

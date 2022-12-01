@@ -5,12 +5,10 @@ import * as E from 'fp-ts/Either'
 import * as IOE from 'fp-ts/IOEither'
 import * as RT from 'fp-ts/ReaderTask'
 import { flow, pipe } from 'fp-ts/function'
-import { split } from 'fp-ts/string'
 import * as D from 'io-ts/Decoder'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
-import { isOrcid } from 'orcid-id-ts'
 import { AppEnv, app } from './app'
 import { rawHtml } from './html'
 
@@ -25,8 +23,6 @@ export const UrlD = pipe(
 )
 
 export const HtmlD = pipe(D.string, D.map(rawHtml))
-
-const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
 
 const EnvD = pipe(
   D.struct({
@@ -44,7 +40,6 @@ const EnvD = pipe(
   }),
   D.intersect(
     D.partial({
-      CAN_ADD_AUTHORS: pipe(D.string, D.map(split(',')), D.compose(D.array(OrcidD))),
       LEGACY_PREREVIEW_UPDATE: pipe(
         D.literal('true', 'false'),
         D.map(value => value === 'true'),
@@ -63,7 +58,6 @@ const env = pipe(
 )()
 
 const deps: AppEnv = {
-  canAddAuthors: user => env.CAN_ADD_AUTHORS?.includes(user.orcid) === true,
   clock: SystemClock,
   fetch: fetch.defaults({
     cachePath: env.CACHE_PATH,
