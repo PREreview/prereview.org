@@ -1,4 +1,3 @@
-import { hasRegistrant } from 'doi-ts'
 import express from 'express'
 import * as P from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
@@ -16,7 +15,7 @@ import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
-import { getPreprintFromCrossref } from './crossref'
+import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { logFetch, useStaleCache } from './fetch'
 import { home } from './home'
 import { handleError } from './http-error'
@@ -164,12 +163,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
 )
 
 const getPreprint = (doi: PreprintId['doi']) =>
-  match(doi)
-    .when(
-      hasRegistrant('1101', '1590', '21203', '31219', '31223', '31224', '31234', '31235', '31730', '35542'),
-      getPreprintFromCrossref,
-    )
-    .exhaustive()
+  match(doi).when(isCrossrefPreprintDoi, getPreprintFromCrossref).exhaustive()
 
 const getPreprintTitle = flow(
   getPreprint,

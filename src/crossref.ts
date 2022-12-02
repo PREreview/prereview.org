@@ -1,10 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Work, getWork } from 'crossref-ts'
-import { hasRegistrant } from 'doi-ts'
+import { Doi, hasRegistrant } from 'doi-ts'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
+import { Refinement } from 'fp-ts/Refinement'
 import { flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { Status } from 'hyper-ts'
@@ -43,6 +44,19 @@ export type CrossrefPreprintId =
   | ResearchSquarePreprintId
   | ScieloPreprintId
   | SocarxivPreprintId
+
+export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['doi']> = hasRegistrant(
+  '1101',
+  '1590',
+  '21203',
+  '31219',
+  '31223',
+  '31224',
+  '31234',
+  '31235',
+  '31730',
+  '35542',
+)
 
 export const getPreprintFromCrossref = flow(
   (doi: CrossrefPreprintId['doi']) => getWork(doi),

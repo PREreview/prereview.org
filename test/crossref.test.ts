@@ -7,6 +7,16 @@ import * as _ from '../src/crossref'
 import { rawHtml } from '../src/html'
 import * as fc from './fc'
 
+describe('isCrossrefPreprintDoi', () => {
+  test.prop([fc.crossrefPreprintDoi()])('with a Crossref DOI', doi => {
+    expect(_.isCrossrefPreprintDoi(doi)).toBe(true)
+  })
+
+  test.prop([fc.doi()])('with a non-Crossref DOI', doi => {
+    expect(_.isCrossrefPreprintDoi(doi)).toBe(false)
+  })
+})
+
 describe('getPreprintFromCrossref', () => {
   describe('when the preprint can be loaded', () => {
     test.prop([fc.africarxivPreprintId(), fc.plainDate()])('from AfricArXiv', async (id, posted) => {
