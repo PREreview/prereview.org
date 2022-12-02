@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi, hasRegistrant, isDoi } from 'doi-ts'
+import { Doi, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
@@ -27,7 +27,7 @@ import {
 } from 'zenodo-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { Html, plainText, sanitizeHtml } from './html'
-import { PreprintId } from './preprint-id'
+import { PreprintId, isPreprintDoi } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
@@ -137,13 +137,7 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
   )
 }
 
-const DoiD = D.fromRefinement(
-  pipe(
-    isDoi,
-    compose(hasRegistrant('1101', '1590', '21203', '31219', '31223', '31224', '31234', '31235', '31730', '35542')),
-  ),
-  'DOI',
-)
+const DoiD = D.fromRefinement(pipe(isDoi, compose(isPreprintDoi)), 'DOI')
 
 const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
   D.fromStruct({ metadata: D.fromStruct({ license: D.fromStruct({ id: D.literal('CC-BY-4.0') }) }) }),

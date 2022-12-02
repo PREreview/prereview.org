@@ -1,18 +1,13 @@
-import { hasRegistrant, isDoi } from 'doi-ts'
+import { isDoi } from 'doi-ts'
 import * as P from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import { compose } from 'fp-ts/Refinement'
 import { pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+import { isPreprintDoi } from './preprint-id'
 
-const DoiD = D.fromRefinement(
-  pipe(
-    isDoi,
-    compose(hasRegistrant('1101', '1590', '21203', '31219', '31223', '31224', '31234', '31235', '31730', '35542')),
-  ),
-  'DOI',
-)
+const DoiD = D.fromRefinement(pipe(isDoi, compose(isPreprintDoi)), 'DOI')
 
 const IntegerFromStringC = C.make(
   pipe(

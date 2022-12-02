@@ -1,4 +1,4 @@
-import { Doi, hasRegistrant, parse } from 'doi-ts'
+import { Doi, parse } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
@@ -14,6 +14,7 @@ import { html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
+import { isPreprintDoi } from './preprint-id'
 import { homeMatch, preprintMatch } from './routes'
 
 export const home = pipe(
@@ -40,10 +41,7 @@ const showHomeErrorPage = flow(
 const DoiD = pipe(
   D.string,
   D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parse(s))),
-  D.refine(
-    hasRegistrant('1101', '1590', '21203', '31219', '31223', '31224', '31234', '31235', '31730', '35542'),
-    'DOI',
-  ),
+  D.refine(isPreprintDoi, 'DOI'),
 )
 
 const LookupDoiD = pipe(

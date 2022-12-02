@@ -1,4 +1,5 @@
-import { Doi } from 'doi-ts'
+import { Doi, hasRegistrant } from 'doi-ts'
+import { Refinement } from 'fp-ts/Refinement'
 
 export type PreprintId =
   | AfricarxivPreprintId
@@ -67,3 +68,16 @@ export interface SocarxivPreprintId {
   readonly type: 'socarxiv'
   readonly doi: Doi<'31235'>
 }
+
+export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
+  '1101',
+  '1590',
+  '21203',
+  '31219',
+  '31223',
+  '31224',
+  '31234',
+  '31235',
+  '31730',
+  '35542',
+)
