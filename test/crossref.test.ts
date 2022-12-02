@@ -1741,7 +1741,7 @@ describe('getPreprintFromCrossref', () => {
     })
   })
 
-  test.prop([fc.doi()])('when the preprint is not found', async doi => {
+  test.prop([fc.crossrefPreprintDoi()])('when the preprint is not found', async doi => {
     const fetch = fetchMock
       .sandbox()
       .getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, { status: Status.NotFound })
@@ -1751,7 +1751,7 @@ describe('getPreprintFromCrossref', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.doi(), fc.record({ status: fc.integer(), body: fc.string() })])(
+  test.prop([fc.crossrefPreprintDoi(), fc.record({ status: fc.integer(), body: fc.string() })])(
     'when the preprint cannot be loaded',
     async (doi, response) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, response)

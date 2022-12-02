@@ -31,8 +31,21 @@ import {
 
 import PlainDate = Temporal.PlainDate
 
+export type CrossrefPreprintId =
+  | AfricarxivPreprintId
+  | BiorxivPreprintId
+  | EartharxivPreprintId
+  | EdarxivPreprintId
+  | EngrxivPreprintId
+  | MedrxivPreprintId
+  | OsfPreprintId
+  | PsyarxivPreprintId
+  | ResearchSquarePreprintId
+  | ScieloPreprintId
+  | SocarxivPreprintId
+
 export const getPreprintFromCrossref = flow(
-  getWork,
+  (doi: CrossrefPreprintId['doi']) => getWork(doi),
   RTE.local(revalidateIfStale),
   RTE.local(useStaleCache),
   RTE.local(timeoutRequest(2000)),
@@ -182,20 +195,7 @@ function toHttps(url: URL): URL {
   return httpsUrl
 }
 
-const PreprintIdD: D.Decoder<
-  Work,
-  | AfricarxivPreprintId
-  | BiorxivPreprintId
-  | EartharxivPreprintId
-  | EdarxivPreprintId
-  | EngrxivPreprintId
-  | MedrxivPreprintId
-  | OsfPreprintId
-  | PsyarxivPreprintId
-  | ResearchSquarePreprintId
-  | ScieloPreprintId
-  | SocarxivPreprintId
-> = D.union(
+const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('31730'), 'DOI'),

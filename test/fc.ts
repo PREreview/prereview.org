@@ -13,6 +13,7 @@ import ISO6391, { LanguageCode } from 'iso-639-1'
 import { Headers as FetchHeaders } from 'node-fetch'
 import { Body, Headers, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
 import { Orcid, isOrcid } from 'orcid-id-ts'
+import { CrossrefPreprintId } from '../src/crossref'
 import { Html, sanitizeHtml, html as toHtml } from '../src/html'
 import { Preprint } from '../src/preprint'
 import {
@@ -71,6 +72,8 @@ export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbi
     .filter(isDoi as Refinement<unknown, Doi<R>>)
 
 export const preprintDoi = (): fc.Arbitrary<PreprintId['doi']> => preprintId().map(id => id.doi)
+
+export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['doi']> => crossrefPreprintId().map(id => id.doi)
 
 export const africarxivPreprintId = (): fc.Arbitrary<AfricarxivPreprintId> =>
   fc.record({
@@ -138,7 +141,22 @@ export const socarxivPreprintId = (): fc.Arbitrary<SocarxivPreprintId> =>
     doi: doi(fc.constant('31235')),
   })
 
-export const preprintId = () =>
+export const preprintId = (): fc.Arbitrary<PreprintId> =>
+  fc.oneof(
+    africarxivPreprintId(),
+    biorxivPreprintId(),
+    eartharxivPreprintId(),
+    edarxivPreprintId(),
+    engrxivPreprintId(),
+    medrxivPreprintId(),
+    osfPreprintId(),
+    psyarxivPreprintId(),
+    researchSquarePreprintId(),
+    scieloPreprintId(),
+    socarxivPreprintId(),
+  )
+
+export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(
     africarxivPreprintId(),
     biorxivPreprintId(),
