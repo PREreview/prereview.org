@@ -43,11 +43,6 @@ export const getPreprintFromCrossref = flow(
       .otherwise(() => 'unavailable' as const),
   ),
 )
-export const getPreprintTitleFromCrossref = flow(
-  getPreprintFromCrossref,
-  RTE.local(useStaleCache),
-  RTE.map(preprint => ({ language: preprint.title.language, title: preprint.title.text })),
-)
 
 function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> {
   return pipe(

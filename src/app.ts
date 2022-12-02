@@ -3,7 +3,7 @@ import * as P from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { constant, flip, pipe } from 'fp-ts/function'
+import { constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { ResponseEnded, StatusOpen } from 'hyper-ts'
@@ -14,8 +14,8 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
-import { getPreprintFromCrossref, getPreprintTitleFromCrossref } from './crossref'
-import { logFetch } from './fetch'
+import { getPreprintFromCrossref } from './crossref'
+import { logFetch, useStaleCache } from './fetch'
 import { home } from './home'
 import { handleError } from './http-error'
 import {
@@ -104,7 +104,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getPrereview: flip(getPrereviewFromZenodo)({
             ...env,
-            getPreprintTitle: flip(getPreprintTitleFromCrossref)(env),
+            getPreprintTitle: flip(getPreprintTitle)(env),
           }),
         })),
       ),
@@ -148,7 +148,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPreprintTitle: flip(getPreprintTitleFromCrossref)(env),
+          getPreprintTitle: flip(getPreprintTitle)(env),
           postPrereview: flip((newPrereview: NewPrereview) =>
             pipe(createRecordOnZenodo(newPrereview), RTE.chainFirstW(createPrereviewOnLegacyPrereview(newPrereview))),
           )(env),
@@ -158,6 +158,12 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
   ],
   M.concatAll(P.getParserMonoid()),
   P.map(R.local(logFetch)),
+)
+
+const getPreprintTitle = flow(
+  getPreprintFromCrossref,
+  RTE.local(useStaleCache),
+  RTE.map(preprint => ({ language: preprint.title.language, title: preprint.title.text })),
 )
 
 const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
