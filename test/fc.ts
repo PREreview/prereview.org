@@ -14,10 +14,12 @@ import { Headers as FetchHeaders } from 'node-fetch'
 import { Body, Headers, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
 import { Orcid, isOrcid } from 'orcid-id-ts'
 import { CrossrefPreprintId } from '../src/crossref'
+import { DatacitePreprintId } from '../src/datacite'
 import { Html, sanitizeHtml, html as toHtml } from '../src/html'
 import { Preprint } from '../src/preprint'
 import {
   AfricarxivPreprintId,
+  ArxivPreprintId,
   BiorxivPreprintId,
   EartharxivPreprintId,
   EdarxivPreprintId,
@@ -75,10 +77,18 @@ export const preprintDoi = (): fc.Arbitrary<PreprintId['doi']> => preprintId().m
 
 export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['doi']> => crossrefPreprintId().map(id => id.doi)
 
+export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['doi']> => datacitePreprintId().map(id => id.doi)
+
 export const africarxivPreprintId = (): fc.Arbitrary<AfricarxivPreprintId> =>
   fc.record({
     type: fc.constant('africarxiv'),
     doi: doi(fc.constant('31730')),
+  })
+
+export const arxivPreprintId = (): fc.Arbitrary<ArxivPreprintId> =>
+  fc.record({
+    type: fc.constant('arxiv'),
+    doi: doi(fc.constant('48550')),
   })
 
 export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
@@ -144,6 +154,7 @@ export const socarxivPreprintId = (): fc.Arbitrary<SocarxivPreprintId> =>
 export const preprintId = (): fc.Arbitrary<PreprintId> =>
   fc.oneof(
     africarxivPreprintId(),
+    arxivPreprintId(),
     biorxivPreprintId(),
     eartharxivPreprintId(),
     edarxivPreprintId(),
@@ -171,6 +182,8 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     socarxivPreprintId(),
   )
 
+export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> => arxivPreprintId()
+
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc
     .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), {
@@ -190,6 +203,9 @@ export const plainDate = (): fc.Arbitrary<Temporal.PlainDate> =>
       day: fc.integer({ min: 1, max: 31 }),
     })
     .map(args => Temporal.PlainDate.from(args))
+
+export const instant = (): fc.Arbitrary<Temporal.Instant> =>
+  fc.date().map(date => Temporal.Instant.from(date.toISOString()))
 
 export const origin = (): fc.Arbitrary<URL> => url().map(url => new URL(url.origin))
 

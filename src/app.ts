@@ -16,6 +16,7 @@ import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
+import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import { logFetch, useStaleCache } from './fetch'
 import { home } from './home'
 import { handleError } from './http-error'
@@ -163,7 +164,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
 )
 
 const getPreprint = (doi: PreprintId['doi']) =>
-  match(doi).when(isCrossrefPreprintDoi, getPreprintFromCrossref).exhaustive()
+  match(doi)
+    .when(isCrossrefPreprintDoi, getPreprintFromCrossref)
+    .when(isDatacitePreprintDoi, getPreprintFromDatacite)
+    .exhaustive()
 
 const getPreprintTitle = flow(
   getPreprint,

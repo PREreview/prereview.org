@@ -3,6 +3,7 @@ import { Refinement } from 'fp-ts/Refinement'
 
 export type PreprintId =
   | AfricarxivPreprintId
+  | ArxivPreprintId
   | BiorxivPreprintId
   | EartharxivPreprintId
   | EdarxivPreprintId
@@ -17,6 +18,11 @@ export type PreprintId =
 export interface AfricarxivPreprintId {
   readonly type: 'africarxiv'
   readonly doi: Doi<'31730'>
+}
+
+export interface ArxivPreprintId {
+  readonly type: 'arxiv'
+  readonly doi: Doi<'48550'>
 }
 
 export interface BiorxivPreprintId {
@@ -80,4 +86,5 @@ export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
   '31235',
   '31730',
   '35542',
+  '48550',
 )
