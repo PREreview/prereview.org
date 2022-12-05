@@ -50,7 +50,7 @@
     "@tiptap/core": "^2.0.0-beta.204",
     "@tiptap/extension-link": "^2.0.0-beta.204",
     "@tiptap/extension-subscript": "^2.0.0-beta.204",
-    "@tiptap/extension-superscript": "^2.0.0-beta.204",
+    "@tiptap/extension-superscript": "^2.0.0-beta.205",
     "@tiptap/extension-typography": "^2.0.0-beta.204",
     "@tiptap/starter-kit": "^2.0.0-beta.204",
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
