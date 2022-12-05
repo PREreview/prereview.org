@@ -10,7 +10,7 @@
     "@keyv/sqlite": "^3.6.3",
     "clock-ts": "^0.1.2",
     "crossref-ts": "^0.1.4",
-    "datacite-ts": "^0.1.1",
+    "datacite-ts": "^0.1.2",
     "doi-ts": "^0.1.4",
     "express": "^4.18.2",
     "fetch-fp-ts": "^0.1.5",
