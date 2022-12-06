@@ -126,6 +126,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
 const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = pipe(
   D.fromStruct({
     doi: D.fromRefinement(hasRegistrant('48550'), 'DOI'),
+    publisher: D.literal('arXiv'),
   }),
   D.map(work => ({
     type: 'arxiv' as const,
