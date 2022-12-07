@@ -238,7 +238,7 @@ test('can skip to the review', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
-test('might not load the PREreview in time', async ({ fetch, page }) => {
+test('might not load the PREreview in time', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
     conceptrecid: 1061863,
@@ -302,5 +302,17 @@ test('might not load the PREreview in time', async ({ fetch, page }) => {
   await page.goto('/reviews/1061864')
 
   await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
   await expect(page).toHaveScreenshot()
 })

@@ -91,7 +91,7 @@ function failureMessage() {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
-      <main>
+      <main id="main-content">
         <h1>Sorry, we’re having problems</h1>
 
         <p>We’re unable to show the preprint and its PREreviews now.</p>
@@ -99,6 +99,7 @@ function failureMessage() {
         <p>Please try again later.</p>
       </main>
     `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
   })
 }
 

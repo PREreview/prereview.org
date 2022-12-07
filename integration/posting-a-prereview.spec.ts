@@ -1335,7 +1335,7 @@ test("aren't told about ORCID when already logged in", async ({ fetch, page }) =
   await expect(page.locator('h1')).toHaveText('Have you already written your PREreview?')
 })
 
-test('are told if ORCID is unavailable', async ({ fetch, page }) => {
+test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
 
@@ -1347,9 +1347,21 @@ test('are told if ORCID is unavailable', async ({ fetch, page }) => {
 
   await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
   await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
 })
 
-test('are told if Zenodo is unavailable', async ({ fetch, page }) => {
+test('are told if Zenodo is unavailable', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
 
@@ -1385,9 +1397,21 @@ test('are told if Zenodo is unavailable', async ({ fetch, page }) => {
 
   await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
   await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
 })
 
-test("are directed to the current site if you don't have a pseudonym", async ({ fetch, page }) => {
+test("are directed to the current site if you don't have a pseudonym", async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
 
@@ -1415,6 +1439,18 @@ test("are directed to the current site if you don't have a pseudonym", async ({ 
   await page.keyboard.press('Enter')
 
   await expect(page.locator('h1')).toHaveText('Sorry, you can’t post a PREreview yet')
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
   await expect(page).toHaveScreenshot()
 })
 

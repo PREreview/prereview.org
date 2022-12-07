@@ -24,7 +24,7 @@ function notFoundPage() {
   return page({
     title: plainText`Page not found`,
     content: html`
-      <main>
+      <main id="main-content">
         <h1>Page not found</h1>
 
         <p>If you typed the web address, check it is correct.</p>
@@ -32,6 +32,7 @@ function notFoundPage() {
         <p>If you pasted the web address, check you copied the entire address.</p>
       </main>
     `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
   })
 }
 
@@ -39,11 +40,12 @@ function problemsPage() {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
-      <main>
+      <main id="main-content">
         <h1>Sorry, we’re having problems</h1>
 
         <p>Please try again later.</p>
       </main>
     `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
   })
 }

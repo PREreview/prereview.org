@@ -5,7 +5,7 @@ import { URL } from 'url'
 import { RecordsC } from 'zenodo-ts'
 import { expect, test } from './test'
 
-test('might not find anything', async ({ fetch, page }) => {
+test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/')
   await page.fill('text="Preprint DOI"', '10.1101/this-should-not-find-anything')
 
@@ -16,6 +16,18 @@ test('might not find anything', async ({ fetch, page }) => {
   const h1 = page.locator('h1')
 
   await expect(h1).toHaveText('Page not found')
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
   await expect(page).toHaveScreenshot()
 })
 
@@ -105,7 +117,7 @@ test('can find and view a preprint', async ({ fetch, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
-test('might not load the preprint in time', async ({ fetch, page }) => {
+test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/')
   await page.fill('text="Preprint DOI"', '10.1101/this-should-take-too-long')
 
@@ -118,9 +130,21 @@ test('might not load the preprint in time', async ({ fetch, page }) => {
 
   await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
   await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
 })
 
-test('might not load PREreviews in time', async ({ fetch, page }) => {
+test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/')
   await page.fill('text="Preprint DOI"', '10.1101/2022.01.13.476201')
 
@@ -135,6 +159,18 @@ test('might not load PREreviews in time', async ({ fetch, page }) => {
   await page.click('text="Continue"')
 
   await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
   await expect(page).toHaveScreenshot()
 })
 

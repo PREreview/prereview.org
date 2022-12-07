@@ -160,7 +160,7 @@ function failureMessage(preprint: Preprint) {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
-      <main>
+      <main id="main-content">
         <h1>Sorry, we’re having problems</h1>
 
         <p>We’re unable to post your PREreview now.</p>
@@ -170,6 +170,7 @@ function failureMessage(preprint: Preprint) {
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
     `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
   })
 }
 
