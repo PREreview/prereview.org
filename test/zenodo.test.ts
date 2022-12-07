@@ -601,7 +601,7 @@ describe('getPrereviewsFromZenodo', () => {
               publication_date: new Date('2022-07-05'),
               resource_type: {
                 type: 'publication',
-                subtype: 'article',
+                subtype: 'peerreview',
               },
               title: 'Title',
             },
@@ -618,6 +618,7 @@ describe('getPrereviewsFromZenodo', () => {
             communities: 'prereview-reviews',
             q: `related.identifier:"${preprint.doi}"`,
             sort: 'mostrecent',
+            subtype: 'peerreview',
           },
         },
         {
@@ -671,7 +672,7 @@ describe('getPrereviewsFromZenodo', () => {
               publication_date: new Date('2022-07-05'),
               resource_type: {
                 type: 'publication',
-                subtype: 'article',
+                subtype: 'peerreview',
               },
               title: 'Title',
             },
@@ -690,6 +691,7 @@ describe('getPrereviewsFromZenodo', () => {
               q: `related.identifier:"${preprint.doi}"`,
               size: '100',
               sort: 'mostrecent',
+              subtype: 'peerreview',
             }).toString()}` && cache === 'force-cache',
         {
           body: RecordsC.encode(records),
@@ -704,6 +706,7 @@ describe('getPrereviewsFromZenodo', () => {
               q: `related.identifier:"${preprint.doi}"`,
               size: '100',
               sort: 'mostrecent',
+              subtype: 'peerreview',
             }).toString()}` && cache === 'no-cache',
         { throws: new Error('Network error') },
       )
@@ -733,6 +736,7 @@ describe('getPrereviewsFromZenodo', () => {
               communities: 'prereview-reviews',
               q: `related.identifier:"${preprint.doi}"`,
               sort: 'mostrecent',
+              subtype: 'peerreview',
             },
           },
           { status },

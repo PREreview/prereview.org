@@ -53,7 +53,7 @@ test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
       ],
       resource_type: {
         type: 'publication',
-        subtype: 'article',
+        subtype: 'peerreview',
       },
       title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
     },

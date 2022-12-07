@@ -53,6 +53,7 @@ export const getPrereviewsFromZenodo = flow(
       q: `related.identifier:"${preprint.doi}"`,
       size: '100',
       sort: 'mostrecent',
+      subtype: 'peerreview',
     }),
   getRecords,
   RTE.local(revalidateIfStale),
