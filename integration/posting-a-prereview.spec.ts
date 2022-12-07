@@ -1335,6 +1335,51 @@ test("aren't told about ORCID when already logged in", async ({ fetch, page }) =
   await expect(page.locator('h1')).toHaveText('Have you already written your PREreview?')
 })
 
+test('are told if ORCID is unavailable', async ({ fetch, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+
+  fetch.postOnce('http://orcid.test/token', { status: Status.ServiceUnavailable })
+  await page.keyboard.press('Enter')
+
+  await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
+  await expect(page).toHaveScreenshot()
+})
+
+test("are directed to the current site if you don't have a pseudonym", async ({ fetch, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+
+  fetch
+    .postOnce('http://orcid.test/token', {
+      status: Status.OK,
+      body: {
+        access_token: 'access-token',
+        token_type: 'Bearer',
+        name: 'Josiah Carberry',
+        orcid: '0000-0002-1825-0097',
+      },
+    })
+    .get(
+      {
+        url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
+        headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
+      },
+      { status: Status.NotFound },
+      { overwriteRoutes: true },
+    )
+  await page.keyboard.press('Enter')
+
+  await expect(page.locator('h1')).toHaveText('Sorry, you can’t post a PREreview yet')
+  await expect(page).toHaveScreenshot()
+})
+
 test('have to say if you have already written your PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
