@@ -210,6 +210,240 @@ test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
+test('can skip to the forms', async ({ fetch, javaScriptEnabled, page }) => {
+  const record: Record = {
+    conceptdoi: '10.5072/zenodo.1055805' as Doi,
+    conceptrecid: 1055805,
+    files: [
+      {
+        links: {
+          self: new URL('http://example.com/file'),
+        },
+        key: 'review.html',
+        type: 'html',
+        size: 58,
+      },
+    ],
+    id: 1055806,
+    links: {
+      latest: new URL('http://example.com/latest'),
+      latest_html: new URL('http://example.com/latest_html'),
+    },
+    metadata: {
+      communities: [{ id: 'prereview-reviews' }],
+      creators: [
+        {
+          name: 'Josiah Carberry',
+          orcid: '0000-0002-1825-0097' as Orcid,
+        },
+      ],
+      description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+      doi: '10.5072/zenodo.1055806' as Doi,
+      license: {
+        id: 'CC-BY-4.0',
+      },
+      publication_date: new Date('2022-07-05'),
+      related_identifiers: [
+        {
+          identifier: '10.1101/2022.01.13.476201',
+          relation: 'reviews',
+          resource_type: 'publication-preprint',
+          scheme: 'doi',
+        },
+        {
+          identifier: '10.5072/zenodo.1061863',
+          relation: 'isVersionOf',
+          scheme: 'doi',
+        },
+      ],
+      resource_type: {
+        type: 'publication',
+        subtype: 'article',
+      },
+      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+    },
+  }
+
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+  await page.keyboard.press('Enter')
+
+  await expect(page).toHaveTitle(/PREreview/)
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Save and continue"')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.check('text="Josiah Carberry"')
+  await page.click('text="Save and continue"')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.check('text="No, by myself"')
+  await page.click('text="Save and continue"')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.check('text="No"')
+  await page.click('text="Save and continue"')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.check('text="I’m following the Code of Conduct"')
+  await page.click('text="Save and continue"')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  fetch
+    .postOnce('http://zenodo.test/api/deposit/depositions', {
+      body: UnsubmittedDepositionC.encode({
+        ...record,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+        },
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          prereserve_doi: {
+            doi: record.metadata.doi,
+          },
+          upload_type: 'publication',
+          publication_type: 'article',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }),
+      status: Status.Created,
+    })
+    .putOnce('http://example.com/bucket/review.html', {
+      status: Status.Created,
+    })
+    .postOnce('http://example.com/publish', {
+      body: SubmittedDepositionC.encode({
+        ...record,
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          upload_type: 'publication',
+          publication_type: 'article',
+        },
+        state: 'done',
+        submitted: true,
+      }),
+      status: Status.Accepted,
+    })
+
+  await page.click('text="Post PREreview"')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
+
 test.extend(updatesLegacyPrereview)('updates the legacy PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055805' as Doi,

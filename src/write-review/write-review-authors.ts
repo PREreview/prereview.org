@@ -105,7 +105,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
         <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
-      <main>
+      <main id="form">
         <form method="post" action="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" novalidate>
           ${error
             ? html`
@@ -188,6 +188,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
       </main>
     `,
     js: ['error-summary.js'],
+    skipLinks: [[html`Skip to form`, '#form']],
   })
 }
 

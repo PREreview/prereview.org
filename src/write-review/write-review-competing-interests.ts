@@ -116,7 +116,7 @@ function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm
         <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
-      <main>
+      <main id="form">
         <form
           method="post"
           action="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.doi })}"
@@ -270,6 +270,7 @@ ${match(form.competingInterestsDetails)
       </main>
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
+    skipLinks: [[html`Skip to form`, '#form']],
   })
 }
 

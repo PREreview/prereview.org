@@ -125,7 +125,7 @@ function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
   return page({
     title: plainText`PREreview posted`,
     content: html`
-      <main>
+      <main id="main-content">
         <div class="panel">
           <h1>PREreview posted</h1>
 
@@ -153,6 +153,7 @@ function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
     `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
   })
 }
 
@@ -182,7 +183,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
         <a href="${format(writeReviewConductMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
-      <main>
+      <main id="form">
         <single-use-form>
           <form method="post" action="${format(writeReviewPostMatch.formatter, { doi: preprint.doi })}" novalidate>
             <h1 id="preview-label">Check your PREreview</h1>
@@ -229,6 +230,7 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
       </main>
     `,
     js: ['single-use-form.js', 'error-summary.js'],
+    skipLinks: [[html`Skip to form`, '#form']],
   })
 }
 

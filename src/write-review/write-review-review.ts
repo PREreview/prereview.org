@@ -197,7 +197,7 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
-      <main>
+      <main id="form">
         <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" novalidate>
           ${error
             ? html`
@@ -306,6 +306,7 @@ ${turndown.turndown(review.toString())}</textarea
       </main>
     `,
     js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
+    skipLinks: [[html`Skip to form`, '#form']],
   })
 }
 
@@ -319,7 +320,7 @@ function pasteReviewForm(preprint: Preprint, form: PasteReviewForm) {
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
-      <main>
+      <main id="form">
         <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" novalidate>
           ${error
             ? html`
@@ -381,6 +382,7 @@ ${match(form.review)
       </main>
     `,
     js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
+    skipLinks: [[html`Skip to form`, '#form']],
   })
 }
 
@@ -396,7 +398,7 @@ function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm) {
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
-      <main>
+      <main id="form">
         <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" novalidate>
           ${error
             ? html`
@@ -481,6 +483,7 @@ function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm) {
       </main>
     `,
     js: ['error-summary.js'],
+    skipLinks: [[html`Skip to form`, '#form']],
   })
 }
 

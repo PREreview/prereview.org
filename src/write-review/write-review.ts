@@ -45,7 +45,7 @@ function startPage(preprint: Preprint) {
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
-      <main>
+      <main id="main-content">
         <h1>PREreview this preprint</h1>
 
         <p>
@@ -73,6 +73,7 @@ function startPage(preprint: Preprint) {
         <a href="${format(logInMatch.formatter, {})}" role="button" draggable="false">Start now</a>
       </main>
     `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
   })
 }
 

@@ -93,7 +93,7 @@ function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm) {
         <a href="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
-      <main>
+      <main id="form">
         <form method="post" action="${format(writeReviewConductMatch.formatter, { doi: preprint.doi })}" novalidate>
           ${error
             ? html`
@@ -201,6 +201,7 @@ function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm) {
       </main>
     `,
     js: ['error-summary.js'],
+    skipLinks: [[html`Skip to form`, '#form']],
   })
 }
 

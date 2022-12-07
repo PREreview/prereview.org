@@ -58,7 +58,7 @@ function cannotAddAuthorsForm(preprint: Preprint) {
         <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
-      <main>
+      <main id="form">
         <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })}" novalidate>
           <h1>Add more authors</h1>
 
@@ -73,6 +73,7 @@ function cannotAddAuthorsForm(preprint: Preprint) {
       </main>
     `,
     js: ['error-summary.js'],
+    skipLinks: [[html`Skip to form`, '#form']],
   })
 }
 

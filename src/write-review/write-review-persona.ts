@@ -91,7 +91,7 @@ function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
         <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
       </nav>
 
-      <main>
+      <main id="form">
         <form method="post" action="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" novalidate>
           ${error
             ? html`
@@ -200,6 +200,7 @@ function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
       </main>
     `,
     js: ['error-summary.js'],
+    skipLinks: [[html`Skip to form`, '#form']],
   })
 }
 
