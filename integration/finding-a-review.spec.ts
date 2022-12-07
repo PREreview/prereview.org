@@ -212,7 +212,7 @@ test('can skip to the review', async ({ fetch, javaScriptEnabled, page }) => {
       ],
       resource_type: {
         type: 'publication',
-        subtype: 'article',
+        subtype: 'peerreview',
       },
       title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
     },
@@ -288,7 +288,7 @@ test('might not load the PREreview in time', async ({ fetch, javaScriptEnabled, 
       ],
       resource_type: {
         type: 'publication',
-        subtype: 'article',
+        subtype: 'peerreview',
       },
       title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
     },

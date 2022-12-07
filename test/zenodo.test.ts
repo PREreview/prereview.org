@@ -69,7 +69,7 @@ describe('getPrereviewFromZenodo', () => {
         ],
         resource_type: {
           type: 'publication',
-          subtype: 'article',
+          subtype: 'peerreview',
         },
         title: 'Title',
       },
@@ -149,7 +149,7 @@ describe('getPrereviewFromZenodo', () => {
         ],
         resource_type: {
           type: 'publication',
-          subtype: 'article',
+          subtype: 'peerreview',
         },
         title: 'Title',
       },
@@ -239,7 +239,7 @@ describe('getPrereviewFromZenodo', () => {
         ],
         resource_type: {
           type: 'publication',
-          subtype: 'article',
+          subtype: 'peerreview',
         },
         title: 'Title',
       },
@@ -311,7 +311,7 @@ describe('getPrereviewFromZenodo', () => {
           ],
           resource_type: {
             type: 'publication',
-            subtype: 'article',
+            subtype: 'peerreview',
           },
           title: 'Title',
         },
@@ -369,7 +369,85 @@ describe('getPrereviewFromZenodo', () => {
         ],
         resource_type: {
           type: 'publication',
-          subtype: 'article',
+          subtype: 'peerreview',
+        },
+        title: 'Title',
+      },
+    }
+
+    const actual = await _.getPrereviewFromZenodo(id)({
+      fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+        body: RecordC.encode(record),
+        status: Status.OK,
+      }),
+      getPreprintTitle: () => () => Promise.reject('should not be called'),
+    })()
+
+    expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
+  })
+
+  test.prop([
+    fc.integer(),
+    fc.preprintDoi(),
+    fc.constantFrom(
+      'annotationcollection' as const,
+      'article' as const,
+      'book' as const,
+      'conferencepaper' as const,
+      'datamanagementplan' as const,
+      'deliverable' as const,
+      'milestone' as const,
+      'other' as const,
+      'patent' as const,
+      'preprint' as const,
+      'proposal' as const,
+      'report' as const,
+      'section' as const,
+      'softwaredocumentation' as const,
+      'taxonomictreatment' as const,
+      'technicalnote' as const,
+      'thesis' as const,
+      'workingpaper' as const,
+    ),
+  ])('when the record is not a peer review', async (id, preprintDoi, publicationType) => {
+    const record: Record = {
+      conceptdoi: '10.5072/zenodo.1061863' as Doi,
+      conceptrecid: 1061863,
+      files: [
+        {
+          links: {
+            self: new URL('http://example.com/file'),
+          },
+          key: 'review.html',
+          type: 'html',
+          size: 58,
+        },
+      ],
+      id,
+      links: {
+        latest: new URL('http://example.com/latest'),
+        latest_html: new URL('http://example.com/latest_html'),
+      },
+      metadata: {
+        communities: [{ id: 'prereview-reviews' }],
+        creators: [{ name: 'PREreviewer' }],
+        description: 'Description',
+        doi: '10.5281/zenodo.1061864' as Doi,
+        license: {
+          id: 'CC-BY-4.0',
+        },
+        publication_date: new Date('2022-07-05'),
+        related_identifiers: [
+          {
+            scheme: 'doi',
+            identifier: preprintDoi,
+            relation: 'reviews',
+            resource_type: 'publication-preprint',
+          },
+        ],
+        resource_type: {
+          type: 'publication',
+          subtype: publicationType,
         },
         title: 'Title',
       },
@@ -426,7 +504,7 @@ describe('getPrereviewFromZenodo', () => {
           ],
           resource_type: {
             type: 'publication',
-            subtype: 'article',
+            subtype: 'peerreview',
           },
           title: 'Title',
         },
@@ -484,7 +562,7 @@ describe('getPrereviewFromZenodo', () => {
           ],
           resource_type: {
             type: 'publication',
-            subtype: 'article',
+            subtype: 'peerreview',
           },
           title: 'Title',
         },
@@ -549,7 +627,7 @@ describe('getPrereviewFromZenodo', () => {
         ],
         resource_type: {
           type: 'publication',
-          subtype: 'article',
+          subtype: 'peerreview',
         },
         title: 'Title',
       },

@@ -4,6 +4,7 @@ import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
 import * as O from 'fp-ts/Option'
+import { and } from 'fp-ts/Predicate'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
@@ -42,7 +43,7 @@ export const getPrereviewFromZenodo = flow(
   RTE.local(revalidateIfStale),
   RTE.local(useStaleCache),
   RTE.local(timeoutRequest(2000)),
-  RTE.filterOrElseW(isInCommunity, () => new NotFound()),
+  RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview)), () => new NotFound()),
   RTE.chain(recordToPrereview),
 )
 
@@ -151,6 +152,10 @@ function isInCommunity(record: Record) {
     O.chain(A.findFirst(community => community.id === 'prereview-reviews')),
     O.isSome,
   )
+}
+
+function isPeerReview(record: Record) {
+  return record.metadata.resource_type.type === 'publication' && record.metadata.resource_type.subtype === 'peerreview'
 }
 
 const getReviewUrl = flow(
