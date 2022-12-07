@@ -91,7 +91,7 @@ export const createRecordOnZenodo: (
 function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
   return {
     upload_type: 'publication',
-    publication_type: 'article',
+    publication_type: 'peerreview',
     title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
     creators: [
       newPrereview.persona === 'public'

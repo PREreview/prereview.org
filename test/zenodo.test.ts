@@ -801,7 +801,7 @@ describe('createRecordOnZenodo', () => {
             body: {
               metadata: {
                 upload_type: 'publication',
-                publication_type: 'article',
+                publication_type: 'peerreview',
                 title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
                 creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
                 communities: [{ identifier: 'prereview-reviews' }],
@@ -898,7 +898,7 @@ describe('createRecordOnZenodo', () => {
             body: {
               metadata: {
                 upload_type: 'publication',
-                publication_type: 'article',
+                publication_type: 'peerreview',
                 title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
                 creators: [{ name: newPrereview.user.pseudonym }],
                 communities: [{ identifier: 'prereview-reviews' }],
