@@ -1349,6 +1349,44 @@ test('are told if ORCID is unavailable', async ({ fetch, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
+test('are told if Zenodo is unavailable', async ({ fetch, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.click('text="Start now"')
+
+  await page.fill('[type=email]', 'test@example.com')
+  await page.fill('[type=password]', 'password')
+
+  fetch.postOnce('http://orcid.test/token', {
+    status: Status.OK,
+    body: {
+      access_token: 'access-token',
+      token_type: 'Bearer',
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097',
+    },
+  })
+  await page.keyboard.press('Enter')
+
+  await page.check('text="No"')
+  await page.click('text="Continue"')
+  await page.click('text="Save and continue"')
+  await page.check('text="Josiah Carberry"')
+  await page.click('text="Save and continue"')
+  await page.check('text="No, by myself"')
+  await page.click('text="Save and continue"')
+  await page.check('text="No"')
+  await page.click('text="Save and continue"')
+  await page.check('text="I’m following the Code of Conduct"')
+  await page.click('text="Save and continue"')
+
+  fetch.postOnce('http://zenodo.test/api/deposit/depositions', { status: Status.ServiceUnavailable })
+
+  await page.click('text="Post PREreview"')
+
+  await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
+  await expect(page).toHaveScreenshot()
+})
+
 test("are directed to the current site if you don't have a pseudonym", async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
