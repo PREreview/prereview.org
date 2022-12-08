@@ -73,6 +73,7 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
                 <li><a href="https://content.prereview.org/coc/">Code of Conduct</a></li>
                 <li><a href="https://content.prereview.org/privacypolicy/">Privacy</a></li>
                 <li><a href="mailto:contact@prereview.org">Contact</a></li>
+                <li><a href="https://donorbox.org/prereview">Donate</a></li>
               </ul>
 
               <small>
