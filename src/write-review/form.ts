@@ -1,10 +1,11 @@
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
+import * as E from 'fp-ts/Either'
 import { JsonRecord } from 'fp-ts/Json'
 import { ReaderTask } from 'fp-ts/ReaderTask'
-import * as T from 'fp-ts/Task'
+import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { constVoid, constant, flow } from 'fp-ts/function'
+import { constVoid, flow } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
 import * as C from 'io-ts/Codec'
 import Keyv from 'keyv'
@@ -29,12 +30,23 @@ export interface FormStoreEnv {
   formStore: Keyv<JsonRecord>
 }
 
-export function getForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv, Form> {
+export function getForm(user: Orcid, preprint: Doi): ReaderTaskEither<FormStoreEnv, 'no-form', Form> {
   return flow(
-    TE.tryCatchK(async ({ formStore }) => await formStore.get(`${user}_${preprint}`), constant('no-new-review')),
-    TE.chainEitherKW(FormC.decode),
-    TE.getOrElse(() => T.of({})),
+    TE.tryCatchK(
+      async ({ formStore }) => await formStore.get(`${user}_${preprint}`),
+      () => 'no-form' as const,
+    ),
+    TE.chainEitherK(
+      flow(
+        FormC.decode,
+        E.mapLeft(() => 'no-form'),
+      ),
+    ),
   )
+}
+
+export function createForm(): Form {
+  return {}
 }
 
 export function updateForm(originalForm: Form): (newForm: Form) => Form {

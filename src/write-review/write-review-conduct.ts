@@ -13,7 +13,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { writeReviewCompetingInterestsMatch, writeReviewConductMatch, writeReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
+import { Form, createForm, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewConduct = flow(
@@ -24,7 +24,10 @@ export const writeReviewConduct = flow(
       RM.apS('user', getUserFromSession()),
       RM.bindW(
         'form',
-        RM.fromReaderTaskK(({ user }) => getForm(user.orcid, preprint.doi)),
+        flow(
+          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
+          RM.alt(() => RM.of(createForm())),
+        ),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>

@@ -1,5 +1,6 @@
 import { format } from 'fp-ts-routing'
 import { Reader } from 'fp-ts/Reader'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -10,7 +11,7 @@ import { notFound, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { logInMatch, preprintMatch } from '../routes'
 import { getUserFromSession } from '../user'
-import { getForm, showNextForm } from './form'
+import { createForm, getForm, showNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReview = flow(
@@ -18,7 +19,12 @@ export const writeReview = flow(
   RM.ichainW(preprint =>
     pipe(
       getUserFromSession(),
-      RM.chainReaderTaskKW(user => getForm(user.orcid, preprint.doi)),
+      RM.chainReaderTaskEitherKW(
+        flow(
+          user => getForm(user.orcid, preprint.doi),
+          RTE.alt(() => RTE.of(createForm())),
+        ),
+      ),
       RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
       RM.orElseW(() => showStartPage(preprint)),
     ),
