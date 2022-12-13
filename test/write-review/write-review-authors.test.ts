@@ -250,18 +250,15 @@ describe('writeReviewAuthors', () => {
       connection,
     )()
 
-    expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ moreAuthors: 'no' })
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.SeeOther },
         {
           type: 'setHeader',
           name: 'Location',
-          value: expect.stringContaining(
-            `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/write-a-prereview/`,
-          ),
+          value: `/preprints/doi-${encodeURIComponent(
+            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+          )}/write-a-prereview`,
         },
         { type: 'endResponse' },
       ]),

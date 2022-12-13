@@ -142,11 +142,10 @@ describe('writeReviewPersona', () => {
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
-    fc.tuple(fc.constantFrom('public', 'pseudonym'), fc.uuid(), fc.string()).chain(([persona, sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
       fc.tuple(
-        fc.constant(persona),
         fc.connection({
-          body: fc.constant({ persona }),
+          body: fc.record({ persona: fc.constantFrom('public', 'pseudonym') }),
           headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
@@ -155,7 +154,7 @@ describe('writeReviewPersona', () => {
       ),
     ),
     fc.user(),
-  ])('when there is no form', async (preprintDoi, preprintTitle, [persona, connection, sessionId, secret], user) => {
+  ])('when there is no form', async (preprintDoi, preprintTitle, [connection, sessionId, secret], user) => {
     const sessionStore = new Keyv()
     await sessionStore.set(sessionId, UserC.encode(user))
     const formStore = new Keyv()
@@ -166,18 +165,15 @@ describe('writeReviewPersona', () => {
       connection,
     )()
 
-    expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ persona })
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.SeeOther },
         {
           type: 'setHeader',
           name: 'Location',
-          value: expect.stringContaining(
-            `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/write-a-prereview/`,
-          ),
+          value: `/preprints/doi-${encodeURIComponent(
+            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+          )}/write-a-prereview`,
         },
         { type: 'endResponse' },
       ]),

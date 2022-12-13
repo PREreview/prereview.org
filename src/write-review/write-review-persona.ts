@@ -13,7 +13,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { writeReviewMatch, writeReviewPersonaMatch, writeReviewReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { Form, createForm, getForm, saveForm, showNextForm, updateForm } from './form'
+import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewPersona = flow(
@@ -24,10 +24,7 @@ export const writeReviewPersona = flow(
       RM.apS('user', getUserFromSession()),
       RM.bindW(
         'form',
-        flow(
-          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
-          RM.alt(() => RM.of(createForm())),
-        ),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(showPersonaForm)),

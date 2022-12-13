@@ -178,10 +178,15 @@ describe('writeReviewAddAuthors', () => {
 
     expect(actual).toStrictEqual(
       E.right([
-        { type: 'setStatus', status: Status.NotFound },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
+        { type: 'setStatus', status: Status.SeeOther },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: `/preprints/doi-${encodeURIComponent(
+            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+          )}/write-a-prereview`,
+        },
+        { type: 'endResponse' },
       ]),
     )
     expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)

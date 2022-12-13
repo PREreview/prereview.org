@@ -25,7 +25,7 @@ import {
 } from '../routes'
 import { User, getUserFromSession } from '../user'
 import { CompletedForm, CompletedFormD } from './completed-form'
-import { createForm, deleteForm, getForm, showNextForm } from './form'
+import { deleteForm, getForm, showNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export type NewPrereview = {
@@ -48,10 +48,7 @@ export const writeReviewPost = flow(
       RM.apS('user', getUserFromSession()),
       RM.bindW(
         'form',
-        flow(
-          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
-          RM.alt(() => RM.of(createForm())),
-        ),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
