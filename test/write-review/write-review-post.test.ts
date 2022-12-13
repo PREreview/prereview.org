@@ -92,20 +92,23 @@ describe('writeReviewPost', () => {
         fc.constant(secret),
       ),
     ),
-    fc
-      .record(
-        {
-          alreadyWritten: fc.constantFrom('yes', 'no'),
-          competingInterests: fc.constantFrom('yes', 'no'),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.oneof(fc.constant('yes'), fc.string()),
-          moreAuthors: fc.oneof(fc.constantFrom('yes', 'no'), fc.string()),
-          persona: fc.oneof(fc.constantFrom('public', 'pseudonym'), fc.string()),
-          review: fc.oneof(fc.lorem(), fc.constant('')),
-        },
-        { withDeletedKeys: true },
-      )
-      .filter(newReview => Object.keys(newReview).length < 5),
+    fc.oneof(
+      fc
+        .record(
+          {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
+            competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
+            conduct: fc.oneof(fc.constant('yes'), fc.string()),
+            moreAuthors: fc.oneof(fc.constantFrom('yes', 'no'), fc.string()),
+            persona: fc.oneof(fc.constantFrom('public', 'pseudonym'), fc.string()),
+            review: fc.oneof(fc.lorem(), fc.constant('')),
+          },
+          { withDeletedKeys: true },
+        )
+        .filter(newReview => Object.keys(newReview).length < 5),
+      fc.constant({}),
+    ),
     fc.user(),
   ])(
     'when the form is incomplete',
@@ -137,6 +140,47 @@ describe('writeReviewPost', () => {
       )
     },
   )
+
+  test.prop([
+    fc.preprintDoi(),
+    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+      fc.tuple(
+        fc.connection({
+          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          method: fc.constant('POST'),
+        }),
+        fc.constant(sessionId),
+        fc.constant(secret),
+      ),
+    ),
+    fc.user(),
+  ])('when there is no form', async (preprintDoi, preprintTitle, [connection, sessionId, secret], user) => {
+    const sessionStore = new Keyv()
+    await sessionStore.set(sessionId, UserC.encode(user))
+    const formStore = new Keyv()
+    const getPreprintTitle = () => TE.right(preprintTitle)
+
+    const actual = await runMiddleware(
+      _.writeReviewPost(preprintDoi)({
+        getPreprintTitle,
+        formStore,
+        postPrereview: () => TE.left(''),
+        secret,
+        sessionStore,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'clearCookie', name: 'session', options: expect.anything() },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 
   test.prop([
     fc.preprintDoi(),

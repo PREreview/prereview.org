@@ -161,6 +161,46 @@ describe('writeReviewAddAuthors', () => {
       ),
     ),
     fc.user(),
+  ])('when there is no form', async (preprintDoi, preprintTitle, [connection, sessionId, secret], user) => {
+    const sessionStore = new Keyv()
+    await sessionStore.set(sessionId, UserC.encode(user))
+    const formStore = new Keyv()
+    const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+    const actual = await runMiddleware(
+      _.writeReviewAddAuthors(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        secret,
+        sessionStore,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.NotFound },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+    expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
+  })
+
+  test.prop([
+    fc.preprintDoi(),
+    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+      fc.tuple(
+        fc.connection({
+          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          method: fc.constant('POST'),
+        }),
+        fc.constant(sessionId),
+        fc.constant(secret),
+      ),
+    ),
+    fc.user(),
     fc.record(
       {
         alreadyWritten: fc.constantFrom('yes', 'no'),

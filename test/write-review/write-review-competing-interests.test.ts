@@ -113,18 +113,21 @@ describe('writeReviewCompetingInterests', () => {
         ),
       ),
     fc.user(),
-    fc
-      .record(
-        {
-          alreadyWritten: fc.constantFrom('yes', 'no'),
-          conduct: fc.constant('yes'),
-          moreAuthors: fc.constantFrom('yes', 'no'),
-          persona: fc.constantFrom('public', 'pseudonym'),
-          review: fc.nonEmptyString(),
-        },
-        { withDeletedKeys: true },
-      )
-      .filter(newReview => Object.keys(newReview).length < 5),
+    fc.oneof(
+      fc
+        .record(
+          {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
+            conduct: fc.constant('yes'),
+            moreAuthors: fc.constantFrom('yes', 'no'),
+            persona: fc.constantFrom('public', 'pseudonym'),
+            review: fc.nonEmptyString(),
+          },
+          { withDeletedKeys: true },
+        )
+        .filter(newReview => Object.keys(newReview).length < 5),
+      fc.constant({}),
+    ),
   ])(
     'when the form is incomplete',
     async (preprintDoi, preprintTitle, [competingInterests, connection, sessionId, secret], user, newReview) => {
@@ -132,6 +135,68 @@ describe('writeReviewCompetingInterests', () => {
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      const getPreprintTitle = () => TE.right(preprintTitle)
+
+      const actual = await runMiddleware(
+        _.writeReviewCompetingInterests(preprintDoi)({ formStore, getPreprintTitle, secret, sessionStore }),
+        connection,
+      )()
+
+      expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject(competingInterests)
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: expect.stringContaining(
+              `/preprints/doi-${encodeURIComponent(
+                preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              )}/write-a-prereview/`,
+            ),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
+
+  test.prop([
+    fc.preprintDoi(),
+    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc
+      .tuple(
+        fc.oneof(
+          fc.constant({
+            competingInterests: 'no',
+          }),
+          fc.record({
+            competingInterests: fc.constant('yes'),
+            competingInterestsDetails: fc.lorem(),
+          }),
+        ),
+        fc.uuid(),
+        fc.string(),
+      )
+      .chain(([competingInterests, sessionId, secret]) =>
+        fc.tuple(
+          fc.constant(competingInterests),
+          fc.connection({
+            body: fc.constant(competingInterests),
+            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+            method: fc.constant('POST'),
+          }),
+          fc.constant(sessionId),
+          fc.constant(secret),
+        ),
+      ),
+    fc.user(),
+  ])(
+    'when there is no form',
+    async (preprintDoi, preprintTitle, [competingInterests, connection, sessionId, secret], user) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, UserC.encode(user))
+      const formStore = new Keyv()
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
