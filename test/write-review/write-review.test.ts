@@ -94,15 +94,9 @@ describe('writeReview', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/write-a-prereview/write-your-prereview`,
-          },
-          { type: 'endResponse' },
+          { type: 'setStatus', status: Status.OK },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
         ]),
       )
     })

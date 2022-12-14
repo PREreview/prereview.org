@@ -1536,7 +1536,7 @@ test('see existing values when going back a step', async ({ fetch, javaScriptEna
   }
 })
 
-test("aren't told about ORCID when already logged in", async ({ fetch, page }) => {
+test("aren't told about ORCID when already logged in", async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/log-in')
   await page.fill('[type=email]', 'test@example.com')
   await page.fill('[type=password]', 'password')
@@ -1566,6 +1566,23 @@ test("aren't told about ORCID when already logged in", async ({ fetch, page }) =
   await page.click('text="Write a PREreview"')
 
   await expect(page.locator('main')).not.toContainText('ORCID')
+  await expect(page.locator('h1')).toHaveText('PREreview this preprint')
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.click('text="Start now"')
+
   await expect(page.locator('h1')).toHaveText('Have you already written your PREreview?')
 })
 
