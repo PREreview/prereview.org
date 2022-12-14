@@ -9,7 +9,7 @@ import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { notFound, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import { logInMatch, preprintMatch } from '../routes'
+import { preprintMatch, writeReviewStartMatch } from '../routes'
 import { getUserFromSession } from '../user'
 import { createForm, getForm, showNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
@@ -76,7 +76,9 @@ function startPage(preprint: Preprint) {
           </div>
         </details>
 
-        <a href="${format(logInMatch.formatter, {})}" role="button" draggable="false">Start now</a>
+        <a href="${format(writeReviewStartMatch.formatter, { doi: preprint.doi })}" role="button" draggable="false">
+          Start now
+        </a>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],

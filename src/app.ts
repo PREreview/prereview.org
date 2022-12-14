@@ -44,6 +44,7 @@ import {
   writeReviewPersonaMatch,
   writeReviewPostMatch,
   writeReviewReviewMatch,
+  writeReviewStartMatch,
 } from './routes'
 import {
   FormStoreEnv,
@@ -56,6 +57,7 @@ import {
   writeReviewPersona,
   writeReviewPost,
   writeReviewReview,
+  writeReviewStart,
 } from './write-review'
 import { createRecordOnZenodo, getPrereviewFromZenodo, getPrereviewsFromZenodo } from './zenodo'
 
@@ -117,6 +119,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewMatch.parser,
           P.map(({ doi }) => writeReview(doi)),
+        ),
+        pipe(
+          writeReviewStartMatch.parser,
+          P.map(({ doi }) => writeReviewStart(doi)),
         ),
         pipe(
           writeReviewReviewMatch.parser,

@@ -7,6 +7,7 @@ import { MediaType, Status } from 'hyper-ts'
 import all from 'it-all'
 import Keyv from 'keyv'
 import * as _ from '../src/log-in'
+import { writeReviewMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
@@ -83,6 +84,53 @@ describe('log-in', () => {
         ]),
       )
     })
+  })
+
+  test.prop([
+    fc.record({
+      authorizeUrl: fc.url(),
+      clientId: fc.string(),
+      clientSecret: fc.string(),
+      redirectUri: fc.url(),
+      tokenUrl: fc.url(),
+    }),
+    fc.preprintDoi(),
+    fc.origin(),
+    fc.connection(),
+  ])('logInAndRedirect', async (oauth, preprintDoi, publicUrl, connection) => {
+    const actual = await runMiddleware(
+      _.logInAndRedirect(writeReviewMatch.formatter, { doi: preprintDoi })({
+        oauth,
+        publicUrl,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.Found },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: new URL(
+            `?${new URLSearchParams({
+              client_id: oauth.clientId,
+              response_type: 'code',
+              redirect_uri: oauth.redirectUri.href,
+              scope: '/authenticate',
+              state: new URL(
+                `/preprints/doi-${encodeURIComponent(
+                  preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                )}/write-a-prereview`,
+                publicUrl,
+              ).toString(),
+            }).toString()}`,
+            oauth.authorizeUrl,
+          ).href,
+        },
+        { type: 'endResponse' },
+      ]),
+    )
   })
 
   describe('authenticate', () => {

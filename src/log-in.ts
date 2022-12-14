@@ -1,7 +1,7 @@
-import { format } from 'fp-ts-routing'
+import { Formatter, format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
-import { Reader } from 'fp-ts/Reader'
+import * as R from 'fp-ts/Reader'
 import * as RE from 'fp-ts/ReaderEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
@@ -36,6 +36,11 @@ export const logIn = pipe(
     ),
   ),
   RM.ichainW(requestAuthorizationCode('/authenticate')),
+)
+
+export const logInAndRedirect = flow(
+  fromReaderK(toUrl),
+  RM.ichainW(flow(String, requestAuthorizationCode('/authenticate'))),
 )
 
 const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
@@ -73,6 +78,10 @@ function getReferer(state: string) {
       referer => referer.href,
     ),
   )
+}
+
+function toUrl<A>(formatter: Formatter<A>, a: A) {
+  return R.asks(({ publicUrl }: PublicUrlEnv) => pipe(new URL(format(formatter, a), publicUrl)))
 }
 
 function ifHasSameOrigin(url: URL) {
@@ -133,7 +142,7 @@ function failureMessage() {
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
+  f: (...a: A) => R.Reader<R, B>,
 ): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
   return (...a) => RM.rightReader(f(...a))
 }
