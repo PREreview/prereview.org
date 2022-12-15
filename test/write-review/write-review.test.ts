@@ -26,18 +26,24 @@ describe('writeReview', () => {
           fc.constant(secret),
         ),
       ),
-      fc.record({
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
-        review: fc.lorem(),
-      }),
+      fc.oneof(
+        fc.record(
+          {
+            alreadyWritten: fc.constantFrom('yes', 'no'),
+            competingInterests: fc.constantFrom('yes', 'no'),
+            competingInterestsDetails: fc.lorem(),
+            conduct: fc.constant('yes'),
+            moreAuthors: fc.constantFrom('yes', 'no'),
+            persona: fc.constantFrom('public', 'pseudonym'),
+            review: fc.lorem(),
+          },
+          { withDeletedKeys: true },
+        ),
+        fc.constant({}),
+      ),
       fc.user(),
     ])(
-      'there is completed form already',
+      'there is a form already',
       async (preprintDoi, preprintTitle, [connection, sessionId, secret], newReview, user) => {
         const sessionStore = new Keyv()
         await sessionStore.set(sessionId, UserC.encode(user))
@@ -58,7 +64,7 @@ describe('writeReview', () => {
               name: 'Location',
               value: `/preprints/doi-${encodeURIComponent(
                 preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-              )}/write-a-prereview/check-your-prereview`,
+              )}/write-a-prereview/start-now`,
             },
             { type: 'endResponse' },
           ]),

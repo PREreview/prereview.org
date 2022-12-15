@@ -8,11 +8,11 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
-import { notFound, serviceUnavailable } from '../middleware'
+import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { preprintMatch, writeReviewStartMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { getForm, redirectToNextForm } from './form'
+import { getForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReview = flow(
@@ -27,7 +27,10 @@ export const writeReview = flow(
       ),
       RM.ichainW(state =>
         match(state)
-          .with({ form: { right: P.select() } }, fromMiddlewareK(redirectToNextForm(preprint.doi)))
+          .with(
+            { form: P.when(E.isRight) },
+            fromMiddlewareK(() => seeOther(format(writeReviewStartMatch.formatter, { doi: preprint.doi }))),
+          )
           .with({ form: P.when(E.isLeft) }, ({ user }) => showStartPage(preprint, user))
           .exhaustive(),
       ),
