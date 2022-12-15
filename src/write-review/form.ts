@@ -72,24 +72,17 @@ export function deleteForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv,
   )
 }
 
-export const showNextForm = (preprint: PreprintId['doi']) => (form: Form) =>
+const nextFormMatch = (form: Form) =>
   match(form)
-    .with({ review: P.optional(P.nullish) }, () =>
-      seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint })),
-    )
-    .with({ persona: P.optional(P.nullish) }, () =>
-      seeOther(format(writeReviewPersonaMatch.formatter, { doi: preprint })),
-    )
-    .with({ moreAuthors: P.optional(P.nullish) }, () =>
-      seeOther(format(writeReviewAuthorsMatch.formatter, { doi: preprint })),
-    )
-    .with({ competingInterests: P.optional(P.nullish) }, () =>
-      seeOther(format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint })),
-    )
-    .with({ conduct: P.optional(P.nullish) }, () =>
-      seeOther(format(writeReviewConductMatch.formatter, { doi: preprint })),
-    )
-    .otherwise(() => seeOther(format(writeReviewPostMatch.formatter, { doi: preprint })))
+    .with({ review: P.optional(P.nullish) }, () => writeReviewReviewMatch)
+    .with({ persona: P.optional(P.nullish) }, () => writeReviewPersonaMatch)
+    .with({ moreAuthors: P.optional(P.nullish) }, () => writeReviewAuthorsMatch)
+    .with({ competingInterests: P.optional(P.nullish) }, () => writeReviewCompetingInterestsMatch)
+    .with({ conduct: P.optional(P.nullish) }, () => writeReviewConductMatch)
+    .otherwise(() => writeReviewPostMatch)
+
+export const showNextForm = (preprint: PreprintId['doi']) =>
+  flow(nextFormMatch, match => format(match.formatter, { doi: preprint }), seeOther)
 
 const FormC = C.partial({
   alreadyWritten: C.literal('yes', 'no'),
