@@ -13,7 +13,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { writeReviewCompetingInterestsMatch, writeReviewConductMatch, writeReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
+import { Form, getForm, saveForm, redirectToNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewConduct = flow(
@@ -68,7 +68,7 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
     RM.orElseW(showCodeOfConductErrorForm(preprint)),
   )
 

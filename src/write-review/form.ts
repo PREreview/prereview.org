@@ -81,7 +81,7 @@ const nextFormMatch = (form: Form) =>
     .with({ conduct: P.optional(P.nullish) }, () => writeReviewConductMatch)
     .otherwise(() => writeReviewPostMatch)
 
-export const showNextForm = (preprint: PreprintId['doi']) =>
+export const redirectToNextForm = (preprint: PreprintId['doi']) =>
   flow(nextFormMatch, match => format(match.formatter, { doi: preprint }), seeOther)
 
 const FormC = C.partial({

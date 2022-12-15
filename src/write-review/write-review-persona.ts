@@ -13,7 +13,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { writeReviewMatch, writeReviewPersonaMatch, writeReviewReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
+import { Form, getForm, saveForm, redirectToNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewPersona = flow(
@@ -66,7 +66,7 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
     RM.orElseW(showPersonaErrorForm(preprint, user)),
   )
 

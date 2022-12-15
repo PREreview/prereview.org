@@ -16,7 +16,7 @@ import { page } from '../page'
 import { preprintMatch, writeReviewMatch, writeReviewReviewMatch } from '../routes'
 import { NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
-import { Form, createForm, getForm, saveForm, showNextForm, updateForm } from './form'
+import { Form, createForm, getForm, saveForm, redirectToNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 const turndown = new TurndownService({ bulletListMarker: '-', emDelimiter: '*', headingStyle: 'atx' })
@@ -126,7 +126,7 @@ const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
     RM.orElseW(showWriteReviewErrorForm(preprint)),
   )
 
@@ -144,7 +144,7 @@ const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
     RM.orElseW(showPasteReviewErrorForm(preprint)),
   )
 
@@ -160,7 +160,7 @@ const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; prepri
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
     RM.orElseW(showAlreadyWrittenErrorForm(preprint)),
   )
 

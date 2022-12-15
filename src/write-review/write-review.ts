@@ -12,7 +12,7 @@ import { notFound, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { preprintMatch, writeReviewStartMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { getForm, showNextForm } from './form'
+import { getForm, redirectToNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReview = flow(
@@ -27,7 +27,7 @@ export const writeReview = flow(
       ),
       RM.ichainW(state =>
         match(state)
-          .with({ form: { right: P.select() } }, fromMiddlewareK(showNextForm(preprint.doi)))
+          .with({ form: { right: P.select() } }, fromMiddlewareK(redirectToNextForm(preprint.doi)))
           .with({ form: P.when(E.isLeft) }, ({ user }) => showStartPage(preprint, user))
           .exhaustive(),
       ),

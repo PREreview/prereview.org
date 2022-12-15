@@ -25,7 +25,7 @@ import {
 } from '../routes'
 import { User, getUserFromSession } from '../user'
 import { CompletedForm, CompletedFormD } from './completed-form'
-import { deleteForm, getForm, showNextForm } from './form'
+import { deleteForm, getForm, redirectToNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export type NewPrereview = {
@@ -56,7 +56,7 @@ export const writeReviewPost = flow(
           .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormD.decode)) }, handlePostForm)
           .with({ method: 'POST', preprint: P.select() }, showFailureMessage)
           .with({ form: P.when(R.fromEitherK(CompletedFormD.decode)) }, showPostForm)
-          .otherwise(flow(({ form }) => form, fromMiddlewareK(showNextForm(preprint.doi)))),
+          .otherwise(flow(({ form }) => form, fromMiddlewareK(redirectToNextForm(preprint.doi)))),
       ),
       RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
     ),

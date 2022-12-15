@@ -6,7 +6,7 @@ import { logInAndRedirect } from '../log-in'
 import { notFound, serviceUnavailable } from '../middleware'
 import { writeReviewStartMatch } from '../routes'
 import { getUserFromSession } from '../user'
-import { createForm, getForm, showNextForm } from './form'
+import { createForm, getForm, redirectToNextForm } from './form'
 import { getPreprint } from './preprint'
 
 export const writeReviewStart = flow(
@@ -20,7 +20,7 @@ export const writeReviewStart = flow(
           RTE.alt(() => RTE.of(createForm())),
         ),
       ),
-      RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
+      RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
       RM.orElseW(() => logInAndRedirect(writeReviewStartMatch.formatter, { doi: preprint.doi })),
     ),
   ),

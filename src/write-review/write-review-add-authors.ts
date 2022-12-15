@@ -10,7 +10,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
 import { getUserFromSession } from '../user'
-import { Form, getForm, showNextForm } from './form'
+import { Form, getForm, redirectToNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewAddAuthors = flow(
@@ -48,7 +48,7 @@ const showCannotAddAuthorsForm = flow(
 )
 
 const handleCannotAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
-  showNextForm(preprint.doi)(form)
+  redirectToNextForm(preprint.doi)(form)
 
 function cannotAddAuthorsForm(preprint: Preprint) {
   return page({

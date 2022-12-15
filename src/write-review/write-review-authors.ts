@@ -18,7 +18,7 @@ import {
   writeReviewPersonaMatch,
 } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
+import { Form, getForm, saveForm, redirectToNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewAuthors = flow(
@@ -77,7 +77,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
         .with({ form: { moreAuthors: 'yes' } }, () =>
           seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })),
         )
-        .otherwise(flow(({ form }) => form, showNextForm(preprint.doi))),
+        .otherwise(flow(({ form }) => form, redirectToNextForm(preprint.doi))),
     ),
     RM.orElseW(showAuthorsErrorForm(preprint)),
   )

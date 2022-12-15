@@ -15,7 +15,7 @@ import { page } from '../page'
 import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
 import { NonEmptyString, NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
-import { Form, getForm, saveForm, showNextForm, updateForm } from './form'
+import { Form, getForm, saveForm, redirectToNextForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewCompetingInterests = flow(
@@ -87,7 +87,7 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(showNextForm(preprint.doi)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
     RM.orElseW(showCompetingInterestsErrorForm(preprint)),
   )
 
