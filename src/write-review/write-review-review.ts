@@ -16,7 +16,7 @@ import { page } from '../page'
 import { preprintMatch, writeReviewMatch, writeReviewReviewMatch } from '../routes'
 import { NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
-import { Form, createForm, getForm, saveForm, redirectToNextForm, updateForm } from './form'
+import { Form, createForm, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 const turndown = new TurndownService({ bulletListMarker: '-', emDelimiter: '*', headingStyle: 'atx' })

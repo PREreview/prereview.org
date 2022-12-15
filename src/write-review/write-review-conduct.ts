@@ -13,7 +13,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { writeReviewCompetingInterestsMatch, writeReviewConductMatch, writeReviewMatch } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { Form, getForm, saveForm, redirectToNextForm, updateForm } from './form'
+import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewConduct = flow(

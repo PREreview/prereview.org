@@ -15,7 +15,7 @@ import { page } from '../page'
 import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
 import { NonEmptyString, NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
-import { Form, getForm, saveForm, redirectToNextForm, updateForm } from './form'
+import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewCompetingInterests = flow(
