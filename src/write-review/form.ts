@@ -72,7 +72,7 @@ export function deleteForm(user: Orcid, preprint: Doi): ReaderTask<FormStoreEnv,
   )
 }
 
-const nextFormMatch = (form: Form) =>
+export const nextFormMatch = (form: Form) =>
   match(form)
     .with({ review: P.optional(P.nullish) }, () => writeReviewReviewMatch)
     .with({ persona: P.optional(P.nullish) }, () => writeReviewPersonaMatch)
