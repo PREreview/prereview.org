@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
+import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -170,6 +171,111 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
       </aside>
 
       <main id="prereviews">
+        ${preprint.id.doi === ('10.1101/2022.02.14.480364' as Doi)
+          ? html`
+            <div role="region" aria-labelledby="rapid-prereviews-caption" tabindex="0">
+              <table>
+                <caption id="rapid-prereviews-caption"><h2>19 Rapid PREreviews</h2></caption>
+                <thead>
+                <tr>
+                  <th scope="col"><span class="visually-hidden">Question</th>
+                  <th scope="col">Yes</th>
+                  <th scope="col">Unsure</th>
+                  <th scope="col">N/A</th>
+                  <th scope="col">No</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <th scope="row">Are the findings novel?</th>
+                  <td>84%</td>
+                  <td>16%</td>
+                  <td>0%</td>
+                  <td>0%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Are the results likely to lead to future research?</th>
+                  <td>100%</td>
+                  <td>0%</td>
+                  <td>0%</td>
+                  <td>0%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Is sufficient detail provided to allow reproduction of the study?</th>
+                  <td>37%</td>
+                  <td>53%</td>
+                  <td>0%</td>
+                  <td>11%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Are the methods and statistics appropriate for the analysis?</th>
+                  <td>74%</td>
+                  <td>21%</td>
+                  <td>5%</td>
+                  <td>0%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Are the principal conclusions supported by the data and analysis?</th>
+                  <td>89%</td>
+                  <td>5%</td>
+                  <td>0%</td>
+                  <td>5%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Does the manuscript discuss limitations?</th>
+                  <td>5%</td>
+                  <td>11%</td>
+                  <td>5%</td>
+                  <td>79%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Have the authors adequately discussed ethical concerns?</th>
+                  <td>21%</td>
+                  <td>5%</td>
+                  <td>11%</td>
+                  <td>63%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Does the manuscript include new data?</th>
+                  <td>95%</td>
+                  <td>5%</td>
+                  <td>0%</td>
+                  <td>0%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Are the data used in the manuscript available?</th>
+                  <td>16%</td>
+                  <td>32%</td>
+                  <td>26%</td>
+                  <td>26%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Is the code used in the manuscript available?</th>
+                  <td>11%</td>
+                  <td>11%</td>
+                  <td>42%</td>
+                  <td>37%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Would you recommend this manuscript to others?</th>
+                  <td>84%</td>
+                  <td>5%</td>
+                  <td>0%</td>
+                  <td>11%</td>
+                </tr>
+                <tr>
+                  <th scope="row">Do you recommend this manuscript for peer review?</th>
+                  <td>100%</td>
+                  <td>0%</td>
+                  <td>0%</td>
+                  <td>0%</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          `
+          : ''}
+
         <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
 
         <a href="${format(writeReviewMatch.formatter, { doi: preprint.id.doi })}" class="button">Write a PREreview</a>

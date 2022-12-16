@@ -2,6 +2,8 @@
 @import url('@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Bold.css');
 @import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-Regular.css');
 @import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-Italic.css');
+@import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-Medium.css');
+@import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-MediumItalic.css');
 @import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-Bold.css');
 @import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-BoldItalic.css');
 @import url('open-color/open-color.css');
@@ -15,6 +17,8 @@
 @custom-selector :--input [type='text'], :--textarea;
 
 @custom-selector :--list ol, ul;
+
+@custom-selector :--scroller [role='region'][aria-labelledby][tabindex];
 
 @custom-selector :--textarea textarea, [contenteditable];
 
@@ -239,16 +243,24 @@ article {
   }
 }
 
+:--scroller {
+  overflow: auto;
+}
+
 :--heading {
   font-weight: 700;
   line-height: 1.2;
 
-  @nest :not(legend) > & {
+  @nest :where(:not(caption, legend)) > & {
     margin-block-start: var(--space-s-m);
   }
 
   @nest :--heading + & {
     margin-block-start: var(--space-2xs-xs);
+  }
+
+  @nest :--scroller + & {
+    margin-block-start: var(--space-m-l);
   }
 }
 
@@ -360,6 +372,52 @@ dt {
     font-weight: 700;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
+  }
+}
+
+table {
+  font-size: var(--step--1);
+  margin-block-start: var(--space-s-m);
+  border-spacing: 0;
+  inline-size: 100%;
+}
+
+caption {
+  margin-block-end: var(--space-2xs-xs);
+  text-align: start;
+}
+
+td,
+th {
+  padding-block: var(--space-3xs-2xs);
+  border-block-end: var(--width-divider-narrow) solid var(--color-divider);
+  vertical-align: baseline;
+}
+
+th {
+  text-align: center;
+
+  &[scope='row'] {
+    font-weight: 500;
+    min-inline-size: 12rem;
+    text-align: start;
+  }
+
+  @nest & + & {
+    padding-inline-start: var(--space-2xs-s);
+  }
+}
+
+td {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+
+  @nest th + & {
+    padding-inline-start: var(--space-s-m);
+  }
+
+  @nest & + & {
+    padding-inline-start: var(--space-2xs-s);
   }
 }
 
