@@ -1,9 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
+import * as I from 'fp-ts/Identity'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
+import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
@@ -44,6 +46,21 @@ export type Prereview = {
   authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
   id: number
   text: Html
+}
+
+type RapidPrereview = {
+  availableCode: 'yes' | 'unsure' | 'na' | 'no'
+  availableData: 'yes' | 'unsure' | 'na' | 'no'
+  coherent: 'yes' | 'unsure' | 'na' | 'no'
+  ethics: 'yes' | 'unsure' | 'na' | 'no'
+  future: 'yes' | 'unsure' | 'na' | 'no'
+  limitations: 'yes' | 'unsure' | 'na' | 'no'
+  methods: 'yes' | 'unsure' | 'na' | 'no'
+  newData: 'yes' | 'unsure' | 'na' | 'no'
+  novel: 'yes' | 'unsure' | 'na' | 'no'
+  peerReview: 'yes' | 'unsure' | 'na' | 'no'
+  recommend: 'yes' | 'unsure' | 'na' | 'no'
+  reproducibility: 'yes' | 'unsure' | 'na' | 'no'
 }
 
 export interface GetPreprintEnv {
@@ -171,110 +188,7 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
       </aside>
 
       <main id="prereviews">
-        ${preprint.id.doi === ('10.1101/2022.02.14.480364' as Doi)
-          ? html`
-            <div role="region" aria-labelledby="rapid-prereviews-caption" tabindex="0">
-              <table>
-                <caption id="rapid-prereviews-caption"><h2>19 Rapid PREreviews</h2></caption>
-                <thead>
-                <tr>
-                  <th scope="col"><span class="visually-hidden">Question</th>
-                  <th scope="col">Yes</th>
-                  <th scope="col">Unsure</th>
-                  <th scope="col">N/A</th>
-                  <th scope="col">No</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <th scope="row">Are the findings novel?</th>
-                  <td>84%</td>
-                  <td>16%</td>
-                  <td>0%</td>
-                  <td>0%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Are the results likely to lead to future research?</th>
-                  <td>100%</td>
-                  <td>0%</td>
-                  <td>0%</td>
-                  <td>0%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Is sufficient detail provided to allow reproduction of the study?</th>
-                  <td>37%</td>
-                  <td>53%</td>
-                  <td>0%</td>
-                  <td>11%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Are the methods and statistics appropriate for the analysis?</th>
-                  <td>74%</td>
-                  <td>21%</td>
-                  <td>5%</td>
-                  <td>0%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Are the principal conclusions supported by the data and analysis?</th>
-                  <td>89%</td>
-                  <td>5%</td>
-                  <td>0%</td>
-                  <td>5%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Does the manuscript discuss limitations?</th>
-                  <td>5%</td>
-                  <td>11%</td>
-                  <td>5%</td>
-                  <td>79%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Have the authors adequately discussed ethical concerns?</th>
-                  <td>21%</td>
-                  <td>5%</td>
-                  <td>11%</td>
-                  <td>63%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Does the manuscript include new data?</th>
-                  <td>95%</td>
-                  <td>5%</td>
-                  <td>0%</td>
-                  <td>0%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Are the data used in the manuscript available?</th>
-                  <td>16%</td>
-                  <td>32%</td>
-                  <td>26%</td>
-                  <td>26%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Is the code used in the manuscript available?</th>
-                  <td>11%</td>
-                  <td>11%</td>
-                  <td>42%</td>
-                  <td>37%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Would you recommend this manuscript to others?</th>
-                  <td>84%</td>
-                  <td>5%</td>
-                  <td>0%</td>
-                  <td>11%</td>
-                </tr>
-                <tr>
-                  <th scope="row">Do you recommend this manuscript for peer review?</th>
-                  <td>100%</td>
-                  <td>0%</td>
-                  <td>0%</td>
-                  <td>0%</td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-          `
-          : ''}
+        ${preprint.id.doi === ('10.1101/2022.02.14.480364' as Doi) ? showRapidPrereviews(rapidPrereviews) : ''}
 
         <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
 
@@ -314,6 +228,87 @@ function showReview(review: Prereview) {
   `
 }
 
+function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview>): Html {
+  return html`
+    <div role="region" aria-labelledby="rapid-prereviews-caption" tabindex="0">
+      <table>
+        <caption id="rapid-prereviews-caption">
+          <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
+        </caption>
+        <thead>
+        <tr>
+          <th scope="col"><span class="visually-hidden">Question</th>
+          <th scope="col">Yes</th>
+          <th scope="col">Unsure</th>
+          <th scope="col">N/A</th>
+          <th scope="col">No</th>
+        </tr>
+        </thead>
+        <tbody>
+        ${pipe(
+          [
+            'novel',
+            'future',
+            'reproducibility',
+            'methods',
+            'coherent',
+            'limitations',
+            'ethics',
+            'newData',
+            'availableData',
+            'availableCode',
+            'recommend',
+            'peerReview',
+          ] as ReadonlyNonEmptyArray<keyof RapidPrereview>,
+          RNEA.map(
+            flow(
+              I.bindTo('question'),
+              I.bind('answers', ({ question }) => ({
+                yes: countRapidPrereviewResponses(rapidPrereviews, question, 'yes'),
+                unsure: countRapidPrereviewResponses(rapidPrereviews, question, 'unsure'),
+                na: countRapidPrereviewResponses(rapidPrereviews, question, 'na'),
+                no: countRapidPrereviewResponses(rapidPrereviews, question, 'no'),
+              })),
+            ),
+          ),
+          RNEA.map(
+            ({ question, answers }) => html`
+              <tr>
+                <th scope="row">${displayRapidPrereviewQuestion(question)}</th>
+                <td>
+                  ${(answers.yes / rapidPrereviews.length).toLocaleString('en', {
+                    style: 'percent',
+                    maximumFractionDigits: 0,
+                  })}
+                </td>
+                <td>
+                  ${(answers.unsure / rapidPrereviews.length).toLocaleString('en', {
+                    style: 'percent',
+                    maximumFractionDigits: 0,
+                  })}
+                </td>
+                <td>
+                  ${(answers.na / rapidPrereviews.length).toLocaleString('en', {
+                    style: 'percent',
+                    maximumFractionDigits: 0,
+                  })}
+                </td>
+                <td>
+                  ${(answers.no / rapidPrereviews.length).toLocaleString('en', {
+                    style: 'percent',
+                    maximumFractionDigits: 0,
+                  })}
+                </td>
+              </tr>
+            `,
+          ),
+        )}
+        </tbody>
+      </table>
+    </div>
+  `
+}
+
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
     return html`<a href="https://orcid.org/${orcid}">${name}</a>`
@@ -321,6 +316,300 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
 
   return name
 }
+
+function displayRapidPrereviewQuestion(question: keyof RapidPrereview): Html {
+  return match(question)
+    .with('availableCode', () => html`Is the code used in the manuscript available?`)
+    .with('availableData', () => html`Are the data used in the manuscript available?`)
+    .with('coherent', () => html`Are the principal conclusions supported by the data and analysis?`)
+    .with('ethics', () => html`Have the authors adequately discussed ethical concerns?`)
+    .with('future', () => html`Are the results likely to lead to future research?`)
+    .with('limitations', () => html`Does the manuscript discuss limitations?`)
+    .with('methods', () => html`Are the methods and statistics appropriate for the analysis?`)
+    .with('newData', () => html`Does the manuscript include new data?`)
+    .with('novel', () => html`Are the findings novel?`)
+    .with('peerReview', () => html`Do you recommend this manuscript for peer review?`)
+    .with('recommend', () => html`Would you recommend this manuscript to others?`)
+    .with('reproducibility', () => html`Is sufficient detail provided to allow reproduction of the study?`)
+    .exhaustive()
+}
+
+function countRapidPrereviewResponses<Q extends keyof RapidPrereview>(
+  rapidPrereviews: ReadonlyArray<RapidPrereview>,
+  question: Q,
+  response: RapidPrereview[Q],
+) {
+  return rapidPrereviews.reduce((total, rapidPrereview) => total + (rapidPrereview[question] === response ? 1 : 0), 0)
+}
+
+const rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview> = [
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'yes',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'yes',
+    ethics: 'na',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'na',
+    availableData: 'na',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'unsure',
+    methods: 'unsure',
+    coherent: 'yes',
+    limitations: 'unsure',
+    ethics: 'yes',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'no',
+    availableData: 'no',
+  },
+  {
+    novel: 'unsure',
+    future: 'yes',
+    reproducibility: 'unsure',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'na',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'no',
+    availableData: 'yes',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'unsure',
+    methods: 'unsure',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'na',
+    availableData: 'unsure',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'unsure',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'na',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'no',
+    peerReview: 'yes',
+    availableCode: 'na',
+    availableData: 'na',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'unsure',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'na',
+    availableData: 'na',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'unsure',
+    methods: 'na',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'no',
+    availableData: 'yes',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'yes',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'yes',
+    availableData: 'unsure',
+  },
+  {
+    novel: 'unsure',
+    future: 'yes',
+    reproducibility: 'unsure',
+    methods: 'unsure',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'na',
+    availableData: 'no',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'no',
+    methods: 'unsure',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'unsure',
+    peerReview: 'yes',
+    availableCode: 'no',
+    availableData: 'no',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'unsure',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'yes',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'unsure',
+    availableData: 'unsure',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'yes',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'no',
+    availableData: 'no',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'unsure',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'na',
+    availableData: 'unsure',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'yes',
+    methods: 'yes',
+    coherent: 'no',
+    limitations: 'no',
+    ethics: 'yes',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'yes',
+    availableData: 'yes',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'unsure',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'unsure',
+    ethics: 'unsure',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'na',
+    availableData: 'na',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'yes',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'no',
+    availableData: 'unsure',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'no',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'yes',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'na',
+    availableData: 'na',
+  },
+  {
+    novel: 'yes',
+    future: 'yes',
+    reproducibility: 'yes',
+    methods: 'yes',
+    coherent: 'yes',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'yes',
+    recommend: 'yes',
+    peerReview: 'yes',
+    availableCode: 'no',
+    availableData: 'no',
+  },
+  {
+    novel: 'unsure',
+    future: 'yes',
+    reproducibility: 'yes',
+    methods: 'yes',
+    coherent: 'unsure',
+    limitations: 'no',
+    ethics: 'no',
+    newData: 'unsure',
+    recommend: 'no',
+    peerReview: 'yes',
+    availableCode: 'unsure',
+    availableData: 'unsure',
+  },
+]
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
