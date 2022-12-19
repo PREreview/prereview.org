@@ -1,9 +1,9 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as I from 'fp-ts/Identity'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as RA from 'fp-ts/ReadonlyArray'
 import { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as TE from 'fp-ts/TaskEither'
@@ -71,6 +71,10 @@ export interface GetPrereviewsEnv {
   getPrereviews: (id: PreprintId) => TE.TaskEither<'unavailable', ReadonlyArray<Prereview>>
 }
 
+export interface GetRapidPrereviewsEnv {
+  getRapidPrereviews: (id: PreprintId) => TE.TaskEither<'unavailable', ReadonlyArray<RapidPrereview>>
+}
+
 const sendPage = flow(
   fromReaderK(createPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
@@ -83,12 +87,21 @@ const getPreprint = (doi: PreprintId['doi']) =>
 const getPrereviews = (id: PreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }: GetPrereviewsEnv) => getPrereviews(id)))
 
+const getRapidPrereviews = (id: PreprintId) =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ getRapidPrereviews }: GetRapidPrereviewsEnv) => getRapidPrereviews(id)),
+  )
+
 export const preprint = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.bindTo('preprint'),
   RM.bindW(
     'reviews',
     RM.fromReaderTaskEitherK(({ preprint }) => getPrereviews(preprint.id)),
+  ),
+  RM.bindW(
+    'rapidPrereviews',
+    RM.fromReaderTaskEitherK(({ preprint }) => getRapidPrereviews(preprint.id)),
   ),
   RM.ichainW(sendPage),
   RM.orElseW(error =>
@@ -121,7 +134,15 @@ function failureMessage() {
   })
 }
 
-function createPage({ preprint, reviews }: { preprint: Preprint; reviews: ReadonlyArray<Prereview> }) {
+function createPage({
+  preprint,
+  reviews,
+  rapidPrereviews,
+}: {
+  preprint: Preprint
+  reviews: ReadonlyArray<Prereview>
+  rapidPrereviews: ReadonlyArray<RapidPrereview>
+}) {
   return page({
     title: plainText`PREreviews of “${preprint.title.text}”`,
     content: html`
@@ -188,7 +209,10 @@ function createPage({ preprint, reviews }: { preprint: Preprint; reviews: Readon
       </aside>
 
       <main id="prereviews">
-        ${preprint.id.doi === ('10.1101/2022.02.14.480364' as Doi) ? showRapidPrereviews(rapidPrereviews) : ''}
+        ${pipe(
+          rapidPrereviews,
+          RA.matchW(() => '', showRapidPrereviews),
+        )}
 
         <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
 
@@ -341,275 +365,6 @@ function countRapidPrereviewResponses<Q extends keyof RapidPrereview>(
 ) {
   return rapidPrereviews.reduce((total, rapidPrereview) => total + (rapidPrereview[question] === response ? 1 : 0), 0)
 }
-
-const rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview> = [
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'yes',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'yes',
-    ethics: 'na',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'na',
-    availableData: 'na',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'unsure',
-    methods: 'unsure',
-    coherent: 'yes',
-    limitations: 'unsure',
-    ethics: 'yes',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'no',
-    availableData: 'no',
-  },
-  {
-    novel: 'unsure',
-    future: 'yes',
-    reproducibility: 'unsure',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'na',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'no',
-    availableData: 'yes',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'unsure',
-    methods: 'unsure',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'na',
-    availableData: 'unsure',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'unsure',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'na',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'no',
-    peerReview: 'yes',
-    availableCode: 'na',
-    availableData: 'na',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'unsure',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'na',
-    availableData: 'na',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'unsure',
-    methods: 'na',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'no',
-    availableData: 'yes',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'yes',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'yes',
-    availableData: 'unsure',
-  },
-  {
-    novel: 'unsure',
-    future: 'yes',
-    reproducibility: 'unsure',
-    methods: 'unsure',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'na',
-    availableData: 'no',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'no',
-    methods: 'unsure',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'unsure',
-    peerReview: 'yes',
-    availableCode: 'no',
-    availableData: 'no',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'unsure',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'yes',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'unsure',
-    availableData: 'unsure',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'yes',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'no',
-    availableData: 'no',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'unsure',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'na',
-    availableData: 'unsure',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'yes',
-    methods: 'yes',
-    coherent: 'no',
-    limitations: 'no',
-    ethics: 'yes',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'yes',
-    availableData: 'yes',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'unsure',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'unsure',
-    ethics: 'unsure',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'na',
-    availableData: 'na',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'yes',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'no',
-    availableData: 'unsure',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'no',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'yes',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'na',
-    availableData: 'na',
-  },
-  {
-    novel: 'yes',
-    future: 'yes',
-    reproducibility: 'yes',
-    methods: 'yes',
-    coherent: 'yes',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'yes',
-    recommend: 'yes',
-    peerReview: 'yes',
-    availableCode: 'no',
-    availableData: 'no',
-  },
-  {
-    novel: 'unsure',
-    future: 'yes',
-    reproducibility: 'yes',
-    methods: 'yes',
-    coherent: 'unsure',
-    limitations: 'no',
-    ethics: 'no',
-    newData: 'unsure',
-    recommend: 'no',
-    peerReview: 'yes',
-    availableCode: 'unsure',
-    availableData: 'unsure',
-  },
-]
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(

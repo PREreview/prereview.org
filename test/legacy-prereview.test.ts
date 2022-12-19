@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
@@ -101,6 +102,23 @@ describe('legacy-prereview', () => {
         expect(actual).toStrictEqual(E.left(error))
       },
     )
+  })
+
+  describe('getRapidPreviewsFromLegacyPrereview', () => {
+    test('when the DOI is 10.1101/2022.02.14.480364', async () => {
+      const actual = await _.getRapidPreviewsFromLegacyPrereview({
+        type: 'biorxiv',
+        doi: '10.1101/2022.02.14.480364' as Doi<'1101'>,
+      })()
+
+      expect(actual).toStrictEqual(E.right(expect.arrayContaining([expect.objectContaining({ novel: 'yes' })])))
+    })
+
+    test.prop([fc.preprintId()])('when the DOI is not 10.1101/2022.02.14.480364', async preprintId => {
+      const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)()
+
+      expect(actual).toStrictEqual(E.right([]))
+    })
   })
 
   describe('createPrereviewOnLegacyPrereview', () => {

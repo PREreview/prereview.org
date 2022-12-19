@@ -24,6 +24,7 @@ import {
   LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
   getPseudonymFromLegacyPrereview,
+  getRapidPreviewsFromLegacyPrereview,
 } from './legacy-prereview'
 import { PublicUrlEnv, authenticate, logIn } from './log-in'
 import { PhaseEnv } from './page'
@@ -98,6 +99,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getPreprint: flip(getPreprint)(env),
           getPrereviews: flip(getPrereviewsFromZenodo)(env),
+          getRapidPrereviews: getRapidPreviewsFromLegacyPrereview,
         })),
       ),
     ),

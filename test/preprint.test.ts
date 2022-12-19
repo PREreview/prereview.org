@@ -28,11 +28,37 @@ describe('preprint', () => {
           text: fc.html(),
         }),
       ),
-    ])('when the reviews can be loaded', async (connection, preprint, prereviews) => {
+      fc.array(
+        fc.record({
+          availableCode: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          availableData: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          coherent: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          ethics: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          future: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          limitations: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          methods: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          newData: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          novel: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          peerReview: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          recommend: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          reproducibility: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+        }),
+      ),
+    ])('when the reviews can be loaded', async (connection, preprint, prereviews, rapidPrereviews) => {
       const getPreprint: Mock<_.GetPreprintEnv['getPreprint']> = jest.fn(_ => TE.right(preprint))
       const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.right(prereviews))
+      const getRapidPrereviews: Mock<_.GetRapidPrereviewsEnv['getRapidPrereviews']> = jest.fn(_ =>
+        TE.right(rapidPrereviews),
+      )
 
-      const actual = await runMiddleware(_.preprint(preprint.id.doi)({ getPreprint, getPrereviews }), connection)()
+      const actual = await runMiddleware(
+        _.preprint(preprint.id.doi)({
+          getPreprint,
+          getPrereviews,
+          getRapidPrereviews,
+        }),
+        connection,
+      )()
 
       expect(actual).toStrictEqual(
         E.right([
@@ -43,6 +69,7 @@ describe('preprint', () => {
       )
       expect(getPreprint).toHaveBeenCalledWith(preprint.id.doi)
       expect(getPrereviews).toHaveBeenCalledWith(preprint.id)
+      expect(getRapidPrereviews).toHaveBeenCalledWith(preprint.id)
     })
 
     test.prop([fc.connection(), fc.preprintDoi()])(
@@ -52,6 +79,7 @@ describe('preprint', () => {
           _.preprint(preprintDoi)({
             getPreprint: () => TE.left('not-found'),
             getPrereviews: () => () => Promise.reject('should not be called'),
+            getRapidPrereviews: () => () => Promise.reject('should not be called'),
           }),
           connection,
         )()
@@ -74,6 +102,7 @@ describe('preprint', () => {
           _.preprint(preprintDoi)({
             getPreprint: () => TE.left('unavailable'),
             getPrereviews: () => () => Promise.reject('should not be called'),
+            getRapidPrereviews: () => () => Promise.reject('should not be called'),
           }),
           connection,
         )()
@@ -88,11 +117,68 @@ describe('preprint', () => {
       },
     )
 
-    test.prop([fc.connection(), fc.preprint()])('when the reviews cannot be loaded', async (connection, preprint) => {
+    test.prop([
+      fc.connection(),
+      fc.preprint(),
+      fc.array(
+        fc.record({
+          availableCode: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          availableData: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          coherent: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          ethics: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          future: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          limitations: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          methods: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          newData: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          novel: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          peerReview: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          recommend: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+          reproducibility: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
+        }),
+      ),
+    ])('when the reviews cannot be loaded', async (connection, preprint, rapidPrereviews) => {
       const actual = await runMiddleware(
         _.preprint(preprint.id.doi)({
           getPreprint: () => TE.right(preprint),
           getPrereviews: () => TE.left('unavailable'),
+          getRapidPrereviews: () => TE.right(rapidPrereviews),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.connection(),
+      fc.preprint(),
+      fc.array(
+        fc.record({
+          authors: fc.nonEmptyArray(
+            fc.record(
+              {
+                name: fc.string(),
+                orcid: fc.orcid(),
+              },
+              { requiredKeys: ['name'] },
+            ),
+          ),
+          id: fc.integer(),
+          text: fc.html(),
+        }),
+      ),
+    ])('when the rapid PREreviews cannot be loaded', async (connection, preprint, prereviews) => {
+      const actual = await runMiddleware(
+        _.preprint(preprint.id.doi)({
+          getPreprint: () => TE.right(preprint),
+          getPrereviews: () => TE.right(prereviews),
+          getRapidPrereviews: () => TE.left('unavailable'),
         }),
         connection,
       )()
