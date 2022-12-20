@@ -60,8 +60,8 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['doi']> =
 
 export const getPreprintFromCrossref = flow(
   (doi: CrossrefPreprintId['doi']) => getWork(doi),
-  RTE.local(revalidateIfStale),
-  RTE.local(useStaleCache),
+  RTE.local(revalidateIfStale()),
+  RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainEitherKW(workToPreprint),
   RTE.mapLeft(error =>

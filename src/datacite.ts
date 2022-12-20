@@ -23,8 +23,8 @@ export const isDatacitePreprintDoi: R.Refinement<Doi, DatacitePreprintId['doi']>
 
 export const getPreprintFromDatacite = flow(
   (doi: DatacitePreprintId['doi']) => getWork(doi),
-  RTE.local(revalidateIfStale),
-  RTE.local(useStaleCache),
+  RTE.local(revalidateIfStale()),
+  RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainEitherKW(dataciteWorkToPreprint),
   RTE.mapLeft(error =>

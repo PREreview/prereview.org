@@ -1,18 +1,13 @@
 import * as F from 'fetch-fp-ts'
 import { constVoid } from 'fp-ts/function'
 import * as L from 'logger-fp-ts'
-import { ZenodoEnv } from 'zenodo-ts'
 
-export function useStaleCache(env: ZenodoEnv): ZenodoEnv
-export function useStaleCache(env: F.FetchEnv): F.FetchEnv
-export function useStaleCache<E extends F.FetchEnv>(env: E): E {
-  return { ...env, fetch: (url, init) => env.fetch(url, { cache: 'force-cache', ...init }) }
+export function useStaleCache<E extends F.FetchEnv>(): (env: E) => E {
+  return env => ({ ...env, fetch: (url, init) => env.fetch(url, { cache: 'force-cache', ...init }) })
 }
 
-export function revalidateIfStale(env: ZenodoEnv): ZenodoEnv
-export function revalidateIfStale(env: F.FetchEnv): F.FetchEnv
-export function revalidateIfStale<E extends F.FetchEnv>(env: E): E {
-  return {
+export function revalidateIfStale<E extends F.FetchEnv>(): (env: E) => E {
+  return env => ({
     ...env,
     fetch: async (url, init) => {
       const response = await env.fetch(url, init)
@@ -26,7 +21,7 @@ export function revalidateIfStale<E extends F.FetchEnv>(env: E): E {
 
       return response
     },
-  }
+  })
 }
 
 export function timeoutRequest<E extends F.FetchEnv>(timeout: number): (env: E) => E {

@@ -179,7 +179,7 @@ const getPreprint = (doi: PreprintId['doi']) =>
 
 const getPreprintTitle = flow(
   getPreprint,
-  RTE.local(useStaleCache),
+  RTE.local(useStaleCache()),
   RTE.map(preprint => ({ language: preprint.title.language, title: preprint.title.text })),
 )
 

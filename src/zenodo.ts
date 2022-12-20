@@ -40,8 +40,8 @@ interface GetPreprintTitleEnv {
 
 export const getPrereviewFromZenodo = flow(
   getRecord,
-  RTE.local(revalidateIfStale),
-  RTE.local(useStaleCache),
+  RTE.local(revalidateIfStale()),
+  RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview)), () => new NotFound()),
   RTE.chain(recordToPrereview),
@@ -57,8 +57,8 @@ export const getPrereviewsFromZenodo = flow(
       subtype: 'peerreview',
     }),
   getRecords,
-  RTE.local(revalidateIfStale),
-  RTE.local(useStaleCache),
+  RTE.local(revalidateIfStale()),
+  RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.bimap(
     () => 'unavailable' as const,
@@ -167,7 +167,7 @@ const getReviewUrl = flow(
 const getReviewText = flow(
   F.Request('GET'),
   F.send,
-  RTE.local(useStaleCache),
+  RTE.local(useStaleCache()),
   RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'no text'),
   RTE.chainTaskEitherK(F.getText(identity)),
   RTE.map(sanitizeHtml),
