@@ -105,20 +105,263 @@ describe('legacy-prereview', () => {
   })
 
   describe('getRapidPreviewsFromLegacyPrereview', () => {
-    test('when the DOI is 10.1101/2022.02.14.480364', async () => {
-      const actual = await _.getRapidPreviewsFromLegacyPrereview({
-        type: 'biorxiv',
-        doi: '10.1101/2022.02.14.480364' as Doi<'1101'>,
-      })()
+    describe('when the DOI is 10.1101/2022.02.14.480364', () => {
+      test.prop([
+        fc.string(),
+        fc.string(),
+        fc.origin(),
+        fc.boolean(),
+        fc.constant({
+          type: 'biorxiv' as const,
+          doi: '10.1101/2022.02.14.480364' as Doi<'1101'>,
+        }),
+      ])('when the Rapid PREreviews can be loaded', async (app, key, url, update, preprintId) => {
+        const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
+          fetch: fetchMock
+            .sandbox()
+            .getOnce(
+              `${url}api/v2/preprints/doi-${preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
+              {
+                body: {
+                  data: [
+                    {
+                      rapidReviews: [
+                        {
+                          ynNovel: 'yes',
+                          ynFuture: 'yes',
+                          ynReproducibility: 'unsure',
+                          ynMethods: 'unsure',
+                          ynCoherent: 'yes',
+                          ynLimitations: 'unsure',
+                          ynEthics: 'yes',
+                          ynNewData: 'yes',
+                          ynRecommend: 'yes',
+                          ynPeerReview: 'yes',
+                          ynAvailableCode: 'no',
+                          ynAvailableData: 'no',
+                        },
+                        {
+                          ynNovel: 'unsure',
+                          ynFuture: 'yes',
+                          ynReproducibility: 'unsure',
+                          ynMethods: 'yes',
+                          ynCoherent: 'yes',
+                          ynLimitations: 'no',
+                          ynEthics: 'N/A',
+                          ynNewData: 'yes',
+                          ynRecommend: 'yes',
+                          ynPeerReview: 'yes',
+                          ynAvailableCode: 'no',
+                          ynAvailableData: 'yes',
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
+            ),
+          legacyPrereviewApi: {
+            app,
+            key,
+            url,
+            update,
+          },
+        })()
 
-      expect(actual).toStrictEqual(E.right(expect.arrayContaining([expect.objectContaining({ novel: 'yes' })])))
+        expect(actual).toStrictEqual(
+          E.right([
+            {
+              novel: 'yes',
+              future: 'yes',
+              reproducibility: 'unsure',
+              methods: 'unsure',
+              coherent: 'yes',
+              limitations: 'unsure',
+              ethics: 'yes',
+              newData: 'yes',
+              recommend: 'yes',
+              peerReview: 'yes',
+              availableCode: 'no',
+              availableData: 'no',
+            },
+            {
+              novel: 'unsure',
+              future: 'yes',
+              reproducibility: 'unsure',
+              methods: 'yes',
+              coherent: 'yes',
+              limitations: 'no',
+              ethics: 'na',
+              newData: 'yes',
+              recommend: 'yes',
+              peerReview: 'yes',
+              availableCode: 'no',
+              availableData: 'yes',
+            },
+          ]),
+        )
+      })
+
+      test.prop([
+        fc.string(),
+        fc.string(),
+        fc.origin(),
+        fc.boolean(),
+        fc.constant({
+          type: 'biorxiv' as const,
+          doi: '10.1101/2022.02.14.480364' as Doi<'1101'>,
+        }),
+      ])('revalidates if the Rapid PREreviews are stale', async (app, key, url, update, preprintId) => {
+        const fetch = fetchMock
+          .sandbox()
+          .getOnce(
+            (requestUrl, { cache }) =>
+              requestUrl ===
+                `${url}api/v2/preprints/doi-${preprintId.doi
+                  .toLowerCase()
+                  .replaceAll('-', '+')
+                  .replaceAll('/', '-')}` && cache === 'force-cache',
+            {
+              body: {
+                  data: [
+                    {
+                      rapidReviews: [
+                        {
+                          ynNovel: 'yes',
+                          ynFuture: 'yes',
+                          ynReproducibility: 'unsure',
+                          ynMethods: 'unsure',
+                          ynCoherent: 'yes',
+                          ynLimitations: 'unsure',
+                          ynEthics: 'yes',
+                          ynNewData: 'yes',
+                          ynRecommend: 'yes',
+                          ynPeerReview: 'yes',
+                          ynAvailableCode: 'no',
+                          ynAvailableData: 'no',
+                        },
+                      ],
+                    },
+                  ],
+              },
+              headers: { 'X-Local-Cache-Status': 'stale' },
+            },
+          )
+          .getOnce(
+            (requestUrl, { cache }) =>
+              requestUrl ===
+                `${url}api/v2/preprints/doi-${preprintId.doi
+                  .toLowerCase()
+                  .replaceAll('-', '+')
+                  .replaceAll('/', '-')}` && cache === 'no-cache',
+            { throws: new Error('Network error') },
+          )
+
+        const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
+          fetch,
+          legacyPrereviewApi: {
+            app,
+            key,
+            url,
+            update,
+          },
+        })()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            {
+              novel: 'yes',
+              future: 'yes',
+              reproducibility: 'unsure',
+              methods: 'unsure',
+              coherent: 'yes',
+              limitations: 'unsure',
+              ethics: 'yes',
+              newData: 'yes',
+              recommend: 'yes',
+              peerReview: 'yes',
+              availableCode: 'no',
+              availableData: 'no',
+            },
+          ]),
+        )
+        expect(fetch.done()).toBeTruthy()
+      })
+
+      test.prop([
+        fc.string(),
+        fc.string(),
+        fc.origin(),
+        fc.boolean(),
+        fc.constant({
+          type: 'biorxiv' as const,
+          doi: '10.1101/2022.02.14.480364' as Doi<'1101'>,
+        }),
+      ])('when the Rapid PREreviews cannot be found', async (app, key, url, update, preprintId) => {
+        const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
+          fetch: fetchMock
+            .sandbox()
+            .getOnce(
+              `${url}api/v2/preprints/doi-${preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
+              { status: Status.NotFound },
+            ),
+          legacyPrereviewApi: {
+            app,
+            key,
+            url,
+            update,
+          },
+        })()
+
+        expect(actual).toStrictEqual(E.right([]))
+      })
+
+      test.prop([
+        fc.string(),
+        fc.string(),
+        fc.origin(),
+        fc.boolean(),
+        fc.constant({
+          type: 'biorxiv' as const,
+          doi: '10.1101/2022.02.14.480364' as Doi<'1101'>,
+        }),
+        fc.integer({ min: 400, max: 599 }).filter(status => status !== Status.NotFound),
+      ])('when the Rapid PREreviews cannot be loaded', async (app, key, url, update, preprintId, status) => {
+        const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
+          fetch: fetchMock
+            .sandbox()
+            .getOnce(
+              `${url}api/v2/preprints/doi-${preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
+              { status },
+            ),
+          legacyPrereviewApi: {
+            app,
+            key,
+            url,
+            update,
+          },
+        })()
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      })
     })
 
-    test.prop([fc.preprintId()])('when the DOI is not 10.1101/2022.02.14.480364', async preprintId => {
-      const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)()
+    test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintId()])(
+      'when the DOI is not 10.1101/2022.02.14.480364',
+      async (app, key, url, update, preprintId) => {
+        const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
+          fetch: () => Promise.reject('should not be called'),
+          legacyPrereviewApi: {
+            app,
+            key,
+            url,
+            update,
+          },
+        })()
 
-      expect(actual).toStrictEqual(E.right([]))
-    })
+        expect(actual).toStrictEqual(E.right([]))
+      },
+    )
   })
 
   describe('createPrereviewOnLegacyPrereview', () => {

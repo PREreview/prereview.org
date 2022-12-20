@@ -4,7 +4,7 @@ import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import * as TE from 'fp-ts/TaskEither'
+import * as RA from 'fp-ts/ReadonlyArray'
 import * as b from 'fp-ts/boolean'
 import { constVoid, flow, identity, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
@@ -14,6 +14,7 @@ import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
 import { isUuid } from 'uuid-ts'
+import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { PreprintId } from './preprint-id'
 import { NewPrereview } from './write-review'
 
@@ -50,6 +51,46 @@ const LegacyPrereviewUserD = pipe(
   ),
 )
 
+const RapidPrereviewAnswerD = pipe(
+  D.literal('yes', 'unsure', 'N/A', 'no'),
+  D.map(answer =>
+    match(answer)
+      .with('yes', identity)
+      .with('unsure', identity)
+      .with('N/A', () => 'na' as const)
+      .with('no', identity)
+      .exhaustive(),
+  ),
+)
+
+const LegacyPrereviewD = pipe(
+  JsonD,
+  D.compose(
+    D.struct({
+      data: D.tuple(
+        D.struct({
+          rapidReviews: D.array(
+            D.struct({
+              ynNovel: RapidPrereviewAnswerD,
+              ynFuture: RapidPrereviewAnswerD,
+              ynReproducibility: RapidPrereviewAnswerD,
+              ynMethods: RapidPrereviewAnswerD,
+              ynCoherent: RapidPrereviewAnswerD,
+              ynLimitations: RapidPrereviewAnswerD,
+              ynEthics: RapidPrereviewAnswerD,
+              ynNewData: RapidPrereviewAnswerD,
+              ynRecommend: RapidPrereviewAnswerD,
+              ynPeerReview: RapidPrereviewAnswerD,
+              ynAvailableCode: RapidPrereviewAnswerD,
+              ynAvailableData: RapidPrereviewAnswerD,
+            }),
+          ),
+        }),
+      ),
+    }),
+  ),
+)
+
 const UuidD = D.fromRefinement(isUuid, 'UUID')
 
 const LegacyPrereviewPreprintD = pipe(
@@ -78,275 +119,43 @@ export const getPseudonymFromLegacyPrereview = flow(
 
 export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
   id.doi === ('10.1101/2022.02.14.480364' as Doi)
-    ? TE.right([
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'yes',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'yes',
-          ethics: 'na',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'na',
-          availableData: 'na',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'unsure',
-          methods: 'unsure',
-          coherent: 'yes',
-          limitations: 'unsure',
-          ethics: 'yes',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'no',
-          availableData: 'no',
-        },
-        {
-          novel: 'unsure',
-          future: 'yes',
-          reproducibility: 'unsure',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'na',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'no',
-          availableData: 'yes',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'unsure',
-          methods: 'unsure',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'na',
-          availableData: 'unsure',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'unsure',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'na',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'no',
-          peerReview: 'yes',
-          availableCode: 'na',
-          availableData: 'na',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'unsure',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'na',
-          availableData: 'na',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'unsure',
-          methods: 'na',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'no',
-          availableData: 'yes',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'yes',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'yes',
-          availableData: 'unsure',
-        },
-        {
-          novel: 'unsure',
-          future: 'yes',
-          reproducibility: 'unsure',
-          methods: 'unsure',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'na',
-          availableData: 'no',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'no',
-          methods: 'unsure',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'unsure',
-          peerReview: 'yes',
-          availableCode: 'no',
-          availableData: 'no',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'unsure',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'yes',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'unsure',
-          availableData: 'unsure',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'yes',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'no',
-          availableData: 'no',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'unsure',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'na',
-          availableData: 'unsure',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'yes',
-          methods: 'yes',
-          coherent: 'no',
-          limitations: 'no',
-          ethics: 'yes',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'yes',
-          availableData: 'yes',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'unsure',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'unsure',
-          ethics: 'unsure',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'na',
-          availableData: 'na',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'yes',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'no',
-          availableData: 'unsure',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'no',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'yes',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'na',
-          availableData: 'na',
-        },
-        {
-          novel: 'yes',
-          future: 'yes',
-          reproducibility: 'yes',
-          methods: 'yes',
-          coherent: 'yes',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'yes',
-          recommend: 'yes',
-          peerReview: 'yes',
-          availableCode: 'no',
-          availableData: 'no',
-        },
-        {
-          novel: 'unsure',
-          future: 'yes',
-          reproducibility: 'yes',
-          methods: 'yes',
-          coherent: 'unsure',
-          limitations: 'no',
-          ethics: 'no',
-          newData: 'unsure',
-          recommend: 'no',
-          peerReview: 'yes',
-          availableCode: 'unsure',
-          availableData: 'unsure',
-        },
-      ] as const)
-    : TE.right([])
+    ? pipe(
+        RTE.fromReader(
+          legacyPrereviewUrl(`preprints/${`doi-${id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`}`),
+        ),
+        RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
+        RTE.chainW(F.send),
+        RTE.local(revalidateIfStale()),
+        RTE.local(useStaleCache()),
+        RTE.local(timeoutRequest(2000)),
+        RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+        RTE.chainTaskEitherKW(F.decode(LegacyPrereviewD)),
+        RTE.map(
+          flow(
+            get('data.[0].rapidReviews'),
+            RA.map(results => ({
+              availableCode: results.ynAvailableCode,
+              availableData: results.ynAvailableData,
+              coherent: results.ynCoherent,
+              ethics: results.ynEthics,
+              future: results.ynFuture,
+              limitations: results.ynLimitations,
+              methods: results.ynMethods,
+              newData: results.ynNewData,
+              novel: results.ynNovel,
+              peerReview: results.ynPeerReview,
+              recommend: results.ynRecommend,
+              reproducibility: results.ynReproducibility,
+            })),
+          ),
+        ),
+        RTE.orElseW(error =>
+          match(error)
+            .with({ status: Status.NotFound }, () => RTE.right([]))
+            .otherwise(() => RTE.left('unavailable' as const)),
+        ),
+      )
+    : RTE.right([])
 
 export const createPrereviewOnLegacyPrereview = (newPrereview: NewPrereview) => (doi: Doi) =>
   pipe(

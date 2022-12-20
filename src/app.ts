@@ -99,7 +99,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getPreprint: flip(getPreprint)(env),
           getPrereviews: flip(getPrereviewsFromZenodo)(env),
-          getRapidPrereviews: getRapidPreviewsFromLegacyPrereview,
+          getRapidPrereviews: flip(getRapidPreviewsFromLegacyPrereview)(env),
         })),
       ),
     ),
