@@ -1201,7 +1201,8 @@ skip-link {
     & > .contents {
       & > main {
         &,
-        & > :first-child {
+        & > :first-child,
+        & > :first-child > :first-child {
           margin-block-start: 0;
         }
       }
