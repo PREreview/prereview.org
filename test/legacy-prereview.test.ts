@@ -223,26 +223,26 @@ describe('legacy-prereview', () => {
                   .replaceAll('/', '-')}` && cache === 'force-cache',
             {
               body: {
-                  data: [
-                    {
-                      rapidReviews: [
-                        {
-                          ynNovel: 'yes',
-                          ynFuture: 'yes',
-                          ynReproducibility: 'unsure',
-                          ynMethods: 'unsure',
-                          ynCoherent: 'yes',
-                          ynLimitations: 'unsure',
-                          ynEthics: 'yes',
-                          ynNewData: 'yes',
-                          ynRecommend: 'yes',
-                          ynPeerReview: 'yes',
-                          ynAvailableCode: 'no',
-                          ynAvailableData: 'no',
-                        },
-                      ],
-                    },
-                  ],
+                data: [
+                  {
+                    rapidReviews: [
+                      {
+                        ynNovel: 'yes',
+                        ynFuture: 'yes',
+                        ynReproducibility: 'unsure',
+                        ynMethods: 'unsure',
+                        ynCoherent: 'yes',
+                        ynLimitations: 'unsure',
+                        ynEthics: 'yes',
+                        ynNewData: 'yes',
+                        ynRecommend: 'yes',
+                        ynPeerReview: 'yes',
+                        ynAvailableCode: 'no',
+                        ynAvailableData: 'no',
+                      },
+                    ],
+                  },
+                ],
               },
               headers: { 'X-Local-Cache-Status': 'stale' },
             },
