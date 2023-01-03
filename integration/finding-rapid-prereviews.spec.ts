@@ -370,4 +370,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
 
   await page.getByRole('heading', { name: '19 Rapid PREreviews' }).scrollIntoViewIfNeeded()
   await expect(page).toHaveScreenshot()
+
+  await page.getByRole('region', { name: 'Aggregated Rapid PREreviews' }).focus()
+  await expect(page).toHaveScreenshot()
 })
