@@ -260,73 +260,73 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
           <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
         </caption>
         <thead>
-        <tr>
-          <th scope="col"><span class="visually-hidden">Question</th>
-          <th scope="col">Yes</th>
-          <th scope="col">Unsure</th>
-          <th scope="col">N/A</th>
-          <th scope="col">No</th>
-        </tr>
+          <tr>
+            <th scope="col"><span class="visually-hidden">Question</span></th>
+            <th scope="col">Yes</th>
+            <th scope="col">Unsure</th>
+            <th scope="col">N/A</th>
+            <th scope="col">No</th>
+          </tr>
         </thead>
         <tbody>
-        ${pipe(
-          [
-            'novel',
-            'future',
-            'reproducibility',
-            'methods',
-            'coherent',
-            'limitations',
-            'ethics',
-            'newData',
-            'availableData',
-            'availableCode',
-            'recommend',
-            'peerReview',
-          ] as ReadonlyNonEmptyArray<keyof RapidPrereview>,
-          RNEA.map(
-            flow(
-              I.bindTo('question'),
-              I.bind('answers', ({ question }) => ({
-                yes: countRapidPrereviewResponses(rapidPrereviews, question, 'yes'),
-                unsure: countRapidPrereviewResponses(rapidPrereviews, question, 'unsure'),
-                na: countRapidPrereviewResponses(rapidPrereviews, question, 'na'),
-                no: countRapidPrereviewResponses(rapidPrereviews, question, 'no'),
-              })),
+          ${pipe(
+            [
+              'novel',
+              'future',
+              'reproducibility',
+              'methods',
+              'coherent',
+              'limitations',
+              'ethics',
+              'newData',
+              'availableData',
+              'availableCode',
+              'recommend',
+              'peerReview',
+            ] as ReadonlyNonEmptyArray<keyof RapidPrereview>,
+            RNEA.map(
+              flow(
+                I.bindTo('question'),
+                I.bind('answers', ({ question }) => ({
+                  yes: countRapidPrereviewResponses(rapidPrereviews, question, 'yes'),
+                  unsure: countRapidPrereviewResponses(rapidPrereviews, question, 'unsure'),
+                  na: countRapidPrereviewResponses(rapidPrereviews, question, 'na'),
+                  no: countRapidPrereviewResponses(rapidPrereviews, question, 'no'),
+                })),
+              ),
             ),
-          ),
-          RNEA.map(
-            ({ question, answers }) => html`
-              <tr>
-                <th scope="row">${displayRapidPrereviewQuestion(question)}</th>
-                <td>
-                  ${(answers.yes / rapidPrereviews.length).toLocaleString('en', {
-                    style: 'percent',
-                    maximumFractionDigits: 0,
-                  })}
-                </td>
-                <td>
-                  ${(answers.unsure / rapidPrereviews.length).toLocaleString('en', {
-                    style: 'percent',
-                    maximumFractionDigits: 0,
-                  })}
-                </td>
-                <td>
-                  ${(answers.na / rapidPrereviews.length).toLocaleString('en', {
-                    style: 'percent',
-                    maximumFractionDigits: 0,
-                  })}
-                </td>
-                <td>
-                  ${(answers.no / rapidPrereviews.length).toLocaleString('en', {
-                    style: 'percent',
-                    maximumFractionDigits: 0,
-                  })}
-                </td>
-              </tr>
-            `,
-          ),
-        )}
+            RNEA.map(
+              ({ question, answers }) => html`
+                <tr>
+                  <th scope="row">${displayRapidPrereviewQuestion(question)}</th>
+                  <td>
+                    ${(answers.yes / rapidPrereviews.length).toLocaleString('en', {
+                      style: 'percent',
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td>
+                    ${(answers.unsure / rapidPrereviews.length).toLocaleString('en', {
+                      style: 'percent',
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td>
+                    ${(answers.na / rapidPrereviews.length).toLocaleString('en', {
+                      style: 'percent',
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                  <td>
+                    ${(answers.no / rapidPrereviews.length).toLocaleString('en', {
+                      style: 'percent',
+                      maximumFractionDigits: 0,
+                    })}
+                  </td>
+                </tr>
+              `,
+            ),
+          )}
         </tbody>
       </table>
     </div>
