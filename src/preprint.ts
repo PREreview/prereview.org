@@ -256,6 +256,19 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
   return html`
     <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
 
+    <details>
+      <summary>Where can I fill out a Rapid PREreview?</summary>
+
+      <div>
+        <p>You still can on the <a href="https://prereview.org/">current website</a>.</p>
+
+        <p>
+          We haven’t yet added the form to the new version of PREreview as we’re looking to improve how Rapid PREreviews
+          work; if you could help, please <a href="mailto:contact@prereview.org">get in touch</a>.
+        </p>
+      </div>
+    </details>
+
     <div role="region" aria-labelledby="rapid-prereviews-caption" tabindex="0">
       <table>
         <caption id="rapid-prereviews-caption" class="visually-hidden">
