@@ -380,6 +380,10 @@ table {
   margin-block-start: var(--space-s-m);
   border-spacing: 0;
   inline-size: 100%;
+
+  @nest :--heading + :--scroller > & {
+    margin-block-start: var(--space-2xs-xs);
+  }
 }
 
 caption {
@@ -1201,8 +1205,7 @@ skip-link {
     & > .contents {
       & > main {
         &,
-        & > :first-child,
-        & > :first-child > :first-child {
+        & > :first-child {
           margin-block-start: 0;
         }
       }

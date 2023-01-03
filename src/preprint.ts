@@ -254,10 +254,12 @@ function showReview(review: Prereview) {
 
 function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview>): Html {
   return html`
+    <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
+
     <div role="region" aria-labelledby="rapid-prereviews-caption" tabindex="0">
       <table>
-        <caption id="rapid-prereviews-caption">
-          <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
+        <caption id="rapid-prereviews-caption" class="visually-hidden">
+          Aggregated Rapid PREreviews
         </caption>
         <thead>
           <tr>
