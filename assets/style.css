@@ -245,6 +245,14 @@ article {
 
 :--scroller {
   overflow: auto;
+
+  & > :first-child {
+    margin-block-start: 0;
+  }
+
+  @nest :is(:--heading, details) + & {
+    margin-block-start: var(--space-2xs-xs);
+  }
 }
 
 :--heading {
@@ -380,10 +388,6 @@ table {
   margin-block-start: var(--space-s-m);
   border-spacing: 0;
   inline-size: 100%;
-
-  @nest :is(:--heading, details) + :--scroller > & {
-    margin-block-start: var(--space-2xs-xs);
-  }
 }
 
 caption {
