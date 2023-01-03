@@ -106,7 +106,7 @@ test('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(page).toHaveScreenshot()
 
   if (javaScriptEnabled) {
-    await page.fill('role=textbox[name="Write your PREreview"]', '')
+    await page.locator('role=textbox[name="Write your PREreview"]').clear()
     await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
     await page.keyboard.press('Control+b')
     await page.keyboard.type('adipiscing elit')
@@ -676,7 +676,7 @@ test('can format a PREreview', async ({ browserName, fetch, javaScriptEnabled, p
   }
 
   await page.locator('[contenteditable]').waitFor()
-  await page.fill('role=textbox[name="Write your PREreview"]', '')
+  await page.locator('role=textbox[name="Write your PREreview"]').clear()
 
   await page.getByRole('button', { name: 'Heading level 1' }).click()
   await expect(page.getByRole('button', { name: 'Heading level 1' })).toHaveAttribute('aria-pressed', 'true')
@@ -1883,7 +1883,7 @@ test('have to enter a review', async ({ fetch, javaScriptEnabled, page }) => {
     await page.locator('[contenteditable]').waitFor()
   }
 
-  await page.fill('role=textbox[name="Write your PREreview"]', '')
+  await page.locator('role=textbox[name="Write your PREreview"]').clear()
   await page.click('text="Save and continue"')
 
   if (javaScriptEnabled) {
