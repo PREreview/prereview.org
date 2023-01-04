@@ -1,4 +1,4 @@
-import { Fixtures, PlaywrightTestArgs, PlaywrightTestOptions, test as baseTest } from '@playwright/test'
+import { Fixtures, PlaywrightTestArgs, PlaywrightTestOptions, test as baseTest, expect } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
 import fetchMock, { FetchMockSandbox } from 'fetch-mock'
 import * as fs from 'fs/promises'
@@ -542,6 +542,19 @@ export const canLogIn: Fixtures<
         orcid: '0000-0002-1825-0097',
       },
     })
+
+    await use(page)
+  },
+}
+
+export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, Pick<PlaywrightTestArgs, 'page'>> = {
+  page: async ({ page }, use) => {
+    await page.goto('/log-in')
+    await page.fill('[type=email]', 'test@example.com')
+    await page.fill('[type=password]', 'password')
+    await page.keyboard.press('Enter')
+
+    await expect(page).toHaveTitle(/PREreview/)
 
     await use(page)
   },
