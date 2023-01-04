@@ -3,6 +3,7 @@ import { SystemClock } from 'clock-ts'
 import fetchMock, { FetchMockSandbox } from 'fetch-mock'
 import * as fs from 'fs/promises'
 import { Server } from 'http'
+import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { app } from '../src/app'
@@ -523,6 +524,26 @@ export const updatesLegacyPrereview: Fixtures<
 > = {
   updatesLegacyPrereview: async ({}, use) => {
     await use(true)
+  },
+}
+
+export const canLogIn: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+> = {
+  page: async ({ fetch, page }, use) => {
+    fetch.post('http://orcid.test/token', {
+      status: Status.OK,
+      body: {
+        access_token: 'access-token',
+        token_type: 'Bearer',
+        name: 'Josiah Carberry',
+        orcid: '0000-0002-1825-0097',
+      },
+    })
+
+    await use(page)
   },
 }
 
