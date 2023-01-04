@@ -366,16 +366,31 @@ describe('log-in', () => {
     )
   })
 
-  test.prop([fc.connection()])('authenticateError', async connection => {
-    const actual = await runMiddleware(_.authenticateError()({}), connection)()
+  describe('authenticateError', () => {
+    test.prop([fc.connection()])('with an access_denied error', async connection => {
+      const actual = await runMiddleware(_.authenticateError('access_denied')({}), connection)()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Forbidden },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([fc.string(), fc.connection()])('with an unknown error', async (error, connection) => {
+      const actual = await runMiddleware(_.authenticateError(error)({}), connection)()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
   })
 })

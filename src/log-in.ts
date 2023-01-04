@@ -69,7 +69,10 @@ export const authenticate = flow(
   ),
 )
 
-export const authenticateError = () => showFailureMessage
+export const authenticateError = (error: string) =>
+  match(error)
+    .with('access_denied', () => showAccessDeniedMessage)
+    .otherwise(() => showFailureMessage)
 
 function getReferer(state: string) {
   return pipe(
@@ -119,12 +122,35 @@ function noPseudonymMessage() {
   })
 }
 
+const showAccessDeniedMessage = pipe(
+  RM.rightReader(accessDeniedMessage()),
+  RM.ichainFirst(() => RM.status(Status.Forbidden)),
+  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
 const showFailureMessage = pipe(
   RM.rightReader(failureMessage()),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
   RM.ichainMiddlewareK(sendHtml),
 )
+
+function accessDeniedMessage() {
+  return page({
+    title: plainText`Sorry, we can’t log you in`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we can’t log you in</h1>
+
+        <p>You have denied PREreview access to your ORCID&nbsp;iD.</p>
+
+        <p>Please try again.</p>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+  })
+}
 
 function failureMessage() {
   return page({

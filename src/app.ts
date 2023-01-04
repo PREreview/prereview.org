@@ -94,7 +94,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       orcidErrorMatch.parser,
-      P.map(() => authenticateError()),
+      P.map(({ error }) => authenticateError(error)),
     ),
     pipe(
       preprintMatch.parser,
