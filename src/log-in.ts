@@ -69,6 +69,8 @@ export const authenticate = flow(
   ),
 )
 
+export const authenticateError = () => showFailureMessage
+
 function getReferer(state: string) {
   return pipe(
     RE.fromEither(E.tryCatch(() => new URL(state), constant('not-a-url'))),

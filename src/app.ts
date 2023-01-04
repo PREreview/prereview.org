@@ -26,7 +26,7 @@ import {
   getPseudonymFromLegacyPrereview,
   getRapidPreviewsFromLegacyPrereview,
 } from './legacy-prereview'
-import { PublicUrlEnv, authenticate, logIn } from './log-in'
+import { PublicUrlEnv, authenticate, authenticateError, logIn } from './log-in'
 import { PhaseEnv } from './page'
 import { preprint } from './preprint'
 import { PreprintId } from './preprint-id'
@@ -35,6 +35,7 @@ import {
   homeMatch,
   logInMatch,
   orcidCodeMatch,
+  orcidErrorMatch,
   preprintMatch,
   reviewMatch,
   writeReviewAddAuthorsMatch,
@@ -90,6 +91,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           getPseudonym: flip(getPseudonymFromLegacyPrereview)(env),
         })),
       ),
+    ),
+    pipe(
+      orcidErrorMatch.parser,
+      P.map(() => authenticateError()),
     ),
     pipe(
       preprintMatch.parser,
