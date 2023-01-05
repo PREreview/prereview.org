@@ -50,7 +50,11 @@ export const orcidCodeMatch = pipe(
   P.then(P.end),
 )
 
-export const orcidErrorMatch = pipe(P.lit('orcid'), P.then(query(C.struct({ error: C.string }))), P.then(P.end))
+export const orcidErrorMatch = pipe(
+  P.lit('orcid'),
+  P.then(query(C.struct({ error: C.string, state: C.string }))),
+  P.then(P.end),
+)
 
 export const preprintMatch = pipe(P.lit('preprints'), P.then(type('doi', PreprintDoiC)), P.then(P.end))
 
