@@ -1510,7 +1510,8 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.click('text="Start now"')
 
-  await page.goto('/orcid?error=access_denied')
+  const redirectUri = await page.locator('[name=redirectUri]').inputValue()
+  await page.goto(`${new URL(redirectUri).pathname}?error=access_denied`)
 
   await expect(page.locator('h1')).toHaveText('Sorry, we can’t log you in')
   await expect(page).toHaveScreenshot()
