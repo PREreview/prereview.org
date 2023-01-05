@@ -67,80 +67,79 @@ test.extend(canLogIn)('can post a PREreview', async ({ fetch, javaScriptEnabled,
     { body: RecordsC.encode({ hits: { hits: [] } }) },
   )
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-  await page.click('text="Write a PREreview"')
+  await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
-  await expect(page.locator('main')).toContainText('We will ask you to log in')
+  await expect(page.getByRole('main')).toContainText('We will ask you to log in')
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Start now"')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
-  await page.fill('[type=email]', 'test@example.com')
-  await page.fill('[type=password]', 'password')
+  await page.locator('[type=email]').fill('test@example.com')
+  await page.locator('[type=password]').fill('password')
   await page.keyboard.press('Enter')
 
-  await page.check('text="No"')
+  await page.getByLabel('No').check()
 
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Continue"')
+  await page.getByRole('button', { name: 'Continue' }).click()
 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
 
   if (javaScriptEnabled) {
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toHaveText(/^Write a short summary of/)
+    await expect(page.getByLabel('Write your PREreview')).toHaveText(/^Write a short summary of/)
   } else {
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toHaveValue(/^Write a short summary of/)
+    await expect(page.getByLabel('Write your PREreview')).toHaveValue(/^Write a short summary of/)
   }
 
   await expect(page).toHaveScreenshot()
 
   if (javaScriptEnabled) {
-    await page.locator('role=textbox[name="Write your PREreview"]').clear()
+    await page.getByLabel('Write your PREreview').clear()
     await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
     await page.keyboard.press('Control+b')
     await page.keyboard.type('adipiscing elit')
     await page.keyboard.press('Control+b')
     await page.keyboard.type('.')
   } else {
-    await page.fill(
-      'text="Write your PREreview"',
-      'Lorem ipsum dolor sit "amet", *consectetur* <b>adipiscing elit</b>.',
-    )
+    await page
+      .getByLabel('Write your PREreview')
+      .fill('Lorem ipsum dolor sit "amet", *consectetur* <b>adipiscing elit</b>.')
   }
 
   await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
 
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Save and continue"')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.check('text="Josiah Carberry"')
-
-  await expect(page).toHaveScreenshot()
-
-  await page.click('text="Save and continue"')
-
-  await page.check('text="No, by myself"')
+  await page.getByLabel('Josiah Carberry').check()
 
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Save and continue"')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.check('text="No"')
-
-  await expect(page).toHaveScreenshot()
-
-  await page.click('text="Save and continue"')
-
-  await page.check('text="I’m following the Code of Conduct"')
+  await page.getByLabel('No, by myself').check()
 
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Save and continue"')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  const preview = page.locator('role=blockquote[name="Check your PREreview"]')
+  await page.getByLabel('No').check()
+
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await page.getByLabel('I’m following the Code of Conduct').check()
+
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
 
   await expect(preview).toContainText('Josiah Carberry')
   if (javaScriptEnabled) {
@@ -191,10 +190,10 @@ test.extend(canLogIn)('can post a PREreview', async ({ fetch, javaScriptEnabled,
       status: Status.Accepted,
     })
 
-  await page.click('text="Post PREreview"')
+  await page.getByRole('button', { name: 'Post PREreview' }).click()
 
-  const main = page.locator('main')
-  const h1 = main.locator('h1')
+  const main = page.getByRole('main')
+  const h1 = main.getByRole('heading', { level: 1 })
 
   await expect(h1).toContainText('PREreview posted')
   await expect(main).toContainText('Your DOI 10.5072/zenodo.1055806')
@@ -268,7 +267,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   }
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Start now"')
+  await page.getByRole('button', { name: 'Start now' }).click()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -281,8 +280,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   }
   await expect(page).toHaveScreenshot()
 
-  await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -295,7 +294,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   }
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Save and continue"')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -309,8 +308,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   }
   await expect(page).toHaveScreenshot()
 
-  await page.check('text="Josiah Carberry"')
-  await page.click('text="Save and continue"')
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -323,8 +322,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   }
   await expect(page).toHaveScreenshot()
 
-  await page.check('text="No, by myself"')
-  await page.click('text="Save and continue"')
+  await page.getByLabel('No, by myself').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -337,8 +336,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   }
   await expect(page).toHaveScreenshot()
 
-  await page.check('text="No"')
-  await page.click('text="Save and continue"')
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -351,8 +350,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   }
   await expect(page).toHaveScreenshot()
 
-  await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Save and continue"')
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -405,7 +404,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
       status: Status.Accepted,
     })
 
-  await page.click('text="Post PREreview"')
+  await page.getByRole('button', { name: 'Post PREreview' }).click()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
@@ -483,25 +482,25 @@ test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn)(
       { body: RecordsC.encode({ hits: { hits: [] } }) },
     )
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.click('text="Write a PREreview"')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
 
-    await page.fill('role=textbox[name="Write your PREreview"]', 'Lorem ipsum')
-    await page.click('text="Save and continue"')
-    await page.check('text="Josiah Carberry"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No, by myself"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No"')
-    await page.click('text="Save and continue"')
-    await page.check('text="I’m following the Code of Conduct"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, by myself').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     fetch
       .postOnce('http://zenodo.test/api/deposit/depositions', {
@@ -555,9 +554,9 @@ test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn)(
         { status: Status.Created },
       )
 
-    await page.click('text="Post PREreview"')
+    await page.getByRole('button', { name: 'Post PREreview' }).click()
 
-    await expect(page.locator('h1')).toContainText('PREreview posted')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
   },
 )
 
@@ -572,16 +571,16 @@ test.extend(canLogIn).extend(areLoggedIn)(
       { body: RecordsC.encode({ hits: { hits: [] } }) },
     )
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.click('text="Write a PREreview"')
-    await page.click('text="Start now"')
-    await page.check('text="Yes"')
-    await page.click('text="Continue"')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
 
-    await expect(page.locator('h1')).toHaveText('Paste your PREreview')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Paste your PREreview')
     await expect(page).toHaveScreenshot()
   },
 )
@@ -597,12 +596,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
       { body: RecordsC.encode({ hits: { hits: [] } }) },
     )
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.click('text="Write a PREreview"')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-    await page.locator('role=textbox[name="Write your PREreview"]').waitFor()
+    await page.getByLabel('Write your PREreview').waitFor()
     await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
 
     if (!javaScriptEnabled) {
@@ -612,15 +611,15 @@ test.extend(canLogIn).extend(areLoggedIn)(
     }
 
     await page.locator('[contenteditable]').waitFor()
-    await page.locator('role=textbox[name="Write your PREreview"]').clear()
+    await page.getByLabel('Write your PREreview').clear()
 
     await page.getByRole('button', { name: 'Heading level 1' }).click()
     await expect(page.getByRole('button', { name: 'Heading level 1' })).toHaveAttribute('aria-pressed', 'true')
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-disabled', 'true')
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
 
     if (browserName === 'webkit') {
-      await page.locator('role=textbox[name="Write your PREreview"]').scrollIntoViewIfNeeded()
+      await page.getByLabel('Write your PREreview').scrollIntoViewIfNeeded()
     }
 
     await page.keyboard.type('Lorem')
@@ -689,7 +688,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Enter')
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Italic' })).toHaveAttribute('aria-pressed', 'true')
 
     await page.keyboard.type('consectetur')
@@ -698,7 +697,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('button', { name: 'Italic' })).toBeFocused()
 
     await page.keyboard.press('Enter')
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
 
     await page.keyboard.type(' ')
 
@@ -707,20 +706,20 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
 
     await page.keyboard.press('Enter')
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
 
     await page.keyboard.type('adipiscing ')
 
     await page.getByRole('button', { name: 'Subscript' }).click()
 
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true')
     await expect(page.getByRole('button', { name: 'Subscript' })).toHaveAttribute('aria-pressed', 'true')
     await page.keyboard.type('el')
 
     await page.getByRole('button', { name: 'Superscript' }).click()
 
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'true')
     await expect(page.getByRole('button', { name: 'Subscript' })).toHaveAttribute('aria-pressed', 'false')
     await expect(page.getByRole('button', { name: 'Superscript' })).toHaveAttribute('aria-pressed', 'true')
@@ -731,7 +730,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('button', { name: 'Superscript' })).toBeFocused()
 
     await page.keyboard.press('Enter')
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Superscript' })).toHaveAttribute('aria-pressed', 'false')
 
     await page.keyboard.press('Shift+Tab')
@@ -740,7 +739,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Enter')
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Bold' })).toHaveAttribute('aria-pressed', 'false')
 
     await page.keyboard.type('.')
@@ -837,34 +836,31 @@ test.extend(canLogIn).extend(areLoggedIn)(
       { body: RecordsC.encode({ hits: { hits: [] } }) },
     )
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.click('text="Write a PREreview"')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
-    await page.fill(
-      'role=textbox[name="Write your PREreview"]',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-    await page.click('text="Save and continue"')
-    await page.check('text="Josiah Carberry"')
-    await page.click('text="Save and continue"')
-    await page.check('text="Yes"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.locator('main')).toContainText('Add more authors')
+    await expect(page.getByRole('main')).toContainText('Add more authors')
     await expect(page).toHaveScreenshot()
 
-    await page.click('text="Continue"')
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-    await page.check('text="No"')
-    await page.click('text="Save and continue"')
-    await page.check('text="I’m following the Code of Conduct"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.locator('role=blockquote[name="Check your PREreview"]')
+    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
 
     await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
@@ -908,10 +904,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
         status: Status.Accepted,
       })
 
-    await page.click('text="Post PREreview"')
+    await page.getByRole('button', { name: 'Post PREreview' }).click()
 
-    const main = page.locator('main')
-    const h1 = main.locator('h1')
+    const main = page.getByRole('main')
+    const h1 = main.getByRole('heading', { level: 1 })
 
     await expect(h1).toContainText('PREreview posted')
     await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
@@ -979,34 +975,31 @@ test.extend(canLogIn).extend(areLoggedIn)(
       { body: RecordsC.encode({ hits: { hits: [] } }) },
     )
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.click('text="Write a PREreview"')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
-    await page.fill(
-      'role=textbox[name="Write your PREreview"]',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-    await page.click('text="Save and continue"')
-    await page.check('text="Josiah Carberry"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No, by myself"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, by myself').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.check('text="Yes"')
-    await page.fill('role=textbox[name="What are they?"]', 'Maecenas sed dapibus massa.')
+    await page.getByLabel('Yes').check()
+    await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
 
     await expect(page).toHaveScreenshot()
 
-    await page.click('text="Save and continue"')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.check('text="I’m following the Code of Conduct"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.locator('role=blockquote[name="Check your PREreview"]')
+    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
 
     await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await expect(preview).toContainText('Maecenas sed dapibus massa.')
@@ -1052,10 +1045,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
         status: Status.Accepted,
       })
 
-    await page.click('text="Post PREreview"')
+    await page.getByRole('button', { name: 'Post PREreview' }).click()
 
-    const main = page.locator('main')
-    const h1 = main.locator('h1')
+    const main = page.getByRole('main')
+    const h1 = main.getByRole('heading', { level: 1 })
 
     await expect(h1).toContainText('PREreview posted')
     await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
@@ -1121,28 +1114,25 @@ test.extend(canLogIn).extend(areLoggedIn)(
       { body: RecordsC.encode({ hits: { hits: [] } }) },
     )
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.click('text="Write a PREreview"')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
-    await page.fill(
-      'role=textbox[name="Write your PREreview"]',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-    await page.click('text="Save and continue"')
-    await page.check('text="Orange Panda"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No, by myself"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No"')
-    await page.click('text="Save and continue"')
-    await page.check('text="I’m following the Code of Conduct"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Orange Panda').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, by myself').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.locator('role=blockquote[name="Check your PREreview"]')
+    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
 
     await expect(preview).toContainText('Orange Panda')
     await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1187,10 +1177,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
         status: Status.Accepted,
       })
 
-    await page.click('text="Post PREreview"')
+    await page.getByRole('button', { name: 'Post PREreview' }).click()
 
-    const main = page.locator('main')
-    const h1 = main.locator('h1')
+    const main = page.getByRole('main')
+    const h1 = main.getByRole('heading', { level: 1 })
 
     await expect(h1).toContainText('PREreview posted')
     await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
@@ -1201,42 +1191,38 @@ test.extend(canLogIn).extend(areLoggedIn)(
   'can change the review after previewing',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
-    await page.fill(
-      'role=textbox[name="Write your PREreview"]',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-    await page.click('text="Save and continue"')
-    await page.check('text="Josiah Carberry"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No, by myself"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No"')
-    await page.click('text="Save and continue"')
-    await page.check('text="I’m following the Code of Conduct"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, by myself').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText(
+    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
 
-    await page.click('text="Change PREreview"')
+    await page.getByRole('link', { name: 'Change PREreview' }).click()
 
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
-    await page.fill(
-      'role=textbox[name="Write your PREreview"]',
-      'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
-    )
-    await page.click('text="Save and continue"')
+    await page
+      .getByLabel('Write your PREreview')
+      .fill('Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText(
+    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
       'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
     )
   },
@@ -1246,85 +1232,79 @@ test.extend(canLogIn).extend(areLoggedIn)(
   'can change the name after previewing',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
-    await page.fill(
-      'role=textbox[name="Write your PREreview"]',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-    await page.click('text="Save and continue"')
-    await page.check('text="Josiah Carberry"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No, by myself"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No"')
-    await page.click('text="Save and continue"')
-    await page.check('text="I’m following the Code of Conduct"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, by myself').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText('Josiah Carberry')
+    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Josiah Carberry')
 
-    await page.click('text="Change name"')
+    await page.getByRole('link', { name: 'Change name' }).click()
 
-    await page.check('text="Orange Panda"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Orange Panda').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.locator('role=blockquote[name="Check your PREreview"]')).toContainText('Orange Panda')
+    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Orange Panda')
   },
 )
 
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.click('text="Start now"')
-  await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
-  await page.fill(
-    'role=textbox[name="Write your PREreview"]',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  )
-  await page.click('text="Save and continue"')
-  await page.check('text="Josiah Carberry"')
-  await page.click('text="Save and continue"')
-  await page.check('text="No, by myself"')
-  await page.click('text="Save and continue"')
-  await page.check('text="No"')
-  await page.click('text="Save and continue"')
-  await page.check('text="I’m following the Code of Conduct"')
-  await page.click('text="Save and continue"')
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, by myself').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.locator('h1')).toContainText('Check your PREreview')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
 
   await page.goBack()
 
-  await expect(page.locator('text="I’m following the Code of Conduct"')).toBeChecked()
+  await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
 
   await page.goBack()
 
-  await expect(page.locator('text="No"')).toBeChecked()
+  await expect(page.getByLabel('No')).toBeChecked()
 
   await page.goBack()
 
-  await expect(page.locator('text="No, by myself"')).toBeChecked()
+  await expect(page.getByLabel('No, by myself')).toBeChecked()
 
   await page.goBack()
 
-  await expect(page.locator('text="Josiah Carberry"')).toBeChecked()
+  await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
 
   await page.goBack()
 
   if (javaScriptEnabled) {
-    await expect(page.locator('role=textbox[name="Write your PREreview"]')).toHaveText(
+    await expect(page.getByLabel('Write your PREreview')).toHaveText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
   } else {
-    await expect(page.locator('text="Write your PREreview"')).toHaveValue(
+    await expect(page.getByLabel('Write your PREreview')).toHaveValue(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
   }
@@ -1334,52 +1314,49 @@ test.extend(canLogIn).extend(areLoggedIn)(
   'see existing values when going back a step',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
-    await page.fill(
-      'role=textbox[name="Write your PREreview"]',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-    await page.click('text="Save and continue"')
-    await page.check('text="Josiah Carberry"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No, by myself"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No"')
-    await page.click('text="Save and continue"')
-    await page.check('text="I’m following the Code of Conduct"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, by myself').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.locator('h1')).toContainText('Check your PREreview')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
 
-    await page.click('text="Back"')
+    await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.locator('text="I’m following the Code of Conduct"')).toBeChecked()
+    await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
 
-    await page.click('text="Back"')
+    await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.locator('text="No"')).toBeChecked()
+    await expect(page.getByLabel('No')).toBeChecked()
 
-    await page.click('text="Back"')
+    await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.locator('text="No, by myself"')).toBeChecked()
+    await expect(page.getByLabel('No, by myself')).toBeChecked()
 
-    await page.click('text="Back"')
+    await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.locator('text="Josiah Carberry"')).toBeChecked()
+    await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
 
-    await page.click('text="Back"')
+    await page.getByRole('link', { name: 'Back' }).click()
 
     if (javaScriptEnabled) {
-      await expect(page.locator('role=textbox[name="Write your PREreview"]')).toHaveText(
+      await expect(page.getByLabel('Write your PREreview')).toHaveText(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       )
     } else {
-      await expect(page.locator('text="Write your PREreview"')).toHaveValue(
+      await expect(page.getByLabel('Write your PREreview')).toHaveValue(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       )
     }
@@ -1398,10 +1375,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     )
 
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.click('text="Write a PREreview"')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
-    await expect(page.locator('main')).not.toContainText('ORCID')
-    await expect(page.locator('h1')).toHaveText('PREreview this preprint')
+    await expect(page.getByRole('main')).not.toContainText('ORCID')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('PREreview this preprint')
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1416,9 +1393,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.click('text="Start now"')
+    await page.getByRole('button', { name: 'Start now' }).click()
 
-    await expect(page.locator('h1')).toHaveText('Have you already written your PREreview?')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Have you already written your PREreview?')
   },
 )
 
@@ -1433,14 +1410,14 @@ test.extend(canLogIn).extend(areLoggedIn)(
       { body: RecordsC.encode({ hits: { hits: [] } }) },
     )
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.click('text="Write a PREreview"')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
-    await page.click('text="Back to preprint"')
-    await page.click('text="Write a PREreview"')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('link', { name: 'Back to preprint' }).click()
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
-    await expect(page.locator('h1')).toHaveText('PREreview this preprint')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('PREreview this preprint')
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1455,9 +1432,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.click('text="Continue"')
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.locator('h1')).toHaveText('Write your PREreview')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write your PREreview')
   },
 )
 
@@ -1472,20 +1449,20 @@ test.extend(canLogIn).extend(areLoggedIn)(
       { body: RecordsC.encode({ hits: { hits: [] } }) },
     )
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.click('text="Write a PREreview"')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
-    await page.click('text="Back to preprint"')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('link', { name: 'Back to preprint' }).click()
     await page.context().clearCookies()
-    await page.click('text="Write a PREreview"')
-    await page.click('text="Start now"')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.fill('[type=email]', 'test@example.com')
-    await page.fill('[type=password]', 'password')
+    await page.locator('[type=email]').fill('test@example.com')
+    await page.locator('[type=password]').fill('password')
     await page.keyboard.press('Enter')
 
-    await expect(page.locator('h1')).toHaveText('PREreview this preprint')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('PREreview this preprint')
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1500,15 +1477,15 @@ test.extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.click('text="Continue"')
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.locator('h1')).toHaveText('Write your PREreview')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write your PREreview')
   },
 )
 
 test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.click('text="Start now"')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
   const [redirectUri, state] = await Promise.all([
     page.locator('[name=redirectUri]').inputValue(),
@@ -1516,7 +1493,7 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
   ])
   await page.goto(`${new URL(redirectUri).pathname}?error=access_denied&state=${state}`)
 
-  await expect(page.locator('h1')).toHaveText('Sorry, we can’t log you in')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t log you in')
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -1534,15 +1511,15 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
 
 test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.click('text="Start now"')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
-  await page.fill('[type=email]', 'test@example.com')
-  await page.fill('[type=password]', 'password')
+  await page.locator('[type=email]').fill('test@example.com')
+  await page.locator('[type=password]').fill('password')
 
   fetch.postOnce('http://orcid.test/token', { status: Status.ServiceUnavailable })
   await page.keyboard.press('Enter')
 
-  await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -1562,24 +1539,24 @@ test.extend(canLogIn).extend(areLoggedIn)(
   'are told if Zenodo is unavailable',
   async ({ fetch, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
-    await page.click('text="Save and continue"')
-    await page.check('text="Josiah Carberry"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No, by myself"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No"')
-    await page.click('text="Save and continue"')
-    await page.check('text="I’m following the Code of Conduct"')
-    await page.click('text="Save and continue"')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, by myself').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     fetch.postOnce('http://zenodo.test/api/deposit/depositions', { status: Status.ServiceUnavailable })
 
-    await page.click('text="Post PREreview"')
+    await page.getByRole('button', { name: 'Post PREreview' }).click()
 
-    await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1600,10 +1577,10 @@ test.extend(canLogIn)(
   "are directed to the current site if you don't have a pseudonym",
   async ({ fetch, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.click('text="Start now"')
+    await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.fill('[type=email]', 'test@example.com')
-    await page.fill('[type=password]', 'password')
+    await page.locator('[type=email]').fill('test@example.com')
+    await page.locator('[type=password]').fill('password')
 
     fetch.get(
       {
@@ -1615,7 +1592,7 @@ test.extend(canLogIn)(
     )
     await page.keyboard.press('Enter')
 
-    await expect(page.locator('h1')).toHaveText('Sorry, you can’t post a PREreview yet')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t post a PREreview yet')
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1636,108 +1613,105 @@ test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you have already written your PREreview',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.click('text="Start now"')
+    await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.click('text="Continue"')
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     if (javaScriptEnabled) {
-      await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
     }
-    await expect(page.locator('role=group[name="Have you already written your PREreview?"]')).toHaveAttribute(
+    await expect(page.getByRole('group', { name: 'Have you already written your PREreview?' })).toHaveAttribute(
       'aria-invalid',
       'true',
     )
     await expect(page).toHaveScreenshot()
 
-    await page.click('text="Select yes if you have already written your PREreview"')
+    await page.getByRole('link', { name: 'Select yes if you have already written your PREreview' }).click()
 
-    await expect(page.locator('role=radio[name="No"]')).toBeFocused()
+    await expect(page.getByLabel('No')).toBeFocused()
     await expect(page).toHaveScreenshot()
   },
 )
 
 test.extend(canLogIn).extend(areLoggedIn)('have to enter a review', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.click('text="Start now"')
-  await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
 
-  await page.locator('role=textbox[name="Write your PREreview"]').clear()
-  await page.click('text="Save and continue"')
+  await page.getByLabel('Write your PREreview').clear()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   if (javaScriptEnabled) {
-    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
   } else {
-    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
   }
-  await expect(page.locator('role=textbox[name="Write your PREreview"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Enter your PREreview"')
+  await page.getByRole('link', { name: 'Enter your PREreview' }).click()
 
-  await expect(page.locator('role=textbox[name="Write your PREreview"]')).toBeFocused()
+  await expect(page.getByLabel('Write your PREreview')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('have to paste a review', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.click('text="Start now"')
-  await page.check('text="Yes"')
-  await page.click('text="Continue"')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Yes').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
 
-  await page.click('text="Save and continue"')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   if (javaScriptEnabled) {
-    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
   } else {
-    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
   }
-  await expect(page.locator('role=textbox[name="Paste your PREreview"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page.getByLabel('Paste your PREreview')).toHaveAttribute('aria-invalid', 'true')
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Paste your PREreview"')
+  await page.getByRole('link', { name: 'Paste your PREreview' }).click()
 
-  await expect(page.locator('role=textbox[name="Paste your PREreview"]')).toBeFocused()
+  await expect(page.getByLabel('Paste your PREreview')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.click('text="Start now"')
-  await page.check('text="No"')
-  await page.click('text="Continue"')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
 
   if (javaScriptEnabled) {
     await page.locator('[contenteditable]').waitFor()
   }
-  await page.fill(
-    'role=textbox[name="Write your PREreview"]',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  )
-  await page.click('text="Save and continue"')
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.click('text="Save and continue"')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   if (javaScriptEnabled) {
-    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
   } else {
-    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
   }
-  await expect(page.locator('role=group[name="What name would you like to use?"]')).toHaveAttribute(
+  await expect(page.getByRole('group', { name: 'What name would you like to use?' })).toHaveAttribute(
     'aria-invalid',
     'true',
   )
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Select the name that you would like to use"')
+  await page.getByRole('link', { name: 'Select the name that you would like to use' }).click()
 
-  await expect(page.locator('role=radio[name="Josiah Carberry"]')).toBeFocused()
+  await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
 
@@ -1745,39 +1719,36 @@ test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if there are more authors',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
-    await page.fill(
-      'role=textbox[name="Write your PREreview"]',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.click('text="Save and continue"')
-    await page.check('text="Josiah Carberry"')
-    await page.click('text="Save and continue"')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.click('text="Save and continue"')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
-      await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
     }
-    await expect(page.locator('role=group[name="Did you write the PREreview with anyone else?"]')).toHaveAttribute(
+    await expect(page.getByRole('group', { name: 'Did you write the PREreview with anyone else?' })).toHaveAttribute(
       'aria-invalid',
       'true',
     )
     await expect(page).toHaveScreenshot()
 
-    await page.click('text="Select yes if you wrote the PREreview with someone else"')
+    await page.getByRole('link', { name: 'Select yes if you wrote the PREreview with someone else' }).click()
 
-    await expect(page.locator('role=radio[name="No, by myself"]')).toBeFocused()
+    await expect(page.getByLabel('No, by myself')).toBeFocused()
     await expect(page).toHaveScreenshot()
   },
 )
@@ -1786,56 +1757,53 @@ test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare any competing interests',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
-    await page.fill(
-      'role=textbox[name="Write your PREreview"]',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-    await page.click('text="Save and continue"')
-    await page.check('text="Josiah Carberry"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No, by myself"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, by myself').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.click('text="Save and continue"')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
-      await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
     }
-    await expect(page.locator('role=group[name="Do you have any competing interests?"]')).toHaveAttribute(
+    await expect(page.getByRole('group', { name: 'Do you have any competing interests?' })).toHaveAttribute(
       'aria-invalid',
       'true',
     )
     await expect(page).toHaveScreenshot()
 
-    await page.click('text="Select yes if you have any competing interests"')
+    await page.getByRole('link', { name: 'Select yes if you have any competing interests' }).click()
 
-    await expect(page.locator('role=radio[name="No"]')).toBeFocused()
+    await expect(page.getByLabel('No')).toBeFocused()
     await expect(page).toHaveScreenshot()
 
-    await page.check('text="Yes"')
+    await page.getByLabel('Yes').check()
 
-    await page.click('text="Save and continue"')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
-      await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
     }
-    await expect(page.locator('role=textbox[name="What are they?"]')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page.getByLabel('What are they?')).toHaveAttribute('aria-invalid', 'true')
     await expect(page).toHaveScreenshot()
 
-    await page.click('text="Enter details of your competing interests"')
+    await page.getByRole('link', { name: 'Enter details of your competing interests' }).click()
 
-    await expect(page.locator('role=textbox[name="What are they?"]')).toBeFocused()
+    await expect(page.getByLabel('What are they?')).toBeFocused()
     await expect(page).toHaveScreenshot()
   },
 )
@@ -1844,38 +1812,35 @@ test.extend(canLogIn).extend(areLoggedIn)(
   'have to agree to the Code of Conduct',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.click('text="Start now"')
-    await page.check('text="No"')
-    await page.click('text="Continue"')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     if (javaScriptEnabled) {
       await page.locator('[contenteditable]').waitFor()
     }
-    await page.fill(
-      'role=textbox[name="Write your PREreview"]',
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-    await page.click('text="Save and continue"')
-    await page.check('text="Josiah Carberry"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No, by myself"')
-    await page.click('text="Save and continue"')
-    await page.check('text="No"')
-    await page.click('text="Save and continue"')
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, by myself').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.click('text="Save and continue"')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
-      await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
     }
-    await expect(page.locator('role=group[name="Code of Conduct"]')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page.getByRole('group', { name: 'Code of Conduct' })).toHaveAttribute('aria-invalid', 'true')
     await expect(page).toHaveScreenshot()
 
-    await page.click('text="Confirm that you are following the Code of Conduct"')
+    await page.getByRole('link', { name: 'Confirm that you are following the Code of Conduct' }).click()
 
-    await expect(page.locator('role=checkbox[name="I’m following the Code of Conduct"]')).toBeFocused()
+    await expect(page.getByLabel('I’m following the Code of Conduct')).toBeFocused()
     await expect(page).toHaveScreenshot()
   },
 )

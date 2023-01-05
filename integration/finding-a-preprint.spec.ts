@@ -7,13 +7,13 @@ import { expect, test } from './test'
 
 test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/')
-  await page.fill('text="Preprint DOI"', '10.1101/this-should-not-find-anything')
+  await page.getByLabel('Preprint DOI').fill('10.1101/this-should-not-find-anything')
 
   fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
 
-  await page.click('text="Continue"')
+  await page.getByRole('button', { name: 'Continue' }).click()
 
-  const h1 = page.locator('h1')
+  const h1 = page.getByRole('heading', { level: 1 })
 
   await expect(h1).toHaveText('Page not found')
   await expect(page).toHaveScreenshot()
@@ -33,7 +33,7 @@ test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
 
 test('can find and view a preprint', async ({ fetch, page }) => {
   await page.goto('/')
-  await page.fill('text="Preprint DOI"', '10.1101/2022.01.13.476201')
+  await page.getByLabel('Preprint DOI').fill('10.1101/2022.01.13.476201')
 
   await expect(page).toHaveScreenshot()
 
@@ -107,10 +107,10 @@ test('can find and view a preprint', async ({ fetch, page }) => {
     },
   )
 
-  await page.click('text="Continue"')
+  await page.getByRole('button', { name: 'Continue' }).click()
 
-  const preprint = page.locator('aside')
-  const reviews = page.locator('main')
+  const preprint = page.getByRole('complementary')
+  const reviews = page.getByRole('main')
 
   await expect(preprint).toContainText('The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii')
   await expect(reviews).toContainText('1 PREreview')
@@ -119,16 +119,16 @@ test('can find and view a preprint', async ({ fetch, page }) => {
 
 test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/')
-  await page.fill('text="Preprint DOI"', '10.1101/this-should-take-too-long')
+  await page.getByLabel('Preprint DOI').fill('10.1101/this-should-take-too-long')
 
   fetch.get(
     'https://api.crossref.org/works/10.1101%2Fthis-should-take-too-long',
     new Promise(() => setTimeout(() => ({ status: Status.NotFound }), 2000)),
   )
 
-  await page.click('text="Continue"')
+  await page.getByRole('button', { name: 'Continue' }).click()
 
-  await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -146,7 +146,7 @@ test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, p
 
 test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/')
-  await page.fill('text="Preprint DOI"', '10.1101/2022.01.13.476201')
+  await page.getByLabel('Preprint DOI').fill('10.1101/2022.01.13.476201')
 
   fetch.getOnce(
     {
@@ -156,9 +156,9 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
     new Promise(() => setTimeout(() => ({ body: RecordsC.encode({ hits: { hits: [] } }) }), 2000)),
   )
 
-  await page.click('text="Continue"')
+  await page.getByRole('button', { name: 'Continue' }).click()
 
-  await expect(page.locator('h1')).toHaveText('Sorry, we’re having problems')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -176,22 +176,22 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
 
 test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
   await page.goto('/')
-  await page.fill('text="Preprint DOI"', '10.5555/12345678')
+  await page.getByLabel('Preprint DOI').fill('10.5555/12345678')
 
-  await page.click('text="Continue"')
+  await page.getByRole('button', { name: 'Continue' }).click()
 
   if (javaScriptEnabled) {
-    await expect(page.locator('role=alert[name="There is a problem"]')).toBeFocused()
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
   } else {
-    await expect(page.locator('role=alert[name="There is a problem"]')).toBeVisible()
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
   }
-  await expect(page.locator('role=textbox[name="Preprint DOI"]')).toHaveAttribute('aria-invalid', 'true')
+  await expect(page.getByLabel('Preprint DOI')).toHaveAttribute('aria-invalid', 'true')
   await expect(page).toHaveScreenshot()
 
-  await page.click('text="Enter a preprint DOI"')
+  await page.getByRole('link', { name: 'Enter a preprint DOI' }).click()
 
-  await expect(page.locator('role=textbox[name="Preprint DOI"]')).toBeFocused()
-  await expect(page.locator('role=textbox[name="Preprint DOI"]')).toHaveValue('10.5555/12345678')
+  await expect(page.getByLabel('Preprint DOI')).toBeFocused()
+  await expect(page.getByLabel('Preprint DOI')).toHaveValue('10.5555/12345678')
   await expect(page).toHaveScreenshot()
 })
 

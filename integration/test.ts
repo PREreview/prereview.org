@@ -550,8 +550,8 @@ export const canLogIn: Fixtures<
 export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, Pick<PlaywrightTestArgs, 'page'>> = {
   page: async ({ page }, use) => {
     await page.goto('/log-in')
-    await page.fill('[type=email]', 'test@example.com')
-    await page.fill('[type=password]', 'password')
+    await page.locator('[type=email]').fill('test@example.com')
+    await page.locator('[type=password]').fill('password')
     await page.keyboard.press('Enter')
 
     await expect(page).toHaveTitle(/PREreview/)
