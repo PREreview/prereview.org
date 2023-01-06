@@ -27,7 +27,6 @@ export const HtmlD = pipe(D.string, D.map(rawHtml))
 const EnvD = pipe(
   D.struct({
     CACHE_PATH: D.string,
-    DB_PATH: D.string,
     LEGACY_PREREVIEW_API_APP: D.string,
     LEGACY_PREREVIEW_API_KEY: D.string,
     LEGACY_PREREVIEW_URL: UrlD,
@@ -66,7 +65,7 @@ const deps: AppEnv = {
       'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
     },
   }),
-  formStore: new Keyv(`sqlite://${env.DB_PATH}`, { namespace: 'forms' }),
+  formStore: new Keyv(env.REDIS_URI?.href, { namespace: 'forms' }),
   legacyPrereviewApi: {
     app: env.LEGACY_PREREVIEW_API_APP,
     key: env.LEGACY_PREREVIEW_API_KEY,

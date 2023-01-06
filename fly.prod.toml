@@ -2,7 +2,6 @@ app = "prereview"
 
 [env]
 CACHE_PATH = "/data/cache"
-DB_PATH = "/data/db.sqlite"
 LEGACY_PREREVIEW_URL = "https://prereview.org/"
 LEGACY_PREREVIEW_UPDATE = "true"
 PUBLIC_URL = "https://beta.prereview.org/"

@@ -4,4 +4,3 @@
 /node_modules/
 /src/manifest.json
 /.env
-*.sqlite
