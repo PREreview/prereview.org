@@ -46,6 +46,7 @@ const EnvD = pipe(
       ),
       PHASE_TAG: D.string,
       PHASE_TEXT: HtmlD,
+      REDIS_URI: UrlD,
     }),
   ),
 )
@@ -89,7 +90,7 @@ const deps: AppEnv = {
       : undefined,
   publicUrl: env.PUBLIC_URL,
   secret: env.SECRET,
-  sessionStore: new Keyv(`sqlite://${env.DB_PATH}`, { namespace: 'sessions' }),
+  sessionStore: new Keyv(env.REDIS_URI?.href, { namespace: 'sessions' }),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
 }
