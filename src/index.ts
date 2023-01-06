@@ -101,6 +101,8 @@ server.on('listening', () => {
 })
 
 createTerminus(server, {
+  healthChecks: { '/health': () => Promise.resolve() },
+  logger: (message, error) => L.errorP(message)({ name: error.name, message: error.message })(deps)(),
   onShutdown: RT.fromReaderIO(L.debug('Shutting server down'))(deps),
   onSignal: RT.fromReaderIO(L.debug('Signal received'))(deps),
   signals: ['SIGINT', 'SIGTERM'],
