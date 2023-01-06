@@ -1,4 +1,5 @@
 import { createTerminus } from '@godaddy/terminus'
+import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
 import * as C from 'fp-ts/Console'
 import * as E from 'fp-ts/Either'
@@ -57,6 +58,8 @@ const env = pipe(
   IOE.getOrElse(() => process.exit(1)),
 )()
 
+const keyvStore = env.REDIS_URI instanceof URL ? new KeyvRedis(env.REDIS_URI.href) : undefined
+
 const deps: AppEnv = {
   clock: SystemClock,
   fetch: fetch.defaults({
@@ -65,7 +68,7 @@ const deps: AppEnv = {
       'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
     },
   }),
-  formStore: new Keyv(env.REDIS_URI?.href, { namespace: 'forms' }),
+  formStore: new Keyv({ namespace: 'forms', store: keyvStore }),
   legacyPrereviewApi: {
     app: env.LEGACY_PREREVIEW_API_APP,
     key: env.LEGACY_PREREVIEW_API_KEY,
@@ -89,7 +92,7 @@ const deps: AppEnv = {
       : undefined,
   publicUrl: env.PUBLIC_URL,
   secret: env.SECRET,
-  sessionStore: new Keyv(env.REDIS_URI?.href, { namespace: 'sessions', ttl: 1000 * 60 * 60 * 24 * 30 }),
+  sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
 }
