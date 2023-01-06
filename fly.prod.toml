@@ -18,6 +18,14 @@ internal_port = 3000
 protocol = "tcp"
 script_checks = []
 
+[[services.http_checks]]
+grace_period = "5s"
+interval = "5s"
+method = "get"
+path = "/health"
+protocol = "http"
+timeout = "1s"
+
 [[services.ports]]
 handlers = ["http"]
 port = 80
