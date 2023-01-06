@@ -89,7 +89,7 @@ const deps: AppEnv = {
       : undefined,
   publicUrl: env.PUBLIC_URL,
   secret: env.SECRET,
-  sessionStore: new Keyv(env.REDIS_URI?.href, { namespace: 'sessions' }),
+  sessionStore: new Keyv(env.REDIS_URI?.href, { namespace: 'sessions', ttl: 1000 * 60 * 60 * 24 * 30 }),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
 }
