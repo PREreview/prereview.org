@@ -65,7 +65,7 @@
     "@types/rtl-detect": "^1.0.0",
     "@types/sanitize-html": "^2.8.0",
     "@types/turndown": "^5.0.1",
-    "@typescript-eslint/eslint-plugin": "^5.48.0",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
     "@typescript-eslint/parser": "^5.46.1",
     "babel-loader": "^9.1.2",
     "cdigit": "^3.1.4",
