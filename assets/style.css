@@ -1145,7 +1145,8 @@ skip-link {
     padding-inline: var(--space-s);
     inline-size: 100%;
 
-    & > :first-child {
+    & > :not(.visually-hidden):first-child,
+    & > .visually-hidden:first-child + * {
       margin-block-start: 0;
     }
   }

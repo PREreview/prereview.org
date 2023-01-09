@@ -153,9 +153,9 @@ function createPage({
       </h1>
 
       <aside id="preprint-details" tabindex="0" aria-label="Preprint details">
-        <article>
+        <article aria-labelledby="preprint-title">
           <header>
-            <h2 lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}">
+            <h2 lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}" id="preprint-title">
               ${preprint.title.text}
             </h2>
 
@@ -234,7 +234,11 @@ function createPage({
 function showReview(review: Prereview) {
   return html`
     <li>
-      <article>
+      <article aria-labelledby="prereview-${review.id}-title">
+        <h3 class="visually-hidden" id="prereview-${review.id}-title">
+          PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
+        </h3>
+
         <ol aria-label="Authors of this PREreview" role="list" class="author-list">
           ${review.authors.map(author => html` <li>${author.name}</li>`)}
         </ol>

@@ -109,10 +109,12 @@ test('can find and view a preprint', async ({ fetch, page }) => {
 
   await page.getByRole('button', { name: 'Continue' }).click()
 
-  const preprint = page.getByRole('complementary')
+  const preprint = page
+    .getByRole('complementary', { name: 'Preprint details' })
+    .getByRole('article', { name: 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' })
   const reviews = page.getByRole('main')
 
-  await expect(preprint).toContainText('The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii')
+  await expect(preprint).toContainText('Non-photochemical quenching (NPQ) is the process that protects')
   await expect(reviews).toContainText('1 PREreview')
   await expect(page).toHaveScreenshot()
 })

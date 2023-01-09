@@ -75,7 +75,10 @@ test('can find and view a review', async ({ fetch, page }) => {
     })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-  await page.getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al.' }).click()
+  await page
+    .getByRole('article', { name: 'PREreview by Jingfang Hao et al.' })
+    .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al.' })
+    .click()
 
   const review = page.getByRole('main')
 
