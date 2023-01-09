@@ -80,9 +80,7 @@ test('can find and view a review', async ({ fetch, page }) => {
     .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al.' })
     .click()
 
-  const review = page.getByRole('main')
-
-  await expect(review).toContainText('This work enriches the knowledge')
+  await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
   await expect(page).toHaveScreenshot()
 })
 

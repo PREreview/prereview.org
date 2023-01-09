@@ -16,9 +16,7 @@ test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
 
   await page.getByRole('button', { name: 'Continue' }).click()
 
-  const h1 = page.getByRole('heading', { level: 1 })
-
-  await expect(h1).toHaveText('Page not found')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found')
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -115,13 +113,12 @@ test('can find and view a preprint', async ({ fetch, page }) => {
 
   await page.getByRole('button', { name: 'Continue' }).click()
 
-  const preprint = page
-    .getByRole('complementary', { name: 'Preprint details' })
-    .getByRole('article', { name: 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' })
-  const reviews = page.getByRole('main')
-
-  await expect(preprint).toContainText('Non-photochemical quenching (NPQ) is the process that protects')
-  await expect(reviews).toContainText('1 PREreview')
+  await expect(
+    page
+      .getByRole('complementary', { name: 'Preprint details' })
+      .getByRole('article', { name: 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' }),
+  ).toContainText('Non-photochemical quenching (NPQ) is the process that protects')
+  await expect(page.getByRole('main')).toContainText('1 PREreview')
   await expect(page).toHaveScreenshot()
 })
 

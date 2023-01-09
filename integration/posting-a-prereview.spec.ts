@@ -192,11 +192,8 @@ test.extend(canLogIn)('can post a PREreview', async ({ fetch, javaScriptEnabled,
 
   await page.getByRole('button', { name: 'Post PREreview' }).click()
 
-  const main = page.getByRole('main')
-  const h1 = main.getByRole('heading', { level: 1 })
-
-  await expect(h1).toContainText('PREreview posted')
-  await expect(main).toContainText('Your DOI 10.5072/zenodo.1055806')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+  await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
   await expect(page).toHaveScreenshot()
 })
 
@@ -860,9 +857,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
-
-    await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    )
 
     fetch
       .postOnce('http://zenodo.test/api/deposit/depositions', {
@@ -906,12 +903,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('button', { name: 'Post PREreview' }).click()
 
-    const main = page.getByRole('main')
-    const h1 = main.getByRole('heading', { level: 1 })
-
-    await expect(h1).toContainText('PREreview posted')
-    await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
-    await expect(main).toContainText('other authors’ details')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
+    await expect(page.getByRole('main')).toContainText('other authors’ details')
     await expect(page).toHaveScreenshot()
   },
 )
@@ -1047,11 +1041,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('button', { name: 'Post PREreview' }).click()
 
-    const main = page.getByRole('main')
-    const h1 = main.getByRole('heading', { level: 1 })
-
-    await expect(h1).toContainText('PREreview posted')
-    await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
   },
 )
 
@@ -1179,11 +1170,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('button', { name: 'Post PREreview' }).click()
 
-    const main = page.getByRole('main')
-    const h1 = main.getByRole('heading', { level: 1 })
-
-    await expect(h1).toContainText('PREreview posted')
-    await expect(main).toContainText('Your DOI 10.5072/zenodo.1055808')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
   },
 )
 
