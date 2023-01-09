@@ -183,20 +183,21 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
 
 test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
   const form = page.getByRole('form', { name: 'Find and post PREreviews' })
+  const alert = page.getByRole('alert', { name: 'There is a problem' })
 
   await page.goto('/')
   await form.getByLabel('Preprint DOI').fill('10.5555/12345678')
   await form.getByRole('button', { name: 'Continue' }).click()
 
   if (javaScriptEnabled) {
-    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    await expect(alert).toBeFocused()
   } else {
-    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+    await expect(alert).toBeVisible()
   }
   await expect(form.getByLabel('Preprint DOI')).toHaveAttribute('aria-invalid', 'true')
   await expect(page).toHaveScreenshot()
 
-  await page.getByRole('link', { name: 'Enter a preprint DOI' }).click()
+  await alert.getByRole('link', { name: 'Enter a preprint DOI' }).click()
 
   await expect(form.getByLabel('Preprint DOI')).toBeFocused()
   await expect(form.getByLabel('Preprint DOI')).toHaveValue('10.5555/12345678')
