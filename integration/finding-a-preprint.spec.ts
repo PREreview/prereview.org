@@ -7,7 +7,10 @@ import { expect, test } from './test'
 
 test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/')
-  await page.getByLabel('Preprint DOI').fill('10.1101/this-should-not-find-anything')
+  await page
+    .getByRole('form', { name: 'Find and post PREreviews' })
+    .getByLabel('Preprint DOI')
+    .fill('10.1101/this-should-not-find-anything')
 
   fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
 
@@ -33,7 +36,10 @@ test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
 
 test('can find and view a preprint', async ({ fetch, page }) => {
   await page.goto('/')
-  await page.getByLabel('Preprint DOI').fill('10.1101/2022.01.13.476201')
+  await page
+    .getByRole('form', { name: 'Find and post PREreviews' })
+    .getByLabel('Preprint DOI')
+    .fill('10.1101/2022.01.13.476201')
 
   await expect(page).toHaveScreenshot()
 
@@ -121,7 +127,10 @@ test('can find and view a preprint', async ({ fetch, page }) => {
 
 test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/')
-  await page.getByLabel('Preprint DOI').fill('10.1101/this-should-take-too-long')
+  await page
+    .getByRole('form', { name: 'Find and post PREreviews' })
+    .getByLabel('Preprint DOI')
+    .fill('10.1101/this-should-take-too-long')
 
   fetch.get(
     'https://api.crossref.org/works/10.1101%2Fthis-should-take-too-long',
@@ -148,7 +157,10 @@ test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, p
 
 test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/')
-  await page.getByLabel('Preprint DOI').fill('10.1101/2022.01.13.476201')
+  await page
+    .getByRole('form', { name: 'Find and post PREreviews' })
+    .getByLabel('Preprint DOI')
+    .fill('10.1101/2022.01.13.476201')
 
   fetch.getOnce(
     {
@@ -178,7 +190,7 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
 
 test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
   await page.goto('/')
-  await page.getByLabel('Preprint DOI').fill('10.5555/12345678')
+  await page.getByRole('form', { name: 'Find and post PREreviews' }).getByLabel('Preprint DOI').fill('10.5555/12345678')
 
   await page.getByRole('button', { name: 'Continue' }).click()
 
