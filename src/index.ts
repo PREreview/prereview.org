@@ -40,6 +40,7 @@ const EnvD = pipe(
   }),
   D.intersect(
     D.partial({
+      FATHOM_SITE_ID: D.string,
       LEGACY_PREREVIEW_UPDATE: pipe(
         D.literal('true', 'false'),
         D.map(value => value === 'true'),
@@ -62,6 +63,7 @@ const keyvStore = env.REDIS_URI instanceof URL ? new KeyvRedis(env.REDIS_URI.hre
 
 const deps: AppEnv = {
   clock: SystemClock,
+  fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: env.CACHE_PATH,
     headers: {
