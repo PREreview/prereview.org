@@ -27,7 +27,7 @@ import {
   getRapidPreviewsFromLegacyPrereview,
 } from './legacy-prereview'
 import { PublicUrlEnv, authenticate, authenticateError, logIn } from './log-in'
-import { PhaseEnv } from './page'
+import { FathomEnv, PhaseEnv } from './page'
 import { preprint } from './preprint'
 import { PreprintId } from './preprint-id'
 import { review } from './review'
@@ -63,7 +63,8 @@ import {
 } from './write-review'
 import { createRecordOnZenodo, getPrereviewFromZenodo, getPrereviewsFromZenodo } from './zenodo'
 
-export type AppEnv = FormStoreEnv &
+export type AppEnv = FathomEnv &
+  FormStoreEnv &
   LegacyPrereviewApiEnv &
   L.LoggerEnv &
   OAuthEnv &

@@ -4,6 +4,10 @@ import { Html, PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
 import { homeMatch } from './routes'
 
+export interface FathomEnv {
+  readonly fathomId?: string
+}
+
 export interface PhaseEnv {
   readonly phase?: {
     readonly tag: string
@@ -19,9 +23,9 @@ type Page = {
   readonly js?: ReadonlyArray<Assets<'.js'>>
 }
 
-export function page({ title, type, content, skipLinks = [], js = [] }: Page): R.Reader<PhaseEnv, Html> {
+export function page({ title, type, content, skipLinks = [], js = [] }: Page): R.Reader<FathomEnv & PhaseEnv, Html> {
   return R.asks(
-    ({ phase }) => html`
+    ({ fathomId, phase }) => html`
       <!DOCTYPE html>
       <html lang="en" dir="ltr">
         <meta charset="utf-8" />
@@ -30,6 +34,9 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
         <link href="${assets['style.css']}" rel="stylesheet" />
         ${skipLinks.length > 0 ? html` <script src="${assets['skip-link.js']}" type="module"></script>` : ''}
         ${js.map(file => html` <script src="${assets[file]}" type="module"></script>`)}
+        ${fathomId
+          ? html`<script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
+          : ''}
 
         <title>${title}</title>
 
