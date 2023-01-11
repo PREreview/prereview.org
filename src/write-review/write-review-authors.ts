@@ -84,13 +84,13 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
 
 const MoreAuthorsFieldD = pipe(
   D.struct({
-    moreAuthors: D.literal('yes', 'no'),
+    moreAuthors: D.literal('yes', 'yes-private', 'no'),
   }),
   D.map(get('moreAuthors')),
 )
 
 type AuthorsForm = {
-  readonly moreAuthors: E.Either<MissingE, 'yes' | 'no' | undefined>
+  readonly moreAuthors: E.Either<MissingE, 'yes' | 'yes-private' | 'no' | undefined>
 }
 
 function authorsForm(preprint: Preprint, form: AuthorsForm) {
@@ -168,7 +168,20 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
                         .with(E.right('no' as const), () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>No, by myself</span>
+                    <span>No, I reviewed it alone</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="moreAuthors"
+                      type="radio"
+                      value="yes-private"
+                      ${match(form.moreAuthors)
+                        .with(E.right('yes-private' as const), () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>Yes, but they don’t want to be listed as authors </span>
                   </label>
                 </li>
                 <li>
@@ -181,7 +194,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
                         .with(E.right('yes' as const), () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>Yes</span>
+                    <span>Yes, and some or all want to be authors</span>
                   </label>
                 </li>
               </ol>

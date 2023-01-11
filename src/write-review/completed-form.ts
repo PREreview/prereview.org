@@ -8,7 +8,7 @@ export type CompletedForm = D.TypeOf<typeof CompletedFormD>
 export const CompletedFormD = pipe(
   D.struct({
     conduct: D.literal('yes'),
-    moreAuthors: D.literal('yes', 'no'),
+    moreAuthors: D.literal('yes', 'yes-private', 'no'),
     persona: D.literal('public', 'pseudonym'),
     review: RawHtmlC,
   }),

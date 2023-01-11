@@ -88,7 +88,7 @@ const FormC = C.partial({
   alreadyWritten: C.literal('yes', 'no'),
   review: RawHtmlC,
   persona: C.literal('public', 'pseudonym'),
-  moreAuthors: C.literal('yes', 'no'),
+  moreAuthors: C.literal('yes', 'yes-private', 'no'),
   competingInterests: C.literal('yes', 'no'),
   competingInterestsDetails: NonEmptyStringC,
   conduct: C.literal('yes'),

@@ -40,7 +40,7 @@ describe('writeReviewStart', () => {
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
-          moreAuthors: fc.constantFrom('yes', 'no'),
+          moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.lorem(),
         },
