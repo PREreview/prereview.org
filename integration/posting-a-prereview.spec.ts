@@ -1728,13 +1728,13 @@ test.extend(canLogIn).extend(areLoggedIn)(
     } else {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
     }
-    await expect(page.getByRole('group', { name: 'Did you write the PREreview with anyone else?' })).toHaveAttribute(
+    await expect(page.getByRole('group', { name: 'Did you review this preprint with anyone else?' })).toHaveAttribute(
       'aria-invalid',
       'true',
     )
     await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Select yes if you wrote the PREreview with someone else' }).click()
+    await page.getByRole('link', { name: 'Select yes if you reviewed the preprint with someone else' }).click()
 
     await expect(page.getByLabel('No, by myself')).toBeFocused()
     await expect(page).toHaveScreenshot()

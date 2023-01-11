@@ -97,7 +97,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Did you write the PREreview with anyone else? – PREreview of “${
+    title: plainText`${error ? 'Error: ' : ''}Did you review this preprint with anyone else? – PREreview of “${
       preprint.title
     }”`,
     content: html`
@@ -119,7 +119,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
                               ${match(form.moreAuthors.left)
                                 .with(
                                   { _tag: 'MissingE' },
-                                  () => 'Select yes if you wrote the PREreview with someone else',
+                                  () => 'Select yes if you reviewed the preprint with someone else',
                                 )
                                 .exhaustive()}
                             </a>
@@ -134,18 +134,23 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
           <div ${rawHtml(E.isLeft(form.moreAuthors) ? 'class="error"' : '')}>
             <fieldset
               role="group"
+              aria-describedby="more-authors-tip"
               ${rawHtml(E.isLeft(form.moreAuthors) ? 'aria-invalid="true" aria-errormessage="more-authors-error"' : '')}
             >
               <legend>
-                <h1>Did you write the PREreview with anyone&nbsp;else?</h1>
+                <h1>Did you review this preprint with anyone&nbsp;else?</h1>
               </legend>
+
+              <div id="more-authors-tip" role="note">
+                This can include people who contributed to the discussion or wrote the review.
+              </div>
 
               ${E.isLeft(form.moreAuthors)
                 ? html`
                     <div class="error-message" id="more-authors-error">
                       <span class="visually-hidden">Error:</span>
                       ${match(form.moreAuthors.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select yes if you wrote the PREreview with someone else')
+                        .with({ _tag: 'MissingE' }, () => 'Select yes if you reviewed the preprint with someone else')
                         .exhaustive()}
                     </div>
                   `
