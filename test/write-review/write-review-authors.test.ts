@@ -19,7 +19,7 @@ describe('writeReviewAuthors', () => {
       fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
         fc.tuple(
           fc.connection({
-            body: fc.constant({ moreAuthors: 'yes' }),
+            body: fc.constant({ moreAuthors: 'yes', moreAuthorsApproved: 'yes' }),
             headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
             method: fc.constant('POST'),
           }),
@@ -35,6 +35,7 @@ describe('writeReviewAuthors', () => {
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
           moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
+          moreAuthorsApproved: fc.constant('yes'),
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.nonEmptyString(),
         },
@@ -50,7 +51,7 @@ describe('writeReviewAuthors', () => {
         },
       ),
     ])(
-      'when they want to be listed',
+      'when they have read and agreed',
       async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
         const sessionStore = new Keyv()
         await sessionStore.set(sessionId, UserC.encode(user))
@@ -67,7 +68,10 @@ describe('writeReviewAuthors', () => {
           connection,
         )()
 
-        expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ moreAuthors: 'yes' })
+        expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({
+          moreAuthors: 'yes',
+          moreAuthorsApproved: 'yes',
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -85,6 +89,65 @@ describe('writeReviewAuthors', () => {
       },
     )
 
+    test.prop([
+      fc.preprintDoi(),
+      fc.record({ title: fc.html(), language: fc.languageCode() }),
+      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+        fc.tuple(
+          fc.connection({
+            body: fc.record(
+              { moreAuthors: fc.constant('yes'), moreAuthorsApproved: fc.string() },
+              { requiredKeys: ['moreAuthors'] },
+            ),
+            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+            method: fc.constant('POST'),
+          }),
+          fc.constant(sessionId),
+          fc.constant(secret),
+        ),
+      ),
+      fc.user(),
+      fc.record(
+        {
+          alreadyWritten: fc.constantFrom('yes', 'no'),
+          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterestsDetails: fc.lorem(),
+          conduct: fc.constant('yes'),
+          moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
+          moreAuthorsApproved: fc.constant('yes'),
+          persona: fc.constantFrom('public', 'pseudonym'),
+          review: fc.nonEmptyString(),
+        },
+        { withDeletedKeys: true },
+      ),
+    ])(
+      "when they haven't read and agreed",
+      async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+        const sessionStore = new Keyv()
+        await sessionStore.set(sessionId, UserC.encode(user))
+        const formStore = new Keyv()
+        await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+        const getPreprintTitle = () => TE.right(preprintTitle)
+        const actual = await runMiddleware(
+          _.writeReviewAuthors(preprintDoi)({
+            formStore,
+            getPreprintTitle,
+            secret,
+            sessionStore,
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.BadRequest },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
+
     describe("when they don't want to be listed", () => {
       test.prop([
         fc.preprintDoi(),
@@ -92,7 +155,10 @@ describe('writeReviewAuthors', () => {
         fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
           fc.tuple(
             fc.connection({
-              body: fc.constant({ moreAuthors: 'yes-private' }),
+              body: fc.record(
+                { moreAuthors: fc.constantFrom('yes-private'), moreAuthorsApproved: fc.constant('yes') },
+                { requiredKeys: ['moreAuthors'] },
+              ),
               headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
               method: fc.constant('POST'),
             }),
@@ -108,6 +174,7 @@ describe('writeReviewAuthors', () => {
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
             moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
+            moreAuthorsApproved: fc.constant('yes'),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
           },
@@ -157,7 +224,10 @@ describe('writeReviewAuthors', () => {
         fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
           fc.tuple(
             fc.connection({
-              body: fc.constant({ moreAuthors: 'yes-private' }),
+              body: fc.record(
+                { moreAuthors: fc.constant('yes-private'), moreAuthorsApproved: fc.constant('yes') },
+                { requiredKeys: ['moreAuthors'] },
+              ),
               headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
               method: fc.constant('POST'),
             }),
@@ -175,6 +245,7 @@ describe('writeReviewAuthors', () => {
                 competingInterestsDetails: fc.lorem(),
                 conduct: fc.constant('yes'),
                 moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
+                moreAuthorsApproved: fc.constant('yes'),
                 persona: fc.constantFrom('public', 'pseudonym'),
                 review: fc.nonEmptyString(),
               },
@@ -230,7 +301,10 @@ describe('writeReviewAuthors', () => {
       fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
         fc.tuple(
           fc.connection({
-            body: fc.constant({ moreAuthors: 'no' }),
+            body: fc.record(
+              { moreAuthors: fc.constantFrom('no'), moreAuthorsApproved: fc.constant('yes') },
+              { requiredKeys: ['moreAuthors'] },
+            ),
             headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
             method: fc.constant('POST'),
           }),
@@ -246,6 +320,7 @@ describe('writeReviewAuthors', () => {
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
           moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
+          moreAuthorsApproved: fc.constant('yes'),
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.nonEmptyString(),
         },
@@ -293,7 +368,10 @@ describe('writeReviewAuthors', () => {
       fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
         fc.tuple(
           fc.connection({
-            body: fc.constant({ moreAuthors: 'no' }),
+            body: fc.record(
+              { moreAuthors: fc.constant('no'), moreAuthorsApproved: fc.constant('yes') },
+              { requiredKeys: ['moreAuthors'] },
+            ),
             headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
             method: fc.constant('POST'),
           }),
@@ -311,6 +389,7 @@ describe('writeReviewAuthors', () => {
               competingInterestsDetails: fc.lorem(),
               conduct: fc.constant('yes'),
               moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
+              moreAuthorsApproved: fc.constant('yes'),
               persona: fc.constantFrom('public', 'pseudonym'),
               review: fc.nonEmptyString(),
             },
@@ -364,7 +443,10 @@ describe('writeReviewAuthors', () => {
     fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
       fc.tuple(
         fc.connection({
-          body: fc.constant({ moreAuthors: 'no' }),
+          body: fc.record(
+            { moreAuthors: fc.constant('no'), moreAuthorsApproved: fc.constant('yes') },
+            { requiredKeys: ['moreAuthors'] },
+          ),
           headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
@@ -409,7 +491,10 @@ describe('writeReviewAuthors', () => {
     fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
       fc.tuple(
         fc.connection({
-          body: fc.record({ moreAuthors: fc.constantFrom('yes', 'yes-private', 'no') }),
+          body: fc.record(
+            { moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'), moreAuthorsApproved: fc.constant('yes') },
+            { withDeletedKeys: true },
+          ),
           headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
@@ -425,6 +510,7 @@ describe('writeReviewAuthors', () => {
         competingInterestsDetails: fc.lorem(),
         conduct: fc.constant('yes'),
         moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
+        moreAuthorsApproved: fc.constantFrom('yes'),
         persona: fc.constantFrom('public', 'pseudonym'),
         review: fc.nonEmptyString(),
       },
@@ -462,7 +548,10 @@ describe('writeReviewAuthors', () => {
     fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
       fc.tuple(
         fc.connection({
-          body: fc.record({ moreAuthors: fc.constantFrom('yes', 'yes-private', 'no') }),
+          body: fc.record(
+            { moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'), moreAuthorsApproved: fc.constant('yes') },
+            { withDeletedKeys: true },
+          ),
           headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
@@ -478,6 +567,7 @@ describe('writeReviewAuthors', () => {
         competingInterestsDetails: fc.lorem(),
         conduct: fc.constant('yes'),
         moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
+        moreAuthorsApproved: fc.constantFrom('yes'),
         persona: fc.constantFrom('public', 'pseudonym'),
         review: fc.nonEmptyString(),
       },
@@ -514,7 +604,10 @@ describe('writeReviewAuthors', () => {
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
     fc.connection({
-      body: fc.record({ moreAuthors: fc.constantFrom('yes', 'yes-private', 'no') }),
+      body: fc.record(
+        { moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'), moreAuthorsApproved: fc.constant('yes') },
+        { withDeletedKeys: true },
+      ),
       method: fc.constant('POST'),
     }),
     fc.string(),
@@ -554,7 +647,10 @@ describe('writeReviewAuthors', () => {
     fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
       fc.tuple(
         fc.connection({
-          body: fc.record({ moreAuthors: fc.string() }, { withDeletedKeys: true }),
+          body: fc.record(
+            { moreAuthors: fc.string(), moreAuthorsApproved: fc.constant('yes') },
+            { withDeletedKeys: true },
+          ),
           headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),

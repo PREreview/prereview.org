@@ -845,6 +845,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, and some or all want to be authors').check()
+    await page.getByLabel('They have read and approved the PREreview').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('Add more authors')
@@ -1866,6 +1867,44 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Select yes if you reviewed the preprint with someone else' }).click()
 
     await expect(page.getByLabel('No, I reviewed it alone')).toBeFocused()
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say that the other authors have read and approved the PREreview',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    if (javaScriptEnabled) {
+      await page.locator('[contenteditable]').waitFor()
+    }
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes, and some or all want to be authors').click()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+    }
+    await expect(page.getByLabel('They have read and approved the PREreview')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', { name: 'Confirm that the other authors have read and approved the PREreview' })
+      .click()
+
+    await expect(page.getByLabel('They have read and approved the PREreview')).toBeFocused()
     await expect(page).toHaveScreenshot()
   },
 )

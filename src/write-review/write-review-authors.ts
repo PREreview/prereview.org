@@ -1,5 +1,6 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as I from 'fp-ts/Identity'
 import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
@@ -46,7 +47,10 @@ export const writeReviewAuthors = flow(
 
 const showAuthorsForm = flow(
   fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
-    authorsForm(preprint, { moreAuthors: E.right(form.moreAuthors) }),
+    authorsForm(preprint, {
+      moreAuthors: E.right(form.moreAuthors),
+      moreAuthorsApproved: E.right(form.moreAuthorsApproved),
+    }),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -61,11 +65,23 @@ const showAuthorsErrorForm = (preprint: Preprint) =>
 
 const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(body => E.right({ moreAuthors: pipe(MoreAuthorsFieldD.decode(body), E.mapLeft(missingE)) })),
+    RM.decodeBody(body =>
+      pipe(
+        I.Do,
+        I.let('moreAuthors', () => pipe(MoreAuthorsFieldD.decode(body), E.mapLeft(missingE))),
+        I.let('moreAuthorsApproved', ({ moreAuthors }) =>
+          match(moreAuthors)
+            .with(E.right('yes' as const), () => pipe(MoreAuthorsApprovedFieldD.decode(body), E.mapLeft(missingE)))
+            .otherwise(() => E.right(undefined)),
+        ),
+        E.right,
+      ),
+    ),
     RM.chainEitherK(fields =>
       pipe(
         E.Do,
         E.apS('moreAuthors', fields.moreAuthors),
+        E.apS('moreAuthorsApproved', fields.moreAuthorsApproved),
         E.mapLeft(() => fields),
       ),
     ),
@@ -89,8 +105,16 @@ const MoreAuthorsFieldD = pipe(
   D.map(get('moreAuthors')),
 )
 
+const MoreAuthorsApprovedFieldD = pipe(
+  D.struct({
+    moreAuthorsApproved: D.literal('yes'),
+  }),
+  D.map(get('moreAuthorsApproved')),
+)
+
 type AuthorsForm = {
   readonly moreAuthors: E.Either<MissingE, 'yes' | 'yes-private' | 'no' | undefined>
+  readonly moreAuthorsApproved: E.Either<MissingE, 'yes' | undefined>
 }
 
 function authorsForm(preprint: Preprint, form: AuthorsForm) {
@@ -126,86 +150,140 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
                           </li>
                         `
                       : ''}
+                    ${E.isLeft(form.moreAuthorsApproved)
+                      ? html`
+                          <li>
+                            <a href="#more-authors-approved-yes">
+                              ${match(form.moreAuthorsApproved.left)
+                                .with(
+                                  { _tag: 'MissingE' },
+                                  () => 'Confirm that the other authors have read and approved the PREreview',
+                                )
+                                .exhaustive()}
+                            </a>
+                          </li>
+                        `
+                      : ''}
                   </ul>
                 </error-summary>
               `
             : ''}
 
           <div ${rawHtml(E.isLeft(form.moreAuthors) ? 'class="error"' : '')}>
-            <fieldset
-              role="group"
-              aria-describedby="more-authors-tip"
-              ${rawHtml(E.isLeft(form.moreAuthors) ? 'aria-invalid="true" aria-errormessage="more-authors-error"' : '')}
-            >
-              <legend>
-                <h1>Did you review this preprint with anyone&nbsp;else?</h1>
-              </legend>
+            <conditional-inputs>
+              <fieldset
+                role="group"
+                aria-describedby="more-authors-tip"
+                ${rawHtml(
+                  E.isLeft(form.moreAuthors) ? 'aria-invalid="true" aria-errormessage="more-authors-error"' : '',
+                )}
+              >
+                <legend>
+                  <h1>Did you review this preprint with anyone&nbsp;else?</h1>
+                </legend>
 
-              <div id="more-authors-tip" role="note">
-                This can include people who contributed to the discussion or wrote the review.
-              </div>
+                <div id="more-authors-tip" role="note">
+                  This can include people who contributed to the discussion or wrote the review.
+                </div>
 
-              ${E.isLeft(form.moreAuthors)
-                ? html`
-                    <div class="error-message" id="more-authors-error">
-                      <span class="visually-hidden">Error:</span>
-                      ${match(form.moreAuthors.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select yes if you reviewed the preprint with someone else')
-                        .exhaustive()}
+                ${E.isLeft(form.moreAuthors)
+                  ? html`
+                      <div class="error-message" id="more-authors-error">
+                        <span class="visually-hidden">Error:</span>
+                        ${match(form.moreAuthors.left)
+                          .with({ _tag: 'MissingE' }, () => 'Select yes if you reviewed the preprint with someone else')
+                          .exhaustive()}
+                      </div>
+                    `
+                  : ''}
+
+                <ol>
+                  <li>
+                    <label>
+                      <input
+                        name="moreAuthors"
+                        id="more-authors-no"
+                        type="radio"
+                        value="no"
+                        ${match(form.moreAuthors)
+                          .with(E.right('no' as const), () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>No, I reviewed it alone</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="moreAuthors"
+                        type="radio"
+                        value="yes-private"
+                        ${match(form.moreAuthors)
+                          .with(E.right('yes-private' as const), () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Yes, but they don’t want to be listed as authors</span>
+                    </label>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="moreAuthors"
+                        type="radio"
+                        value="yes"
+                        aria-controls="more-authors-yes-control"
+                        ${match(form.moreAuthors)
+                          .with(E.right('yes' as const), () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Yes, and some or all want to be authors</span>
+                    </label>
+                    <div class="conditional" id="more-authors-yes-control">
+                      <div ${rawHtml(E.isLeft(form.moreAuthorsApproved) ? 'class="error"' : '')}>
+                        ${E.isLeft(form.moreAuthorsApproved)
+                          ? html`
+                              <div class="error-message" id="more-authors-approved-error">
+                                <span class="visually-hidden">Error:</span>
+                                ${match(form.moreAuthorsApproved.left)
+                                  .with(
+                                    { _tag: 'MissingE' },
+                                    () => 'Confirm that the other authors have read and approved the PREreview',
+                                  )
+                                  .exhaustive()}
+                              </div>
+                            `
+                          : ''}
+
+                        <label>
+                          <input
+                            name="moreAuthorsApproved"
+                            id="more-authors-approved-yes"
+                            type="checkbox"
+                            value="yes"
+                            ${match(form.moreAuthorsApproved)
+                              .with(E.right('yes' as const), () => 'checked')
+                              .with(E.right(undefined), () => '')
+                              .with(
+                                E.left({ _tag: 'MissingE' }),
+                                () => html`aria-invalid="true" aria-errormessage="more-authors-approved-error"`,
+                              )
+                              .exhaustive()}
+                          />
+                          <span>They have read and approved the PREreview</span>
+                        </label>
+                      </div>
                     </div>
-                  `
-                : ''}
-
-              <ol>
-                <li>
-                  <label>
-                    <input
-                      name="moreAuthors"
-                      id="more-authors-no"
-                      type="radio"
-                      value="no"
-                      ${match(form.moreAuthors)
-                        .with(E.right('no' as const), () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>No, I reviewed it alone</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="moreAuthors"
-                      type="radio"
-                      value="yes-private"
-                      ${match(form.moreAuthors)
-                        .with(E.right('yes-private' as const), () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Yes, but they don’t want to be listed as authors </span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="moreAuthors"
-                      type="radio"
-                      value="yes"
-                      ${match(form.moreAuthors)
-                        .with(E.right('yes' as const), () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Yes, and some or all want to be authors</span>
-                  </label>
-                </li>
-              </ol>
-            </fieldset>
+                  </li>
+                </ol>
+              </fieldset>
+            </conditional-inputs>
           </div>
 
           <button>Save and continue</button>
         </form>
       </main>
     `,
-    js: ['error-summary.js'],
+    js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
   })
 }
