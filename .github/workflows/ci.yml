@@ -36,7 +36,7 @@ jobs:
         run: npm run build:assets
 
       - name: 'Upload manifest'
-        uses: actions/upload-artifact@v3.1.1
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: manifest
           path: src/manifest.json
@@ -63,7 +63,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: 'Upload build'
-        uses: actions/upload-artifact@v3.1.1
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: image
           path: /tmp/image.tar
@@ -174,7 +174,7 @@ jobs:
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
-        uses: actions/upload-artifact@v3.1.1
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: integration-tests-results-${{ matrix.shard }}
           path: integration-results
