@@ -13,6 +13,7 @@ import { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
+import * as l from 'logging-ts/lib/IO'
 import { match } from 'ts-pattern'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
@@ -197,10 +198,12 @@ export const app = (deps: AppEnv) => {
   const app = express()
     .disable('x-powered-by')
     .use((req, res, next) => {
-      pipe({ method: req.method, url: req.url }, L.infoP('Received HTTP request'))(deps)()
+      const requestId = req.header('Fly-Request-Id') ?? null
+
+      pipe({ method: req.method, url: req.url, requestId }, L.infoP('Received HTTP request'))(deps)()
 
       res.once('finish', () => {
-        pipe({ status: res.statusCode }, L.infoP('Sent HTTP response'))(deps)()
+        pipe({ status: res.statusCode, requestId }, L.infoP('Sent HTTP response'))(deps)()
       })
 
       res.once('close', () => {
@@ -208,7 +211,7 @@ export const app = (deps: AppEnv) => {
           return
         }
 
-        pipe({ status: res.statusCode }, L.warnP('HTTP response may not have been completely sent'))(deps)()
+        pipe({ status: res.statusCode, requestId }, L.warnP('HTTP response may not have been completely sent'))(deps)()
       })
 
       next()
@@ -223,7 +226,21 @@ export const app = (deps: AppEnv) => {
       }),
     )
     .use(express.urlencoded({ extended: true }))
-    .use(pipe(appMiddleware(deps), toRequestHandler))
+    .use((req, res, next) => {
+      return pipe(
+        appMiddleware({
+          ...deps,
+          logger: pipe(
+            deps.logger,
+            l.contramap(entry => ({
+              ...entry,
+              payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
+            })),
+          ),
+        }),
+        toRequestHandler,
+      )(req, res, next)
+    })
 
   return http.createServer(app)
 }

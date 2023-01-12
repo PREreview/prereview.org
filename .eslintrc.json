@@ -47,7 +47,17 @@
     ],
     "import/no-internal-modules": [
       "error",
-      { "allow": ["fp-ts/*", "fp-ts-contrib/*", "io-ts/*", "hyper-ts/lib/*", "nanohtml/*", "remixicon/**/*.svg"] }
+      {
+        "allow": [
+          "fp-ts/*",
+          "fp-ts-contrib/*",
+          "io-ts/*",
+          "hyper-ts/lib/*",
+          "logging-ts/lib/*",
+          "nanohtml/*",
+          "remixicon/**/*.svg"
+        ]
+      }
     ],
     "quotes": ["error", "single", { "avoidEscape": true }]
   },
