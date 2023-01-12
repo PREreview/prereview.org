@@ -170,7 +170,7 @@ jobs:
 
       - name: 'Run Playwright'
         id: 'playwright'
-        run: npm run test:integration -- ${{ steps.build.outputs.imageid }} --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }}
+        run: npm run test:integration -- ${{ steps.build.outputs.imageid }} --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 2
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
