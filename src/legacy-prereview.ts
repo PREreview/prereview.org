@@ -106,6 +106,7 @@ export const getPseudonymFromLegacyPrereview = flow(
   RTE.fromReaderK((orcid: Orcid) => legacyPrereviewUrl(`users/${orcid}`)),
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
+  RTE.local(timeoutRequest(2000)),
   RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
   RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
   RTE.bimap(
