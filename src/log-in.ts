@@ -14,6 +14,7 @@ import * as D from 'io-ts/Decoder'
 import { Orcid, isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
+import { timeoutRequest } from './fetch'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
 import { homeMatch } from './routes'
@@ -56,7 +57,10 @@ const getPseudonym = (orcid: Orcid): RTE.ReaderTaskEither<GetPseudonymEnv, unkno
 export const authenticate = flow(
   (code: string, state: string) => RM.of({ code, state }),
   RM.bind('referer', fromReaderK(flow(get('state'), getReferer))),
-  RM.bindW('user', RM.fromReaderTaskEitherK(flow(get('code'), exchangeAuthorizationCode(OrcidUserD)))),
+  RM.bindW(
+    'user',
+    RM.fromReaderTaskEitherK(flow(get('code'), exchangeAuthorizationCode(OrcidUserD), RTE.local(timeoutRequest(2000)))),
+  ),
   RM.bindW('pseudonym', RM.fromReaderTaskEitherK(flow(get('user.orcid'), getPseudonym))),
   RM.ichainFirstW(flow(get('referer'), RM.redirect)),
   RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), storeUserInSession)),
