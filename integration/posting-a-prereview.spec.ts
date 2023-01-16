@@ -197,6 +197,134 @@ test.extend(canLogIn)('can post a PREreview', async ({ fetch, javaScriptEnabled,
   await expect(page).toHaveScreenshot()
 })
 
+test.extend(canLogIn).extend(areLoggedIn)(
+  'are logged out after posting',
+  async ({ fetch, javaScriptEnabled, page }) => {
+    const record: Record = {
+      conceptdoi: '10.5072/zenodo.1055807' as Doi,
+      conceptrecid: 1055807,
+      files: [
+        {
+          links: {
+            self: new URL('http://example.com/file'),
+          },
+          key: 'review.html',
+          type: 'html',
+          size: 58,
+        },
+      ],
+      id: 1055808,
+      links: {
+        latest: new URL('http://example.com/latest'),
+        latest_html: new URL('http://example.com/latest_html'),
+      },
+      metadata: {
+        communities: [{ id: 'prereview-reviews' }],
+        creators: [{ name: 'Orange Panda' }],
+        description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
+        doi: '10.5072/zenodo.1055808' as Doi,
+        license: {
+          id: 'CC-BY-4.0',
+        },
+        publication_date: new Date('2022-07-05'),
+        related_identifiers: [
+          {
+            identifier: '10.1101/2022.01.13.476201',
+            relation: 'reviews',
+            resource_type: 'publication-preprint',
+            scheme: 'doi',
+          },
+          {
+            identifier: '10.5072/zenodo.1055807',
+            relation: 'isVersionOf',
+            scheme: 'doi',
+          },
+        ],
+        resource_type: {
+          type: 'publication',
+          subtype: 'peerreview',
+        },
+        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      },
+    }
+
+    fetch.get(
+      {
+        url: 'http://zenodo.test/api/records/',
+        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      },
+      { body: RecordsC.encode({ hits: { hits: [] } }) },
+    )
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    if (javaScriptEnabled) {
+      await page.locator('[contenteditable]').waitFor()
+    }
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, but they don’t want to be listed as authors').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    fetch
+      .postOnce('http://zenodo.test/api/deposit/depositions', {
+        body: UnsubmittedDepositionC.encode({
+          ...record,
+          links: {
+            bucket: new URL('http://example.com/bucket'),
+            publish: new URL('http://example.com/publish'),
+          },
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            prereserve_doi: {
+              doi: record.metadata.doi,
+            },
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'unsubmitted',
+          submitted: false,
+        }),
+        status: Status.Created,
+      })
+      .putOnce('http://example.com/bucket/review.html', {
+        status: Status.Created,
+      })
+      .postOnce('http://example.com/publish', {
+        body: SubmittedDepositionC.encode({
+          ...record,
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'done',
+          submitted: true,
+        }),
+        status: Status.Accepted,
+      })
+
+    await page.getByRole('button', { name: 'Post PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+
+    await page.goBack()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview this preprint')
+    await expect(page.getByRole('main')).toContainText('We will ask you to log in')
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055805' as Doi,

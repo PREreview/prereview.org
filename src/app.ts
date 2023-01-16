@@ -227,6 +227,11 @@ export const app = (deps: AppEnv) => {
     )
     .use(express.urlencoded({ extended: true }))
     .use((req, res, next) => {
+      res.vary('Cookie')
+
+      next()
+    })
+    .use((req, res, next) => {
       return pipe(
         appMiddleware({
           ...deps,
