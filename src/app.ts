@@ -227,6 +227,7 @@ export const app = (deps: AppEnv) => {
     )
     .use(express.urlencoded({ extended: true }))
     .use((req, res, next) => {
+      res.set('Cache-Control', 'no-cache, private')
       res.vary('Cookie')
 
       next()
