@@ -54,6 +54,10 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
     )
 
+    fetch.get('http://prereview.test/api/v2/preprints/doi-10.1101-2022.01.13.476201', {
+      body: { data: [{ rapidReviews: [] }] },
+    })
+
     fetch.get('https://api.crossref.org/works/10.1101%2F2022.01.13.476201', {
       body: {
         status: 'ok',
