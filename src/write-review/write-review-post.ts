@@ -58,7 +58,16 @@ export const writeReviewPost = flow(
           .with({ form: P.when(R.fromEitherK(CompletedFormD.decode)) }, showPostForm)
           .otherwise(flow(({ form }) => form, fromMiddlewareK(redirectToNextForm(preprint.doi)))),
       ),
-      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+      RM.orElseW(error =>
+        match(error)
+          .with(
+            'no-form',
+            'no-session',
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+          )
+          .with('session-unavailable', () => serviceUnavailable)
+          .exhaustive(),
+      ),
     ),
   ),
   RM.orElseW(error =>
@@ -98,14 +107,24 @@ const postPrereview = (newPrereview: NewPrereview) =>
 const showSuccessMessage = flow(
   fromReaderK(successMessage),
   RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainFirstW(() => endSession()),
-  RM.ichainMiddlewareK(sendHtml),
+  RM.ichainFirstW(() =>
+    pipe(
+      endSession(),
+      RM.orElseW(() => RM.right(undefined)),
+    ),
+  ),
+  RM.ichainMiddlewareKW(sendHtml),
 )
 
 const showFailureMessage = flow(
   fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
-  RM.ichainFirstW(() => endSession()),
+  RM.ichainFirstW(() =>
+    pipe(
+      endSession(),
+      RM.orElseW(() => RM.right(undefined)),
+    ),
+  ),
   RM.ichainMiddlewareK(sendHtml),
 )
 

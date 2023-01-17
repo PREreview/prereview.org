@@ -34,7 +34,12 @@ export const writeReview = flow(
           .with({ form: P.when(E.isLeft) }, ({ user }) => showStartPage(preprint, user))
           .exhaustive(),
       ),
-      RM.orElseW(() => showStartPage(preprint)),
+      RM.orElseW(error =>
+        match(error)
+          .with('no-session', () => showStartPage(preprint))
+          .with('session-unavailable', () => serviceUnavailable)
+          .exhaustive(),
+      ),
     ),
   ),
   RM.orElseW(error =>

@@ -1,15 +1,16 @@
 import { format } from 'fp-ts-routing'
 import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, StatusOpen } from 'hyper-ts'
+import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
+import { OAuthEnv } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
-import { logInAndRedirect } from '../log-in'
+import { PublicUrlEnv, logInAndRedirect } from '../log-in'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
+import { FathomEnv, PhaseEnv, page } from '../page'
 import { preprintMatch, writeReviewReviewMatch, writeReviewStartMatch } from '../routes'
 import { getUserFromSession } from '../user'
 import { Form, getForm, nextFormMatch } from './form'
@@ -26,9 +27,12 @@ export const writeReviewStart = flow(
         match(error)
           .with(
             'no-form',
-            fromMiddlewareK(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint.doi }))),
+            fromMiddlewareK<FathomEnv & PhaseEnv & PublicUrlEnv & OAuthEnv, [], void, StatusOpen, ResponseEnded, never>(
+              () => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint.doi })),
+            ),
           )
           .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { doi: preprint.doi }))
+          .with('session-unavailable', () => serviceUnavailable)
           .exhaustive(),
       ),
     ),

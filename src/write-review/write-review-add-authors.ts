@@ -30,7 +30,16 @@ export const writeReviewAddAuthors = flow(
           .with({ form: { moreAuthors: 'yes' } }, showCannotAddAuthorsForm)
           .otherwise(() => notFound),
       ),
-      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+      RM.orElseW(error =>
+        match(error)
+          .with(
+            'no-form',
+            'no-session',
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+          )
+          .with('session-unavailable', () => serviceUnavailable)
+          .exhaustive(),
+      ),
     ),
   ),
   RM.orElseW(error =>

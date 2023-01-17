@@ -3,6 +3,7 @@ import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
@@ -58,7 +59,16 @@ export const writeReviewReview = flow(
           .with({ form: { alreadyWritten: 'yes', review: P.optional(P.nullish) } }, showPasteReviewForm)
           .otherwise(showWriteReviewForm),
       ),
-      RM.orElseMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+      RM.orElseW(error =>
+        match(error)
+          .with(
+            'no-form',
+            'no-session',
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+          )
+          .with('session-unavailable', () => serviceUnavailable)
+          .exhaustive(),
+      ),
     ),
   ),
   RM.orElseW(error =>
@@ -501,6 +511,14 @@ Write a short summary of the research’s main findings and how this work has mo
 
 - List concerns that would improve the overall flow or clarity but are not critical to the understanding and conclusions of the research.
 `.trim()
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/83
+const fromMiddlewareK =
+  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
+    f: (...a: A) => M.Middleware<I, O, E, B>,
+  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
+  (...a) =>
+    RM.fromMiddleware(f(...a))
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
