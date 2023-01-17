@@ -119,44 +119,44 @@ export const getPseudonymFromLegacyPrereview = flow(
 )
 
 export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
-  id.doi === ('10.1101/2022.02.14.480364' as Doi)
-    ? pipe(
-        RTE.fromReader(
-          legacyPrereviewUrl(`preprints/${`doi-${id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`}`),
-        ),
-        RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
-        RTE.chainW(F.send),
-        RTE.local(revalidateIfStale()),
-        RTE.local(useStaleCache()),
-        RTE.local(timeoutRequest(2000)),
-        RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-        RTE.chainTaskEitherKW(F.decode(LegacyPrereviewD)),
-        RTE.map(
-          flow(
-            get('data.[0].rapidReviews'),
-            RA.map(results => ({
-              availableCode: results.ynAvailableCode,
-              availableData: results.ynAvailableData,
-              coherent: results.ynCoherent,
-              ethics: results.ynEthics,
-              future: results.ynFuture,
-              limitations: results.ynLimitations,
-              methods: results.ynMethods,
-              newData: results.ynNewData,
-              novel: results.ynNovel,
-              peerReview: results.ynPeerReview,
-              recommend: results.ynRecommend,
-              reproducibility: results.ynReproducibility,
-            })),
-          ),
-        ),
-        RTE.orElseW(error =>
-          match(error)
-            .with({ status: Status.NotFound }, () => RTE.right([]))
-            .otherwise(() => RTE.left('unavailable' as const)),
-        ),
-      )
-    : RTE.right([])
+  pipe(
+    RTE.fromReader(
+      legacyPrereviewUrl(
+        `preprints/${`doi-${encodeURIComponent(id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'))}`}`,
+      ),
+    ),
+    RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
+    RTE.chainW(F.send),
+    RTE.local(revalidateIfStale()),
+    RTE.local(useStaleCache()),
+    RTE.local(timeoutRequest(2000)),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.chainTaskEitherKW(F.decode(LegacyPrereviewD)),
+    RTE.map(
+      flow(
+        get('data.[0].rapidReviews'),
+        RA.map(results => ({
+          availableCode: results.ynAvailableCode,
+          availableData: results.ynAvailableData,
+          coherent: results.ynCoherent,
+          ethics: results.ynEthics,
+          future: results.ynFuture,
+          limitations: results.ynLimitations,
+          methods: results.ynMethods,
+          newData: results.ynNewData,
+          novel: results.ynNovel,
+          peerReview: results.ynPeerReview,
+          recommend: results.ynRecommend,
+          reproducibility: results.ynReproducibility,
+        })),
+      ),
+    ),
+    RTE.orElseW(error =>
+      match(error)
+        .with({ status: Status.NotFound }, () => RTE.right([]))
+        .otherwise(() => RTE.left('unavailable' as const)),
+    ),
+  )
 
 export const createPrereviewOnLegacyPrereview = (newPrereview: NewPrereview) => (doi: Doi) =>
   pipe(
