@@ -7,7 +7,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
@@ -36,7 +36,7 @@ export const writeReviewPersona = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
           )
-          .with('session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
           .exhaustive(),
       ),
     ),
@@ -75,9 +75,14 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
-    RM.orElseW(showPersonaErrorForm(preprint, user)),
+    RM.orElseW(error =>
+      match(error)
+        .with('form-unavailable', () => serviceUnavailable)
+        .with({ persona: P.any }, showPersonaErrorForm(preprint, user))
+        .exhaustive(),
+    ),
   )
 
 const PersonaFieldD = pipe(

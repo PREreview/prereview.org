@@ -32,7 +32,7 @@ export const writeReviewStart = flow(
             ),
           )
           .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { doi: preprint.doi }))
-          .with('session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
           .exhaustive(),
       ),
     ),

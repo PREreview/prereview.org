@@ -37,7 +37,7 @@ export const writeReviewAddAuthors = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
           )
-          .with('session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
           .exhaustive(),
       ),
     ),

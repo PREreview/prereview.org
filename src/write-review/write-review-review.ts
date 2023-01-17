@@ -66,7 +66,7 @@ export const writeReviewReview = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
           )
-          .with('session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
           .exhaustive(),
       ),
     ),
@@ -135,9 +135,14 @@ const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
-    RM.orElseW(showWriteReviewErrorForm(preprint)),
+    RM.orElseW(error =>
+      match(error)
+        .with('form-unavailable', () => serviceUnavailable)
+        .with({ review: P.any }, showWriteReviewErrorForm(preprint))
+        .exhaustive(),
+    ),
   )
 
 const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -153,9 +158,14 @@ const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
-    RM.orElseW(showPasteReviewErrorForm(preprint)),
+    RM.orElseW(error =>
+      match(error)
+        .with('form-unavailable', () => serviceUnavailable)
+        .with({ review: P.any }, showPasteReviewErrorForm(preprint))
+        .exhaustive(),
+    ),
   )
 
 const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
@@ -169,9 +179,14 @@ const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; prepri
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
-    RM.orElseW(showAlreadyWrittenErrorForm(preprint)),
+    RM.orElseW(error =>
+      match(error)
+        .with('form-unavailable', () => serviceUnavailable)
+        .with({ alreadyWritten: P.any }, showAlreadyWrittenErrorForm(preprint))
+        .exhaustive(),
+    ),
   )
 
 const ReviewFieldD = pipe(

@@ -23,7 +23,13 @@ export const writeReview = flow(
       RM.bindTo('user'),
       RM.bindW(
         'form',
-        RM.fromReaderTaskK(({ user }) => getForm(user.orcid, preprint.doi)),
+        flow(
+          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
+          RM.map(E.right),
+          RM.orElseW(error =>
+            match(error).with('no-form', flow(E.left, RM.right)).with('form-unavailable', RM.left).exhaustive(),
+          ),
+        ),
       ),
       RM.ichainW(state =>
         match(state)
@@ -37,7 +43,7 @@ export const writeReview = flow(
       RM.orElseW(error =>
         match(error)
           .with('no-session', () => showStartPage(preprint))
-          .with('session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
           .exhaustive(),
       ),
     ),

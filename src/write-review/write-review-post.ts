@@ -65,7 +65,7 @@ export const writeReviewPost = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
           )
-          .with('session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
           .exhaustive(),
       ),
     ),
@@ -80,7 +80,7 @@ export const writeReviewPost = flow(
 
 const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
   pipe(
-    RM.rightReaderTask(deleteForm(user.orcid, preprint.doi)),
+    RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.doi)),
     RM.map(() => ({
       conduct: form.conduct,
       persona: form.persona,

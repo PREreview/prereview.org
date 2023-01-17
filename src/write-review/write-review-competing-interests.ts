@@ -40,7 +40,7 @@ export const writeReviewCompetingInterests = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
           )
-          .with('session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
           .exhaustive(),
       ),
     ),
@@ -96,9 +96,14 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.doi)),
     RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
-    RM.orElseW(showCompetingInterestsErrorForm(preprint)),
+    RM.orElseW(error =>
+      match(error)
+        .with('form-unavailable', () => serviceUnavailable)
+        .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint))
+        .exhaustive(),
+    ),
   )
 
 const CompetingInterestsFieldD = pipe(

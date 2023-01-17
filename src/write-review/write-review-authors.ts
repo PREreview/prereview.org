@@ -8,7 +8,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
@@ -42,7 +42,7 @@ export const writeReviewAuthors = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
           )
-          .with('session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
           .exhaustive(),
       ),
     ),
@@ -96,7 +96,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskK(saveForm(user.orcid, preprint.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.doi)),
     RM.bindTo('form'),
     RM.ichainMiddlewareKW(state =>
       match(state)
@@ -105,7 +105,12 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
         )
         .otherwise(flow(({ form }) => form, redirectToNextForm(preprint.doi))),
     ),
-    RM.orElseW(showAuthorsErrorForm(preprint)),
+    RM.orElseW(error =>
+      match(error)
+        .with('form-unavailable', () => serviceUnavailable)
+        .with({ moreAuthors: P.any }, showAuthorsErrorForm(preprint))
+        .exhaustive(),
+    ),
   )
 
 const MoreAuthorsFieldD = pipe(
