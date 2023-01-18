@@ -81,7 +81,18 @@ createTerminus(server, {
   },
   logger: (message, error) => L.errorP(message)({ name: error.name, message: error.message })(loggerEnv)(),
   onShutdown: RT.fromReaderIO(L.debug('Shutting server down'))(loggerEnv),
-  onSignal: RT.fromReaderIO(L.debug('Signal received'))(loggerEnv),
+  onSignal: async () => {
+    L.debug('Signal received')(loggerEnv)()
+
+    if (!(redis instanceof Redis)) {
+      return
+    }
+
+    await redis
+      .quit()
+      .then(() => L.debug('Redis disconnected')(loggerEnv)())
+      .catch(() => L.warn('Redis unable to disconnect')(loggerEnv)())
+  },
   signals: ['SIGINT', 'SIGTERM'],
 })
 
