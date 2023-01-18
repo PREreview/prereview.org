@@ -63,7 +63,17 @@ server.on('listening', () => {
 })
 
 createTerminus(server, {
-  healthChecks: { '/health': () => Promise.resolve() },
+  healthChecks: {
+    '/health': () => {
+      if (!(redis instanceof Redis)) {
+        return Promise.resolve()
+      }
+
+      const status = redis.status
+
+      return status === 'ready' ? Promise.resolve() : Promise.reject(new Error(`Redis not ready (${status})`))
+    },
+  },
   logger: (message, error) => L.errorP(message)({ name: error.name, message: error.message })(loggerEnv)(),
   onShutdown: RT.fromReaderIO(L.debug('Shutting server down'))(loggerEnv),
   onSignal: RT.fromReaderIO(L.debug('Signal received'))(loggerEnv),
