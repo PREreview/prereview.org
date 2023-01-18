@@ -92,7 +92,7 @@ createTerminus(server, {
     await redis
       .quit()
       .then(() => L.debug('Redis disconnected')(loggerEnv)())
-      .catch(() => L.warn('Redis unable to disconnect')(loggerEnv)())
+      .catch((error: Error) => L.warnP('Redis unable to disconnect')({ error: error.message })(loggerEnv)())
   },
   signals: ['SIGINT', 'SIGTERM'],
 })
