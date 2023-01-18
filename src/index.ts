@@ -19,12 +19,13 @@ const loggerEnv: L.LoggerEnv = {
 }
 
 const redis = env.REDIS_URI instanceof URL ? new Redis(env.REDIS_URI.href) : undefined
+const keyvStore = redis ? new KeyvRedis(redis) : undefined
+
 redis?.on('connect', () => L.debug('Redis connected')(loggerEnv)())
 redis?.on('close', () => L.debug('Redis connection closed')(loggerEnv)())
 redis?.on('reconnecting', () => L.info('Redis reconnecting')(loggerEnv)())
+redis?.removeAllListeners('error')
 redis?.on('error', (error: Error) => L.errorP('Redis connection error')({ error: error.message })(loggerEnv)())
-
-const keyvStore = redis instanceof Redis ? new KeyvRedis(redis) : undefined
 
 const server = app({
   ...loggerEnv,
