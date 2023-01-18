@@ -1,6 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
+import cookieSignature from 'cookie-signature'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
@@ -10,6 +11,7 @@ import all from 'it-all'
 import Keyv from 'keyv'
 import * as _ from '../src/log-in'
 import { writeReviewMatch } from '../src/routes'
+import { UserC } from '../src/user'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
@@ -133,6 +135,50 @@ describe('log-in', () => {
         { type: 'endResponse' },
       ]),
     )
+  })
+
+  describe('logOut', () => {
+    test.prop([
+      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+        fc.tuple(
+          fc.connection({
+            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          }),
+          fc.constant(sessionId),
+          fc.constant(secret),
+        ),
+      ),
+      fc.user(),
+    ])('when there is a session', async ([connection, sessionId, secret], user) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, UserC.encode(user))
+
+      const actual = await runMiddleware(_.logOut({ secret, sessionStore }), connection)()
+
+      expect(await sessionStore.has(sessionId)).toBeFalsy()
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          { type: 'setHeader', name: 'Location', value: '/' },
+          { type: 'clearCookie', name: 'session', options: expect.anything() },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
+
+    test.prop([fc.connection(), fc.string()])("when there isn't a session", async (connection, secret) => {
+      const sessionStore = new Keyv()
+
+      const actual = await runMiddleware(_.logOut({ secret, sessionStore }), connection)()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          { type: 'setHeader', name: 'Location', value: '/' },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
   })
 
   describe('authenticate', () => {

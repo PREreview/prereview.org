@@ -1699,9 +1699,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByRole('link', { name: 'Back to preprint' }).click()
-    await page.context().clearCookies()
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.goto('/log-out')
+    await page.goBack()
     await page.getByRole('button', { name: 'Start now' }).click()
 
     await page.locator('[type=email]').fill('test@example.com')

@@ -44,6 +44,8 @@ export const homeMatch = P.end
 
 export const logInMatch = pipe(P.lit('log-in'), P.then(P.end))
 
+export const logOutMatch = pipe(P.lit('log-out'), P.then(P.end))
+
 export const orcidCodeMatch = pipe(
   P.lit('orcid'),
   P.then(query(C.struct({ code: C.string, state: C.string }))),

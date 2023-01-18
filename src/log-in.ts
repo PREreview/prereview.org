@@ -19,7 +19,7 @@ import { timeoutRequest } from './fetch'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
 import { homeMatch } from './routes'
-import { storeUserInSession } from './user'
+import { endSession, storeUserInSession } from './user'
 
 export interface PublicUrlEnv {
   publicUrl: URL
@@ -43,6 +43,13 @@ export const logIn = pipe(
 export const logInAndRedirect = flow(
   fromReaderK(toUrl),
   RM.ichainW(flow(String, requestAuthorizationCode('/authenticate'))),
+)
+
+export const logOut = pipe(
+  RM.redirect(format(homeMatch.formatter, {})),
+  RM.ichainFirst(() => endSession),
+  RM.ichain(() => RM.closeHeaders()),
+  RM.ichain(() => RM.end()),
 )
 
 const OrcidD = D.fromRefinement(isOrcid, 'ORCID')

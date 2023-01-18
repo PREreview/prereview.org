@@ -1,7 +1,7 @@
 import * as E from 'fp-ts/Either'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { StatusOpen } from 'hyper-ts'
-import { getSession, storeSession } from 'hyper-ts-session'
+import { endSession as _endSession, getSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
@@ -19,6 +19,11 @@ export const UserC = C.struct({
 })
 
 export const storeUserInSession = flow(UserC.encode, storeSession)
+
+export const endSession = pipe(
+  _endSession(),
+  RM.orElseW(() => RM.right(undefined as void)),
+)
 
 export function getUserFromSession<I = StatusOpen>() {
   return pipe(
