@@ -4,6 +4,7 @@ import { SystemClock } from 'clock-ts'
 import * as C from 'fp-ts/Console'
 import * as RT from 'fp-ts/ReaderTask'
 import { pipe } from 'fp-ts/function'
+import Redis from 'ioredis'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
@@ -17,7 +18,8 @@ const loggerEnv: L.LoggerEnv = {
   logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
 }
 
-const keyvStore = env.REDIS_URI instanceof URL ? new KeyvRedis(env.REDIS_URI.href) : undefined
+const redis = env.REDIS_URI instanceof URL ? new Redis(env.REDIS_URI.href) : undefined
+const keyvStore = redis instanceof Redis ? new KeyvRedis(redis) : undefined
 
 const server = app({
   ...loggerEnv,
