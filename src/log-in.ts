@@ -11,6 +11,7 @@ import { Status, StatusOpen } from 'hyper-ts'
 import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import * as L from 'logger-fp-ts'
 import { Orcid, isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
@@ -59,9 +60,25 @@ export const authenticate = flow(
   RM.bind('referer', fromReaderK(flow(get('state'), getReferer))),
   RM.bindW(
     'user',
-    RM.fromReaderTaskEitherK(flow(get('code'), exchangeAuthorizationCode(OrcidUserD), RTE.local(timeoutRequest(2000)))),
+    RM.fromReaderTaskEitherK(
+      flow(
+        get('code'),
+        exchangeAuthorizationCode(OrcidUserD),
+        RTE.local(timeoutRequest(2000)),
+        RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
+      ),
+    ),
   ),
-  RM.bindW('pseudonym', RM.fromReaderTaskEitherK(flow(get('user.orcid'), getPseudonym))),
+  RM.bindW(
+    'pseudonym',
+    RM.fromReaderTaskEitherK(
+      flow(
+        get('user.orcid'),
+        getPseudonym,
+        RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to get pseudonym'))),
+      ),
+    ),
+  ),
   RM.ichainFirstW(flow(get('referer'), RM.redirect)),
   RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), storeUserInSession)),
   RM.ichainFirst(() => RM.closeHeaders()),

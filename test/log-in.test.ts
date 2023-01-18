@@ -1,7 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as IO from 'fp-ts/IO'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import all from 'it-all'
@@ -163,11 +165,13 @@ describe('log-in', () => {
             code,
             referer.href,
           )({
+            clock: SystemClock,
             fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
               status: Status.OK,
               body: accessToken,
             }),
             getPseudonym: () => TE.right(pseudonym),
+            logger: () => IO.of(undefined),
             oauth,
             publicUrl: new URL('/', referer),
             secret,
@@ -222,11 +226,13 @@ describe('log-in', () => {
           code,
           referer.href,
         )({
+          clock: SystemClock,
           fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
             status: Status.OK,
             body: accessToken,
           }),
           getPseudonym: () => TE.left('no-pseudonym'),
+          logger: () => IO.of(undefined),
           oauth,
           publicUrl: new URL('/', referer),
           secret,
@@ -276,11 +282,13 @@ describe('log-in', () => {
             code,
             referer.href,
           )({
+            clock: SystemClock,
             fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
               status: Status.OK,
               body: accessToken,
             }),
             getPseudonym: () => TE.left(error),
+            logger: () => IO.of(undefined),
             oauth,
             publicUrl: new URL('/', referer),
             secret,
@@ -332,11 +340,13 @@ describe('log-in', () => {
             code,
             state,
           )({
+            clock: SystemClock,
             fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
               status: Status.OK,
               body: accessToken,
             }),
             getPseudonym: () => TE.right(pseudonym),
+            logger: () => IO.of(undefined),
             oauth,
             publicUrl,
             secret,
