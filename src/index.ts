@@ -2,62 +2,15 @@ import { createTerminus } from '@godaddy/terminus'
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
 import * as C from 'fp-ts/Console'
-import * as E from 'fp-ts/Either'
-import * as IOE from 'fp-ts/IOEither'
 import * as RT from 'fp-ts/ReaderTask'
-import { flow, pipe } from 'fp-ts/function'
-import * as D from 'io-ts/Decoder'
+import { pipe } from 'fp-ts/function'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
 import { AppEnv, app } from './app'
-import { rawHtml } from './html'
+import { decodeEnv } from './env'
 
-export const UrlD = pipe(
-  D.string,
-  D.parse(s =>
-    E.tryCatch(
-      () => new URL(s),
-      () => D.error(s, 'URL'),
-    ),
-  ),
-)
-
-export const HtmlD = pipe(D.string, D.map(rawHtml))
-
-const EnvD = pipe(
-  D.struct({
-    CACHE_PATH: D.string,
-    LEGACY_PREREVIEW_API_APP: D.string,
-    LEGACY_PREREVIEW_API_KEY: D.string,
-    LEGACY_PREREVIEW_URL: UrlD,
-    ORCID_CLIENT_ID: D.string,
-    ORCID_CLIENT_SECRET: D.string,
-    PUBLIC_URL: UrlD,
-    SECRET: D.string,
-    ZENODO_API_KEY: D.string,
-    ZENODO_URL: UrlD,
-  }),
-  D.intersect(
-    D.partial({
-      FATHOM_SITE_ID: D.string,
-      LEGACY_PREREVIEW_UPDATE: pipe(
-        D.literal('true', 'false'),
-        D.map(value => value === 'true'),
-      ),
-      PHASE_TAG: D.string,
-      PHASE_TEXT: HtmlD,
-      REDIS_URI: UrlD,
-    }),
-  ),
-)
-
-const env = pipe(
-  process.env,
-  IOE.fromEitherK(EnvD.decode),
-  IOE.orElseFirstIOK(flow(D.draw, C.log)),
-  IOE.getOrElse(() => process.exit(1)),
-)()
+const env = decodeEnv(process)()
 
 const keyvStore = env.REDIS_URI instanceof URL ? new KeyvRedis(env.REDIS_URI.href) : undefined
 
