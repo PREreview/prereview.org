@@ -7,15 +7,20 @@ import { pipe } from 'fp-ts/function'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
-import { AppEnv, app } from './app'
+import { app } from './app'
 import { decodeEnv } from './env'
 
 const env = decodeEnv(process)()
 
+const loggerEnv: L.LoggerEnv = {
+  clock: SystemClock,
+  logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
+}
+
 const keyvStore = env.REDIS_URI instanceof URL ? new KeyvRedis(env.REDIS_URI.href) : undefined
 
-const deps: AppEnv = {
-  clock: SystemClock,
+const server = app({
+  ...loggerEnv,
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: env.CACHE_PATH,
@@ -30,7 +35,6 @@ const deps: AppEnv = {
     url: env.LEGACY_PREREVIEW_URL,
     update: env.LEGACY_PREREVIEW_UPDATE ?? false,
   },
-  logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
   oauth: {
     authorizeUrl: new URL('https://orcid.org/oauth/authorize'),
     clientId: env.ORCID_CLIENT_ID,
@@ -50,19 +54,17 @@ const deps: AppEnv = {
   sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
-}
-
-const server = app(deps)
+})
 
 server.on('listening', () => {
-  L.debug('Server listening')(deps)()
+  L.debug('Server listening')(loggerEnv)()
 })
 
 createTerminus(server, {
   healthChecks: { '/health': () => Promise.resolve() },
-  logger: (message, error) => L.errorP(message)({ name: error.name, message: error.message })(deps)(),
-  onShutdown: RT.fromReaderIO(L.debug('Shutting server down'))(deps),
-  onSignal: RT.fromReaderIO(L.debug('Signal received'))(deps),
+  logger: (message, error) => L.errorP(message)({ name: error.name, message: error.message })(loggerEnv)(),
+  onShutdown: RT.fromReaderIO(L.debug('Shutting server down'))(loggerEnv),
+  onSignal: RT.fromReaderIO(L.debug('Signal received'))(loggerEnv),
   signals: ['SIGINT', 'SIGTERM'],
 })
 
