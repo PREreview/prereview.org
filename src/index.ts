@@ -18,7 +18,7 @@ const loggerEnv: L.LoggerEnv = {
   logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
 }
 
-const redis = env.REDIS_URI instanceof URL ? new Redis(env.REDIS_URI.href) : undefined
+const redis = env.REDIS_URI instanceof URL ? new Redis(env.REDIS_URI.href, { commandTimeout: 2 * 1000 }) : undefined
 const keyvStore = redis ? new KeyvRedis(redis) : undefined
 
 redis?.on('connect', () => L.debug('Redis connected')(loggerEnv)())
