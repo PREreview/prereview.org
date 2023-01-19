@@ -80,7 +80,7 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-fp-ts": "^0.3.2",
-    "eslint-plugin-import": "^2.27.4",
+    "eslint-plugin-import": "^2.27.5",
     "fetch-mock": "^9.11.0",
     "fp-ts-contrib": "^0.1.29",
     "glob": "^8.0.3",
