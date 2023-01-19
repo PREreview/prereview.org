@@ -73,14 +73,16 @@ server.on('listening', () => {
 
 createTerminus(server, {
   healthChecks: {
-    '/health': () => {
+    '/health': async () => {
       if (!(redis instanceof Redis)) {
-        return Promise.resolve()
+        return
       }
 
-      const status = redis.status
+      if (redis.status !== 'ready') {
+        throw new Error(`Redis not ready (${redis.status})`)
+      }
 
-      return status === 'ready' ? Promise.resolve() : Promise.reject(new Error(`Redis not ready (${status})`))
+      await redis.ping()
     },
   },
   logger: (message, error) => L.errorP(message)({ name: error.name, message: error.message })(loggerEnv)(),
