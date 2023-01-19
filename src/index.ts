@@ -15,7 +15,7 @@ const env = decodeEnv(process)()
 
 const loggerEnv: L.LoggerEnv = {
   clock: SystemClock,
-  logger: pipe(C.log, L.withShow(L.getColoredShow(L.ShowLogEntry))),
+  logger: pipe(C.log, L.withShow(env.LOG_FORMAT === 'json' ? L.JsonShowLogEntry : L.getColoredShow(L.ShowLogEntry))),
 }
 
 const redis =

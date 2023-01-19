@@ -46,6 +46,7 @@ const EnvD = pipe(
         D.literal('true', 'false'),
         D.map(value => value === 'true'),
       ),
+      LOG_FORMAT: D.literal('json'),
       PHASE_TAG: D.string,
       PHASE_TEXT: HtmlD,
       REDIS_URI: UrlD,
