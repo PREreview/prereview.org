@@ -190,9 +190,9 @@ test.extend(canLogIn)('can post a PREreview', async ({ fetch, javaScriptEnabled,
       status: Status.Accepted,
     })
 
-  await page.getByRole('button', { name: 'Post PREreview' }).click()
+  await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
   await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
   await expect(page).toHaveScreenshot()
 })
@@ -314,9 +314,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
         status: Status.Accepted,
       })
 
-    await page.getByRole('button', { name: 'Post PREreview' }).click()
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
 
     await page.goBack()
 
@@ -529,7 +529,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
       status: Status.Accepted,
     })
 
-  await page.getByRole('button', { name: 'Post PREreview' }).click()
+  await page.getByRole('button', { name: 'Publish PREreview' }).click()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
@@ -679,9 +679,9 @@ test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn)(
         { status: Status.Created },
       )
 
-    await page.getByRole('button', { name: 'Post PREreview' }).click()
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
   },
 )
 
@@ -1030,9 +1030,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
         status: Status.Accepted,
       })
 
-    await page.getByRole('button', { name: 'Post PREreview' }).click()
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
     await expect(page.getByRole('main')).toContainText('other authors’ details')
     await expect(page).toHaveScreenshot()
@@ -1160,9 +1160,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
         status: Status.Accepted,
       })
 
-    await page.getByRole('button', { name: 'Post PREreview' }).click()
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
     await expect(page.getByRole('main')).not.toContainText('other authors’ details')
   },
@@ -1297,9 +1297,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
         status: Status.Accepted,
       })
 
-    await page.getByRole('button', { name: 'Post PREreview' }).click()
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
   },
 )
@@ -1426,9 +1426,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
         status: Status.Accepted,
       })
 
-    await page.getByRole('button', { name: 'Post PREreview' }).click()
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview posted')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
   },
 )
@@ -1841,7 +1841,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     fetch.postOnce('http://zenodo.test/api/deposit/depositions', { status: Status.ServiceUnavailable })
 
-    await page.getByRole('button', { name: 'Post PREreview' }).click()
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
     await expect(page).toHaveScreenshot()

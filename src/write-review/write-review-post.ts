@@ -142,11 +142,11 @@ function renderReview(form: CompletedForm) {
 
 function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
   return page({
-    title: plainText`PREreview posted`,
+    title: plainText`PREreview published`,
     content: html`
       <main id="main-content">
         <div class="panel">
-          <h1>PREreview posted</h1>
+          <h1>PREreview published</h1>
 
           <p>
             Your DOI <br />
@@ -183,7 +183,7 @@ function failureMessage(preprint: Preprint) {
       <main id="main-content">
         <h1>Sorry, we’re having problems</h1>
 
-        <p>We’re unable to post your PREreview now.</p>
+        <p>We’re unable to publish your PREreview now.</p>
 
         <p>Please try again later.</p>
 
@@ -196,7 +196,7 @@ function failureMessage(preprint: Preprint) {
 
 function postForm(preprint: Preprint, review: CompletedForm, user: User) {
   return page({
-    title: plainText`Post your PREreview of “${preprint.title}”`,
+    title: plainText`Publish your PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewConductMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
@@ -226,14 +226,14 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
               <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}">Change name</a>
             </div>
 
-            <h2>Now post your PREreview</h2>
+            <h2>Now publish your PREreview</h2>
 
             <p>
               We will assign your PREreview a DOI (a permanent identifier) and make it publicly available under a
               <a href="https://creativecommons.org/licenses/by/4.0/">CC&nbsp;BY&nbsp;4.0 license</a>.
             </p>
 
-            <button>Post PREreview</button>
+            <button>Publish PREreview</button>
           </form>
         </single-use-form>
       </main>
