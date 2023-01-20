@@ -618,27 +618,6 @@ label {
   }
 }
 
-.button-secondary {
-  font-size: var(--step-0);
-  padding-block: var(--space-3xs-2xs);
-  padding-inline: var(--space-2xs-xs);
-
-  &::after {
-    background-color: var(--color-divider-light);
-  }
-
-  &:not(:disabled) {
-    &:hover {
-      filter: brightness(0.9);
-    }
-  }
-
-  @media screen {
-    color: var(--color-text-light);
-    background-color: var(--color-divider);
-  }
-}
-
 .button-group {
   display: flex;
   flex-wrap: wrap;
@@ -649,6 +628,11 @@ label {
 
   @nest .preview + & {
     margin-block-start: var(--space-s);
+  }
+
+  & :any-link:not(.button) {
+    padding-block: var(--space-4xs-3xs);
+    padding-inline: var(--space-4xs-3xs);
   }
 }
 

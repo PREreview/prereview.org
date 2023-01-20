@@ -222,18 +222,8 @@ function postForm(preprint: Preprint, review: CompletedForm, user: User) {
             </blockquote>
 
             <div class="button-group" role="group">
-              <a
-                href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}"
-                class="button button-secondary"
-              >
-                Change PREreview
-              </a>
-              <a
-                href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}"
-                class="button button-secondary"
-              >
-                Change name
-              </a>
+              <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.doi })}">Change PREreview</a>
+              <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}">Change name</a>
             </div>
 
             <h2>Now post your PREreview</h2>
