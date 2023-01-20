@@ -46,7 +46,7 @@ import {
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
-  writeReviewPostMatch,
+  writeReviewPublishMatch,
   writeReviewReviewMatch,
   writeReviewStartMatch,
 } from './routes'
@@ -163,7 +163,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           P.map(({ doi }) => writeReviewConduct(doi)),
         ),
         pipe(
-          writeReviewPostMatch.parser,
+          writeReviewPublishMatch.parser,
           P.map(({ doi }) => writeReviewPublish(doi)),
         ),
       ],

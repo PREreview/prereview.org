@@ -18,7 +18,7 @@ import {
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
   writeReviewPersonaMatch,
-  writeReviewPostMatch,
+  writeReviewPublishMatch,
   writeReviewReviewMatch,
 } from '../routes'
 import { NonEmptyStringC } from '../string'
@@ -84,7 +84,7 @@ export const nextFormMatch = (form: Form) =>
     .with({ moreAuthors: P.optional(P.nullish) }, () => writeReviewAuthorsMatch)
     .with({ competingInterests: P.optional(P.nullish) }, () => writeReviewCompetingInterestsMatch)
     .with({ conduct: P.optional(P.nullish) }, () => writeReviewConductMatch)
-    .otherwise(() => writeReviewPostMatch)
+    .otherwise(() => writeReviewPublishMatch)
 
 export const redirectToNextForm = (preprint: PreprintId['doi']) =>
   flow(nextFormMatch, match => format(match.formatter, { doi: preprint }), seeOther)

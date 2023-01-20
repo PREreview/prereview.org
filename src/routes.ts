@@ -88,7 +88,7 @@ export const writeReviewCompetingInterestsMatch = pipe(
 
 export const writeReviewConductMatch = pipe(writeReviewBaseMatch, P.then(P.lit('code-of-conduct')), P.then(P.end))
 
-export const writeReviewPostMatch = pipe(writeReviewBaseMatch, P.then(P.lit('check-your-prereview')), P.then(P.end))
+export const writeReviewPublishMatch = pipe(writeReviewBaseMatch, P.then(P.lit('check-your-prereview')), P.then(P.end))
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
 function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {

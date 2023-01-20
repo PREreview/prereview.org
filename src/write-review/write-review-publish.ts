@@ -20,7 +20,7 @@ import {
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
-  writeReviewPostMatch,
+  writeReviewPublishMatch,
   writeReviewReviewMatch,
 } from '../routes'
 import { User, getUserFromSession } from '../user'
@@ -206,7 +206,7 @@ function publishForm(preprint: Preprint, review: CompletedForm, user: User) {
 
       <main id="form">
         <single-use-form>
-          <form method="post" action="${format(writeReviewPostMatch.formatter, { doi: preprint.doi })}" novalidate>
+          <form method="post" action="${format(writeReviewPublishMatch.formatter, { doi: preprint.doi })}" novalidate>
             <h1 id="preview-label">Check your PREreview</h1>
 
             <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
