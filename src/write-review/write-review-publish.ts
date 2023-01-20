@@ -36,11 +36,11 @@ export type NewPrereview = {
   user: User
 }
 
-export interface PostPrereviewEnv {
-  postPrereview: (newPrereview: NewPrereview) => TE.TaskEither<unknown, Doi>
+export interface PublishPrereviewEnv {
+  publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<unknown, Doi>
 }
 
-export const writeReviewPost = flow(
+export const writeReviewPublish = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
@@ -53,9 +53,9 @@ export const writeReviewPost = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
-          .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormD.decode)) }, handlePostForm)
+          .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormD.decode)) }, handlePublishForm)
           .with({ method: 'POST', preprint: P.select() }, showFailureMessage)
-          .with({ form: P.when(R.fromEitherK(CompletedFormD.decode)) }, showPostForm)
+          .with({ form: P.when(R.fromEitherK(CompletedFormD.decode)) }, showPublishForm)
           .otherwise(flow(({ form }) => form, fromMiddlewareK(redirectToNextForm(preprint.doi)))),
       ),
       RM.orElseW(error =>
@@ -78,7 +78,7 @@ export const writeReviewPost = flow(
   ),
 )
 
-const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
+const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
   pipe(
     RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.doi)),
     RM.map(() => ({
@@ -88,21 +88,23 @@ const handlePostForm = ({ form, preprint, user }: { form: CompletedForm; preprin
       review: renderReview(form),
       user,
     })),
-    RM.chainReaderTaskEitherKW(postPrereview),
+    RM.chainReaderTaskEitherKW(publishPrereview),
     RM.ichainW(doi => showSuccessMessage(preprint, doi, form.moreAuthors === 'yes')),
     RM.orElseW(() => showFailureMessage(preprint)),
   )
 
-const showPostForm = flow(
+const showPublishForm = flow(
   fromReaderK(({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
-    postForm(preprint, form, user),
+    publishForm(preprint, form, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const postPrereview = (newPrereview: NewPrereview) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ postPrereview }: PostPrereviewEnv) => postPrereview(newPrereview)))
+const publishPrereview = (newPrereview: NewPrereview) =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ publishPrereview }: PublishPrereviewEnv) => publishPrereview(newPrereview)),
+  )
 
 const showSuccessMessage = flow(
   fromReaderK(successMessage),
@@ -194,7 +196,7 @@ function failureMessage(preprint: Preprint) {
   })
 }
 
-function postForm(preprint: Preprint, review: CompletedForm, user: User) {
+function publishForm(preprint: Preprint, review: CompletedForm, user: User) {
   return page({
     title: plainText`Publish your PREreview of “${preprint.title}”`,
     content: html`

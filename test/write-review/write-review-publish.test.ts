@@ -11,7 +11,7 @@ import * as _ from '../../src/write-review'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 
-describe('writeReviewPost', () => {
+describe('writeReviewPublish', () => {
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
@@ -44,20 +44,20 @@ describe('writeReviewPost', () => {
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
-      const postPrereview: Mock<_.PostPrereviewEnv['postPrereview']> = jest.fn(_ => TE.right(reviewDoi))
+      const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ => TE.right(reviewDoi))
 
       const actual = await runMiddleware(
-        _.writeReviewPost(preprintDoi)({
+        _.writeReviewPublish(preprintDoi)({
           formStore,
           getPreprintTitle,
-          postPrereview,
+          publishPrereview,
           secret,
           sessionStore,
         }),
         connection,
       )()
 
-      expect(postPrereview).toHaveBeenCalledWith({
+      expect(publishPrereview).toHaveBeenCalledWith({
         conduct: 'yes',
         persona: newReview.persona,
         preprint: {
@@ -120,10 +120,10 @@ describe('writeReviewPost', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewPost(preprintDoi)({
+        _.writeReviewPublish(preprintDoi)({
           getPreprintTitle,
           formStore,
-          postPrereview: () => TE.left(''),
+          publishPrereview: () => TE.left(''),
           secret,
           sessionStore,
         }),
@@ -162,10 +162,10 @@ describe('writeReviewPost', () => {
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReviewPost(preprintDoi)({
+      _.writeReviewPublish(preprintDoi)({
         getPreprintTitle,
         formStore,
-        postPrereview: () => TE.left(''),
+        publishPrereview: () => TE.left(''),
         secret,
         sessionStore,
       }),
@@ -218,13 +218,13 @@ describe('writeReviewPost', () => {
     const formStore = new Keyv()
     await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
     const getPreprintTitle = () => TE.left('unavailable' as const)
-    const postPrereview = () => () => Promise.reject('should not be called')
+    const publishPrereview = () => () => Promise.reject('should not be called')
 
     const actual = await runMiddleware(
-      _.writeReviewPost(preprintDoi)({
+      _.writeReviewPublish(preprintDoi)({
         formStore,
         getPreprintTitle,
-        postPrereview,
+        publishPrereview,
         secret,
         sessionStore,
       }),
@@ -272,13 +272,13 @@ describe('writeReviewPost', () => {
     const formStore = new Keyv()
     await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
     const getPreprintTitle = () => TE.left('not-found' as const)
-    const postPrereview = () => () => Promise.reject('should not be called')
+    const publishPrereview = () => () => Promise.reject('should not be called')
 
     const actual = await runMiddleware(
-      _.writeReviewPost(preprintDoi)({
+      _.writeReviewPublish(preprintDoi)({
         formStore,
         getPreprintTitle,
-        postPrereview,
+        publishPrereview,
         secret,
         sessionStore,
       }),
@@ -306,10 +306,10 @@ describe('writeReviewPost', () => {
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReviewPost(preprintDoi)({
+      _.writeReviewPublish(preprintDoi)({
         getPreprintTitle,
         formStore,
-        postPrereview: () => TE.left(''),
+        publishPrereview: () => TE.left(''),
         secret,
         sessionStore,
       }),
@@ -365,10 +365,10 @@ describe('writeReviewPost', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewPost(preprintDoi)({
+        _.writeReviewPublish(preprintDoi)({
           getPreprintTitle,
           formStore,
-          postPrereview: () => TE.left(response),
+          publishPrereview: () => TE.left(response),
           secret,
           sessionStore,
         }),

@@ -59,7 +59,7 @@ import {
   writeReviewCompetingInterests,
   writeReviewConduct,
   writeReviewPersona,
-  writeReviewPost,
+  writeReviewPublish,
   writeReviewReview,
   writeReviewStart,
 } from './write-review'
@@ -164,7 +164,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         ),
         pipe(
           writeReviewPostMatch.parser,
-          P.map(({ doi }) => writeReviewPost(doi)),
+          P.map(({ doi }) => writeReviewPublish(doi)),
         ),
       ],
       M.concatAll(P.getParserMonoid()),
@@ -172,7 +172,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getPreprintTitle: flip(getPreprintTitle)(env),
-          postPrereview: flip((newPrereview: NewPrereview) =>
+          publishPrereview: flip((newPrereview: NewPrereview) =>
             pipe(createRecordOnZenodo(newPrereview), RTE.chainFirstW(createPrereviewOnLegacyPrereview(newPrereview))),
           )(env),
         })),
