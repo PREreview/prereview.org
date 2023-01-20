@@ -5,7 +5,7 @@ import { URL } from 'url'
 import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
 import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview } from './test'
 
-test.extend(canLogIn)('can post a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
+test.extend(canLogIn)('can publish a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1055805' as Doi,
     conceptrecid: 1055805,
@@ -198,7 +198,7 @@ test.extend(canLogIn)('can post a PREreview', async ({ fetch, javaScriptEnabled,
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
-  'are logged out after posting',
+  'are logged out after publishing',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
       conceptdoi: '10.5072/zenodo.1055807' as Doi,
@@ -903,7 +903,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)(
-  'can post a PREreview with more authors',
+  'can publish a PREreview with more authors',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
       conceptdoi: '10.5072/zenodo.1055807' as Doi,
@@ -1040,7 +1040,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)(
-  "can post a PREreview with more authors who don't want to be listed as authors",
+  "can publish a PREreview with more authors who don't want to be listed as authors",
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
       conceptdoi: '10.5072/zenodo.1055807' as Doi,
@@ -1169,7 +1169,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)(
-  'can post a PREreview with competing interests',
+  'can publish a PREreview with competing interests',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
       conceptdoi: '10.5072/zenodo.1055807' as Doi,
@@ -1305,7 +1305,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)(
-  'can post a PREreview using a pseudonym',
+  'can publish a PREreview using a pseudonym',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
       conceptdoi: '10.5072/zenodo.1055807' as Doi,
