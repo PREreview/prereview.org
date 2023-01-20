@@ -6,7 +6,7 @@ import { RecordsC } from 'zenodo-ts'
 import { expect, test } from './test'
 
 test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
-  const form = page.getByRole('form', { name: 'Find and post PREreviews' })
+  const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
 
   await page.goto('/')
   await form.getByLabel('Preprint DOI').fill('10.1101/this-should-not-find-anything')
@@ -32,7 +32,7 @@ test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
 })
 
 test('can find and view a preprint', async ({ fetch, page }) => {
-  const form = page.getByRole('form', { name: 'Find and post PREreviews' })
+  const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
 
   await page.goto('/')
   await form.getByLabel('Preprint DOI').fill('10.1101/2022.01.13.476201')
@@ -121,7 +121,7 @@ test('can find and view a preprint', async ({ fetch, page }) => {
 })
 
 test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, page }) => {
-  const form = page.getByRole('form', { name: 'Find and post PREreviews' })
+  const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
 
   await page.goto('/')
   await form.getByLabel('Preprint DOI').fill('10.1101/this-should-take-too-long')
@@ -150,7 +150,7 @@ test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, p
 })
 
 test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, page }) => {
-  const form = page.getByRole('form', { name: 'Find and post PREreviews' })
+  const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
 
   await page.goto('/')
   await form.getByLabel('Preprint DOI').fill('10.1101/2022.01.13.476201')
@@ -182,7 +182,7 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
 })
 
 test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
-  const form = page.getByRole('form', { name: 'Find and post PREreviews' })
+  const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
   const alert = page.getByRole('alert', { name: 'There is a problem' })
 
   await page.goto('/')

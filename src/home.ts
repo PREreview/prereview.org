@@ -99,7 +99,7 @@ function createPage(lookupDoi: LookupDoi) {
             `
           : ''}
 
-        <h2 id="find-title">Find and post PREreviews</h2>
+        <h2 id="find-title">Find and publish PREreviews</h2>
 
         <form method="post" action="${format(homeMatch.formatter, {})}" novalidate aria-labelledby="find-title">
           <div ${rawHtml(E.isLeft(lookupDoi) ? 'class="error"' : '')}>

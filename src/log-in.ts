@@ -135,13 +135,13 @@ const showNoPseudonymMessage = pipe(
 
 function noPseudonymMessage() {
   return page({
-    title: plainText`Sorry, you can‘t post a PREreview yet`,
+    title: plainText`Sorry, you can‘t publish a PREreview yet`,
     content: html`
       <main id="main-content">
-        <h1>Sorry, you can’t post a PREreview&nbsp;yet</h1>
+        <h1>Sorry, you can’t publish a PREreview&nbsp;yet</h1>
 
         <p>
-          To post a PREreview on the new version of PREreview, you will first need to
+          To publish a PREreview on the new version of PREreview, you will first need to
           <a href="https://prereview.org/login">sign up for the current website</a>.
         </p>
       </main>

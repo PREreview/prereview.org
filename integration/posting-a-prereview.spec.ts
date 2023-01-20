@@ -1879,7 +1879,7 @@ test.extend(canLogIn)(
     )
     await page.keyboard.press('Enter')
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t post a PREreview yet')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t publish a PREreview yet')
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')

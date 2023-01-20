@@ -101,7 +101,7 @@ function createPage(review: Prereview) {
 
           <dl>
             <div>
-              <dt>Posted</dt>
+              <dt>Published</dt>
               <dd>${renderDate(review.postedDate)}</dd>
             </div>
             <div>

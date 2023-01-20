@@ -73,7 +73,7 @@ function cannotAddAuthorsForm(preprint: Preprint) {
 
           <p>Unfortunately, we’re unable to add more authors now.</p>
 
-          <p>Once you have posted your PREreview, please let us know their details, and we’ll add them.</p>
+          <p>Once you have published your PREreview, please let us know their details, and we’ll add them.</p>
 
           <p>We’ll remind you to do this.</p>
 
