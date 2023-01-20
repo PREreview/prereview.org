@@ -70,9 +70,9 @@ function carryOnPage(preprint: Preprint, form: Form) {
           >”, we’ll take you to the next step so you can carry&nbsp;on.
         </p>
 
-        <a href="${format(nextFormMatch(form).formatter, { doi: preprint.doi })}" role="button" draggable="false">
-          Continue
-        </a>
+        <a href="${format(nextFormMatch(form).formatter, { doi: preprint.doi })}" role="button" draggable="false"
+          >Continue</a
+        >
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],

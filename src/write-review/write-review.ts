@@ -99,9 +99,9 @@ function startPage(preprint: Preprint, user?: User) {
               </details>
             `}
 
-        <a href="${format(writeReviewStartMatch.formatter, { doi: preprint.doi })}" role="button" draggable="false">
-          Start now
-        </a>
+        <a href="${format(writeReviewStartMatch.formatter, { doi: preprint.doi })}" role="button" draggable="false"
+          >Start now</a
+        >
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
