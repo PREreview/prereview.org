@@ -25,7 +25,7 @@ export type Prereview = {
   authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
   doi: Doi
   license: 'CC-BY-4.0'
-  postedDate: PlainDate
+  published: PlainDate
   preprint: {
     doi: PreprintId['doi']
     language: LanguageCode
@@ -102,7 +102,7 @@ function createPage(review: Prereview) {
           <dl>
             <div>
               <dt>Published</dt>
-              <dd>${renderDate(review.postedDate)}</dd>
+              <dd>${renderDate(review.published)}</dd>
             </div>
             <div>
               <dt>DOI</dt>

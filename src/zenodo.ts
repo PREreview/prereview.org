@@ -124,7 +124,7 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
         authors: RTE.right(review.metadata.creators),
         doi: RTE.right(review.metadata.doi),
         license: RTE.right(review.license),
-        postedDate: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
+        published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
         preprint: RTE.asksReaderTaskEither(
           flow(
             RTE.fromTaskEitherK(({ getPreprintTitle }: F.FetchEnv & GetPreprintTitleEnv) =>
