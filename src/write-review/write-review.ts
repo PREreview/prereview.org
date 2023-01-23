@@ -64,14 +64,14 @@ const showStartPage = flow(
 
 function startPage(preprint: Preprint, user?: User) {
   return page({
-    title: plainText`PREreview this preprint`,
+    title: plainText`Write a PREreview`,
     content: html`
       <nav>
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="main-content">
-        <h1>PREreview this preprint</h1>
+        <h1>Write a PREreview</h1>
 
         <p>
           You can write a PREreview of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}"

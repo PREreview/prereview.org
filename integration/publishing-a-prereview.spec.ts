@@ -320,7 +320,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.goBack()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview this preprint')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Write a PREreview')
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
   },
 )
@@ -1624,7 +1624,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
     await expect(page.getByRole('main')).not.toContainText('ORCID')
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('PREreview this preprint')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1663,7 +1663,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Back to preprint' }).click()
     await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('PREreview this preprint')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1707,7 +1707,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.locator('[type=password]').fill('password')
     await page.keyboard.press('Enter')
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('PREreview this preprint')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
