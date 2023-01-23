@@ -92,8 +92,8 @@ function startPage(preprint: Preprint, user?: User) {
 
                 <div>
                   <p>
-                    An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a persistent digital identifier you
-                    own and control, distinguishing you from every other researcher.
+                    An <a href="https://orcid.org/"><dfn>ORCID&nbsp;iD</dfn></a> is a unique identifier that
+                    distinguishes you from everyone with the same or similar name.
                   </p>
                 </div>
               </details>
