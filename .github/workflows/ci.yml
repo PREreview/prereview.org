@@ -169,7 +169,7 @@ jobs:
         run: apt-get install --yes git-lfs
 
       - name: 'Install Git LFS'
-        run: git-lfs install
+        run: git lfs install
 
       - name: 'Checkout code'
         uses: nschloe/action-cached-lfs-checkout@v1.2.1
