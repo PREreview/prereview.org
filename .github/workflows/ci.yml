@@ -161,8 +161,16 @@ jobs:
       fail-fast: false
       matrix:
         shard: [1, 2, 3]
-
     steps:
+      - name: 'Set up the Packagecloud APT repository'
+        run: curl --silent https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
+
+      - name: 'Set up Git LFS'
+        run: apt-get install --yes git-lfs
+
+      - name: 'Install Git LFS'
+        run: git-lfs install
+
       - name: 'Checkout code'
         uses: nschloe/action-cached-lfs-checkout@v1.2.1
 
