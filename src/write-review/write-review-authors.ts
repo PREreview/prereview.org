@@ -251,7 +251,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
                           .with(E.right('yes' as const), () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Yes, and some or all want to be authors</span>
+                      <span>Yes, and some or all want to be listed as authors</span>
                     </label>
                     <div class="conditional" id="more-authors-yes-control">
                       <div ${rawHtml(E.isLeft(form.moreAuthorsApproved) ? 'class="error"' : '')}>

@@ -972,7 +972,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Yes, and some or all want to be authors').check()
+    await page.getByLabel('Yes, and some or all want to be listed as authors').check()
     await page.getByLabel('They have read and approved the PREreview').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -2098,7 +2098,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByLabel('Yes, and some or all want to be authors').click()
+    await page.getByLabel('Yes, and some or all want to be listed as authors').click()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
