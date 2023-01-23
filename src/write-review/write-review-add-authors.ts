@@ -73,9 +73,12 @@ function cannotAddAuthorsForm(preprint: Preprint) {
 
           <p>Unfortunately, we’re unable to add more authors now.</p>
 
-          <p>Once you have published your PREreview, please let us know their details, and we’ll add them.</p>
+          <p>
+            Please email us at <a href="mailto:contact@prereview.org">contact@prereview.org</a> to let us know their
+            details, and we’ll add them on your behalf.
+          </p>
 
-          <p>We’ll remind you to do this.</p>
+          <p>We’ll remind you to do this once you have published your PREreview.</p>
 
           <button>Continue</button>
         </form>
