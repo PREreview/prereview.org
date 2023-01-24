@@ -25,6 +25,7 @@ import {
   EdarxivPreprintId,
   EngrxivPreprintId,
   MedrxivPreprintId,
+  MetaarxivPreprintId,
   OsfPreprintId,
   PreprintId,
   PsyarxivPreprintId,
@@ -121,6 +122,12 @@ export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
     doi: doi(fc.constant('1101')),
   })
 
+export const metaarxivPreprintId = (): fc.Arbitrary<MetaarxivPreprintId> =>
+  fc.record({
+    type: fc.constant('metaarxiv'),
+    doi: doi(fc.constant('31222')),
+  })
+
 export const osfPreprintId = (): fc.Arbitrary<OsfPreprintId> =>
   fc.record({
     type: fc.constant('osf'),
@@ -160,6 +167,7 @@ export const preprintId = (): fc.Arbitrary<PreprintId> =>
     edarxivPreprintId(),
     engrxivPreprintId(),
     medrxivPreprintId(),
+    metaarxivPreprintId(),
     osfPreprintId(),
     psyarxivPreprintId(),
     researchSquarePreprintId(),
@@ -175,6 +183,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     edarxivPreprintId(),
     engrxivPreprintId(),
     medrxivPreprintId(),
+    metaarxivPreprintId(),
     osfPreprintId(),
     psyarxivPreprintId(),
     researchSquarePreprintId(),

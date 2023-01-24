@@ -179,6 +179,7 @@ function createPage({
                     .with('edarxiv', () => 'EdArXiv')
                     .with('engrxiv', () => 'engrXiv')
                     .with('medrxiv', () => 'medRxiv')
+                    .with('metaarxiv', () => 'MetaArXiv')
                     .with('osf', () => 'OSF Preprints')
                     .with('psyarxiv', () => 'PsyArXiv')
                     .with('research-square', () => 'Research Square')

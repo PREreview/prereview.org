@@ -23,6 +23,7 @@ import {
   EdarxivPreprintId,
   EngrxivPreprintId,
   MedrxivPreprintId,
+  MetaarxivPreprintId,
   OsfPreprintId,
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
@@ -39,6 +40,7 @@ export type CrossrefPreprintId =
   | EdarxivPreprintId
   | EngrxivPreprintId
   | MedrxivPreprintId
+  | MetaarxivPreprintId
   | OsfPreprintId
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
@@ -50,6 +52,7 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['doi']> =
   '1590',
   '21203',
   '31219',
+  '31222',
   '31223',
   '31224',
   '31234',
@@ -122,6 +125,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
               .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
               .with({ type: 'engrxiv' }, () => O.some('en' as const))
+              .with({ type: 'metaarxiv' }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
@@ -153,6 +157,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
               .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
               .with({ type: 'engrxiv' }, () => O.some('en' as const))
+              .with({ type: 'metaarxiv' }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
@@ -271,6 +276,17 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     }),
     D.map(work => ({
       type: 'medrxiv' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('31222'), 'DOI'),
+      publisher: D.literal('Center for Open Science'),
+      'group-title': D.literal('MetaArXiv'),
+    }),
+    D.map(work => ({
+      type: 'metaarxiv' as const,
       doi: work.DOI,
     })),
   ),

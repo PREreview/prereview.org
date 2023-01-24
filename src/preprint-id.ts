@@ -9,6 +9,7 @@ export type PreprintId =
   | EdarxivPreprintId
   | EngrxivPreprintId
   | MedrxivPreprintId
+  | MetaarxivPreprintId
   | OsfPreprintId
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
@@ -50,6 +51,11 @@ export interface MedrxivPreprintId {
   readonly doi: Doi<'1101'>
 }
 
+export interface MetaarxivPreprintId {
+  readonly type: 'metaarxiv'
+  readonly doi: Doi<'31222'>
+}
+
 export interface OsfPreprintId {
   readonly type: 'osf'
   readonly doi: Doi<'31219'>
@@ -80,6 +86,7 @@ export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
   '1590',
   '21203',
   '31219',
+  '31222',
   '31223',
   '31224',
   '31234',

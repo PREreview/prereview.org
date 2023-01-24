@@ -851,6 +851,90 @@ describe('getPreprintFromCrossref', () => {
       )
     })
 
+    test.prop([fc.metaarxivPreprintId(), fc.plainDate()])('from MetaArXiv', async (id, posted) => {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+        body: {
+          status: 'ok',
+          'message-type': 'work',
+          'message-version': '1.0.0',
+          message: {
+            indexed: { 'date-parts': [[2022, 8, 30]], 'date-time': '2022-08-30T14:40:20Z', timestamp: 1661870420502 },
+            posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+            'group-title': 'MetaArXiv',
+            'reference-count': 0,
+            publisher: 'Center for Open Science',
+            license: [
+              {
+                start: { 'date-parts': [[2017, 3, 3]], 'date-time': '2017-03-03T00:00:00Z', timestamp: 1488499200000 },
+                'content-version': 'unspecified',
+                'delay-in-days': 0,
+                URL: 'https://creativecommons.org/licenses/by/4.0/legalcode',
+              },
+            ],
+            'content-domain': { domain: [], 'crossmark-restriction': false },
+            'short-container-title': [],
+            abstract:
+              '<p>There is growing interest in enhancing research transparency and reproducibility in economics and other scientific fields. We survey existing work on these topics within economics, and discuss the evidence suggesting that publication bias, inability to replicate, and specification searching remain widespread in the discipline. We next discuss recent progress in this area, including through improved research design, study registration and pre-analysis plans, disclosure standards, and open sharing of data and materials, drawing on experiences in both economics and other social sciences. We discuss areas where consensus is emerging on new practices, as well as approaches that remain controversial, and speculate about the most effective ways to make economics research more credible in the future.</p>',
+            DOI: id.doi,
+            type: 'posted-content',
+            created: { 'date-parts': [[2018, 7, 2]], 'date-time': '2018-07-02T10:45:16Z', timestamp: 1530528316000 },
+            source: 'Crossref',
+            'is-referenced-by-count': 1,
+            title: ['Transparency, Reproducibility, and the Credibility of Economics Research'],
+            prefix: '10.31234',
+            author: [
+              { given: 'Garret', family: 'Christensen', sequence: 'first', affiliation: [] },
+              { given: 'Edward', family: 'Miguel', sequence: 'additional', affiliation: [] },
+            ],
+            member: '15934',
+            'container-title': [],
+            'original-title': [],
+            deposited: { 'date-parts': [[2022, 8, 30]], 'date-time': '2022-08-30T14:00:06Z', timestamp: 1661868006000 },
+            score: 1,
+            resource: { primary: { URL: 'https://osf.io/9a3rw' } },
+            subtitle: [],
+            'short-title': [],
+            issued: { 'date-parts': [[2017, 3, 3]] },
+            'references-count': 0,
+            URL: 'http://dx.doi.org/10.31222/osf.io/9a3rw',
+            relation: {},
+            published: { 'date-parts': [[2017, 3, 3]] },
+            subtype: 'preprint',
+          },
+        },
+      })
+
+      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          abstract: {
+            language: 'en',
+            text: rawHtml(
+              '<p>There is growing interest in enhancing research transparency and reproducibility in economics and other scientific fields. We survey existing work on these topics within economics, and discuss the evidence suggesting that publication bias, inability to replicate, and specification searching remain widespread in the discipline. We next discuss recent progress in this area, including through improved research design, study registration and pre-analysis plans, disclosure standards, and open sharing of data and materials, drawing on experiences in both economics and other social sciences. We discuss areas where consensus is emerging on new practices, as well as approaches that remain controversial, and speculate about the most effective ways to make economics research more credible in the future.</p>',
+            ),
+          },
+          authors: [
+            {
+              name: 'Garret Christensen',
+              orcid: undefined,
+            },
+            {
+              name: 'Edward Miguel',
+              orcid: undefined,
+            },
+          ],
+          id,
+          posted,
+          title: {
+            language: 'en',
+            text: rawHtml('Transparency, Reproducibility, and the Credibility of Economics Research'),
+          },
+          url: new URL('https://osf.io/9a3rw'),
+        }),
+      )
+    })
+
     test.prop([fc.osfPreprintId(), fc.plainDate()])('from OSF', async (id, posted) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
         body: {
