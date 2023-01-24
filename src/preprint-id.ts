@@ -6,6 +6,7 @@ export type PreprintId =
   | ArxivPreprintId
   | BiorxivPreprintId
   | EartharxivPreprintId
+  | EcoevorxivPreprintId
   | EdarxivPreprintId
   | EngrxivPreprintId
   | MedrxivPreprintId
@@ -34,6 +35,11 @@ export interface BiorxivPreprintId {
 export interface EartharxivPreprintId {
   readonly type: 'eartharxiv'
   readonly doi: Doi<'31223'>
+}
+
+export interface EcoevorxivPreprintId {
+  readonly type: 'ecoevorxiv'
+  readonly doi: Doi<'32942'>
 }
 
 export interface EdarxivPreprintId {
@@ -92,6 +98,7 @@ export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
   '31234',
   '31235',
   '31730',
+  '32942',
   '35542',
   '48550',
 )

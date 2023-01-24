@@ -20,6 +20,7 @@ import {
   AfricarxivPreprintId,
   BiorxivPreprintId,
   EartharxivPreprintId,
+  EcoevorxivPreprintId,
   EdarxivPreprintId,
   EngrxivPreprintId,
   MedrxivPreprintId,
@@ -37,6 +38,7 @@ export type CrossrefPreprintId =
   | AfricarxivPreprintId
   | BiorxivPreprintId
   | EartharxivPreprintId
+  | EcoevorxivPreprintId
   | EdarxivPreprintId
   | EngrxivPreprintId
   | MedrxivPreprintId
@@ -58,6 +60,7 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['doi']> =
   '31234',
   '31235',
   '31730',
+  '32942',
   '35542',
 )
 
@@ -123,6 +126,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
+              .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
               .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
               .with({ type: 'engrxiv' }, () => O.some('en' as const))
               .with({ type: 'metaarxiv' }, () => O.some('en' as const))
@@ -155,6 +159,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
+              .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
               .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
               .with({ type: 'engrxiv' }, () => O.some('en' as const))
               .with({ type: 'metaarxiv' }, () => O.some('en' as const))
@@ -244,6 +249,16 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     }),
     D.map(work => ({
       type: 'eartharxiv' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('32942'), 'DOI'),
+      publisher: D.literal('California Digital Library (CDL)'),
+    }),
+    D.map(work => ({
+      type: 'ecoevorxiv' as const,
       doi: work.DOI,
     })),
   ),

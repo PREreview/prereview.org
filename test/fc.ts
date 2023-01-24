@@ -22,6 +22,7 @@ import {
   ArxivPreprintId,
   BiorxivPreprintId,
   EartharxivPreprintId,
+  EcoevorxivPreprintId,
   EdarxivPreprintId,
   EngrxivPreprintId,
   MedrxivPreprintId,
@@ -104,6 +105,12 @@ export const eartharxivPreprintId = (): fc.Arbitrary<EartharxivPreprintId> =>
     doi: doi(fc.constant('31223')),
   })
 
+export const ecoevorxivPreprintId = (): fc.Arbitrary<EcoevorxivPreprintId> =>
+  fc.record({
+    type: fc.constant('ecoevorxiv'),
+    doi: doi(fc.constant('32942')),
+  })
+
 export const edarxivPreprintId = (): fc.Arbitrary<EdarxivPreprintId> =>
   fc.record({
     type: fc.constant('edarxiv'),
@@ -164,6 +171,7 @@ export const preprintId = (): fc.Arbitrary<PreprintId> =>
     arxivPreprintId(),
     biorxivPreprintId(),
     eartharxivPreprintId(),
+    ecoevorxivPreprintId(),
     edarxivPreprintId(),
     engrxivPreprintId(),
     medrxivPreprintId(),
@@ -180,6 +188,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     africarxivPreprintId(),
     biorxivPreprintId(),
     eartharxivPreprintId(),
+    ecoevorxivPreprintId(),
     edarxivPreprintId(),
     engrxivPreprintId(),
     medrxivPreprintId(),
