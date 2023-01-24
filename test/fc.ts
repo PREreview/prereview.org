@@ -21,6 +21,7 @@ import {
   AfricarxivPreprintId,
   ArxivPreprintId,
   BiorxivPreprintId,
+  ChemrxivPreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
   EdarxivPreprintId,
@@ -99,6 +100,12 @@ export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
     doi: doi(fc.constant('1101')),
   })
 
+export const chemrxivPreprintId = (): fc.Arbitrary<ChemrxivPreprintId> =>
+  fc.record({
+    type: fc.constant('chemrxiv'),
+    doi: doi(fc.constant('26434')),
+  })
+
 export const eartharxivPreprintId = (): fc.Arbitrary<EartharxivPreprintId> =>
   fc.record({
     type: fc.constant('eartharxiv'),
@@ -170,6 +177,7 @@ export const preprintId = (): fc.Arbitrary<PreprintId> =>
     africarxivPreprintId(),
     arxivPreprintId(),
     biorxivPreprintId(),
+    chemrxivPreprintId(),
     eartharxivPreprintId(),
     ecoevorxivPreprintId(),
     edarxivPreprintId(),
@@ -187,6 +195,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(
     africarxivPreprintId(),
     biorxivPreprintId(),
+    chemrxivPreprintId(),
     eartharxivPreprintId(),
     ecoevorxivPreprintId(),
     edarxivPreprintId(),

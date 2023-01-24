@@ -131,8 +131,8 @@ function createPage(lookupDoi: LookupDoi) {
             />
 
             <div id="doi-tip" role="note">
-              We support AfricArXiv, arXiv, bioRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, medRxiv, MetaArXiv, OSF,
-              PsyArXiv, Research&nbsp;Square, SciELO and SocArXiv preprints.
+              We support AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, medRxiv,
+              MetaArXiv, OSF, PsyArXiv, Research&nbsp;Square, SciELO and SocArXiv preprints.
             </div>
           </div>
 

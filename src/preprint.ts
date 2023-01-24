@@ -175,6 +175,7 @@ function createPage({
                     .with('africarxiv', () => 'AfricArXiv Preprints')
                     .with('arxiv', () => 'arXiv')
                     .with('biorxiv', () => 'bioRxiv')
+                    .with('chemrxiv', () => 'ChemRxiv')
                     .with('eartharxiv', () => 'EarthArXiv')
                     .with('ecoevorxiv', () => 'EcoEvoRxiv')
                     .with('edarxiv', () => 'EdArXiv')

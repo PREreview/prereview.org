@@ -19,6 +19,7 @@ import { Preprint } from './preprint'
 import {
   AfricarxivPreprintId,
   BiorxivPreprintId,
+  ChemrxivPreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
   EdarxivPreprintId,
@@ -37,6 +38,7 @@ import PlainDate = Temporal.PlainDate
 export type CrossrefPreprintId =
   | AfricarxivPreprintId
   | BiorxivPreprintId
+  | ChemrxivPreprintId
   | EartharxivPreprintId
   | EcoevorxivPreprintId
   | EdarxivPreprintId
@@ -53,6 +55,7 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['doi']> =
   '1101',
   '1590',
   '21203',
+  '26434',
   '31219',
   '31222',
   '31223',
@@ -125,6 +128,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+              .with({ type: 'chemrxiv' }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
               .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
               .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
@@ -158,6 +162,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
             match({ type: preprint.id.type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
+              .with({ type: 'chemrxiv' }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
               .with({ type: 'ecoevorxiv' }, () => O.some('en' as const))
               .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
@@ -239,6 +244,16 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     }),
     D.map(work => ({
       type: 'biorxiv' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('26434'), 'DOI'),
+      publisher: D.literal('American Chemical Society (ACS)'),
+    }),
+    D.map(work => ({
+      type: 'chemrxiv' as const,
       doi: work.DOI,
     })),
   ),
