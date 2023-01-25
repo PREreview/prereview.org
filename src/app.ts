@@ -6,7 +6,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
-import { ResponseEnded, StatusOpen } from 'hyper-ts'
+import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
 import { OAuthEnv } from 'hyper-ts-oauth'
 import { route } from 'hyper-ts-routing'
 import { SessionEnv } from 'hyper-ts-session'
@@ -236,6 +236,9 @@ export const app = (deps: AppEnv) => {
       res.vary('Cookie')
 
       next()
+    })
+    .use(/^\/preprints\/arxiv-([A-z0-9.+-]+?)(?:v[0-9]+)?$/, (req, res) => {
+      res.redirect(Status.MovedPermanently, `/preprints/doi-10.48550-arxiv.${req.params['0']}`)
     })
     .use((req, res, next) => {
       return pipe(
