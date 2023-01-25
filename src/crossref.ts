@@ -76,6 +76,7 @@ export const getPreprintFromCrossref = flow(
   RTE.mapLeft(error =>
     match(error)
       .with({ status: Status.NotFound }, () => 'not-found' as const)
+      .with('not a preprint', () => 'not-found' as const)
       .otherwise(() => 'unavailable' as const),
   ),
 )

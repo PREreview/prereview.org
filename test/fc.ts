@@ -220,7 +220,15 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcid)
 
-const year = (): fc.Arbitrary<number> => fc.integer({ min: -271820, max: 275759 })
+export const year = (): fc.Arbitrary<number> => fc.integer({ min: -271820, max: 275759 })
+
+export const plainYearMonth = (): fc.Arbitrary<Temporal.PlainYearMonth> =>
+  fc
+    .record({
+      year: year(),
+      month: fc.integer({ min: 1, max: 12 }),
+    })
+    .map(args => Temporal.PlainYearMonth.from(args))
 
 export const plainDate = (): fc.Arbitrary<Temporal.PlainDate> =>
   fc

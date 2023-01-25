@@ -2075,6 +2075,69 @@ describe('getPreprintFromCrossref', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
+  test.prop([
+    fc.record(
+      {
+        author: fc.array(fc.record({ name: fc.string() })),
+        DOI: fc.crossrefPreprintDoi(),
+        institution: fc.array(fc.record({ name: fc.string() })),
+        license: fc.array(
+          fc.record({
+            start: fc.record({
+              'date-parts': fc.tuple(
+                fc.oneof(
+                  fc.year().map(year => [year]),
+                  fc.plainYearMonth().map(time => [time.year, time.month]),
+                  fc.plainDate().map(time => [time.year, time.month, time.day]),
+                ),
+              ),
+            }),
+            URL: fc.webUrl(),
+          }),
+        ),
+        published: fc.record({
+          'date-parts': fc.tuple(
+            fc.oneof(
+              fc.year().map(year => [year]),
+              fc.plainYearMonth().map(time => [time.year, time.month]),
+              fc.plainDate().map(time => [time.year, time.month, time.day]),
+            ),
+          ),
+        }),
+        publisher: fc.string(),
+        resource: fc.record({
+          primary: fc.record({
+            URL: fc.webUrl(),
+          }),
+        }),
+        subtype: fc.string(),
+        title: fc.array(fc.string()),
+        type: fc.string(),
+      },
+      {
+        requiredKeys: [
+          'author',
+          'DOI',
+          'institution',
+          'license',
+          'published',
+          'publisher',
+          'resource',
+          'title',
+          'type',
+        ],
+      },
+    ),
+  ])('when the DOI is not for a preprint', async work => {
+    const fetch = fetchMock
+      .sandbox()
+      .getOnce(`https://api.crossref.org/works/${encodeURIComponent(work.DOI)}`, { body: { message: work } })
+
+    const actual = await _.getPreprintFromCrossref(work.DOI)({ fetch })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
   test.prop([fc.crossrefPreprintDoi(), fc.record({ status: fc.integer(), body: fc.string() })])(
     'when the preprint cannot be loaded',
     async (doi, response) => {
