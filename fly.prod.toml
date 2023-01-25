@@ -8,7 +8,7 @@ LEGACY_PREREVIEW_UPDATE = "true"
 LOG_FORMAT = "json"
 PUBLIC_URL = "https://beta.prereview.org/"
 PHASE_TAG = "beta"
-PHASE_TEXT = "This is the new version of PREreview. The <a href=\"https://prereview.org/\">current website</a> is still available."
+PHASE_TEXT = "This is the new version of PREreview."
 ZENODO_URL = "https://zenodo.org/"
 
 [mounts]
