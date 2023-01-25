@@ -267,8 +267,6 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
       <summary>Where can I fill out a Rapid PREreview?</summary>
 
       <div>
-        <p>You still can on the <a href="https://prereview.org/">current website</a>.</p>
-
         <p>
           We haven’t yet added the form to the new version of PREreview as we’re looking to improve how Rapid PREreviews
           work; if you could help, please <a href="mailto:contact@prereview.org">get in touch</a>.
