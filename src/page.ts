@@ -1,8 +1,6 @@
-import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/Reader'
 import { Html, PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
-import { homeMatch } from './routes'
 
 export interface FathomEnv {
   readonly fathomId?: string
@@ -61,7 +59,7 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
                       ? html`
                           <div class="header">
                             <div class="logo">
-                              <a href="${format(homeMatch.formatter, {})}">
+                              <a href="https://prereview.org/">
                                 <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
                               </a>
                             </div>
