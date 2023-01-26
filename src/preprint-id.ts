@@ -16,6 +16,7 @@ export type PreprintId =
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
   | ScieloPreprintId
+  | ScienceOpenPreprintId
   | SocarxivPreprintId
 
 export interface AfricarxivPreprintId {
@@ -88,6 +89,11 @@ export interface ScieloPreprintId {
   readonly doi: Doi<'1590'>
 }
 
+export interface ScienceOpenPreprintId {
+  readonly type: 'science-open'
+  readonly doi: Doi<'14293'>
+}
+
 export interface SocarxivPreprintId {
   readonly type: 'socarxiv'
   readonly doi: Doi<'31235'>
@@ -96,6 +102,7 @@ export interface SocarxivPreprintId {
 export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
   '1101',
   '1590',
+  '14293',
   '21203',
   '26434',
   '31219',

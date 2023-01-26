@@ -186,6 +186,7 @@ function createPage({
                     .with('psyarxiv', () => 'PsyArXiv')
                     .with('research-square', () => 'Research Square')
                     .with('scielo', () => 'SciELO Preprints')
+                    .with('science-open', () => 'ScienceOpen Preprints')
                     .with('socarxiv', () => 'SocArXiv')
                     .exhaustive()}
                 </dd>

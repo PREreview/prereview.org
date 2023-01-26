@@ -30,6 +30,7 @@ import {
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
+  ScienceOpenPreprintId,
   SocarxivPreprintId,
 } from './preprint-id'
 
@@ -49,11 +50,13 @@ export type CrossrefPreprintId =
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
   | ScieloPreprintId
+  | ScienceOpenPreprintId
   | SocarxivPreprintId
 
 export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['doi']> = hasRegistrant(
   '1101',
   '1590',
+  '14293',
   '21203',
   '26434',
   '31219',
@@ -139,6 +142,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
+              .with({ type: 'science-open', text: P.select() }, detectLanguage)
               .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
@@ -173,6 +177,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
+              .with({ type: 'science-open', text: P.select() }, detectLanguage)
               .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
@@ -361,6 +366,16 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     }),
     D.map(work => ({
       type: 'scielo' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('14293'), 'DOI'),
+      publisher: D.literal('ScienceOpen'),
+    }),
+    D.map(work => ({
+      type: 'science-open' as const,
       doi: work.DOI,
     })),
   ),

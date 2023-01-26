@@ -33,6 +33,7 @@ import {
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
+  ScienceOpenPreprintId,
   SocarxivPreprintId,
 } from '../src/preprint-id'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
@@ -166,6 +167,12 @@ export const scieloPreprintId = (): fc.Arbitrary<ScieloPreprintId> =>
     doi: doi(fc.constant('1590')),
   })
 
+export const scienceOpenPreprintId = (): fc.Arbitrary<ScienceOpenPreprintId> =>
+  fc.record({
+    type: fc.constant('science-open'),
+    doi: doi(fc.constant('14293')),
+  })
+
 export const socarxivPreprintId = (): fc.Arbitrary<SocarxivPreprintId> =>
   fc.record({
     type: fc.constant('socarxiv'),
@@ -188,6 +195,7 @@ export const preprintId = (): fc.Arbitrary<PreprintId> =>
     psyarxivPreprintId(),
     researchSquarePreprintId(),
     scieloPreprintId(),
+    scienceOpenPreprintId(),
     socarxivPreprintId(),
   )
 
@@ -206,6 +214,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     psyarxivPreprintId(),
     researchSquarePreprintId(),
     scieloPreprintId(),
+    scienceOpenPreprintId(),
     socarxivPreprintId(),
   )
 
