@@ -50,18 +50,20 @@ export type Prereview = {
 }
 
 type RapidPrereview = {
-  availableCode: 'yes' | 'unsure' | 'na' | 'no'
-  availableData: 'yes' | 'unsure' | 'na' | 'no'
-  coherent: 'yes' | 'unsure' | 'na' | 'no'
-  ethics: 'yes' | 'unsure' | 'na' | 'no'
-  future: 'yes' | 'unsure' | 'na' | 'no'
-  limitations: 'yes' | 'unsure' | 'na' | 'no'
-  methods: 'yes' | 'unsure' | 'na' | 'no'
-  newData: 'yes' | 'unsure' | 'na' | 'no'
-  novel: 'yes' | 'unsure' | 'na' | 'no'
-  peerReview: 'yes' | 'unsure' | 'na' | 'no'
-  recommend: 'yes' | 'unsure' | 'na' | 'no'
-  reproducibility: 'yes' | 'unsure' | 'na' | 'no'
+  questions: {
+    availableCode: 'yes' | 'unsure' | 'na' | 'no'
+    availableData: 'yes' | 'unsure' | 'na' | 'no'
+    coherent: 'yes' | 'unsure' | 'na' | 'no'
+    ethics: 'yes' | 'unsure' | 'na' | 'no'
+    future: 'yes' | 'unsure' | 'na' | 'no'
+    limitations: 'yes' | 'unsure' | 'na' | 'no'
+    methods: 'yes' | 'unsure' | 'na' | 'no'
+    newData: 'yes' | 'unsure' | 'na' | 'no'
+    novel: 'yes' | 'unsure' | 'na' | 'no'
+    peerReview: 'yes' | 'unsure' | 'na' | 'no'
+    recommend: 'yes' | 'unsure' | 'na' | 'no'
+    reproducibility: 'yes' | 'unsure' | 'na' | 'no'
+  }
 }
 
 export interface GetPreprintEnv {
@@ -309,7 +311,7 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
               'availableCode',
               'recommend',
               'peerReview',
-            ] as ReadonlyNonEmptyArray<keyof RapidPrereview>,
+            ] as ReadonlyNonEmptyArray<keyof RapidPrereview['questions']>,
             RNEA.map(
               flow(
                 I.bindTo('question'),
@@ -379,7 +381,7 @@ function formatList(
   )
 }
 
-function displayRapidPrereviewQuestion(question: keyof RapidPrereview): Html {
+function displayRapidPrereviewQuestion(question: keyof RapidPrereview['questions']): Html {
   return match(question)
     .with('availableCode', () => html`Is the code used in the manuscript available?`)
     .with('availableData', () => html`Are the data used in the manuscript available?`)
@@ -396,12 +398,15 @@ function displayRapidPrereviewQuestion(question: keyof RapidPrereview): Html {
     .exhaustive()
 }
 
-function countRapidPrereviewResponses<Q extends keyof RapidPrereview>(
+function countRapidPrereviewResponses<Q extends keyof RapidPrereview['questions']>(
   rapidPrereviews: ReadonlyArray<RapidPrereview>,
   question: Q,
-  response: RapidPrereview[Q],
+  response: RapidPrereview['questions'][Q],
 ) {
-  return rapidPrereviews.reduce((total, rapidPrereview) => total + (rapidPrereview[question] === response ? 1 : 0), 0)
+  return rapidPrereviews.reduce(
+    (total, rapidPrereview) => total + (rapidPrereview.questions[question] === response ? 1 : 0),
+    0,
+  )
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
