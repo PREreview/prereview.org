@@ -12,7 +12,7 @@ import { LanguageCode } from 'iso-639-1'
 import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
-import { Html, html, plainText, sendHtml } from './html'
+import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound } from './middleware'
 import { page } from './page'
 import { PreprintId } from './preprint-id'
@@ -95,9 +95,10 @@ function createPage(review: Prereview) {
             >”
           </h1>
 
-          <ol aria-label="Authors of this PREreview" class="author-list">
-            ${review.authors.map(author => html`<li>${displayAuthor(author)}</li>`)}
-          </ol>
+          <p class="byline">
+            <span class="visually-hidden">Authored</span> by
+            ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
+          </p>
 
           <dl>
             <div>
@@ -141,6 +142,18 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   }
 
   return name
+}
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    RNEA.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85

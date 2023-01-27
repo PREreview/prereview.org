@@ -976,6 +976,21 @@ html-editor {
   }
 }
 
+.byline {
+  margin-block-start: var(--space-2xs);
+  font-size: var(--step--1);
+  font-style: italic;
+
+  & :any-link {
+    text-decoration-line: inherit;
+    color: inherit;
+
+    &:hover {
+      text-decoration-line: underline;
+    }
+  }
+}
+
 .author-list {
   display: flex;
   flex-wrap: wrap;

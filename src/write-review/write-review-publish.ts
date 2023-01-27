@@ -216,9 +216,10 @@ function publishForm(preprint: Preprint, review: CompletedForm, user: User) {
                 >”
               </h2>
 
-              <ol aria-label="Authors of this PREreview" class="author-list">
-                <li>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</li>
-              </ol>
+              <p class="byline">
+                <span class="visually-hidden">Authored</span> by
+                ${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}
+              </p>
 
               ${renderReview(review)}
             </blockquote>
