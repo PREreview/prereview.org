@@ -207,6 +207,16 @@ body > footer {
   }
 }
 
+.orcid {
+  @media screen {
+    padding-right: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line liberty/use-logical-spec */
+    background-image: url('orcid.svg');
+    background-position: right 0.1ch bottom 40%;
+    background-repeat: no-repeat;
+    background-size: 1em;
+  }
+}
+
 img {
   display: block;
   block-size: auto;
@@ -987,22 +997,8 @@ html-editor {
     text-decoration-line: inherit;
     color: inherit;
 
-    @media screen {
-      display: flex;
-      align-items: center;
-
-      &::after {
-        content: '';
-        inline-size: 1em;
-        block-size: 1em;
-        margin-inline-start: 0.4ch;
-        margin-inline-end: 0.1ch;
-        background-image: url('orcid.svg');
-      }
-
-      &:hover {
-        text-decoration-line: underline;
-      }
+    &:hover {
+      text-decoration-line: underline;
     }
   }
 }

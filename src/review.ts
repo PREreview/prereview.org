@@ -137,7 +137,7 @@ function createPage(review: Prereview) {
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
-    return html`<a href="https://orcid.org/${orcid}">${name}</a>`
+    return html`<a href="https://orcid.org/${orcid}" class="orcid">${name}</a>`
   }
 
   return name
