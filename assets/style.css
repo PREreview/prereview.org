@@ -342,10 +342,6 @@ h6 {
   margin-block-start: var(--space-s);
   padding-inline-start: var(--space-m);
 
-  @nest header > & {
-    margin-block-start: var(--space-2xs);
-  }
-
   @nest fieldset > & {
     list-style-type: none;
     margin-block-start: 0;
@@ -982,33 +978,6 @@ html-editor {
   font-style: italic;
 
   & :any-link {
-    text-decoration-line: inherit;
-    color: inherit;
-
-    &:hover {
-      text-decoration-line: underline;
-    }
-  }
-}
-
-.author-list {
-  display: flex;
-  flex-wrap: wrap;
-  font-size: var(--step--1);
-  font-style: italic;
-  padding-inline-start: 0;
-
-  & > li {
-    display: inline-flex;
-    align-items: center;
-
-    &:not(:last-child)::after {
-      content: ', ';
-      white-space: pre;
-    }
-  }
-
-  & a {
     text-decoration-line: inherit;
     color: inherit;
 
