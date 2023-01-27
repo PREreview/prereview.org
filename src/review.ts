@@ -129,7 +129,7 @@ function createPage(review: Prereview) {
           </dl>
         </header>
 
-        ${review.text}
+        <div>${review.text}</div>
       </main>
     `,
     skipLinks: [[html`Skip to PREreview`, '#prereview']],

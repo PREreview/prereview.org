@@ -221,7 +221,7 @@ function publishForm(preprint: Preprint, review: CompletedForm, user: User) {
                 ${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}
               </p>
 
-              ${renderReview(review)}
+              <div>${renderReview(review)}</div>
             </blockquote>
 
             <div class="button-group" role="group">

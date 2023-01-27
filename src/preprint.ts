@@ -252,7 +252,7 @@ function showReview(review: Prereview) {
           </p>
         </header>
 
-        ${rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5 }))}
+        <div>${rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5 }))}</div>
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
           Read
