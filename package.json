@@ -68,7 +68,7 @@
     "@types/sanitize-html": "^2.8.0",
     "@types/turndown": "^5.0.1",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
-    "@typescript-eslint/parser": "^5.46.1",
+    "@typescript-eslint/parser": "^5.49.0",
     "babel-loader": "^9.1.2",
     "cdigit": "^3.2.1",
     "cookie-signature": "^1.2.0",
