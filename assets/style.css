@@ -1140,9 +1140,15 @@ skip-link {
     padding-inline: var(--space-s);
     inline-size: 100%;
 
-    & > :not(.visually-hidden):first-child,
-    & > .visually-hidden:first-child + * {
-      margin-block-start: 0;
+    & > header {
+      & > :not(.visually-hidden):first-child,
+      & > .visually-hidden:first-child + * {
+        margin-block-start: 0;
+      }
+
+      & + :not(.visually-hidden) {
+        margin-block-start: var(--space-xs);
+      }
     }
   }
 

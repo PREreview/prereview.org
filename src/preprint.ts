@@ -13,6 +13,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { LanguageCode } from 'iso-639-1'
 import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
+import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match } from 'ts-pattern'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
@@ -239,13 +240,16 @@ function showReview(review: Prereview) {
   return html`
     <li>
       <article aria-labelledby="prereview-${review.id}-title">
-        <h3 class="visually-hidden" id="prereview-${review.id}-title">
-          PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
-        </h3>
+        <header>
+          <h3 class="visually-hidden" id="prereview-${review.id}-title">
+            PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
+          </h3>
 
-        <ol aria-label="Authors of this PREreview" role="list" class="author-list">
-          ${review.authors.map(author => html` <li>${author.name}</li>`)}
-        </ol>
+          <p class="byline">
+            <span class="visually-hidden">Authored</span> by
+            ${pipe(review.authors, RNEA.map(get('name')), formatList('en'))}
+          </p>
+        </header>
 
         ${rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5 }))}
 
@@ -360,6 +364,18 @@ function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   }
 
   return name
+}
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    RNEA.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
 }
 
 function displayRapidPrereviewQuestion(question: keyof RapidPrereview): Html {
