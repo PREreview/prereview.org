@@ -160,9 +160,10 @@ function createPage({
               ${preprint.title.text}
             </h2>
 
-            <ol aria-label="Authors of this preprint" role="list" class="author-list">
-              ${preprint.authors.map(author => html` <li>${displayAuthor(author)}</li>`)}
-            </ol>
+            <p class="byline">
+              <span class="visually-hidden">Authored</span> by
+              ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList('en'))}
+            </p>
 
             <dl>
               <div>
