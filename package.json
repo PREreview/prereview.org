@@ -88,7 +88,7 @@
     "imagemin": "^8.0.1",
     "imagemin-svgo": "^10.0.1",
     "it-all": "^1.0.6",
-    "jest": "^29.3.1",
+    "jest": "^29.4.1",
     "mini-css-extract-plugin": "^2.7.2",
     "node-fetch": "^2.6.8",
     "node-mocks-http": "^1.12.1",
