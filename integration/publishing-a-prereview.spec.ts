@@ -1995,6 +1995,35 @@ test.extend(canLogIn).extend(areLoggedIn)('have to enter a review', async ({ jav
   await expect(page).toHaveScreenshot()
 })
 
+test.extend(canLogIn).extend(areLoggedIn)(
+  "can't use the template as the review",
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    if (javaScriptEnabled) {
+      await page.locator('[contenteditable]').waitFor()
+    }
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+    }
+    await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Enter your PREreview' }).click()
+
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+    await expect(page).toHaveScreenshot()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)('have to paste a review', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()

@@ -10,7 +10,7 @@ import markdownIt from 'markdown-it'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import TurndownService from 'turndown'
-import { MissingE, hasAnError, missingE } from '../form'
+import { InvalidE, MissingE, hasAnError, invalidE, missingE } from '../form'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -126,7 +126,15 @@ const showAlreadyWrittenErrorForm = (preprint: Preprint) =>
 
 const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
   pipe(
-    RM.decodeBody(body => E.right({ review: pipe(ReviewFieldD.decode(body), E.mapLeft(missingE)) })),
+    RM.decodeBody(body =>
+      E.right({
+        review: pipe(
+          ReviewFieldD.decode(body),
+          E.mapLeft(missingE),
+          E.filterOrElseW(isSameMarkdownAs(template), flow(String, invalidE)),
+        ),
+      }),
+    ),
     RM.chainEitherK(fields =>
       pipe(
         E.Do,
@@ -197,7 +205,7 @@ const ReviewFieldD = pipe(
 )
 
 type WriteReviewForm = {
-  readonly review: E.Either<MissingE, Html | undefined>
+  readonly review: E.Either<MissingE | InvalidE, Html | undefined>
 }
 
 type PasteReviewForm = {
@@ -237,7 +245,7 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
                           <li>
                             <a href="#review">
                               ${match(form.review.left)
-                                .with({ _tag: 'MissingE' }, () => 'Enter your PREreview')
+                                .with({ _tag: P.union('MissingE', 'InvalidE') }, () => 'Enter your PREreview')
                                 .exhaustive()}
                             </a>
                           </li>
@@ -288,7 +296,7 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
                   <div class="error-message" id="review-error">
                     <span class="visually-hidden">Error:</span>
                     ${match(form.review.left)
-                      .with({ _tag: 'MissingE' }, () => 'Enter your PREreview')
+                      .with({ _tag: P.union('MissingE', 'InvalidE') }, () => 'Enter your PREreview')
                       .exhaustive()}
                   </div>
                 `
@@ -323,6 +331,22 @@ ${turndown.turndown(review.toString())}</textarea
                       aria-invalid="true"
                       aria-errormessage="review-error"
                     ></textarea>
+                  `,
+                )
+                .with(
+                  E.left({ _tag: 'InvalidE', actual: P.select() }),
+                  review => html`
+                    <textarea
+                      id="review"
+                      name="review"
+                      rows="20"
+                      aria-describedby="review-tip"
+                      aria-invalid="true"
+                      aria-errormessage="review-error"
+                    >
+${turndown.turndown(review)}</textarea
+                    >
+                    <textarea hidden disabled>${rawHtml(review)}</textarea>
                   `,
                 )
                 .exhaustive()}
@@ -526,6 +550,15 @@ Write a short summary of the research’s main findings and how this work has mo
 
 - List concerns that would improve the overall flow or clarity but are not critical to the understanding and conclusions of the research.
 `.trim()
+
+function isSameMarkdownAs(reference: string) {
+  return (input: Html) => {
+    return (
+      turndown.turndown(input.toString()).replaceAll(/\s+/g, ' ') !==
+      turndown.turndown(reference.replaceAll(/\s+/g, ' '))
+    )
+  }
+}
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/83
 const fromMiddlewareK =
