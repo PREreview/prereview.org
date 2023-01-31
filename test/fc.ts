@@ -13,6 +13,7 @@ import ISO6391, { LanguageCode } from 'iso-639-1'
 import { Headers as FetchHeaders } from 'node-fetch'
 import { Body, Headers, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
 import { Orcid, isOrcid } from 'orcid-id-ts'
+import { Uuid, isUuid } from 'uuid-ts'
 import { CrossrefPreprintId } from '../src/crossref'
 import { DatacitePreprintId } from '../src/datacite'
 import { Html, sanitizeHtml, html as toHtml } from '../src/html'
@@ -53,9 +54,10 @@ export const {
   record,
   string,
   tuple,
-  uuid,
   webUrl,
 } = fc
+
+export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
 
