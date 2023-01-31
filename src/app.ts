@@ -3,6 +3,7 @@ import * as P from 'fp-ts-routing'
 import * as M from 'fp-ts/Monoid'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as TE from 'fp-ts/TaskEither'
 import { constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -29,7 +30,7 @@ import {
 } from './legacy-prereview'
 import { PublicUrlEnv, authenticate, authenticateError, logIn, logOut } from './log-in'
 import { FathomEnv, PhaseEnv } from './page'
-import { preprint } from './preprint'
+import { preprint, redirectToPreprint } from './preprint'
 import { PreprintId } from './preprint-id'
 import { review } from './review'
 import {
@@ -39,6 +40,7 @@ import {
   orcidCodeMatch,
   orcidErrorMatch,
   preprintMatch,
+  preprintUuidMatch,
   reviewMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
@@ -112,6 +114,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           getPreprint: flip(getPreprint)(env),
           getPrereviews: flip(getPrereviewsFromZenodo)(env),
           getRapidPrereviews: flip(getRapidPreviewsFromLegacyPrereview)(env),
+        })),
+      ),
+    ),
+    pipe(
+      preprintUuidMatch.parser,
+      P.map(({ uuid }) => redirectToPreprint(uuid)),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          getPreprintDoiFromUuid: () => TE.left('unavailable'),
         })),
       ),
     ),

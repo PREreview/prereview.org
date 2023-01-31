@@ -16,11 +16,12 @@ import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match } from 'ts-pattern'
+import { Uuid } from 'uuid-ts'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
-import { notFound } from './middleware'
+import { notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
 import { PreprintId } from './preprint-id'
-import { reviewMatch, writeReviewMatch } from './routes'
+import { preprintMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
 
 import PlainDate = Temporal.PlainDate
@@ -70,6 +71,10 @@ export interface GetPreprintEnv {
   getPreprint: (doi: PreprintId['doi']) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
 }
 
+export interface GetPreprintDoiFromUuidEnv {
+  getPreprintDoiFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', PreprintId['doi']>
+}
+
 export interface GetPrereviewsEnv {
   getPrereviews: (id: PreprintId) => TE.TaskEither<'unavailable', ReadonlyArray<Prereview>>
 }
@@ -86,6 +91,11 @@ const sendPage = flow(
 
 const getPreprint = (doi: PreprintId['doi']) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(doi)))
+
+const getPreprintDoiFromUuid = (uuid: Uuid) =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ getPreprintDoiFromUuid }: GetPreprintDoiFromUuidEnv) => getPreprintDoiFromUuid(uuid)),
+  )
 
 const getPrereviews = (id: PreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }: GetPrereviewsEnv) => getPrereviews(id)))
@@ -111,6 +121,20 @@ export const preprint = flow(
     match(error)
       .with('not-found', () => notFound)
       .with('unavailable', () => showFailureMessage)
+      .exhaustive(),
+  ),
+)
+
+export const redirectToPreprint = flow(
+  RM.fromReaderTaskEitherK(getPreprintDoiFromUuid),
+  RM.ichainFirst(() => RM.status(Status.MovedPermanently)),
+  RM.ichain(doi => RM.header('Location', format(preprintMatch.formatter, { doi }))),
+  RM.ichain(() => RM.closeHeaders()),
+  RM.ichain(() => RM.end()),
+  RM.orElseW(error =>
+    match(error)
+      .with('not-found', () => notFound)
+      .with('unavailable', () => serviceUnavailable)
       .exhaustive(),
   ),
 )

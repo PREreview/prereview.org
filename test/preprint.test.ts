@@ -196,4 +196,64 @@ describe('preprint', () => {
       )
     })
   })
+
+  describe('redirectToPreprint', () => {
+    test.prop([fc.connection(), fc.uuid(), fc.preprintDoi()])(
+      'when the DOI is found',
+      async (connection, uuid, doi) => {
+        const getPreprintDoiFromUuid: Mock<_.GetPreprintDoiFromUuidEnv['getPreprintDoiFromUuid']> = jest.fn(_ =>
+          TE.right(doi),
+        )
+
+        const actual = await runMiddleware(_.redirectToPreprint(uuid)({ getPreprintDoiFromUuid }), connection)()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.MovedPermanently },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: `/preprints/doi-${encodeURIComponent(
+                doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              )}`,
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+        expect(getPreprintDoiFromUuid).toHaveBeenCalledWith(uuid)
+      },
+    )
+
+    test.prop([fc.connection(), fc.uuid()])('when the DOI is not found', async (connection, uuid) => {
+      const actual = await runMiddleware(
+        _.redirectToPreprint(uuid)({ getPreprintDoiFromUuid: () => TE.left('not-found') }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.NotFound },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([fc.connection(), fc.uuid()])('when the DOI is unavailable', async (connection, uuid) => {
+      const actual = await runMiddleware(
+        _.redirectToPreprint(uuid)({ getPreprintDoiFromUuid: () => TE.left('unavailable') }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+  })
 })
