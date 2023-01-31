@@ -25,6 +25,7 @@ import { handleError } from './http-error'
 import {
   LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
+  getPreprintDoiFromLegacyPreviewUuid,
   getPseudonymFromLegacyPrereview,
   getRapidPreviewsFromLegacyPrereview,
 } from './legacy-prereview'
@@ -123,7 +124,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPreprintDoiFromUuid: () => TE.left('unavailable'),
+          getPreprintDoiFromUuid: flip(getPreprintDoiFromLegacyPreviewUuid)(env),
         })),
       ),
     ),

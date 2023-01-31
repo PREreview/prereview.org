@@ -1,7 +1,8 @@
-import { Doi } from 'doi-ts'
+import { Doi, parse } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
+import * as O from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
@@ -13,9 +14,9 @@ import { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
-import { isUuid } from 'uuid-ts'
+import { Uuid, isUuid } from 'uuid-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { PreprintId } from './preprint-id'
+import { PreprintId, isPreprintDoi } from './preprint-id'
 import { NewPrereview } from './write-review'
 
 export interface LegacyPrereviewApiEnv {
@@ -99,6 +100,37 @@ const LegacyPrereviewPreprintD = pipe(
     D.struct({
       uuid: UuidD,
     }),
+  ),
+)
+
+const LegacyPrereviewPreprintUuidD = pipe(
+  JsonD,
+  D.compose(
+    D.struct({
+      data: D.tuple(
+        D.struct({
+          handle: D.string,
+        }),
+      ),
+    }),
+  ),
+)
+
+export const getPreprintDoiFromLegacyPreviewUuid = flow(
+  RTE.fromReaderK((uuid: Uuid) => legacyPrereviewUrl(`preprints/${uuid}`)),
+  RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
+  RTE.chainW(F.send),
+  RTE.local(useStaleCache()),
+  RTE.local(timeoutRequest(2000)),
+  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+  RTE.chainTaskEitherKW(F.decode(LegacyPrereviewPreprintUuidD)),
+  RTE.mapLeft(error =>
+    match(error)
+      .with({ status: Status.NotFound }, () => 'not-found' as const)
+      .otherwise(() => 'unavailable' as const),
+  ),
+  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(
+    flow(get('data.[0].handle'), parse, O.filter(isPreprintDoi)),
   ),
 )
 
