@@ -416,9 +416,11 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
+    await page.locator('[contenteditable]').waitFor()
   }
   await expect(page).toHaveScreenshot()
 
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.keyboard.press('Tab')
 
@@ -1829,6 +1831,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
+    if (javaScriptEnabled) {
+      await page.locator('[contenteditable]').waitFor()
+    }
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
