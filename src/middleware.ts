@@ -12,6 +12,16 @@ export const seeOther: <E = never>(location: string) => M.Middleware<StatusOpen,
     M.ichain(() => M.end()),
   )
 
+export const movedPermanently: <E = never>(
+  location: string,
+) => M.Middleware<StatusOpen, ResponseEnded, E, void> = location =>
+  pipe(
+    M.status(Status.MovedPermanently),
+    M.ichain(() => M.header('Location', location)),
+    M.ichain(() => M.closeHeaders()),
+    M.ichain(() => M.end()),
+  )
+
 export const notFound = handleError(new NotFound())
 
 export const serviceUnavailable = handleError(new ServiceUnavailable())

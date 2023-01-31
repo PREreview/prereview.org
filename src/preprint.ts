@@ -18,7 +18,7 @@ import textClipper from 'text-clipper'
 import { match } from 'ts-pattern'
 import { Uuid } from 'uuid-ts'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
-import { notFound, serviceUnavailable } from './middleware'
+import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
 import { PreprintId } from './preprint-id'
 import { preprintMatch, reviewMatch, writeReviewMatch } from './routes'
@@ -127,10 +127,7 @@ export const preprint = flow(
 
 export const redirectToPreprint = flow(
   RM.fromReaderTaskEitherK(getPreprintDoiFromUuid),
-  RM.ichainFirst(() => RM.status(Status.MovedPermanently)),
-  RM.ichain(doi => RM.header('Location', format(preprintMatch.formatter, { doi }))),
-  RM.ichain(() => RM.closeHeaders()),
-  RM.ichain(() => RM.end()),
+  RM.ichainMiddlewareK(doi => movedPermanently(format(preprintMatch.formatter, { doi }))),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)

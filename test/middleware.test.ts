@@ -19,6 +19,18 @@ describe('middleware', () => {
     )
   })
 
+  test.prop([fc.connection(), fc.string()])('movedPermanently', async (connection, location) => {
+    const actual = await runMiddleware(_.movedPermanently(location), connection)()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.MovedPermanently },
+        { type: 'setHeader', name: 'Location', value: location },
+        { type: 'endResponse' },
+      ]),
+    )
+  })
+
   test.prop([fc.connection()])('notFound', async connection => {
     const actual = await runMiddleware(_.notFound({}), connection)()
 
