@@ -1,6 +1,7 @@
 import { createTerminus } from '@godaddy/terminus'
 import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
+import * as dns from 'dns'
 import * as C from 'fp-ts/Console'
 import * as RT from 'fp-ts/ReaderTask'
 import { pipe } from 'fp-ts/function'
@@ -29,6 +30,10 @@ redis?.on('close', () => L.debug('Redis connection closed')(loggerEnv)())
 redis?.on('reconnecting', () => L.info('Redis reconnecting')(loggerEnv)())
 redis?.removeAllListeners('error')
 redis?.on('error', (error: Error) => L.errorP('Redis connection error')({ error: error.message })(loggerEnv)())
+
+if (env.ZENODO_URL.href.includes('sandbox')) {
+  dns.setDefaultResultOrder('ipv4first')
+}
 
 const server = app({
   ...loggerEnv,
