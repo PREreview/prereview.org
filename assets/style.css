@@ -821,7 +821,7 @@ error-summary {
     }
   }
 
-  @nest :not(label) > &:first-child {
+  @nest :not(label) > &:where(:first-child) {
     margin-block-start: var(--space-s-m);
   }
 
