@@ -420,12 +420,7 @@ function pasteReviewForm(preprint: Preprint, form: PasteReviewForm) {
                 rows="20"
                 aria-describedby="review-tip"
                 ${rawHtml(E.isLeft(form.review) ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
-              >
-${match(form.review)
-                  .with(E.right(undefined), () => '')
-                  .with(E.left({ _tag: 'MissingE' }), () => '')
-                  .exhaustive()}</textarea
-              >
+              ></textarea>
             </html-editor>
           </div>
 
