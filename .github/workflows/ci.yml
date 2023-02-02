@@ -56,8 +56,9 @@ jobs:
 
       - name: 'Build image'
         id: build
-        uses: docker/build-push-action@v3.3.0
+        uses: docker/build-push-action@v4.0.0
         with:
+          provenance: false
           outputs: type=docker,dest=/tmp/image.tar
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -161,7 +162,7 @@ jobs:
 
       - name: 'Build image'
         id: build
-        uses: docker/build-push-action@v3.3.0
+        uses: docker/build-push-action@v4.0.0
         with:
           load: true
           target: test-integration
