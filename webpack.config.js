@@ -48,13 +48,7 @@ module.exports = {
                     'postcss-preset-env',
                     {
                       features: {
-                        'custom-properties': false,
                         'custom-selectors': true,
-                        'focus-visible-pseudo-class': false,
-                        'font-variant-property': false,
-                        'logical-properties-and-values': {
-                          dir: 'ltr',
-                        },
                         'nesting-rules': true,
                       },
                       preserve: false,
