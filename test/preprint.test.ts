@@ -30,6 +30,13 @@ describe('preprint', () => {
       ),
       fc.array(
         fc.record({
+          author: fc.record(
+            {
+              name: fc.string(),
+              orcid: fc.orcid(),
+            },
+            { requiredKeys: ['name'] },
+          ),
           questions: fc.record({
             availableCode: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
             availableData: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
@@ -124,6 +131,13 @@ describe('preprint', () => {
       fc.preprint(),
       fc.array(
         fc.record({
+          author: fc.record(
+            {
+              name: fc.string(),
+              orcid: fc.orcid(),
+            },
+            { requiredKeys: ['name'] },
+          ),
           questions: fc.record({
             availableCode: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),
             availableData: fc.constantFrom('yes' as const, 'unsure' as const, 'na' as const, 'no' as const),

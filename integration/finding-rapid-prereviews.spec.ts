@@ -95,6 +95,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             rapidReviews: [
               {
+                author: {
+                  name: 'Madison Dresler',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'yes',
@@ -109,6 +112,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'N/A',
               },
               {
+                author: {
+                  name: 'Darkblue Monkey',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'unsure',
@@ -123,6 +129,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'no',
               },
               {
+                author: {
+                  name: 'Darkred Gorilla',
+                },
                 ynNovel: 'unsure',
                 ynFuture: 'yes',
                 ynReproducibility: 'unsure',
@@ -137,6 +146,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'yes',
               },
               {
+                author: {
+                  name: 'Lamis Elkheir',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'unsure',
@@ -151,6 +163,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'unsure',
               },
               {
+                author: {
+                  name: 'Devanshi Gupta',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'unsure',
@@ -165,6 +180,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'N/A',
               },
               {
+                author: {
+                  name: 'Sandhya Prabhakaran',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'unsure',
@@ -179,6 +197,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'N/A',
               },
               {
+                author: {
+                  name: 'Suhaila Rahman',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'unsure',
@@ -193,6 +214,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'yes',
               },
               {
+                author: {
+                  name: 'Ruchika Bajaj',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'yes',
@@ -207,6 +231,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'unsure',
               },
               {
+                author: {
+                  name: 'Sepia Gorilla',
+                },
                 ynNovel: 'unsure',
                 ynFuture: 'yes',
                 ynReproducibility: 'unsure',
@@ -221,6 +248,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'no',
               },
               {
+                author: {
+                  name: 'Manoj Kumar',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'no',
@@ -235,6 +265,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'no',
               },
               {
+                author: {
+                  name: 'Vivia Khosasih',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'unsure',
@@ -249,6 +282,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'unsure',
               },
               {
+                author: {
+                  name: 'Raimi Morufu Olalekan',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'yes',
@@ -263,6 +299,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'no',
               },
               {
+                author: {
+                  name: 'Peren Coskun',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'unsure',
@@ -277,6 +316,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'unsure',
               },
               {
+                author: {
+                  name: 'Ali Mussa',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'yes',
@@ -291,6 +333,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'yes',
               },
               {
+                author: {
+                  name: 'Nalaka Wijekoon',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'unsure',
@@ -305,6 +350,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'N/A',
               },
               {
+                author: {
+                  name: 'Sumaya Kambal',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'yes',
@@ -319,6 +367,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'unsure',
               },
               {
+                author: {
+                  name: 'Marioara Chiritoiu-Butnaru',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'no',
@@ -333,6 +384,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'N/A',
               },
               {
+                author: {
+                  name: 'Emmanuel Boakye',
+                },
                 ynNovel: 'yes',
                 ynFuture: 'yes',
                 ynReproducibility: 'yes',
@@ -347,6 +401,9 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
                 ynAvailableData: 'no',
               },
               {
+                author: {
+                  name: 'Oluwaseun Adeolu Ogundijo',
+                },
                 ynNovel: 'unsure',
                 ynFuture: 'yes',
                 ynReproducibility: 'yes',

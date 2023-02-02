@@ -72,6 +72,9 @@ const LegacyPrereviewD = pipe(
         D.struct({
           rapidReviews: D.array(
             D.struct({
+              author: D.struct({
+                name: D.string,
+              }),
               ynNovel: RapidPrereviewAnswerD,
               ynFuture: RapidPrereviewAnswerD,
               ynReproducibility: RapidPrereviewAnswerD,
@@ -169,6 +172,7 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
       flow(
         get('data.[0].rapidReviews'),
         RA.map(results => ({
+          author: { name: results.author.name },
           questions: {
             availableCode: results.ynAvailableCode,
             availableData: results.ynAvailableData,

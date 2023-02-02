@@ -241,6 +241,7 @@ describe('legacy-prereview', () => {
                   {
                     rapidReviews: [
                       {
+                        author: { name: 'Author 1' },
                         ynNovel: 'yes',
                         ynFuture: 'yes',
                         ynReproducibility: 'unsure',
@@ -255,6 +256,7 @@ describe('legacy-prereview', () => {
                         ynAvailableData: 'no',
                       },
                       {
+                        author: { name: 'Author 2' },
                         ynNovel: 'unsure',
                         ynFuture: 'yes',
                         ynReproducibility: 'unsure',
@@ -285,6 +287,7 @@ describe('legacy-prereview', () => {
       expect(actual).toStrictEqual(
         E.right([
           {
+            author: { name: 'Author 1' },
             questions: {
               novel: 'yes',
               future: 'yes',
@@ -301,6 +304,7 @@ describe('legacy-prereview', () => {
             },
           },
           {
+            author: { name: 'Author 2' },
             questions: {
               novel: 'unsure',
               future: 'yes',
@@ -337,6 +341,7 @@ describe('legacy-prereview', () => {
                   {
                     rapidReviews: [
                       {
+                        author: { name: 'Author name' },
                         ynNovel: 'yes',
                         ynFuture: 'yes',
                         ynReproducibility: 'unsure',
@@ -379,6 +384,7 @@ describe('legacy-prereview', () => {
         expect(actual).toStrictEqual(
           E.right([
             {
+              author: { name: 'Author name' },
               questions: {
                 novel: 'yes',
                 future: 'yes',

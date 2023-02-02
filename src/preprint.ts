@@ -51,6 +51,10 @@ export type Prereview = {
 }
 
 type RapidPrereview = {
+  author: {
+    name: string
+    orcid?: Orcid
+  }
   questions: {
     availableCode: 'yes' | 'unsure' | 'na' | 'no'
     availableData: 'yes' | 'unsure' | 'na' | 'no'
@@ -291,6 +295,11 @@ function showReview(review: Prereview) {
 function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview>): Html {
   return html`
     <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
+
+    <p class="byline">
+      <span class="visually-hidden">Authored</span> by
+      ${pipe(rapidPrereviews, RNEA.map(flow(get('author'), displayAuthor)), formatList('en'))}
+    </p>
 
     <details>
       <summary>Where can I fill out a Rapid PREreview?</summary>
