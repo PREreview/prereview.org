@@ -799,7 +799,7 @@ error-summary {
   padding-block: var(--space-3xs);
   padding-inline: var(--space-2xs);
   max-inline-size: 100%;
-  max-block-size: 30vh;
+  max-block-size: 30vb;
 
   &:not([hidden]) {
     display: block;
@@ -842,10 +842,10 @@ error-summary {
   }
 
   @media screen {
-    max-block-size: 75vh;
+    max-block-size: 75vb;
 
     @media (min-width: 50em) {
-      max-block-size: 50vh;
+      max-block-size: 50vb;
     }
   }
 }
@@ -854,7 +854,7 @@ html-editor {
   display: contents;
 
   & :--textarea {
-    block-size: 100vh;
+    block-size: 100vb;
     resize: none;
   }
 
@@ -1053,12 +1053,12 @@ html-editor {
   }
 
   @media screen {
-    max-block-size: 75vh;
+    max-block-size: 75vb;
     overflow-y: auto;
     scrollbar-gutter: stable;
 
     @media (min-width: 50em) {
-      max-block-size: 50vh;
+      max-block-size: 50vb;
     }
   }
 }
