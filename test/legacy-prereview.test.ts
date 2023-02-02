@@ -118,36 +118,43 @@ describe('legacy-prereview', () => {
   })
 
   describe('getPseudonymFromLegacyPrereview', () => {
-    test.prop([fc.orcid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.string()])(
-      'when the user can be decoded',
-      async (orcid, app, key, url, update, pseudonym) => {
-        const fetch = fetchMock.sandbox().getOnce(
-          {
-            url: `${url}api/v2/users/${encodeURIComponent(orcid)}`,
-            headers: { 'X-Api-App': app, 'X-Api-Key': key },
-          },
-          {
-            body: {
-              data: {
-                personas: [
-                  {
-                    isAnonymous: true,
-                    name: pseudonym,
-                  },
-                ],
-              },
-            },
-          },
-        )
+    test.prop([
+      fc.orcid(),
+      fc.string(),
+      fc.string(),
+      fc.origin(),
+      fc.boolean(),
+      fc.tuple(fc.string(), fc.string()).chain(([pseudonym, realName]) =>
+        fc.tuple(
+          fc.constant(pseudonym),
+          fc.oneof(
+            fc.constant([
+              { isAnonymous: false, name: realName },
+              { isAnonymous: true, name: pseudonym },
+            ]),
+            fc.constant([
+              { isAnonymous: true, name: pseudonym },
+              { isAnonymous: false, name: realName },
+            ]),
+          ),
+        ),
+      ),
+    ])('when the user can be decoded', async (orcid, app, key, url, update, [pseudonym, personas]) => {
+      const fetch = fetchMock.sandbox().getOnce(
+        {
+          url: `${url}api/v2/users/${encodeURIComponent(orcid)}`,
+          headers: { 'X-Api-App': app, 'X-Api-Key': key },
+        },
+        { body: { data: { personas } } },
+      )
 
-        const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
-          fetch,
-          legacyPrereviewApi: { app, key, url, update },
-        })()
+      const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
+        fetch,
+        legacyPrereviewApi: { app, key, url, update },
+      })()
 
-        expect(actual).toStrictEqual(E.right(pseudonym))
-      },
-    )
+      expect(actual).toStrictEqual(E.right(pseudonym))
+    })
 
     test.prop([
       fc.orcid(),

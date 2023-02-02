@@ -41,9 +41,9 @@ const LegacyPrereviewUserD = pipe(
   D.compose(
     D.struct({
       data: D.struct({
-        personas: D.tuple(
+        personas: D.array(
           D.struct({
-            isAnonymous: D.literal(true),
+            isAnonymous: D.boolean,
             name: D.string,
           }),
         ),
@@ -141,12 +141,13 @@ export const getPseudonymFromLegacyPrereview = flow(
   RTE.local(timeoutRequest(2000)),
   RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
   RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
-  RTE.bimap(
-    error =>
-      match(error)
-        .with({ status: Status.NotFound }, () => 'no-pseudonym' as const)
-        .otherwise(identity),
-    get('data.personas.[0].name'),
+  RTE.mapLeft(error =>
+    match(error)
+      .with({ status: Status.NotFound }, () => 'no-pseudonym' as const)
+      .otherwise(identity),
+  ),
+  RTE.chainOptionK(() => 'no-pseudonym' as const)(
+    flow(get('data.personas'), RA.findFirst(get('isAnonymous')), O.map(get('name'))),
   ),
 )
 
