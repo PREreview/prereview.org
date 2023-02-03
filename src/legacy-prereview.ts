@@ -10,7 +10,7 @@ import * as b from 'fp-ts/boolean'
 import { constVoid, flow, identity, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
-import { Orcid } from 'orcid-id-ts'
+import { Orcid, isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
@@ -35,6 +35,8 @@ const JsonD = {
       E.mapLeft(() => D.error(s, 'JSON')),
     ),
 }
+
+const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
 
 const LegacyPrereviewUserD = pipe(
   JsonD,
@@ -70,9 +72,16 @@ const LegacyRapidPrereviewsD = pipe(
     D.struct({
       data: D.array(
         D.struct({
-          author: D.struct({
-            name: D.string,
-          }),
+          author: pipe(
+            D.struct({
+              name: D.string,
+            }),
+            D.intersect(
+              D.partial({
+                orcid: OrcidD,
+              }),
+            ),
+          ),
           ynNovel: RapidPrereviewAnswerD,
           ynFuture: RapidPrereviewAnswerD,
           ynReproducibility: RapidPrereviewAnswerD,
@@ -170,7 +179,7 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
       flow(
         get('data'),
         RA.map(results => ({
-          author: { name: results.author.name },
+          author: { name: results.author.name, orcid: results.author.orcid },
           questions: {
             availableCode: results.ynAvailableCode,
             availableData: results.ynAvailableData,

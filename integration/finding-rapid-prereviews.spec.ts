@@ -95,6 +95,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Madison Dresler',
+              orcid: '0000-0001-6647-6392',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -146,6 +147,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Lamis Elkheir',
+              orcid: '0000-0002-3516-334X',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -163,6 +165,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Devanshi Gupta',
+              orcid: '0000-0003-4946-401X',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -180,6 +183,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Sandhya Prabhakaran',
+              orcid: '0000-0002-9537-507X',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -197,6 +201,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Suhaila Rahman',
+              orcid: '0000-0002-7946-5155',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -214,6 +219,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Ruchika Bajaj',
+              orcid: '0000-0002-9777-0364',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -248,6 +254,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Manoj Kumar',
+              orcid: '0000-0003-0772-1399',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -265,6 +272,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Vivia Khosasih',
+              orcid: '0000-0002-6451-3556',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -282,6 +290,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Raimi Morufu Olalekan',
+              orcid: '0000-0001-5042-6729',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -299,6 +308,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Peren Coskun',
+              orcid: '0000-0003-3521-0027',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -316,6 +326,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Ali Mussa',
+              orcid: '0000-0002-1116-7362',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -333,6 +344,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Nalaka Wijekoon',
+              orcid: '0000-0002-3599-5357',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -350,6 +362,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Sumaya Kambal',
+              orcid: '0000-0003-3093-7251',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -367,6 +380,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Marioara Chiritoiu-Butnaru',
+              orcid: '0000-0003-2064-2003',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -384,6 +398,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Emmanuel Boakye',
+              orcid: '0000-0003-2043-5952',
             },
             ynNovel: 'yes',
             ynFuture: 'yes',
@@ -401,6 +416,7 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
           {
             author: {
               name: 'Oluwaseun Adeolu Ogundijo',
+              orcid: '0000-0002-7888-8279',
             },
             ynNovel: 'unsure',
             ynFuture: 'yes',

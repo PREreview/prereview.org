@@ -242,7 +242,7 @@ describe('legacy-prereview', () => {
               body: {
                 data: [
                   {
-                    author: { name: 'Author 1' },
+                    author: { name: 'Author 1', orcid: '0000-0002-1825-0097' },
                     ynNovel: 'yes',
                     ynFuture: 'yes',
                     ynReproducibility: 'unsure',
@@ -286,7 +286,7 @@ describe('legacy-prereview', () => {
       expect(actual).toStrictEqual(
         E.right([
           {
-            author: { name: 'Author 1' },
+            author: { name: 'Author 1', orcid: '0000-0002-1825-0097' },
             questions: {
               novel: 'yes',
               future: 'yes',
@@ -303,7 +303,7 @@ describe('legacy-prereview', () => {
             },
           },
           {
-            author: { name: 'Author 2' },
+            author: { name: 'Author 2', orcid: undefined },
             questions: {
               novel: 'unsure',
               future: 'yes',
@@ -379,7 +379,7 @@ describe('legacy-prereview', () => {
         expect(actual).toStrictEqual(
           E.right([
             {
-              author: { name: 'Author name' },
+              author: { name: 'Author name', orcid: undefined },
               questions: {
                 novel: 'yes',
                 future: 'yes',
