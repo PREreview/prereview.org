@@ -234,43 +234,42 @@ describe('legacy-prereview', () => {
         fetch: fetchMock
           .sandbox()
           .getOnce(
-            `${url}api/v2/preprints/doi-${preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
+            `${url}api/v2/preprints/doi-${preprintId.doi
+              .toLowerCase()
+              .replaceAll('-', '+')
+              .replaceAll('/', '-')}/rapid-reviews`,
             {
               body: {
                 data: [
                   {
-                    rapidReviews: [
-                      {
-                        author: { name: 'Author 1' },
-                        ynNovel: 'yes',
-                        ynFuture: 'yes',
-                        ynReproducibility: 'unsure',
-                        ynMethods: 'unsure',
-                        ynCoherent: 'yes',
-                        ynLimitations: 'unsure',
-                        ynEthics: 'yes',
-                        ynNewData: 'yes',
-                        ynRecommend: 'yes',
-                        ynPeerReview: 'yes',
-                        ynAvailableCode: 'no',
-                        ynAvailableData: 'no',
-                      },
-                      {
-                        author: { name: 'Author 2' },
-                        ynNovel: 'unsure',
-                        ynFuture: 'yes',
-                        ynReproducibility: 'unsure',
-                        ynMethods: 'yes',
-                        ynCoherent: 'yes',
-                        ynLimitations: 'no',
-                        ynEthics: 'N/A',
-                        ynNewData: 'yes',
-                        ynRecommend: 'yes',
-                        ynPeerReview: 'yes',
-                        ynAvailableCode: 'no',
-                        ynAvailableData: 'yes',
-                      },
-                    ],
+                    author: { name: 'Author 1' },
+                    ynNovel: 'yes',
+                    ynFuture: 'yes',
+                    ynReproducibility: 'unsure',
+                    ynMethods: 'unsure',
+                    ynCoherent: 'yes',
+                    ynLimitations: 'unsure',
+                    ynEthics: 'yes',
+                    ynNewData: 'yes',
+                    ynRecommend: 'yes',
+                    ynPeerReview: 'yes',
+                    ynAvailableCode: 'no',
+                    ynAvailableData: 'no',
+                  },
+                  {
+                    author: { name: 'Author 2' },
+                    ynNovel: 'unsure',
+                    ynFuture: 'yes',
+                    ynReproducibility: 'unsure',
+                    ynMethods: 'yes',
+                    ynCoherent: 'yes',
+                    ynLimitations: 'no',
+                    ynEthics: 'N/A',
+                    ynNewData: 'yes',
+                    ynRecommend: 'yes',
+                    ynPeerReview: 'yes',
+                    ynAvailableCode: 'no',
+                    ynAvailableData: 'yes',
                   },
                 ],
               },
@@ -334,28 +333,24 @@ describe('legacy-prereview', () => {
               requestUrl ===
                 `${url}api/v2/preprints/doi-${encodeURIComponent(
                   preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-                )}` && cache === 'force-cache',
+                )}/rapid-reviews` && cache === 'force-cache',
             {
               body: {
                 data: [
                   {
-                    rapidReviews: [
-                      {
-                        author: { name: 'Author name' },
-                        ynNovel: 'yes',
-                        ynFuture: 'yes',
-                        ynReproducibility: 'unsure',
-                        ynMethods: 'unsure',
-                        ynCoherent: 'yes',
-                        ynLimitations: 'unsure',
-                        ynEthics: 'yes',
-                        ynNewData: 'yes',
-                        ynRecommend: 'yes',
-                        ynPeerReview: 'yes',
-                        ynAvailableCode: 'no',
-                        ynAvailableData: 'no',
-                      },
-                    ],
+                    author: { name: 'Author name' },
+                    ynNovel: 'yes',
+                    ynFuture: 'yes',
+                    ynReproducibility: 'unsure',
+                    ynMethods: 'unsure',
+                    ynCoherent: 'yes',
+                    ynLimitations: 'unsure',
+                    ynEthics: 'yes',
+                    ynNewData: 'yes',
+                    ynRecommend: 'yes',
+                    ynPeerReview: 'yes',
+                    ynAvailableCode: 'no',
+                    ynAvailableData: 'no',
                   },
                 ],
               },
@@ -367,7 +362,7 @@ describe('legacy-prereview', () => {
               requestUrl ===
                 `${url}api/v2/preprints/doi-${encodeURIComponent(
                   preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-                )}` && cache === 'no-cache',
+                )}/rapid-reviews` && cache === 'no-cache',
             { throws: new Error('Network error') },
           )
 
@@ -415,7 +410,7 @@ describe('legacy-prereview', () => {
             .getOnce(
               `${url}api/v2/preprints/doi-${encodeURIComponent(
                 preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-              )}`,
+              )}/rapid-reviews`,
               { status: Status.NotFound },
             ),
           legacyPrereviewApi: {
@@ -445,7 +440,7 @@ describe('legacy-prereview', () => {
           .getOnce(
             `${url}api/v2/preprints/doi-${encodeURIComponent(
               preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}`,
+            )}/rapid-reviews`,
             { status },
           ),
         legacyPrereviewApi: {

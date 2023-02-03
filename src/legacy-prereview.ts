@@ -64,31 +64,27 @@ const RapidPrereviewAnswerD = pipe(
   ),
 )
 
-const LegacyPrereviewD = pipe(
+const LegacyRapidPrereviewsD = pipe(
   JsonD,
   D.compose(
     D.struct({
-      data: D.tuple(
+      data: D.array(
         D.struct({
-          rapidReviews: D.array(
-            D.struct({
-              author: D.struct({
-                name: D.string,
-              }),
-              ynNovel: RapidPrereviewAnswerD,
-              ynFuture: RapidPrereviewAnswerD,
-              ynReproducibility: RapidPrereviewAnswerD,
-              ynMethods: RapidPrereviewAnswerD,
-              ynCoherent: RapidPrereviewAnswerD,
-              ynLimitations: RapidPrereviewAnswerD,
-              ynEthics: RapidPrereviewAnswerD,
-              ynNewData: RapidPrereviewAnswerD,
-              ynRecommend: RapidPrereviewAnswerD,
-              ynPeerReview: RapidPrereviewAnswerD,
-              ynAvailableCode: RapidPrereviewAnswerD,
-              ynAvailableData: RapidPrereviewAnswerD,
-            }),
-          ),
+          author: D.struct({
+            name: D.string,
+          }),
+          ynNovel: RapidPrereviewAnswerD,
+          ynFuture: RapidPrereviewAnswerD,
+          ynReproducibility: RapidPrereviewAnswerD,
+          ynMethods: RapidPrereviewAnswerD,
+          ynCoherent: RapidPrereviewAnswerD,
+          ynLimitations: RapidPrereviewAnswerD,
+          ynEthics: RapidPrereviewAnswerD,
+          ynNewData: RapidPrereviewAnswerD,
+          ynRecommend: RapidPrereviewAnswerD,
+          ynPeerReview: RapidPrereviewAnswerD,
+          ynAvailableCode: RapidPrereviewAnswerD,
+          ynAvailableData: RapidPrereviewAnswerD,
         }),
       ),
     }),
@@ -158,7 +154,9 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
   pipe(
     RTE.fromReader(
       legacyPrereviewUrl(
-        `preprints/${`doi-${encodeURIComponent(id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'))}`}`,
+        `preprints/${`doi-${encodeURIComponent(
+          id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+        )}`}/rapid-reviews`,
       ),
     ),
     RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
@@ -167,10 +165,10 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
     RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-    RTE.chainTaskEitherKW(F.decode(LegacyPrereviewD)),
+    RTE.chainTaskEitherKW(F.decode(LegacyRapidPrereviewsD)),
     RTE.map(
       flow(
-        get('data.[0].rapidReviews'),
+        get('data'),
         RA.map(results => ({
           author: { name: results.author.name },
           questions: {
