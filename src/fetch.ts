@@ -1,4 +1,5 @@
 import * as F from 'fetch-fp-ts'
+import { Json } from 'fp-ts/Json'
 import { constVoid } from 'fp-ts/function'
 import * as L from 'logger-fp-ts'
 
@@ -47,6 +48,7 @@ export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(env: E): E {
       L.debugP('Sending HTTP request')({
         url,
         method: init.method,
+        cache: init.cache as Json,
       })(env)()
 
       const startTime = Date.now()
