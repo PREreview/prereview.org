@@ -18,7 +18,7 @@ import { match } from 'ts-pattern'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
-import { logFetch, useStaleCache } from './fetch'
+import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { home } from './home'
 import { handleError } from './http-error'
 import {
@@ -192,7 +192,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
   ],
   M.concatAll(P.getParserMonoid()),
-  P.map(R.local(logFetch)),
+  P.map(flow(R.local(collapseRequests()), R.local(logFetch))),
 )
 
 const getPreprint = (doi: PreprintId['doi']) =>
