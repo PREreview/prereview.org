@@ -266,7 +266,7 @@ const headerName = () =>
     { minLength: 1 },
   )
 
-const headers = () =>
+export const headers = () =>
   fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init => new FetchHeaders(init))
 
 export const fetchResponse = ({ status }: { status?: fc.Arbitrary<number> } = {}): fc.Arbitrary<F.Response> =>
