@@ -275,6 +275,7 @@ export const fetchResponse = ({ status }: { status?: fc.Arbitrary<number> } = {}
     status: status ?? fc.integer(),
     statusText: fc.string(),
     url: fc.string(),
+    clone: fc.func(fc.constant(undefined)) as unknown as fc.Arbitrary<F.Response['clone']>,
     text: fc.func(fc.string().map(text => Promise.resolve(text))),
   })
 
