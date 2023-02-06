@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
+import { sequenceS } from 'fp-ts/Apply'
 import * as I from 'fp-ts/Identity'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -111,14 +112,12 @@ const getRapidPrereviews = (id: PreprintId) =>
 
 export const preprint = flow(
   RM.fromReaderTaskEitherK(getPreprint),
-  RM.bindTo('preprint'),
-  RM.bindW(
-    'reviews',
-    RM.fromReaderTaskEitherK(({ preprint }) => getPrereviews(preprint.id)),
-  ),
-  RM.bindW(
-    'rapidPrereviews',
-    RM.fromReaderTaskEitherK(({ preprint }) => getRapidPrereviews(preprint.id)),
+  RM.chainReaderTaskEitherKW(preprint =>
+    sequenceS(RTE.ApplyPar)({
+      preprint: RTE.right<GetRapidPrereviewsEnv & GetPrereviewsEnv, never, Preprint>(preprint),
+      rapidPrereviews: getRapidPrereviews(preprint.id),
+      reviews: getPrereviews(preprint.id),
+    }),
   ),
   RM.ichainW(sendPage),
   RM.orElseW(error =>
