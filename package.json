@@ -13,7 +13,7 @@
     "datacite-ts": "^0.1.2",
     "doi-ts": "^0.1.4",
     "express": "^4.18.2",
-    "fetch-fp-ts": "^0.1.5",
+    "fetch-fp-ts": "^0.1.6",
     "fp-ts": "^2.13.1",
     "fp-ts-routing": "^0.5.4",
     "http-errors": "^2.0.0",
