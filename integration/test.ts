@@ -486,6 +486,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   server: async ({ fetch, logger, port, updatesLegacyPrereview }, use) => {
     const server = app({
+      allowSiteCrawlers: true,
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),

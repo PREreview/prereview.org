@@ -41,6 +41,10 @@ const EnvD = pipe(
   }),
   D.intersect(
     D.partial({
+      ALLOW_SITE_CRAWLERS: pipe(
+        D.literal('true', 'false'),
+        D.map(value => value === 'true'),
+      ),
       FATHOM_SITE_ID: D.string,
       LEGACY_PREREVIEW_UPDATE: pipe(
         D.literal('true', 'false'),

@@ -75,7 +75,9 @@ export type AppEnv = FathomEnv &
   PhaseEnv &
   PublicUrlEnv &
   SessionEnv &
-  ZenodoAuthenticatedEnv
+  ZenodoAuthenticatedEnv & {
+    allowSiteCrawlers: boolean
+  }
 
 export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -230,6 +232,10 @@ export const app = (deps: AppEnv) => {
 
         pipe({ status: res.statusCode, requestId }, L.warnP('HTTP response may not have been completely sent'))(deps)()
       })
+
+      if (!deps.allowSiteCrawlers) {
+        res.header('X-Robots-Tag', 'none, noarchive')
+      }
 
       next()
     })
