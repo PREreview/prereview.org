@@ -27,7 +27,7 @@
     "keyv": "^4.5.2",
     "logger-fp-ts": "^0.2.2",
     "logging-ts": "^0.3.4",
-    "make-fetch-happen": "^11.0.2",
+    "make-fetch-happen": "^11.0.3",
     "markdown-it": "^12.3.2",
     "nanohtml": "^1.10.0",
     "orcid-id-ts": "^0.1.2",
