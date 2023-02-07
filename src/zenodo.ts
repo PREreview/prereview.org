@@ -8,13 +8,15 @@ import { and } from 'fp-ts/Predicate'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
+import * as RR from 'fp-ts/ReadonlyRecord'
 import { compose } from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
-import { LanguageCode } from 'iso-639-1'
+import iso6391, { LanguageCode } from 'iso-639-1'
+import iso6393To1 from 'iso-639-3/to-1.json'
 import { get } from 'spectacles-ts'
 import {
   DepositMetadata,
@@ -67,6 +69,7 @@ export const getPrereviewsFromZenodo = flow(
       RA.map(record => ({
         authors: record.metadata.creators,
         id: record.id,
+        language: pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined),
         text: sanitizeHtml(record.metadata.description),
       })),
     ),
@@ -123,6 +126,7 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right(review.metadata.creators),
         doi: RTE.right(review.metadata.doi),
+        language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
         license: RTE.right(review.license),
         published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
         preprint: RTE.asksReaderTaskEither(
@@ -185,3 +189,10 @@ const getReviewedDoi = flow(
   ),
   O.chainEitherK(flow(get('identifier'), DoiD.decode)),
 )
+
+function iso633To1(code: string): O.Option<LanguageCode> {
+  return pipe(RR.lookup(code, iso6393To1), O.filter(iso6391Validate))
+}
+
+// https://github.com/meikidd/iso-639-1/pull/61
+const iso6391Validate = iso6391.validate as (code: string) => code is LanguageCode

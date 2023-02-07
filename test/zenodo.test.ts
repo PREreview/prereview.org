@@ -55,6 +55,7 @@ describe('getPrereviewFromZenodo', () => {
         creators: [{ name: 'PREreviewer' }],
         description: 'Description',
         doi: '10.5281/zenodo.1061864' as Doi,
+        language: 'eng',
         license: {
           id: 'CC-BY-4.0',
         },
@@ -95,6 +96,7 @@ describe('getPrereviewFromZenodo', () => {
       E.right({
         authors: [{ name: 'PREreviewer' }],
         doi: '10.5281/zenodo.1061864' as Doi,
+        language: 'en',
         license: 'CC-BY-4.0',
         published: PlainDate.from('2022-07-05'),
         preprint,
@@ -172,6 +174,7 @@ describe('getPrereviewFromZenodo', () => {
       E.right({
         authors: [{ name: 'PREreviewer' }],
         doi: '10.5281/zenodo.1061864' as Doi,
+        language: undefined,
         license: 'CC-BY-4.0',
         published: PlainDate.from('2022-07-05'),
         preprint,
@@ -673,6 +676,7 @@ describe('getPrereviewsFromZenodo', () => {
               creators: [{ name: 'PREreviewer' }],
               description: 'Description',
               doi: '10.5281/zenodo.1061864' as Doi,
+              language: 'eng',
               license: {
                 id: 'CC-BY-4.0',
               },
@@ -711,6 +715,7 @@ describe('getPrereviewsFromZenodo', () => {
         {
           authors: [{ name: 'PREreviewer' }],
           id: 1061864,
+          language: 'en',
           text: rawHtml('Description'),
         },
       ]),
@@ -796,6 +801,7 @@ describe('getPrereviewsFromZenodo', () => {
         {
           authors: [{ name: 'PREreviewer' }],
           id: 1061864,
+          language: undefined,
           text: rawHtml('Description'),
         },
       ]),

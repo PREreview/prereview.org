@@ -52,6 +52,7 @@
           "fp-ts/*",
           "fp-ts-contrib/*",
           "io-ts/*",
+          "iso-639-3/to-*.json",
           "hyper-ts/lib/*",
           "logging-ts/lib/*",
           "nanohtml/*",
