@@ -1103,6 +1103,10 @@ skip-link {
   margin-block-start: var(--space-m-l);
   padding-inline-start: 0;
 
+  > li {
+    text-align: initial;
+  }
+
   & article {
     position: relative;
     padding-block: var(--space-xs);
