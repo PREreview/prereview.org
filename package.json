@@ -2,7 +2,7 @@
   "private": true,
   "engines": {
     "node": "18",
-    "npm": "8"
+    "npm": "9"
   },
   "dependencies": {
     "@godaddy/terminus": "^4.11.2",
