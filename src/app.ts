@@ -249,6 +249,10 @@ export const app = (deps: AppEnv) => {
 
       next()
     })
+    .get('/robots.txt', (req, res) => {
+      res.type('text/plain')
+      res.send('User-agent: *\nAllow: /')
+    })
     .use(
       express.static('dist/assets', {
         setHeaders: (res, path) => {
