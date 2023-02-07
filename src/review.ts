@@ -24,6 +24,7 @@ import PlainDate = Temporal.PlainDate
 export type Prereview = {
   authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
   doi: Doi
+  language?: LanguageCode
   license: 'CC-BY-4.0'
   published: PlainDate
   preprint: {
@@ -129,7 +130,9 @@ function createPage(review: Prereview) {
           </dl>
         </header>
 
-        <div>${review.text}</div>
+        <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
+          ${review.text}
+        </div>
       </main>
     `,
     skipLinks: [[html`Skip to PREreview`, '#prereview']],

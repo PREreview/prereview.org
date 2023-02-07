@@ -48,6 +48,7 @@ export type Preprint = {
 export type Prereview = {
   authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
   id: number
+  language?: LanguageCode
   text: Html
 }
 
@@ -278,7 +279,9 @@ function showReview(review: Prereview) {
           </p>
         </header>
 
-        <div>${rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5 }))}</div>
+        <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
+          ${rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5 }))}
+        </div>
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
           Read
