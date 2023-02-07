@@ -20,6 +20,7 @@ module.exports = {
     'editor-toolbar': path.resolve('assets', 'editor-toolbar.ts'),
     'error-summary': path.resolve('assets', 'error-summary.ts'),
     favicon: path.resolve('assets', 'favicon.ico'),
+    'favicon.svg': path.resolve('assets', 'favicon.svg'),
     'html-editor': path.resolve('assets', 'html-editor.ts'),
     prereview: path.resolve('assets', 'prereview.svg'),
     'prereview-footer': path.resolve('assets', 'prereview-footer.svg'),

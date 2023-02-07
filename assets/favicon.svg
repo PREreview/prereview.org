@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6.5 0 95 95">
+  <title xml:lang="en">PREreview</title>
+
+  <style>
+    :root {
+      --color-background: white;
+      --color-primary: rgb(250, 82, 82);
+      --color-text: rgb(52, 58, 64);
+    }
+
+    #background {
+      fill: var(--color-background)
+    }
+
+    #logo {
+      fill: none;
+      stroke: var(--color-text);
+    }
+
+    .primary {
+      fill: var(--color-primary);
+      stroke-width: 0;
+    }
+  </style>
+
+  <rect id="background" x="-6.5" y="0" width="100%" height="100%" />
+
+  <g id="logo">
+    <path d="M54.6 74.9H18.7c-.9 0-1.7-.8-1.7-1.7V19c0-.9.8-1.7 1.7-1.7h44.6c.9 0 1.7.8 1.7 1.7v54.2" />
+    <path class="primary" d="M51 77.8l5-2.9-5-2.9" />
+    <path d="M27.7 32.2h26.9M27.7 46.3h26.9M27.7 60.5h26.9" />
+  </g>
+</svg>

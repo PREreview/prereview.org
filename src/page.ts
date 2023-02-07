@@ -36,6 +36,9 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
           ? html`<script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
           : ''}
 
+        <link rel="icon" href="${assets['favicon.ico']}" sizes="any" />
+        <link rel="icon" href="${assets['favicon.svg']}" type="image/svg+xml" />
+
         <title>${title}</title>
 
         <body ${rawHtml(type ? `class="${type}"` : '')}>
