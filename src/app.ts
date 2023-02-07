@@ -1,5 +1,6 @@
 import express from 'express'
 import * as P from 'fp-ts-routing'
+import { Json } from 'fp-ts/Json'
 import * as M from 'fp-ts/Monoid'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -219,7 +220,16 @@ export const app = (deps: AppEnv) => {
     .use((req, res, next) => {
       const requestId = req.header('Fly-Request-Id') ?? null
 
-      pipe({ method: req.method, url: req.url, requestId }, L.infoP('Received HTTP request'))(deps)()
+      pipe(
+        {
+          method: req.method,
+          url: req.url,
+          referrer: req.header('Referer') as Json,
+          userAgent: req.header('User-Agent') as Json,
+          requestId,
+        },
+        L.infoP('Received HTTP request'),
+      )(deps)()
 
       res.once('finish', () => {
         pipe({ status: res.statusCode, requestId }, L.infoP('Sent HTTP response'))(deps)()
