@@ -8,7 +8,7 @@ The source code for [beta.prereview.org].
 
 ### Requirements
 
-- [Node.js]
+- [Node.js] v18
 
 ### Running the app
 
