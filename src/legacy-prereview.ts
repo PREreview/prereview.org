@@ -156,6 +156,7 @@ const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: stri
     RTE.local(timeoutRequest(2000)),
     RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
     RTE.chainTaskEitherKW(F.decode(D.string)),
+    RTE.mapLeft(() => 'unavailable' as const),
   )
 
 export const getPseudonymFromLegacyPrereview = (user: { orcid: Orcid; name: string }) =>
@@ -169,10 +170,10 @@ export const getPseudonymFromLegacyPrereview = (user: { orcid: Orcid; name: stri
     RTE.chainOptionK(() => 'unknown-pseudonym' as unknown)(
       flow(get('data.personas'), RA.findFirst(get('isAnonymous')), O.map(get('name'))),
     ),
-    RTE.orElseW(error =>
+    RTE.orElse(error =>
       match(error)
         .with({ status: Status.NotFound }, () => createUserOnLegacyPrereview(user))
-        .otherwise(RTE.left),
+        .otherwise(() => RTE.left('unavailable' as const)),
     ),
   )
 

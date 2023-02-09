@@ -26,7 +26,7 @@ export interface PublicUrlEnv {
 }
 
 export interface GetPseudonymEnv {
-  getPseudonym: (user: OrcidUser) => TE.TaskEither<unknown, string>
+  getPseudonym: (user: OrcidUser) => TE.TaskEither<'unavailable', string>
 }
 
 export const logIn = pipe(
@@ -61,7 +61,7 @@ const OrcidUserD = D.struct({
 
 type OrcidUser = D.TypeOf<typeof OrcidUserD>
 
-const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, unknown, string> =>
+const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'unavailable', string> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPseudonym }: GetPseudonymEnv) => getPseudonym(user)))
 
 export const authenticate = flow(

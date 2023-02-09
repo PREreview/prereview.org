@@ -172,7 +172,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
       legacyPrereviewApi: { app, key, url, update },
     })()
 
-    expect(actual).toStrictEqual(E.left(expect.anything()))
+    expect(actual).toStrictEqual(E.left('unavailable'))
   })
 
   describe('when the response has a 404 status code', () => {
@@ -226,7 +226,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
         legacyPrereviewApi: { app, key, url, update },
       })()
 
-      expect(actual).toStrictEqual(E.left(expect.anything()))
+      expect(actual).toStrictEqual(E.left('unavailable'))
     })
 
     test.prop([
@@ -255,7 +255,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
         legacyPrereviewApi: { app, key, url, update },
       })()
 
-      expect(actual).toStrictEqual(E.left(expect.objectContaining({ status })))
+      expect(actual).toStrictEqual(E.left('unavailable'))
     })
   })
 
@@ -275,7 +275,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
       legacyPrereviewApi: { app, key, url, update },
     })()
 
-    expect(actual).toStrictEqual(E.left(expect.objectContaining({ status })))
+    expect(actual).toStrictEqual(E.left('unavailable'))
   })
 
   test.prop([fc.orcid(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
@@ -286,7 +286,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
         legacyPrereviewApi: { app, key, url, update },
       })()
 
-      expect(actual).toStrictEqual(E.left(error))
+      expect(actual).toStrictEqual(E.left('unavailable'))
     },
   )
 })

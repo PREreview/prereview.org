@@ -259,10 +259,9 @@ describe('authenticate', () => {
       name: fc.string(),
       orcid: fc.orcid(),
     }),
-    fc.anything(),
     fc.string(),
     fc.connection(),
-  ])('when a pseudonym cannot be retrieved', async (code, [referer], oauth, accessToken, error, secret, connection) => {
+  ])('when a pseudonym cannot be retrieved', async (code, [referer], oauth, accessToken, secret, connection) => {
     const sessionStore = new Keyv()
 
     const actual = await runMiddleware(
@@ -275,7 +274,7 @@ describe('authenticate', () => {
           status: Status.OK,
           body: accessToken,
         }),
-        getPseudonym: () => TE.left(error),
+        getPseudonym: () => TE.left('unavailable'),
         logger: () => IO.of(undefined),
         oauth,
         publicUrl: new URL('/', referer),
