@@ -1866,42 +1866,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn)(
-  "are directed to the current site if you don't have a pseudonym",
-  async ({ fetch, javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
-
-    fetch.get(
-      {
-        url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
-        headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      },
-      { status: Status.NotFound },
-      { overwriteRoutes: true },
-    )
-    await page.keyboard.press('Enter')
-
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t publish a PREreview yet')
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Enter')
-
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('main')).toBeFocused()
-    }
-    await expect(page).toHaveScreenshot()
-  },
-)
-
 test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()

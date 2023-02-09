@@ -122,6 +122,7 @@ describe('legacy-prereview', () => {
       fc.orcid(),
       fc.string(),
       fc.string(),
+      fc.string(),
       fc.origin(),
       fc.boolean(),
       fc.tuple(fc.string(), fc.string()).chain(([pseudonym, realName]) =>
@@ -139,7 +140,7 @@ describe('legacy-prereview', () => {
           ),
         ),
       ),
-    ])('when the user can be decoded', async (orcid, app, key, url, update, [pseudonym, personas]) => {
+    ])('when the user can be decoded', async (orcid, name, app, key, url, update, [pseudonym, personas]) => {
       const fetch = fetchMock.sandbox().getOnce(
         {
           url: `${url}api/v2/users/${encodeURIComponent(orcid)}`,
@@ -148,7 +149,7 @@ describe('legacy-prereview', () => {
         { body: { data: { personas } } },
       )
 
-      const actual = await _.getPseudonymFromLegacyPrereview({ orcid })({
+      const actual = await _.getPseudonymFromLegacyPrereview({ orcid, name })({
         fetch,
         legacyPrereviewApi: { app, key, url, update },
       })()
@@ -160,13 +161,14 @@ describe('legacy-prereview', () => {
       fc.orcid(),
       fc.string(),
       fc.string(),
+      fc.string(),
       fc.origin(),
       fc.boolean(),
       fc.fetchResponse({ status: fc.constant(Status.OK) }),
-    ])('when the work cannot be decoded', async (orcid, app, key, url, update, response) => {
+    ])('when the user cannot be decoded', async (orcid, name, app, key, url, update, response) => {
       const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, response)
 
-      const actual = await _.getPseudonymFromLegacyPrereview({ orcid })({
+      const actual = await _.getPseudonymFromLegacyPrereview({ orcid, name })({
         fetch,
         legacyPrereviewApi: { app, key, url, update },
       })()
@@ -174,31 +176,102 @@ describe('legacy-prereview', () => {
       expect(actual).toStrictEqual(E.left(expect.anything()))
     })
 
-    test.prop([fc.orcid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
-      'when the response has a 404 status code',
-      async (orcid, app, key, url, update) => {
-        const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, Status.NotFound)
+    describe('when the response has a 404 status code', () => {
+      test.prop([fc.orcid(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.string()])(
+        'when the response has a 404 status code',
+        async (orcid, name, app, key, url, update, pseudonym) => {
+          const fetch = fetchMock
+            .sandbox()
+            .getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, Status.NotFound)
+            .postOnce(
+              {
+                url: `${url}api/v2/users`,
+                headers: { 'X-Api-App': app, 'X-Api-Key': key },
+                body: { orcid, name },
+              },
+              { status: Status.Created, body: pseudonym },
+            )
 
-        const actual = await _.getPseudonymFromLegacyPrereview({ orcid })({
+          const actual = await _.getPseudonymFromLegacyPrereview({ orcid, name })({
+            fetch,
+            legacyPrereviewApi: { app, key, url, update },
+          })()
+
+          expect(actual).toStrictEqual(E.right(pseudonym))
+        },
+      )
+
+      test.prop([
+        fc.orcid(),
+        fc.string(),
+        fc.string(),
+        fc.string(),
+        fc.origin(),
+        fc.boolean(),
+        fc.fetchResponse({ status: fc.constant(Status.Created) }),
+      ])('when the user cannot be decoded', async (orcid, name, app, key, url, update, response) => {
+        const fetch = fetchMock
+          .sandbox()
+          .getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, Status.NotFound)
+          .postOnce(
+            {
+              url: `${url}api/v2/users`,
+              headers: { 'X-Api-App': app, 'X-Api-Key': key },
+              body: { orcid, name },
+            },
+            response,
+          )
+
+        const actual = await _.getPseudonymFromLegacyPrereview({ orcid, name })({
           fetch,
           legacyPrereviewApi: { app, key, url, update },
         })()
 
-        expect(actual).toStrictEqual(E.left('no-pseudonym'))
-      },
-    )
+        expect(actual).toStrictEqual(E.left(expect.anything()))
+      })
+
+      test.prop([
+        fc.orcid(),
+        fc.string(),
+        fc.string(),
+        fc.string(),
+        fc.origin(),
+        fc.boolean(),
+        fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.Created),
+      ])('when the response has a non-201 status code', async (orcid, name, app, key, url, update, status) => {
+        const fetch = fetchMock
+          .sandbox()
+          .getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, Status.NotFound)
+          .postOnce(
+            {
+              url: `${url}api/v2/users`,
+              headers: { 'X-Api-App': app, 'X-Api-Key': key },
+              body: { orcid, name },
+            },
+            { status },
+          )
+
+        const actual = await _.getPseudonymFromLegacyPrereview({ orcid, name })({
+          fetch,
+          legacyPrereviewApi: { app, key, url, update },
+        })()
+
+        expect(actual).toStrictEqual(E.left(expect.objectContaining({ status })))
+      })
+    })
 
     test.prop([
       fc.orcid(),
       fc.string(),
       fc.string(),
+      fc.string(),
       fc.origin(),
       fc.boolean(),
       fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
-    ])('when the response has a non-200/404 status code', async (orcid, app, key, url, update, status) => {
+    ])('when the response has a non-200/404 status code', async (orcid, name, app, key, url, update, status) => {
       const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, status)
 
-      const actual = await _.getPseudonymFromLegacyPrereview({ orcid })({
+      const actual = await _.getPseudonymFromLegacyPrereview({ orcid, name })({
         fetch,
         legacyPrereviewApi: { app, key, url, update },
       })()
@@ -206,10 +279,10 @@ describe('legacy-prereview', () => {
       expect(actual).toStrictEqual(E.left(expect.objectContaining({ status })))
     })
 
-    test.prop([fc.orcid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
+    test.prop([fc.orcid(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
       'when fetch throws an error',
-      async (orcid, app, key, url, update, error) => {
-        const actual = await _.getPseudonymFromLegacyPrereview({ orcid })({
+      async (orcid, name, app, key, url, update, error) => {
+        const actual = await _.getPseudonymFromLegacyPrereview({ orcid, name })({
           fetch: () => Promise.reject(error),
           legacyPrereviewApi: { app, key, url, update },
         })()

@@ -142,22 +142,39 @@ export const getPreprintDoiFromLegacyPreviewUuid = flow(
   ),
 )
 
-export const getPseudonymFromLegacyPrereview = flow(
-  RTE.fromReaderK((user: { orcid: Orcid }) => legacyPrereviewUrl(`users/${user.orcid}`)),
-  RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
-  RTE.chainW(F.send),
-  RTE.local(timeoutRequest(2000)),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-  RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
-  RTE.mapLeft(error =>
-    match(error)
-      .with({ status: Status.NotFound }, () => 'no-pseudonym' as const)
-      .otherwise(identity),
-  ),
-  RTE.chainOptionK(() => 'no-pseudonym' as const)(
-    flow(get('data.personas'), RA.findFirst(get('isAnonymous')), O.map(get('name'))),
-  ),
-)
+const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: string }) =>
+  pipe(
+    RTE.fromReader(legacyPrereviewUrl('users')),
+    RTE.chainReaderK(
+      flow(
+        F.Request('POST'),
+        F.setBody(JSON.stringify({ orcid, name }), 'application/json'),
+        addLegacyPrereviewApiHeaders,
+      ),
+    ),
+    RTE.chainW(F.send),
+    RTE.local(timeoutRequest(2000)),
+    RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
+    RTE.chainTaskEitherKW(F.decode(D.string)),
+  )
+
+export const getPseudonymFromLegacyPrereview = (user: { orcid: Orcid; name: string }) =>
+  pipe(
+    RTE.fromReader(legacyPrereviewUrl(`users/${user.orcid}`)),
+    RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
+    RTE.chainW(F.send),
+    RTE.local(timeoutRequest(2000)),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
+    RTE.chainOptionK(() => 'unknown-pseudonym' as unknown)(
+      flow(get('data.personas'), RA.findFirst(get('isAnonymous')), O.map(get('name'))),
+    ),
+    RTE.orElseW(error =>
+      match(error)
+        .with({ status: Status.NotFound }, () => createUserOnLegacyPrereview(user))
+        .otherwise(RTE.left),
+    ),
+  )
 
 export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
   pipe(
