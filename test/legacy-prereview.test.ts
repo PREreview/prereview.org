@@ -142,6 +142,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
   ])('when the user can be decoded', async (orcid, name, app, key, url, update, [pseudonym, personas]) => {
     const fetch = fetchMock.sandbox().getOnce(
       {
+        functionMatcher: (_, req) => req.cache === 'force-cache',
         url: `${url}api/v2/users/${encodeURIComponent(orcid)}`,
         headers: { 'X-Api-App': app, 'X-Api-Key': key },
       },

@@ -164,6 +164,7 @@ export const getPseudonymFromLegacyPrereview = (user: { orcid: Orcid; name: stri
     RTE.fromReader(legacyPrereviewUrl(`users/${user.orcid}`)),
     RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
     RTE.chainW(F.send),
+    RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
     RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
     RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
