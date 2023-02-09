@@ -12,7 +12,7 @@ import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oa
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
-import { Orcid, isOrcid } from 'orcid-id-ts'
+import { isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { timeoutRequest } from './fetch'
@@ -26,7 +26,7 @@ export interface PublicUrlEnv {
 }
 
 export interface GetPseudonymEnv {
-  getPseudonym: (orcid: Orcid) => TE.TaskEither<'no-pseudonym' | unknown, string>
+  getPseudonym: (user: OrcidUser) => TE.TaskEither<unknown, string>
 }
 
 export const logIn = pipe(
@@ -59,8 +59,10 @@ const OrcidUserD = D.struct({
   orcid: OrcidD,
 })
 
-const getPseudonym = (orcid: Orcid): RTE.ReaderTaskEither<GetPseudonymEnv, unknown, string> =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPseudonym }: GetPseudonymEnv) => getPseudonym(orcid)))
+type OrcidUser = D.TypeOf<typeof OrcidUserD>
+
+const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, unknown, string> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPseudonym }: GetPseudonymEnv) => getPseudonym(user)))
 
 export const authenticate = flow(
   (code: string, state: string) => RM.of({ code, state }),
@@ -79,11 +81,7 @@ export const authenticate = flow(
   RM.bindW(
     'pseudonym',
     RM.fromReaderTaskEitherK(
-      flow(
-        get('user.orcid'),
-        getPseudonym,
-        RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to get pseudonym'))),
-      ),
+      flow(get('user'), getPseudonym, RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to get pseudonym')))),
     ),
   ),
   RM.ichainFirstW(flow(get('referer'), RM.redirect)),

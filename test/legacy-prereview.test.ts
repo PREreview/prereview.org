@@ -148,7 +148,7 @@ describe('legacy-prereview', () => {
         { body: { data: { personas } } },
       )
 
-      const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
+      const actual = await _.getPseudonymFromLegacyPrereview({ orcid })({
         fetch,
         legacyPrereviewApi: { app, key, url, update },
       })()
@@ -166,7 +166,7 @@ describe('legacy-prereview', () => {
     ])('when the work cannot be decoded', async (orcid, app, key, url, update, response) => {
       const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, response)
 
-      const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
+      const actual = await _.getPseudonymFromLegacyPrereview({ orcid })({
         fetch,
         legacyPrereviewApi: { app, key, url, update },
       })()
@@ -179,7 +179,7 @@ describe('legacy-prereview', () => {
       async (orcid, app, key, url, update) => {
         const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, Status.NotFound)
 
-        const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
+        const actual = await _.getPseudonymFromLegacyPrereview({ orcid })({
           fetch,
           legacyPrereviewApi: { app, key, url, update },
         })()
@@ -198,7 +198,7 @@ describe('legacy-prereview', () => {
     ])('when the response has a non-200/404 status code', async (orcid, app, key, url, update, status) => {
       const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/users/${encodeURIComponent(orcid)}`, status)
 
-      const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
+      const actual = await _.getPseudonymFromLegacyPrereview({ orcid })({
         fetch,
         legacyPrereviewApi: { app, key, url, update },
       })()
@@ -209,7 +209,7 @@ describe('legacy-prereview', () => {
     test.prop([fc.orcid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
       'when fetch throws an error',
       async (orcid, app, key, url, update, error) => {
-        const actual = await _.getPseudonymFromLegacyPrereview(orcid)({
+        const actual = await _.getPseudonymFromLegacyPrereview({ orcid })({
           fetch: () => Promise.reject(error),
           legacyPrereviewApi: { app, key, url, update },
         })()

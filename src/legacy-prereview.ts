@@ -143,7 +143,7 @@ export const getPreprintDoiFromLegacyPreviewUuid = flow(
 )
 
 export const getPseudonymFromLegacyPrereview = flow(
-  RTE.fromReaderK((orcid: Orcid) => legacyPrereviewUrl(`users/${orcid}`)),
+  RTE.fromReaderK((user: { orcid: Orcid }) => legacyPrereviewUrl(`users/${user.orcid}`)),
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
   RTE.local(timeoutRequest(2000)),
