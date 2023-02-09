@@ -88,11 +88,7 @@ export const authenticate = flow(
   RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), storeUserInSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichainFirst(() => RM.end()),
-  RM.orElseW(error =>
-    match(error)
-      .with('no-pseudonym', () => showNoPseudonymMessage)
-      .otherwise(() => showFailureMessage),
-  ),
+  RM.orElseW(() => showFailureMessage),
 )
 
 export const authenticateError = (error: string) =>
@@ -122,30 +118,6 @@ function ifHasSameOrigin(url: URL) {
       RE.fromPredicate(url => url.origin === publicUrl.origin, constant('different-origin')),
     ),
   )
-}
-
-const showNoPseudonymMessage = pipe(
-  RM.rightReader(noPseudonymMessage()),
-  RM.ichainFirst(() => RM.status(Status.Forbidden)),
-  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
-  RM.ichainMiddlewareK(sendHtml),
-)
-
-function noPseudonymMessage() {
-  return page({
-    title: plainText`Sorry, you can‘t publish a PREreview yet`,
-    content: html`
-      <main id="main-content">
-        <h1>Sorry, you can’t publish a PREreview&nbsp;yet</h1>
-
-        <p>
-          To publish a PREreview on the new version of PREreview, you will first need to
-          <a href="https://prereview.org/login">sign up for the current website</a>.
-        </p>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-  })
 }
 
 const showAccessDeniedMessage = pipe(

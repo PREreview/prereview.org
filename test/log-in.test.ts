@@ -262,59 +262,6 @@ describe('log-in', () => {
         name: fc.string(),
         orcid: fc.orcid(),
       }),
-      fc.string(),
-      fc.connection(),
-    ])('when a pseudonym cannot be found', async (code, [referer], oauth, accessToken, secret, connection) => {
-      const sessionStore = new Keyv()
-
-      const actual = await runMiddleware(
-        _.authenticate(
-          code,
-          referer.href,
-        )({
-          clock: SystemClock,
-          fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-            status: Status.OK,
-            body: accessToken,
-          }),
-          getPseudonym: () => TE.left('no-pseudonym'),
-          logger: () => IO.of(undefined),
-          oauth,
-          publicUrl: new URL('/', referer),
-          secret,
-          sessionStore,
-        }),
-        connection,
-      )()
-      const sessions = await all(sessionStore.iterator(undefined))
-
-      expect(sessions).toStrictEqual([])
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Forbidden },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    })
-
-    test.prop([
-      fc.string(),
-      fc.url().chain(url => fc.tuple(fc.constant(url))),
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
-      fc.record({
-        access_token: fc.string(),
-        token_type: fc.string(),
-        name: fc.string(),
-        orcid: fc.orcid(),
-      }),
       fc.anything(),
       fc.string(),
       fc.connection(),
