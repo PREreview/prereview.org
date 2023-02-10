@@ -32,6 +32,14 @@ class HtmlEditor extends HTMLElement {
       throw new Error('No text area')
     }
 
+    const form = textArea.form
+
+    if (!(form instanceof HTMLFormElement)) {
+      throw new Error('No form')
+    }
+
+    form.addEventListener('submit', preventDefault)
+
     const container = document.createElement('div')
     container.setAttribute('aria-busy', 'true')
     container.append(...this.children)
@@ -376,6 +384,7 @@ class HtmlEditor extends HTMLElement {
     status.remove()
     container.setAttribute('aria-busy', 'false')
     removeAttributes(textArea, ['aria-describedby', 'aria-errormessage', 'aria-invalid', 'id'])
+    form.removeEventListener('submit', preventDefault)
   }
 }
 
@@ -409,4 +418,8 @@ function extractAttributes(source: Element, qualifiedNames: ReadonlyArray<string
 
 function removeAttributes(source: Element, qualifiedNames: ReadonlyArray<string>) {
   qualifiedNames.forEach(qualifiedName => source.removeAttribute(qualifiedName))
+}
+
+function preventDefault(event: Event) {
+  event.preventDefault()
 }
