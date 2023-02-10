@@ -9,6 +9,15 @@ import bulletedListIcon from 'remixicon/icons/Editor/list-unordered.svg'
 import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
 import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
 
+const deps = Promise.all([
+  import('@tiptap/core'),
+  import('@tiptap/extension-link'),
+  import('@tiptap/extension-subscript'),
+  import('@tiptap/extension-superscript'),
+  import('@tiptap/extension-typography'),
+  import('@tiptap/starter-kit'),
+])
+
 class HtmlEditor extends HTMLElement {
   static element = 'html-editor' as const
 
@@ -39,15 +48,7 @@ class HtmlEditor extends HTMLElement {
 
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
-    const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { default: StarterKit }] =
-      await Promise.all([
-        import('@tiptap/core'),
-        import('@tiptap/extension-link'),
-        import('@tiptap/extension-subscript'),
-        import('@tiptap/extension-superscript'),
-        import('@tiptap/extension-typography'),
-        import('@tiptap/starter-kit'),
-      ])
+    const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { default: StarterKit }] = await deps
 
     const input = textArea.nextElementSibling instanceof HTMLTextAreaElement ? textArea.nextElementSibling : textArea
 
