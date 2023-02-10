@@ -851,8 +851,6 @@ error-summary {
 }
 
 html-editor {
-  display: contents;
-
   & :--textarea {
     block-size: 100vb;
     resize: none;
