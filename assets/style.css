@@ -851,15 +851,15 @@ error-summary {
 }
 
 html-editor {
+  display: block;
+
   & :--textarea {
     block-size: 100vb;
     resize: none;
   }
 
   @nest details + & {
-    & > :first-child {
-      margin-block-start: var(--space-m-l);
-    }
+    margin-block-start: var(--space-m-l);
   }
 }
 
