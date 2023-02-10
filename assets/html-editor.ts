@@ -38,6 +38,7 @@ class HtmlEditor extends HTMLElement {
       throw new Error('No form')
     }
 
+    form.querySelectorAll('button').forEach(disableButton)
     form.addEventListener('submit', preventDefault)
 
     const container = document.createElement('div')
@@ -385,6 +386,7 @@ class HtmlEditor extends HTMLElement {
     container.setAttribute('aria-busy', 'false')
     removeAttributes(textArea, ['aria-describedby', 'aria-errormessage', 'aria-invalid', 'id'])
     form.removeEventListener('submit', preventDefault)
+    form.querySelectorAll('button').forEach(enableButton)
   }
 }
 
@@ -422,4 +424,12 @@ function removeAttributes(source: Element, qualifiedNames: ReadonlyArray<string>
 
 function preventDefault(event: Event) {
   event.preventDefault()
+}
+
+function disableButton(button: HTMLButtonElement): void {
+  button.disabled = true
+}
+
+function enableButton(button: HTMLButtonElement): void {
+  button.disabled = false
 }
