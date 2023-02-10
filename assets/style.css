@@ -878,6 +878,18 @@ html-editor {
     padding-block: var(--space-l-xl) var(--space-s-m);
     padding-inline: var(--space-m-xl);
     inset: 0;
+
+    @media (prefers-reduced-motion: no-preference) {
+      &::before {
+        content: '';
+        border: var(--width-divider-wide) solid var(--color-text);
+        border-radius: 50%;
+        animation: rotation 1s linear infinite;
+        border-inline-end-color: transparent;
+        inline-size: var(--space-m-l);
+        block-size: var(--space-m-l);
+      }
+    }
   }
 }
 
@@ -1264,4 +1276,14 @@ skip-link {
   background-color: var(--color-primary);
   padding-block: var(--space-4xs);
   padding-inline: var(--space-3xs-2xs);
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
