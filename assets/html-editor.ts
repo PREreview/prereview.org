@@ -23,7 +23,11 @@ class HtmlEditor extends HTMLElement {
       throw new Error('No text area')
     }
 
-    this.setAttribute('aria-busy', 'true')
+    const container = document.createElement('div')
+    container.setAttribute('aria-busy', 'true')
+    container.append(...this.children)
+    this.append(container)
+
     textArea.readOnly = true
 
     const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { default: StarterKit }] =
@@ -50,7 +54,7 @@ class HtmlEditor extends HTMLElement {
           ...extractAttributes(textArea, ['aria-errormessage', 'aria-invalid']),
         },
       },
-      element: this,
+      element: container,
       extensions: [
         StarterKit.configure({
           blockquote: false,
@@ -333,7 +337,7 @@ class HtmlEditor extends HTMLElement {
       )
     })
 
-    this.prepend(toolbar)
+    container.prepend(toolbar)
 
     editor.on('create', () => {
       const html = editor.getHTML()
@@ -347,9 +351,9 @@ class HtmlEditor extends HTMLElement {
       textArea.innerText = html !== '<p></p>' ? html : ''
     })
 
-    this.append(textArea, input)
+    container.append(textArea, input)
     textArea.hidden = true
-    this.setAttribute('aria-busy', 'false')
+    container.setAttribute('aria-busy', 'false')
     removeAttributes(textArea, ['aria-errormessage', 'aria-invalid', 'id'])
   }
 }
