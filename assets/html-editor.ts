@@ -23,6 +23,7 @@ class HtmlEditor extends HTMLElement {
       throw new Error('No text area')
     }
 
+    this.setAttribute('aria-busy', 'true')
     textArea.readOnly = true
 
     const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { default: StarterKit }] =
@@ -348,6 +349,7 @@ class HtmlEditor extends HTMLElement {
 
     this.append(textArea, input)
     textArea.hidden = true
+    this.setAttribute('aria-busy', 'false')
     removeAttributes(textArea, ['aria-errormessage', 'aria-invalid', 'id'])
   }
 }
