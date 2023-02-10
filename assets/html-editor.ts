@@ -30,6 +30,15 @@ class HtmlEditor extends HTMLElement {
 
     textArea.readOnly = true
 
+    const status = document.createElement('div')
+    status.classList.add('loading', 'visually-hidden')
+    const statusText = document.createElement('span')
+    statusText.textContent = 'Loading'
+    status.append(statusText)
+    this.append(status)
+
+    setTimeout(() => status.classList.remove('visually-hidden'), 100)
+
     const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { default: StarterKit }] =
       await Promise.all([
         import('@tiptap/core'),
@@ -353,6 +362,7 @@ class HtmlEditor extends HTMLElement {
 
     container.append(textArea, input)
     textArea.hidden = true
+    status.remove()
     container.setAttribute('aria-busy', 'false')
     removeAttributes(textArea, ['aria-errormessage', 'aria-invalid', 'id'])
   }

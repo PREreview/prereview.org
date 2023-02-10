@@ -851,6 +851,7 @@ error-summary {
 }
 
 html-editor {
+  position: relative;
   display: block;
 
   & :--textarea {
@@ -861,6 +862,22 @@ html-editor {
 
   @nest details + & {
     margin-block-start: var(--space-m-l);
+  }
+
+  & > .loading {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 500;
+    background-color: var(--color-background);
+    border: var(--width-divider) solid currentcolor;
+    z-index: 1;
+    user-select: none;
+    row-gap: var(--space-2xs-xs);
+    padding-block: var(--space-l-xl) var(--space-s-m);
+    padding-inline: var(--space-m-xl);
+    inset: 0;
   }
 }
 
