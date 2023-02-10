@@ -17,6 +17,14 @@ class HtmlEditor extends HTMLElement {
   }
 
   async connectedCallback() {
+    const textArea = this.firstElementChild
+
+    if (!(textArea instanceof HTMLTextAreaElement)) {
+      throw new Error('No text area')
+    }
+
+    textArea.readOnly = true
+
     const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { default: StarterKit }] =
       await Promise.all([
         import('@tiptap/core'),
@@ -26,12 +34,6 @@ class HtmlEditor extends HTMLElement {
         import('@tiptap/extension-typography'),
         import('@tiptap/starter-kit'),
       ])
-
-    const textArea = this.firstElementChild
-
-    if (!(textArea instanceof HTMLTextAreaElement)) {
-      throw new Error('No text area')
-    }
 
     const input = textArea.nextElementSibling instanceof HTMLTextAreaElement ? textArea.nextElementSibling : textArea
 
