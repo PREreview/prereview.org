@@ -237,6 +237,13 @@ class HtmlEditor extends HTMLElement {
       content: new DOMParser().parseFromString(input.innerHTML, 'text/html').documentElement.textContent,
     })
 
+    editor.on('create', () => {
+      status.remove()
+      container.setAttribute('aria-busy', 'false')
+      form.removeEventListener('submit', preventDefault)
+      form.querySelectorAll('button').forEach(enableButton)
+    })
+
     editor.on('transaction', () => {
       bold.setAttribute('aria-pressed', editor.isActive('bold') ? 'true' : 'false')
       bold.setAttribute('aria-disabled', editor.can().toggleBold() ? 'false' : 'true')
@@ -382,11 +389,7 @@ class HtmlEditor extends HTMLElement {
 
     container.append(textArea, input)
     textArea.hidden = true
-    status.remove()
-    container.setAttribute('aria-busy', 'false')
     removeAttributes(textArea, ['aria-describedby', 'aria-errormessage', 'aria-invalid', 'id'])
-    form.removeEventListener('submit', preventDefault)
-    form.querySelectorAll('button').forEach(enableButton)
   }
 }
 
