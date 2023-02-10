@@ -198,7 +198,7 @@ class HtmlEditor extends HTMLElement {
           'aria-multiline': 'true',
           id: textArea.id,
           role: 'textbox',
-          ...extractAttributes(textArea, ['aria-errormessage', 'aria-invalid']),
+          ...extractAttributes(textArea, ['aria-describedby', 'aria-errormessage', 'aria-invalid']),
         },
       },
       element: container,
@@ -375,7 +375,7 @@ class HtmlEditor extends HTMLElement {
     textArea.hidden = true
     status.remove()
     container.setAttribute('aria-busy', 'false')
-    removeAttributes(textArea, ['aria-errormessage', 'aria-invalid', 'id'])
+    removeAttributes(textArea, ['aria-describedby', 'aria-errormessage', 'aria-invalid', 'id'])
   }
 }
 
