@@ -48,9 +48,146 @@ class HtmlEditor extends HTMLElement {
 
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
-    const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { default: StarterKit }] = await deps
+    const toolbar = document.createElement('editor-toolbar')
+    toolbar.setAttribute('role', 'toolbar')
+    toolbar.setAttribute('aria-controls', textArea.id)
+    toolbar.setAttribute('aria-label', 'Formatting')
+
+    const bold = document.createElement('button')
+    bold.type = 'button'
+    bold.setAttribute('aria-pressed', 'false')
+    bold.setAttribute('aria-disabled', 'true')
+
+    const boldImage = document.createElement('img')
+    boldImage.alt = 'Bold'
+    boldImage.src = boldIcon
+    boldImage.width = 24
+    boldImage.height = 24
+    bold.append(boldImage)
+
+    const italic = document.createElement('button')
+    italic.type = 'button'
+    italic.setAttribute('aria-pressed', 'false')
+    italic.setAttribute('aria-disabled', 'true')
+
+    const italicImage = document.createElement('img')
+    italicImage.alt = 'Italic'
+    italicImage.src = italicIcon
+    italicImage.width = 24
+    italicImage.height = 24
+    italic.append(italicImage)
+
+    const subscript = document.createElement('button')
+    subscript.type = 'button'
+    subscript.setAttribute('aria-pressed', 'false')
+    subscript.setAttribute('aria-disabled', 'true')
+
+    const subscriptImage = document.createElement('img')
+    subscriptImage.alt = 'Subscript'
+    subscriptImage.src = subscriptIcon
+    subscriptImage.width = 24
+    subscriptImage.height = 24
+    subscript.append(subscriptImage)
+
+    const superscript = document.createElement('button')
+    superscript.type = 'button'
+    superscript.setAttribute('aria-pressed', 'false')
+    superscript.setAttribute('aria-disabled', 'true')
+
+    const superscriptImage = document.createElement('img')
+    superscriptImage.alt = 'Superscript'
+    superscriptImage.src = superscriptIcon
+    superscriptImage.width = 24
+    superscriptImage.height = 24
+    superscript.append(superscriptImage)
+
+    const formatting = document.createElement('div')
+    formatting.setAttribute('role', 'group')
+    formatting.append(bold, italic, subscript, superscript)
+
+    const link = document.createElement('button')
+    link.type = 'button'
+    link.setAttribute('aria-pressed', 'false')
+    link.setAttribute('aria-disabled', 'true')
+
+    const linkImage = document.createElement('img')
+    linkImage.alt = 'link'
+    linkImage.src = linkIcon
+    linkImage.width = 24
+    linkImage.height = 24
+    link.append(linkImage)
+
+    const heading1 = document.createElement('button')
+    heading1.type = 'button'
+    heading1.setAttribute('aria-pressed', 'false')
+    heading1.setAttribute('aria-disabled', 'true')
+
+    const heading1Image = document.createElement('img')
+    heading1Image.alt = 'Heading level 1'
+    heading1Image.src = heading1Icon
+    heading1Image.width = 24
+    heading1Image.height = 24
+    heading1.append(heading1Image)
+
+    const heading2 = document.createElement('button')
+    heading2.type = 'button'
+    heading2.setAttribute('aria-pressed', 'false')
+    heading2.setAttribute('aria-disabled', 'true')
+
+    const heading2Image = document.createElement('img')
+    heading2Image.alt = 'Heading level 2'
+    heading2Image.src = heading2Icon
+    heading2Image.width = 24
+    heading2Image.height = 24
+    heading2.append(heading2Image)
+
+    const heading3 = document.createElement('button')
+    heading3.type = 'button'
+    heading3.setAttribute('aria-pressed', 'false')
+    heading3.setAttribute('aria-disabled', 'true')
+
+    const heading3Image = document.createElement('img')
+    heading3Image.alt = 'Heading level 3'
+    heading3Image.src = heading3Icon
+    heading3Image.width = 24
+    heading3Image.height = 24
+    heading3.append(heading3Image)
+
+    const bulletedList = document.createElement('button')
+    bulletedList.type = 'button'
+    bulletedList.setAttribute('aria-pressed', 'false')
+    bulletedList.setAttribute('aria-disabled', 'true')
+
+    const bulletedListImage = document.createElement('img')
+    bulletedListImage.alt = 'Bulleted list'
+    bulletedListImage.src = bulletedListIcon
+    bulletedListImage.width = 24
+    bulletedListImage.height = 24
+    bulletedList.append(bulletedListImage)
+
+    const numberedList = document.createElement('button')
+    numberedList.type = 'button'
+    numberedList.setAttribute('aria-pressed', 'false')
+    numberedList.setAttribute('aria-disabled', 'true')
+
+    const numberedListImage = document.createElement('img')
+    numberedListImage.alt = 'Numbered list'
+    numberedListImage.src = numberedListIcon
+    numberedListImage.width = 24
+    numberedListImage.height = 24
+    numberedList.append(numberedListImage)
+
+    const styles = document.createElement('div')
+    styles.setAttribute('role', 'group')
+    styles.append(heading1, heading2, heading3, bulletedList, numberedList)
+
+    toolbar.append(formatting, link, styles)
+
+    container.prepend(toolbar)
 
     const input = textArea.nextElementSibling instanceof HTMLTextAreaElement ? textArea.nextElementSibling : textArea
+
+    const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { default: StarterKit }] = await deps
 
     const editor = new Editor({
       editorProps: {
@@ -90,222 +227,6 @@ class HtmlEditor extends HTMLElement {
       ],
       content: new DOMParser().parseFromString(input.innerHTML, 'text/html').documentElement.textContent,
     })
-
-    const toolbar = document.createElement('editor-toolbar')
-    toolbar.setAttribute('role', 'toolbar')
-    toolbar.setAttribute('aria-controls', textArea.id)
-    toolbar.setAttribute('aria-label', 'Formatting')
-
-    const bold = document.createElement('button')
-    bold.type = 'button'
-    bold.addEventListener('click', () => {
-      if (bold.getAttribute('aria-disabled') === 'true') {
-        return
-      }
-
-      editor.chain().focus().toggleBold().run()
-    })
-    bold.setAttribute('aria-pressed', 'false')
-    bold.setAttribute('aria-disabled', 'true')
-
-    const boldImage = document.createElement('img')
-    boldImage.alt = 'Bold'
-    boldImage.src = boldIcon
-    boldImage.width = 24
-    boldImage.height = 24
-    bold.append(boldImage)
-
-    const italic = document.createElement('button')
-    italic.type = 'button'
-    italic.addEventListener('click', () => {
-      if (italic.getAttribute('aria-disabled') === 'true') {
-        return
-      }
-
-      editor.chain().focus().toggleItalic().run()
-    })
-    italic.setAttribute('aria-pressed', 'false')
-    italic.setAttribute('aria-disabled', 'true')
-
-    const italicImage = document.createElement('img')
-    italicImage.alt = 'Italic'
-    italicImage.src = italicIcon
-    italicImage.width = 24
-    italicImage.height = 24
-    italic.append(italicImage)
-
-    const subscript = document.createElement('button')
-    subscript.type = 'button'
-    subscript.addEventListener('click', () => {
-      if (subscript.getAttribute('aria-disabled') === 'true') {
-        return
-      }
-
-      editor.chain().focus().toggleSubscript().run()
-    })
-    subscript.setAttribute('aria-pressed', 'false')
-    subscript.setAttribute('aria-disabled', 'true')
-
-    const subscriptImage = document.createElement('img')
-    subscriptImage.alt = 'Subscript'
-    subscriptImage.src = subscriptIcon
-    subscriptImage.width = 24
-    subscriptImage.height = 24
-    subscript.append(subscriptImage)
-
-    const superscript = document.createElement('button')
-    superscript.type = 'button'
-    superscript.addEventListener('click', () => {
-      if (superscript.getAttribute('aria-disabled') === 'true') {
-        return
-      }
-
-      editor.chain().focus().toggleSuperscript().run()
-    })
-    superscript.setAttribute('aria-pressed', 'false')
-    superscript.setAttribute('aria-disabled', 'true')
-
-    const superscriptImage = document.createElement('img')
-    superscriptImage.alt = 'Superscript'
-    superscriptImage.src = superscriptIcon
-    superscriptImage.width = 24
-    superscriptImage.height = 24
-    superscript.append(superscriptImage)
-
-    const formatting = document.createElement('div')
-    formatting.setAttribute('role', 'group')
-    formatting.append(bold, italic, subscript, superscript)
-
-    const link = document.createElement('button')
-    link.type = 'button'
-    link.addEventListener('click', () => {
-      if (link.getAttribute('aria-disabled') === 'true') {
-        return
-      }
-
-      if (editor.isActive('link')) {
-        editor.chain().focus().extendMarkRange('link').unsetLink().run()
-        return
-      }
-
-      const href = window.prompt('Enter a URL')
-
-      if (!href) {
-        return
-      }
-
-      editor.chain().focus().extendMarkRange('link').setLink({ href }).run()
-    })
-    link.setAttribute('aria-pressed', 'false')
-    link.setAttribute('aria-disabled', 'true')
-
-    const linkImage = document.createElement('img')
-    linkImage.alt = 'link'
-    linkImage.src = linkIcon
-    linkImage.width = 24
-    linkImage.height = 24
-    link.append(linkImage)
-
-    const heading1 = document.createElement('button')
-    heading1.type = 'button'
-    heading1.addEventListener('click', () => {
-      if (heading1.getAttribute('aria-disabled') === 'true') {
-        return
-      }
-
-      editor.chain().focus().toggleHeading({ level: 1 }).run()
-    })
-    heading1.setAttribute('aria-pressed', 'false')
-    heading1.setAttribute('aria-disabled', 'true')
-
-    const heading1Image = document.createElement('img')
-    heading1Image.alt = 'Heading level 1'
-    heading1Image.src = heading1Icon
-    heading1Image.width = 24
-    heading1Image.height = 24
-    heading1.append(heading1Image)
-
-    const heading2 = document.createElement('button')
-    heading2.type = 'button'
-    heading2.addEventListener('click', () => {
-      if (heading2.getAttribute('aria-disabled') === 'true') {
-        return
-      }
-
-      editor.chain().focus().toggleHeading({ level: 2 }).run()
-    })
-    heading2.setAttribute('aria-pressed', 'false')
-    heading2.setAttribute('aria-disabled', 'true')
-
-    const heading2Image = document.createElement('img')
-    heading2Image.alt = 'Heading level 2'
-    heading2Image.src = heading2Icon
-    heading2Image.width = 24
-    heading2Image.height = 24
-    heading2.append(heading2Image)
-
-    const heading3 = document.createElement('button')
-    heading3.type = 'button'
-    heading3.addEventListener('click', () => {
-      if (heading3.getAttribute('aria-disabled') === 'true') {
-        return
-      }
-
-      editor.chain().focus().toggleHeading({ level: 3 }).run()
-    })
-    heading3.setAttribute('aria-pressed', 'false')
-    heading3.setAttribute('aria-disabled', 'true')
-
-    const heading3Image = document.createElement('img')
-    heading3Image.alt = 'Heading level 3'
-    heading3Image.src = heading3Icon
-    heading3Image.width = 24
-    heading3Image.height = 24
-    heading3.append(heading3Image)
-
-    const bulletedList = document.createElement('button')
-    bulletedList.type = 'button'
-    bulletedList.addEventListener('click', () => {
-      if (bulletedList.getAttribute('aria-disabled') === 'true') {
-        return
-      }
-
-      editor.chain().focus().toggleBulletList().run()
-    })
-    bulletedList.setAttribute('aria-pressed', 'false')
-    bulletedList.setAttribute('aria-disabled', 'true')
-
-    const bulletedListImage = document.createElement('img')
-    bulletedListImage.alt = 'Bulleted list'
-    bulletedListImage.src = bulletedListIcon
-    bulletedListImage.width = 24
-    bulletedListImage.height = 24
-    bulletedList.append(bulletedListImage)
-
-    const numberedList = document.createElement('button')
-    numberedList.type = 'button'
-    numberedList.addEventListener('click', () => {
-      if (numberedList.getAttribute('aria-disabled') === 'true') {
-        return
-      }
-
-      editor.chain().focus().toggleOrderedList().run()
-    })
-    numberedList.setAttribute('aria-pressed', 'false')
-    numberedList.setAttribute('aria-disabled', 'true')
-
-    const numberedListImage = document.createElement('img')
-    numberedListImage.alt = 'Numbered list'
-    numberedListImage.src = numberedListIcon
-    numberedListImage.width = 24
-    numberedListImage.height = 24
-    numberedList.append(numberedListImage)
-
-    const styles = document.createElement('div')
-    styles.setAttribute('role', 'group')
-    styles.append(heading1, heading2, heading3, bulletedList, numberedList)
-
-    toolbar.append(formatting, link, styles)
 
     editor.on('transaction', () => {
       bold.setAttribute('aria-pressed', editor.isActive('bold') ? 'true' : 'false')
@@ -347,7 +268,96 @@ class HtmlEditor extends HTMLElement {
       )
     })
 
-    container.prepend(toolbar)
+    bold.addEventListener('click', () => {
+      if (bold.getAttribute('aria-disabled') === 'true') {
+        return
+      }
+
+      editor.chain().focus().toggleBold().run()
+    })
+
+    italic.addEventListener('click', () => {
+      if (italic.getAttribute('aria-disabled') === 'true') {
+        return
+      }
+
+      editor.chain().focus().toggleItalic().run()
+    })
+
+    subscript.addEventListener('click', () => {
+      if (subscript.getAttribute('aria-disabled') === 'true') {
+        return
+      }
+
+      editor.chain().focus().toggleSubscript().run()
+    })
+
+    link.addEventListener('click', () => {
+      if (link.getAttribute('aria-disabled') === 'true') {
+        return
+      }
+
+      if (editor.isActive('link')) {
+        editor.chain().focus().extendMarkRange('link').unsetLink().run()
+        return
+      }
+
+      const href = window.prompt('Enter a URL')
+
+      if (!href) {
+        return
+      }
+
+      editor.chain().focus().extendMarkRange('link').setLink({ href }).run()
+    })
+
+    heading1.addEventListener('click', () => {
+      if (heading1.getAttribute('aria-disabled') === 'true') {
+        return
+      }
+
+      editor.chain().focus().toggleHeading({ level: 1 }).run()
+    })
+
+    heading2.addEventListener('click', () => {
+      if (heading2.getAttribute('aria-disabled') === 'true') {
+        return
+      }
+
+      editor.chain().focus().toggleHeading({ level: 2 }).run()
+    })
+
+    heading3.addEventListener('click', () => {
+      if (heading3.getAttribute('aria-disabled') === 'true') {
+        return
+      }
+
+      editor.chain().focus().toggleHeading({ level: 3 }).run()
+    })
+
+    bulletedList.addEventListener('click', () => {
+      if (bulletedList.getAttribute('aria-disabled') === 'true') {
+        return
+      }
+
+      editor.chain().focus().toggleBulletList().run()
+    })
+
+    superscript.addEventListener('click', () => {
+      if (superscript.getAttribute('aria-disabled') === 'true') {
+        return
+      }
+
+      editor.chain().focus().toggleSuperscript().run()
+    })
+
+    numberedList.addEventListener('click', () => {
+      if (numberedList.getAttribute('aria-disabled') === 'true') {
+        return
+      }
+
+      editor.chain().focus().toggleOrderedList().run()
+    })
 
     editor.on('create', () => {
       const html = editor.getHTML()
