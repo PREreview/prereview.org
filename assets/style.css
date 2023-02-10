@@ -855,6 +855,7 @@ html-editor {
 
   & :--textarea {
     block-size: 100vb;
+    min-block-size: var(--space-3xl);
     resize: none;
   }
 
