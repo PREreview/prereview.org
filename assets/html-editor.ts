@@ -192,8 +192,6 @@ class HtmlEditor extends HTMLElement {
 
     toolbar.append(formatting, link, styles)
 
-    container.prepend(toolbar)
-
     const input = textArea.nextElementSibling instanceof HTMLTextAreaElement ? textArea.nextElementSibling : textArea
 
     const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { StarterKit }] = await deps
@@ -391,6 +389,7 @@ class HtmlEditor extends HTMLElement {
       editor.commands.focus('start', { scrollIntoView: false })
     }
 
+    container.prepend(toolbar)
     container.append(textArea, input)
     textArea.hidden = true
     removeAttributes(textArea, ['aria-describedby', 'aria-errormessage', 'aria-invalid', 'id'])
