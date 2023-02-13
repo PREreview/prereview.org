@@ -38,7 +38,13 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
           js,
           RA.uniq(stringEq()),
           RA.concatW(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
-          RA.map(file => html` <script src="${assets[file]}" type="module"></script>`),
+          RA.chain(file =>
+            pipe(
+              assets[file].preload as ReadonlyArray<string>,
+              RA.map(preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
+              RA.prepend(html` <script src="${assets[file].path}" type="module"></script>`),
+            ),
+          ),
         )}
         ${fathomId
           ? html`<script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`

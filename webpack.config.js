@@ -123,7 +123,19 @@ module.exports = {
             return carry
           }
 
-          return { ...carry, [file.name]: file.path }
+          if (!file.chunk || !file.path.endsWith('js')) {
+            return { ...carry, [file.name]: file.path }
+          }
+
+          return {
+            ...carry,
+            [file.name]: {
+              path: file.path,
+              preload: Array.from(file.chunk.getAllAsyncChunks().values()).flatMap(chunk =>
+                Array.from(chunk.files).map(name => files.find(file => file.path.endsWith(name)).path),
+              ),
+            },
+          }
         }, {}),
     }),
   ],
