@@ -1,3 +1,5 @@
+import { forceFocus } from './dom'
+
 export class SkipLink extends HTMLElement {
   static element = 'skip-link' as const
 
@@ -46,13 +48,4 @@ function getFragmentFromUrl(url: string) {
   }
 
   return url.split('#').pop()
-}
-
-function forceFocus(element: HTMLElement) {
-  if (!element.hasAttribute('tabindex')) {
-    element.setAttribute('tabindex', '-1')
-    element.addEventListener('blur', () => element.removeAttribute('tabindex'), { once: true })
-  }
-
-  element.focus()
 }
