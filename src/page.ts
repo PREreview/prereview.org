@@ -34,10 +34,10 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link href="${assets['style.css']}" rel="stylesheet" />
-        ${skipLinks.length > 0 ? html` <script src="${assets['skip-link.js']}" type="module"></script>` : ''}
         ${pipe(
           js,
           RA.uniq(stringEq()),
+          RA.concatW(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
           RA.map(file => html` <script src="${assets[file]}" type="module"></script>`),
         )}
         ${fathomId
