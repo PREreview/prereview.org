@@ -18,7 +18,7 @@ type Page = {
   readonly type?: 'no-header' | 'two-up'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
-  readonly js?: ReadonlyArray<Assets<'.js'>>
+  readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
 }
 
 export function page({ title, type, content, skipLinks = [], js = [] }: Page): R.Reader<FathomEnv & PhaseEnv, Html> {
