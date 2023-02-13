@@ -434,9 +434,11 @@ function preventDefault(event: Event) {
 }
 
 function disableButton(button: HTMLButtonElement): void {
-  button.disabled = true
+  button.setAttribute('aria-disabled', 'true')
+  button.addEventListener('click', preventDefault)
 }
 
 function enableButton(button: HTMLButtonElement): void {
-  button.disabled = false
+  button.setAttribute('aria-disabled', 'false')
+  button.removeEventListener('click', preventDefault)
 }

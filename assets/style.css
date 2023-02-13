@@ -595,12 +595,12 @@ label {
     outline-offset: 0;
   }
 
-  &:disabled {
+  &:is([aria-disabled='true']) {
     opacity: 0.5;
     cursor: not-allowed;
   }
 
-  &:not(:disabled) {
+  &:not([aria-disabled='true']) {
     cursor: pointer;
     transition: filter 0.2s;
 
