@@ -20,3 +20,13 @@ export function enableButton(button: HTMLButtonElement): void {
   button.setAttribute('aria-disabled', 'false')
   button.removeEventListener('click', preventDefault)
 }
+
+export function getTargetElement(link: HTMLAnchorElement): HTMLElement | null {
+  const fragment = link.href.split('#').pop()
+
+  if (!fragment) {
+    return null
+  }
+
+  return document.getElementById(fragment)
+}

@@ -1,4 +1,4 @@
-import { forceFocus } from './dom'
+import { forceFocus, getTargetElement } from './dom'
 
 class ErrorSummary extends HTMLElement {
   static element = 'error-summary' as const
@@ -25,13 +25,7 @@ class ErrorSummary extends HTMLElement {
 }
 
 function focusTarget(target: HTMLAnchorElement) {
-  const inputId = getFragmentFromUrl(target.href)
-
-  if (!inputId) {
-    return false
-  }
-
-  const input = document.getElementById(inputId)
+  const input = getTargetElement(target)
 
   if (!(input instanceof HTMLInputElement) && !(input instanceof HTMLTextAreaElement) && !input?.isContentEditable) {
     return false
@@ -47,14 +41,6 @@ function focusTarget(target: HTMLAnchorElement) {
   legendOrLabel.scrollIntoView()
 
   return true
-}
-
-function getFragmentFromUrl(url: string) {
-  if (url.indexOf('#') === -1) {
-    return undefined
-  }
-
-  return url.split('#').pop()
 }
 
 function getAssociatedLegendOrLabel(input: HTMLElement) {
