@@ -38,7 +38,8 @@ class HtmlEditor extends HTMLElement {
       throw new Error('No form')
     }
 
-    form.querySelectorAll('button').forEach(disableButton)
+    const buttons = form.querySelectorAll('button')
+    buttons.forEach(disableButton)
     form.addEventListener('submit', preventDefault)
 
     const container = document.createElement('div')
@@ -239,7 +240,7 @@ class HtmlEditor extends HTMLElement {
       status.remove()
       container.setAttribute('aria-busy', 'false')
       form.removeEventListener('submit', preventDefault)
-      form.querySelectorAll('button').forEach(enableButton)
+      buttons.forEach(enableButton)
     })
 
     editor.on('transaction', () => {
