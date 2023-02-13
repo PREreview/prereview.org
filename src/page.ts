@@ -1,4 +1,8 @@
+import { Eq } from 'fp-ts/Eq'
 import * as R from 'fp-ts/Reader'
+import * as RA from 'fp-ts/ReadonlyArray'
+import { pipe } from 'fp-ts/function'
+import * as s from 'fp-ts/string'
 import { Html, PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
 
@@ -31,7 +35,11 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
 
         <link href="${assets['style.css']}" rel="stylesheet" />
         ${skipLinks.length > 0 ? html` <script src="${assets['skip-link.js']}" type="module"></script>` : ''}
-        ${js.map(file => html` <script src="${assets[file]}" type="module"></script>`)}
+        ${pipe(
+          js,
+          RA.uniq(stringEq()),
+          RA.map(file => html` <script src="${assets[file]}" type="module"></script>`),
+        )}
         ${fathomId
           ? html`<script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
           : ''}
@@ -98,6 +106,10 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
       </html>
     `,
   )
+}
+
+function stringEq<A>(): Eq<A> {
+  return s.Eq as Eq<A>
 }
 
 type Assets<A extends string> = EndsWith<keyof typeof assets, A>
