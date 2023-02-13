@@ -117,6 +117,14 @@ module.exports = {
     }),
     new WebpackManifestPlugin({
       fileName: path.resolve('src', 'manifest.json'),
+      generate: (_, files, entries) =>
+        files.reduce((carry, file) => {
+          if (!(file.name in entries) && !file.isInitial) {
+            return carry
+          }
+
+          return { ...carry, [file.name]: file.path }
+        }, {}),
     }),
   ],
 }
