@@ -387,6 +387,10 @@ class HtmlEditor extends HTMLElement {
       textArea.innerText = html !== '<p></p>' ? html : ''
     })
 
+    if (textArea.isSameNode(document.activeElement)) {
+      editor.commands.focus('start', { scrollIntoView: false })
+    }
+
     container.append(textArea, input)
     textArea.hidden = true
     removeAttributes(textArea, ['aria-describedby', 'aria-errormessage', 'aria-invalid', 'id'])
