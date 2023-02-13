@@ -1,3 +1,5 @@
+import { disableButton } from './dom'
+
 class SingleUseForm extends HTMLElement {
   static element = 'single-use-form' as const
 
@@ -24,12 +26,3 @@ class SingleUseForm extends HTMLElement {
 }
 
 window.customElements.define(SingleUseForm.element, SingleUseForm)
-
-function preventDefault(event: Event) {
-  event.preventDefault()
-}
-
-function disableButton(button: HTMLButtonElement): void {
-  button.setAttribute('aria-disabled', 'true')
-  button.addEventListener('click', preventDefault)
-}

@@ -8,6 +8,7 @@ import numberedListIcon from 'remixicon/icons/Editor/list-ordered.svg'
 import bulletedListIcon from 'remixicon/icons/Editor/list-unordered.svg'
 import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
 import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
+import { disableButton, enableButton, preventDefault } from './dom'
 
 const deps = Promise.all([
   import('@tiptap/core'),
@@ -427,18 +428,4 @@ function extractAttributes(source: Element, qualifiedNames: ReadonlyArray<string
 
 function removeAttributes(source: Element, qualifiedNames: ReadonlyArray<string>) {
   qualifiedNames.forEach(qualifiedName => source.removeAttribute(qualifiedName))
-}
-
-function preventDefault(event: Event) {
-  event.preventDefault()
-}
-
-function disableButton(button: HTMLButtonElement): void {
-  button.setAttribute('aria-disabled', 'true')
-  button.addEventListener('click', preventDefault)
-}
-
-function enableButton(button: HTMLButtonElement): void {
-  button.setAttribute('aria-disabled', 'false')
-  button.removeEventListener('click', preventDefault)
 }
