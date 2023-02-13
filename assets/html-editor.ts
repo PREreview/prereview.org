@@ -196,7 +196,7 @@ class HtmlEditor extends HTMLElement {
 
     const input = textArea.nextElementSibling instanceof HTMLTextAreaElement ? textArea.nextElementSibling : textArea
 
-    const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { default: StarterKit }] = await deps
+    const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { StarterKit }] = await deps
 
     const editor = new Editor({
       editorProps: {
