@@ -46,9 +46,20 @@ module.exports = {
               postcssOptions: {
                 plugins: [
                   [
+                    '@csstools/postcss-global-data',
+                    {
+                      files: [
+                        path.resolve('assets', 'space.css'),
+                        path.resolve('assets', 'step.css'),
+                        path.resolve('node_modules', 'open-color', 'open-color.css'),
+                      ],
+                    },
+                  ],
+                  [
                     'postcss-preset-env',
                     {
                       features: {
+                        'custom-properties': false,
                         'custom-selectors': true,
                         'nesting-rules': true,
                       },
