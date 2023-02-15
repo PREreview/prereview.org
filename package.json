@@ -106,7 +106,7 @@
     "remixicon": "^2.5.0",
     "stylelint": "^15.1.0",
     "stylelint-config-logic-order": "^1.0.1",
-    "stylelint-config-prettier": "^9.0.4",
+    "stylelint-config-prettier": "^9.0.5",
     "stylelint-config-standard": "^30.0.1",
     "stylelint-use-logical-spec": "^5.0.0",
     "ts-jest": "^29.0.5",
