@@ -22,12 +22,15 @@ describe('home', () => {
     },
   )
 
-  describe('looking up a DOI', () => {
+  describe('looking up a preprint', () => {
     test.prop([
       fc
         .preprintDoi()
-        .chain(doi =>
-          fc.tuple(fc.constant(doi), fc.connection({ body: fc.constant({ doi }), method: fc.constant('POST') })),
+        .chain(preprint =>
+          fc.tuple(
+            fc.constant(preprint),
+            fc.connection({ body: fc.constant({ preprint }), method: fc.constant('POST') }),
+          ),
         ),
     ])('with a preprint DOI', async ([doi, connection]) => {
       const actual = await runMiddleware(_.home({}), connection)()

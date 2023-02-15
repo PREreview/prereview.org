@@ -21,7 +21,7 @@ export const home = pipe(
   RM.fromMiddleware(getMethod),
   RM.ichain(method =>
     match(method)
-      .with('POST', () => lookupDoi)
+      .with('POST', () => lookupPreprint)
       .otherwise(() => showHomePage),
   ),
 )
@@ -44,19 +44,19 @@ const DoiD = pipe(
   D.refine(isPreprintDoi, 'DOI'),
 )
 
-const LookupDoiD = pipe(
+const LookupPreprintD = pipe(
   D.struct({
-    doi: DoiD,
+    preprint: DoiD,
   }),
-  D.map(get('doi')),
+  D.map(get('preprint')),
 )
 
-const lookupDoi = pipe(
-  RM.decodeBody(LookupDoiD.decode),
+const lookupPreprint = pipe(
+  RM.decodeBody(LookupPreprintD.decode),
   RM.ichainMiddlewareK(doi => seeOther(format(preprintMatch.formatter, { doi }))),
   RM.orElse(
     flow(
-      getInput('doi'),
+      getInput('preprint'),
       O.getOrElse(() => ''),
       invalidE,
       E.left,
@@ -65,10 +65,10 @@ const lookupDoi = pipe(
   ),
 )
 
-type LookupDoi = E.Either<InvalidE, Doi | undefined>
+type LookupPreprint = E.Either<InvalidE, Doi | undefined>
 
-function createPage(lookupDoi: LookupDoi) {
-  const error = E.isLeft(lookupDoi)
+function createPage(lookupPreprint: LookupPreprint) {
+  const error = E.isLeft(lookupPreprint)
 
   return page({
     title: plainText`${error ? 'Error: ' : ''}PREreview`,
@@ -83,11 +83,11 @@ function createPage(lookupDoi: LookupDoi) {
               <error-summary aria-labelledby="error-summary-title" role="alert">
                 <h2 id="error-summary-title">There is a problem</h2>
                 <ul>
-                  ${E.isLeft(lookupDoi)
+                  ${E.isLeft(lookupPreprint)
                     ? html`
                         <li>
-                          <a href="#doi">
-                            ${match(lookupDoi.left)
+                          <a href="#preprint">
+                            ${match(lookupPreprint.left)
                               .with({ _tag: 'InvalidE' }, () => 'Enter a preprint DOI')
                               .exhaustive()}
                           </a>
@@ -102,14 +102,14 @@ function createPage(lookupDoi: LookupDoi) {
         <h2 id="find-title">Find and publish PREreviews</h2>
 
         <form method="post" action="${format(homeMatch.formatter, {})}" novalidate aria-labelledby="find-title">
-          <div ${rawHtml(E.isLeft(lookupDoi) ? 'class="error"' : '')}>
-            <label for="doi">Preprint DOI</label>
+          <div ${rawHtml(E.isLeft(lookupPreprint) ? 'class="error"' : '')}>
+            <label for="preprint">Preprint DOI</label>
 
             ${error
               ? html`
-                  <div class="error-message" id="doi-error">
+                  <div class="error-message" id="preprint-error">
                     <span class="visually-hidden">Error:</span>
-                    ${match(lookupDoi.left)
+                    ${match(lookupPreprint.left)
                       .with({ _tag: 'InvalidE' }, () => 'Enter a preprint DOI')
                       .exhaustive()}
                   </div>
@@ -117,20 +117,20 @@ function createPage(lookupDoi: LookupDoi) {
               : ''}
 
             <input
-              id="doi"
-              name="doi"
+              id="preprint"
+              name="preprint"
               type="text"
               size="40"
               spellcheck="false"
-              aria-describedby="doi-tip"
-              ${match(lookupDoi)
+              aria-describedby="preprint-tip"
+              ${match(lookupPreprint)
                 .with(E.right(P.select(P.string)), value => html`value="${value}"`)
                 .with(E.left({ actual: P.select() }), value => html`value="${value}"`)
                 .otherwise(() => '')}
-              ${rawHtml(E.isLeft(lookupDoi) ? 'aria-invalid="true" aria-errormessage="doi-error"' : '')}
+              ${rawHtml(E.isLeft(lookupPreprint) ? 'aria-invalid="true" aria-errormessage="preprint-error"' : '')}
             />
 
-            <div id="doi-tip" role="note">
+            <div id="preprint-tip" role="note">
               We support AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, medRxiv,
               MetaArXiv, OSF, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv preprints.
             </div>
