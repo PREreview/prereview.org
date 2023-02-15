@@ -33,7 +33,7 @@ function notFoundPage() {
 
         <p>
           If the web address is correct or you selected a link or button, please
-          <a href="mailto:contact@prereview.org">get in touch</a>.
+          <a href="mailto:help@prereview.org">get in touch</a>.
         </p>
       </main>
     `,

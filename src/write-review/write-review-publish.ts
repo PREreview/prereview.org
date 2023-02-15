@@ -165,7 +165,7 @@ function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
               <div class="inset">
                 <p>
                   Please let us know the other authors’ details (names and ORCID&nbsp;iDs), and we’ll add them to the
-                  PREreview. Our email address is <a href="mailto:contact@prereview.org">contact@prereview.org</a>.
+                  PREreview. Our email address is <a href="mailto:help@prereview.org">help@prereview.org</a>.
                 </p>
               </div>
             `
