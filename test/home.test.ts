@@ -1,7 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
+import * as H from 'hyper-ts'
 import { MediaType, Status } from 'hyper-ts'
+import { ExpressConnection } from 'hyper-ts/lib/express'
+import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/home'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -23,16 +27,40 @@ describe('home', () => {
   )
 
   describe('looking up a preprint', () => {
-    test.prop([
-      fc
-        .preprintDoi()
-        .chain(preprint =>
-          fc.tuple(
-            fc.constant(preprint),
-            fc.connection({ body: fc.constant({ preprint }), method: fc.constant('POST') }),
+    test.prop(
+      [
+        fc
+          .preprintDoi()
+          .chain(preprint =>
+            fc.tuple(
+              fc.constant(preprint),
+              fc.connection({ body: fc.constant({ preprint }), method: fc.constant('POST') }),
+            ),
           ),
-        ),
-    ])('with a preprint DOI', async ([doi, connection]) => {
+      ],
+      {
+        examples: [
+          [
+            [
+              '10.1101/2021.06.18.21258689' as Doi<'1101'>,
+              new ExpressConnection<H.StatusOpen>(
+                createRequest({ body: { preprint: 'https://doi.org/10.1101/2021.06.18.21258689' }, method: 'POST' }),
+                createResponse(),
+              ),
+            ], // doi.org URL,
+          ],
+          [
+            [
+              '10.1101/2021.06.18.21258689' as Doi<'1101'>,
+              new ExpressConnection<H.StatusOpen>(
+                createRequest({ body: { preprint: 'https://doi.org/10.1101/2021.06.18.21258689' }, method: 'POST' }),
+                createResponse(),
+              ),
+            ], // doi.org URL with whitespace,
+          ],
+        ],
+      },
+    )('with a preprint DOI', async ([doi, connection]) => {
       const actual = await runMiddleware(_.home({}), connection)()
 
       expect(actual).toStrictEqual(

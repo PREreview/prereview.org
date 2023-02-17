@@ -1,5 +1,8 @@
-import { Doi, hasRegistrant } from 'doi-ts'
+import { Doi, hasRegistrant, isDoi } from 'doi-ts'
+import * as O from 'fp-ts/Option'
 import { Refinement } from 'fp-ts/Refinement'
+import { flow } from 'fp-ts/function'
+import { P, match } from 'ts-pattern'
 
 export type PreprintId =
   | AfricarxivPreprintId
@@ -116,3 +119,12 @@ export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
   '35542',
   '48550',
 )
+
+export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
+  return match([url.hostname, url.pathname.slice(1)])
+    .with(
+      [P.union('doi.org', 'dx.doi.org'), P.select()],
+      flow(decodeURIComponent, O.fromPredicate(isDoi), O.filter(isPreprintDoi)),
+    )
+    .otherwise(() => O.none)
+}

@@ -14,7 +14,7 @@ import { html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
-import { isPreprintDoi } from './preprint-id'
+import { fromUrl, isPreprintDoi } from './preprint-id'
 import { homeMatch, preprintMatch } from './routes'
 
 export const home = pipe(
@@ -38,15 +38,30 @@ const showHomeErrorPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
+const UrlD = pipe(
+  D.string,
+  D.parse(s =>
+    E.tryCatch(
+      () => new URL(s.trim()),
+      () => D.error(s, 'URL'),
+    ),
+  ),
+)
+
 const DoiD = pipe(
   D.string,
   D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parse(s))),
   D.refine(isPreprintDoi, 'DOI'),
 )
 
+const PreprintUrlD = pipe(
+  UrlD,
+  D.parse(url => E.fromOption(() => D.error(url, 'PreprintUrl'))(fromUrl(url))),
+)
+
 const LookupPreprintD = pipe(
   D.struct({
-    preprint: DoiD,
+    preprint: D.union(DoiD, PreprintUrlD),
   }),
   D.map(get('preprint')),
 )
