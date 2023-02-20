@@ -53,7 +53,7 @@ describe('home', () => {
             [
               '10.1101/2021.06.18.21258689' as Doi<'1101'>,
               new ExpressConnection<H.StatusOpen>(
-                createRequest({ body: { preprint: 'https://doi.org/10.1101/2021.06.18.21258689' }, method: 'POST' }),
+                createRequest({ body: { preprint: ' https://doi.org/10.1101/2021.06.18.21258689 ' }, method: 'POST' }),
                 createResponse(),
               ),
             ], // doi.org URL with whitespace,
