@@ -30,6 +30,35 @@ describe('fromUrl', () => {
     [
       fc
         .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
+        .filter(suffix => isDoi(`10.48550/${suffix}`))
+        .map(
+          suffix => [new URL(`https://arxiv.org/abs/${suffix}`), `10.48550/arXiv.${suffix}` as Doi<'48550'>] as const,
+        ),
+    ],
+    {
+      examples: [
+        [[new URL('http://arxiv.org/abs/1501.00001'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // http
+        [[new URL('https://www.arxiv.org/abs/1501.00001'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // www.
+        [[new URL('https://arxiv.org/abs/1501.00001v1'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // with version
+        [[new URL('https://arxiv.org/abs/hep-th/9901001'), '10.48550/arXiv.hep-th/9901001' as Doi<'48550'>]], // old ID
+        [[new URL('https://arxiv.org/abs/hep-th/9901001v3'), '10.48550/arXiv.hep-th/9901001' as Doi<'48550'>]], // old ID with version
+        [[new URL('https://arxiv.org/abs/0706.0001'), '10.48550/arXiv.0706.0001' as Doi<'48550'>]], // shorter ID
+        [[new URL('https://arxiv.org/abs/0706.0001v2'), '10.48550/arXiv.0706.0001' as Doi<'48550'>]], // shorter ID with version
+        [[new URL('https://arxiv.org/abs/1501.00001?context=math.IT'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // with context
+        [[new URL('https://arxiv.org/abs/1501.00001?fmt=txt'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // in format
+        [[new URL('https://arxiv.org/format/1501.00001'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // formats
+        [[new URL('https://arxiv.org/pdf/1501.00001'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // pdf
+        [[new URL('https://arxiv.org/pdf/1501.00001.pdf'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // pdf with extension
+      ],
+    },
+  )('with an arxiv.org URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
+  test.prop(
+    [
+      fc
+        .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
         .filter(suffix => isDoi(`10.1101/${suffix}`))
         .map(
           suffix =>
