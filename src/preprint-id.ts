@@ -127,10 +127,10 @@ export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
       flow(decodeURIComponent, O.fromPredicate(isDoi), O.filter(isPreprintDoi)),
     )
     .with(
-      [P.union('biorxiv.org', 'www.biorxiv.org'), P.select()],
+      [P.union('biorxiv.org', 'www.biorxiv.org', 'medrxiv.org', 'www.medrxiv.org'), P.select()],
       flow(
         decodeURIComponent,
-        O.fromNullableK(s => s.match(/^(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i)?.[1]),
+        O.fromNullableK(s => s.match(/(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i)?.[1]),
         O.map(suffix => `10.1101/${suffix}`),
         O.filter(pipe(isDoi, compose(isPreprintDoi))),
       ),

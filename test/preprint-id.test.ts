@@ -86,6 +86,84 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
   })
 
+  test.prop(
+    [
+      fc
+        .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
+        .filter(suffix => isDoi(`10.1101/${suffix}`))
+        .map(
+          suffix =>
+            [new URL(`https://www.medrxiv.org/content/10.1101/${suffix}`), `10.1101/${suffix}` as Doi<'1101'>] as const,
+        ),
+    ],
+    {
+      examples: [
+        [
+          [
+            new URL('http://www.medrxiv.org/content/10.1101/2020.04.08.20058073'), // http
+            '10.1101/2020.04.08.20058073' as Doi<'1101'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073v3'), // with version
+            '10.1101/2020.04.08.20058073' as Doi<'1101'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073v3.article-info'), // with section
+            '10.1101/2020.04.08.20058073' as Doi<'1101'>,
+          ],
+        ],
+        [
+          [
+            new URL('http://medrxiv.org/cgi/content/short/2020.04.08.20058073'),
+            '10.1101/2020.04.08.20058073' as Doi<'1101'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073v3.full.pdf'), // pdf
+            '10.1101/2020.04.08.20058073' as Doi<'1101'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073v3.full.pdf+html'), // pdf
+            '10.1101/2020.04.08.20058073' as Doi<'1101'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://www.medrxiv.org/content/medrxiv/early/2020/09/10/2020.04.08.20058073.full.pdf'), // pdf
+            '10.1101/2020.04.08.20058073' as Doi<'1101'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://www.medrxiv.org/content/10.1101/2020.04.08.20058073v3.ppt'), // ppt
+            '10.1101/2020.04.08.20058073' as Doi<'1101'>,
+          ],
+        ],
+        [
+          [
+            new URL('http://medrxiv.org/lookup/doi/10.1101/2020.04.08.20058073'), // DOI resolution
+            '10.1101/2020.04.08.20058073' as Doi<'1101'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://www.medrxiv.org/content/medrxiv/early/2023/02/17/2023.01.17.23284673/embed/graphic-3.gif'), // article thumbnail
+            '10.1101/2023.01.17.23284673' as Doi<'1101'>,
+          ],
+        ],
+      ],
+    },
+  )('with a medrxiv.org URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
   test.prop([fc.url()], {
     examples: [
       [new URL('https://foo.doi.org/10.1101/2021.06.18.21258689')], // unknown subdomain
