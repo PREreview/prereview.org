@@ -58,6 +58,30 @@ describe('home', () => {
               ),
             ], // doi.org URL with whitespace,
           ],
+          [
+            [
+              '10.1101/2021.06.18.21258689' as Doi<'1101'>,
+              new ExpressConnection<H.StatusOpen>(
+                createRequest({
+                  body: { preprint: 'https://www.biorxiv.org/content/10.1101/2021.06.18.21258689' },
+                  method: 'POST',
+                }),
+                createResponse(),
+              ),
+            ], // biorxiv.org URL,
+          ],
+          [
+            [
+              '10.1101/2021.06.18.21258689' as Doi<'1101'>,
+              new ExpressConnection<H.StatusOpen>(
+                createRequest({
+                  body: { preprint: ' http://www.biorxiv.org/content/10.1101/2021.06.18.21258689 ' },
+                  method: 'POST',
+                }),
+                createResponse(),
+              ),
+            ], // biorxiv.org URL with whitespace,
+          ],
         ],
       },
     )('with a preprint DOI', async ([doi, connection]) => {

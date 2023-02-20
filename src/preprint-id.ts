@@ -1,7 +1,7 @@
 import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import * as O from 'fp-ts/Option'
-import { Refinement } from 'fp-ts/Refinement'
-import { flow } from 'fp-ts/function'
+import { Refinement, compose } from 'fp-ts/Refinement'
+import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 
 export type PreprintId =
@@ -125,6 +125,15 @@ export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
     .with(
       [P.union('doi.org', 'dx.doi.org'), P.select()],
       flow(decodeURIComponent, O.fromPredicate(isDoi), O.filter(isPreprintDoi)),
+    )
+    .with(
+      [P.union('biorxiv.org', 'www.biorxiv.org'), P.select()],
+      flow(
+        decodeURIComponent,
+        O.fromNullableK(s => s.match(/^(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i)?.[1]),
+        O.map(suffix => `10.1101/${suffix}`),
+        O.filter(pipe(isDoi, compose(isPreprintDoi))),
+      ),
     )
     .otherwise(() => O.none)
 }

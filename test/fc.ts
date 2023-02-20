@@ -53,6 +53,7 @@ export const {
   option,
   record,
   string,
+  stringOf,
   tuple,
   webUrl,
 } = fc
