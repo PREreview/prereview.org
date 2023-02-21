@@ -304,7 +304,7 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
     </p>
 
     <details>
-      <summary>Where can I fill out a Rapid PREreview?</summary>
+      <summary><span>Where can I fill out a Rapid PREreview?</span></summary>
 
       <div>
         <p>

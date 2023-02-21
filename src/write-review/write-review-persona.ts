@@ -144,7 +144,7 @@ function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
               </div>
 
               <details>
-                <summary>What is a PREreview&nbsp;pseudonym?</summary>
+                <summary><span>What is a PREreview&nbsp;pseudonym?</span></summary>
 
                 <div>
                   <p>

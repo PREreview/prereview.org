@@ -265,7 +265,7 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
             </div>
 
             <details>
-              <summary>Examples of good reviewer behavior</summary>
+              <summary><span>Examples of good reviewer behavior</span></summary>
 
               <div>
                 <ul>
@@ -277,7 +277,7 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
             </details>
 
             <details>
-              <summary>Examples of helpful review sections</summary>
+              <summary><span>Examples of helpful review sections</span></summary>
 
               <div>
                 <ol>

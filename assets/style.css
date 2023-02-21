@@ -89,7 +89,10 @@
 summary {
   color: var(--color-link-dark);
   hyphens: manual;
+}
 
+:any-link,
+summary > span {
   @media screen {
     text-decoration: underline;
     text-decoration-thickness: max(1px, 0.08rem);

@@ -88,7 +88,7 @@ function startPage(preprint: Preprint, user?: User) {
               <p>We will ask you to log in with your ORCID&nbsp;iD. If you don’t have an iD, you can create one.</p>
 
               <details>
-                <summary>What is an ORCID&nbsp;iD?</summary>
+                <summary><span>What is an ORCID&nbsp;iD?</span></summary>
 
                 <div>
                   <p>

@@ -189,7 +189,7 @@ function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm
                 </div>
 
                 <details>
-                  <summary>Examples</summary>
+                  <summary><span>Examples</span></summary>
 
                   <div>
                     <ul>

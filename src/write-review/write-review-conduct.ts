@@ -150,7 +150,7 @@ function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm) {
               </div>
 
               <details>
-                <summary>Examples of expected behaviors</summary>
+                <summary><span>Examples of expected behaviors</span></summary>
 
                 <div>
                   <ul>
@@ -165,7 +165,7 @@ function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm) {
               </details>
 
               <details>
-                <summary>Examples of unacceptable behaviors</summary>
+                <summary><span>Examples of unacceptable behaviors</span></summary>
 
                 <div>
                   <ul>
