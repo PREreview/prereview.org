@@ -176,7 +176,7 @@ body > footer {
 
   & > div {
     flex-grow: 1;
-    flex-basis: 20em;
+    flex-basis: 25em;
     display: flex;
     flex-direction: column;
     row-gap: var(--space-2xs-xs);
