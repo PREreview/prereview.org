@@ -293,7 +293,7 @@ h1 {
 h2 {
   font-size: var(--step-4);
 
-  @nest form & {
+  @nest :is(aside, form) & {
     font-size: var(--step-3);
   }
 
