@@ -193,6 +193,20 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
   })
 
+  test.failing.prop([
+    fc
+      .integer()
+      .map(
+        id =>
+          [
+            new URL(`https://preprints.scielo.org/index.php/scielo/preprint/view/${id}`),
+            `10.1590/SciELOPreprints.${id}` as Doi<'1590'>,
+          ] as const,
+      ),
+  ])('with a SciELO URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
   test.prop([fc.url()], {
     examples: [
       [new URL('https://foo.doi.org/10.1101/2021.06.18.21258689')], // unknown subdomain
