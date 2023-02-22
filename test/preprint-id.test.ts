@@ -193,7 +193,7 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
   })
 
-  test.failing.prop([
+  test.prop([
     fc
       .integer()
       .map(
