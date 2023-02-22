@@ -130,36 +130,35 @@ export const parsePreprintDoi: (input: string) => O.Option<PreprintId['doi']> = 
 
 export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
   return match([url.hostname, url.pathname.slice(1)])
-    .with(
-      [P.union('doi.org', 'dx.doi.org'), P.select()],
-      flow(decodeURIComponent, O.fromPredicate(isDoi), O.filter(isPreprintDoi)),
-    )
-    .with(
-      [P.union('arxiv.org', 'www.arxiv.org'), P.select()],
-      flow(
-        decodeURIComponent,
-        O.fromNullableK(s => s.match(/\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i)?.[1]),
-        O.map(suffix => `10.48550/arXiv.${suffix}`),
-        O.filter(pipe(isDoi, compose(isPreprintDoi))),
-      ),
-    )
+    .with([P.union('doi.org', 'dx.doi.org'), P.select()], extractFromDoiPath)
+    .with([P.union('arxiv.org', 'www.arxiv.org'), P.select()], extractFromArxivPath)
     .with(
       [P.union('biorxiv.org', 'www.biorxiv.org', 'medrxiv.org', 'www.medrxiv.org'), P.select()],
-      flow(
-        decodeURIComponent,
-        O.fromNullableK(s => s.match(/(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i)?.[1]),
-        O.map(suffix => `10.1101/${suffix}`),
-        O.filter(pipe(isDoi, compose(isPreprintDoi))),
-      ),
+      extractFromBiorxivMedrxivPath,
     )
-    .with(
-      ['preprints.scielo.org', P.select()],
-      flow(
-        decodeURIComponent,
-        O.fromNullableK(s => s.match(/^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/)?.[1]),
-        O.map(id => `10.1590/SciELOPreprints.${id}`),
-        O.filter(pipe(isDoi, compose(isPreprintDoi))),
-      ),
-    )
+    .with(['preprints.scielo.org', P.select()], extractFromScieloPath)
     .otherwise(() => O.none)
 }
+
+const extractFromDoiPath = flow(decodeURIComponent, O.fromPredicate(isDoi), O.filter(isPreprintDoi))
+
+const extractFromArxivPath = flow(
+  decodeURIComponent,
+  O.fromNullableK(s => s.match(/\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i)?.[1]),
+  O.map(suffix => `10.48550/arXiv.${suffix}`),
+  O.filter(pipe(isDoi, compose(isPreprintDoi))),
+)
+
+const extractFromBiorxivMedrxivPath = flow(
+  decodeURIComponent,
+  O.fromNullableK(s => s.match(/(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i)?.[1]),
+  O.map(suffix => `10.1101/${suffix}`),
+  O.filter(pipe(isDoi, compose(isPreprintDoi))),
+)
+
+const extractFromScieloPath = flow(
+  decodeURIComponent,
+  O.fromNullableK(s => s.match(/^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/)?.[1]),
+  O.map(id => `10.1590/SciELOPreprints.${id}`),
+  O.filter(pipe(isDoi, compose(isPreprintDoi))),
+)
