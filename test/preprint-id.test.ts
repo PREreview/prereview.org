@@ -193,17 +193,47 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
   })
 
-  test.prop([
-    fc
-      .integer({ min: 1 })
-      .map(
-        id =>
+  test.failing.prop(
+    [
+      fc
+        .integer({ min: 1 })
+        .map(
+          id =>
+            [
+              new URL(`https://preprints.scielo.org/index.php/scielo/preprint/view/${id}`),
+              `10.1590/SciELOPreprints.${id}` as Doi<'1590'>,
+            ] as const,
+        ),
+    ],
+    {
+      examples: [
+        [
           [
-            new URL(`https://preprints.scielo.org/index.php/scielo/preprint/view/${id}`),
-            `10.1590/SciELOPreprints.${id}` as Doi<'1590'>,
-          ] as const,
-      ),
-  ])('with a SciELO URL', ([url, doi]) => {
+            new URL('https://preprints.scielo.org/index.php/scielo/preprint/view/5577/version/5899'), // version
+            '10.1590/SciELOPreprints.5577' as Doi<'1590'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://preprints.scielo.org/index.php/scielo/preprint/view/5577/10753'), // html view of pdf
+            '10.1590/SciELOPreprints.5577' as Doi<'1590'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://preprints.scielo.org/index.php/scielo/preprint/download/5577/10753'), // pdf
+            '10.1590/SciELOPreprints.5577' as Doi<'1590'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://preprints.scielo.org/index.php/scielo/preprint/download/5577/10753/11315'), // pdf
+            '10.1590/SciELOPreprints.5577' as Doi<'1590'>,
+          ],
+        ],
+      ],
+    },
+  )('with a SciELO URL', ([url, doi]) => {
     expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
   })
 
