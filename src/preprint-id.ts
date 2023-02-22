@@ -2,6 +2,7 @@ import { Doi, hasRegistrant, isDoi } from 'doi-ts'
 import * as O from 'fp-ts/Option'
 import { Refinement, compose } from 'fp-ts/Refinement'
 import { flow, pipe } from 'fp-ts/function'
+import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 
 export type PreprintId =
@@ -118,6 +119,11 @@ export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
   '32942',
   '35542',
   '48550',
+)
+
+export const PreprintDoiD: D.Decoder<unknown, PreprintId['doi']> = D.fromRefinement(
+  pipe(isDoi, compose(isPreprintDoi)),
+  'DOI',
 )
 
 export function fromUrl(url: URL): O.Option<PreprintId['doi']> {

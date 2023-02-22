@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi, isDoi } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
@@ -9,7 +9,6 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RR from 'fp-ts/ReadonlyRecord'
-import { compose } from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
@@ -30,7 +29,7 @@ import {
 } from 'zenodo-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { Html, plainText, sanitizeHtml } from './html'
-import { PreprintId, isPreprintDoi } from './preprint-id'
+import { PreprintDoiD, PreprintId } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
@@ -143,8 +142,6 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
   )
 }
 
-const DoiD = D.fromRefinement(pipe(isDoi, compose(isPreprintDoi)), 'DOI')
-
 const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
   D.fromStruct({ metadata: D.fromStruct({ license: D.fromStruct({ id: D.literal('CC-BY-4.0') }) }) }),
   D.map(get('metadata.license.id')),
@@ -187,7 +184,7 @@ const getReviewedDoi = flow(
         identifier.resource_type === 'publication-preprint',
     ),
   ),
-  O.chainEitherK(flow(get('identifier'), DoiD.decode)),
+  O.chainEitherK(flow(get('identifier'), PreprintDoiD.decode)),
 )
 
 function iso633To1(code: string): O.Option<LanguageCode> {

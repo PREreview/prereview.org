@@ -1,14 +1,10 @@
-import { isDoi } from 'doi-ts'
 import * as P from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
-import { compose } from 'fp-ts/Refinement'
 import { pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { isUuid } from 'uuid-ts'
-import { isPreprintDoi } from './preprint-id'
-
-const DoiD = D.fromRefinement(pipe(isDoi, compose(isPreprintDoi)), 'DOI')
+import { PreprintDoiD } from './preprint-id'
 
 const UuidD = D.fromRefinement(isUuid, 'UUID')
 
@@ -46,7 +42,7 @@ const PreprintDoiC = C.make(
       const [, match] = s.match(/^doi-(.+)$/) ?? []
 
       if (match && match.toLowerCase() === match) {
-        return DoiD.decode(match.replaceAll('-', '/').replaceAll('+', '-'))
+        return PreprintDoiD.decode(match.replaceAll('-', '/').replaceAll('+', '-'))
       }
 
       return D.failure(s, 'DOI')
