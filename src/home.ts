@@ -1,4 +1,4 @@
-import { Doi, parse } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
@@ -14,7 +14,7 @@ import { html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
-import { fromUrl, isPreprintDoi } from './preprint-id'
+import { fromUrl, parsePreprintDoi } from './preprint-id'
 import { homeMatch, preprintMatch } from './routes'
 
 export const home = pipe(
@@ -50,8 +50,7 @@ const UrlD = pipe(
 
 const DoiD = pipe(
   D.string,
-  D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parse(s))),
-  D.refine(isPreprintDoi, 'DOI'),
+  D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parsePreprintDoi(s))),
 )
 
 const PreprintUrlD = pipe(

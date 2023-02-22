@@ -1,4 +1,4 @@
-import { Doi, parse } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
@@ -16,7 +16,7 @@ import { match } from 'ts-pattern'
 import { URL } from 'url'
 import { Uuid, isUuid } from 'uuid-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { PreprintId, isPreprintDoi } from './preprint-id'
+import { PreprintId, parsePreprintDoi } from './preprint-id'
 import { NewPrereview } from './write-review'
 
 export interface LegacyPrereviewApiEnv {
@@ -137,9 +137,7 @@ export const getPreprintDoiFromLegacyPreviewUuid = flow(
       .with({ status: Status.NotFound }, () => 'not-found' as const)
       .otherwise(() => 'unavailable' as const),
   ),
-  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(
-    flow(get('data.[0].handle'), parse, O.filter(isPreprintDoi)),
-  ),
+  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(flow(get('data.[0].handle'), parsePreprintDoi)),
 )
 
 const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: string }) =>

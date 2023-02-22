@@ -1,4 +1,4 @@
-import { Doi, hasRegistrant, isDoi } from 'doi-ts'
+import { Doi, hasRegistrant, isDoi, parse } from 'doi-ts'
 import * as O from 'fp-ts/Option'
 import { Refinement, compose } from 'fp-ts/Refinement'
 import { flow, pipe } from 'fp-ts/function'
@@ -125,6 +125,8 @@ export const PreprintDoiD: D.Decoder<unknown, PreprintId['doi']> = D.fromRefinem
   pipe(isDoi, compose(isPreprintDoi)),
   'DOI',
 )
+
+export const parsePreprintDoi: (input: string) => O.Option<PreprintId['doi']> = flow(parse, O.filter(isPreprintDoi))
 
 export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
   return match([url.hostname, url.pathname.slice(1)])
