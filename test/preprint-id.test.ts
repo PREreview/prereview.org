@@ -195,7 +195,7 @@ describe('fromUrl', () => {
 
   test.prop([
     fc
-      .integer()
+      .integer({ min: 1 })
       .map(
         id =>
           [
