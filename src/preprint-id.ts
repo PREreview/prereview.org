@@ -148,7 +148,7 @@ export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
       ['preprints.scielo.org', P.select()],
       flow(
         decodeURIComponent,
-        O.fromNullableK(s => s.match(/^index\.php\/scielo\/preprint\/view\/([1-9][0-9]*)$/)?.[1]),
+        O.fromNullableK(s => s.match(/^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/)?.[1]),
         O.map(id => `10.1590/SciELOPreprints.${id}`),
         O.filter(pipe(isDoi, compose(isPreprintDoi))),
       ),
