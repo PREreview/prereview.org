@@ -136,6 +136,10 @@ export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
       [P.union('biorxiv.org', 'www.biorxiv.org', 'medrxiv.org', 'www.medrxiv.org'), P.select()],
       extractFromBiorxivMedrxivPath,
     )
+    .with(
+      [P.union('researchsquare.com', 'www.researchsquare.com', 'assets.researchsquare.com'), P.select()],
+      extractFromResearchSquarePath,
+    )
     .with(['preprints.scielo.org', P.select()], extractFromScieloPath)
     .otherwise(() => O.none)
 }
@@ -153,6 +157,13 @@ const extractFromBiorxivMedrxivPath = flow(
   decodeURIComponent,
   O.fromNullableK(s => s.match(/(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i)?.[1]),
   O.map(suffix => `10.1101/${suffix}`),
+  O.filter(pipe(isDoi, compose(isPreprintDoi))),
+)
+
+const extractFromResearchSquarePath = flow(
+  decodeURIComponent,
+  O.fromNullableK(s => s.match(/\/(rs-[1-9][0-9]*\/v[1-9][0-9]*)(?:[./]|$)/)?.[1]),
+  O.map(id => `10.21203/rs.3.${id}`),
   O.filter(pipe(isDoi, compose(isPreprintDoi))),
 )
 

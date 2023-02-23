@@ -196,6 +196,51 @@ describe('fromUrl', () => {
   test.prop(
     [
       fc
+        .tuple(fc.integer({ min: 1 }), fc.integer({ min: 1 }))
+        .map(
+          ([id, version]) =>
+            [
+              new URL(`https://www.researchsquare.com/article/rs-${id}/v${version}`),
+              `10.21203/rs.3.rs-${id}/v${version}` as Doi<'21203'>,
+            ] as const,
+        ),
+    ],
+    {
+      examples: [
+        [[new URL('https://researchsquare.com/article/rs-2609755/v1'), '10.21203/rs.3.rs-2609755/v1' as Doi<'21203'>]], // no www.
+        [
+          [
+            new URL('http://www.researchsquare.com/article/rs-2609755/v1'), // http
+            '10.21203/rs.3.rs-2609755/v1' as Doi<'21203'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://www.researchsquare.com/article/rs-2609755/v1/'), // trailing slash
+            '10.21203/rs.3.rs-2609755/v1' as Doi<'21203'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://www.researchsquare.com/article/rs-2609755/v1.pdf'), // pdf
+            '10.21203/rs.3.rs-2609755/v1' as Doi<'21203'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://assets.researchsquare.com/files/rs-2609755/v1/fc7f953cb5cfb4b664a2d448.pdf'), // pdf
+            '10.21203/rs.3.rs-2609755/v1' as Doi<'21203'>,
+          ],
+        ],
+      ],
+    },
+  )('with a researchsquare.com URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
+  test.prop(
+    [
+      fc
         .integer({ min: 1 })
         .map(
           id =>
