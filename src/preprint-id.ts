@@ -141,6 +141,9 @@ export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
       extractFromResearchSquarePath,
     )
     .with(['preprints.scielo.org', P.select()], extractFromScieloPath)
+    .with([P.union('scienceopen.com', 'www.scienceopen.com'), 'hosted-document'], () =>
+      extractFromScienceOpenQueryString(url.searchParams),
+    )
     .otherwise(() => O.none)
 }
 
@@ -171,5 +174,10 @@ const extractFromScieloPath = flow(
   decodeURIComponent,
   O.fromNullableK(s => s.match(/^index\.php\/scielo\/preprint\/(?:view|download)\/([1-9][0-9]*)(?:\/|$)/)?.[1]),
   O.map(id => `10.1590/SciELOPreprints.${id}`),
+  O.filter(pipe(isDoi, compose(isPreprintDoi))),
+)
+
+const extractFromScienceOpenQueryString = flow(
+  O.fromNullableK((query: URLSearchParams) => query.get('doi')),
   O.filter(pipe(isDoi, compose(isPreprintDoi))),
 )

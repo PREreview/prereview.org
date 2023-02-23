@@ -282,6 +282,51 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
   })
 
+  test.prop(
+    [
+      fc
+        .scienceOpenPreprintId()
+        .map(
+          ({ doi }) =>
+            [new URL(`https://www.scienceopen.com/hosted-document?doi=${encodeURIComponent(doi)}`), doi] as const,
+        ),
+    ],
+    {
+      examples: [
+        [
+          [
+            new URL('http://www.scienceopen.com/hosted-document?doi=10.14293/S2199-1006.1.SOR-.PPI1TYM.v1'), // http
+            '10.14293/S2199-1006.1.SOR-.PPI1TYM.v1' as Doi<'14293'>,
+          ],
+        ],
+        [
+          [
+            new URL('https://scienceopen.com/hosted-document?doi=10.14293/S2199-1006.1.SOR-.PPI1TYM.v1'), // no www.
+            '10.14293/S2199-1006.1.SOR-.PPI1TYM.v1' as Doi<'14293'>,
+          ],
+        ],
+        [
+          [
+            new URL(
+              'https://www.scienceopen.com/hosted-document?-1.ILinkListener-header-action~bar-download~dropdown-pdf~link-link&doi=10.14293/S2199-1006.1.SOR-.PPI1TYM.v1',
+            ), // pdf
+            '10.14293/S2199-1006.1.SOR-.PPI1TYM.v1' as Doi<'14293'>,
+          ],
+        ],
+        [
+          [
+            new URL(
+              'https://www.scienceopen.com/hosted-document?-1.ILinkListener-header-action~bar-download~dropdown-xml~link-link&doi=10.14293/S2199-1006.1.SOR-.PPI1TYM.v1',
+            ), // xml
+            '10.14293/S2199-1006.1.SOR-.PPI1TYM.v1' as Doi<'14293'>,
+          ],
+        ],
+      ],
+    },
+  )('with a scienceopen.com URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
   test.prop([fc.url()], {
     examples: [
       [new URL('https://foo.doi.org/10.1101/2021.06.18.21258689')], // unknown subdomain
