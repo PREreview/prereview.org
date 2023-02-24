@@ -42,3 +42,44 @@ describe('forceFocus', () => {
     })
   })
 })
+
+describe('disableButton', () => {
+  it('disables the button', async () => {
+    const element = await fixture<HTMLButtonElement>('<button/>')
+
+    _.disableButton(element)
+
+    expect(element).to.have.attribute('aria-disabled', 'true')
+  })
+
+  it('prevents the button from being clicked', async () => {
+    const element = await fixture<HTMLButtonElement>('<button/>')
+    const event = new MouseEvent('click', { cancelable: true })
+
+    _.disableButton(element)
+    element.dispatchEvent(event)
+
+    expect(event.defaultPrevented).to.be.true
+  })
+})
+
+describe('enableButton', () => {
+  it('enables the button', async () => {
+    const element = await fixture<HTMLButtonElement>('<button aria-disabled="true"/>')
+
+    _.enableButton(element)
+
+    expect(element).to.have.attribute('aria-disabled', 'false')
+  })
+
+  it('does not prevent the button from being clicked', async () => {
+    const element = await fixture<HTMLButtonElement>('<button/>')
+    const event = new MouseEvent('click', { cancelable: true })
+    element.addEventListener('click', _.preventDefault)
+
+    _.enableButton(element)
+    element.dispatchEvent(event)
+
+    expect(event.defaultPrevented).to.be.false
+  })
+})
