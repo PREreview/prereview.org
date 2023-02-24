@@ -85,7 +85,7 @@ describe('enableButton', () => {
 })
 
 describe('getTargetElement', () => {
-  describe('when the target has fragment', () => {
+  describe('when the target has a local fragment', () => {
     describe('when it exists', () => {
       it('finds the target element', async () => {
         const element = await fixture<HTMLAnchorElement>('<a href="#id"/></a><div id="id"></div>')
@@ -103,9 +103,25 @@ describe('getTargetElement', () => {
     })
   })
 
+  describe('when the target is a remote fragment', () => {
+    it('returns null', async () => {
+      const element = await fixture<HTMLAnchorElement>('<a href="something#id"/></a><div id="id"></div>')
+
+      expect(_.getTargetElement(element)).to.be.null
+    })
+  })
+
   describe('when the target has no fragment', () => {
     it('returns null', async () => {
       const element = await fixture<HTMLAnchorElement>('<a href="something"/></a>')
+
+      expect(_.getTargetElement(element)).to.be.null
+    })
+  })
+
+  describe('when there is no target', () => {
+    it('returns null', async () => {
+      const element = await fixture<HTMLAnchorElement>('<a></a>')
 
       expect(_.getTargetElement(element)).to.be.null
     })

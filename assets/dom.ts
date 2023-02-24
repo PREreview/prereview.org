@@ -22,11 +22,11 @@ export function enableButton(button: HTMLButtonElement): void {
 }
 
 export function getTargetElement(link: HTMLAnchorElement): HTMLElement | null {
-  const fragment = link.href.split('#').pop()
+  const href = link.getAttribute('href')
 
-  if (!fragment) {
+  if (href?.[0] !== '#') {
     return null
   }
 
-  return document.getElementById(fragment)
+  return document.getElementById(href.slice(1))
 }
