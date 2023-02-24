@@ -1,4 +1,4 @@
-class EditorToolbar extends HTMLElement {
+export class EditorToolbar extends HTMLElement {
   static element = 'editor-toolbar' as const
 
   constructor() {
