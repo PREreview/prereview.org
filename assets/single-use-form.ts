@@ -1,6 +1,6 @@
 import { disableButton } from './dom'
 
-class SingleUseForm extends HTMLElement {
+export class SingleUseForm extends HTMLElement {
   static element = 'single-use-form' as const
 
   constructor() {
