@@ -1,6 +1,6 @@
 import { forceFocus, getTargetElement } from './dom'
 
-class ErrorSummary extends HTMLElement {
+export class ErrorSummary extends HTMLElement {
   static element = 'error-summary' as const
 
   constructor() {
