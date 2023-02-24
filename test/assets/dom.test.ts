@@ -83,3 +83,31 @@ describe('enableButton', () => {
     expect(event.defaultPrevented).to.be.false
   })
 })
+
+describe('getTargetElement', () => {
+  describe('when the target has fragment', () => {
+    describe('when it exists', () => {
+      it('finds the target element', async () => {
+        const element = await fixture<HTMLAnchorElement>('<a href="#id"/></a><div id="id"></div>')
+
+        expect(_.getTargetElement(element)).to.have.id('id')
+      })
+
+      describe('when does not exist', () => {
+        it('returns null', async () => {
+          const element = await fixture<HTMLAnchorElement>('<a href="#id"/></a>')
+
+          expect(_.getTargetElement(element)).to.be.null
+        })
+      })
+    })
+  })
+
+  describe('when the target has no fragment', () => {
+    it('returns null', async () => {
+      const element = await fixture<HTMLAnchorElement>('<a href="something"/></a>')
+
+      expect(_.getTargetElement(element)).to.be.null
+    })
+  })
+})
