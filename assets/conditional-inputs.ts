@@ -1,4 +1,4 @@
-class ConditionalInputs extends HTMLElement {
+export class ConditionalInputs extends HTMLElement {
   static element = 'conditional-inputs' as const
 
   constructor() {
