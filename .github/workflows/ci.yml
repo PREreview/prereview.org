@@ -6,6 +6,9 @@ on:
       - 'main'
   pull_request:
 
+env:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+
 jobs:
   build-assets:
     name: 'Build assets'
@@ -202,6 +205,32 @@ jobs:
       - name: 'Run smoke test'
         run: scripts/smoke-test.sh ${{ needs.build-image.outputs.image }}
 
+  test-web:
+    name: 'Web Tests'
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v3.3.0
+
+      - name: 'Set up Node.js'
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version-file: package.json
+          cache: ${{ !env.ACT && 'npm' || '' }}
+
+      - name: 'Install dependencies'
+        run: npm ci
+
+      - name: 'Install browser dependencies'
+        run: npx playwright install-deps
+
+      - name: 'Install browsers'
+        run: npx playwright install
+
+      - name: 'Run the tests'
+        run: npx web-test-runner
+
   typecheck:
     name: 'Typecheck'
     runs-on: ubuntu-20.04
@@ -243,6 +272,7 @@ jobs:
       - test
       - test-integration
       - test-smoke
+      - test-web
       - typecheck
 
     steps:

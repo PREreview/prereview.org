@@ -15,6 +15,7 @@ COPY .npmrc \
 # Stage: Development NPM install
 #
 FROM npm AS npm-dev
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
 RUN npm ci
 

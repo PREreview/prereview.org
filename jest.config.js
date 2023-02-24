@@ -3,6 +3,7 @@ module.exports = {
   injectGlobals: false,
   testEnvironment: 'node',
   roots: ['./src/', './test/'],
+  testPathIgnorePatterns: ['./test/assets/'],
   moduleFileExtensions: ['js', 'ts'],
   transform: {
     '^.+\\.ts$': [

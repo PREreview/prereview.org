@@ -3,7 +3,7 @@
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "es2022"],
     "resolveJsonModule": true,
-    "types": []
+    "types": ["mocha"]
   },
   "include": ["assets", "integration", "src", "test", "*.ts"]
 }
