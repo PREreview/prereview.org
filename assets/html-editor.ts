@@ -19,7 +19,7 @@ const deps = Promise.all([
   import('@tiptap/starter-kit'),
 ])
 
-class HtmlEditor extends HTMLElement {
+export class HtmlEditor extends HTMLElement {
   static element = 'html-editor' as const
 
   constructor() {
