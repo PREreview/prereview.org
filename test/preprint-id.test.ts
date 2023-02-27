@@ -196,6 +196,27 @@ describe('fromUrl', () => {
   test.prop(
     [
       fc
+        .stringOf(fc.alphanumeric(), { minLength: 1 })
+        .map(id => [new URL(`https://osf.io/${id}`), `10.31219/osf.io/${id}` as Doi<'31219'>] as const),
+    ],
+    {
+      examples: [
+        [[new URL('https://www.osf.io/ewdn8'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // www.
+        [[new URL('http://osf.io/ewdn8'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // http
+        [[new URL('https://osf.io/ewdn8/'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // trailing slash
+        [[new URL('https://osf.io/preprints/ewdn8'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // with preprints
+        [[new URL('https://osf.io/ewdn8/download'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // download
+        [[new URL('https://osf.io/preprints/ewdn8/download'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // download
+        [[new URL('https://osf.io/ewdn8/download?format=pdf'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // download pdf
+      ],
+    },
+  )('with an OSF URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
+  test.prop(
+    [
+      fc
         .tuple(fc.integer({ min: 1 }), fc.integer({ min: 1 }))
         .map(
           ([id, version]) =>

@@ -58,6 +58,12 @@ export const {
   webUrl,
 } = fc
 
+export const alphanumeric = (): fc.Arbitrary<string> =>
+  fc.mapToConstant(
+    { num: 26, build: v => String.fromCharCode(v + 0x61) },
+    { num: 10, build: v => String.fromCharCode(v + 0x30) },
+  )
+
 export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
