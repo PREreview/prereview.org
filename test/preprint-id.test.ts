@@ -140,6 +140,27 @@ describe('fromUrl', () => {
   test.prop(
     [
       fc
+        .stringOf(fc.alphanumeric(), { minLength: 1 })
+        .map(id => [new URL(`https://edarxiv.org/${id}`), `10.35542/osf.io/${id}` as Doi<'35542'>] as const),
+    ],
+    {
+      examples: [
+        [[new URL('https://www.edarxiv.org/wc6r7'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // www.
+        [[new URL('http://edarxiv.org/wc6r7'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // http
+        [[new URL('https://edarxiv.org/wc6r7/'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // trailing slash
+        [[new URL('https://edarxiv.org/preprints/wc6r7'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // with preprints
+        [[new URL('https://edarxiv.org/wc6r7/download'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // download
+        [[new URL('https://edarxiv.org/preprints/wc6r7/download'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // download
+        [[new URL('https://edarxiv.org/wc6r7/download?format=pdf'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // download pdf
+      ],
+    },
+  )('with an edarxiv.org URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
+  test.prop(
+    [
+      fc
         .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
         .filter(suffix => isDoi(`10.1101/${suffix}`))
         .map(
