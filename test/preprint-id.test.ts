@@ -161,6 +161,27 @@ describe('fromUrl', () => {
   test.prop(
     [
       fc
+        .integer({ min: 1 })
+        .map(id => [new URL(`https://engrxiv.org/preprint/view/${id}`), `10.31224/${id}` as Doi<'31224'>] as const),
+    ],
+    {
+      examples: [
+        [[new URL('https://www.engrxiv.org/preprint/view/2172'), '10.31224/2172' as Doi<'31224'>]], // www.
+        [[new URL('http://engrxiv.org/preprint/view/2172'), '10.31224/2172' as Doi<'31224'>]], // http
+        [[new URL('https://engrxiv.org/preprint/view/2172/'), '10.31224/2172' as Doi<'31224'>]], // trailing slash
+        [[new URL('https://engrxiv.org/preprint/view/2172/version/3242'), '10.31224/2172' as Doi<'31224'>]], //version
+        [[new URL('https://engrxiv.org/preprint/view/2172/4288'), '10.31224/2172' as Doi<'31224'>]], // html view of pdf
+        [[new URL('https://engrxiv.org/preprint/download/2172/4288'), '10.31224/2172' as Doi<'31224'>]], // download
+        [[new URL('https://engrxiv.org/preprint/download/2172/4288/3228'), '10.31224/2172' as Doi<'31224'>]], // download
+      ],
+    },
+  )('with an engrxiv.org URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
+  test.prop(
+    [
+      fc
         .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
         .filter(suffix => isDoi(`10.1101/${suffix}`))
         .map(
