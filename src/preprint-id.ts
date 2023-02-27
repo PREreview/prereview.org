@@ -188,7 +188,7 @@ const extractFromOsfPath = flow(
   ),
   O.map(([, prefix, id]) =>
     match(prefix)
-      .with('africarxiv', () => `10.31730/osf.io/${id}` as const)
+      .with('africarxiv', () => `10.31730/osf.io/${id}`)
       .with('metaarxiv', () => `10.31222/osf.io/${id}`)
       .with('socarxiv', () => `10.31235/osf.io/${id}`)
       .otherwise(() => `10.31219/osf.io/${id}`),
