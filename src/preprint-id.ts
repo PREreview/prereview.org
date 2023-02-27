@@ -139,6 +139,7 @@ export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
     .with([P.union('edarxiv.org', 'www.edarxiv.org'), P.select()], extractFromEdarxivPath)
     .with([P.union('engrxiv.org', 'www.engrxiv.org'), P.select()], extractFromEngrxivPath)
     .with([P.union('osf.io', 'www.osf.io'), P.select()], extractFromOsfPath)
+    .with([P.union('psyarxiv.com', 'www.psyarxiv.com'), P.select()], extractFromPsyarxivPath)
     .with(
       [P.union('researchsquare.com', 'www.researchsquare.com', 'assets.researchsquare.com'), P.select()],
       extractFromResearchSquarePath,
@@ -189,6 +190,13 @@ const extractFromOsfPath = flow(
       .with('metaarxiv', () => `10.31222/osf.io/${id}`)
       .otherwise(() => `10.31219/osf.io/${id}`),
   ),
+  O.filter(pipe(isDoi, compose(isPreprintDoi))),
+)
+
+const extractFromPsyarxivPath = flow(
+  decodeURIComponent,
+  O.fromNullableK(s => s.match(/^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i)?.[1]),
+  O.map(id => `10.31234/osf.io/${id}`),
   O.filter(pipe(isDoi, compose(isPreprintDoi))),
 )
 

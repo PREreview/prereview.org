@@ -302,6 +302,27 @@ describe('fromUrl', () => {
   test.prop(
     [
       fc
+        .stringOf(fc.alphanumeric(), { minLength: 1 })
+        .map(id => [new URL(`https://psyarxiv.com/${id}`), `10.31234/osf.io/${id}` as Doi<'31234'>] as const),
+    ],
+    {
+      examples: [
+        [[new URL('https://www.psyarxiv.com/k9mn3'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // www.
+        [[new URL('http://psyarxiv.com/k9mn3'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // http
+        [[new URL('https://psyarxiv.com/k9mn3/'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // trailing slash
+        [[new URL('https://psyarxiv.com/preprints/k9mn3'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // with preprints
+        [[new URL('https://psyarxiv.com/k9mn3/download'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // download
+        [[new URL('https://psyarxiv.com/preprints/k9mn3/download'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // download
+        [[new URL('https://psyarxiv.com/k9mn3/download?format=pdf'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // download pdf
+      ],
+    },
+  )('with an psyarxiv.com URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
+  test.prop(
+    [
+      fc
         .tuple(fc.integer({ min: 1 }), fc.integer({ min: 1 }))
         .map(
           ([id, version]) =>
