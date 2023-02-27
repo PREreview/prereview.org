@@ -102,7 +102,7 @@ function createPage(lookupPreprint: LookupPreprint) {
                         <li>
                           <a href="#preprint">
                             ${match(lookupPreprint.left)
-                              .with({ _tag: 'InvalidE' }, () => 'Enter a preprint DOI')
+                              .with({ _tag: 'InvalidE' }, () => 'Enter a preprint DOI or URL')
                               .exhaustive()}
                           </a>
                         </li>
@@ -117,14 +117,14 @@ function createPage(lookupPreprint: LookupPreprint) {
 
         <form method="post" action="${format(homeMatch.formatter, {})}" novalidate aria-labelledby="find-title">
           <div ${rawHtml(E.isLeft(lookupPreprint) ? 'class="error"' : '')}>
-            <label for="preprint">Preprint DOI</label>
+            <label for="preprint">Preprint DOI or URL</label>
 
             ${error
               ? html`
                   <div class="error-message" id="preprint-error">
                     <span class="visually-hidden">Error:</span>
                     ${match(lookupPreprint.left)
-                      .with({ _tag: 'InvalidE' }, () => 'Enter a preprint DOI')
+                      .with({ _tag: 'InvalidE' }, () => 'Enter a preprint DOI or URL')
                       .exhaustive()}
                   </div>
                 `

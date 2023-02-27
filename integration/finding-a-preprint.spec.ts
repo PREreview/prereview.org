@@ -9,7 +9,7 @@ test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
   const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
 
   await page.goto('/')
-  await form.getByLabel('Preprint DOI').fill('10.1101/this-should-not-find-anything')
+  await form.getByLabel('Preprint DOI or URL').fill('10.1101/this-should-not-find-anything')
 
   fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
 
@@ -35,7 +35,7 @@ test('can find and view a preprint', async ({ fetch, page }) => {
   const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
 
   await page.goto('/')
-  await form.getByLabel('Preprint DOI').fill('10.1101/2022.01.13.476201')
+  await form.getByLabel('Preprint DOI or URL').fill('10.1101/2022.01.13.476201')
 
   await expect(page).toHaveScreenshot()
 
@@ -124,7 +124,7 @@ test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, p
   const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
 
   await page.goto('/')
-  await form.getByLabel('Preprint DOI').fill('10.1101/this-should-take-too-long')
+  await form.getByLabel('Preprint DOI or URL').fill('10.1101/this-should-take-too-long')
 
   fetch.get(
     'https://api.crossref.org/works/10.1101%2Fthis-should-take-too-long',
@@ -153,7 +153,7 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
   const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
 
   await page.goto('/')
-  await form.getByLabel('Preprint DOI').fill('10.1101/2022.01.13.476201')
+  await form.getByLabel('Preprint DOI or URL').fill('10.1101/2022.01.13.476201')
 
   fetch.getOnce(
     {
@@ -181,12 +181,12 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
   await expect(page).toHaveScreenshot()
 })
 
-test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
+test('have to enter a preprint DOI or URL', async ({ javaScriptEnabled, page }) => {
   const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
   const alert = page.getByRole('alert', { name: 'There is a problem' })
 
   await page.goto('/')
-  await form.getByLabel('Preprint DOI').fill('10.5555/12345678')
+  await form.getByLabel('Preprint DOI or URL').fill('10.5555/12345678')
   await form.getByRole('button', { name: 'Continue' }).click()
 
   if (javaScriptEnabled) {
@@ -194,13 +194,13 @@ test('have to enter a preprint DOI', async ({ javaScriptEnabled, page }) => {
   } else {
     await expect(alert).toBeVisible()
   }
-  await expect(form.getByLabel('Preprint DOI')).toHaveAttribute('aria-invalid', 'true')
+  await expect(form.getByLabel('Preprint DOI or URL')).toHaveAttribute('aria-invalid', 'true')
   await expect(page).toHaveScreenshot()
 
-  await alert.getByRole('link', { name: 'Enter a preprint DOI' }).click()
+  await alert.getByRole('link', { name: 'Enter a preprint DOI or URL' }).click()
 
-  await expect(form.getByLabel('Preprint DOI')).toBeFocused()
-  await expect(form.getByLabel('Preprint DOI')).toHaveValue('10.5555/12345678')
+  await expect(form.getByLabel('Preprint DOI or URL')).toBeFocused()
+  await expect(form.getByLabel('Preprint DOI or URL')).toHaveValue('10.5555/12345678')
   await expect(page).toHaveScreenshot()
 })
 
