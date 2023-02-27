@@ -29,6 +29,28 @@ describe('fromUrl', () => {
   test.prop(
     [
       fc
+        .stringOf(fc.alphanumeric(), { minLength: 1 })
+        .map(
+          id =>
+            [new URL(`https://osf.io/preprints/africarxiv/${id}`), `10.31730/osf.io/${id}` as Doi<'31730'>] as const,
+        ),
+    ],
+    {
+      examples: [
+        [[new URL('https://www.osf.io/preprints/africarxiv/grxt6'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // www.
+        [[new URL('http://osf.io/preprints/africarxiv/grxt6'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // http
+        [[new URL('https://osf.io/preprints/africarxiv/grxt6/'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // trailing slash
+        [[new URL('https://osf.io/preprints/africarxiv/grxt6'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // with preprints
+        [[new URL('https://osf.io/preprints/africarxiv/grxt6/download'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // download
+      ],
+    },
+  )('with an AfricArXiv URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
+  test.prop(
+    [
+      fc
         .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
         .filter(suffix => isDoi(`10.48550/${suffix}`))
         .map(

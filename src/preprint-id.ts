@@ -166,8 +166,12 @@ const extractFromBiorxivMedrxivPath = flow(
 
 const extractFromOsfPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^(?:preprints\/)?([a-z0-9]+)(?:\/?$|\/download)/i)?.[1]),
-  O.map(id => `10.31219/osf.io/${id}`),
+  O.fromNullableK(s => s.match(/^(?:preprints\/(?:(africarxiv)\/)?)?([a-z0-9]+)(?:\/?$|\/download)/i)),
+  O.map(([_, prefix, id]) =>
+    match(prefix)
+      .with('africarxiv', () => `10.31730/osf.io/${id}` as const)
+      .otherwise(() => `10.31219/osf.io/${id}`),
+  ),
   O.filter(pipe(isDoi, compose(isPreprintDoi))),
 )
 
