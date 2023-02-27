@@ -454,6 +454,27 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
   })
 
+  test.prop(
+    [
+      fc
+        .stringOf(fc.alphanumeric(), { minLength: 1 })
+        .map(
+          id => [new URL(`https://osf.io/preprints/socarxiv/${id}`), `10.31235/osf.io/${id}` as Doi<'31235'>] as const,
+        ),
+    ],
+    {
+      examples: [
+        [[new URL('https://www.osf.io/preprints/socarxiv/8374m'), '10.31235/osf.io/8374m' as Doi<'31235'>]], // www.
+        [[new URL('http://osf.io/preprints/socarxiv/8374m'), '10.31235/osf.io/8374m' as Doi<'31235'>]], // http
+        [[new URL('https://osf.io/preprints/socarxiv/8374m/'), '10.31235/osf.io/8374m' as Doi<'31235'>]], // trailing slash
+        [[new URL('https://osf.io/preprints/socarxiv/8374m'), '10.31235/osf.io/8374m' as Doi<'31235'>]], // with preprints
+        [[new URL('https://osf.io/preprints/socarxiv/8374m/download'), '10.31235/osf.io/8374m' as Doi<'31235'>]], // download
+      ],
+    },
+  )('with an SocArXiv URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
   test.prop([fc.url()], {
     examples: [
       [new URL('https://foo.doi.org/10.1101/2021.06.18.21258689')], // unknown subdomain
