@@ -261,6 +261,27 @@ describe('fromUrl', () => {
     [
       fc
         .stringOf(fc.alphanumeric(), { minLength: 1 })
+        .map(
+          id => [new URL(`https://osf.io/preprints/metaarxiv/${id}`), `10.31222/osf.io/${id}` as Doi<'31222'>] as const,
+        ),
+    ],
+    {
+      examples: [
+        [[new URL('https://www.osf.io/preprints/metaarxiv/9a3rw'), '10.31222/osf.io/9a3rw' as Doi<'31222'>]], // www.
+        [[new URL('http://osf.io/preprints/metaarxiv/9a3rw'), '10.31222/osf.io/9a3rw' as Doi<'31222'>]], // http
+        [[new URL('https://osf.io/preprints/metaarxiv/9a3rw/'), '10.31222/osf.io/9a3rw' as Doi<'31222'>]], // trailing slash
+        [[new URL('https://osf.io/preprints/metaarxiv/9a3rw'), '10.31222/osf.io/9a3rw' as Doi<'31222'>]], // with preprints
+        [[new URL('https://osf.io/preprints/metaarxiv/9a3rw/download'), '10.31222/osf.io/9a3rw' as Doi<'31222'>]], // download
+      ],
+    },
+  )('with a MetaArXiv URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
+  test.prop(
+    [
+      fc
+        .stringOf(fc.alphanumeric(), { minLength: 1 })
         .map(id => [new URL(`https://osf.io/${id}`), `10.31219/osf.io/${id}` as Doi<'31219'>] as const),
     ],
     {

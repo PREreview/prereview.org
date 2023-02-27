@@ -182,10 +182,11 @@ const extractFromEngrxivPath = flow(
 
 const extractFromOsfPath = flow(
   decodeURIComponent,
-  O.fromNullableK(s => s.match(/^(?:preprints\/(?:(africarxiv)\/)?)?([a-z0-9]+)(?:\/?$|\/download)/i)),
+  O.fromNullableK(s => s.match(/^(?:preprints\/(?:(africarxiv|metaarxiv)\/)?)?([a-z0-9]+)(?:\/?$|\/download)/i)),
   O.map(([, prefix, id]) =>
     match(prefix)
       .with('africarxiv', () => `10.31730/osf.io/${id}` as const)
+      .with('metaarxiv', () => `10.31222/osf.io/${id}`)
       .otherwise(() => `10.31219/osf.io/${id}`),
   ),
   O.filter(pipe(isDoi, compose(isPreprintDoi))),
