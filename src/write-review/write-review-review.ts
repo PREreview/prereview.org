@@ -305,14 +305,14 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
             <html-editor>
               ${match(form.review)
                 .with(
-                  E.right(undefined),
+                  { right: undefined },
                   () => html`
                     <textarea id="review" name="review" rows="20" aria-describedby="review-tip">${template}</textarea>
                     <textarea hidden disabled>${markdownIt().render(template)}</textarea>
                   `,
                 )
                 .with(
-                  E.right(P.select(P.not(undefined))),
+                  { right: P.select(P.not(undefined)) },
                   review => html`
                     <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
 ${turndown.turndown(review.toString())}</textarea
@@ -321,7 +321,7 @@ ${turndown.turndown(review.toString())}</textarea
                   `,
                 )
                 .with(
-                  E.left({ _tag: 'MissingE' }),
+                  { left: { _tag: 'MissingE' } },
                   () => html`
                     <textarea
                       id="review"
@@ -334,7 +334,7 @@ ${turndown.turndown(review.toString())}</textarea
                   `,
                 )
                 .with(
-                  E.left({ _tag: 'InvalidE', actual: P.select() }),
+                  { left: { _tag: 'InvalidE', actual: P.select() } },
                   review => html`
                     <textarea
                       id="review"
@@ -502,7 +502,7 @@ function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm) {
                       type="radio"
                       value="no"
                       ${match(form.alreadyWritten)
-                        .with(E.right('no' as const), () => 'checked')
+                        .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
                     <span>No</span>
@@ -515,7 +515,7 @@ function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm) {
                       type="radio"
                       value="yes"
                       ${match(form.alreadyWritten)
-                        .with(E.right('yes' as const), () => 'checked')
+                        .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
                     <span>Yes</span>

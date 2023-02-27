@@ -182,7 +182,7 @@ function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
                       value="public"
                       aria-describedby="persona-tip-public"
                       ${match(form.persona)
-                        .with(E.right('public' as const), () => 'checked')
+                        .with({ right: 'public' }, () => 'checked')
                         .otherwise(() => '')}
                     />
                     <span>${user.name}</span>
@@ -197,7 +197,7 @@ function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
                       value="pseudonym"
                       aria-describedby="persona-tip-pseudonym"
                       ${match(form.persona)
-                        .with(E.right('pseudonym' as const), () => 'checked')
+                        .with({ right: 'pseudonym' }, () => 'checked')
                         .otherwise(() => '')}
                     />
                     <span>${user.pseudonym}</span>

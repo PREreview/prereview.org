@@ -81,7 +81,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
         I.let('moreAuthors', () => pipe(MoreAuthorsFieldD.decode(body), E.mapLeft(missingE))),
         I.let('moreAuthorsApproved', ({ moreAuthors }) =>
           match(moreAuthors)
-            .with(E.right('yes' as const), () => pipe(MoreAuthorsApprovedFieldD.decode(body), E.mapLeft(missingE)))
+            .with({ right: 'yes' }, () => pipe(MoreAuthorsApprovedFieldD.decode(body), E.mapLeft(missingE)))
             .otherwise(() => E.right(undefined)),
         ),
         E.right,
@@ -221,7 +221,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
                         type="radio"
                         value="no"
                         ${match(form.moreAuthors)
-                          .with(E.right('no' as const), () => 'checked')
+                          .with({ right: 'no' }, () => 'checked')
                           .otherwise(() => '')}
                       />
                       <span>No, I reviewed it alone</span>
@@ -234,7 +234,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
                         type="radio"
                         value="yes-private"
                         ${match(form.moreAuthors)
-                          .with(E.right('yes-private' as const), () => 'checked')
+                          .with({ right: 'yes-private' }, () => 'checked')
                           .otherwise(() => '')}
                       />
                       <span>Yes, but they don’t want to be listed as authors</span>
@@ -248,7 +248,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
                         value="yes"
                         aria-controls="more-authors-yes-control"
                         ${match(form.moreAuthors)
-                          .with(E.right('yes' as const), () => 'checked')
+                          .with({ right: 'yes' }, () => 'checked')
                           .otherwise(() => '')}
                       />
                       <span>Yes, and some or all want to be listed as authors</span>
@@ -276,10 +276,10 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
                             type="checkbox"
                             value="yes"
                             ${match(form.moreAuthorsApproved)
-                              .with(E.right('yes' as const), () => 'checked')
-                              .with(E.right(undefined), () => '')
+                              .with({ right: 'yes' }, () => 'checked')
+                              .with({ right: undefined }, () => '')
                               .with(
-                                E.left({ _tag: 'MissingE' }),
+                                { left: { _tag: 'MissingE' } },
                                 () => html`aria-invalid="true" aria-errormessage="more-authors-approved-error"`,
                               )
                               .exhaustive()}

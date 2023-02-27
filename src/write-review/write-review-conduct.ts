@@ -203,7 +203,7 @@ function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm) {
                   type="checkbox"
                   value="yes"
                   ${match(form.conduct)
-                    .with(E.right('yes' as const), () => 'checked')
+                    .with({ right: 'yes' }, () => 'checked')
                     .otherwise(() => '')}
                 />
                 <span>I’m following the Code&nbsp;of&nbsp;Conduct</span>

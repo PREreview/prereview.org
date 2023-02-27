@@ -138,8 +138,8 @@ function createPage(lookupPreprint: LookupPreprint) {
               spellcheck="false"
               aria-describedby="preprint-tip"
               ${match(lookupPreprint)
-                .with(E.right(P.select(P.string)), value => html`value="${value}"`)
-                .with(E.left({ actual: P.select() }), value => html`value="${value}"`)
+                .with({ right: P.select(P.string) }, value => html`value="${value}"`)
+                .with({ left: { actual: P.select() } }, value => html`value="${value}"`)
                 .otherwise(() => '')}
               ${rawHtml(E.isLeft(lookupPreprint) ? 'aria-invalid="true" aria-errormessage="preprint-error"' : '')}
             />

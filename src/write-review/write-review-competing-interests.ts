@@ -80,9 +80,7 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
         I.let('competingInterests', () => pipe(CompetingInterestsFieldD.decode(body), E.mapLeft(missingE))),
         I.let('competingInterestsDetails', ({ competingInterests }) =>
           match(competingInterests)
-            .with(E.right('yes' as const), () =>
-              pipe(CompetingInterestsDetailsFieldD.decode(body), E.mapLeft(missingE)),
-            )
+            .with({ right: 'yes' }, () => pipe(CompetingInterestsDetailsFieldD.decode(body), E.mapLeft(missingE)))
             .otherwise(() => E.right(undefined)),
         ),
       ),
@@ -224,7 +222,7 @@ function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm
                         type="radio"
                         value="no"
                         ${match(form.competingInterests)
-                          .with(E.right('no' as const), () => 'checked')
+                          .with({ right: 'no' }, () => 'checked')
                           .otherwise(() => '')}
                       />
                       <span>No</span>
@@ -238,7 +236,7 @@ function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm
                         value="yes"
                         aria-controls="competing-interests-details-control"
                         ${match(form.competingInterests)
-                          .with(E.right('yes' as const), () => 'checked')
+                          .with({ right: 'yes' }, () => 'checked')
                           .otherwise(() => '')}
                       />
                       <span>Yes</span>
@@ -269,7 +267,7 @@ function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm
                           )}
                         >
 ${match(form.competingInterestsDetails)
-                            .with(E.right(P.select(P.string)), identity)
+                            .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
                       </div>
