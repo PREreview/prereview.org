@@ -129,25 +129,17 @@ export const PreprintDoiD: D.Decoder<unknown, PreprintId['doi']> = D.fromRefinem
 export const parsePreprintDoi: (input: string) => O.Option<PreprintId['doi']> = flow(parse, O.filter(isPreprintDoi))
 
 export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
-  return match([url.hostname, url.pathname.slice(1)])
+  return match([url.hostname.replace('www.', ''), url.pathname.slice(1)])
     .with([P.union('doi.org', 'dx.doi.org'), P.select()], extractFromDoiPath)
-    .with([P.union('arxiv.org', 'www.arxiv.org'), P.select()], extractFromArxivPath)
-    .with(
-      [P.union('biorxiv.org', 'www.biorxiv.org', 'medrxiv.org', 'www.medrxiv.org'), P.select()],
-      extractFromBiorxivMedrxivPath,
-    )
-    .with([P.union('edarxiv.org', 'www.edarxiv.org'), P.select()], extractFromEdarxivPath)
-    .with([P.union('engrxiv.org', 'www.engrxiv.org'), P.select()], extractFromEngrxivPath)
-    .with([P.union('osf.io', 'www.osf.io'), P.select()], extractFromOsfPath)
-    .with([P.union('psyarxiv.com', 'www.psyarxiv.com'), P.select()], extractFromPsyarxivPath)
-    .with(
-      [P.union('researchsquare.com', 'www.researchsquare.com', 'assets.researchsquare.com'), P.select()],
-      extractFromResearchSquarePath,
-    )
+    .with(['arxiv.org', P.select()], extractFromArxivPath)
+    .with([P.union('biorxiv.org', 'medrxiv.org'), P.select()], extractFromBiorxivMedrxivPath)
+    .with(['edarxiv.org', P.select()], extractFromEdarxivPath)
+    .with(['engrxiv.org', P.select()], extractFromEngrxivPath)
+    .with(['osf.io', P.select()], extractFromOsfPath)
+    .with(['psyarxiv.com', P.select()], extractFromPsyarxivPath)
+    .with([P.union('researchsquare.com', 'assets.researchsquare.com'), P.select()], extractFromResearchSquarePath)
     .with(['preprints.scielo.org', P.select()], extractFromScieloPath)
-    .with([P.union('scienceopen.com', 'www.scienceopen.com'), 'hosted-document'], () =>
-      extractFromScienceOpenQueryString(url.searchParams),
-    )
+    .with(['scienceopen.com', 'hosted-document'], () => extractFromScienceOpenQueryString(url.searchParams))
     .otherwise(() => O.none)
 }
 
