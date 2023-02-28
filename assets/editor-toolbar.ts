@@ -6,10 +6,8 @@ export class EditorToolbar extends HTMLElement {
   }
 
   connectedCallback() {
-    const buttons = [...this.querySelectorAll<HTMLButtonElement>('button[type="button"]')]
-
     const setFocusTo = (button: HTMLButtonElement) => {
-      buttons.forEach(button => button.setAttribute('tabindex', '-1'))
+      this.buttons.forEach(button => button.setAttribute('tabindex', '-1'))
       button.setAttribute('tabindex', '0')
       button.focus()
     }
@@ -37,28 +35,30 @@ export class EditorToolbar extends HTMLElement {
       setFocusTo(last)
     }
 
-    const setFocusToFirst = () => setFocusToFirstCandidate(buttons)
+    const setFocusToFirst = () => setFocusToFirstCandidate([...this.buttons])
 
-    const setFocusToLast = () => setFocusToLastCandidate(buttons)
+    const setFocusToLast = () => setFocusToLastCandidate([...this.buttons])
 
     const setFocusToNext = () => {
-      const current = this.querySelector<HTMLButtonElement>('button[type="button"][tabindex="0"]')
+      const current = this.current
 
       if (!current) {
         return
       }
 
+      const buttons = [...this.buttons]
       const index = buttons.indexOf(current)
       setFocusToFirstCandidate(buttons.slice(index + 1))
     }
 
     const setFocusToPrevious = () => {
-      const current = this.querySelector<HTMLButtonElement>('button[type="button"][tabindex="0"]')
+      const current = this.current
 
       if (!current) {
         return
       }
 
+      const buttons = [...this.buttons]
       const index = buttons.indexOf(current)
       setFocusToLastCandidate(buttons.slice(0, index))
     }
@@ -90,11 +90,20 @@ export class EditorToolbar extends HTMLElement {
       true,
     )
 
+    const buttons = this.buttons
     buttons.forEach(button => {
       button.setAttribute('tabindex', '-1')
       button.addEventListener('click', () => setFocusTo(button))
     })
     buttons[0].setAttribute('tabindex', '0')
+  }
+
+  private get current() {
+    return this.querySelector<HTMLButtonElement>('button[type="button"][tabindex="0"]')
+  }
+
+  private get buttons() {
+    return this.querySelectorAll<HTMLButtonElement>('button[type="button"]')
   }
 }
 
