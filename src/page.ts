@@ -19,7 +19,7 @@ export interface PhaseEnv {
 
 type Page = {
   readonly title: PlainText
-  readonly type?: 'no-header' | 'two-up'
+  readonly type?: 'two-up'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
@@ -61,31 +61,25 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
             : ''}
 
           <div class="contents">
-            ${phase || type !== 'no-header'
-              ? html`
-                  <header>
-                    ${phase
-                      ? html`
-                          <div class="phase-banner">
-                            <strong class="tag">${phase.tag}</strong>
-                            <span>${phase.text}</span>
-                          </div>
-                        `
-                      : ''}
-                    ${type !== 'no-header'
-                      ? html`
-                          <div class="header">
-                            <div class="logo">
-                              <a href="https://prereview.org/">
-                                <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
-                              </a>
-                            </div>
-                          </div>
-                        `
-                      : ''}
-                  </header>
-                `
-              : ''}
+            <header>
+              ${phase
+                ? html`
+                    <div class="phase-banner">
+                      <strong class="tag">${phase.tag}</strong>
+                      <span>${phase.text}</span>
+                    </div>
+                  `
+                : ''}
+
+              <div class="header">
+                <div class="logo">
+                  <a href="https://prereview.org/">
+                    <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
+                  </a>
+                </div>
+              </div>
+            </header>
+
             ${content}
           </div>
 

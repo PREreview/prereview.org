@@ -972,10 +972,6 @@ html-editor {
   }
 }
 
-.home-logo {
-  block-size: var(--space-3xl);
-}
-
 .doi {
   font-family: var(--font-monospace);
   user-select: all;

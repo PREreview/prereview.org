@@ -11,7 +11,6 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { InvalidE, getInput, invalidE } from './form'
 import { html, plainText, rawHtml, sendHtml } from './html'
-import * as assets from './manifest.json'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { fromUrl, parsePreprintDoi } from './preprint-id'
@@ -88,10 +87,6 @@ function createPage(lookupPreprint: LookupPreprint) {
     title: plainText`${error ? 'Error: ' : ''}PREreview`,
     content: html`
       <main id="main-content">
-        <header>
-          <h1><img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" class="home-logo" /></h1>
-        </header>
-
         ${error
           ? html`
               <error-summary aria-labelledby="error-summary-title" role="alert">
@@ -113,10 +108,10 @@ function createPage(lookupPreprint: LookupPreprint) {
             `
           : ''}
 
-        <h2 id="find-title">Find and publish PREreviews</h2>
-
         <form method="post" action="${format(homeMatch.formatter, {})}" novalidate aria-labelledby="find-title">
           <div ${rawHtml(E.isLeft(lookupPreprint) ? 'class="error"' : '')}>
+            <h1 id="find-title">Find and publish PREreviews</h1>
+
             <label for="preprint">Preprint DOI or URL</label>
 
             ${error
@@ -156,7 +151,6 @@ function createPage(lookupPreprint: LookupPreprint) {
     `,
     js: error ? ['error-summary.js'] : [],
     skipLinks: [[html`Skip to main content`, '#main-content']],
-    type: 'no-header',
   })
 }
 
