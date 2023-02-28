@@ -5,7 +5,7 @@ import * as _ from '../../assets/editor-toolbar'
 describe('when it loads', () => {
   it('the first button gets focus', async () => {
     const element = defineCE(class extends _.EditorToolbar {})
-    const editorToolbar = await fixture<_.EditorToolbar>(
+    await fixture<_.EditorToolbar>(
       `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -23,7 +23,7 @@ describe('on an ArrowLeft key', () => {
   describe('when there is another button', () => {
     it('the previous button gets focus', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -43,7 +43,7 @@ describe('on an ArrowLeft key', () => {
   describe('when on the first button', () => {
     it('does nothing', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -64,7 +64,7 @@ describe('on an ArrowRight key', () => {
   describe('when there is another button', () => {
     it('the next button gets focus', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -85,7 +85,7 @@ describe('on an ArrowRight key', () => {
   describe('when on the last button', () => {
     it('does nothing', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -107,7 +107,7 @@ describe('on an ArrowUp key', () => {
   describe('when there is another button', () => {
     it('the first button gets focus', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -130,7 +130,7 @@ describe('on an ArrowUp key', () => {
   describe('when on the first button', () => {
     it('does nothing', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -151,7 +151,7 @@ describe('on a Home key', () => {
   describe('when there is another button', () => {
     it('the first button gets focus', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -174,7 +174,7 @@ describe('on a Home key', () => {
   describe('when on the first button', () => {
     it('does nothing', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -195,7 +195,7 @@ describe('on an ArrowDown key', () => {
   describe('when there is another button', () => {
     it('the last button gets focus', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -216,7 +216,7 @@ describe('on an ArrowDown key', () => {
   describe('when on the last button', () => {
     it('does nothing', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -238,7 +238,7 @@ describe('on an End key', () => {
   describe('when there is another button', () => {
     it('the last button gets focus', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -259,7 +259,7 @@ describe('on an End key', () => {
   describe('when on the last button', () => {
     it('does nothing', async () => {
       const element = defineCE(class extends _.EditorToolbar {})
-      const editorToolbar = await fixture<_.EditorToolbar>(
+      await fixture<_.EditorToolbar>(
         `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">
@@ -280,7 +280,7 @@ describe('on an End key', () => {
 describe('on another key', () => {
   it('does nothing', async () => {
     const element = defineCE(class extends _.EditorToolbar {})
-    const editorToolbar = await fixture<_.EditorToolbar>(
+    await fixture<_.EditorToolbar>(
       `<${element}>
         <button type="button" id="button1">
         <button type="button" id="button2">

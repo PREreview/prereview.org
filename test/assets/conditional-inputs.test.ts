@@ -6,7 +6,7 @@ describe('when an option is selected', () => {
     const element = defineCE(class extends _.ConditionalInputs {})
     const target1 = await fixture<HTMLDivElement>('<div id="target1"/>')
     const target2 = await fixture<HTMLDivElement>('<div id="target2"/>')
-    const conditionalInputs = await fixture<_.ConditionalInputs>(
+    await fixture<_.ConditionalInputs>(
       `<${element}>
         <input type="radio" name="controls" aria-controls="target1" id="control1">
         <input type="radio" name="controls" aria-controls="target2" id="control2">
