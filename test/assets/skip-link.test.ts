@@ -10,6 +10,6 @@ describe('when a link is clicked', () => {
     skipLink.querySelector('a')?.click()
 
     expect(target).to.have.focus
-    expect(skipLink.ownerDocument.location.hash).to.be.empty
+    expect(document.location.hash).to.be.empty
   })
 })

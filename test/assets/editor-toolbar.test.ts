@@ -13,9 +13,9 @@ describe('when it loads', () => {
       </${element}>`,
     )
 
-    expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '0')
-    expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '-1')
-    expect(editorToolbar.ownerDocument.getElementById('button3')).to.have.attribute('tabindex', '-1')
+    expect(document.getElementById('button1')).to.have.attribute('tabindex', '0')
+    expect(document.getElementById('button2')).to.have.attribute('tabindex', '-1')
+    expect(document.getElementById('button3')).to.have.attribute('tabindex', '-1')
   })
 })
 
@@ -34,9 +34,9 @@ describe('on an ArrowLeft key', () => {
       await sendKeys({ press: 'ArrowRight' })
       await sendKeys({ press: 'ArrowLeft' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.focus
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button1')).to.have.focus
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '-1')
     })
   })
 
@@ -53,9 +53,9 @@ describe('on an ArrowLeft key', () => {
       await sendKeys({ press: 'Tab' })
       await sendKeys({ press: 'ArrowLeft' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.focus
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button1')).to.have.focus
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '-1')
     })
   })
 })
@@ -75,10 +75,10 @@ describe('on an ArrowRight key', () => {
       await sendKeys({ press: 'Tab' })
       await sendKeys({ press: 'ArrowRight' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '-1')
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.focus
-      expect(editorToolbar.ownerDocument.getElementById('button3')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button2')).to.have.focus
+      expect(document.getElementById('button3')).to.have.attribute('tabindex', '-1')
     })
   })
 
@@ -96,9 +96,9 @@ describe('on an ArrowRight key', () => {
       await sendKeys({ press: 'ArrowRight' })
       await sendKeys({ press: 'ArrowRight' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '-1')
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.focus
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button2')).to.have.focus
     })
   })
 })
@@ -120,10 +120,10 @@ describe('on an ArrowUp key', () => {
       await sendKeys({ press: 'ArrowRight' })
       await sendKeys({ press: 'ArrowUp' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.focus
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '-1')
-      expect(editorToolbar.ownerDocument.getElementById('button3')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button1')).to.have.focus
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button3')).to.have.attribute('tabindex', '-1')
     })
   })
 
@@ -140,9 +140,9 @@ describe('on an ArrowUp key', () => {
       await sendKeys({ press: 'Tab' })
       await sendKeys({ press: 'ArrowUp' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.focus
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button1')).to.have.focus
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '-1')
     })
   })
 })
@@ -164,10 +164,10 @@ describe('on a Home key', () => {
       await sendKeys({ press: 'ArrowRight' })
       await sendKeys({ press: 'Home' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.focus
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '-1')
-      expect(editorToolbar.ownerDocument.getElementById('button3')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button1')).to.have.focus
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button3')).to.have.attribute('tabindex', '-1')
     })
   })
 
@@ -184,9 +184,9 @@ describe('on a Home key', () => {
       await sendKeys({ press: 'Tab' })
       await sendKeys({ press: 'Home' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.focus
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button1')).to.have.focus
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '-1')
     })
   })
 })
@@ -206,10 +206,10 @@ describe('on an ArrowDown key', () => {
       await sendKeys({ press: 'Tab' })
       await sendKeys({ press: 'ArrowDown' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '-1')
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '-1')
-      expect(editorToolbar.ownerDocument.getElementById('button3')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button3')).to.have.focus
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button3')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button3')).to.have.focus
     })
   })
 
@@ -227,9 +227,9 @@ describe('on an ArrowDown key', () => {
       await sendKeys({ press: 'ArrowRight' })
       await sendKeys({ press: 'ArrowDown' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '-1')
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.focus
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button2')).to.have.focus
     })
   })
 })
@@ -249,10 +249,10 @@ describe('on an End key', () => {
       await sendKeys({ press: 'Tab' })
       await sendKeys({ press: 'End' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '-1')
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '-1')
-      expect(editorToolbar.ownerDocument.getElementById('button3')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button3')).to.have.focus
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button3')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button3')).to.have.focus
     })
   })
 
@@ -270,9 +270,9 @@ describe('on an End key', () => {
       await sendKeys({ press: 'ArrowRight' })
       await sendKeys({ press: 'End' })
 
-      expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '-1')
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '0')
-      expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.focus
+      expect(document.getElementById('button1')).to.have.attribute('tabindex', '-1')
+      expect(document.getElementById('button2')).to.have.attribute('tabindex', '0')
+      expect(document.getElementById('button2')).to.have.focus
     })
   })
 })
@@ -290,8 +290,8 @@ describe('on another key', () => {
     await sendKeys({ press: 'Tab' })
     await sendKeys({ press: 'KeyA' })
 
-    expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.attribute('tabindex', '0')
-    expect(editorToolbar.ownerDocument.getElementById('button1')).to.have.focus
-    expect(editorToolbar.ownerDocument.getElementById('button2')).to.have.attribute('tabindex', '-1')
+    expect(document.getElementById('button1')).to.have.attribute('tabindex', '0')
+    expect(document.getElementById('button1')).to.have.focus
+    expect(document.getElementById('button2')).to.have.attribute('tabindex', '-1')
   })
 })

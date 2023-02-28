@@ -24,6 +24,6 @@ describe('when a link is clicked', () => {
     errorSummary.querySelector('a')?.click()
 
     expect(target).to.have.focus
-    expect(errorSummary.ownerDocument.location.hash).to.be.empty
+    expect(document.location.hash).to.be.empty
   })
 })

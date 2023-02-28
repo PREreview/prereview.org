@@ -16,12 +16,12 @@ describe('when an option is selected', () => {
     expect(target1).to.have.attribute('hidden')
     expect(target2).to.have.attribute('hidden')
 
-    conditionalInputs.ownerDocument.getElementById('control1')?.click()
+    document.getElementById('control1')?.click()
 
     expect(target1).not.to.have.attribute('hidden')
     expect(target2).to.have.attribute('hidden')
 
-    conditionalInputs.ownerDocument.getElementById('control2')?.click()
+    document.getElementById('control2')?.click()
 
     expect(target1).to.have.attribute('hidden')
     expect(target2).not.to.have.attribute('hidden')
