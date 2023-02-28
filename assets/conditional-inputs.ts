@@ -6,12 +6,14 @@ export class ConditionalInputs extends HTMLElement {
   }
 
   connectedCallback() {
-    const controllers = this.querySelectorAll<HTMLInputElement>('input[type="radio"][aria-controls]')
-
-    controllers.forEach(toggleControlledElement)
+    this.controllers.forEach(toggleControlledElement)
     this.addEventListener('input', () => {
-      controllers.forEach(toggleControlledElement)
+      this.controllers.forEach(toggleControlledElement)
     })
+  }
+
+  private get controllers() {
+    return this.querySelectorAll<HTMLInputElement>('input[type="radio"][aria-controls]')
   }
 }
 
