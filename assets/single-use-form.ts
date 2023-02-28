@@ -8,13 +8,12 @@ export class SingleUseForm extends HTMLElement {
   }
 
   connectedCallback() {
-    const form = this.firstElementChild
-
-    if (!(form instanceof HTMLFormElement)) {
-      throw new Error('No form')
-    }
-
     this.addEventListener('submit', event => {
+      const form = event.target
+      if (!(form instanceof HTMLFormElement)) {
+        return
+      }
+
       if (form.dataset.submitted === 'true') {
         event.preventDefault()
       }
