@@ -229,6 +229,11 @@ img {
 }
 
 nav {
+  @nest .contents > & {
+    display: flex;
+    justify-content: space-between;
+  }
+
   @nest :not(.contents) > & {
     margin-block-start: var(--space-m);
   }
