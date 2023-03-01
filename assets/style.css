@@ -1000,6 +1000,24 @@ html-editor {
   }
 }
 
+.forward {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--step--1);
+
+  &::after {
+    content: '\00a0›';
+  }
+
+  &:any-link {
+    color: inherit;
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
 .byline {
   margin-block-start: var(--space-2xs);
   font-size: var(--step--1);
