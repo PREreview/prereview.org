@@ -60,7 +60,6 @@ export class HtmlEditor extends HTMLElement {
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
     const toolbar = document.createElement('editor-toolbar')
-    toolbar.setAttribute('role', 'toolbar')
     toolbar.setAttribute('aria-controls', textArea.id)
     toolbar.setAttribute('aria-label', 'Formatting')
 

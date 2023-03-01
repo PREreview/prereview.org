@@ -49,6 +49,8 @@ export class EditorToolbar extends HTMLElement {
   }
 
   connectedCallback() {
+    this.setAttribute('role', 'toolbar')
+
     const buttons = this.buttons
     buttons.forEach(button => button.setAttribute('tabindex', '-1'))
     buttons[0].setAttribute('tabindex', '0')

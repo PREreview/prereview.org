@@ -3,6 +3,17 @@ import { sendKeys } from '@web/test-runner-commands'
 import * as _ from '../../assets/editor-toolbar'
 
 describe('when it loads', () => {
+  it('is a toolbar', async () => {
+    const element = defineCE(class extends _.EditorToolbar {})
+    const editorToolbar = await fixture<_.EditorToolbar>(
+      `<${element}>
+        <button type="button">
+      </${element}>`,
+    )
+
+    expect(editorToolbar).to.have.attribute('role', 'toolbar')
+  })
+
   it('the first button gets focus', async () => {
     const element = defineCE(class extends _.EditorToolbar {})
     await fixture<_.EditorToolbar>(
