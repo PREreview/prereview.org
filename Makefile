@@ -1,4 +1,4 @@
-.PHONY: test test-integration update-snapshots
+.PHONY: test test-integration update-snapshots test-integration-image
 
 node_modules: package.json package-lock.json
 	npm install
@@ -7,10 +7,11 @@ node_modules: package.json package-lock.json
 test: node_modules
 	npx jest ${TEST}
 
-test-integration:
-	docker build --target test-integration --tag "prereview.org-integration-tests" .
+test-integration: test-integration-image
 	docker run --rm --volume "$$(pwd)"/integration/snapshots:/app/integration/snapshots --volume "$$(pwd)"/integration-results:/app/integration-results "prereview.org-integration-tests" ${TEST}
 
-update-snapshots:
-	docker build --target test-integration --tag "prereview.org-integration-tests" .
+update-snapshots: test-integration-image
 	docker run --rm --volume "$$(pwd)"/integration/snapshots:/app/integration/snapshots --volume "$$(pwd)"/integration-results:/app/integration-results "prereview.org-integration-tests" ${TEST} --update-snapshots
+
+test-integration-image:
+	docker build --target test-integration --tag "prereview.org-integration-tests" .
