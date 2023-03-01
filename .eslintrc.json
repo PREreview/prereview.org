@@ -9,6 +9,7 @@
     "plugin:import/recommended",
     "plugin:import/typescript",
     "plugin:fp-ts/all",
+    "plugin:wc/best-practice",
     "prettier"
   ],
   "overrides": [
