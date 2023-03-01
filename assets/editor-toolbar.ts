@@ -33,11 +33,24 @@ export class EditorToolbar extends HTMLElement {
       true,
     )
 
-    const buttons = this.buttons
-    buttons.forEach(button => {
-      button.setAttribute('tabindex', '-1')
-      button.addEventListener('click', () => this.setFocusTo(button))
+    this.addEventListener('click', event => {
+      const target = event.target
+
+      if (!(target instanceof HTMLElement)) {
+        return
+      }
+
+      const button = target.closest<HTMLButtonElement>('button[type="button"]')
+
+      if (!button) {
+        return
+      }
+
+      this.setFocusTo(button)
     })
+
+    const buttons = this.buttons
+    buttons.forEach(button => button.setAttribute('tabindex', '-1'))
     buttons[0].setAttribute('tabindex', '0')
   }
 

@@ -19,6 +19,42 @@ describe('when it loads', () => {
   })
 })
 
+describe('when a button is clicked', () => {
+  it('gets focus', async () => {
+    const element = defineCE(class extends _.EditorToolbar {})
+    await fixture<_.EditorToolbar>(
+      `<${element}>
+        <button type="button" id="button1">
+        <button type="button" id="button2">
+      </${element}>`,
+    )
+
+    document.getElementById('button2')?.click()
+
+    expect(document.getElementById('button1')).to.have.attribute('tabindex', '-1')
+    expect(document.getElementById('button2')).to.have.attribute('tabindex', '0')
+    expect(document.getElementById('button2')).to.have.focus
+  })
+})
+
+describe('when something inside a button is clicked', () => {
+  it('gets focus', async () => {
+    const element = defineCE(class extends _.EditorToolbar {})
+    await fixture<_.EditorToolbar>(
+      `<${element}>
+        <button type="button" id="button1">
+        <button type="button" id="button2"><img id="image1"></button>
+      </${element}>`,
+    )
+
+    document.getElementById('image1')?.click()
+
+    expect(document.getElementById('button1')).to.have.attribute('tabindex', '-1')
+    expect(document.getElementById('button2')).to.have.attribute('tabindex', '0')
+    expect(document.getElementById('button2')).to.have.focus
+  })
+})
+
 describe('on an ArrowLeft key', () => {
   describe('when there is another button', () => {
     it('the previous button gets focus', async () => {
