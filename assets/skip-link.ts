@@ -5,9 +5,7 @@ export class SkipLink extends HTMLElement {
 
   constructor() {
     super()
-  }
 
-  connectedCallback() {
     this.addEventListener('click', event => {
       const { target } = event
 

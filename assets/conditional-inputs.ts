@@ -3,13 +3,14 @@ export class ConditionalInputs extends HTMLElement {
 
   constructor() {
     super()
+
+    this.addEventListener('input', () => {
+      this.controllers.forEach(toggleControlledElement)
+    })
   }
 
   connectedCallback() {
     this.controllers.forEach(toggleControlledElement)
-    this.addEventListener('input', () => {
-      this.controllers.forEach(toggleControlledElement)
-    })
   }
 
   private get controllers() {

@@ -5,10 +5,6 @@ export class ErrorSummary extends HTMLElement {
 
   constructor() {
     super()
-  }
-
-  connectedCallback() {
-    forceFocus(this)
 
     this.addEventListener('click', event => {
       const { target } = event
@@ -21,6 +17,10 @@ export class ErrorSummary extends HTMLElement {
         event.preventDefault()
       }
     })
+  }
+
+  connectedCallback() {
+    forceFocus(this)
   }
 }
 

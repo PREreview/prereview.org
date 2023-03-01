@@ -3,9 +3,7 @@ export class EditorToolbar extends HTMLElement {
 
   constructor() {
     super()
-  }
 
-  connectedCallback() {
     this.addEventListener(
       'keydown',
       event => {
@@ -48,7 +46,9 @@ export class EditorToolbar extends HTMLElement {
 
       this.setFocusTo(button)
     })
+  }
 
+  connectedCallback() {
     const buttons = this.buttons
     buttons.forEach(button => button.setAttribute('tabindex', '-1'))
     buttons[0].setAttribute('tabindex', '0')

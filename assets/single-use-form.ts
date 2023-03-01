@@ -5,9 +5,7 @@ export class SingleUseForm extends HTMLElement {
 
   constructor() {
     super()
-  }
 
-  connectedCallback() {
     this.addEventListener('submit', event => {
       const form = event.target
       if (!(form instanceof HTMLFormElement)) {
