@@ -20,6 +20,12 @@ export class ConditionalInputs extends HTMLElement {
 
 window.customElements.define(ConditionalInputs.element, ConditionalInputs)
 
+declare global {
+  interface HTMLElementTagNameMap {
+    [ConditionalInputs.element]: ConditionalInputs
+  }
+}
+
 function toggleControlledElement(node: HTMLInputElement) {
   const controlled = getControlledElement(node)
 

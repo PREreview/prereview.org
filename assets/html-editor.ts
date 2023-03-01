@@ -400,6 +400,12 @@ export class HtmlEditor extends HTMLElement {
 
 window.customElements.define(HtmlEditor.element, HtmlEditor)
 
+declare global {
+  interface HTMLElementTagNameMap {
+    [HtmlEditor.element]: HtmlEditor
+  }
+}
+
 function replaceLabels(source: HTMLTextAreaElement) {
   return [...source.labels].map(label => {
     const replacement = document.createElement('span')

@@ -83,3 +83,9 @@ function getAssociatedLegendOrLabel(input: HTMLElement) {
 }
 
 window.customElements.define(ErrorSummary.element, ErrorSummary)
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [ErrorSummary.element]: ErrorSummary
+  }
+}

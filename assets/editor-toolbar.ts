@@ -125,3 +125,9 @@ export class EditorToolbar extends HTMLElement {
 }
 
 window.customElements.define(EditorToolbar.element, EditorToolbar)
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [EditorToolbar.element]: EditorToolbar
+  }
+}

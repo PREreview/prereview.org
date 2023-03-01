@@ -23,3 +23,9 @@ export class SingleUseForm extends HTMLElement {
 }
 
 window.customElements.define(SingleUseForm.element, SingleUseForm)
+
+declare global {
+  interface HTMLElementTagNameMap {
+    [SingleUseForm.element]: SingleUseForm
+  }
+}

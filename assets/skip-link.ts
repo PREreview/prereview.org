@@ -22,6 +22,12 @@ export class SkipLink extends HTMLElement {
 
 window.customElements.define(SkipLink.element, SkipLink)
 
+declare global {
+  interface HTMLElementTagNameMap {
+    [SkipLink.element]: SkipLink
+  }
+}
+
 function focusTarget(target: HTMLAnchorElement) {
   const element = getTargetElement(target)
 
