@@ -5,23 +5,74 @@ import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 
-export type PreprintId =
-  | AfricarxivPreprintId
-  | ArxivPreprintId
-  | BiorxivPreprintId
-  | ChemrxivPreprintId
-  | EartharxivPreprintId
-  | EcoevorxivPreprintId
-  | EdarxivPreprintId
-  | EngrxivPreprintId
-  | MedrxivPreprintId
-  | MetaarxivPreprintId
-  | OsfPreprintId
-  | PsyarxivPreprintId
-  | ResearchSquarePreprintId
-  | ScieloPreprintId
-  | ScienceOpenPreprintId
-  | SocarxivPreprintId
+const preprintIds = [
+  {
+    type: 'africarxiv' as const,
+    doi: '31730' as Doi<'31730'>,
+  },
+  {
+    type: 'arxiv' as const,
+    doi: '48550' as Doi<'48550'>,
+  },
+  {
+    type: 'biorxiv' as const,
+    doi: '1101' as Doi<'1101'>,
+  },
+  {
+    type: 'chemrxiv' as const,
+    doi: '25434' as Doi<'26434'>,
+  },
+  {
+    type: 'eartharxiv' as const,
+    doi: '31223' as Doi<'31223'>,
+  },
+  {
+    type: 'ecoevorxiv' as const,
+    doi: '32942' as Doi<'32942'>,
+  },
+  {
+    type: 'edarxiv' as const,
+    doi: '35542' as Doi<'35542'>,
+  },
+  {
+    type: 'engrxiv' as const,
+    doi: '31224' as Doi<'31224'>,
+  },
+  {
+    type: 'medrxiv' as const,
+    doi: '1101' as Doi<'1101'>,
+  },
+  {
+    type: 'metaarxiv' as const,
+    doi: '31222' as Doi<'31222'>,
+  },
+  {
+    type: 'osf' as const,
+    doi: '31219' as Doi<'31219'>,
+  },
+  {
+    type: 'psyarxiv' as const,
+    doi: '31234' as Doi<'31234'>,
+  },
+  {
+    type: 'research-square' as const,
+    doi: '21203' as Doi<'21203'>,
+  },
+  {
+    type: 'scielo' as const,
+    doi: '1590' as Doi<'1590'>,
+  },
+  {
+    type: 'science-open' as const,
+    doi: '14293' as Doi<'14293'>,
+  },
+  {
+    type: 'socarxiv' as const,
+    doi: '31235' as Doi<'31235'>,
+  },
+]
+
+export type PreprintId = (typeof preprintIds)[number]
 
 export interface AfricarxivPreprintId {
   readonly type: 'africarxiv'
