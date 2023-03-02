@@ -390,8 +390,7 @@ export class HtmlEditor extends HTMLElement {
       editor.commands.focus('start', { scrollIntoView: false })
     }
 
-    container.prepend(toolbar)
-    container.append(textArea, input)
+    container.insertBefore(toolbar, editor.view.dom)
     textArea.hidden = true
     removeAttributes(textArea, ['aria-describedby', 'aria-errormessage', 'aria-invalid', 'id'])
   }
