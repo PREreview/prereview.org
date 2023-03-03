@@ -56,8 +56,9 @@ export const writeReviewReview = flow(
             { form: { alreadyWritten: P.optional(P.nullish), review: P.optional(P.nullish) } },
             showAlreadyWrittenForm,
           )
-          .with({ form: { alreadyWritten: 'yes', review: P.optional(P.nullish) } }, showPasteReviewForm)
-          .otherwise(showWriteReviewForm),
+          .with({ form: { alreadyWritten: 'yes' } }, showPasteReviewForm)
+          .with({ form: { alreadyWritten: P.optional('no') } }, showWriteReviewForm)
+          .exhaustive(),
       ),
       RM.orElseW(error =>
         match(error)
@@ -209,7 +210,7 @@ type WriteReviewForm = {
 }
 
 type PasteReviewForm = {
-  readonly review: E.Either<MissingE, undefined>
+  readonly review: E.Either<MissingE, Html | undefined>
 }
 
 const AlreadyWrittenFieldD = pipe(
@@ -414,13 +415,34 @@ function pasteReviewForm(preprint: Preprint, form: PasteReviewForm) {
               : ''}
 
             <html-editor>
-              <textarea
-                id="review"
-                name="review"
-                rows="20"
-                aria-describedby="review-tip"
-                ${rawHtml(E.isLeft(form.review) ? 'aria-invalid="true" aria-errormessage="review-error"' : '')}
-              ></textarea>
+              ${match(form.review)
+                .with(
+                  { right: undefined },
+                  () => html` <textarea id="review" name="review" rows="20" aria-describedby="review-tip"></textarea> `,
+                )
+                .with(
+                  { right: P.select(P.not(undefined)) },
+                  review => html`
+                    <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
+${turndown.turndown(review.toString())}</textarea
+                    >
+                    <textarea hidden disabled>${review}</textarea>
+                  `,
+                )
+                .with(
+                  { left: { _tag: 'MissingE' } },
+                  () => html`
+                    <textarea
+                      id="review"
+                      name="review"
+                      rows="20"
+                      aria-describedby="review-tip"
+                      aria-invalid="true"
+                      aria-errormessage="review-error"
+                    ></textarea>
+                  `,
+                )
+                .exhaustive()}
             </html-editor>
           </div>
 
