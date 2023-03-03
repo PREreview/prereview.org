@@ -115,7 +115,7 @@ describe('writeReviewStart', () => {
               name: 'Location',
               value: `/preprints/doi-${encodeURIComponent(
                 preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-              )}/write-a-prereview/write-your-prereview`,
+              )}/write-a-prereview/already-written`,
             },
             { type: 'endResponse' },
           ]),
