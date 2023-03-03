@@ -689,7 +689,7 @@ test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can paste an already-written PREreview',
-  async ({ fetch, javaScriptEnabled, page }) => {
+  async ({ browserName, context, fetch, javaScriptEnabled, page }, testInfo) => {
     fetch.get(
       {
         url: 'http://zenodo.test/api/records/',
@@ -708,6 +708,49 @@ test.extend(canLogIn).extend(areLoggedIn)(
     }
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Paste your PREreview')
+    await expect(page).toHaveScreenshot()
+
+    testInfo.skip(
+      browserName === 'webkit' && !javaScriptEnabled,
+      'https://github.com/microsoft/playwright/issues/21379',
+    )
+
+    const newPage = await context.newPage()
+    await newPage.setContent(`<div contenteditable>
+      <h1>Lorem ipsum</h1>
+      <div>
+        <p>Dolor sit amet, consectetur <strong>adipiscing</strong> <em>elit</em>.</p>
+        <ul>
+          <li>
+            Sed id nibh in felis porta ultricies.
+          </li>
+          <li>
+            <ol>
+              <li>Praesent aliquet velit non nibh luctus imperdiet.</li>
+            </ol>
+          </li>
+        </ul>
+      </div>
+    </div>`)
+    await newPage.locator('[contenteditable]').selectText()
+    await newPage.keyboard.press('Control+C')
+    await newPage.close()
+
+    await page.getByLabel('Paste your PREreview').focus()
+    await page.keyboard.press('Control+V')
+
+    if (javaScriptEnabled) {
+      testInfo.fail(browserName === 'firefox', 'https://github.com/microsoft/playwright/issues/18339')
+
+      await expect(page.getByLabel('Paste your PREreview').getByRole('heading', { level: 1 })).toHaveText('Lorem ipsum')
+      await expect(page.getByLabel('Paste your PREreview').getByRole('listitem')).toHaveText([
+        'Sed id nibh in felis porta ultricies.',
+        'Praesent aliquet velit non nibh luctus imperdiet.',
+      ])
+    } else {
+      await expect(page.getByLabel('Paste your PREreview')).toHaveValue(/Lorem ipsum/)
+    }
+
     await expect(page).toHaveScreenshot()
   },
 )
