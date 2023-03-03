@@ -14,6 +14,7 @@ import { RawHtmlC } from '../html'
 import { seeOther } from '../middleware'
 import { PreprintId } from '../preprint-id'
 import {
+  writeReviewAlreadyWrittenMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
@@ -79,6 +80,10 @@ export function deleteForm(user: Orcid, preprint: Doi): ReaderTaskEither<FormSto
 
 export const nextFormMatch = (form: Form) =>
   match(form)
+    .with(
+      { alreadyWritten: P.optional(P.nullish), review: P.optional(P.nullish) },
+      () => writeReviewAlreadyWrittenMatch,
+    )
     .with({ review: P.optional(P.nullish) }, () => writeReviewReviewMatch)
     .with({ persona: P.optional(P.nullish) }, () => writeReviewPersonaMatch)
     .with({ moreAuthors: P.optional(P.nullish) }, () => writeReviewAuthorsMatch)

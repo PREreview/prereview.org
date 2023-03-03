@@ -44,6 +44,7 @@ import {
   preprintUuidMatch,
   reviewMatch,
   writeReviewAddAuthorsMatch,
+  writeReviewAlreadyWrittenMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
@@ -58,6 +59,7 @@ import {
   NewPrereview,
   writeReview,
   writeReviewAddAuthors,
+  writeReviewAlreadyWritten,
   writeReviewAuthors,
   writeReviewCompetingInterests,
   writeReviewConduct,
@@ -152,6 +154,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewStartMatch.parser,
           P.map(({ doi }) => writeReviewStart(doi)),
+        ),
+        pipe(
+          writeReviewAlreadyWrittenMatch.parser,
+          P.map(({ doi }) => writeReviewAlreadyWritten(doi)),
         ),
         pipe(
           writeReviewReviewMatch.parser,

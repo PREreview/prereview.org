@@ -1599,6 +1599,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
   }
+
+  await page.goBack()
+
+  await expect(page.getByLabel('No')).toBeChecked()
+
+  await page.goBack()
+
+  await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
@@ -1648,6 +1656,23 @@ test.extend(canLogIn).extend(areLoggedIn)(
       )
     } else {
       await expect(page.getByLabel('Write your PREreview')).toHaveValue(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      )
+    }
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('No')).toBeChecked()
+
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByLabel('Paste your PREreview')).toHaveText(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      )
+    } else {
+      await expect(page.getByLabel('Paste your PREreview')).toHaveValue(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       )
     }
@@ -1705,6 +1730,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('link', { name: 'Back' }).click()
     await page.getByRole('link', { name: 'Back to preprint' }).click()
     await page.getByRole('link', { name: 'Write a PREreview' }).click()
 

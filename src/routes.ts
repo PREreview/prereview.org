@@ -87,6 +87,12 @@ export const writeReviewMatch = pipe(writeReviewBaseMatch, P.then(P.end))
 
 export const writeReviewStartMatch = pipe(writeReviewBaseMatch, P.then(P.lit('start-now')), P.then(P.end))
 
+export const writeReviewAlreadyWrittenMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('already-written')),
+  P.then(P.end),
+)
+
 export const writeReviewReviewMatch = pipe(writeReviewBaseMatch, P.then(P.lit('write-your-prereview')), P.then(P.end))
 
 export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, P.then(P.lit('choose-name')), P.then(P.end))

@@ -11,7 +11,7 @@ import { html, plainText, sendHtml } from '../html'
 import { PublicUrlEnv, logInAndRedirect } from '../log-in'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { FathomEnv, PhaseEnv, page } from '../page'
-import { preprintMatch, writeReviewReviewMatch, writeReviewStartMatch } from '../routes'
+import { preprintMatch, writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../routes'
 import { getUserFromSession } from '../user'
 import { Form, getForm, nextFormMatch } from './form'
 import { Preprint, getPreprint } from './preprint'
@@ -28,7 +28,7 @@ export const writeReviewStart = flow(
           .with(
             'no-form',
             fromMiddlewareK<FathomEnv & PhaseEnv & PublicUrlEnv & OAuthEnv, [], void, StatusOpen, ResponseEnded, never>(
-              () => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint.doi })),
+              () => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.doi })),
             ),
           )
           .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { doi: preprint.doi }))
