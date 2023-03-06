@@ -68,6 +68,7 @@ const server = app({
       : undefined,
   publicUrl: env.PUBLIC_URL,
   secret: env.SECRET,
+  sessionCookie: 'session',
   sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,

@@ -68,6 +68,8 @@ export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
 
+export const cookieName = (): fc.Arbitrary<string> => fc.lorem({ maxCount: 1 })
+
 export const html = (): fc.Arbitrary<Html> => fc.lorem().map(text => toHtml`<p>${text}</p>`)
 
 export const sanitisedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeHtml)

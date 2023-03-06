@@ -7,7 +7,7 @@ import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
 describe('middleware', () => {
-  test.prop([fc.connection(), fc.string()])('seeOther', async (connection, location) => {
+  test.prop([fc.connection(), fc.cookieName(), fc.string()])('seeOther', async (connection, location) => {
     const actual = await runMiddleware(_.seeOther(location), connection)()
 
     expect(actual).toStrictEqual(

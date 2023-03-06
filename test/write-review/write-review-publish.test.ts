@@ -15,12 +15,13 @@ describe('writeReviewPublish', () => {
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
-    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
+        fc.constant(sessionCookie),
         fc.constant(sessionId),
         fc.constant(secret),
       ),
@@ -38,7 +39,7 @@ describe('writeReviewPublish', () => {
     fc.doi(),
   ])(
     'when the form is complete',
-    async (preprintDoi, preprintTitle, [connection, sessionId, secret], newReview, user, reviewDoi) => {
+    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], newReview, user, reviewDoi) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -52,6 +53,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle,
           publishPrereview,
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -70,7 +72,7 @@ describe('writeReviewPublish', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.OK },
-          { type: 'clearCookie', name: 'session', options: expect.anything() },
+          { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: expect.anything() },
         ]),
@@ -82,12 +84,13 @@ describe('writeReviewPublish', () => {
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
-    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
+        fc.constant(sessionCookie),
         fc.constant(sessionId),
         fc.constant(secret),
       ),
@@ -112,7 +115,7 @@ describe('writeReviewPublish', () => {
     fc.user(),
   ])(
     'when the form is incomplete',
-    async (preprintDoi, preprintTitle, [connection, sessionId, secret], newPrereview, user) => {
+    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], newPrereview, user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -125,6 +128,7 @@ describe('writeReviewPublish', () => {
           formStore,
           publishPrereview: () => TE.left(''),
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -133,7 +137,7 @@ describe('writeReviewPublish', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'clearCookie', name: 'session', options: expect.anything() },
+          { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: expect.anything() },
         ]),
@@ -144,57 +148,63 @@ describe('writeReviewPublish', () => {
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
-    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
+        fc.constant(sessionCookie),
         fc.constant(sessionId),
         fc.constant(secret),
       ),
     ),
     fc.user(),
-  ])('when there is no form', async (preprintDoi, preprintTitle, [connection, sessionId, secret], user) => {
-    const sessionStore = new Keyv()
-    await sessionStore.set(sessionId, UserC.encode(user))
-    const formStore = new Keyv()
-    const getPreprintTitle = () => TE.right(preprintTitle)
+  ])(
+    'when there is no form',
+    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, UserC.encode(user))
+      const formStore = new Keyv()
+      const getPreprintTitle = () => TE.right(preprintTitle)
 
-    const actual = await runMiddleware(
-      _.writeReviewPublish(preprintDoi)({
-        getPreprintTitle,
-        formStore,
-        publishPrereview: () => TE.left(''),
-        secret,
-        sessionStore,
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.writeReviewPublish(preprintDoi)({
+          getPreprintTitle,
+          formStore,
+          publishPrereview: () => TE.left(''),
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-          )}/write-a-prereview`,
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: `/preprints/doi-${encodeURIComponent(
+              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            )}/write-a-prereview`,
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
 
   test.prop([
     fc.preprintDoi(),
-    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
+        fc.constant(sessionCookie),
         fc.constant(sessionId),
         fc.constant(secret),
       ),
@@ -212,43 +222,48 @@ describe('writeReviewPublish', () => {
       { withDeletedKeys: true },
     ),
     fc.user(),
-  ])('when the preprint cannot be loaded', async (preprintDoi, [connection, sessionId, secret], newReview, user) => {
-    const sessionStore = new Keyv()
-    await sessionStore.set(sessionId, UserC.encode(user))
-    const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-    const getPreprintTitle = () => TE.left('unavailable' as const)
-    const publishPrereview = () => () => Promise.reject('should not be called')
+  ])(
+    'when the preprint cannot be loaded',
+    async (preprintDoi, [connection, sessionCookie, sessionId, secret], newReview, user) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, UserC.encode(user))
+      const formStore = new Keyv()
+      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      const getPreprintTitle = () => TE.left('unavailable' as const)
+      const publishPrereview = () => () => Promise.reject('should not be called')
 
-    const actual = await runMiddleware(
-      _.writeReviewPublish(preprintDoi)({
-        formStore,
-        getPreprintTitle,
-        publishPrereview,
-        secret,
-        sessionStore,
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.writeReviewPublish(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          publishPrereview,
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 
   test.prop([
     fc.preprintDoi(),
-    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
+        fc.constant(sessionCookie),
         fc.constant(sessionId),
         fc.constant(secret),
       ),
@@ -266,41 +281,46 @@ describe('writeReviewPublish', () => {
       { withDeletedKeys: true },
     ),
     fc.user(),
-  ])('when the preprint cannot be found', async (preprintDoi, [connection, sessionId, secret], newReview, user) => {
-    const sessionStore = new Keyv()
-    await sessionStore.set(sessionId, UserC.encode(user))
-    const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-    const getPreprintTitle = () => TE.left('not-found' as const)
-    const publishPrereview = () => () => Promise.reject('should not be called')
+  ])(
+    'when the preprint cannot be found',
+    async (preprintDoi, [connection, sessionCookie, sessionId, secret], newReview, user) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, UserC.encode(user))
+      const formStore = new Keyv()
+      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      const getPreprintTitle = () => TE.left('not-found' as const)
+      const publishPrereview = () => () => Promise.reject('should not be called')
 
-    const actual = await runMiddleware(
-      _.writeReviewPublish(preprintDoi)({
-        formStore,
-        getPreprintTitle,
-        publishPrereview,
-        secret,
-        sessionStore,
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.writeReviewPublish(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          publishPrereview,
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.NotFound },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.NotFound },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
     fc.connection({ method: fc.constant('POST') }),
+    fc.cookieName(),
     fc.string(),
-  ])("when there isn't a session", async (preprintDoi, preprintTitle, connection, secret) => {
+  ])("when there isn't a session", async (preprintDoi, preprintTitle, connection, sessionCookie, secret) => {
     const sessionStore = new Keyv()
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.right(preprintTitle)
@@ -311,6 +331,7 @@ describe('writeReviewPublish', () => {
         formStore,
         publishPrereview: () => TE.left(''),
         secret,
+        sessionCookie,
         sessionStore,
       }),
       connection,
@@ -334,12 +355,13 @@ describe('writeReviewPublish', () => {
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
-    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
+        fc.constant(sessionCookie),
         fc.constant(sessionId),
         fc.constant(secret),
       ),
@@ -357,7 +379,7 @@ describe('writeReviewPublish', () => {
     fc.user(),
   ])(
     'Zenodo is unavailable',
-    async (preprintDoi, preprintTitle, [connection, sessionId, secret], response, newReview, user) => {
+    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], response, newReview, user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -370,6 +392,7 @@ describe('writeReviewPublish', () => {
           formStore,
           publishPrereview: () => TE.left(response),
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -378,7 +401,7 @@ describe('writeReviewPublish', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'clearCookie', name: 'session', options: expect.anything() },
+          { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: expect.anything() },
         ]),
