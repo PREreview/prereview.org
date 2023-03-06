@@ -1,5 +1,5 @@
 const path = require('path')
-const glob = require('glob')
+const { globSync } = require('glob')
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { PurgeCSSPlugin } = require('purgecss-webpack-plugin')
@@ -119,7 +119,7 @@ module.exports = {
       filename: '[name].[contenthash].css',
     }),
     new PurgeCSSPlugin({
-      paths: [...glob.sync(`assets/**/*.ts`, { nodir: true }), ...glob.sync(`src/**/*`, { nodir: true })],
+      paths: [...globSync(`assets/**/*.ts`, { nodir: true }), ...globSync(`src/**/*`, { nodir: true })],
       safelist: ['contenteditable', /^:/],
       variables: true,
     }),
