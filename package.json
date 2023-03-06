@@ -20,7 +20,7 @@
     "hyper-ts": "^0.7.8",
     "hyper-ts-oauth": "^0.1.1",
     "hyper-ts-routing": "^0.1.0",
-    "hyper-ts-session": "^0.2.0",
+    "hyper-ts-session": "^0.3.0",
     "io-ts": "^2.2.20",
     "ioredis": "^5.3.1",
     "iso-639-1": "^2.1.15",
