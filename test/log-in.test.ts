@@ -136,46 +136,50 @@ test.prop([
 
 describe('logOut', () => {
   test.prop([
-    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
         }),
+        fc.constant(sessionCookie),
         fc.constant(sessionId),
         fc.constant(secret),
       ),
     ),
     fc.user(),
-  ])('when there is a session', async ([connection, sessionId, secret], user) => {
+  ])('when there is a session', async ([connection, sessionCookie, sessionId, secret], user) => {
     const sessionStore = new Keyv()
     await sessionStore.set(sessionId, UserC.encode(user))
 
-    const actual = await runMiddleware(_.logOut({ secret, sessionStore }), connection)()
+    const actual = await runMiddleware(_.logOut({ secret, sessionCookie, sessionStore }), connection)()
 
     expect(await sessionStore.has(sessionId)).toBeFalsy()
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.Found },
         { type: 'setHeader', name: 'Location', value: '/' },
-        { type: 'clearCookie', name: 'session', options: expect.anything() },
+        { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
         { type: 'endResponse' },
       ]),
     )
   })
 
-  test.prop([fc.connection(), fc.string()])("when there isn't a session", async (connection, secret) => {
-    const sessionStore = new Keyv()
+  test.prop([fc.connection(), fc.cookieName(), fc.string()])(
+    "when there isn't a session",
+    async (connection, sessionCookie, secret) => {
+      const sessionStore = new Keyv()
 
-    const actual = await runMiddleware(_.logOut({ secret, sessionStore }), connection)()
+      const actual = await runMiddleware(_.logOut({ secret, sessionCookie, sessionStore }), connection)()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.Found },
-        { type: 'setHeader', name: 'Location', value: '/' },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          { type: 'setHeader', name: 'Location', value: '/' },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
 })
 
 describe('authenticate', () => {
@@ -197,10 +201,11 @@ describe('authenticate', () => {
     }),
     fc.string(),
     fc.string(),
+    fc.cookieName(),
     fc.connection(),
   ])(
     'when the state contains a valid referer',
-    async (code, [referer], oauth, accessToken, pseudonym, secret, connection) => {
+    async (code, [referer], oauth, accessToken, pseudonym, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
 
       const actual = await runMiddleware(
@@ -218,6 +223,7 @@ describe('authenticate', () => {
           oauth,
           publicUrl: new URL('/', referer),
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -233,7 +239,7 @@ describe('authenticate', () => {
           { type: 'setHeader', name: 'Location', value: referer.href },
           {
             type: 'setCookie',
-            name: 'session',
+            name: sessionCookie,
             options: expect.anything(),
             value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
           },
@@ -260,41 +266,46 @@ describe('authenticate', () => {
       orcid: fc.orcid(),
     }),
     fc.string(),
+    fc.cookieName(),
     fc.connection(),
-  ])('when a pseudonym cannot be retrieved', async (code, [referer], oauth, accessToken, secret, connection) => {
-    const sessionStore = new Keyv()
+  ])(
+    'when a pseudonym cannot be retrieved',
+    async (code, [referer], oauth, accessToken, secret, sessionCookie, connection) => {
+      const sessionStore = new Keyv()
 
-    const actual = await runMiddleware(
-      _.authenticate(
-        code,
-        referer.href,
-      )({
-        clock: SystemClock,
-        fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-          status: Status.OK,
-          body: accessToken,
+      const actual = await runMiddleware(
+        _.authenticate(
+          code,
+          referer.href,
+        )({
+          clock: SystemClock,
+          fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+            status: Status.OK,
+            body: accessToken,
+          }),
+          getPseudonym: () => TE.left('unavailable'),
+          logger: () => IO.of(undefined),
+          oauth,
+          publicUrl: new URL('/', referer),
+          secret,
+          sessionCookie,
+          sessionStore,
         }),
-        getPseudonym: () => TE.left('unavailable'),
-        logger: () => IO.of(undefined),
-        oauth,
-        publicUrl: new URL('/', referer),
-        secret,
-        sessionStore,
-      }),
-      connection,
-    )()
-    const sessions = await all(sessionStore.iterator(undefined))
+        connection,
+      )()
+      const sessions = await all(sessionStore.iterator(undefined))
 
-    expect(sessions).toStrictEqual([])
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(sessions).toStrictEqual([])
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 
   test.prop([
     fc.string(),
@@ -315,10 +326,11 @@ describe('authenticate', () => {
     }),
     fc.string(),
     fc.string(),
+    fc.cookieName(),
     fc.connection(),
   ])(
     'when the state contains an invalid referer',
-    async (code, publicUrl, state, oauth, accessToken, pseudonym, secret, connection) => {
+    async (code, publicUrl, state, oauth, accessToken, pseudonym, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
 
       const actual = await runMiddleware(
@@ -336,6 +348,7 @@ describe('authenticate', () => {
           oauth,
           publicUrl,
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -351,7 +364,7 @@ describe('authenticate', () => {
           { type: 'setHeader', name: 'Location', value: '/' },
           {
             type: 'setCookie',
-            name: 'session',
+            name: sessionCookie,
             options: expect.anything(),
             value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
           },

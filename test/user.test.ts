@@ -27,14 +27,15 @@ describe('user', () => {
     })
   })
 
-  test.prop([fc.user(), fc.string(), fc.connection<HeadersOpen>()])(
+  test.prop([fc.user(), fc.string(), fc.cookieName(), fc.connection<HeadersOpen>()])(
     'storeUserInSession',
-    async (user, secret, connection) => {
+    async (user, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
 
       const actual = await runMiddleware(
         _.storeUserInSession(user)({
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -46,7 +47,7 @@ describe('user', () => {
         E.right([
           {
             type: 'setCookie',
-            name: 'session',
+            name: sessionCookie,
             options: expect.anything(),
             value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
           },
@@ -58,22 +59,24 @@ describe('user', () => {
   describe('getUserFromSession', () => {
     test.prop([
       fc.user(),
-      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+      fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.tuple(
           fc.connection({
-            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           }),
+          fc.constant(sessionCookie),
           fc.constant(sessionId),
           fc.constant(secret),
         ),
       ),
-    ])('when the user can be decoded', async (user, [connection, sessionId, secret]) => {
+    ])('when the user can be decoded', async (user, [connection, sessionCookie, sessionId, secret]) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, _.UserC.encode(user))
 
       const actual = await M.evalMiddleware(
         _.getUserFromSession()({
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -85,22 +88,24 @@ describe('user', () => {
     test.prop([
       fc.user(),
       fc.jsonValue(),
-      fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+      fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.tuple(
           fc.connection({
-            headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           }),
+          fc.constant(sessionCookie),
           fc.constant(sessionId),
           fc.constant(secret),
         ),
       ),
-    ])('when the user cannot be decoded', async (user, value, [connection, sessionId, secret]) => {
+    ])('when the user cannot be decoded', async (user, value, [connection, sessionCookie, sessionId, secret]) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, value)
 
       const actual = await M.evalMiddleware(
         _.getUserFromSession()({
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -109,14 +114,15 @@ describe('user', () => {
       expect(actual).toStrictEqual(E.left(expect.anything()))
     })
 
-    test.prop([fc.user(), fc.string(), fc.connection()])(
+    test.prop([fc.user(), fc.string(), fc.cookieName(), fc.connection()])(
       'when there is no session',
-      async (user, secret, connection) => {
+      async (user, secret, sessionCookie, connection) => {
         const sessionStore = new Keyv()
 
         const actual = await M.evalMiddleware(
           _.getUserFromSession()({
             secret,
+            sessionCookie,
             sessionStore,
           }),
           connection,

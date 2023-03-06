@@ -506,6 +506,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
       publicUrl: new URL(`http://localhost:${port}`),
       secret: '',
+      sessionCookie: 'session',
       sessionStore: new Keyv(),
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),

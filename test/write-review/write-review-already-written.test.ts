@@ -15,18 +15,21 @@ describe('writeReviewAlreadyWritten', () => {
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
-    fc.tuple(fc.constantFrom('yes', 'no'), fc.uuid(), fc.string()).chain(([alreadyWritten, sessionId, secret]) =>
-      fc.tuple(
-        fc.constant(alreadyWritten),
-        fc.connection({
-          body: fc.constant({ alreadyWritten }),
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
-        }),
-        fc.constant(sessionId),
-        fc.constant(secret),
+    fc
+      .tuple(fc.constantFrom('yes', 'no'), fc.cookieName(), fc.uuid(), fc.string())
+      .chain(([alreadyWritten, sessionCookie, sessionId, secret]) =>
+        fc.tuple(
+          fc.constant(alreadyWritten),
+          fc.connection({
+            body: fc.constant({ alreadyWritten }),
+            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+            method: fc.constant('POST'),
+          }),
+          fc.constant(sessionCookie),
+          fc.constant(sessionId),
+          fc.constant(secret),
+        ),
       ),
-    ),
     fc.user(),
     fc.record(
       {
@@ -51,7 +54,13 @@ describe('writeReviewAlreadyWritten', () => {
     ),
   ])(
     'when the form is completed',
-    async (preprintDoi, preprintTitle, [alreadyWritten, connection, sessionId, secret], user, newReview) => {
+    async (
+      preprintDoi,
+      preprintTitle,
+      [alreadyWritten, connection, sessionCookie, sessionId, secret],
+      user,
+      newReview,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -62,6 +71,7 @@ describe('writeReviewAlreadyWritten', () => {
           formStore,
           getPreprintTitle,
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -88,18 +98,21 @@ describe('writeReviewAlreadyWritten', () => {
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
-    fc.tuple(fc.constantFrom('yes', 'no'), fc.uuid(), fc.string()).chain(([alreadyWritten, sessionId, secret]) =>
-      fc.tuple(
-        fc.constant(alreadyWritten),
-        fc.connection({
-          body: fc.constant({ alreadyWritten }),
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
-        }),
-        fc.constant(sessionId),
-        fc.constant(secret),
+    fc
+      .tuple(fc.constantFrom('yes', 'no'), fc.cookieName(), fc.uuid(), fc.string())
+      .chain(([alreadyWritten, sessionCookie, sessionId, secret]) =>
+        fc.tuple(
+          fc.constant(alreadyWritten),
+          fc.connection({
+            body: fc.constant({ alreadyWritten }),
+            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+            method: fc.constant('POST'),
+          }),
+          fc.constant(sessionCookie),
+          fc.constant(sessionId),
+          fc.constant(secret),
+        ),
       ),
-    ),
     fc.user(),
     fc.record(
       {
@@ -115,7 +128,13 @@ describe('writeReviewAlreadyWritten', () => {
     ),
   ])(
     'when the form is incomplete',
-    async (preprintDoi, preprintTitle, [alreadyWritten, connection, sessionId, secret], user, newReview) => {
+    async (
+      preprintDoi,
+      preprintTitle,
+      [alreadyWritten, connection, sessionCookie, sessionId, secret],
+      user,
+      newReview,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -127,6 +146,7 @@ describe('writeReviewAlreadyWritten', () => {
           formStore,
           getPreprintTitle,
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -152,22 +172,25 @@ describe('writeReviewAlreadyWritten', () => {
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
-    fc.tuple(fc.constantFrom('yes', 'no'), fc.uuid(), fc.string()).chain(([alreadyWritten, sessionId, secret]) =>
-      fc.tuple(
-        fc.constant(alreadyWritten),
-        fc.connection({
-          body: fc.constant({ alreadyWritten }),
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
-        }),
-        fc.constant(sessionId),
-        fc.constant(secret),
+    fc
+      .tuple(fc.constantFrom('yes', 'no'), fc.cookieName(), fc.uuid(), fc.string())
+      .chain(([alreadyWritten, sessionCookie, sessionId, secret]) =>
+        fc.tuple(
+          fc.constant(alreadyWritten),
+          fc.connection({
+            body: fc.constant({ alreadyWritten }),
+            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+            method: fc.constant('POST'),
+          }),
+          fc.constant(sessionCookie),
+          fc.constant(sessionId),
+          fc.constant(secret),
+        ),
       ),
-    ),
     fc.user(),
   ])(
     'when there is no form',
-    async (preprintDoi, preprintTitle, [alreadyWritten, connection, sessionId, secret], user) => {
+    async (preprintDoi, preprintTitle, [alreadyWritten, connection, sessionCookie, sessionId, secret], user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -178,6 +201,7 @@ describe('writeReviewAlreadyWritten', () => {
           formStore,
           getPreprintTitle,
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
@@ -202,13 +226,14 @@ describe('writeReviewAlreadyWritten', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
           body: fc.record({ alreadyWritten: fc.constantFrom('yes', 'no') }),
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
+        fc.constant(sessionCookie),
         fc.constant(sessionId),
         fc.constant(secret),
       ),
@@ -226,41 +251,46 @@ describe('writeReviewAlreadyWritten', () => {
       },
       { withDeletedKeys: true },
     ),
-  ])('when the preprint cannot be loaded', async (preprintDoi, [connection, sessionId, secret], user, newReview) => {
-    const sessionStore = new Keyv()
-    await sessionStore.set(sessionId, UserC.encode(user))
-    const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-    const getPreprintTitle = () => TE.left('unavailable' as const)
-    const actual = await runMiddleware(
-      _.writeReviewAlreadyWritten(preprintDoi)({
-        formStore,
-        getPreprintTitle,
-        secret,
-        sessionStore,
-      }),
-      connection,
-    )()
+  ])(
+    'when the preprint cannot be loaded',
+    async (preprintDoi, [connection, sessionCookie, sessionId, secret], user, newReview) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, UserC.encode(user))
+      const formStore = new Keyv()
+      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      const getPreprintTitle = () => TE.left('unavailable' as const)
+      const actual = await runMiddleware(
+        _.writeReviewAlreadyWritten(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 
   test.prop([
     fc.preprintDoi(),
-    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
           body: fc.record({ alreadyWritten: fc.constantFrom('yes', 'no') }),
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
+        fc.constant(sessionCookie),
         fc.constant(sessionId),
         fc.constant(secret),
       ),
@@ -278,38 +308,43 @@ describe('writeReviewAlreadyWritten', () => {
       },
       { withDeletedKeys: true },
     ),
-  ])('when the preprint cannot be found', async (preprintDoi, [connection, sessionId, secret], user, newReview) => {
-    const sessionStore = new Keyv()
-    await sessionStore.set(sessionId, UserC.encode(user))
-    const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-    const getPreprintTitle = () => TE.left('not-found' as const)
-    const actual = await runMiddleware(
-      _.writeReviewAlreadyWritten(preprintDoi)({
-        formStore,
-        getPreprintTitle,
-        secret,
-        sessionStore,
-      }),
-      connection,
-    )()
+  ])(
+    'when the preprint cannot be found',
+    async (preprintDoi, [connection, sessionCookie, sessionId, secret], user, newReview) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, UserC.encode(user))
+      const formStore = new Keyv()
+      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      const getPreprintTitle = () => TE.left('not-found' as const)
+      const actual = await runMiddleware(
+        _.writeReviewAlreadyWritten(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.NotFound },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.NotFound },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
     fc.connection({ body: fc.record({ alreadyWritten: fc.constantFrom('yes', 'no') }), method: fc.constant('POST') }),
+    fc.cookieName(),
     fc.string(),
-  ])("when there isn't a session", async (preprintDoi, preprintTitle, connection, secret) => {
+  ])("when there isn't a session", async (preprintDoi, preprintTitle, connection, sessionCookie, secret) => {
     const sessionStore = new Keyv()
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.right(preprintTitle)
@@ -319,6 +354,7 @@ describe('writeReviewAlreadyWritten', () => {
         formStore,
         getPreprintTitle,
         secret,
+        sessionCookie,
         sessionStore,
       }),
       connection,
@@ -342,13 +378,14 @@ describe('writeReviewAlreadyWritten', () => {
   test.prop([
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
-    fc.tuple(fc.uuid(), fc.string()).chain(([sessionId, secret]) =>
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
           body: fc.record({ alreadyWritten: fc.lorem() }, { withDeletedKeys: true }),
-          headers: fc.constant({ Cookie: `session=${cookieSignature.sign(sessionId, secret)}` }),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
+        fc.constant(sessionCookie),
         fc.constant(sessionId),
         fc.constant(secret),
       ),
@@ -366,7 +403,7 @@ describe('writeReviewAlreadyWritten', () => {
     ),
   ])(
     'without saying if you have already written the PREreview',
-    async (preprintDoi, preprintTitle, [connection, sessionId, secret], user, newReview) => {
+    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], user, newReview) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, UserC.encode(user))
       const formStore = new Keyv()
@@ -378,6 +415,7 @@ describe('writeReviewAlreadyWritten', () => {
           formStore,
           getPreprintTitle,
           secret,
+          sessionCookie,
           sessionStore,
         }),
         connection,
