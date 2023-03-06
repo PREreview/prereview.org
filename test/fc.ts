@@ -302,12 +302,23 @@ export const request = ({
       method: method ?? requestMethod(),
       url: fc.webUrl(),
     })
-    .map(createRequest)
+    .map(args =>
+      Object.defineProperties(createRequest(args), { [fc.toStringMethod]: { value: () => fc.stringify(args) } }),
+    )
 
-export const response = (): fc.Arbitrary<Response> => fc.record({ req: request() }).map(createResponse)
+export const response = (): fc.Arbitrary<Response> =>
+  fc
+    .record({ req: request() })
+    .map(args =>
+      Object.defineProperties(createResponse(args), { [fc.toStringMethod]: { value: () => fc.stringify(args) } }),
+    )
 
 export const connection = <S = H.StatusOpen>(...args: Parameters<typeof request>): fc.Arbitrary<ExpressConnection<S>> =>
-  fc.tuple(request(...args), response()).map(args => new ExpressConnection(...args))
+  fc.tuple(request(...args), response()).map(args =>
+    Object.defineProperties(new ExpressConnection(...args), {
+      [fc.toStringMethod]: { value: () => fc.stringify(args[0]) },
+    }),
+  )
 
 export const nonEmptyArray = <T>(
   arb: fc.Arbitrary<T>,
