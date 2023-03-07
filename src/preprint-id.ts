@@ -5,74 +5,88 @@ import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 
-const preprintIds = [
+const preprintRegistrants = [
   {
     type: 'africarxiv' as const,
-    doi: '31730' as Doi<'31730'>,
+    prefix: '31730' as const,
   },
   {
     type: 'arxiv' as const,
-    doi: '48550' as Doi<'48550'>,
+    prefix: '48550' as const,
   },
   {
     type: 'biorxiv' as const,
-    doi: '1101' as Doi<'1101'>,
+    prefix: '1101' as const,
   },
   {
     type: 'chemrxiv' as const,
-    doi: '25434' as Doi<'26434'>,
+    prefix: '26434' as const,
   },
   {
     type: 'eartharxiv' as const,
-    doi: '31223' as Doi<'31223'>,
+    prefix: '31223' as const,
   },
   {
     type: 'ecoevorxiv' as const,
-    doi: '32942' as Doi<'32942'>,
+    prefix: '32942' as const,
   },
   {
     type: 'edarxiv' as const,
-    doi: '35542' as Doi<'35542'>,
+    prefix: '35542' as const,
   },
   {
     type: 'engrxiv' as const,
-    doi: '31224' as Doi<'31224'>,
+    prefix: '31224' as const,
   },
   {
     type: 'medrxiv' as const,
-    doi: '1101' as Doi<'1101'>,
+    prefix: '1101' as const,
   },
   {
     type: 'metaarxiv' as const,
-    doi: '31222' as Doi<'31222'>,
+    prefix: '31222' as const,
   },
   {
     type: 'osf' as const,
-    doi: '31219' as Doi<'31219'>,
+    prefix: '31219' as const,
   },
   {
     type: 'psyarxiv' as const,
-    doi: '31234' as Doi<'31234'>,
+    prefix: '31234' as const,
   },
   {
     type: 'research-square' as const,
-    doi: '21203' as Doi<'21203'>,
+    prefix: '21203' as const,
   },
   {
     type: 'scielo' as const,
-    doi: '1590' as Doi<'1590'>,
+    prefix: '1590' as const,
   },
   {
     type: 'science-open' as const,
-    doi: '14293' as Doi<'14293'>,
+    prefix: '14293' as const,
   },
   {
     type: 'socarxiv' as const,
-    doi: '31235' as Doi<'31235'>,
+    prefix: '31235' as const,
   },
 ]
 
-export type PreprintId = (typeof preprintIds)[number]
+type Registrant = {
+  type: string
+  prefix: string
+}
+
+type ToPreprintId<R extends Registrant> = {
+  type: R['type']
+  doi: Doi<R['prefix']>
+}
+
+type PreprintRegistrant = (typeof preprintRegistrants)[number]
+
+type MapToPreprintId<T extends PreprintRegistrant> = T extends PreprintRegistrant ? ToPreprintId<T> : never
+
+export type PreprintId = MapToPreprintId<PreprintRegistrant>
 
 export interface AfricarxivPreprintId {
   readonly type: 'africarxiv'
@@ -155,21 +169,7 @@ export interface SocarxivPreprintId {
 }
 
 export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
-  '1101',
-  '1590',
-  '14293',
-  '21203',
-  '26434',
-  '31219',
-  '31222',
-  '31223',
-  '31224',
-  '31234',
-  '31235',
-  '31730',
-  '32942',
-  '35542',
-  '48550',
+  ...preprintRegistrants.map(r => r.prefix),
 )
 
 export const PreprintDoiD: D.Decoder<unknown, PreprintId['doi']> = D.fromRefinement(
