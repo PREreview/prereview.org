@@ -4,6 +4,7 @@ import { Refinement, compose } from 'fp-ts/Refinement'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
+import { preprintId } from '../test/fc'
 
 const preprintRegistrants = [
   {
@@ -88,85 +89,24 @@ type MapToPreprintId<T extends PreprintRegistrant> = T extends PreprintRegistran
 
 export type PreprintId = MapToPreprintId<PreprintRegistrant>
 
-export interface AfricarxivPreprintId {
-  readonly type: 'africarxiv'
-  readonly doi: Doi<'31730'>
-}
+export type PreprintIdByType<T extends PreprintId['type']> = PreprintId & { type: T }
 
-export interface ArxivPreprintId {
-  readonly type: 'arxiv'
-  readonly doi: Doi<'48550'>
-}
-
-export interface BiorxivPreprintId {
-  readonly type: 'biorxiv'
-  readonly doi: Doi<'1101'>
-}
-
-export interface ChemrxivPreprintId {
-  readonly type: 'chemrxiv'
-  readonly doi: Doi<'26434'>
-}
-
-export interface EartharxivPreprintId {
-  readonly type: 'eartharxiv'
-  readonly doi: Doi<'31223'>
-}
-
-export interface EcoevorxivPreprintId {
-  readonly type: 'ecoevorxiv'
-  readonly doi: Doi<'32942'>
-}
-
-export interface EdarxivPreprintId {
-  readonly type: 'edarxiv'
-  readonly doi: Doi<'35542'>
-}
-
-export interface EngrxivPreprintId {
-  readonly type: 'engrxiv'
-  readonly doi: Doi<'31224'>
-}
-
-export interface MedrxivPreprintId {
-  readonly type: 'medrxiv'
-  readonly doi: Doi<'1101'>
-}
-
-export interface MetaarxivPreprintId {
-  readonly type: 'metaarxiv'
-  readonly doi: Doi<'31222'>
-}
-
-export interface OsfPreprintId {
-  readonly type: 'osf'
-  readonly doi: Doi<'31219'>
-}
-
-export interface PsyarxivPreprintId {
-  readonly type: 'psyarxiv'
-  readonly doi: Doi<'31234'>
-}
-
-export interface ResearchSquarePreprintId {
-  readonly type: 'research-square'
-  readonly doi: Doi<'21203'>
-}
-
-export interface ScieloPreprintId {
-  readonly type: 'scielo'
-  readonly doi: Doi<'1590'>
-}
-
-export interface ScienceOpenPreprintId {
-  readonly type: 'science-open'
-  readonly doi: Doi<'14293'>
-}
-
-export interface SocarxivPreprintId {
-  readonly type: 'socarxiv'
-  readonly doi: Doi<'31235'>
-}
+export type AfricarxivPreprintId = PreprintIdByType<'africarxiv'>
+export type ArxivPreprintId = PreprintIdByType<'arxiv'>
+export type BiorxivPreprintId = PreprintIdByType<'biorxiv'>
+export type ChemrxivPreprintId = PreprintIdByType<'chemrxiv'>
+export type EartharxivPreprintId = PreprintIdByType<'eartharxiv'>
+export type EcoevorxivPreprintId = PreprintIdByType<'ecoevorxiv'>
+export type EdarxivPreprintId = PreprintIdByType<'edarxiv'>
+export type EngrxivPreprintId = PreprintIdByType<'engrxiv'>
+export type MedrxivPreprintId = PreprintIdByType<'medrxiv'>
+export type MetaarxivPreprintId = PreprintIdByType<'metaarxiv'>
+export type OsfPreprintId = PreprintIdByType<'osf'>
+export type PsyarxivPreprintId = PreprintIdByType<'psyarxiv'>
+export type ResearchSquarePreprintId = PreprintIdByType<'research-square'>
+export type ScieloPreprintId = PreprintIdByType<'scielo'>
+export type ScienceOpenPreprintId = PreprintIdByType<'science-open'>
+export type SocarxivPreprintId = PreprintIdByType<'socarxiv'>
 
 export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
   ...preprintRegistrants.map(r => r.prefix),
