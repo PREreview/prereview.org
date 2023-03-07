@@ -25,7 +25,7 @@ import {
   writeReviewReviewMatch,
 } from '../routes'
 import { User, getUserFromSession } from '../user'
-import { CompletedForm, CompletedFormD } from './completed-form'
+import { CompletedForm, CompletedFormC } from './completed-form'
 import { deleteForm, getForm, redirectToNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -58,9 +58,9 @@ export const writeReviewPublish = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
-          .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormD.decode)) }, handlePublishForm)
+          .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePublishForm)
           .with({ method: 'POST', preprint: P.select() }, showFailureMessage)
-          .with({ form: P.when(R.fromEitherK(CompletedFormD.decode)) }, showPublishForm)
+          .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, showPublishForm)
           .otherwise(flow(({ form }) => form, fromMiddlewareK(redirectToNextForm(preprint.doi)))),
       ),
       RM.orElseW(error =>

@@ -8,8 +8,9 @@ import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
-import * as fc from '../fc'
+import { CompletedFormC } from '../../src/write-review/completed-form'
 import { runMiddleware } from '../middleware'
+import * as fc from './fc'
 
 describe('writeReviewPublish', () => {
   test.prop([
@@ -26,15 +27,7 @@ describe('writeReviewPublish', () => {
         fc.constant(secret),
       ),
     ),
-    fc.record({
-      alreadyWritten: fc.constantFrom('yes', 'no'),
-      competingInterests: fc.constantFrom('yes', 'no'),
-      competingInterestsDetails: fc.lorem(),
-      conduct: fc.constant('yes'),
-      moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-      persona: fc.constantFrom('public', 'pseudonym'),
-      review: fc.lorem(),
-    }),
+    fc.completedForm(),
     fc.user(),
     fc.doi(),
   ])(
@@ -43,7 +36,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintDoi}`, CompletedFormC.encode(newReview))
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ => TE.right(reviewDoi))
 
@@ -66,7 +59,7 @@ describe('writeReviewPublish', () => {
           doi: preprintDoi,
           ...preprintTitle,
         },
-        review: expect.stringContaining(newReview.review),
+        review: expect.stringContaining(newReview.review.toString()),
         user,
       })
       expect(actual).toStrictEqual(
@@ -209,18 +202,7 @@ describe('writeReviewPublish', () => {
         fc.constant(secret),
       ),
     ),
-    fc.record(
-      {
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
-        review: fc.lorem(),
-      },
-      { withDeletedKeys: true },
-    ),
+    fc.completedForm(),
     fc.user(),
   ])(
     'when the preprint cannot be loaded',
@@ -228,7 +210,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintDoi}`, CompletedFormC.encode(newReview))
       const getPreprintTitle = () => TE.left('unavailable' as const)
       const publishPrereview = () => () => Promise.reject('should not be called')
 
@@ -268,18 +250,7 @@ describe('writeReviewPublish', () => {
         fc.constant(secret),
       ),
     ),
-    fc.record(
-      {
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
-        review: fc.lorem(),
-      },
-      { withDeletedKeys: true },
-    ),
+    fc.completedForm(),
     fc.user(),
   ])(
     'when the preprint cannot be found',
@@ -287,7 +258,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintDoi}`, CompletedFormC.encode(newReview))
       const getPreprintTitle = () => TE.left('not-found' as const)
       const publishPrereview = () => () => Promise.reject('should not be called')
 
@@ -367,15 +338,7 @@ describe('writeReviewPublish', () => {
       ),
     ),
     fc.oneof(fc.fetchResponse({ status: fc.integer({ min: 400 }) }), fc.error()),
-    fc.record({
-      alreadyWritten: fc.constantFrom('yes', 'no'),
-      competingInterests: fc.constantFrom('yes', 'no'),
-      competingInterestsDetails: fc.lorem(),
-      conduct: fc.constant('yes'),
-      moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-      persona: fc.constantFrom('public', 'pseudonym'),
-      review: fc.lorem(),
-    }),
+    fc.completedForm(),
     fc.user(),
   ])(
     'Zenodo is unavailable',
@@ -383,7 +346,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintDoi}`, CompletedFormC.encode(newReview))
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(

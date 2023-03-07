@@ -41,6 +41,8 @@ import {
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
 
+export type Arbitrary<T> = fc.Arbitrary<T>
+
 export const {
   anything,
   array,

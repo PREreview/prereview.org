@@ -1,25 +1,25 @@
 import { pipe } from 'fp-ts/function'
-import * as D from 'io-ts/Decoder'
+import * as C from 'io-ts/Codec'
 import { RawHtmlC } from '../html'
 import { NonEmptyStringC } from '../string'
 
-export type CompletedForm = D.TypeOf<typeof CompletedFormD>
+export type CompletedForm = C.TypeOf<typeof CompletedFormC>
 
-export const CompletedFormD = pipe(
-  D.struct({
-    conduct: D.literal('yes'),
-    moreAuthors: D.literal('yes', 'yes-private', 'no'),
-    persona: D.literal('public', 'pseudonym'),
+export const CompletedFormC = pipe(
+  C.struct({
+    conduct: C.literal('yes'),
+    moreAuthors: C.literal('yes', 'yes-private', 'no'),
+    persona: C.literal('public', 'pseudonym'),
     review: RawHtmlC,
   }),
-  D.intersect(
-    D.sum('competingInterests')({
-      yes: D.struct({
-        competingInterests: D.literal('yes'),
+  C.intersect(
+    C.sum('competingInterests')({
+      yes: C.struct({
+        competingInterests: C.literal('yes'),
         competingInterestsDetails: NonEmptyStringC,
       }),
-      no: D.struct({
-        competingInterests: D.literal('no'),
+      no: C.struct({
+        competingInterests: C.literal('no'),
       }),
     }),
   ),
