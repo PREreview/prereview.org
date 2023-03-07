@@ -1,12 +1,13 @@
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
+import { Option } from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as R from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
-import { flow, pipe } from 'fp-ts/function'
+import { Lazy, flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
-import { endSession } from 'hyper-ts-session'
+import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Orcid } from 'orcid-id-ts'
@@ -45,7 +46,11 @@ export const writeReviewPublish = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apS('user', getUserFromSession()),
+      RM.apS('session', getSession()),
+      RM.bindW(
+        'user',
+        fromOptionK(() => 'no-session' as const)(({ session }) => getUserFromSession(session)),
+      ),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
@@ -65,7 +70,7 @@ export const writeReviewPublish = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
           )
-          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
       ),
     ),
@@ -267,4 +272,16 @@ function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E =
   f: (...a: A) => Reader<R, B>,
 ): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
   return (...a) => RM.rightReader(f(...a))
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/88
+function fromOptionK<E>(
+  onNone: Lazy<E>,
+): <A extends ReadonlyArray<unknown>, B>(
+  f: (...a: A) => Option<B>,
+) => <R, I = StatusOpen>(...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return f =>
+    (...a) =>
+    () =>
+      M.fromOption(onNone)(f(...a))
 }

@@ -1,12 +1,14 @@
 import { format } from 'fp-ts-routing'
+import { Option } from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
-import { flow, pipe } from 'fp-ts/function'
+import { Lazy, flow, pipe } from 'fp-ts/function'
 import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
 import { OAuthEnv } from 'hyper-ts-oauth'
+import { getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { PublicUrlEnv, logInAndRedirect } from '../log-in'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
@@ -20,7 +22,8 @@ export const writeReviewStart = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
-      getUserFromSession(),
+      getSession(),
+      chainOptionKW(() => 'no-session' as const)(getUserFromSession),
       RM.chainReaderTaskEitherKW(user => getForm(user.orcid, preprint.doi)),
       RM.ichainW(form => showCarryOnPage(preprint, form)),
       RM.orElseW(error =>
@@ -32,7 +35,7 @@ export const writeReviewStart = flow(
             ),
           )
           .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { doi: preprint.doi }))
-          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
       ),
     ),
@@ -77,6 +80,15 @@ function carryOnPage(preprint: Preprint, form: Form) {
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
   })
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/80
+function chainOptionKW<E2>(
+  onNone: Lazy<E2>,
+): <A, B>(
+  f: (a: A) => Option<B>,
+) => <R, I, E1>(ma: RM.ReaderMiddleware<R, I, I, E1, A>) => RM.ReaderMiddleware<R, I, I, E1 | E2, B> {
+  return f => RM.ichainMiddlewareKW((...a) => M.fromOption(onNone)(f(...a)))
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/83

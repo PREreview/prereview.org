@@ -60,7 +60,7 @@ describe('writeReviewStart', () => {
         user,
       ) => {
         const sessionStore = new Keyv()
-        await sessionStore.set(sessionId, UserC.encode(user))
+        await sessionStore.set(sessionId, { user: UserC.encode(user) })
         const formStore = new Keyv()
         await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
         const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
@@ -116,7 +116,7 @@ describe('writeReviewStart', () => {
       "there isn't a form",
       async (oauth, publicUrl, preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
         const sessionStore = new Keyv()
-        await sessionStore.set(sessionId, UserC.encode(user))
+        await sessionStore.set(sessionId, { user: UserC.encode(user) })
         const formStore = new Keyv()
         const getPreprintTitle = () => TE.right(preprintTitle)
 

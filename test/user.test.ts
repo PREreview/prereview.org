@@ -1,16 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import cookieSignature from 'cookie-signature'
 import * as E from 'fp-ts/Either'
+import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/function'
-import { HeadersOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
 import * as D from 'io-ts/Decoder'
-import all from 'it-all'
-import Keyv from 'keyv'
 import * as _ from '../src/user'
 import * as fc from './fc'
-import { runMiddleware } from './middleware'
 
 describe('user', () => {
   describe('UserC', () => {
@@ -27,109 +22,23 @@ describe('user', () => {
     })
   })
 
-  test.prop([fc.user(), fc.string(), fc.cookieName(), fc.connection<HeadersOpen>()])(
-    'storeUserInSession',
-    async (user, secret, sessionCookie, connection) => {
-      const sessionStore = new Keyv()
+  test.prop([fc.user()])('newSessionForUser', user => {
+    const actual = _.newSessionForUser(user)
 
-      const actual = await runMiddleware(
-        _.storeUserInSession(user)({
-          secret,
-          sessionCookie,
-          sessionStore,
-        }),
-        connection,
-      )()
-      const sessions = await all(sessionStore.iterator(undefined))
-
-      expect(sessions).toStrictEqual([[expect.anything(), user]])
-      expect(actual).toStrictEqual(
-        E.right([
-          {
-            type: 'setCookie',
-            name: sessionCookie,
-            options: expect.anything(),
-            value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
-          },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual({ user })
+  })
 
   describe('getUserFromSession', () => {
-    test.prop([
-      fc.user(),
-      fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-        fc.tuple(
-          fc.connection({
-            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          }),
-          fc.constant(sessionCookie),
-          fc.constant(sessionId),
-          fc.constant(secret),
-        ),
-      ),
-    ])('when the user can be decoded', async (user, [connection, sessionCookie, sessionId, secret]) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, _.UserC.encode(user))
+    test.prop([fc.user()])('when there is a user', user => {
+      const actual = _.getUserFromSession({ user })
 
-      const actual = await M.evalMiddleware(
-        _.getUserFromSession()({
-          secret,
-          sessionCookie,
-          sessionStore,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(E.right(user))
+      expect(actual).toStrictEqual(O.some(user))
     })
 
-    test.prop([
-      fc.user(),
-      fc.jsonValue(),
-      fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-        fc.tuple(
-          fc.connection({
-            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          }),
-          fc.constant(sessionCookie),
-          fc.constant(sessionId),
-          fc.constant(secret),
-        ),
-      ),
-    ])('when the user cannot be decoded', async (user, value, [connection, sessionCookie, sessionId, secret]) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, value)
+    test.prop([fc.jsonRecord()])("when there isn't a user", session => {
+      const actual = _.getUserFromSession(session)
 
-      const actual = await M.evalMiddleware(
-        _.getUserFromSession()({
-          secret,
-          sessionCookie,
-          sessionStore,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(E.left(expect.anything()))
+      expect(actual).toStrictEqual(O.none)
     })
-
-    test.prop([fc.user(), fc.string(), fc.cookieName(), fc.connection()])(
-      'when there is no session',
-      async (user, secret, sessionCookie, connection) => {
-        const sessionStore = new Keyv()
-
-        const actual = await M.evalMiddleware(
-          _.getUserFromSession()({
-            secret,
-            sessionCookie,
-            sessionStore,
-          }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(E.left('no-session'))
-      },
-    )
   })
 })

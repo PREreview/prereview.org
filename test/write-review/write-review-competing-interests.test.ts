@@ -63,7 +63,7 @@ describe('writeReviewCompetingInterests', () => {
       newReview,
     ) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
@@ -154,7 +154,7 @@ describe('writeReviewCompetingInterests', () => {
       newReview,
     ) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
@@ -217,7 +217,7 @@ describe('writeReviewCompetingInterests', () => {
     'when there is no form',
     async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       const getPreprintTitle = () => TE.right(preprintTitle)
 
@@ -282,7 +282,7 @@ describe('writeReviewCompetingInterests', () => {
     'when the preprint cannot be loaded',
     async (preprintDoi, [connection, sessionCookie, sessionId, secret], user, newReview) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle = () => TE.left('unavailable' as const)
@@ -343,7 +343,7 @@ describe('writeReviewCompetingInterests', () => {
     'when the preprint cannot be found',
     async (preprintDoi, [connection, sessionCookie, sessionId, secret], user, newReview) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle = () => TE.left('not-found' as const)
@@ -451,7 +451,7 @@ describe('writeReviewCompetingInterests', () => {
     'without declaring any competing interests',
     async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], user, newReview) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)

@@ -149,7 +149,7 @@ describe('logOut', () => {
     fc.user(),
   ])('when there is a session', async ([connection, sessionCookie, sessionId, secret], user) => {
     const sessionStore = new Keyv()
-    await sessionStore.set(sessionId, UserC.encode(user))
+    await sessionStore.set(sessionId, { user: UserC.encode(user) })
 
     const actual = await runMiddleware(_.logOut({ secret, sessionCookie, sessionStore }), connection)()
 
@@ -231,7 +231,7 @@ describe('authenticate', () => {
       const sessions = await all(sessionStore.iterator(undefined))
 
       expect(sessions).toStrictEqual([
-        [expect.anything(), { name: accessToken.name, orcid: accessToken.orcid, pseudonym }],
+        [expect.anything(), { user: { name: accessToken.name, orcid: accessToken.orcid, pseudonym } }],
       ])
       expect(actual).toStrictEqual(
         E.right([
@@ -356,7 +356,7 @@ describe('authenticate', () => {
       const sessions = await all(sessionStore.iterator(undefined))
 
       expect(sessions).toStrictEqual([
-        [expect.anything(), { name: accessToken.name, orcid: accessToken.orcid, pseudonym }],
+        [expect.anything(), { user: { name: accessToken.name, orcid: accessToken.orcid, pseudonym } }],
       ])
       expect(actual).toStrictEqual(
         E.right([

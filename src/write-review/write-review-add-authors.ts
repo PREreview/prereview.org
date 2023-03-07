@@ -1,10 +1,12 @@
 import { format } from 'fp-ts-routing'
+import { Option } from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
-import { flow, pipe } from 'fp-ts/function'
+import { Lazy, flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
+import { getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -18,7 +20,7 @@ export const writeReviewAddAuthors = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apS('user', getUserFromSession()),
+      RM.apS('user', pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
@@ -37,7 +39,7 @@ export const writeReviewAddAuthors = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
           )
-          .with('form-unavailable', 'session-unavailable', () => serviceUnavailable)
+          .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
       ),
     ),
@@ -87,6 +89,15 @@ function cannotAddAuthorsForm(preprint: Preprint) {
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
   })
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/80
+function chainOptionKW<E2>(
+  onNone: Lazy<E2>,
+): <A, B>(
+  f: (a: A) => Option<B>,
+) => <R, I, E1>(ma: RM.ReaderMiddleware<R, I, I, E1, A>) => RM.ReaderMiddleware<R, I, I, E1 | E2, B> {
+  return f => RM.ichainMiddlewareKW((...a) => M.fromOption(onNone)(f(...a)))
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/83

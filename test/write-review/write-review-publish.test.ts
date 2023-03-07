@@ -41,7 +41,7 @@ describe('writeReviewPublish', () => {
     'when the form is complete',
     async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], newReview, user, reviewDoi) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
@@ -117,7 +117,7 @@ describe('writeReviewPublish', () => {
     'when the form is incomplete',
     async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], newPrereview, user) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newPrereview)
       const getPreprintTitle = () => TE.right(preprintTitle)
@@ -164,7 +164,7 @@ describe('writeReviewPublish', () => {
     'when there is no form',
     async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       const getPreprintTitle = () => TE.right(preprintTitle)
 
@@ -226,7 +226,7 @@ describe('writeReviewPublish', () => {
     'when the preprint cannot be loaded',
     async (preprintDoi, [connection, sessionCookie, sessionId, secret], newReview, user) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle = () => TE.left('unavailable' as const)
@@ -285,7 +285,7 @@ describe('writeReviewPublish', () => {
     'when the preprint cannot be found',
     async (preprintDoi, [connection, sessionCookie, sessionId, secret], newReview, user) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle = () => TE.left('not-found' as const)
@@ -381,7 +381,7 @@ describe('writeReviewPublish', () => {
     'Zenodo is unavailable',
     async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], response, newReview, user) => {
       const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, UserC.encode(user))
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)

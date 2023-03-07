@@ -9,6 +9,7 @@ import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { Status, StatusOpen } from 'hyper-ts'
 import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
+import { endSession as _endSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
@@ -19,7 +20,7 @@ import { timeoutRequest } from './fetch'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
 import { homeMatch } from './routes'
-import { endSession, storeUserInSession } from './user'
+import { newSessionForUser } from './user'
 
 export interface PublicUrlEnv {
   publicUrl: URL
@@ -85,7 +86,7 @@ export const authenticate = flow(
     ),
   ),
   RM.ichainFirstW(flow(get('referer'), RM.redirect)),
-  RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), storeUserInSession)),
+  RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), newSessionForUser, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichainFirst(() => RM.end()),
   RM.orElseW(() => showFailureMessage),
@@ -132,6 +133,11 @@ const showFailureMessage = pipe(
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
   RM.ichainMiddlewareK(sendHtml),
+)
+
+const endSession = pipe(
+  _endSession(),
+  RM.orElse(() => RM.right(undefined as void)),
 )
 
 function accessDeniedMessage() {

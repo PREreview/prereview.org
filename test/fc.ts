@@ -5,6 +5,7 @@ import { Doi, isDoi } from 'doi-ts'
 import { Request, Response } from 'express'
 import * as F from 'fetch-fp-ts'
 import { isNonEmpty } from 'fp-ts/Array'
+import { Json, JsonRecord } from 'fp-ts/Json'
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray'
 import { Refinement } from 'fp-ts/Refinement'
 import * as H from 'hyper-ts'
@@ -47,7 +48,6 @@ export const {
   constant,
   constantFrom,
   integer,
-  jsonValue,
   lorem,
   oneof,
   option,
@@ -57,6 +57,10 @@ export const {
   tuple,
   webUrl,
 } = fc
+
+export const json = (): fc.Arbitrary<Json> => fc.jsonValue() as fc.Arbitrary<Json>
+
+export const jsonRecord = (): fc.Arbitrary<JsonRecord> => fc.dictionary(fc.string(), json())
 
 export const alphanumeric = (): fc.Arbitrary<string> =>
   fc.mapToConstant(
