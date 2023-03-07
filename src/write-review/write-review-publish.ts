@@ -1,5 +1,6 @@
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
+import { JsonRecord } from 'fp-ts/Json'
 import { Option } from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -7,7 +8,7 @@ import * as R from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
 import { Lazy, flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
-import { endSession, getSession } from 'hyper-ts-session'
+import { endSession, getSession, storeSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Orcid } from 'orcid-id-ts'
@@ -22,12 +23,14 @@ import {
   writeReviewMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
+  writeReviewPublishedMatch,
   writeReviewReviewMatch,
 } from '../routes'
 import { User, getUserFromSession } from '../user'
 import { CompletedForm, CompletedFormC } from './completed-form'
 import { deleteForm, getForm, redirectToNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
+import { storePublishedReviewInSession } from './published-review'
 
 export type NewPrereview = {
   conduct: 'yes'
@@ -83,7 +86,17 @@ export const writeReviewPublish = flow(
   ),
 )
 
-const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
+const handlePublishForm = ({
+  form,
+  preprint,
+  session,
+  user,
+}: {
+  form: CompletedForm
+  preprint: Preprint
+  session: JsonRecord
+  user: User
+}) =>
   pipe(
     RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.doi)),
     RM.map(() => ({
@@ -94,7 +107,11 @@ const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; prep
       user,
     })),
     RM.chainReaderTaskEitherKW(publishPrereview),
-    RM.ichainW(doi => showSuccessMessage(preprint, doi, form.moreAuthors === 'yes')),
+    RM.ichainFirst(() => RM.status(Status.SeeOther)),
+    RM.ichainFirst(() => RM.header('Location', format(writeReviewPublishedMatch.formatter, { doi: preprint.doi }))),
+    RM.ichainW(flow(doi => storePublishedReviewInSession({ doi, form }, session), storeSession)),
+    RM.ichain(() => RM.closeHeaders()),
+    RM.ichain(() => RM.end()),
     RM.orElseW(() => showFailureMessage(preprint)),
   )
 
@@ -110,18 +127,6 @@ const publishPrereview = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ publishPrereview }: PublishPrereviewEnv) => publishPrereview(newPrereview)),
   )
-
-const showSuccessMessage = flow(
-  fromReaderK(successMessage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainFirstW(() =>
-    pipe(
-      endSession(),
-      RM.orElseW(() => RM.right(undefined)),
-    ),
-  ),
-  RM.ichainMiddlewareKW(sendHtml),
-)
 
 const showFailureMessage = flow(
   fromReaderK(failureMessage),
@@ -145,42 +150,6 @@ function renderReview(form: CompletedForm) {
         ? form.competingInterestsDetails
         : 'The author declares that they have no competing interests.'}
     </p>`
-}
-
-function successMessage(preprint: Preprint, doi: Doi, moreAuthors: boolean) {
-  return page({
-    title: plainText`PREreview published`,
-    content: html`
-      <main id="main-content">
-        <div class="panel">
-          <h1>PREreview published</h1>
-
-          <p>
-            Your DOI <br />
-            <strong class="doi" translate="no">${doi}</strong>
-          </p>
-        </div>
-
-        <h2>What happens next</h2>
-
-        <p>You’ll be able to see your PREreview shortly.</p>
-
-        ${moreAuthors
-          ? html`
-              <div class="inset">
-                <p>
-                  Please let us know the other authors’ details (names and ORCID&nbsp;iDs), and we’ll add them to the
-                  PREreview. Our email address is <a href="mailto:help@prereview.org">help@prereview.org</a>.
-                </p>
-              </div>
-            `
-          : ''}
-
-        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-  })
 }
 
 function failureMessage(preprint: Preprint) {

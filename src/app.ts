@@ -51,6 +51,7 @@ import {
   writeReviewMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
+  writeReviewPublishedMatch,
   writeReviewReviewMatch,
   writeReviewStartMatch,
 } from './routes'
@@ -65,6 +66,7 @@ import {
   writeReviewConduct,
   writeReviewPersona,
   writeReviewPublish,
+  writeReviewPublished,
   writeReviewReview,
   writeReviewStart,
 } from './write-review'
@@ -186,6 +188,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewPublishMatch.parser,
           P.map(({ doi }) => writeReviewPublish(doi)),
+        ),
+        pipe(
+          writeReviewPublishedMatch.parser,
+          P.map(({ doi }) => writeReviewPublished(doi)),
         ),
       ],
       M.concatAll(P.getParserMonoid()),

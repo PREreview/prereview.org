@@ -8,5 +8,6 @@ export { writeReviewCompetingInterests } from './write-review-competing-interest
 export { writeReviewConduct } from './write-review-conduct'
 export { writeReviewPersona } from './write-review-persona'
 export { NewPrereview, PublishPrereviewEnv, writeReviewPublish } from './write-review-publish'
+export { writeReviewPublished } from './write-review-published'
 export { writeReviewReview } from './write-review-review'
 export { writeReviewStart } from './write-review-start'

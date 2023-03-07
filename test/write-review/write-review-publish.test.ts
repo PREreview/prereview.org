@@ -51,6 +51,7 @@ describe('writeReviewPublish', () => {
         }),
         connection,
       )()
+      const session = await sessionStore.get(sessionId)
 
       expect(publishPrereview).toHaveBeenCalledWith({
         conduct: 'yes',
@@ -64,13 +65,22 @@ describe('writeReviewPublish', () => {
       })
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.OK },
-          { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: `/preprints/doi-${encodeURIComponent(
+              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            )}/write-a-prereview/prereview-published`,
+          },
+          { type: 'endResponse' },
         ]),
       )
       expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
+      expect(session).toStrictEqual({
+        user: UserC.encode(user),
+        'published-review': { doi: reviewDoi, form: CompletedFormC.encode(newReview) },
+      })
     },
   )
 
