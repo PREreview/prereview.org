@@ -16,58 +16,38 @@ import { detectLanguage, detectLanguageFrom } from './detect-language'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { Html, rawHtml, sanitizeHtml } from './html'
 import { Preprint } from './preprint'
-import {
-  AfricarxivPreprintId,
-  BiorxivPreprintId,
-  ChemrxivPreprintId,
-  EartharxivPreprintId,
-  EcoevorxivPreprintId,
-  EdarxivPreprintId,
-  EngrxivPreprintId,
-  MedrxivPreprintId,
-  MetaarxivPreprintId,
-  OsfPreprintId,
-  PsyarxivPreprintId,
-  ResearchSquarePreprintId,
-  ScieloPreprintId,
-  ScienceOpenPreprintId,
-  SocarxivPreprintId,
-} from './preprint-id'
+import { ToPreprintId, subsetOfRegistrants } from './preprint-id'
 
 import PlainDate = Temporal.PlainDate
 
-export type CrossrefPreprintId =
-  | AfricarxivPreprintId
-  | BiorxivPreprintId
-  | ChemrxivPreprintId
-  | EartharxivPreprintId
-  | EcoevorxivPreprintId
-  | EdarxivPreprintId
-  | EngrxivPreprintId
-  | MedrxivPreprintId
-  | MetaarxivPreprintId
-  | OsfPreprintId
-  | PsyarxivPreprintId
-  | ResearchSquarePreprintId
-  | ScieloPreprintId
-  | ScienceOpenPreprintId
-  | SocarxivPreprintId
+const crossrefPreprintRegistrants = subsetOfRegistrants([
+  'africarxiv',
+  'biorxiv',
+  'chemrxiv',
+  'eartharxiv',
+  'ecoevorxiv',
+  'edarxiv',
+  'engrxiv',
+  'medrxiv',
+  'metaarxiv',
+  'osf',
+  'psyarxiv',
+  'research-square',
+  'scielo',
+  'science-open',
+  'socarxiv',
+])
+
+type CrossrefPreprintRegistrant = (typeof crossrefPreprintRegistrants)[number]
+
+type MapToPreprintId<T extends CrossrefPreprintRegistrant> = T extends CrossrefPreprintRegistrant
+  ? ToPreprintId<T>
+  : never
+
+export type CrossrefPreprintId = MapToPreprintId<CrossrefPreprintRegistrant>
 
 export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['doi']> = hasRegistrant(
-  '1101',
-  '1590',
-  '14293',
-  '21203',
-  '26434',
-  '31219',
-  '31222',
-  '31223',
-  '31224',
-  '31234',
-  '31235',
-  '31730',
-  '32942',
-  '35542',
+  ...crossrefPreprintRegistrants.map(r => r.prefix),
 )
 
 export const getPreprintFromCrossref = flow(

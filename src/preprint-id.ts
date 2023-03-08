@@ -1,10 +1,10 @@
 import { Doi, hasRegistrant, isDoi, parse } from 'doi-ts'
 import * as O from 'fp-ts/Option'
+import * as RA from 'fp-ts/ReadonlyArray'
 import { Refinement, compose } from 'fp-ts/Refinement'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
-import { preprintId } from '../test/fc'
 
 const preprintRegistrants = [
   {
@@ -78,7 +78,7 @@ type Registrant = {
   prefix: string
 }
 
-type ToPreprintId<R extends Registrant> = {
+export type ToPreprintId<R extends Registrant> = {
   type: R['type']
   doi: Doi<R['prefix']>
 }
@@ -90,6 +90,20 @@ type MapToPreprintId<T extends PreprintRegistrant> = T extends PreprintRegistran
 export type PreprintId = MapToPreprintId<PreprintRegistrant>
 
 export type PreprintIdByType<T extends PreprintId['type']> = PreprintId & { type: T }
+
+export type SubsetOfRegistrant<Types extends Array<PreprintRegistrant['type']>> = Extract<
+  PreprintRegistrant,
+  { type: Types[number] }
+>
+
+export const subsetOfRegistrants = <T extends Array<PreprintRegistrant['type']>>(
+  types: T,
+): ReadonlyArray<SubsetOfRegistrant<T>> =>
+  pipe(
+    preprintRegistrants,
+    RA.filter(({ type }) => types.includes(type)),
+    RA.map(filtered => filtered as SubsetOfRegistrant<T>),
+  )
 
 export type AfricarxivPreprintId = PreprintIdByType<'africarxiv'>
 export type ArxivPreprintId = PreprintIdByType<'arxiv'>
