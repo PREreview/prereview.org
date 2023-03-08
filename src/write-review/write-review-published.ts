@@ -97,6 +97,32 @@ function successMessage({ review: { doi, form }, preprint }: { review: Published
             `
           : ''}
 
+        <h2>Share your review!</h2>
+        <ul>
+          <li>
+            <p>
+              Let the PREreview community on Twitter know that you published your review; tag us
+              <a href="https://twitter.com/prereview_">@PREreview_</a> so we can RT.
+            </p>
+          </li>
+          <li>
+            <p>
+              Share your review with your network on LinkedIn; tag us at
+              <a href="https://www.linkedin.com/company/prereview/">@PREreview</a> so we can highlight your review.
+            </p>
+          </li>
+          <li>
+            <p>
+              <a
+                href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
+                >Schedule a user research interview</a
+              >
+              with our product team to let us know about your experience with the platform. We gladly compensate
+              interviewees in appreciation of their help!
+            </p>
+          </li>
+        </ul>
+
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
     `,
