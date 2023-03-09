@@ -111,17 +111,18 @@ function successMessage({ review: { doi, form }, preprint }: { review: Published
               <a href="https://www.linkedin.com/company/prereview/">@PREreview</a> so we can highlight your review.
             </p>
           </li>
-          <li>
-            <p>
-              <a
-                href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
-                >Schedule a user research interview</a
-              >
-              with our product team to let us know about your experience with the platform. We gladly compensate
-              interviewees in appreciation of their help!
-            </p>
-          </li>
         </ul>
+
+        <h2>Let us know how it went</h2>
+
+        <p>
+          <a
+            href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
+            >Schedule an interview</a
+          >
+          with our product team to discuss your experience on PREreview. We gladly compensate interviewees in
+          appreciation for their help!
+        </p>
 
         <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
       </main>
