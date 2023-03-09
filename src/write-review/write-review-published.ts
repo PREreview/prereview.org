@@ -1,3 +1,4 @@
+import { toUrl } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -97,21 +98,29 @@ function successMessage({ review: { doi, form }, preprint }: { review: Published
             `
           : ''}
 
-        <h2>Share your review!</h2>
-        <ul>
-          <li>
-            <p>
-              Let the PREreview community on Twitter know that you published your review; tag us
-              <a href="https://twitter.com/prereview_">@PREreview_</a> so we can RT.
-            </p>
-          </li>
-          <li>
-            <p>
-              Share your review with your network on LinkedIn; tag us at
-              <a href="https://www.linkedin.com/company/prereview/">@PREreview</a> so we can highlight your review.
-            </p>
-          </li>
-        </ul>
+        <h2>Share your review</h2>
+
+        <p>Let the community know that you published your review.</p>
+
+        <div class="button-group" role="group">
+          <a
+            href="https://twitter.com/intent/tweet/?${new URLSearchParams({
+              text: plainText`I’ve just published a review of “${preprint.title}”`.toString(),
+              hashtags: 'PreprintReview',
+              via: 'PREreview_',
+              url: toUrl(doi).href,
+            }).toString()}"
+            class="twitter"
+            >Write a Tweet</a
+          >
+          <a
+            href="https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({
+              url: toUrl(doi).href,
+            }).toString()}"
+            class="linked-in"
+            >Share it on LinkedIn</a
+          >
+        </div>
 
         <h2>Let us know how it went</h2>
 
