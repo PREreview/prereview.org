@@ -29,10 +29,11 @@ import {
   getPseudonymFromLegacyPrereview,
   getRapidPreviewsFromLegacyPrereview,
 } from './legacy-prereview'
-import { PublicUrlEnv, authenticate, authenticateError, logIn, logOut } from './log-in'
+import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { FathomEnv, PhaseEnv } from './page'
 import { preprint, redirectToPreprint } from './preprint'
 import { PreprintId } from './preprint-id'
+import { PublicUrlEnv } from './public-url'
 import { review } from './review'
 import {
   homeMatch,

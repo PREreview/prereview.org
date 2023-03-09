@@ -1,7 +1,7 @@
-import { Formatter, format } from 'fp-ts-routing'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
-import * as R from 'fp-ts/Reader'
+import { Reader } from 'fp-ts/Reader'
 import * as RE from 'fp-ts/ReaderEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
@@ -19,12 +19,9 @@ import { match } from 'ts-pattern'
 import { timeoutRequest } from './fetch'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
+import { ifHasSameOrigin, toUrl } from './public-url'
 import { homeMatch } from './routes'
 import { newSessionForUser } from './user'
-
-export interface PublicUrlEnv {
-  publicUrl: URL
-}
 
 export interface GetPseudonymEnv {
   getPseudonym: (user: OrcidUser) => TE.TaskEither<'unavailable', string>
@@ -108,19 +105,6 @@ function getReferer(state: string) {
   )
 }
 
-function toUrl<A>(formatter: Formatter<A>, a: A) {
-  return R.asks(({ publicUrl }: PublicUrlEnv) => pipe(new URL(format(formatter, a), publicUrl)))
-}
-
-function ifHasSameOrigin(url: URL) {
-  return RE.asksReaderEither(({ publicUrl }: PublicUrlEnv) =>
-    pipe(
-      url,
-      RE.fromPredicate(url => url.origin === publicUrl.origin, constant('different-origin')),
-    ),
-  )
-}
-
 const showAccessDeniedMessage = pipe(
   RM.rightReader(accessDeniedMessage()),
   RM.ichainFirst(() => RM.status(Status.Forbidden)),
@@ -174,7 +158,7 @@ function failureMessage() {
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => R.Reader<R, B>,
+  f: (...a: A) => Reader<R, B>,
 ): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
   return (...a) => RM.rightReader(f(...a))
 }

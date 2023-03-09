@@ -10,14 +10,11 @@ import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
+import { toUrl } from '../public-url'
 import { preprintMatch, reviewMatch, writeReviewMatch } from '../routes'
 import { getUserFromSession } from '../user'
 import { Preprint, getPreprint } from './preprint'
 import { PublishedReview, getPublishedReviewFromSession } from './published-review'
-
-interface PublicUrlEnv {
-  publicUrl: URL
-}
 
 export const writeReviewPublished = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -73,7 +70,7 @@ const showSuccessMessage = flow(
 )
 function successMessage({ review: { doi, form, id }, preprint }: { review: PublishedReview; preprint: Preprint }) {
   return pipe(
-    R.asks(({ publicUrl }: PublicUrlEnv) => pipe(new URL(format(reviewMatch.formatter, { id }), publicUrl))),
+    toUrl(reviewMatch.formatter, { id }),
     R.chainW(url =>
       page({
         title: plainText`PREreview published`,
