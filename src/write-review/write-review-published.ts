@@ -97,7 +97,10 @@ function successMessage({ review: { doi, form, id }, preprint }: { review: Publi
                   <div class="inset">
                     <p>
                       Please let us know the other authors’ details (names and ORCID&nbsp;iDs), and we’ll add them to
-                      the PREreview. Our email address is <a href="mailto:help@prereview.org">help@prereview.org</a>.
+                      the PREreview. Our email address is
+                      <a href="mailto:help@prereview.org" target="_blank" rel="noopener noreferrer"
+                        >help@prereview.org<span class="visually-hidden"> (opens in a new tab)</span></a
+                      >.
                     </p>
                   </div>
                 `
@@ -115,15 +118,19 @@ function successMessage({ review: { doi, form, id }, preprint }: { review: Publi
                   via: 'PREreview_',
                   url: url.href,
                 }).toString()}"
+                target="_blank"
+                rel="noopener noreferrer"
                 class="twitter"
-                >Write a Tweet</a
+                >Write a Tweet<span class="visually-hidden"> (opens in a new tab)</span></a
               >
               <a
                 href="https://www.linkedin.com/sharing/share-offsite/?${new URLSearchParams({
                   url: url.href,
                 }).toString()}"
+                target="_blank"
+                rel="noopener noreferrer"
                 class="linked-in"
-                >Share it on LinkedIn</a
+                >Share it on LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a
               >
             </div>
 
@@ -132,7 +139,9 @@ function successMessage({ review: { doi, form, id }, preprint }: { review: Publi
             <p>
               <a
                 href="https://calendar.google.com/calendar/u/0/selfsched?sstoken=UUw4R0F6MVo1ZWhyfGRlZmF1bHR8ZGM2YTU1OTNhYzNhY2RiN2YzNTBlYTdmZTBmMzNmNDA"
-                >Schedule an interview</a
+                target="_blank"
+                rel="noopener noreferrer"
+                >Schedule an interview<span class="visually-hidden"> (opens in a new tab)</span></a
               >
               with our product team to discuss your experience on PREreview. We gladly compensate interviewees in
               appreciation for their help!
