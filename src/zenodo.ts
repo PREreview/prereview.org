@@ -77,7 +77,7 @@ export const getPrereviewsFromZenodo = flow(
 
 export const createRecordOnZenodo: (
   newPrereview: NewPrereview,
-) => ReaderTaskEither<ZenodoAuthenticatedEnv, unknown, Doi> = newPrereview =>
+) => ReaderTaskEither<ZenodoAuthenticatedEnv, unknown, [Doi, number]> = newPrereview =>
   pipe(
     createDepositMetadata(newPrereview),
     createDeposition,
@@ -89,7 +89,7 @@ export const createRecordOnZenodo: (
       }),
     ),
     RTE.chain(publishDeposition),
-    RTE.map(deposition => deposition.metadata.doi),
+    RTE.map(deposition => [deposition.metadata.doi, deposition.id]),
   )
 
 function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {

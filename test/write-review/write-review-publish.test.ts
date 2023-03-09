@@ -30,15 +30,26 @@ describe('writeReviewPublish', () => {
     fc.completedForm(),
     fc.user(),
     fc.doi(),
+    fc.integer(),
   ])(
     'when the form is complete',
-    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], newReview, user, reviewDoi) => {
+    async (
+      preprintDoi,
+      preprintTitle,
+      [connection, sessionCookie, sessionId, secret],
+      newReview,
+      user,
+      reviewDoi,
+      reviewId,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, CompletedFormC.encode(newReview))
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
-      const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ => TE.right(reviewDoi))
+      const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
+        TE.right([reviewDoi, reviewId]),
+      )
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintDoi)({
@@ -79,7 +90,7 @@ describe('writeReviewPublish', () => {
       expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
       expect(session).toStrictEqual({
         user: UserC.encode(user),
-        'published-review': { doi: reviewDoi, form: CompletedFormC.encode(newReview) },
+        'published-review': { doi: reviewDoi, form: CompletedFormC.encode(newReview), id: reviewId },
       })
     },
   )

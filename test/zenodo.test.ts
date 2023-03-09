@@ -927,7 +927,7 @@ describe('createRecordOnZenodo', () => {
       zenodoApiKey,
     })()
 
-    expect(actual).toStrictEqual(E.right(reviewDoi))
+    expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
   })
 
   test.prop([
@@ -1024,7 +1024,7 @@ describe('createRecordOnZenodo', () => {
       zenodoApiKey,
     })()
 
-    expect(actual).toStrictEqual(E.right(reviewDoi))
+    expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
   })
 
   test.prop([

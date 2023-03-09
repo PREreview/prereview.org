@@ -31,12 +31,20 @@ describe('writeReviewPublished', () => {
         fc.constant(secret),
       ),
     ),
-    fc.record({ doi: fc.doi(), form: fc.completedForm() }),
+    fc.origin(),
+    fc.record({ doi: fc.doi(), form: fc.completedForm(), id: fc.integer() }),
     fc.user(),
     fc.doi(),
   ])(
     'when the form is complete',
-    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], publishedReview, user) => {
+    async (
+      preprintDoi,
+      preprintTitle,
+      [connection, sessionCookie, sessionId, secret],
+      publicUrl,
+      publishedReview,
+      user,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, {
         user: UserC.encode(user),
@@ -47,6 +55,7 @@ describe('writeReviewPublished', () => {
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintDoi)({
           getPreprintTitle,
+          publicUrl,
           secret,
           sessionCookie,
           sessionStore,
@@ -94,6 +103,7 @@ describe('writeReviewPublished', () => {
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintDoi)({
           getPreprintTitle,
+          publicUrl: new URL('http://example.com'),
           secret,
           sessionCookie,
           sessionStore,
@@ -133,7 +143,7 @@ describe('writeReviewPublished', () => {
         fc.constant(secret),
       ),
     ),
-    fc.record({ doi: fc.doi(), form: fc.completedForm() }),
+    fc.record({ doi: fc.doi(), form: fc.completedForm(), id: fc.integer() }),
     fc.user(),
   ])(
     'when the preprint cannot be loaded',
@@ -148,6 +158,7 @@ describe('writeReviewPublished', () => {
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintDoi)({
           getPreprintTitle,
+          publicUrl: new URL('http://example.com'),
           secret,
           sessionCookie,
           sessionStore,
@@ -182,7 +193,7 @@ describe('writeReviewPublished', () => {
         fc.constant(secret),
       ),
     ),
-    fc.record({ doi: fc.doi(), form: fc.completedForm() }),
+    fc.record({ doi: fc.doi(), form: fc.completedForm(), id: fc.integer() }),
     fc.user(),
   ])(
     'when the preprint cannot be found',
@@ -197,6 +208,7 @@ describe('writeReviewPublished', () => {
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintDoi)({
           getPreprintTitle,
+          publicUrl: new URL('http://example.com'),
           secret,
           sessionCookie,
           sessionStore,
@@ -228,6 +240,7 @@ describe('writeReviewPublished', () => {
     const actual = await runMiddleware(
       _.writeReviewPublished(preprintDoi)({
         getPreprintTitle,
+        publicUrl: new URL('http://example.com'),
         secret,
         sessionCookie,
         sessionStore,

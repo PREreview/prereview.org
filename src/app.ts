@@ -200,7 +200,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getPreprintTitle: flip(getPreprintTitle)(env),
           publishPrereview: flip((newPrereview: NewPrereview) =>
-            pipe(createRecordOnZenodo(newPrereview), RTE.chainFirstW(createPrereviewOnLegacyPrereview(newPrereview))),
+            pipe(
+              createRecordOnZenodo(newPrereview),
+              RTE.chainFirstW(flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))),
+            ),
           )(env),
         })),
       ),

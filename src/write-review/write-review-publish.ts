@@ -41,7 +41,7 @@ export type NewPrereview = {
 }
 
 export interface PublishPrereviewEnv {
-  publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<unknown, Doi>
+  publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<unknown, [Doi, number]>
 }
 
 export const writeReviewPublish = flow(
@@ -109,7 +109,7 @@ const handlePublishForm = ({
     RM.chainReaderTaskEitherKW(publishPrereview),
     RM.ichainFirst(() => RM.status(Status.SeeOther)),
     RM.ichainFirst(() => RM.header('Location', format(writeReviewPublishedMatch.formatter, { doi: preprint.doi }))),
-    RM.ichainW(flow(doi => storePublishedReviewInSession({ doi, form }, session), storeSession)),
+    RM.ichainW(flow(([doi, id]) => storePublishedReviewInSession({ doi, form, id }, session), storeSession)),
     RM.ichain(() => RM.closeHeaders()),
     RM.ichain(() => RM.end()),
     RM.orElseW(() => showFailureMessage(preprint)),

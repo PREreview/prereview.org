@@ -11,9 +11,10 @@ export type PublishedReview = C.TypeOf<typeof PublishedReviewC>
 
 const DoiC = C.make(pipe(D.string, D.refine(isDoi, 'DOI')), { encode: String })
 
-export const PublishedReviewC: C.Codec<unknown, JsonRecord, { doi: Doi; form: CompletedForm }> = C.struct({
+export const PublishedReviewC: C.Codec<unknown, JsonRecord, { doi: Doi; form: CompletedForm; id: number }> = C.struct({
   doi: DoiC,
   form: CompletedFormC,
+  id: C.number,
 })
 
 export const storePublishedReviewInSession = (publishedReview: PublishedReview, session: JsonRecord): JsonRecord =>
