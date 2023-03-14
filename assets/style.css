@@ -610,19 +610,6 @@ label {
     margin-block-start: var(--space-m-l);
   }
 
-  &::after {
-    position: absolute;
-    content: '';
-    background-clip: padding-box;
-    background-color: var(--color-link);
-    border: 0 solid transparent;
-    border-block-end-width: var(--width-divider);
-    border-radius: var(--radius-divider);
-    z-index: -1;
-    inset: 0;
-    inset-block-end: calc(-1 * var(--width-divider));
-  }
-
   &:focus {
     user-select: auto;
   }
@@ -652,10 +639,35 @@ label {
     border: 0 solid transparent;
     border-block-end-width: var(--width-divider);
 
+    &::after {
+      position: absolute;
+      content: '';
+      background-clip: padding-box;
+      background-color: var(--color-link);
+      border: 0 solid transparent;
+      border-block-end-width: var(--width-divider);
+      border-radius: var(--radius-divider);
+      z-index: -1;
+      inset: 0;
+      inset-block-end: calc(-1 * var(--width-divider));
+
+      @media (forced-colors: active) {
+        display: none;
+      }
+    }
+
     &:active {
       margin-block-end: calc(var(--width-divider) / 2);
       inset-block-start: calc(var(--width-divider) / 2);
       border-block-end-width: calc(var(--width-divider) / 2);
+    }
+
+    @media (forced-colors: active) {
+      color: ButtonText;
+      background-color: ButtonFace;
+      border-color: ButtonBorder;
+      border-block-start-width: calc(var(--width-divider) / 2);
+      border-inline-width: calc(var(--width-divider) / 2);
     }
   }
 }
