@@ -999,15 +999,31 @@ html-editor {
     @media screen {
       outline: var(--color-focus) solid var(--width-divider);
       outline-offset: 0;
+
+      @media (forced-colors: active) {
+        outline-color: Highlight;
+      }
     }
   }
 
   &:checked::before {
     background-color: currentcolor;
+
+    @media screen {
+      @media (forced-colors: active) {
+        background-color: ButtonBorder;
+      }
+    }
   }
 
   &:focus-visible {
     outline-offset: 0;
+  }
+
+  @media screen {
+    @media (forced-colors: active) {
+      border-color: ButtonBorder;
+    }
   }
 }
 
