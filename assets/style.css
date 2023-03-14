@@ -1335,6 +1335,10 @@ skip-link {
         &:focus-visible {
           outline-offset: calc(-1 * var(--width-divider));
         }
+
+        @media (forced-colors: active) {
+          border-inline-end: var(--width-divider) solid;
+        }
       }
     }
   }
