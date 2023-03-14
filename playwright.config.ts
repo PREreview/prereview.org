@@ -11,6 +11,22 @@ const config: PlaywrightTestConfig = {
       use: { ...devices['Desktop Chrome'] },
     },
     {
+      name: 'Desktop Chrome (high contrast)',
+      use: {
+        ...devices['Desktop Chrome'],
+        colorScheme: 'dark' as const,
+        contextOptions: { forcedColors: 'active' as const },
+      },
+    },
+    {
+      name: 'Mobile Chrome (high contrast)',
+      use: {
+        ...devices['Pixel 5'],
+        colorScheme: 'dark' as const,
+        contextOptions: { forcedColors: 'active' as const },
+      },
+    },
+    {
       name: 'Desktop Firefox',
       use: { ...devices['Desktop Firefox'] },
     },
