@@ -870,6 +870,12 @@ error-summary {
 
     &:focus-visible {
       border-color: currentcolor;
+
+      @media screen {
+        @media (forced-colors: active) {
+          border-color: CanvasText;
+        }
+      }
     }
   }
 
@@ -898,6 +904,10 @@ error-summary {
 
     @media (min-width: 50em) {
       max-block-size: 50vb;
+    }
+
+    @media (forced-colors: active) {
+      border-color: CanvasText;
     }
   }
 }
