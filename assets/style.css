@@ -1316,6 +1316,12 @@ skip-link {
     flex: 1;
     font-size: var(--step--1);
   }
+
+  @media screen {
+    @media (forced-colors: active) {
+      border-block-end: var(--width-divider-narrow) solid currentcolor;
+    }
+  }
 }
 
 .tag {
@@ -1330,6 +1336,12 @@ skip-link {
   background-color: var(--color-primary);
   padding-block: var(--space-4xs);
   padding-inline: var(--space-3xs-2xs);
+
+  @media screen {
+    @media (forced-colors: active) {
+      border: var(--width-divider-narrow) solid currentcolor;
+    }
+  }
 }
 
 @keyframes rotation {
