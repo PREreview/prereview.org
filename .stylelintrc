@@ -6,6 +6,7 @@
     "import-notation": "url",
     "liberty/use-logical-spec": true,
     "no-descending-specificity": null,
-    "selector-not-notation": "complex"
+    "selector-not-notation": "complex",
+    "value-keyword-case": ["lower", { "ignoreKeywords": ["ButtonBorder"] }]
   }
 }
