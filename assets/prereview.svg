@@ -20,6 +20,13 @@
       fill: var(--color-primary);
       stroke-width: 0;
     }
+
+    @media screen and (forced-colors: active) {
+      :root {
+        --color-primary: CanvasText;
+        --color-text: CanvasText;
+      }
+    }
   </style>
 
   <g id="text">
