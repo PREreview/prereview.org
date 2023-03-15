@@ -636,6 +636,13 @@ label {
   &:is([aria-disabled='true']) {
     opacity: 0.5;
     cursor: not-allowed;
+
+    @media screen {
+      @media (forced-colors: active) {
+        color: GrayText;
+        opacity: 1;
+      }
+    }
   }
 
   &:not([aria-disabled='true']) {
