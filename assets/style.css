@@ -123,6 +123,11 @@ summary > span {
         mask-origin: content-box;
         mask-position: left bottom 40%;
         mask-size: 1.1em;
+
+        @media (forced-colors: active) {
+          forced-color-adjust: none;
+          background-color: LinkText;
+        }
       }
     }
 
@@ -137,6 +142,11 @@ summary > span {
         mask-origin: content-box;
         mask-position: left bottom 40%;
         mask-size: 1.1em;
+
+        @media (forced-colors: active) {
+          forced-color-adjust: none;
+          background-color: LinkText;
+        }
       }
     }
   }
