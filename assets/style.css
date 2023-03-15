@@ -249,6 +249,11 @@ body > footer {
     background-position: right 0.1ch bottom 40%;
     background-repeat: no-repeat;
     background-size: 1em;
+
+    @media (forced-colors: active) {
+      padding: 0;
+      background-image: none;
+    }
   }
 }
 
