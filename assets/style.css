@@ -1256,10 +1256,22 @@ skip-link {
       content: '';
       border: var(--width-divider) solid var(--color-divider-light);
       border-radius: var(--radius-divider);
+
+      @media screen {
+        @media (forced-colors: active) {
+          border-color: CanvasText;
+        }
+      }
     }
 
     &:hover::after {
       border-color: var(--color-divider);
+
+      @media screen {
+        @media (forced-colors: active) {
+          border-color: CanvasText;
+        }
+      }
     }
 
     &:focus-visible {
@@ -1269,6 +1281,11 @@ skip-link {
         @media screen {
           border-color: var(--color-divider);
           outline: var(--color-focus) solid var(--width-divider);
+
+          @media (forced-colors: active) {
+            border-color: CanvasText;
+            outline-color: Highlight;
+          }
         }
       }
     }
