@@ -992,6 +992,10 @@ html-editor {
         border-inline-end-color: transparent;
         inline-size: var(--space-m-l);
         block-size: var(--space-m-l);
+
+        @media (forced-colors: active) {
+          border-inline-end-color: Field;
+        }
       }
     }
   }
