@@ -60,16 +60,16 @@ export class HtmlEditor extends HTMLElement {
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
     const toolbarButtons = Promise.all([
-      createButton('Bold', boldIcon),
-      createButton('Italic', italicIcon),
-      createButton('Subscript', subscriptIcon),
-      createButton('Superscript', superscriptIcon),
-      createButton('Link', linkIcon),
-      createButton('Heading level 1', heading1Icon),
-      createButton('Heading level 2', heading2Icon),
-      createButton('Heading level 3', heading3Icon),
-      createButton('Bulleted list', bulletedListIcon),
-      createButton('Numbered list', numberedListIcon),
+      createButton('Bold', boldIcon, 'editor-bold'),
+      createButton('Italic', italicIcon, 'editor-italic'),
+      createButton('Subscript', subscriptIcon, 'editor-subscript'),
+      createButton('Superscript', superscriptIcon, 'editor-superscript'),
+      createButton('Link', linkIcon, 'editor-link'),
+      createButton('Heading level 1', heading1Icon, 'editor-heading1'),
+      createButton('Heading level 2', heading2Icon, 'editor-heading2'),
+      createButton('Heading level 3', heading3Icon, 'editor-heading3'),
+      createButton('Bulleted list', bulletedListIcon, 'editor-bulleted-list'),
+      createButton('Numbered list', numberedListIcon, 'editor-numbered-list'),
     ])
 
     const toolbar = document.createElement('editor-toolbar')
@@ -330,18 +330,42 @@ function removeAttributes(source: Element, qualifiedNames: ReadonlyArray<string>
   qualifiedNames.forEach(qualifiedName => source.removeAttribute(qualifiedName))
 }
 
-function createButton(label: string, icon: string) {
+function fetchSvg(path: string) {
+  return fetch(path, { mode: 'same-origin' })
+    .then(response => response.text())
+    .then(body => {
+      const svg = document.createRange().createContextualFragment(body).firstElementChild
+
+      if (!(svg instanceof SVGSVGElement)) {
+        throw 'Not an SVG'
+      }
+
+      svg.removeAttribute('xmlns')
+
+      return svg
+    })
+}
+
+async function createButton(label: string, icon: string, id: string) {
   const button = document.createElement('button')
   button.type = 'button'
   button.setAttribute('aria-pressed', 'false')
   button.setAttribute('aria-disabled', 'true')
 
-  const image = document.createElement('img')
-  image.alt = label
-  image.src = icon
-  image.width = 24
-  image.height = 24
-  button.append(image)
+  const wrapper = document.createElement('span')
+  wrapper.id = id
+  wrapper.innerText = label
+  button.append(wrapper)
+
+  try {
+    const svg = await fetchSvg(icon)
+    svg.setAttribute('role', 'graphics-symbol img')
+    svg.setAttribute('aria-labelledby', wrapper.id)
+    button.append(svg)
+    wrapper.hidden = true
+  } catch {
+    // Do nothing
+  }
 
   return button
 }

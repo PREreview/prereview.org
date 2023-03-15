@@ -740,13 +740,25 @@ label {
   &:focus-visible {
     position: relative;
     outline-offset: 0;
+
+    @media screen {
+      @media (forced-colors: active) {
+        border-color: ButtonBorder;
+      }
+    }
   }
 
   &:is([aria-disabled='true']) {
     cursor: not-allowed;
 
-    & img {
-      opacity: 0.5;
+    & svg {
+      color: var(--color-text-light);
+
+      @media screen {
+        @media (forced-colors: active) {
+          color: GrayText;
+        }
+      }
     }
   }
 
@@ -761,10 +773,25 @@ label {
   &:is([aria-pressed='true']) {
     background-color: var(--color-pressed);
     border-block-width: var(--width-divider-wide) var(--width-divider);
+
+    @media screen {
+      @media (forced-colors: active) {
+        color: SelectedItemText;
+        background-color: SelectedItem;
+        border-color: ButtonBorder;
+      }
+    }
   }
 
-  & img {
+  & svg {
     block-size: 100%;
+    fill: currentcolor;
+  }
+
+  @media screen {
+    @media (forced-colors: active) {
+      border-color: ButtonBorder;
+    }
   }
 }
 
