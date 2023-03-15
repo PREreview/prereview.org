@@ -59,143 +59,39 @@ export class HtmlEditor extends HTMLElement {
 
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
+    const toolbarButtons = Promise.all([
+      createButton('Bold', boldIcon),
+      createButton('Italic', italicIcon),
+      createButton('Subscript', subscriptIcon),
+      createButton('Superscript', superscriptIcon),
+      createButton('Link', linkIcon),
+      createButton('Heading level 1', heading1Icon),
+      createButton('Heading level 2', heading2Icon),
+      createButton('Heading level 3', heading3Icon),
+      createButton('Bulleted list', bulletedListIcon),
+      createButton('Numbered list', numberedListIcon),
+    ])
+
     const toolbar = document.createElement('editor-toolbar')
     toolbar.setAttribute('aria-controls', textArea.id)
     toolbar.setAttribute('aria-label', 'Formatting')
 
-    const bold = document.createElement('button')
-    bold.type = 'button'
-    bold.setAttribute('aria-pressed', 'false')
-    bold.setAttribute('aria-disabled', 'true')
-
-    const boldImage = document.createElement('img')
-    boldImage.alt = 'Bold'
-    boldImage.src = boldIcon
-    boldImage.width = 24
-    boldImage.height = 24
-    bold.append(boldImage)
-
-    const italic = document.createElement('button')
-    italic.type = 'button'
-    italic.setAttribute('aria-pressed', 'false')
-    italic.setAttribute('aria-disabled', 'true')
-
-    const italicImage = document.createElement('img')
-    italicImage.alt = 'Italic'
-    italicImage.src = italicIcon
-    italicImage.width = 24
-    italicImage.height = 24
-    italic.append(italicImage)
-
-    const subscript = document.createElement('button')
-    subscript.type = 'button'
-    subscript.setAttribute('aria-pressed', 'false')
-    subscript.setAttribute('aria-disabled', 'true')
-
-    const subscriptImage = document.createElement('img')
-    subscriptImage.alt = 'Subscript'
-    subscriptImage.src = subscriptIcon
-    subscriptImage.width = 24
-    subscriptImage.height = 24
-    subscript.append(subscriptImage)
-
-    const superscript = document.createElement('button')
-    superscript.type = 'button'
-    superscript.setAttribute('aria-pressed', 'false')
-    superscript.setAttribute('aria-disabled', 'true')
-
-    const superscriptImage = document.createElement('img')
-    superscriptImage.alt = 'Superscript'
-    superscriptImage.src = superscriptIcon
-    superscriptImage.width = 24
-    superscriptImage.height = 24
-    superscript.append(superscriptImage)
-
     const formatting = document.createElement('div')
     formatting.setAttribute('role', 'group')
-    formatting.append(bold, italic, subscript, superscript)
-
-    const link = document.createElement('button')
-    link.type = 'button'
-    link.setAttribute('aria-pressed', 'false')
-    link.setAttribute('aria-disabled', 'true')
-
-    const linkImage = document.createElement('img')
-    linkImage.alt = 'link'
-    linkImage.src = linkIcon
-    linkImage.width = 24
-    linkImage.height = 24
-    link.append(linkImage)
-
-    const heading1 = document.createElement('button')
-    heading1.type = 'button'
-    heading1.setAttribute('aria-pressed', 'false')
-    heading1.setAttribute('aria-disabled', 'true')
-
-    const heading1Image = document.createElement('img')
-    heading1Image.alt = 'Heading level 1'
-    heading1Image.src = heading1Icon
-    heading1Image.width = 24
-    heading1Image.height = 24
-    heading1.append(heading1Image)
-
-    const heading2 = document.createElement('button')
-    heading2.type = 'button'
-    heading2.setAttribute('aria-pressed', 'false')
-    heading2.setAttribute('aria-disabled', 'true')
-
-    const heading2Image = document.createElement('img')
-    heading2Image.alt = 'Heading level 2'
-    heading2Image.src = heading2Icon
-    heading2Image.width = 24
-    heading2Image.height = 24
-    heading2.append(heading2Image)
-
-    const heading3 = document.createElement('button')
-    heading3.type = 'button'
-    heading3.setAttribute('aria-pressed', 'false')
-    heading3.setAttribute('aria-disabled', 'true')
-
-    const heading3Image = document.createElement('img')
-    heading3Image.alt = 'Heading level 3'
-    heading3Image.src = heading3Icon
-    heading3Image.width = 24
-    heading3Image.height = 24
-    heading3.append(heading3Image)
-
-    const bulletedList = document.createElement('button')
-    bulletedList.type = 'button'
-    bulletedList.setAttribute('aria-pressed', 'false')
-    bulletedList.setAttribute('aria-disabled', 'true')
-
-    const bulletedListImage = document.createElement('img')
-    bulletedListImage.alt = 'Bulleted list'
-    bulletedListImage.src = bulletedListIcon
-    bulletedListImage.width = 24
-    bulletedListImage.height = 24
-    bulletedList.append(bulletedListImage)
-
-    const numberedList = document.createElement('button')
-    numberedList.type = 'button'
-    numberedList.setAttribute('aria-pressed', 'false')
-    numberedList.setAttribute('aria-disabled', 'true')
-
-    const numberedListImage = document.createElement('img')
-    numberedListImage.alt = 'Numbered list'
-    numberedListImage.src = numberedListIcon
-    numberedListImage.width = 24
-    numberedListImage.height = 24
-    numberedList.append(numberedListImage)
 
     const styles = document.createElement('div')
     styles.setAttribute('role', 'group')
-    styles.append(heading1, heading2, heading3, bulletedList, numberedList)
-
-    toolbar.append(formatting, link, styles)
 
     const input = textArea.nextElementSibling instanceof HTMLTextAreaElement ? textArea.nextElementSibling : textArea
 
     const [{ Editor }, { Link }, { Subscript }, { Superscript }, { Typography }, { StarterKit }] = await deps
+
+    const [bold, italic, subscript, superscript, link, heading1, heading2, heading3, bulletedList, numberedList] =
+      await toolbarButtons
+
+    formatting.append(bold, italic, subscript, superscript)
+    styles.append(heading1, heading2, heading3, bulletedList, numberedList)
+    toolbar.append(formatting, link, styles)
 
     const editor = new Editor({
       editorProps: {
@@ -432,4 +328,20 @@ function extractAttributes(source: Element, qualifiedNames: ReadonlyArray<string
 
 function removeAttributes(source: Element, qualifiedNames: ReadonlyArray<string>) {
   qualifiedNames.forEach(qualifiedName => source.removeAttribute(qualifiedName))
+}
+
+function createButton(label: string, icon: string) {
+  const button = document.createElement('button')
+  button.type = 'button'
+  button.setAttribute('aria-pressed', 'false')
+  button.setAttribute('aria-disabled', 'true')
+
+  const image = document.createElement('img')
+  image.alt = label
+  image.src = icon
+  image.width = 24
+  image.height = 24
+  button.append(image)
+
+  return button
 }
