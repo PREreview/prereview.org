@@ -60,16 +60,16 @@ export class HtmlEditor extends HTMLElement {
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
     const toolbarButtons = Promise.all([
-      createButton('Bold', boldIcon, 'editor-bold'),
-      createButton('Italic', italicIcon, 'editor-italic'),
-      createButton('Subscript', subscriptIcon, 'editor-subscript'),
-      createButton('Superscript', superscriptIcon, 'editor-superscript'),
-      createButton('Link', linkIcon, 'editor-link'),
-      createButton('Heading level 1', heading1Icon, 'editor-heading1'),
-      createButton('Heading level 2', heading2Icon, 'editor-heading2'),
-      createButton('Heading level 3', heading3Icon, 'editor-heading3'),
-      createButton('Bulleted list', bulletedListIcon, 'editor-bulleted-list'),
-      createButton('Numbered list', numberedListIcon, 'editor-numbered-list'),
+      createButton('Bold', boldIcon),
+      createButton('Italic', italicIcon),
+      createButton('Subscript', subscriptIcon),
+      createButton('Superscript', superscriptIcon),
+      createButton('Link', linkIcon),
+      createButton('Heading level 1', heading1Icon),
+      createButton('Heading level 2', heading2Icon),
+      createButton('Heading level 3', heading3Icon),
+      createButton('Bulleted list', bulletedListIcon),
+      createButton('Numbered list', numberedListIcon),
     ])
 
     const toolbar = document.createElement('editor-toolbar')
@@ -346,23 +346,21 @@ function fetchSvg(path: string) {
     })
 }
 
-async function createButton(label: string, icon: string, id: string) {
+async function createButton(label: string, icon: string) {
   const button = document.createElement('button')
   button.type = 'button'
   button.setAttribute('aria-pressed', 'false')
   button.setAttribute('aria-disabled', 'true')
 
   const wrapper = document.createElement('span')
-  wrapper.id = id
   wrapper.innerText = label
   button.append(wrapper)
 
   try {
     const svg = await fetchSvg(icon)
-    svg.setAttribute('role', 'graphics-symbol img')
-    svg.setAttribute('aria-labelledby', wrapper.id)
+    svg.setAttribute('aria-hidden', 'true')
     button.append(svg)
-    wrapper.hidden = true
+    wrapper.classList.add('visually-hidden')
   } catch {
     // Do nothing
   }
