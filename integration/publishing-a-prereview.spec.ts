@@ -5,197 +5,202 @@ import { URL } from 'url'
 import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
 import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview } from './test'
 
-test.extend(canLogIn)('can publish a PREreview', async ({ fetch, javaScriptEnabled, page }) => {
-  const record: Record = {
-    conceptdoi: '10.5072/zenodo.1055805' as Doi,
-    conceptrecid: 1055805,
-    files: [
-      {
-        links: {
-          self: new URL('http://example.com/file'),
-        },
-        key: 'review.html',
-        type: 'html',
-        size: 58,
-      },
-    ],
-    id: 1055806,
-    links: {
-      latest: new URL('http://example.com/latest'),
-      latest_html: new URL('http://example.com/latest_html'),
-    },
-    metadata: {
-      communities: [{ id: 'prereview-reviews' }],
-      creators: [
+test.extend(canLogIn)(
+  'can publish a PREreview',
+  async ({ contextOptions, fetch, javaScriptEnabled, page }, testInfo) => {
+    const record: Record = {
+      conceptdoi: '10.5072/zenodo.1055805' as Doi,
+      conceptrecid: 1055805,
+      files: [
         {
-          name: 'Josiah Carberry',
-          orcid: '0000-0002-1825-0097' as Orcid,
-        },
-      ],
-      description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
-      doi: '10.5072/zenodo.1055806' as Doi,
-      license: {
-        id: 'CC-BY-4.0',
-      },
-      publication_date: new Date('2022-07-05'),
-      related_identifiers: [
-        {
-          identifier: '10.1101/2022.01.13.476201',
-          relation: 'reviews',
-          resource_type: 'publication-preprint',
-          scheme: 'doi',
-        },
-        {
-          identifier: '10.5072/zenodo.1061863',
-          relation: 'isVersionOf',
-          scheme: 'doi',
-        },
-      ],
-      resource_type: {
-        type: 'publication',
-        subtype: 'peerreview',
-      },
-      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-    },
-  }
-
-  fetch.get(
-    {
-      url: 'http://zenodo.test/api/records/',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-    },
-    { body: RecordsC.encode({ hits: { hits: [] } }) },
-  )
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-  await page.getByRole('link', { name: 'Write a PREreview' }).click()
-
-  await expect(page.getByRole('main')).toContainText('We will ask you to log in')
-  await expect(page).toHaveScreenshot()
-
-  await page.getByRole('button', { name: 'Start now' }).click()
-
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-  await page.keyboard.press('Enter')
-
-  await page.getByLabel('No').check()
-
-  await expect(page).toHaveScreenshot()
-
-  await page.getByRole('button', { name: 'Continue' }).click()
-
-  if (javaScriptEnabled) {
-    await page.locator('[contenteditable]').waitFor()
-  }
-
-  if (javaScriptEnabled) {
-    await expect(page.getByLabel('Write your PREreview')).toHaveText(/^Write a short summary of/)
-  } else {
-    await expect(page.getByLabel('Write your PREreview')).toHaveValue(/^Write a short summary of/)
-  }
-
-  await expect(page).toHaveScreenshot()
-
-  if (javaScriptEnabled) {
-    await page.getByLabel('Write your PREreview').clear()
-    await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
-    await page.keyboard.press('Control+b')
-    await page.keyboard.type('adipiscing elit')
-    await page.keyboard.press('Control+b')
-    await page.keyboard.type('.')
-  } else {
-    await page
-      .getByLabel('Write your PREreview')
-      .fill('Lorem ipsum dolor sit "amet", *consectetur* <b>adipiscing elit</b>.')
-  }
-
-  await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-
-  await expect(page).toHaveScreenshot()
-
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-
-  await page.getByLabel('Josiah Carberry').check()
-
-  await expect(page).toHaveScreenshot()
-
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-
-  await page.getByLabel('No, I reviewed it alone').check()
-
-  await expect(page).toHaveScreenshot()
-
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-
-  await page.getByLabel('No').check()
-
-  await expect(page).toHaveScreenshot()
-
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-
-  await page.getByLabel('I’m following the Code of Conduct').check()
-
-  await expect(page).toHaveScreenshot()
-
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-
-  const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
-
-  await expect(preview).toContainText('Josiah Carberry')
-  if (javaScriptEnabled) {
-    await expect(preview).toContainText('Lorem ipsum dolor sit “amet”, consectetur adipiscing elit.')
-  } else {
-    await expect(preview).toContainText('Lorem ipsum dolor sit "amet", consectetur adipiscing elit.')
-  }
-  await expect(preview).toContainText('The author declares that they have no competing interests.')
-  await expect(page).toHaveScreenshot()
-
-  fetch
-    .postOnce('http://zenodo.test/api/deposit/depositions', {
-      body: UnsubmittedDepositionC.encode({
-        ...record,
-        links: {
-          bucket: new URL('http://example.com/bucket'),
-          publish: new URL('http://example.com/publish'),
-        },
-        metadata: {
-          ...record.metadata,
-          communities: [{ identifier: 'prereview-reviews' }],
-          prereserve_doi: {
-            doi: record.metadata.doi,
+          links: {
+            self: new URL('http://example.com/file'),
           },
-          upload_type: 'publication',
-          publication_type: 'peerreview',
+          key: 'review.html',
+          type: 'html',
+          size: 58,
         },
-        state: 'unsubmitted',
-        submitted: false,
-      }),
-      status: Status.Created,
-    })
-    .putOnce('http://example.com/bucket/review.html', {
-      status: Status.Created,
-    })
-    .postOnce('http://example.com/publish', {
-      body: SubmittedDepositionC.encode({
-        ...record,
-        metadata: {
-          ...record.metadata,
-          communities: [{ identifier: 'prereview-reviews' }],
-          upload_type: 'publication',
-          publication_type: 'peerreview',
+      ],
+      id: 1055806,
+      links: {
+        latest: new URL('http://example.com/latest'),
+        latest_html: new URL('http://example.com/latest_html'),
+      },
+      metadata: {
+        communities: [{ id: 'prereview-reviews' }],
+        creators: [
+          {
+            name: 'Josiah Carberry',
+            orcid: '0000-0002-1825-0097' as Orcid,
+          },
+        ],
+        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+        doi: '10.5072/zenodo.1055806' as Doi,
+        license: {
+          id: 'CC-BY-4.0',
         },
-        state: 'done',
-        submitted: true,
-      }),
-      status: Status.Accepted,
-    })
+        publication_date: new Date('2022-07-05'),
+        related_identifiers: [
+          {
+            identifier: '10.1101/2022.01.13.476201',
+            relation: 'reviews',
+            resource_type: 'publication-preprint',
+            scheme: 'doi',
+          },
+          {
+            identifier: '10.5072/zenodo.1061863',
+            relation: 'isVersionOf',
+            scheme: 'doi',
+          },
+        ],
+        resource_type: {
+          type: 'publication',
+          subtype: 'peerreview',
+        },
+        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      },
+    }
 
-  await page.getByRole('button', { name: 'Publish PREreview' }).click()
+    fetch.get(
+      {
+        url: 'http://zenodo.test/api/records/',
+        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      },
+      { body: RecordsC.encode({ hits: { hits: [] } }) },
+    )
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-  await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
-  await expect(page).toHaveScreenshot()
-})
+    await expect(page.getByRole('main')).toContainText('We will ask you to log in')
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Start now' }).click()
+
+    await page.locator('[type=email]').fill('test@example.com')
+    await page.locator('[type=password]').fill('password')
+    await page.keyboard.press('Enter')
+
+    await page.getByLabel('No').check()
+
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    if (javaScriptEnabled) {
+      await page.locator('[contenteditable]').waitFor()
+    }
+
+    if (javaScriptEnabled) {
+      await expect(page.getByLabel('Write your PREreview')).toHaveText(/^Write a short summary of/)
+    } else {
+      await expect(page.getByLabel('Write your PREreview')).toHaveValue(/^Write a short summary of/)
+    }
+
+    await expect(page).toHaveScreenshot()
+
+    if (javaScriptEnabled) {
+      await page.getByLabel('Write your PREreview').clear()
+      await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
+      await page.keyboard.press('Control+b')
+      await page.keyboard.type('adipiscing elit')
+      await page.keyboard.press('Control+b')
+      await page.keyboard.type('.')
+    } else {
+      await page
+        .getByLabel('Write your PREreview')
+        .fill('Lorem ipsum dolor sit "amet", *consectetur* <b>adipiscing elit</b>.')
+    }
+
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
+
+    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
+
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Josiah Carberry').check()
+
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('No, I reviewed it alone').check()
+
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('No').check()
+
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('I’m following the Code of Conduct').check()
+
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
+
+    await expect(preview).toContainText('Josiah Carberry')
+    if (javaScriptEnabled) {
+      await expect(preview).toContainText('Lorem ipsum dolor sit “amet”, consectetur adipiscing elit.')
+    } else {
+      await expect(preview).toContainText('Lorem ipsum dolor sit "amet", consectetur adipiscing elit.')
+    }
+    await expect(preview).toContainText('The author declares that they have no competing interests.')
+    await expect(page).toHaveScreenshot()
+
+    fetch
+      .postOnce('http://zenodo.test/api/deposit/depositions', {
+        body: UnsubmittedDepositionC.encode({
+          ...record,
+          links: {
+            bucket: new URL('http://example.com/bucket'),
+            publish: new URL('http://example.com/publish'),
+          },
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            prereserve_doi: {
+              doi: record.metadata.doi,
+            },
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'unsubmitted',
+          submitted: false,
+        }),
+        status: Status.Created,
+      })
+      .putOnce('http://example.com/bucket/review.html', {
+        status: Status.Created,
+      })
+      .postOnce('http://example.com/publish', {
+        body: SubmittedDepositionC.encode({
+          ...record,
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'done',
+          submitted: true,
+        }),
+        status: Status.Accepted,
+      })
+
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+    await expect(page).toHaveScreenshot()
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'are logged out after publishing',
@@ -689,7 +694,7 @@ test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can paste an already-written PREreview',
-  async ({ browserName, context, fetch, javaScriptEnabled, page }, testInfo) => {
+  async ({ browserName, context, contextOptions, fetch, javaScriptEnabled, page }, testInfo) => {
     fetch.get(
       {
         url: 'http://zenodo.test/api/records/',
@@ -751,13 +756,15 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByLabel('Paste your PREreview')).toHaveValue(/Lorem ipsum/)
     }
 
+    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
+
     await expect(page).toHaveScreenshot()
   },
 )
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can format a PREreview',
-  async ({ browserName, fetch, javaScriptEnabled, page }) => {
+  async ({ browserName, contextOptions, fetch, javaScriptEnabled, page }, testInfo) => {
     fetch.get(
       {
         url: 'http://zenodo.test/api/records/',
@@ -779,6 +786,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
       return
     }
+    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
     await page.locator('[contenteditable]').waitFor()
     await page.getByLabel('Write your PREreview').clear()
@@ -1215,7 +1223,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can publish a PREreview with competing interests',
-  async ({ fetch, javaScriptEnabled, page }) => {
+  async ({ contextOptions, fetch, javaScriptEnabled, page }, testInfo) => {
     const record: Record = {
       conceptdoi: '10.5072/zenodo.1055807' as Doi,
       conceptrecid: 1055807,
@@ -1288,6 +1296,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByLabel('Yes').check()
     await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
+
+    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
     await expect(page).toHaveScreenshot()
 
@@ -2001,36 +2011,42 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)('have to enter a review', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to enter a review',
+  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  if (javaScriptEnabled) {
-    await page.locator('[contenteditable]').waitFor()
-  }
+    if (javaScriptEnabled) {
+      await page.locator('[contenteditable]').waitFor()
+    }
 
-  await page.getByLabel('Write your PREreview').clear()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Write your PREreview').clear()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-  } else {
-    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
-  }
-  await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
-  await expect(page).toHaveScreenshot()
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+    }
+    await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('link', { name: 'Enter your PREreview' }).click()
+    await page.getByRole('link', { name: 'Enter your PREreview' }).click()
 
-  await expect(page.getByLabel('Write your PREreview')).toBeFocused()
-  await expect(page).toHaveScreenshot()
-})
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+
+    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
+
+    await expect(page).toHaveScreenshot()
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)(
   "can't use the template as the review",
-  async ({ javaScriptEnabled, page }) => {
+  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
@@ -2053,31 +2069,39 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Enter your PREreview' }).click()
 
     await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+
+    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
+
     await expect(page).toHaveScreenshot()
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)('have to paste a review', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('Yes').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to paste a review',
+  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-  } else {
-    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
-  }
-  await expect(page.getByLabel('Paste your PREreview')).toHaveAttribute('aria-invalid', 'true')
-  await expect(page).toHaveScreenshot()
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+    }
+    await expect(page.getByLabel('Paste your PREreview')).toHaveAttribute('aria-invalid', 'true')
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('link', { name: 'Paste your PREreview' }).click()
+    await page.getByRole('link', { name: 'Paste your PREreview' }).click()
 
-  await expect(page.getByLabel('Paste your PREreview')).toBeFocused()
-  await expect(page).toHaveScreenshot()
-})
+    await expect(page.getByLabel('Paste your PREreview')).toBeFocused()
+
+    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
+    await expect(page).toHaveScreenshot()
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -2188,7 +2212,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to declare any competing interests',
-  async ({ javaScriptEnabled, page }) => {
+  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
@@ -2237,6 +2261,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Enter details of your competing interests' }).click()
 
     await expect(page.getByLabel('What are they?')).toBeFocused()
+
+    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
+
     await expect(page).toHaveScreenshot()
   },
 )

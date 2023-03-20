@@ -31,11 +31,13 @@ test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
-test('can find and view a preprint', async ({ fetch, page }) => {
+test('can find and view a preprint', async ({ contextOptions, fetch, page }, testInfo) => {
   const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
 
   await page.goto('/')
   await form.getByLabel('Preprint DOI or URL').fill('10.1101/2022.01.13.476201')
+
+  testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
   await expect(page).toHaveScreenshot()
 
@@ -181,7 +183,7 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
   await expect(page).toHaveScreenshot()
 })
 
-test('have to enter a preprint DOI or URL', async ({ javaScriptEnabled, page }) => {
+test('have to enter a preprint DOI or URL', async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
   const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
   const alert = page.getByRole('alert', { name: 'There is a problem' })
 
@@ -201,6 +203,9 @@ test('have to enter a preprint DOI or URL', async ({ javaScriptEnabled, page }) 
 
   await expect(form.getByLabel('Preprint DOI or URL')).toBeFocused()
   await expect(form.getByLabel('Preprint DOI or URL')).toHaveValue('10.5555/12345678')
+
+  testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
+
   await expect(page).toHaveScreenshot()
 })
 
