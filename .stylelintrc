@@ -9,7 +9,7 @@
     "selector-not-notation": "complex",
     "value-keyword-case": [
       "lower",
-      { "ignoreKeywords": ["ButtonBorder", "CanvasText", "LinkText", "SelectedItem", "SelectedItemText"] }
+      { "ignoreKeywords": ["ButtonBorder", "CanvasText", "Field", "LinkText", "SelectedItem", "SelectedItemText"] }
     ]
   }
 }
