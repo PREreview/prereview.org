@@ -47,7 +47,7 @@ export const home = pipe(
 )
 
 const showHomePage = pipe(
-  RM.rightReader(createPage(E.right(undefined), hardcodedPrereview)),
+  RM.rightReader(createPage(E.right(undefined), O.some(hardcodedPrereview))),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -94,14 +94,14 @@ const lookupPreprint = pipe(
       O.getOrElse(() => ''),
       invalidE,
       E.left,
-      lookupPreprint => showHomeErrorPage(lookupPreprint, hardcodedPrereview),
+      lookupPreprint => showHomeErrorPage(lookupPreprint, O.some(hardcodedPrereview)),
     ),
   ),
 )
 
 type LookupPreprint = E.Either<InvalidE, Doi | undefined>
 
-function createPage(lookupPreprint: LookupPreprint, recentPrereview: Prereview) {
+function createPage(lookupPreprint: LookupPreprint, recentPrereview: O.Option<Prereview>) {
   const error = E.isLeft(lookupPreprint)
 
   return page({
@@ -169,20 +169,28 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereview: Prereview) 
           <button>Continue</button>
         </form>
 
-        <section>
-          <h2>Recent PREreviews</h2>
-          <ul>
-            <li>
-              <a href="https://beta.prereview.org/reviews/${recentPrereview.id}">
-                ${formatList('en')(recentPrereview.reviewers)} reviewed “<span
-                  dir="${getLangDir(recentPrereview.preprint.language)}"
-                  lang="${recentPrereview.preprint.language}"
-                  >${recentPrereview.preprint.title}</span
-                >”
-              </a>
-            </li>
-          </ul>
-        </section>
+        ${pipe(
+          recentPrereview,
+          O.matchW(
+            () => '',
+            prereview => html`
+              <section>
+                <h2>Recent PREreviews</h2>
+                <ul>
+                  <li>
+                    <a href="https://beta.prereview.org/reviews/${prereview.id}">
+                      ${formatList('en')(prereview.reviewers)} reviewed “<span
+                        dir="${getLangDir(prereview.preprint.language)}"
+                        lang="${prereview.preprint.language}"
+                        >${prereview.preprint.title}</span
+                      >”
+                    </a>
+                  </li>
+                </ul>
+              </section>
+            `,
+          ),
+        )}
       </main>
     `,
     js: error ? ['error-summary.js'] : [],
