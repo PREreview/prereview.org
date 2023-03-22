@@ -147,6 +147,19 @@ function createPage(lookupPreprint: LookupPreprint) {
 
           <button>Continue</button>
         </form>
+
+        <section>
+          <h2>Recent PREreviews</h2>
+          <ul>
+            <li>
+              <a href="https://beta.prereview.org/reviews/7747129">
+                CJ San Felipe reviewed “<span dir="ltr" lang="en"
+                  >A conserved local structural motif controls the kinetics of PTP1B catalysis</span
+                >”
+              </a>
+            </li>
+          </ul>
+        </section>
       </main>
     `,
     js: error ? ['error-summary.js'] : [],
