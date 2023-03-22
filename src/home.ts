@@ -31,15 +31,6 @@ type Prereview = {
   }
 }
 
-const hardcodedPrereview: Prereview = {
-  id: 7747129,
-  reviewers: ['CJ San Felipe'],
-  preprint: {
-    title: html`A conserved local structural motif controls the kinetics of PTP1B catalysis`,
-    language: 'en',
-  },
-}
-
 export const home = pipe(
   RM.fromMiddleware(getMethod),
   RM.ichain(method =>
@@ -114,7 +105,9 @@ const lookupPreprint = pipe(
       O.getOrElse(() => ''),
       invalidE,
       E.left,
-      lookupPreprint => showHomeErrorPage(lookupPreprint, O.some(hardcodedPrereview)),
+      lookupPreprint => RM.right({ lookupPreprint }),
+      RM.apS('recentPrereview', fromReaderTask(getRecentPrereview())),
+      RM.ichainW(({ lookupPreprint, recentPrereview }) => showHomeErrorPage(lookupPreprint, recentPrereview)),
     ),
   ),
 )
