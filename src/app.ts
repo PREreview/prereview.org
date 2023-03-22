@@ -75,7 +75,7 @@ import {
   createRecordOnZenodo,
   getPrereviewFromZenodo,
   getPrereviewsFromZenodo,
-  getRecentPrereviewFromZenodo,
+  getRecentPrereviewsFromZenodo,
 } from './zenodo'
 
 export type AppEnv = FathomEnv &
@@ -98,7 +98,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getRecentPrereview: () => getRecentPrereviewFromZenodo()(env),
+          getRecentPrereviews: () => getRecentPrereviewsFromZenodo()(env),
         })),
       ),
     ),

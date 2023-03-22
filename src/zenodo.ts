@@ -50,16 +50,18 @@ type RecentPrereview = {
   }
 }
 
-const hardcodedRecentPrereview: RecentPrereview = {
-  id: 7747129,
-  reviewers: ['CJ San Felipe'],
-  preprint: {
-    title: html`A conserved local structural motif controls the kinetics of PTP1B catalysis`,
-    language: 'en',
+const hardcodedRecentPrereviews: ReadonlyArray<RecentPrereview> = [
+  {
+    id: 7747129,
+    reviewers: ['CJ San Felipe'],
+    preprint: {
+      title: html`A conserved local structural motif controls the kinetics of PTP1B catalysis`,
+      language: 'en',
+    },
   },
-}
+]
 
-export const getRecentPrereviewFromZenodo = () => RT.of(O.some(hardcodedRecentPrereview))
+export const getRecentPrereviewsFromZenodo = () => RT.of(hardcodedRecentPrereviews)
 
 export const getPrereviewFromZenodo = flow(
   getRecord,

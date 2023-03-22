@@ -4,8 +4,9 @@ import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
+import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
-import * as TO from 'fp-ts/TaskOption'
+import * as T from 'fp-ts/Task'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
@@ -31,8 +32,8 @@ type Prereview = {
   }
 }
 
-interface GetRecentPrereviewEnv {
-  getRecentPrereview: () => TO.TaskOption<Prereview>
+interface GetRecentPrereviewsEnv {
+  getRecentPrereviews: () => T.Task<ReadonlyArray<Prereview>>
 }
 
 export const home = pipe(
@@ -44,15 +45,15 @@ export const home = pipe(
   ),
 )
 
-const getRecentPrereview = () =>
+const getRecentPrereviews = () =>
   pipe(
-    RT.ask<GetRecentPrereviewEnv>(),
-    RT.chainTaskK(({ getRecentPrereview }) => getRecentPrereview()),
+    RT.ask<GetRecentPrereviewsEnv>(),
+    RT.chainTaskK(({ getRecentPrereviews }) => getRecentPrereviews()),
   )
 
 const showHomePage = pipe(
-  fromReaderTask(getRecentPrereview()),
-  chainReaderKW(recentPrereview => createPage(E.right(undefined), recentPrereview)),
+  fromReaderTask(getRecentPrereviews()),
+  chainReaderKW(recentPrereviews => createPage(E.right(undefined), recentPrereviews)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -100,15 +101,15 @@ const lookupPreprint = pipe(
       invalidE,
       E.left,
       lookupPreprint => RM.right({ lookupPreprint }),
-      RM.apS('recentPrereview', fromReaderTask(getRecentPrereview())),
-      RM.ichainW(({ lookupPreprint, recentPrereview }) => showHomeErrorPage(lookupPreprint, recentPrereview)),
+      RM.apS('recentPrereviews', fromReaderTask(getRecentPrereviews())),
+      RM.ichainW(({ lookupPreprint, recentPrereviews }) => showHomeErrorPage(lookupPreprint, recentPrereviews)),
     ),
   ),
 )
 
 type LookupPreprint = E.Either<InvalidE, Doi | undefined>
 
-function createPage(lookupPreprint: LookupPreprint, recentPrereview: O.Option<Prereview>) {
+function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyArray<Prereview>) {
   const error = E.isLeft(lookupPreprint)
 
   return page({
@@ -177,22 +178,26 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereview: O.Option<Pr
         </form>
 
         ${pipe(
-          recentPrereview,
-          O.matchW(
+          recentPrereviews,
+          RA.matchW(
             () => '',
-            prereview => html`
+            prereviews => html`
               <section>
                 <h2>Recent PREreviews</h2>
                 <ul>
-                  <li>
-                    <a href="https://beta.prereview.org/reviews/${prereview.id}">
-                      ${formatList('en')(prereview.reviewers)} reviewed “<span
-                        dir="${getLangDir(prereview.preprint.language)}"
-                        lang="${prereview.preprint.language}"
-                        >${prereview.preprint.title}</span
-                      >”
-                    </a>
-                  </li>
+                  ${prereviews.map(
+                    prereview => html`
+                      <li>
+                        <a href="https://beta.prereview.org/reviews/${prereview.id}">
+                          ${formatList('en')(prereview.reviewers)} reviewed “<span
+                            dir="${getLangDir(prereview.preprint.language)}"
+                            lang="${prereview.preprint.language}"
+                            >${prereview.preprint.title}</span
+                          >”
+                        </a>
+                      </li>
+                    `,
+                  )}
                 </ul>
               </section>
             `,

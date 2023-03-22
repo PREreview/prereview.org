@@ -2,7 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
-import * as TO from 'fp-ts/TaskOption'
+import * as T from 'fp-ts/Task'
 import * as H from 'hyper-ts'
 import { MediaType, Status } from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
@@ -15,7 +15,7 @@ describe('home', () => {
   test.prop([fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') })])(
     'home',
     async connection => {
-      const actual = await runMiddleware(_.home({ getRecentPrereview: () => TO.none }), connection)()
+      const actual = await runMiddleware(_.home({ getRecentPrereviews: () => T.of([]) }), connection)()
 
       expect(actual).toStrictEqual(
         E.right([
@@ -86,7 +86,7 @@ describe('home', () => {
         ],
       },
     )('with a preprint DOI', async ([doi, connection]) => {
-      const actual = await runMiddleware(_.home({ getRecentPrereview: () => TO.none }), connection)()
+      const actual = await runMiddleware(_.home({ getRecentPrereviews: () => T.of([]) }), connection)()
 
       expect(actual).toStrictEqual(
         E.right([
@@ -107,7 +107,7 @@ describe('home', () => {
         method: fc.constant('POST'),
       }),
     ])('with a non-preprint DOI', async connection => {
-      const actual = await runMiddleware(_.home({ getRecentPrereview: () => TO.none }), connection)()
+      const actual = await runMiddleware(_.home({ getRecentPrereviews: () => T.of([]) }), connection)()
 
       expect(actual).toStrictEqual(
         E.right([
