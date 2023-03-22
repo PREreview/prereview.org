@@ -182,8 +182,8 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
           RA.matchW(
             () => '',
             prereviews => html`
-              <section>
-                <h2>Recent PREreviews</h2>
+              <section aria-labelledby="recent-prereviews-title">
+                <h2 id="recent-prereviews-title">Recent PREreviews</h2>
                 <ul>
                   ${prereviews.map(
                     prereview => html`
