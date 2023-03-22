@@ -5,9 +5,11 @@ import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
 import * as O from 'fp-ts/Option'
 import { and } from 'fp-ts/Predicate'
+import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
+import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
@@ -28,7 +30,7 @@ import {
   uploadFile,
 } from 'zenodo-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { Html, plainText, sanitizeHtml } from './html'
+import { Html, html, plainText, sanitizeHtml } from './html'
 import { PreprintDoiD, PreprintId } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
@@ -38,6 +40,26 @@ import PlainDate = Temporal.PlainDate
 interface GetPreprintTitleEnv {
   getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
 }
+
+type RecentPrereview = {
+  readonly id: number
+  readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
+  readonly preprint: {
+    readonly language: LanguageCode
+    readonly title: Html
+  }
+}
+
+const hardcodedRecentPrereview: RecentPrereview = {
+  id: 7747129,
+  reviewers: ['CJ San Felipe'],
+  preprint: {
+    title: html`A conserved local structural motif controls the kinetics of PTP1B catalysis`,
+    language: 'en',
+  },
+}
+
+export const getRecentPrereviewFromZenodo = () => RT.of(O.some(hardcodedRecentPrereview))
 
 export const getPrereviewFromZenodo = flow(
   getRecord,

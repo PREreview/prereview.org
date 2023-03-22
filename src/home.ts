@@ -31,7 +31,7 @@ type Prereview = {
   }
 }
 
-export const hardcodedPrereview: Prereview = {
+const hardcodedPrereview: Prereview = {
   id: 7747129,
   reviewers: ['CJ San Felipe'],
   preprint: {
