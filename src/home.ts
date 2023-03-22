@@ -47,7 +47,7 @@ export const home = pipe(
 )
 
 const showHomePage = pipe(
-  RM.rightReader(createPage(E.right(undefined))),
+  RM.rightReader(createPage(E.right(undefined), hardcodedPrereview)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -94,14 +94,14 @@ const lookupPreprint = pipe(
       O.getOrElse(() => ''),
       invalidE,
       E.left,
-      showHomeErrorPage,
+      lookupPreprint => showHomeErrorPage(lookupPreprint, hardcodedPrereview),
     ),
   ),
 )
 
 type LookupPreprint = E.Either<InvalidE, Doi | undefined>
 
-function createPage(lookupPreprint: LookupPreprint) {
+function createPage(lookupPreprint: LookupPreprint, recentPrereview: Prereview) {
   const error = E.isLeft(lookupPreprint)
 
   return page({
@@ -173,11 +173,11 @@ function createPage(lookupPreprint: LookupPreprint) {
           <h2>Recent PREreviews</h2>
           <ul>
             <li>
-              <a href="https://beta.prereview.org/reviews/${hardcodedPrereview.id}">
-                ${formatList('en')(hardcodedPrereview.reviewers)} reviewed “<span
-                  dir="${getLangDir(hardcodedPrereview.preprint.language)}"
-                  lang="${hardcodedPrereview.preprint.language}"
-                  >${hardcodedPrereview.preprint.title}</span
+              <a href="https://beta.prereview.org/reviews/${recentPrereview.id}">
+                ${formatList('en')(recentPrereview.reviewers)} reviewed “<span
+                  dir="${getLangDir(recentPrereview.preprint.language)}"
+                  lang="${recentPrereview.preprint.language}"
+                  >${recentPrereview.preprint.title}</span
                 >”
               </a>
             </li>
