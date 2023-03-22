@@ -4,6 +4,7 @@ import { Json } from 'fp-ts/Json'
 import * as M from 'fp-ts/Monoid'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as TO from 'fp-ts/TaskOption'
 import { constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -20,7 +21,7 @@ import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
-import { home } from './home'
+import { hardcodedPrereview, home } from './home'
 import { handleError } from './http-error'
 import {
   LegacyPrereviewApiEnv,
@@ -90,6 +91,12 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       homeMatch.parser,
       P.map(() => home),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          getRecentPrereview: () => TO.some(hardcodedPrereview),
+        })),
+      ),
     ),
     pipe(
       logInMatch.parser,

@@ -5,6 +5,7 @@ import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
+import * as TO from 'fp-ts/TaskOption'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
@@ -30,7 +31,7 @@ type Prereview = {
   }
 }
 
-const hardcodedPrereview: Prereview = {
+export const hardcodedPrereview: Prereview = {
   id: 7747129,
   reviewers: ['CJ San Felipe'],
   preprint: {
@@ -48,7 +49,15 @@ export const home = pipe(
   ),
 )
 
-const getRecentPrereview = (): RT.ReaderTask<unknown, O.Option<Prereview>> => RT.of(O.some(hardcodedPrereview))
+type GetRecentPrereviewEnv = {
+  getRecentPrereview: () => TO.TaskOption<Prereview>
+}
+
+const getRecentPrereview = () =>
+  pipe(
+    RT.ask<GetRecentPrereviewEnv>(),
+    RT.chainTaskK(({ getRecentPrereview }) => getRecentPrereview()),
+  )
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 const chainReaderKW: <R2, A, B>(
