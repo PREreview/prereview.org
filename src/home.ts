@@ -23,7 +23,7 @@ import { page } from './page'
 import { fromUrl, parsePreprintDoi } from './preprint-id'
 import { homeMatch, preprintMatch } from './routes'
 
-type Prereview = {
+export type RecentPrereview = {
   readonly id: number
   readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
   readonly preprint: {
@@ -33,7 +33,7 @@ type Prereview = {
 }
 
 interface GetRecentPrereviewsEnv {
-  getRecentPrereviews: () => T.Task<ReadonlyArray<Prereview>>
+  getRecentPrereviews: () => T.Task<ReadonlyArray<RecentPrereview>>
 }
 
 export const home = pipe(
@@ -109,7 +109,7 @@ const lookupPreprint = pipe(
 
 type LookupPreprint = E.Either<InvalidE, Doi | undefined>
 
-function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyArray<Prereview>) {
+function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyArray<RecentPrereview>) {
   const error = E.isLeft(lookupPreprint)
 
   return page({
