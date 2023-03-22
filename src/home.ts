@@ -21,7 +21,7 @@ import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { fromUrl, parsePreprintDoi } from './preprint-id'
-import { homeMatch, preprintMatch } from './routes'
+import { homeMatch, preprintMatch, reviewMatch } from './routes'
 
 export type RecentPrereview = {
   readonly id: number
@@ -188,7 +188,7 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
                   ${prereviews.map(
                     prereview => html`
                       <li>
-                        <a href="https://beta.prereview.org/reviews/${prereview.id}">
+                        <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
                           ${formatList('en')(prereview.reviewers)} reviewed “<span
                             dir="${getLangDir(prereview.preprint.language)}"
                             lang="${prereview.preprint.language}"
