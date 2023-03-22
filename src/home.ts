@@ -3,9 +3,11 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
+import * as RT from 'fp-ts/ReaderTask'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { LanguageCode } from 'iso-639-1'
@@ -46,8 +48,17 @@ export const home = pipe(
   ),
 )
 
+const getRecentPrereview = (): RT.ReaderTask<unknown, O.Option<Prereview>> => RT.of(O.some(hardcodedPrereview))
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+const chainReaderKW: <R2, A, B>(
+  f: (a: A) => Reader<R2, B>,
+) => <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> = f =>
+  RM.chainW(fromReaderK(f))
+
 const showHomePage = pipe(
-  RM.rightReader(createPage(E.right(undefined), O.some(hardcodedPrereview))),
+  fromReaderTask(getRecentPrereview()),
+  chainReaderKW(recentPrereview => createPage(E.right(undefined), recentPrereview)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -215,4 +226,9 @@ function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E =
   f: (...a: A) => Reader<R, B>,
 ): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
   return (...a) => RM.rightReader(f(...a))
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/87
+function fromReaderTask<R, I = StatusOpen, A = never>(fa: RT.ReaderTask<R, A>): RM.ReaderMiddleware<R, I, I, never, A> {
+  return r => M.fromTask(fa(r))
 }
