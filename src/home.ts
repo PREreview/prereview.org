@@ -31,6 +31,10 @@ type Prereview = {
   }
 }
 
+interface GetRecentPrereviewEnv {
+  getRecentPrereview: () => TO.TaskOption<Prereview>
+}
+
 export const home = pipe(
   RM.fromMiddleware(getMethod),
   RM.ichain(method =>
@@ -40,21 +44,11 @@ export const home = pipe(
   ),
 )
 
-type GetRecentPrereviewEnv = {
-  getRecentPrereview: () => TO.TaskOption<Prereview>
-}
-
 const getRecentPrereview = () =>
   pipe(
     RT.ask<GetRecentPrereviewEnv>(),
     RT.chainTaskK(({ getRecentPrereview }) => getRecentPrereview()),
   )
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-const chainReaderKW: <R2, A, B>(
-  f: (a: A) => Reader<R2, B>,
-) => <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> = f =>
-  RM.chainW(fromReaderK(f))
 
 const showHomePage = pipe(
   fromReaderTask(getRecentPrereview()),
@@ -228,6 +222,13 @@ function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E =
   f: (...a: A) => Reader<R, B>,
 ): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
   return (...a) => RM.rightReader(f(...a))
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function chainReaderKW<R2, A, B>(
+  f: (a: A) => Reader<R2, B>,
+): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
+  return RM.chainW(fromReaderK(f))
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/87
