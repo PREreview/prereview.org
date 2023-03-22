@@ -3,18 +3,39 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
+import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import { LanguageCode } from 'iso-639-1'
+import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { InvalidE, getInput, invalidE } from './form'
-import { html, plainText, rawHtml, sendHtml } from './html'
+import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { fromUrl, parsePreprintDoi } from './preprint-id'
 import { homeMatch, preprintMatch } from './routes'
+
+type Prereview = {
+  readonly id: number
+  readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
+  readonly preprint: {
+    readonly language: LanguageCode
+    readonly title: Html
+  }
+}
+
+const hardcodedPrereview: Prereview = {
+  id: 7747129,
+  reviewers: ['CJ San Felipe'],
+  preprint: {
+    title: html`A conserved local structural motif controls the kinetics of PTP1B catalysis`,
+    language: 'en',
+  },
+}
 
 export const home = pipe(
   RM.fromMiddleware(getMethod),
@@ -152,9 +173,11 @@ function createPage(lookupPreprint: LookupPreprint) {
           <h2>Recent PREreviews</h2>
           <ul>
             <li>
-              <a href="https://beta.prereview.org/reviews/7747129">
-                CJ San Felipe reviewed “<span dir="ltr" lang="en"
-                  >A conserved local structural motif controls the kinetics of PTP1B catalysis</span
+              <a href="https://beta.prereview.org/reviews/${hardcodedPrereview.id}">
+                ${formatList('en')(hardcodedPrereview.reviewers)} reviewed “<span
+                  dir="${getLangDir(hardcodedPrereview.preprint.language)}"
+                  lang="${hardcodedPrereview.preprint.language}"
+                  >${hardcodedPrereview.preprint.title}</span
                 >”
               </a>
             </li>
@@ -165,6 +188,18 @@ function createPage(lookupPreprint: LookupPreprint) {
     js: error ? ['error-summary.js'] : [],
     skipLinks: [[html`Skip to main content`, '#main-content']],
   })
+}
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    RNEA.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
