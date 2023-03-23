@@ -98,7 +98,11 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getRecentPrereviews: () => getRecentPrereviewsFromZenodo()(env),
+          getRecentPrereviews: () =>
+            getRecentPrereviewsFromZenodo()({
+              ...env,
+              getPreprintTitle: flip(getPreprintTitle)(env),
+            }),
         })),
       ),
     ),

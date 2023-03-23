@@ -9,6 +9,7 @@ import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
+import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
@@ -30,7 +31,7 @@ import {
 } from 'zenodo-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { RecentPrereview } from './home'
-import { Html, html, plainText, sanitizeHtml } from './html'
+import { Html, plainText, sanitizeHtml } from './html'
 import { PreprintDoiD, PreprintId } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
@@ -41,18 +42,21 @@ interface GetPreprintTitleEnv {
   getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
 }
 
-const hardcodedRecentPrereviews: ReadonlyArray<RecentPrereview> = [
-  {
-    id: 7747129,
-    reviewers: ['CJ San Felipe'],
-    preprint: {
-      title: html`A conserved local structural motif controls the kinetics of PTP1B catalysis`,
-      language: 'en',
-    },
-  },
-]
-
-export const getRecentPrereviewsFromZenodo = () => RT.of(hardcodedRecentPrereviews)
+export const getRecentPrereviewsFromZenodo = () =>
+  pipe(
+    new URLSearchParams({
+      communities: 'prereview-reviews',
+      size: '5',
+      sort: 'mostrecent',
+      subtype: 'peerreview',
+    }),
+    getRecords,
+    RTE.local(revalidateIfStale()),
+    RTE.local(useStaleCache()),
+    RTE.local(timeoutRequest(2000)),
+    RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToRecentPrereview))),
+    RTE.getOrElseW(() => RT.of(RA.empty)),
+  )
 
 export const getPrereviewFromZenodo = flow(
   getRecord,
@@ -152,6 +156,22 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
           ),
         ),
         text: getReviewText(review.reviewTextUrl),
+      }),
+    ),
+  )
+}
+
+function recordToRecentPrereview(record: Record): RTE.ReaderTaskEither<GetPreprintTitleEnv, unknown, RecentPrereview> {
+  return pipe(
+    RTE.of(record),
+    RTE.bindW('preprintDoi', RTE.fromOptionK(() => 'no reviewed DOI')(getReviewedDoi)),
+    RTE.chain(review =>
+      sequenceS(RTE.ApplyPar)({
+        id: RTE.right(review.id),
+        reviewers: RTE.right(pipe(review.metadata.creators, RNEA.map(get('name')))),
+        preprint: RTE.asksReaderTaskEither(
+          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintDoi)),
+        ),
       }),
     ),
   )

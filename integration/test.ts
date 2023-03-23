@@ -1,11 +1,14 @@
 import { Fixtures, PlaywrightTestArgs, PlaywrightTestOptions, test as baseTest, expect } from '@playwright/test'
 import { SystemClock } from 'clock-ts'
+import { Doi } from 'doi-ts'
 import fetchMock, { FetchMockSandbox } from 'fetch-mock'
 import * as fs from 'fs/promises'
 import { Server } from 'http'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
+import { Orcid } from 'orcid-id-ts'
+import { RecordsC } from 'zenodo-ts'
 import { app } from '../src/app'
 import { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
@@ -56,6 +59,119 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     fetch.get('http://prereview.test/api/v2/preprints/doi-10.1101-2022.01.13.476201/rapid-reviews', {
       body: { data: [] },
+    })
+
+    fetch.get(
+      {
+        name: 'recent-prereviews',
+        url: 'http://zenodo.test/api/records/',
+        query: { communities: 'prereview-reviews', size: 5, sort: 'mostrecent', subtype: 'peerreview' },
+      },
+      {
+        body: RecordsC.encode({
+          hits: {
+            hits: [
+              {
+                conceptdoi: '10.5281/zenodo.7747128' as Doi,
+                conceptrecid: 7747128,
+                files: [
+                  {
+                    key: 'review.html',
+                    links: {
+                      self: new URL('https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html'),
+                    },
+                    size: 7043,
+                    type: 'html',
+                  },
+                ],
+                id: 7747129,
+                links: {
+                  latest: new URL('https://zenodo.org/api/records/7747129'),
+                  latest_html: new URL('https://zenodo.org/record/7747129'),
+                },
+                metadata: {
+                  communities: [{ id: 'prereview-reviews' }],
+                  creators: [{ name: 'CJ San Felipe', orcid: '0000-0002-2695-5951' as Orcid }],
+                  description:
+                    '<p>PTP1b has been an attractive target for drug development due to its essential role in several cellular pathways and diseases such as type 2 diabetes. Focus has been paid to identifying allosteric sites that regulate catalytic activity via altering the dynamics of the active site WPD loop. However, the structural mechanisms underlying the WPD loop opening and closing (which is relatively slow by NMR) remains unclear.\u00a0</p><p>In this paper, the authors sought to identify the structural mechanisms underlying PTP1b loop motion by performing long time scale molecular dynamics (MD) simulations. Starting from existing structures with the WPD loop either open or closed, they are able to derive reasonable estimations of the kinetics of loop opening and closing. They address the question of what structural changes need to occur for the loop to remain open or closed as it fluctuates. Using a random forest approach, they narrow their focus down to the PDFG motifs backbone dihedrals as a set of features sufficient for describing and predicting loop movement between states. The major strength of this paper is reducing the WPD loop conformation (including transient states) down to a set of reaction coordinates in the PDFG motif dihedral angles. Based on this minimum set of features, the committor probabilities provide a strong statistical argument for the transition between open, closed, and transient states along the loop trajectory.</p><p>The major weakness of this paper is that the visualizations describing the PDFG motif switch model are insufficient and confusing and lack an atomic explanation of how these dihedral changes occur in the context of surrounding residues to complement their statistical explanations. This makes it difficult to interpret what the actual transitions look like. We understand that the atomic explanation of this mechanism can be complicated but refer the authors to this paper as an example even though it is a different target and may not be specifically relevant to their work: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1450098/">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1450098/</a> (Fig 3)</p><p>The reaction coordinates alone do not provide a clear direction for envisioning future experiments. Given that this motif is conserved (as the authors explained), other PTP members likely have different structural environments surrounding the motif which likely affects kinetic rates and thermodynamics.\u00a0</p><p>Major Points:</p><ol><li><p>Previous structural studies of PTP\'s have identified atypical open loop conformations in GLEPP1, STEP, and Lyp: <a href="https://www.sciencedirect.com/science/article/pii/S0092867408015134?via%3Dihub">https://www.sciencedirect.com/science/article/pii/S0092867408015134?via%3Dihub</a> Fig 3A. These loops adopt a novel loop conformation that is more open compared to PTP1B. Further, the presence of catalytic water molecules that are tightly bound in closed states and absent in open states have been suggested to play a role in the closing of the WPD loop.\u00a0</p><ol><li><p>Can the authors provide comments on how the PDFG motif factors into the novel open loop conformation (would the motif dihedrals still predict loop states in these family members)?\u00a0</p></li><li><p>Were water molecules detected in the binding site and do they play a role during loop closure?</p></li><li><p>Is it possible to include within these simulations mixed solvent MD with a PTP1B substrate to explore their roles in the loop transition?</p></li></ol></li><li><p>"We note that although the PD[F/H]G BLAST search did return matches in other protein families, there was not the structural information corresponding to those matches that would be needed to draw further conclusions on the conformational significance of PD[F/H]G motifs in those families." - We feel this is a missed opportunity to at least do some exploration and cataloging using the alphafold structures of these other families.</p></li><li><p>The authors describe the backbone dihedrals of the PDFG motif as being sufficient and necessary for predicting WPD loop conformation but do not mention the side chain conformations. We feel that the explanation and visualization of the side chain conformations in both open and closed states is unclear as there is no analysis of how these transitions and conformations affect the populations and rate movement of the loop.\u00a0</p><ol><li><p>What do the rotamer conformations and transitions look like for the PDFG during open, closed, and transient WPD loop states?\u00a0</p></li><li><p>How do these rotamer conformations affect loop movements and populations within the simulation?\u00a0</p></li></ol></li></ol><p>It would be insightful if the authors could provide an explanation of the rotamer transitions during loop opening and closing. Understanding these structural changes during substrate binding and catalysis could yield targets for drug development.\u00a0</p><p>Minor Points:</p><ol><li><p>Supplementary figures S2, S3, S4, and S5 have little to no information to adequately explain what is being illustrated. The authors should be more clear in describing what these figures represent. A description of axes, experimental set up, and legends would be helpful.\u00a0</p></li><li><p>The observation that loop fluctuations without long term stability unless the PDFG motif switches is reminiscent of the population shuffling model of conformational changes put forward by Colin Smith - <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/anie.201408890">https://onlinelibrary.wiley.com/doi/full/10.1002/anie.201408890</a>. Given the previous NMR data on PTP1B, how does this view alter the interpretation away from a strict two state model?</p></li><li><p>"The free energy estimate from these AWE simulations was \u0394Gclosed-to-open = \u22122.6 \u00b1 0.1 kcal mol-1, indicating that the transition from closed to open states is spontaneous (<a href="https://www.biorxiv.org/content/10.1101/2023.02.28.529746v1.full#F2"><b>Figure 2b</b></a>), a finding that is again consistent with experimental data" We are a bit confused by the language here: is this a thermodynamic or kinetic argument? Secondarily, how do the populations compare to those derived from NMR?</p></li></ol><ol><li><p>As previously discussed in a twitter thread with the authors, the backbone ramachandran regions of the 1SUG structure (closed WPD loop conformation) is not in a region previously known for kinases. It would be helpful if the authors could provide validation that the backbone ramachandran regions of the WPD loop are in agreement with what is known about kinases states and whether this would affect their interpretations.\u00a0</p></li></ol><p><a href="https://twitter.com/RolandDunbrack/status/1632284368650530816">https://twitter.com/RolandDunbrack/status/1632284368650530816</a></p><p>Review by - CJ San Felipe (UCSF) and James Fraser (UCSF)</p>\n\n    Competing interests\n\n    <p>\n      The author declares that they have no competing interests.\n    </p>',
+                  doi: '10.5281/zenodo.7747129' as Doi,
+                  license: { id: 'CC-BY-4.0' },
+                  publication_date: new Date('2023-03-17'),
+                  related_identifiers: [
+                    {
+                      identifier: '10.1101/2023.02.28.529746',
+                      relation: 'reviews',
+                      resource_type: 'publication-preprint',
+                      scheme: 'doi',
+                    },
+                    { identifier: '10.5281/zenodo.7747128', relation: 'isVersionOf', scheme: 'doi' },
+                  ],
+                  resource_type: { subtype: 'peerreview', type: 'publication' },
+                  title: 'PREreview of "A conserved local structural motif controls the kinetics of PTP1B catalysis"',
+                },
+              },
+            ],
+          },
+        }),
+      },
+    )
+
+    fetch.get('https://api.crossref.org/works/10.1101%2F2023.02.28.529746', {
+      body: {
+        status: 'ok',
+        'message-type': 'work',
+        'message-version': '1.0.0',
+        message: {
+          institution: [{ name: 'bioRxiv' }],
+          indexed: { 'date-parts': [[2023, 3, 9]], 'date-time': '2023-03-09T05:34:47Z', timestamp: 1678340087045 },
+          posted: { 'date-parts': [[2023, 3, 1]] },
+          'group-title': 'Biophysics',
+          'reference-count': 46,
+          publisher: 'Cold Spring Harbor Laboratory',
+          'content-domain': { domain: [], 'crossmark-restriction': false },
+          'short-container-title': [],
+          accepted: { 'date-parts': [[2023, 3, 1]] },
+          abstract:
+            '<jats:title>Abstract</jats:title><jats:p>Protein tyrosine phosphatase 1B (PTP1B) is a negative regulator of the insulin and leptin signaling pathways, making it a highly attractive target for the treatment of type II diabetes. For PTP1B to perform its enzymatic function, a loop referred to as the \u201cWPD loop\u201d must transition between open (catalytically incompetent) and closed (catalytically competent) conformations, which have both been resolved by X-ray crystallography. Although prior studies have established this transition as the rate-limiting step for catalysis, the transition mechanism for PTP1B and other PTPs has been unclear. Here we present an atomically detailed model of WPD-loop transitions in PTP1B based on unbiased, long-timescale molecular dynamics simulations and weighted ensemble simulations. We found that a specific WPD-loop region\u2014 the PDFG motif\u2014acted as the key conformational switch, with structural changes to the motif being necessary and sufficient for transitions between long-lived open and closed states of the loop. Simulations starting from the closed state repeatedly visited open states of the loop that quickly closed again unless the infrequent conformational switching of the motif stabilized the open state. The functional role of the PDFG motif is supported by the fact that it (or the similar PDHG motif) is conserved across all PTPs. Bioinformatic analysis shows that the PDFG motif is also conserved, and adopts two distinct conformations, in deiminases, and the related DFG motif is known to function as a conformational switch in many kinases, suggesting that PDFG-like motifs may control transitions between structurally distinct, long-lived conformational states in multiple protein families.</jats:p>',
+          DOI: '10.1101/2023.02.28.529746',
+          type: 'posted-content',
+          created: { 'date-parts': [[2023, 3, 3]], 'date-time': '2023-03-03T17:50:24Z', timestamp: 1677865824000 },
+          source: 'Crossref',
+          'is-referenced-by-count': 0,
+          title: ['A conserved local structural motif controls the kinetics of PTP1B catalysis'],
+          prefix: '10.1101',
+          author: [
+            { given: 'Christine Y.', family: 'Yeh', sequence: 'first', affiliation: [] },
+            { given: 'Jesus A.', family: 'Izaguirre', sequence: 'additional', affiliation: [] },
+            { given: 'Jack B.', family: 'Greisman', sequence: 'additional', affiliation: [] },
+            { given: 'Lindsay', family: 'Willmore', sequence: 'additional', affiliation: [] },
+            { given: 'Paul', family: 'Maragakis', sequence: 'additional', affiliation: [] },
+            { given: 'David E.', family: 'Shaw', sequence: 'additional', affiliation: [] },
+          ],
+          member: '246',
+          'container-title': [],
+          'original-title': [],
+          link: [
+            {
+              URL: 'https://syndication.highwire.org/content/doi/10.1101/2023.02.28.529746',
+              'content-type': 'unspecified',
+              'content-version': 'vor',
+              'intended-application': 'similarity-checking',
+            },
+          ],
+          deposited: { 'date-parts': [[2023, 3, 8]], 'date-time': '2023-03-08T10:27:41Z', timestamp: 1678271261000 },
+          score: 1,
+          resource: { primary: { URL: 'http://biorxiv.org/lookup/doi/10.1101/2023.02.28.529746' } },
+          subtitle: [],
+          'short-title': [],
+          issued: { 'date-parts': [[2023, 3, 1]] },
+          'references-count': 46,
+          URL: 'http://dx.doi.org/10.1101/2023.02.28.529746',
+          relation: {},
+          published: { 'date-parts': [[2023, 3, 1]] },
+          subtype: 'preprint',
+        },
+      },
     })
 
     fetch.get('https://api.crossref.org/works/10.1101%2F2022.01.13.476201', {
