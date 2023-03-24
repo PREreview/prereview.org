@@ -24,7 +24,7 @@
       }
     },
     {
-      "files": ["integration/test.ts"],
+      "files": ["integration/**/*.ts"],
       "rules": {
         "no-empty-pattern": "off"
       }
