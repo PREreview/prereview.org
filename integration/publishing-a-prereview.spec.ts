@@ -715,11 +715,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Paste your PREreview')
     await expect(page).toHaveScreenshot()
 
-    testInfo.skip(
-      browserName === 'webkit' && !javaScriptEnabled,
-      'https://github.com/microsoft/playwright/issues/21379',
-    )
-
     const newPage = await context.newPage()
     await newPage.setContent(`<div contenteditable>
       <h1>Lorem ipsum</h1>
