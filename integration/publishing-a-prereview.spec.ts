@@ -3,7 +3,7 @@ import { Status } from 'hyper-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview } from './test'
+import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview } from './base'
 
 test.extend(canLogIn)(
   'can publish a PREreview',

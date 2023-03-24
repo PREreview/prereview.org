@@ -3,7 +3,7 @@ import { Status } from 'hyper-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordsC } from 'zenodo-ts'
-import { expect, test } from './test'
+import { expect, test } from './base'
 
 test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
   const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
