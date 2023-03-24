@@ -2,7 +2,7 @@ import { Doi } from 'doi-ts'
 import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { Record, RecordC, RecordsC } from 'zenodo-ts'
-import { expect, test } from './test'
+import { expect, test } from './base'
 
 test('can find and view a review', async ({ fetch, page }) => {
   const record: Record = {

@@ -656,27 +656,10 @@ label {
 
   @media screen {
     color: var(--color-background);
-    background-color: var(--color-link-dark);
+    background-color: var(--color-link);
     -webkit-tap-highlight-color: transparent;
-    border: 0 solid transparent;
+    border-width: 0;
     border-block-end-width: var(--width-divider);
-
-    &::after {
-      position: absolute;
-      content: '';
-      background-clip: padding-box;
-      background-color: var(--color-link);
-      border: 0 solid transparent;
-      border-block-end-width: var(--width-divider);
-      border-radius: var(--radius-divider);
-      z-index: -1;
-      inset: 0;
-      inset-block-end: calc(-1 * var(--width-divider));
-
-      @media (forced-colors: active) {
-        display: none;
-      }
-    }
 
     &:active {
       margin-block-end: calc(var(--width-divider) / 2);
