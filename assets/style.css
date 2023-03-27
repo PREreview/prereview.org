@@ -444,6 +444,12 @@ dt {
   }
 }
 
+math {
+  &[display='block'] {
+    margin-block: var(--space-2xs);
+  }
+}
+
 table {
   font-size: var(--step--1);
   margin-block-start: var(--space-s-m);

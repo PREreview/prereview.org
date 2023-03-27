@@ -11,6 +11,21 @@ test.each([
   ['array variable ', _.html`${[_.rawHtml('<p>a</p>'), _.rawHtml('<p>b</p>')]}`, '<p>a</p><p>b</p>'],
   ['string variable', _.html`${'<p>a</p>'}`, '&lt;p&gt;a&lt;/p&gt;'],
   ['number variable ', _.html`${1}`, '1'],
+  [
+    'inline math',
+    _.html`$g_J$`,
+    '<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
+  ],
+  [
+    'multiple inline math',
+    _.html`$a$$b$$c$`,
+    '<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi></mrow><annotation encoding="application/x-tex">c</annotation></semantics></math>',
+  ],
+  [
+    'display math',
+    _.html`$$g_J$$`,
+    '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
+  ],
 ])('html (%s)', (_name, actual, expected) => {
   expect(actual.toString()).toBe(expected)
 })
@@ -310,7 +325,43 @@ test.each([
   ['<wbr>', '<wbr>', ''],
   ['<wbr> with attributes', '<wbr lang="en" dir="ltr" id="wbr" foo>', ''],
   ['<wbr> with a body', '<wbr>wbr</wbr>', 'wbr'],
+  [
+    'with inline math',
+    '$g_J$',
+    '<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
+  ],
+  [
+    'with multiple inline math',
+    '$a$$b$$c$',
+    '<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi></mrow><annotation encoding="application/x-tex">c</annotation></semantics></math>',
+  ],
+  [
+    'with block math',
+    '$$g_J$$',
+    '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
+  ],
 ])('sanitizeHtml (%s)', (_name, input, expected) => {
+  const actual = _.sanitizeHtml(input)
+
+  expect(actual.toString()).toBe(expected)
+})
+
+test.prop([fc.html().map(html => [html.toString(), html.toString()])], {
+  examples: [
+    [
+      [
+        '$g_J$',
+        '<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
+      ],
+    ],
+    [
+      [
+        '$$g_J$$',
+        '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
+      ],
+    ],
+  ],
+})('rawHtml', ([input, expected]) => {
   const actual = _.sanitizeHtml(input)
 
   expect(actual.toString()).toBe(expected)
@@ -322,6 +373,16 @@ describe('plainText', () => {
     ['tag with attributes', '<a href="http://example.com/" lang="en" dir="ltr" id="a" foo>a</a>', 'a'],
     ['mismatched tags', '<b><i>bold italic</b> plain</i>', 'bold italic plain'],
     ['comment', 'a<!-- comment -->b', 'ab'],
+    [
+      'inline math',
+      '<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
+      '$g_J$',
+    ],
+    [
+      'block math',
+      '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
+      '$$g_J$$',
+    ],
   ])('with a string (%s)', (_name, input, expected) => {
     const actual = _.plainText(input)
 
@@ -333,6 +394,16 @@ describe('plainText', () => {
     ['tag with attributes', _.html`<a href="http://example.com/" lang="en" dir="ltr" id="a" foo>a</a>`, 'a'],
     ['mismatched tags', _.html`<b><i>bold italic</b> plain</i`, 'bold italic plain'],
     ['comment', _.html`a<!-- comment -->b`, 'ab'],
+    [
+      'inline math',
+      _.html`<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>`,
+      '$g_J$',
+    ],
+    [
+      'block math',
+      _.html`<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>`,
+      '$$g_J$$',
+    ],
   ])('with HTML (%s)', (_name, input, expected) => {
     const actual = _.plainText(input)
 

@@ -1,9 +1,11 @@
 import { Refinement } from 'fp-ts/Refinement'
 import { pipe } from 'fp-ts/function'
+import { decode } from 'html-entities'
 import { HeadersOpen, MediaType, ResponseEnded } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+import katex from 'katex'
 import nanohtml from 'nanohtml'
 import raw from 'nanohtml/raw'
 import sanitize from 'sanitize-html'
@@ -21,11 +23,11 @@ export function html(
   literals: TemplateStringsArray,
   ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>
 ): Html {
-  return nanohtml(literals, ...placeholders) as unknown as Html
+  return rawHtml(nanohtml(literals, ...placeholders).toString())
 }
 
 export function rawHtml(html: string): Html {
-  return raw(html) as unknown as Html
+  return raw(texToMathml(html)) as unknown as Html
 }
 
 export function sanitizeHtml(html: string): Html {
@@ -67,7 +69,7 @@ export function plainText(
   const isTemplateStringsArray = Array.isArray as unknown as Refinement<unknown, TemplateStringsArray>
 
   return stripTags(
-    (isTemplateStringsArray(input) ? html(input, ...placeholders) : input).toString(),
+    mathmlToTex((isTemplateStringsArray(input) ? html(input, ...placeholders) : input).toString()),
   ) as unknown as PlainText
 }
 
@@ -92,3 +94,22 @@ export const RawHtmlC = C.make(
   ),
   { encode: String },
 )
+
+function texToMathml(input: string) {
+  return input.replace(/(\${1,2})([\s\S]+?)\1/g, (original, mode: string, match: string) => {
+    try {
+      return katex
+        .renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml' })
+        .replace(/^<span class="katex">([\s\S]*)<\/span>$/, '$1')
+    } catch {
+      return original
+    }
+  })
+}
+
+function mathmlToTex(input: string) {
+  return input.replaceAll(
+    /<math[\s\S]*?(?:display="(block)")?>[\s\S]*?<annotation encoding="application\/x-tex">([\s\S]+?)<\/annotation>[\s\S]*?<\/math>/gi,
+    (_, display: string, tex: string) => (display === 'block' ? `$$${tex}$$` : `$${tex}$`),
+  )
+}
