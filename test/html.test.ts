@@ -6,6 +6,16 @@ import * as _ from '../src/html'
 import * as fc from './fc'
 
 test.each([
+  ['html variable', _.html`${_.rawHtml('<p>a</p>')}`, '<p>a</p>'],
+  ['plain text variable ', _.html`${_.plainText('a')}`, 'a'],
+  ['array variable ', _.html`${[_.rawHtml('<p>a</p>'), _.rawHtml('<p>b</p>')]}`, '<p>a</p><p>b</p>'],
+  ['string variable', _.html`${'<p>a</p>'}`, '&lt;p&gt;a&lt;/p&gt;'],
+  ['number variable ', _.html`${1}`, '1'],
+])('html (%s)', (_name, actual, expected) => {
+  expect(actual.toString()).toBe(expected)
+})
+
+test.each([
   ['mismatched tags', '<b><i>bold italic</b> plain</i>', '<b><i>bold italic</i></b> plain'],
   ['comment', '<!-- comment -->', ''],
   ['<a>', '<a>a</a>', '<a>a</a>'],
