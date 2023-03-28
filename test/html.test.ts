@@ -11,21 +11,6 @@ test.each([
   ['array variable ', _.html`${[_.rawHtml('<p>a</p>'), _.rawHtml('<p>b</p>')]}`, '<p>a</p><p>b</p>'],
   ['string variable', _.html`${'<p>a</p>'}`, '&lt;p&gt;a&lt;/p&gt;'],
   ['number variable ', _.html`${1}`, '1'],
-  [
-    'inline math',
-    _.html`$g_J$`,
-    '<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
-  ],
-  [
-    'multiple inline math',
-    _.html`$a$$b$$c$`,
-    '<math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi></mrow><annotation encoding="application/x-tex">c</annotation></semantics></math>',
-  ],
-  [
-    'display math',
-    _.html`$$g_J$$`,
-    '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
-  ],
 ])('html (%s)', (_name, actual, expected) => {
   expect(actual.toString()).toBe(expected)
 })

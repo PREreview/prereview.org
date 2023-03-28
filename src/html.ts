@@ -23,7 +23,7 @@ export function html(
   literals: TemplateStringsArray,
   ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>
 ): Html {
-  return rawHtml(nanohtml(literals, ...placeholders).toString())
+  return nanohtml(literals, ...placeholders) as unknown as Html
 }
 
 export function rawHtml(html: string): Html {
