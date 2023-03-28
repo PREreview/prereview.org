@@ -160,9 +160,11 @@ export const RawHtmlC = C.make(
 function texToMathml(input: string) {
   return input.replace(/(\${1,2})([\s\S]+?)\1/g, (original, mode: string, match: string) => {
     try {
-      return katex
-        .renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml' })
-        .replace(/^<span class="katex">([\s\S]*)<\/span>$/, '$1')
+      return sanitizeHtml(
+        katex
+          .renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml' })
+          .replace(/^<span class="katex">([\s\S]*)<\/span>$/, '$1'),
+      ).toString()
     } catch {
       return original
     }
