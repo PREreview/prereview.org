@@ -91,19 +91,19 @@ const LookupPreprintD = pipe(
   D.map(get('preprint')),
 )
 
-const lookupPreprint = pipe(
-  RM.decodeBody(
+const parseLookupPreprint = flow(
+  LookupPreprintD.decode,
+  E.mapLeft(
     flow(
-      LookupPreprintD.decode,
-      E.mapLeft(
-        flow(
-          getInput('preprint'),
-          O.getOrElse(() => ''),
-          invalidE,
-        ),
-      ),
+      getInput('preprint'),
+      O.getOrElse(() => ''),
+      invalidE,
     ),
   ),
+)
+
+const lookupPreprint = pipe(
+  RM.decodeBody(parseLookupPreprint),
   RM.ichainMiddlewareK(doi => seeOther(format(preprintMatch.formatter, { doi }))),
   RM.orElse(
     flow(
