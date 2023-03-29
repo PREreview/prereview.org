@@ -24,12 +24,33 @@ describe('parseLookupPreprint', () => {
         { preprint: `${whitespaceBefore}${prefix}${doi}${whitespaceAfter}` },
         doi,
       ]),
-  ])('with a recognised preprint doi', ([input, expected]) => {
+  ])('with a doi for a supported preprint server', ([input, expected]) => {
     const actual = _.parseLookupPreprint(input)
     expect(actual).toStrictEqual(E.right(expected))
   })
 
   test.todo('with a recognised preprint url')
+
+  test.prop([
+    fc
+      .tuple(
+        fc.doi(),
+        fc.stringOf(fc.constant(' ')),
+        fc.constantFrom('doi:', 'https://doi.org/', 'http://doi.org/', 'https://dx.doi.org/', 'http://dx.doi.org/'),
+        fc.stringOf(fc.constant(' ')),
+      )
+      .map(([doi, whitespaceBefore, prefix, whitespaceAfter]) => ({
+        preprint: `${whitespaceBefore}${prefix}${doi}${whitespaceAfter}`,
+      })),
+  ])('with a doi not for a supported preprint server', input => {
+    const actual = _.parseLookupPreprint(input)
+    expect(actual).toStrictEqual(
+      E.left({
+        _tag: 'InvalidE',
+        actual: input.preprint,
+      }),
+    )
+  })
 
   test.todo('with anything else')
 })
