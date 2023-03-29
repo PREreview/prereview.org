@@ -188,7 +188,7 @@ test('have to enter a preprint DOI or URL', async ({ contextOptions, javaScriptE
   const alert = page.getByRole('alert', { name: 'There is a problem' })
 
   await page.goto('/')
-  await form.getByLabel('Preprint DOI or URL').fill('10.5555/12345678')
+  await form.getByLabel('Preprint DOI or URL').fill(' not a DOI ')
   await form.getByRole('button', { name: 'Continue' }).click()
 
   if (javaScriptEnabled) {
@@ -202,7 +202,7 @@ test('have to enter a preprint DOI or URL', async ({ contextOptions, javaScriptE
   await alert.getByRole('link', { name: 'Enter a preprint DOI or URL' }).click()
 
   await expect(form.getByLabel('Preprint DOI or URL')).toBeFocused()
-  await expect(form.getByLabel('Preprint DOI or URL')).toHaveValue('10.5555/12345678')
+  await expect(form.getByLabel('Preprint DOI or URL')).toHaveValue(' not a DOI ')
 
   testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
