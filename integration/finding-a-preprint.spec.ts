@@ -183,6 +183,30 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
   await expect(page).toHaveScreenshot()
 })
 
+test('when is DOI is not supported', async ({ javaScriptEnabled, page }) => {
+  const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
+
+  await page.goto('/')
+  await form.getByLabel('Preprint DOI or URL').fill('10.5555/12345678')
+
+  await form.getByRole('button', { name: 'Continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support the DOI')
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
+
 test('have to enter a preprint DOI or URL', async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
   const form = page.getByRole('form', { name: 'Find and publish PREreviews' })
   const alert = page.getByRole('alert', { name: 'There is a problem' })

@@ -1,4 +1,4 @@
-import { Doi } from 'doi-ts'
+import { Doi, parse } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
@@ -64,6 +64,13 @@ const showHomeErrorPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
+const showUnsupportedDoiPage = flow(
+  fromReaderK(createUnsupportedDoiPage),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
+  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
 const UrlD = pipe(
   D.string,
   D.parse(s =>
@@ -96,8 +103,14 @@ export const parseLookupPreprint = flow(
   E.mapLeft(
     flow(
       getInput('preprint'),
-      O.getOrElse(() => ''),
-      invalidE,
+      O.chain(foo =>
+        pipe(
+          parse(foo),
+          O.map(unsupportedDoiE),
+          O.altW(() => O.some(invalidE(foo))),
+        ),
+      ),
+      O.getOrElseW(() => invalidE('')),
     ),
   ),
 )
@@ -105,15 +118,29 @@ export const parseLookupPreprint = flow(
 const lookupPreprint = pipe(
   RM.decodeBody(parseLookupPreprint),
   RM.ichainMiddlewareK(doi => seeOther(format(preprintMatch.formatter, { doi }))),
-  RM.orElse(
-    flow(
-      E.left,
-      lookupPreprint => RM.right({ lookupPreprint }),
-      RM.apS('recentPrereviews', fromReaderTask(getRecentPrereviews())),
-      RM.ichainW(({ lookupPreprint, recentPrereviews }) => showHomeErrorPage(lookupPreprint, recentPrereviews)),
-    ),
+  RM.orElse(error =>
+    match(error)
+      .with({ _tag: 'UnsupportedDoiE', actual: P.select() }, showUnsupportedDoiPage)
+      .otherwise(
+        flow(
+          E.left,
+          lookupPreprint => RM.right({ lookupPreprint }),
+          RM.apS('recentPrereviews', fromReaderTask(getRecentPrereviews())),
+          RM.ichainW(({ lookupPreprint, recentPrereviews }) => showHomeErrorPage(lookupPreprint, recentPrereviews)),
+        ),
+      ),
   ),
 )
+
+interface UnsupportedDoiE {
+  readonly _tag: 'UnsupportedDoiE'
+  readonly actual: Doi
+}
+
+const unsupportedDoiE = (actual: Doi): UnsupportedDoiE => ({
+  _tag: 'UnsupportedDoiE',
+  actual,
+})
 
 type SubmittedLookupPreprint = E.Either<InvalidE, Doi>
 type UnsubmittedLookupPreprint = E.Right<undefined>
@@ -216,6 +243,25 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
       </main>
     `,
     js: error ? ['error-summary.js'] : [],
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+  })
+}
+
+function createUnsupportedDoiPage() {
+  return page({
+    title: plainText`Sorry, we don’t support the DOI`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we don’t support the DOI</h1>
+
+        <p>
+          We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
+          medRxiv, MetaArXiv, OSF, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv.
+        </p>
+
+        <a href="${format(homeMatch.formatter, {})}" class="button">Back</a>
+      </main>
+    `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
   })
 }

@@ -39,15 +39,16 @@ describe('parseLookupPreprint', () => {
         fc.constantFrom('doi:', 'https://doi.org/', 'http://doi.org/', 'https://dx.doi.org/', 'http://dx.doi.org/'),
         fc.stringOf(fc.constant(' ')),
       )
-      .map(([doi, whitespaceBefore, prefix, whitespaceAfter]) => ({
-        preprint: `${whitespaceBefore}${prefix}${doi}${whitespaceAfter}`,
-      })),
-  ])('with a doi not for a supported preprint server', input => {
+      .map(([doi, whitespaceBefore, prefix, whitespaceAfter]) => [
+        { preprint: `${whitespaceBefore}${prefix}${doi}${whitespaceAfter}` },
+        doi,
+      ]),
+  ])('with a doi not for a supported preprint server', ([input, doi]) => {
     const actual = _.parseLookupPreprint(input)
     expect(actual).toStrictEqual(
       E.left({
-        _tag: 'InvalidE',
-        actual: input.preprint,
+        _tag: 'UnsupportedDoiE',
+        actual: doi,
       }),
     )
   })
