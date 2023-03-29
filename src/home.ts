@@ -91,7 +91,7 @@ const LookupPreprintD = pipe(
   D.map(get('preprint')),
 )
 
-const parseLookupPreprint = flow(
+export const parseLookupPreprint = flow(
   LookupPreprintD.decode,
   E.mapLeft(
     flow(

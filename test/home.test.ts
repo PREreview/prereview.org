@@ -11,6 +11,29 @@ import * as _ from '../src/home'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
+describe('parseLookupPreprint', () => {
+  test.prop([
+    fc
+      .tuple(
+        fc.preprintDoi(),
+        fc.stringOf(fc.constant(' ')),
+        fc.constantFrom('doi:', 'https://doi.org/', 'http://doi.org/', 'https://dx.doi.org/', 'http://dx.doi.org/'),
+        fc.stringOf(fc.constant(' ')),
+      )
+      .map(([doi, whitespaceBefore, prefix, whitespaceAfter]) => [
+        { preprint: `${whitespaceBefore}${prefix}${doi}${whitespaceAfter}` },
+        doi,
+      ]),
+  ])('with a recognised preprint doi', ([input, expected]) => {
+    const actual = _.parseLookupPreprint(input)
+    expect(actual).toStrictEqual(E.right(expected))
+  })
+
+  test.todo('with a recognised preprint url')
+
+  test.todo('with anything else')
+})
+
 describe('home', () => {
   test.prop([fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') })])(
     'home',
