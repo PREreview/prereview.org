@@ -107,7 +107,9 @@ const lookupPreprint = pipe(
   ),
 )
 
-type LookupPreprint = E.Either<InvalidE, Doi | undefined>
+type SubmittedLookupPreprint = E.Either<InvalidE, Doi>
+type UnsubmittedLookupPreprint = E.Right<undefined>
+type LookupPreprint = SubmittedLookupPreprint | UnsubmittedLookupPreprint
 
 function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyArray<RecentPrereview>) {
   const error = E.isLeft(lookupPreprint)
