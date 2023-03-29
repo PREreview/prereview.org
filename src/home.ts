@@ -58,11 +58,13 @@ const showHomePage = pipe(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showHomeErrorPage = flow(
-  fromReaderK(createPage),
-  RM.ichainFirst(() => RM.status(Status.BadRequest)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showHomeErrorPage = (lookupPreprint: SubmittedLookupPreprint) =>
+  pipe(
+    fromReaderTask(getRecentPrereviews()),
+    chainReaderKW(recentPrereviews => createPage(lookupPreprint, recentPrereviews)),
+    RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
 const showUnsupportedDoiPage = flow(
   fromReaderK(createUnsupportedDoiPage),
@@ -121,14 +123,7 @@ const lookupPreprint = pipe(
   RM.orElse(error =>
     match(error)
       .with({ _tag: 'UnsupportedDoiE', actual: P.select() }, showUnsupportedDoiPage)
-      .otherwise(
-        flow(
-          E.left,
-          lookupPreprint => RM.right({ lookupPreprint }),
-          RM.apS('recentPrereviews', fromReaderTask(getRecentPrereviews())),
-          RM.ichainW(({ lookupPreprint, recentPrereviews }) => showHomeErrorPage(lookupPreprint, recentPrereviews)),
-        ),
-      ),
+      .otherwise(flow(E.left, showHomeErrorPage)),
   ),
 )
 
