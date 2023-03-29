@@ -92,13 +92,21 @@ const LookupPreprintD = pipe(
 )
 
 const lookupPreprint = pipe(
-  RM.decodeBody(LookupPreprintD.decode),
+  RM.decodeBody(
+    flow(
+      LookupPreprintD.decode,
+      E.mapLeft(
+        flow(
+          getInput('preprint'),
+          O.getOrElse(() => ''),
+          invalidE,
+        ),
+      ),
+    ),
+  ),
   RM.ichainMiddlewareK(doi => seeOther(format(preprintMatch.formatter, { doi }))),
   RM.orElse(
     flow(
-      getInput('preprint'),
-      O.getOrElse(() => ''),
-      invalidE,
       E.left,
       lookupPreprint => RM.right({ lookupPreprint }),
       RM.apS('recentPrereviews', fromReaderTask(getRecentPrereviews())),
