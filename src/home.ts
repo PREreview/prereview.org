@@ -105,11 +105,11 @@ export const parseLookupPreprint = flow(
   E.mapLeft(
     flow(
       getInput('preprint'),
-      O.chain(foo =>
+      O.chain(input =>
         pipe(
-          parse(foo),
+          parse(input),
           O.map(unsupportedDoiE),
-          O.altW(() => O.some(invalidE(foo))),
+          O.altW(() => O.some(invalidE(input))),
         ),
       ),
       O.getOrElseW(() => invalidE('')),
