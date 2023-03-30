@@ -29,7 +29,18 @@ describe('parseLookupPreprint', () => {
     expect(actual).toStrictEqual(E.right(expected))
   })
 
-  test.todo('with a recognised preprint url')
+  test.prop([
+    fc
+      .tuple(fc.preprintUrl(), fc.stringOf(fc.constant(' ')), fc.stringOf(fc.constant(' ')))
+      .map(([[url, doi], whitespaceBefore, whitespaceAfter]) => [
+        { preprint: `${whitespaceBefore}${url}${whitespaceAfter}` },
+        doi,
+      ]),
+  ])('with a recognised preprint url', ([input, expected]) => {
+    const actual = _.parseLookupPreprint(input)
+
+    expect(actual).toStrictEqual(E.right(expected))
+  })
 
   test.prop([
     fc
