@@ -269,10 +269,10 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
 
 function createUnsupportedDoiPage() {
   return page({
-    title: plainText`Sorry, we don’t support the DOI`,
+    title: plainText`Sorry, we don’t support this DOI`,
     content: html`
       <main id="main-content">
-        <h1>Sorry, we don’t support the DOI</h1>
+        <h1>Sorry, we don’t support this DOI</h1>
 
         <p>
           We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
@@ -288,10 +288,10 @@ function createUnsupportedDoiPage() {
 
 function createUnsupportedUrlPage() {
   return page({
-    title: plainText`Sorry, we don’t support the URL`,
+    title: plainText`Sorry, we don’t support this URL`,
     content: html`
       <main id="main-content">
-        <h1>Sorry, we don’t support the URL</h1>
+        <h1>Sorry, we don’t support this URL</h1>
 
         <p>
           We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,

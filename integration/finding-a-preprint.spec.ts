@@ -191,7 +191,7 @@ test('when is DOI is not supported', async ({ javaScriptEnabled, page }) => {
 
   await form.getByRole('button', { name: 'Continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support the DOI')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this DOI')
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -217,7 +217,7 @@ test('when is URL is not supported', async ({ javaScriptEnabled, page }) => {
 
   await form.getByRole('button', { name: 'Continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support the URL')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this URL')
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
