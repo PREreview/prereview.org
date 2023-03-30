@@ -85,7 +85,16 @@ describe('parseLookupPreprint', () => {
     )
   })
 
-  test.todo('with anything else')
+  test.prop([fc.string()])('with anything else', input => {
+    const actual = _.parseLookupPreprint(input)
+
+    expect(actual).toStrictEqual(
+      E.left({
+        _tag: 'InvalidE',
+        actual: input,
+      }),
+    )
+  })
 })
 
 describe('home', () => {

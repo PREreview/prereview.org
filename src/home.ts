@@ -83,9 +83,15 @@ const showUnsupportedUrlPage = flow(
 const UrlD = pipe(
   D.string,
   D.parse(s =>
-    E.tryCatch(
-      () => new URL(s.trim()),
-      () => D.error(s, 'URL'),
+    pipe(
+      E.tryCatch(
+        () => new URL(s.trim()),
+        () => D.error(s, 'URL'),
+      ),
+      E.filterOrElse(
+        url => url.protocol === 'http:' || url.protocol === 'https:',
+        () => D.error(s, 'URL'),
+      ),
     ),
   ),
 )
