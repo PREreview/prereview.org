@@ -929,6 +929,10 @@ error-summary {
     margin-block-start: var(--space-4xs);
   }
 
+  @nest [role='note'] + & {
+    margin-block-start: var(--space-3xs-2xs);
+  }
+
   @nest [role='toolbar'] + & {
     margin-block-start: var(--space-2xs);
   }
@@ -1091,6 +1095,10 @@ html-editor {
   &::before {
     border-radius: 50%;
   }
+}
+
+.select-all {
+  user-select: all;
 }
 
 .doi {

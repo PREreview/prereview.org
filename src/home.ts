@@ -200,6 +200,12 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
 
             <label for="preprint">Preprint DOI or URL</label>
 
+            <div id="preprint-tip" role="note">
+              A DOI is a unique identifier that you can find on the preprint. For example,
+              <q class="select-all" translate="no">10.1101/2022.10.06.511170</q> or
+              <q class="select-all" translate="no">https://doi.org/10.1101/2022.10.06.511170</q>.
+            </div>
+
             ${error
               ? html`
                   <div class="error-message" id="preprint-error">
@@ -224,11 +230,6 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
                 .otherwise(() => '')}
               ${rawHtml(E.isLeft(lookupPreprint) ? 'aria-invalid="true" aria-errormessage="preprint-error"' : '')}
             />
-
-            <div id="preprint-tip" role="note">
-              We support AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv, medRxiv,
-              MetaArXiv, OSF, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv preprints.
-            </div>
           </div>
 
           <button>Continue</button>
