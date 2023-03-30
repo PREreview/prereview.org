@@ -280,6 +280,11 @@ function createUnsupportedDoiPage() {
           medRxiv, MetaArXiv, OSF, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv.
         </p>
 
+        <p>
+          If this DOI is for a preprint on a server we don’t support, please
+          <a href="mailto:help@prereview.org">get in touch</a>.
+        </p>
+
         <a href="${format(homeMatch.formatter, {})}" class="button">Back</a>
       </main>
     `,
@@ -299,7 +304,12 @@ function createUnsupportedUrlPage() {
           medRxiv, MetaArXiv, OSF, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv.
         </p>
 
-        <p>If the preprint has a DOI, please try using that instead.</p>
+        <p>
+          If this URL is for a preprint on a server we don’t support, please
+          <a href="mailto:help@prereview.org">get in touch</a>.
+        </p>
+
+        <p>Otherwise, if the preprint has a DOI, please try using that instead.</p>
 
         <a href="${format(homeMatch.formatter, {})}" class="button">Back</a>
       </main>
