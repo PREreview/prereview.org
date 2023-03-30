@@ -106,6 +106,54 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
   })
 
+  test.prop([fc.chemrxivPreprintUrl()], {
+    examples: [
+      [new URL('https://chemrxiv.org/engage/chemrxiv/article-details/6424647b91074bccd07d1aa5')],
+      [new URL('https://www.chemrxiv.org/engage/chemrxiv/article-details/6424647b91074bccd07d1aa5')], // www.
+      [new URL('http://chemrxiv.org/engage/chemrxiv/article-details/6424647b91074bccd07d1aa5')], // http
+      [new URL('https://chemrxiv.org/engage/chemrxiv/article-details/6424647b91074bccd07d1aa5/')], // trailing slash
+      [new URL('https://eartharxiv.org/repository/object/5218/download/10284/')], // download
+      [
+        new URL(
+          'https://chemrxiv.org/engage/api-gateway/chemrxiv/assets/orp/resource/item/6424647b91074bccd07d1aa5/original/prediction-of-toluene-water-partition-coefficient-in-the-sampl9-blind-challenge-assessment-of-machine-learning-and-ief-pcm-mst-continuum-solvation-models.pdf',
+        ),
+      ], // pdf
+      [
+        new URL(
+          'https://chemrxiv.org/engage/api-gateway/chemrxiv/assets/orp/resource/item/6424647b91074bccd07d1aa5/largeThumb/prediction-of-toluene-water-partition-coefficient-in-the-sampl9-blind-challenge-assessment-of-machine-learning-and-ief-pcm-mst-continuum-solvation-models.jpg',
+        ),
+      ], //image
+    ],
+  })('with an chemrxiv.org URL', url => {
+    expect(_.fromUrl(url)).toStrictEqual(O.none)
+  })
+
+  test.prop([fc.eartharxivPreprintUrl()], {
+    examples: [
+      [new URL('https://eartharxiv.org/repository/view/5218/')],
+      [new URL('https://www.eartharxiv.org/repository/view/5218/')], // www.
+      [new URL('http://eartharxiv.org/repository/view/5218/')], // http
+      [new URL('https://eartharxiv.org/repository/view/5218')], // no trailing slash
+      [new URL('https://eartharxiv.org/repository/object/5218/download/10284/')], // download
+      [new URL('https://eartharxiv.org/repository/view/5218/pdf/?file=/repository/object/5218/download/10284/')], // pdf
+    ],
+  })('with an eartharxiv.org URL', url => {
+    expect(_.fromUrl(url)).toStrictEqual(O.none)
+  })
+
+  test.prop([fc.ecoevorxivPreprintUrl()], {
+    examples: [
+      [new URL('https://ecoevorxiv.org/repository/view/5216/')],
+      [new URL('https://www.ecoevorxiv.org/repository/view/5216/')], // www.
+      [new URL('http://ecoevorxiv.org/repository/view/5216/')], // http
+      [new URL('https://ecoevorxiv.org/repository/view/5216')], // no trailing slash
+      [new URL('https://ecoevorxiv.org/repository/object/5216/download/10289/')], // download
+      [new URL('https://ecoevorxiv.org/repository/view/5216/pdf/?file=/repository/object/5216/download/10289/')], // pdf
+    ],
+  })('with an ecoevorxiv.org URL', url => {
+    expect(_.fromUrl(url)).toStrictEqual(O.none)
+  })
+
   test.prop([fc.edarxivPreprintUrl()], {
     examples: [
       [[new URL('https://www.edarxiv.org/wc6r7'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // www.

@@ -158,17 +158,28 @@ export const chemrxivPreprintId = (): fc.Arbitrary<ChemrxivPreprintId> =>
     doi: doi(fc.constant('26434')),
   })
 
+export const chemrxivPreprintUrl = (): fc.Arbitrary<URL> =>
+  fc
+    .stringOf(alphanumeric(), { minLength: 1 })
+    .map(id => new URL(`https://chemrxiv.org/engage/chemrxiv/article-details/${id}`))
+
 export const eartharxivPreprintId = (): fc.Arbitrary<EartharxivPreprintId> =>
   fc.record({
     type: fc.constant('eartharxiv'),
     doi: doi(fc.constant('31223')),
   })
 
+export const eartharxivPreprintUrl = (): fc.Arbitrary<URL> =>
+  fc.integer({ min: 1 }).map(id => new URL(`https://eartharxiv.org/repository/view/${id}/`))
+
 export const ecoevorxivPreprintId = (): fc.Arbitrary<EcoevorxivPreprintId> =>
   fc.record({
     type: fc.constant('ecoevorxiv'),
     doi: doi(fc.constant('32942')),
   })
+
+export const ecoevorxivPreprintUrl = (): fc.Arbitrary<URL> =>
+  fc.integer({ min: 1 }).map(id => new URL(`https://ecoevorxiv.org/repository/view/${id}/`))
 
 export const edarxivPreprintId = (): fc.Arbitrary<EdarxivPreprintId> =>
   fc.record({
