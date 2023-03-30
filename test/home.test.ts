@@ -31,7 +31,7 @@ describe('parseLookupPreprint', () => {
 
   test.prop([
     fc
-      .tuple(fc.preprintUrl(), fc.stringOf(fc.constant(' ')), fc.stringOf(fc.constant(' ')))
+      .tuple(fc.supportedPreprintUrl(), fc.stringOf(fc.constant(' ')), fc.stringOf(fc.constant(' ')))
       .map(([[url, doi], whitespaceBefore, whitespaceAfter]) => [
         { preprint: `${whitespaceBefore}${url}${whitespaceAfter}` },
         doi,
@@ -60,6 +60,27 @@ describe('parseLookupPreprint', () => {
       E.left({
         _tag: 'UnsupportedDoiE',
         actual: doi,
+      }),
+    )
+  })
+
+  test.prop([
+    fc
+      .tuple(
+        fc.oneof(fc.url(), fc.unsupportedPreprintUrl()),
+        fc.stringOf(fc.constant(' ')),
+        fc.stringOf(fc.constant(' ')),
+      )
+      .map(([url, whitespaceBefore, whitespaceAfter]) => [
+        { preprint: `${whitespaceBefore}${url}${whitespaceAfter}` },
+        url,
+      ]),
+  ])('with a url not for a supported preprint server', ([input, url]) => {
+    const actual = _.parseLookupPreprint(input)
+    expect(actual).toStrictEqual(
+      E.left({
+        _tag: 'UnsupportedUrlE',
+        actual: url,
       }),
     )
   })

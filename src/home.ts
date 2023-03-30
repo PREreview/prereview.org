@@ -73,6 +73,13 @@ const showUnsupportedDoiPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
+const showUnsupportedUrlPage = flow(
+  fromReaderK(createUnsupportedUrlPage),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
+  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
 const UrlD = pipe(
   D.string,
   D.parse(s =>
@@ -109,6 +116,7 @@ export const parseLookupPreprint = flow(
         pipe(
           parse(input),
           O.map(unsupportedDoiE),
+          O.altW(() => pipe(O.fromEither(UrlD.decode(input)), O.map(unsupportedUrlE))),
           O.altW(() => O.some(invalidE(input))),
         ),
       ),
@@ -123,6 +131,7 @@ const lookupPreprint = pipe(
   RM.orElse(error =>
     match(error)
       .with({ _tag: 'UnsupportedDoiE', actual: P.select() }, showUnsupportedDoiPage)
+      .with({ _tag: 'UnsupportedUrlE', actual: P.select() }, showUnsupportedUrlPage)
       .otherwise(flow(E.left, showHomeErrorPage)),
   ),
 )
@@ -132,8 +141,18 @@ interface UnsupportedDoiE {
   readonly actual: Doi
 }
 
+interface UnsupportedUrlE {
+  readonly _tag: 'UnsupportedUrlE'
+  readonly actual: URL
+}
+
 const unsupportedDoiE = (actual: Doi): UnsupportedDoiE => ({
   _tag: 'UnsupportedDoiE',
+  actual,
+})
+
+const unsupportedUrlE = (actual: URL): UnsupportedUrlE => ({
+  _tag: 'UnsupportedUrlE',
   actual,
 })
 
@@ -253,6 +272,27 @@ function createUnsupportedDoiPage() {
           We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
           medRxiv, MetaArXiv, OSF, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv.
         </p>
+
+        <a href="${format(homeMatch.formatter, {})}" class="button">Back</a>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+  })
+}
+
+function createUnsupportedUrlPage() {
+  return page({
+    title: plainText`Sorry, we don’t support the URL`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we don’t support the URL</h1>
+
+        <p>
+          We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
+          medRxiv, MetaArXiv, OSF, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv.
+        </p>
+
+        <p>If the preprint has a DOI, please try using that instead.</p>
 
         <a href="${format(homeMatch.formatter, {})}" class="button">Back</a>
       </main>

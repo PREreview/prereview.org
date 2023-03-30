@@ -96,7 +96,7 @@ export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbi
 
 export const preprintDoi = (): fc.Arbitrary<PreprintId['doi']> => preprintId().map(id => id.doi)
 
-export const preprintUrl = (): fc.Arbitrary<[URL, PreprintId['doi']]> =>
+export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId['doi']]> =>
   fc.oneof(
     africarxivPreprintUrl(),
     arxivPreprintUrl(),
@@ -112,6 +112,9 @@ export const preprintUrl = (): fc.Arbitrary<[URL, PreprintId['doi']]> =>
     scienceOpenPreprintUrl(),
     socarxivPreprintUrl(),
   )
+
+export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>
+  fc.oneof(chemrxivPreprintUrl(), eartharxivPreprintUrl(), ecoevorxivPreprintUrl())
 
 export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['doi']> => crossrefPreprintId().map(id => id.doi)
 
