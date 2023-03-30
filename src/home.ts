@@ -242,21 +242,24 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
             prereviews => html`
               <section aria-labelledby="recent-prereviews-title">
                 <h2 id="recent-prereviews-title">Recent PREreviews</h2>
-                <ul>
+
+                <ol class="cards">
                   ${prereviews.map(
                     prereview => html`
                       <li>
-                        <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                          ${formatList('en')(prereview.reviewers)} reviewed “<span
-                            dir="${getLangDir(prereview.preprint.language)}"
-                            lang="${prereview.preprint.language}"
-                            >${prereview.preprint.title}</span
-                          >”
-                        </a>
+                        <article>
+                          <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                            ${formatList('en')(prereview.reviewers)} reviewed “<span
+                              dir="${getLangDir(prereview.preprint.language)}"
+                              lang="${prereview.preprint.language}"
+                              >${prereview.preprint.title}</span
+                            >”
+                          </a>
+                        </article>
                       </li>
                     `,
                   )}
-                </ul>
+                </ol>
               </section>
             `,
           ),
