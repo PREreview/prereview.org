@@ -83,7 +83,7 @@ const showWriteReviewErrorForm = (preprint: Preprint) =>
   )
 
 const showPasteReviewForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form & Partial<{ review: undefined }>; preprint: Preprint }) =>
+  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
     pasteReviewForm(preprint, { review: E.right(form.review) }),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
