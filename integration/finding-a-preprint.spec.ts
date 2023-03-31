@@ -15,7 +15,7 @@ test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
 
   await form.getByRole('button', { name: 'Continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t know this preprint')
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')

@@ -4,6 +4,7 @@ import { Json } from 'fp-ts/Json'
 import * as M from 'fp-ts/Monoid'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as TE from 'fp-ts/TaskEither'
 import { constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -98,6 +99,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
+          doesPreprintExist: flow(
+            flip(getPreprintTitle)(env),
+            TE.map(() => true),
+            TE.orElseW(error =>
+              match(error)
+                .with('not-found', () => TE.right(false))
+                .with('unavailable', TE.left)
+                .exhaustive(),
+            ),
+          ),
           getRecentPrereviews: () =>
             getRecentPrereviewsFromZenodo()({
               ...env,

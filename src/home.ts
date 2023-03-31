@@ -1,13 +1,15 @@
-import { Doi, parse } from 'doi-ts'
+import { Doi, getRegistrant, parse } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as T from 'fp-ts/Task'
-import { flow, pipe } from 'fp-ts/function'
+import * as TE from 'fp-ts/TaskEither'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -20,7 +22,7 @@ import { InvalidE, getInput, invalidE } from './form'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
-import { fromUrl, parsePreprintDoi } from './preprint-id'
+import { PreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
 import { homeMatch, preprintMatch, reviewMatch } from './routes'
 
 export type RecentPrereview = {
@@ -34,6 +36,10 @@ export type RecentPrereview = {
 
 interface GetRecentPrereviewsEnv {
   getRecentPrereviews: () => T.Task<ReadonlyArray<RecentPrereview>>
+}
+
+export interface DoesPreprintExistEnv {
+  doesPreprintExist: (doi: PreprintId['doi']) => TE.TaskEither<'unavailable', boolean>
 }
 
 export const home = pipe(
@@ -51,6 +57,12 @@ const getRecentPrereviews = () =>
     RT.chainTaskK(({ getRecentPrereviews }) => getRecentPrereviews()),
   )
 
+const doesPreprintExist = (doi: PreprintId['doi']) =>
+  pipe(
+    RTE.ask<DoesPreprintExistEnv>(),
+    RTE.chainTaskEitherK(({ doesPreprintExist }) => doesPreprintExist(doi)),
+  )
+
 const showHomePage = pipe(
   fromReaderTask(getRecentPrereviews()),
   chainReaderKW(recentPrereviews => createPage(E.right(undefined), recentPrereviews)),
@@ -66,6 +78,13 @@ const showHomeErrorPage = (lookupPreprint: SubmittedLookupPreprint) =>
     RM.ichainMiddlewareK(sendHtml),
   )
 
+const showUnknownPreprintPage = flow(
+  fromReaderK(createUnknownPreprintPage),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
+  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
 const showUnsupportedDoiPage = flow(
   fromReaderK(createUnsupportedDoiPage),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
@@ -77,6 +96,12 @@ const showUnsupportedUrlPage = flow(
   fromReaderK(createUnsupportedUrlPage),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+const showFailureMessage = pipe(
+  RM.rightReader(failureMessage()),
+  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
@@ -133,14 +158,27 @@ export const parseLookupPreprint = flow(
 
 const lookupPreprint = pipe(
   RM.decodeBody(parseLookupPreprint),
+  RM.chainFirstW(doi =>
+    pipe(
+      RM.fromReaderTaskEither(doesPreprintExist(doi)),
+      RM.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(doi))),
+    ),
+  ),
   RM.ichainMiddlewareK(doi => seeOther(format(preprintMatch.formatter, { doi }))),
-  RM.orElse(error =>
+  RM.orElseW(error =>
     match(error)
+      .with({ _tag: 'UnknownPreprintE', actual: P.select() }, showUnknownPreprintPage)
       .with({ _tag: 'UnsupportedDoiE', actual: P.select() }, showUnsupportedDoiPage)
       .with({ _tag: 'UnsupportedUrlE', actual: P.select() }, showUnsupportedUrlPage)
+      .with('unavailable', () => showFailureMessage)
       .otherwise(flow(E.left, showHomeErrorPage)),
   ),
 )
+
+interface UnknownPreprintE {
+  readonly _tag: 'UnknownPreprintE'
+  readonly actual: PreprintId['doi']
+}
 
 interface UnsupportedDoiE {
   readonly _tag: 'UnsupportedDoiE'
@@ -151,6 +189,11 @@ interface UnsupportedUrlE {
   readonly _tag: 'UnsupportedUrlE'
   readonly actual: URL
 }
+
+const unknownPreprintE = (actual: PreprintId['doi']): UnknownPreprintE => ({
+  _tag: 'UnknownPreprintE',
+  actual,
+})
 
 const unsupportedDoiE = (actual: Doi): UnsupportedDoiE => ({
   _tag: 'UnsupportedDoiE',
@@ -271,6 +314,51 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
   })
 }
 
+function createUnknownPreprintPage(doi: PreprintId['doi']) {
+  return page({
+    title: plainText`Sorry, we don’t know this preprint`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we don’t know this preprint</h1>
+
+        <p>
+          We think the DOI <q class="select-all" translate="no">${doi}</q> could be
+          ${match(getRegistrant(doi))
+            .with('1101', () => 'a bioRxiv or medRxiv')
+            .with('1590', () => 'a SciELO')
+            .with('14293', () => 'a ScienceOpen')
+            .with('21203', () => 'a Research Square')
+            .with('26434', () => 'a ChemRxiv')
+            .with('31219', () => 'an OSF')
+            .with('31222', () => 'a MetaArXiv')
+            .with('31223', () => 'an EarthArXiv')
+            .with('31224', () => 'an engrXiv')
+            .with('31234', () => 'a PsyArXiv')
+            .with('31235', () => 'a SocArXiv')
+            .with('31730', () => 'an AfricArXiv')
+            .with('32942', () => 'an EcoEvoRxiv')
+            .with('35542', () => 'an EdArXiv')
+            .with('48550', () => 'an arXiv')
+            .exhaustive()}
+          preprint, but we can’t find any details.
+        </p>
+
+        <p>If you typed the DOI, check it is correct.</p>
+
+        <p>If you pasted the DOI, check you copied the entire address.</p>
+
+        <p>
+          If the DOI is correct or you selected a link or button, please
+          <a href="mailto:help@prereview.org">get in touch</a>.
+        </p>
+
+        <a href="${format(homeMatch.formatter, {})}" class="button">Back</a>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+  })
+}
+
 function createUnsupportedDoiPage() {
   return page({
     title: plainText`Sorry, we don’t support this DOI`,
@@ -315,6 +403,22 @@ function createUnsupportedUrlPage() {
         <p>Otherwise, if the preprint has a DOI, please try using that instead.</p>
 
         <a href="${format(homeMatch.formatter, {})}" class="button">Back</a>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+  })
+}
+
+function failureMessage() {
+  return page({
+    title: plainText`Sorry, we’re having problems`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we’re having problems</h1>
+
+        <p>We’re unable to show the preprint and its PREreviews now.</p>
+
+        <p>Please try again later.</p>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],

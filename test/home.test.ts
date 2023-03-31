@@ -1,11 +1,13 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
 import * as T from 'fp-ts/Task'
+import * as TE from 'fp-ts/TaskEither'
 import * as H from 'hyper-ts'
 import { MediaType, Status } from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
+import type { Mock } from 'jest-mock'
 import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/home'
 import * as fc from './fc'
@@ -101,7 +103,13 @@ describe('home', () => {
   test.prop([fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') })])(
     'home',
     async connection => {
-      const actual = await runMiddleware(_.home({ getRecentPrereviews: () => T.of([]) }), connection)()
+      const actual = await runMiddleware(
+        _.home({
+          doesPreprintExist: () => () => Promise.reject('should not be called'),
+          getRecentPrereviews: () => T.of([]),
+        }),
+        connection,
+      )()
 
       expect(actual).toStrictEqual(
         E.right([
@@ -172,7 +180,12 @@ describe('home', () => {
         ],
       },
     )('with a preprint DOI', async ([doi, connection]) => {
-      const actual = await runMiddleware(_.home({ getRecentPrereviews: () => T.of([]) }), connection)()
+      const doesPreprintExist: Mock<_.DoesPreprintExistEnv['doesPreprintExist']> = jest.fn(_ => TE.of(true))
+
+      const actual = await runMiddleware(
+        _.home({ doesPreprintExist, getRecentPrereviews: () => T.of([]) }),
+        connection,
+      )()
 
       expect(actual).toStrictEqual(
         E.right([
@@ -185,7 +198,45 @@ describe('home', () => {
           { type: 'endResponse' },
         ]),
       )
+      expect(doesPreprintExist).toHaveBeenCalledWith(doi)
     })
+
+    test.prop([fc.connection({ body: fc.record({ preprint: fc.preprintDoi() }), method: fc.constant('POST') })])(
+      "with a preprint DOI that doesn't exist",
+      async connection => {
+        const actual = await runMiddleware(
+          _.home({ doesPreprintExist: () => TE.of(false), getRecentPrereviews: () => T.of([]) }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.BadRequest },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
+
+    test.prop([fc.connection({ body: fc.record({ preprint: fc.preprintDoi() }), method: fc.constant('POST') })])(
+      "when we can't see if the preprint exists",
+      async connection => {
+        const actual = await runMiddleware(
+          _.home({ doesPreprintExist: () => TE.left('unavailable'), getRecentPrereviews: () => T.of([]) }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
 
     test.prop([
       fc.connection({
@@ -193,7 +244,13 @@ describe('home', () => {
         method: fc.constant('POST'),
       }),
     ])('with a non-preprint DOI', async connection => {
-      const actual = await runMiddleware(_.home({ getRecentPrereviews: () => T.of([]) }), connection)()
+      const actual = await runMiddleware(
+        _.home({
+          doesPreprintExist: () => () => Promise.reject('should not be called'),
+          getRecentPrereviews: () => T.of([]),
+        }),
+        connection,
+      )()
 
       expect(actual).toStrictEqual(
         E.right([
