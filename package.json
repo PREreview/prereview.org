@@ -11,7 +11,7 @@
     "clock-ts": "^0.1.2",
     "crossref-ts": "^0.1.4",
     "datacite-ts": "^0.1.2",
-    "doi-ts": "^0.1.5",
+    "doi-ts": "^0.1.6",
     "express": "^4.18.2",
     "fetch-fp-ts": "^0.1.6",
     "fp-ts": "^2.13.1",
