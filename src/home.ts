@@ -327,6 +327,7 @@ function createUnknownPreprintPage(doi: PreprintId['doi']) {
             .with('1101', () => 'a bioRxiv or medRxiv')
             .with('1590', () => 'a SciELO')
             .with('14293', () => 'a ScienceOpen')
+            .with('20944', () => 'a Preprints.org')
             .with('21203', () => 'a Research Square')
             .with('26434', () => 'a ChemRxiv')
             .with('31219', () => 'an OSF')

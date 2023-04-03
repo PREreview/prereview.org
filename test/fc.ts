@@ -32,6 +32,7 @@ import {
   MetaarxivPreprintId,
   OsfPreprintId,
   PreprintId,
+  PreprintsorgPreprintId,
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
@@ -240,6 +241,12 @@ export const osfPreprintUrl = (): fc.Arbitrary<[URL, OsfPreprintId['doi']]> =>
     .stringOf(alphanumeric(), { minLength: 1 })
     .map(id => [new URL(`https://osf.io/${id}`), `10.31219/osf.io/${id}` as Doi<'31219'>])
 
+export const preprintsorgPreprintId = (): fc.Arbitrary<PreprintsorgPreprintId> =>
+  fc.record({
+    type: fc.constant('preprints.org'),
+    doi: doi(fc.constant('20944')),
+  })
+
 export const psyarxivPreprintId = (): fc.Arbitrary<PsyarxivPreprintId> =>
   fc.record({
     type: fc.constant('psyarxiv'),
@@ -315,6 +322,7 @@ export const preprintId = (): fc.Arbitrary<PreprintId> =>
     medrxivPreprintId(),
     metaarxivPreprintId(),
     osfPreprintId(),
+    preprintsorgPreprintId(),
     psyarxivPreprintId(),
     researchSquarePreprintId(),
     scieloPreprintId(),
@@ -334,6 +342,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     medrxivPreprintId(),
     metaarxivPreprintId(),
     osfPreprintId(),
+    preprintsorgPreprintId(),
     psyarxivPreprintId(),
     researchSquarePreprintId(),
     scieloPreprintId(),

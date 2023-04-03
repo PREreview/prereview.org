@@ -212,6 +212,7 @@ function createPage({
                     .with('medrxiv', () => 'medRxiv')
                     .with('metaarxiv', () => 'MetaArXiv')
                     .with('osf', () => 'OSF Preprints')
+                    .with('preprints.org', () => 'Preprints.org')
                     .with('psyarxiv', () => 'PsyArXiv')
                     .with('research-square', () => 'Research Square')
                     .with('scielo', () => 'SciELO Preprints')

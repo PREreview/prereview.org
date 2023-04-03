@@ -1254,6 +1254,87 @@ describe('getPreprintFromCrossref', () => {
       )
     })
 
+    test.prop([fc.preprintsorgPreprintId(), fc.plainDate()])('from Preprints.org', async (id, posted) => {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+        body: {
+          status: 'ok',
+          'message-type': 'work',
+          'message-version': '1.0.0',
+          message: {
+            indexed: { 'date-parts': [[2023, 3, 21]], 'date-time': '2023-03-21T05:19:24Z', timestamp: 1679375964683 },
+            posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+            'group-title': 'MEDICINE &amp; PHARMACOLOGY',
+            'reference-count': 0,
+            publisher: 'MDPI AG',
+            license: [
+              {
+                start: { 'date-parts': [[2023, 3, 20]], 'date-time': '2023-03-20T00:00:00Z', timestamp: 1679270400000 },
+                'content-version': 'unspecified',
+                'delay-in-days': 0,
+                URL: 'http://creativecommons.org/licenses/by/4.0',
+              },
+            ],
+            'content-domain': { domain: [], 'crossmark-restriction': false },
+            'short-container-title': [],
+            accepted: { 'date-parts': [[2023, 3, 16]] },
+            abstract:
+              '<p>In the wake of the Covid-19 crisis, a need has arisen to prevent and treat two related conditions, Covid vaccine injury and long Covid, both of which have a significant vascular component. Therefore, the management of these conditions require the development of strategies to prevent or dissolve blood clots and restore circulatory health. This review summarizes the evidence on strategies that can be applied to treat both long and vaccine injuries based on similar mechanisms of action.</p>',
+            DOI: id.doi,
+            type: 'posted-content',
+            created: { 'date-parts': [[2023, 3, 21]], 'date-time': '2023-03-21T01:12:05Z', timestamp: 1679361125000 },
+            source: 'Crossref',
+            'is-referenced-by-count': 0,
+            title: ['Strategies for the Management of Spike Protein-Related Pathology'],
+            prefix: '10.20944',
+            author: [
+              { given: 'Matthew T.J.', family: 'Halma', sequence: 'first', affiliation: [] },
+              { given: 'Cristof', family: 'Plothe', sequence: 'additional', affiliation: [] },
+              { given: 'Theresa', family: 'Lawrie', sequence: 'additional', affiliation: [] },
+            ],
+            member: '1968',
+            'container-title': [],
+            'original-title': [],
+            deposited: { 'date-parts': [[2023, 3, 21]], 'date-time': '2023-03-21T01:12:42Z', timestamp: 1679361162000 },
+            score: 1,
+            resource: { primary: { URL: 'https://www.preprints.org/manuscript/202303.0344/v1' } },
+            subtitle: [],
+            'short-title': [],
+            issued: { 'date-parts': [[2023, 3, 20]] },
+            'references-count': 0,
+            URL: 'http://dx.doi.org/10.20944/preprints202303.0344.v1',
+            relation: {},
+            published: { 'date-parts': [[2023, 3, 20]] },
+            subtype: 'preprint',
+          },
+        },
+      })
+
+      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          abstract: {
+            language: 'en',
+            text: rawHtml(
+              '<p>In the wake of the Covid-19 crisis, a need has arisen to prevent and treat two related conditions, Covid vaccine injury and long Covid, both of which have a significant vascular component. Therefore, the management of these conditions require the development of strategies to prevent or dissolve blood clots and restore circulatory health. This review summarizes the evidence on strategies that can be applied to treat both long and vaccine injuries based on similar mechanisms of action.</p>',
+            ),
+          },
+          authors: [
+            { name: 'Matthew T.J. Halma', orcid: undefined },
+            { name: 'Cristof Plothe', orcid: undefined },
+            { name: 'Theresa Lawrie', orcid: undefined },
+          ],
+          id,
+          posted,
+          title: {
+            language: 'en',
+            text: rawHtml('Strategies for the Management of Spike Protein-Related Pathology'),
+          },
+          url: new URL('https://www.preprints.org/manuscript/202303.0344/v1'),
+        }),
+      )
+    })
+
     test.prop([fc.psyarxivPreprintId(), fc.plainDate()])('from PsyArXiv', async (id, posted) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
         body: {

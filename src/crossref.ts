@@ -27,6 +27,7 @@ import {
   MedrxivPreprintId,
   MetaarxivPreprintId,
   OsfPreprintId,
+  PreprintsorgPreprintId,
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
   ScieloPreprintId,
@@ -47,6 +48,7 @@ export type CrossrefPreprintId =
   | MedrxivPreprintId
   | MetaarxivPreprintId
   | OsfPreprintId
+  | PreprintsorgPreprintId
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
   | ScieloPreprintId
@@ -57,6 +59,7 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['doi']> =
   '1101',
   '1590',
   '14293',
+  '20944',
   '21203',
   '26434',
   '31219',
@@ -139,6 +142,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'engrxiv' }, () => O.some('en' as const))
               .with({ type: 'metaarxiv' }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
+              .with({ type: 'preprints.org' }, () => O.some('en' as const))
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
@@ -174,6 +178,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'engrxiv' }, () => O.some('en' as const))
               .with({ type: 'metaarxiv' }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
+              .with({ type: 'preprints.org' }, () => O.some('en' as const))
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
@@ -334,6 +339,16 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     }),
     D.map(work => ({
       type: 'osf' as const,
+      doi: work.DOI,
+    })),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('20944'), 'DOI'),
+      publisher: D.literal('MDPI AG'),
+    }),
+    D.map(work => ({
+      type: 'preprints.org' as const,
       doi: work.DOI,
     })),
   ),

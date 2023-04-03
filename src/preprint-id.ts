@@ -17,6 +17,7 @@ export type PreprintId =
   | MedrxivPreprintId
   | MetaarxivPreprintId
   | OsfPreprintId
+  | PreprintsorgPreprintId
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
   | ScieloPreprintId
@@ -78,6 +79,11 @@ export interface OsfPreprintId {
   readonly doi: Doi<'31219'>
 }
 
+export interface PreprintsorgPreprintId {
+  readonly type: 'preprints.org'
+  readonly doi: Doi<'20944'>
+}
+
 export interface PsyarxivPreprintId {
   readonly type: 'psyarxiv'
   readonly doi: Doi<'31234'>
@@ -109,6 +115,7 @@ export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
   '14293',
   '21203',
   '26434',
+  '20944',
   '31219',
   '31222',
   '31223',
