@@ -369,7 +369,7 @@ function createUnsupportedDoiPage() {
 
         <p>
           We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv.
+          medRxiv, MetaArXiv, OSF, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv.
         </p>
 
         <p>
@@ -393,7 +393,7 @@ function createUnsupportedUrlPage() {
 
         <p>
           We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv.
+          medRxiv, MetaArXiv, OSF, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen and SocArXiv.
         </p>
 
         <p>
