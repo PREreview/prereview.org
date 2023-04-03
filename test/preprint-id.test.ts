@@ -275,6 +275,49 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
   })
 
+  test.prop([fc.preprintsorgPreprintUrl()], {
+    examples: [
+      [
+        [
+          new URL('https://www.preprints.org/manuscript/202303.0344/v1'),
+          '10.20944/preprints202303.0344.v1' as Doi<'20944'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://preprints.org/manuscript/202303.0344/v1'), // no www.
+          '10.20944/preprints202303.0344.v1' as Doi<'20944'>,
+        ],
+      ],
+      [
+        [
+          new URL('http://www.preprints.org/manuscript/202303.0344/v1'), // http
+          '10.20944/preprints202303.0344.v1' as Doi<'20944'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://www.preprints.org/manuscript/202303.0344/v1/'), // trailing slash
+          '10.20944/preprints202303.0344.v1' as Doi<'20944'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://www.preprints.org/manuscript/202303.0344/v1/download'), // download
+          '10.20944/preprints202303.0344.v1' as Doi<'20944'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://www.preprints.org/manuscript/202303.0344/v1/download/supplementary'), // download supplementary
+          '10.20944/preprints202303.0344.v1' as Doi<'20944'>,
+        ],
+      ],
+    ],
+  })('with an preprints.org URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some(doi))
+  })
+
   test.prop([fc.psyarxivPreprintUrl()], {
     examples: [
       [[new URL('https://www.psyarxiv.com/k9mn3'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // www.

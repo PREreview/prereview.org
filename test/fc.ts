@@ -107,6 +107,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId['doi']]> =
     medrxivPreprintUrl(),
     metaarxivPreprintUrl(),
     osfPreprintUrl(),
+    preprintsorgPreprintUrl(),
     psyarxivPreprintUrl(),
     researchSquarePreprintUrl(),
     scieloPreprintUrl(),
@@ -246,6 +247,17 @@ export const preprintsorgPreprintId = (): fc.Arbitrary<PreprintsorgPreprintId> =
     type: fc.constant('preprints.org'),
     doi: doi(fc.constant('20944')),
   })
+
+export const preprintsorgPreprintUrl = (): fc.Arbitrary<[URL, PreprintsorgPreprintId['doi']]> =>
+  fc
+    .tuple(
+      fc.stringOf(fc.oneof(alphanumeric(), fc.constant('.')), { minLength: 1 }).filter(id => !/^\.{1,2}$/.test(id)),
+      fc.integer({ min: 1 }),
+    )
+    .map(([id, version]) => [
+      new URL(`https://www.preprints.org/manuscript/${id}/v${version}`),
+      `10.20944/preprints${id}.v${version}` as Doi<'20944'>,
+    ])
 
 export const psyarxivPreprintId = (): fc.Arbitrary<PsyarxivPreprintId> =>
   fc.record({
