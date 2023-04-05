@@ -102,5 +102,9 @@ const FormC = C.partial({
   moreAuthorsApproved: C.literal('yes'),
   competingInterests: C.literal('yes', 'no'),
   competingInterestsDetails: NonEmptyStringC,
+  competingInterestsMonolithic: C.sum('hasCompetingInterests')({
+    yes: C.struct({ hasCompetingInterests: C.literal('yes'), details: NonEmptyStringC }),
+    no: C.struct({ hasCompetingInterests: C.literal('no') }),
+  }),
   conduct: C.literal('yes'),
 })
