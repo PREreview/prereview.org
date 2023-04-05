@@ -34,6 +34,7 @@ const handleMissingForm = (doi: PreprintId['doi']) => (error: 'no-form' | 'no-se
 
 export const writeReviewCompetingInterests = flow(
   RM.fromReaderTaskEitherK(getPreprint),
+  RM.mapLeft(toErrorPage),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -42,14 +43,14 @@ export const writeReviewCompetingInterests = flow(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
       ),
-      RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.ichainW(state =>
-        match(state).with({ method: 'POST' }, handleCompetingInterestsForm).otherwise(showCompetingInterestsForm),
-      ),
-      RM.orElseW(handleMissingForm(preprint.doi)),
+      RM.mapLeft(handleMissingForm(preprint.doi)),
     ),
   ),
-  RM.orElseW(toErrorPage),
+  RM.apSW('method', RM.fromMiddleware(getMethod)),
+  RM.ichainW(state =>
+    match(state).with({ method: 'POST' }, handleCompetingInterestsForm).otherwise(showCompetingInterestsForm),
+  ),
+  RM.orElseW(identity),
 )
 
 function toErrorPage(error: 'not-found' | 'unavailable') {
