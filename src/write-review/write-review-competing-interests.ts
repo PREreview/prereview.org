@@ -47,13 +47,15 @@ export const writeReviewCompetingInterests = flow(
       ),
     ),
   ),
-  RM.orElseW(error =>
-    match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
-      .exhaustive(),
-  ),
+  RM.orElseW(toErrorPage),
 )
+
+function toErrorPage(error: 'not-found' | 'unavailable') {
+  return match(error)
+    .with('not-found', () => notFound)
+    .with('unavailable', () => serviceUnavailable)
+    .exhaustive()
+}
 
 const showCompetingInterestsForm = flow(
   fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
