@@ -96,7 +96,7 @@
     "eslint-plugin-wc": "^1.4.0",
     "fetch-mock": "^9.11.0",
     "fp-ts-contrib": "^0.1.29",
-    "glob": "^9.3.2",
+    "glob": "^9.3.4",
     "image-minimizer-webpack-plugin": "^3.8.2",
     "imagemin": "^8.0.1",
     "imagemin-svgo": "^10.0.1",
