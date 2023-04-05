@@ -20,6 +20,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { InvalidE, getInput, invalidE } from './form'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
+import * as assets from './manifest.json'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { PreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
@@ -302,6 +303,38 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
                       </li>
                     `,
                   )}
+                </ol>
+              </section>
+
+              <section aria-labelledby="funders-title">
+                <h2 id="funders-title">Funders</h2>
+
+                <ol class="logos">
+                  <li>
+                    <a href="https://sloan.org/grant-detail/8729">
+                      <img src="${assets['sloan.svg']}" width="350" height="190" alt="Alfred P. Sloan Foundation" />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://chanzuckerberg.com/">
+                      <img src="${assets['czi.svg']}" width="192" height="192" alt="Chan Zuckerberg Initiative" />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://elifesciences.org/">
+                      <img src="${assets['elife.svg']}" width="136" height="51" alt="eLife" />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://wellcome.org/grant-funding/schemes/open-research-fund">
+                      <img src="${assets['wellcome.svg']}" width="181" height="181" alt="Wellcome Trust" />
+                    </a>
+                  </li>
+                  <li>
+                    <a href="https://foundation.mozilla.org/">
+                      <img src="${assets['mozilla.svg']}" width="280" height="80" alt="Mozilla Foundation" />
+                    </a>
+                  </li>
                 </ol>
               </section>
             `,

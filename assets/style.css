@@ -1477,6 +1477,32 @@ skip-link {
   }
 }
 
+.logos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  column-gap: var(--space-m-l);
+  row-gap: var(--space-l-xl);
+  padding-inline-start: 0;
+  list-style-type: none;
+
+  & a {
+    display: block;
+    inline-size: fit-content;
+    margin-inline: auto;
+  }
+
+  & img {
+    block-size: 100%;
+    max-block-size: calc(var(--space-xl) * 2);
+    min-block-size: var(--space-xl);
+    inline-size: 100%;
+    max-inline-size: calc(var(--space-2xl) * 2);
+    min-inline-size: var(--space-2xl);
+  }
+}
+
 @keyframes rotation {
   0% {
     transform: rotate(0deg);
