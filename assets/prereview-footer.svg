@@ -3,7 +3,8 @@
 
   <style>
     :root {
-      --color-text: rgb(52, 58, 64);
+      --color-black-800: rgb(24 24 24);
+      --color-text: var(--color-black-800);
     }
 
     #text {

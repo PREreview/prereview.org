@@ -6,7 +6,7 @@
 @import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-MediumItalic.css');
 @import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-Bold.css');
 @import url('@ibm/plex/IBM-Plex-Sans/fonts/split/woff2/IBMPlexSans-BoldItalic.css');
-@import url('open-color/open-color.css');
+@import url('color.css');
 @import url('space.css');
 @import url('step.css');
 
@@ -48,20 +48,20 @@
     'Noto Color Emoji';
   --font-monospace: 'IBM Plex Mono', ui-monospace, 'SF Mono', 'Monaco', 'Menlo', 'Consolas', 'Ubuntu Mono',
     'Liberation Mono', 'DejaVu Sans Mono', 'Courier New', monospace;
-  --color-primary: var(--oc-red-6);
-  --color-background: white;
-  --color-background-alt: var(--oc-gray-0);
-  --color-text: var(--oc-gray-8);
-  --color-text-light: var(--oc-gray-6);
-  --color-focus: var(--oc-yellow-7);
-  --color-selection: var(--oc-indigo-1);
-  --color-pressed: var(--oc-yellow-2);
-  --color-link: var(--oc-red-6);
-  --color-link-dark: var(--oc-red-8);
-  --color-divider: var(--oc-gray-3);
-  --color-divider-light: var(--oc-gray-1);
-  --color-error: var(--oc-red-7);
-  --color-success: var(--oc-green-7);
+  --color-primary: var(--color-red-600);
+  --color-background: var(--color-white);
+  --color-background-alt: var(--color-black-10);
+  --color-text: var(--color-black-800);
+  --color-text-light: var(--color-black-200);
+  --color-focus: var(--color-yellow-40);
+  --color-selection: var(--color-blue-50);
+  --color-pressed: var(--color-yellow-20);
+  --color-link: var(--color-red-600);
+  --color-link-dark: var(--color-red-700);
+  --color-divider: var(--color-black-30);
+  --color-divider-light: var(--color-black-10);
+  --color-error: var(--color-red-200);
+  --color-success: var(--color-green-400);
   --width-divider-narrow: calc(var(--width-divider) / 1.5);
   --width-divider: 4px;
   --width-divider-wide: calc(var(--width-divider) * 1.5);
@@ -87,7 +87,7 @@
 
 :any-link,
 summary {
-  color: var(--color-link-dark);
+  color: var(--color-link);
   hyphens: manual;
 }
 
@@ -630,8 +630,8 @@ label {
   line-height: 1.5;
   letter-spacing: -0.025em;
   min-inline-size: 4em;
-  color: var(--color-link-dark);
-  border: var(--width-divider) solid var(--color-link-dark);
+  color: var(--color-link);
+  border: var(--width-divider) solid var(--color-link);
   border-radius: var(--radius-divider);
   transform: translateZ(0);
   padding-block: var(--space-2xs);
@@ -678,6 +678,7 @@ label {
     -webkit-tap-highlight-color: transparent;
     border-width: 0;
     border-block-end-width: var(--width-divider);
+    border-color: var(--color-link-dark);
 
     &:active {
       margin-block-end: calc(var(--width-divider) / 2);

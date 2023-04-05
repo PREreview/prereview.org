@@ -49,9 +49,9 @@ module.exports = {
                     '@csstools/postcss-global-data',
                     {
                       files: [
+                        path.resolve('assets', 'color.css'),
                         path.resolve('assets', 'space.css'),
                         path.resolve('assets', 'step.css'),
-                        path.resolve('node_modules', 'open-color', 'open-color.css'),
                       ],
                     },
                   ],

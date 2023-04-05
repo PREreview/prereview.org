@@ -3,9 +3,12 @@
 
   <style>
     :root {
-      --color-background: white;
-      --color-primary: rgb(250, 82, 82);
-      --color-text: rgb(52, 58, 64);
+      --color-white: rgb(254 254 254);
+      --color-black-800: rgb(24 24 24);
+      --color-red-600: rgb(228 0 44);
+      --color-background: var(--color-white);
+      --color-primary: var(--color-red-600);
+      --color-text: var(--color-black-800);
     }
 
     #background {

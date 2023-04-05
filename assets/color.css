@@ -1,0 +1,46 @@
+:root {
+  /* Neutrals */
+  --color-white: rgb(254 254 254);
+  --color-black-900: rgb(11 11 11);
+  --color-black-800: rgb(24 24 24); /* Eerie Black */
+  --color-black-600: rgb(48 48 48);
+  --color-black-400: rgb(76 76 76);
+  --color-black-200: rgb(104 104 104);
+  --color-black-90: rgb(133 133 133);
+  --color-black-70: rgb(163 163 163);
+  --color-black-50: rgb(191 191 191);
+  --color-black-30: rgb(219 219 219);
+  --color-black-10: rgb(245 245 245);
+
+  /* Red */
+  --color-red-800: rgb(107 0 0);
+  --color-red-700: rgb(169 0 18);
+  --color-red-600: rgb(228 0 44); /* Rojo */
+  --color-red-200: rgb(238 67 91);
+  --color-red-60: rgb(252 162 169);
+
+  /* Purple */
+  --color-purple-600: rgb(161 0 255); /* Veronica */
+
+  /* Blue */
+  --color-blue-600: rgb(0 61 72);
+  --color-blue-500: rgb(0 80 109);
+  --color-blue-200: rgb(0 122 189);
+  --color-blue-90: rgb(0 153 255); /* Dodger Blue */
+  --color-blue-80: rgb(66 167 255);
+  --color-blue-70: rgb(113 171 255);
+  --color-blue-50: rgb(169 197 255);
+
+  /* Yellow */
+  --color-yellow-100: rgb(148 124 31);
+  --color-yellow-40: rgb(255 204 0); /* Jonquil */
+  --color-yellow-20: rgb(248 233 179);
+  --color-yellow-10: rgb(249 246 232);
+
+  /* Green */
+  --color-green-700: rgb(21 44 4);
+  --color-green-400: rgb(35 102 11);
+  --color-green-80: rgb(52 193 21); /* Kelly Green */
+  --color-green-50: rgb(136 221 131);
+  --color-green-10: rgb(226 247 228);
+}
