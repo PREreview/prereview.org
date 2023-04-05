@@ -178,6 +178,9 @@ body {
   align-items: center;
   column-gap: var(--space-m);
   block-size: var(--space-2xl-3xl);
+  max-inline-size: 75ch;
+  margin-inline: auto;
+  padding-inline: var(--space-s-m);
 
   & > .logo {
     flex-grow: 1;
@@ -195,7 +198,7 @@ body {
   }
 }
 
-.contents > :not(aside),
+.contents > :not(aside, header),
 .contents > aside > * {
   max-inline-size: 75ch;
   margin-inline: auto;
@@ -1394,7 +1397,8 @@ skip-link {
         }
       }
 
-      & > :not(aside) {
+      & > :not(aside, header),
+      & > header > * {
         inline-size: calc(100% - var(--space-m-xl));
         margin-inline-start: calc(var(--space-m-xl) - var(--space-s-m));
       }
@@ -1437,7 +1441,8 @@ skip-link {
   background-color: var(--color-background-alt);
   padding-block: var(--space-2xs);
   padding-inline: var(--space-s-m);
-  margin-inline: calc(-1 * var(--space-s-m));
+  margin-inline: auto;
+  max-inline-size: 75ch;
 
   & > span {
     flex: 1;
