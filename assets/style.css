@@ -1436,8 +1436,8 @@ skip-link {
   column-gap: var(--space-2xs);
   background-color: var(--color-background-alt);
   padding-block: var(--space-2xs);
-  padding-inline: var(--space-2xs-s);
-  margin-inline: calc(-1 * var(--space-2xs-s));
+  padding-inline: var(--space-s-m);
+  margin-inline: calc(-1 * var(--space-s-m));
 
   & > span {
     flex: 1;
