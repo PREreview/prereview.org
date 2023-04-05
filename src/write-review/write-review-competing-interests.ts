@@ -15,11 +15,22 @@ import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
+import { PreprintId } from '../preprint-id'
 import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
 import { NonEmptyString, NonEmptyStringC } from '../string'
 import { User, getUserFromSession } from '../user'
 import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
+
+const handleMissingForm = (doi: PreprintId['doi']) => (error: 'no-form' | 'no-session' | 'form-unavailable' | Error) =>
+  match(error)
+    .with(
+      'no-form',
+      'no-session',
+      fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi }))),
+    )
+    .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
+    .exhaustive()
 
 export const writeReviewCompetingInterests = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -35,16 +46,7 @@ export const writeReviewCompetingInterests = flow(
       RM.ichainW(state =>
         match(state).with({ method: 'POST' }, handleCompetingInterestsForm).otherwise(showCompetingInterestsForm),
       ),
-      RM.orElseW(error =>
-        match(error)
-          .with(
-            'no-form',
-            'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
-          )
-          .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
-          .exhaustive(),
-      ),
+      RM.orElseW(handleMissingForm(preprint.doi)),
     ),
   ),
   RM.orElseW(toErrorPage),
