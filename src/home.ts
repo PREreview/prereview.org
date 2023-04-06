@@ -322,7 +322,7 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
                   </li>
                   <li>
                     <a href="https://elifesciences.org/">
-                      <img src="${assets['elife.svg']}" width="136" height="51" alt="eLife" />
+                      <img src="${assets['elife.svg']}" width="129" height="44" alt="eLife" />
                     </a>
                   </li>
                   <li>
