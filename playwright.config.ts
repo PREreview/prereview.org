@@ -40,8 +40,8 @@ const config: PlaywrightTestConfig = {
   use: {
     javaScriptEnabled: true,
     screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
-    video: 'retain-on-failure',
+    trace: 'on-first-retry',
+    video: 'on-first-retry',
   },
 }
 
