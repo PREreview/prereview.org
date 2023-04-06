@@ -511,6 +511,7 @@ td {
 p {
   hyphens: auto;
   margin-block-start: var(--space-xs);
+  max-inline-size: 64ch;
 }
 
 blockquote {
