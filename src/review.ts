@@ -97,10 +97,10 @@ function createPage(review: Prereview) {
             >”
           </h1>
 
-          <p class="byline">
+          <div class="byline">
             <span class="visually-hidden">Authored</span> by
             ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
-          </p>
+          </div>
 
           <dl>
             <div>

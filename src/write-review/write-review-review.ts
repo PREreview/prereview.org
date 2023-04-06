@@ -200,10 +200,10 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
           <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
             <h1><label id="review-label" for="review">Write your PREreview</label></h1>
 
-            <div id="review-tip" role="note">
+            <p id="review-tip" role="note">
               We want to support you in contributing high-quality feedback on PREreview. Check out our
               <a href="https://content.prereview.org/resources/">tips and resources for reviewers</a>.
-            </div>
+            </p>
 
             <details>
               <summary><span>Examples of good reviewer behavior</span></summary>
@@ -339,9 +339,9 @@ function pasteReviewForm(preprint: Preprint, form: PasteReviewForm) {
           <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
             <h1><label id="review-label" for="review">Paste your PREreview</label></h1>
 
-            <div id="review-tip" role="note">
+            <p id="review-tip" role="note">
               Copy your PREreview and paste it here. We’ll do our best to preserve how it looks.
-            </div>
+            </p>
 
             ${E.isLeft(form.review)
               ? html`

@@ -199,9 +199,9 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
                   <h1>Did you review this preprint with anyone&nbsp;else?</h1>
                 </legend>
 
-                <div id="more-authors-tip" role="note">
+                <p id="more-authors-tip" role="note">
                   This can include people who contributed to the discussion or wrote the review.
-                </div>
+                </p>
 
                 ${E.isLeft(form.moreAuthors)
                   ? html`

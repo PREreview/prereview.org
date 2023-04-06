@@ -190,10 +190,10 @@ function publishForm(preprint: Preprint, review: CompletedForm, user: User) {
                 >”
               </h2>
 
-              <p class="byline">
+              <div class="byline">
                 <span class="visually-hidden">Authored</span> by
                 ${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}
-              </p>
+              </div>
 
               <div>${renderReview(review)}</div>
             </blockquote>

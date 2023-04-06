@@ -146,10 +146,10 @@ function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm) {
                 <h1>Code of Conduct</h1>
               </legend>
 
-              <div id="conduct-tip" role="note">
+              <p id="conduct-tip" role="note">
                 As a member of our community, we expect you to abide by the
                 <a href="https://content.prereview.org/coc/">PREreview Code&nbsp;of&nbsp;Conduct</a>.
-              </div>
+              </p>
 
               <details>
                 <summary><span>Examples of expected behaviors</span></summary>

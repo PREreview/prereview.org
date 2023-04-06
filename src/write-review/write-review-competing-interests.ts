@@ -184,9 +184,9 @@ function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm
                   <h1>Do you have any competing interests?</h1>
                 </legend>
 
-                <div id="competing-interests-tip" role="note">
+                <p id="competing-interests-tip" role="note">
                   A competing interest is anything that could interfere with the objective of a PREreview.
-                </div>
+                </p>
 
                 <details>
                   <summary><span>Examples</span></summary>

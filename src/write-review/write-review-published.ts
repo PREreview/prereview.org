@@ -79,10 +79,10 @@ function successMessage({ review: { doi, form, id }, preprint }: { review: Publi
             <div class="panel">
               <h1>PREreview published</h1>
 
-              <p>
+              <div>
                 Your DOI <br />
                 <strong class="doi" translate="no">${doi}</strong>
-              </p>
+              </div>
             </div>
 
             <h2>What happens next</h2>

@@ -187,10 +187,10 @@ function createPage({
               ${preprint.title.text}
             </h2>
 
-            <p class="byline">
+            <div class="byline">
               <span class="visually-hidden">Authored</span> by
               ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList('en'))}
-            </p>
+            </div>
 
             <dl>
               <div>
@@ -274,10 +274,10 @@ function showReview(review: Prereview) {
             PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
           </h3>
 
-          <p class="byline">
+          <div class="byline">
             <span class="visually-hidden">Authored</span> by
             ${pipe(review.authors, RNEA.map(get('name')), formatList('en'))}
-          </p>
+          </div>
         </header>
 
         <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
@@ -299,10 +299,10 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
   return html`
     <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
 
-    <p class="byline">
+    <div class="byline">
       <span class="visually-hidden">Authored</span> by
       ${pipe(rapidPrereviews, RNEA.map(flow(get('author'), displayAuthor)), formatList('en'))}
-    </p>
+    </div>
 
     <details>
       <summary><span>Where can I fill out a Rapid PREreview?</span></summary>

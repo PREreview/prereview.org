@@ -141,9 +141,9 @@ function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
                 <h1>What name would you like to use?</h1>
               </legend>
 
-              <div id="persona-tip" role="note">
+              <p id="persona-tip" role="note">
                 You can choose between the name on your ORCID&nbsp;profile or your PREreview&nbsp;pseudonym.
-              </div>
+              </p>
 
               <details>
                 <summary><span>What is a PREreview&nbsp;pseudonym?</span></summary>
@@ -189,7 +189,7 @@ function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
                     />
                     <span>${user.name}</span>
                   </label>
-                  <div id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID&nbsp;iD.</div>
+                  <p id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID&nbsp;iD.</p>
                 </li>
                 <li>
                   <label>
@@ -204,9 +204,9 @@ function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
                     />
                     <span>${user.pseudonym}</span>
                   </label>
-                  <div id="persona-tip-pseudonym" role="note">
+                  <p id="persona-tip-pseudonym" role="note">
                     We’ll only link your PREreview to others that also use your pseudonym.
-                  </div>
+                  </p>
                 </li>
               </ol>
             </fieldset>

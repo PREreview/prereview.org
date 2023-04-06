@@ -244,11 +244,11 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
 
             <label for="preprint">Preprint DOI or URL</label>
 
-            <div id="preprint-tip" role="note">
+            <p id="preprint-tip" role="note">
               A DOI is a unique identifier that you can find on the preprint. For example,
               <q class="select-all" translate="no">10.1101/2022.10.06.511170</q> or
               <q class="select-all" translate="no">https://doi.org/10.1101/2022.10.06.511170</q>.
-            </div>
+            </p>
 
             ${error
               ? html`
