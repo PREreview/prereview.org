@@ -1,7 +1,7 @@
-import { PlaywrightTestConfig, devices } from '@playwright/test'
+import { defineConfig, devices } from '@playwright/test'
 import path from 'path'
 
-const config: PlaywrightTestConfig = {
+export default defineConfig({
   expect: {
     toHaveScreenshot: { maxDiffPixels: 30 },
   },
@@ -46,6 +46,4 @@ const config: PlaywrightTestConfig = {
     trace: 'on-first-retry',
     video: 'on-first-retry',
   },
-}
-
-export default config
+})
