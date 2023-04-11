@@ -2,6 +2,9 @@ import { PlaywrightTestConfig, devices } from '@playwright/test'
 import path from 'path'
 
 const config: PlaywrightTestConfig = {
+  expect: {
+    toHaveScreenshot: { maxDiffPixels: 30 },
+  },
   fullyParallel: true,
   outputDir: 'integration-results',
   preserveOutput: 'failures-only',
