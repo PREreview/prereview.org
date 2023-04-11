@@ -244,7 +244,7 @@ test('have to enter a preprint DOI or URL', async ({ contextOptions, javaScriptE
   if (javaScriptEnabled) {
     await expect(alert).toBeFocused()
   } else {
-    await expect(alert).toBeVisible()
+    await expect(alert).toBeInViewport()
   }
   await expect(form.getByLabel('Preprint DOI or URL')).toHaveAttribute('aria-invalid', 'true')
   await expect(page).toHaveScreenshot()

@@ -1991,7 +1991,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByRole('group', { name: 'Have you already written your PREreview?' })).toHaveAttribute(
       'aria-invalid',
@@ -2024,7 +2024,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
     await expect(page).toHaveScreenshot()
@@ -2056,7 +2056,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
     await expect(page).toHaveScreenshot()
@@ -2084,7 +2084,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('Paste your PREreview')).toHaveAttribute('aria-invalid', 'true')
     await expect(page).toHaveScreenshot()
@@ -2115,7 +2115,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
   if (javaScriptEnabled) {
     await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
   } else {
-    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
   }
   await expect(page.getByRole('group', { name: 'What name would you like to use?' })).toHaveAttribute(
     'aria-invalid',
@@ -2152,7 +2152,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByRole('group', { name: 'Did you review this preprint with anyone else?' })).toHaveAttribute(
       'aria-invalid',
@@ -2191,7 +2191,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('They have read and approved the PREreview')).toHaveAttribute('aria-invalid', 'true')
     await expect(page).toHaveScreenshot()
@@ -2228,7 +2228,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByRole('group', { name: 'Do you have any competing interests?' })).toHaveAttribute(
       'aria-invalid',
@@ -2248,7 +2248,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('What are they?')).toHaveAttribute('aria-invalid', 'true')
     await expect(page).toHaveScreenshot()
@@ -2288,7 +2288,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
     } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeVisible()
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByRole('group', { name: 'Code of Conduct' })).toHaveAttribute('aria-invalid', 'true')
     await expect(page).toHaveScreenshot()
