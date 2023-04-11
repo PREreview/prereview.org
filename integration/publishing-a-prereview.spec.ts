@@ -812,6 +812,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.keyboard.type('Ipsum')
     await page.getByRole('button', { name: 'Heading level 3' }).click()
     await page.getByRole('button', { name: 'Heading level 2' }).click()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Heading level 3' })).toHaveAttribute('aria-pressed', 'false')
     await expect(page.getByRole('button', { name: 'Heading level 2' })).toHaveAttribute('aria-pressed', 'true')
 
@@ -836,6 +837,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
     })
     await page.getByRole('button', { name: 'Link' }).click()
 
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
+
     await page.keyboard.press('ArrowRight')
     await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'true')
     await expect(page).toHaveScreenshot()
@@ -849,6 +852,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('button', { name: 'Link' }).click()
 
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'false')
 
     await page.keyboard.press('ArrowDown')
@@ -934,6 +938,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.keyboard.press('Enter')
 
     await page.getByRole('button', { name: 'Bulleted list' }).click()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
 
     await page.keyboard.type('Mauris')
     await page.keyboard.press('Enter')
@@ -944,6 +949,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.keyboard.press('Enter')
     await page.keyboard.press('Shift+Tab')
     await page.keyboard.press('Enter')
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'false')
     await expect(page).toHaveScreenshot()
 
@@ -952,6 +958,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'true')
 
     await page.getByRole('button', { name: 'Numbered list' }).click()
+    await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'false')
     await expect(page.getByRole('button', { name: 'Numbered list' })).toHaveAttribute('aria-pressed', 'true')
     await expect(page).toHaveScreenshot()
