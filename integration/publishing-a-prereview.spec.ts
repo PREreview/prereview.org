@@ -398,6 +398,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   await expect(page).toHaveScreenshot()
 
   await page.getByRole('button', { name: 'Start now' }).click()
+  await page.waitForLoadState()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -412,6 +413,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
 
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Continue' }).click()
+  await page.waitForLoadState()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -427,6 +429,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
 
   await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.waitForLoadState()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -442,6 +445,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
 
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.waitForLoadState()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -456,6 +460,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
 
   await page.getByLabel('No, I reviewed it alone').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.waitForLoadState()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -470,6 +475,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
 
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.waitForLoadState()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -484,6 +490,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
 
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.waitForLoadState()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
@@ -537,6 +544,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
     })
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
+  await page.waitForLoadState()
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
