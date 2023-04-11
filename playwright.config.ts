@@ -11,14 +11,14 @@ export default defineConfig({
   projects: [
     {
       name: 'Desktop Chrome',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], contextOptions: { reducedMotion: 'reduce' as const } },
     },
     {
       name: 'Desktop Chrome (high contrast)',
       use: {
         ...devices['Desktop Chrome'],
         colorScheme: 'dark' as const,
-        contextOptions: { forcedColors: 'active' as const },
+        contextOptions: { forcedColors: 'active' as const, reducedMotion: 'reduce' as const },
       },
     },
     {
@@ -26,7 +26,7 @@ export default defineConfig({
       use: {
         ...devices['Pixel 5'],
         colorScheme: 'dark' as const,
-        contextOptions: { forcedColors: 'active' as const },
+        contextOptions: { forcedColors: 'active' as const, reducedMotion: 'reduce' as const },
       },
     },
     {
