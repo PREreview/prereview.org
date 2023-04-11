@@ -178,7 +178,7 @@ body {
   align-items: center;
   column-gap: var(--space-m);
   block-size: var(--space-2xl-3xl);
-  max-inline-size: 75ch;
+  max-inline-size: 75rem;
   margin-inline: auto;
   padding-inline: var(--space-s-m);
 
@@ -200,7 +200,7 @@ body {
 
 .contents > :not(aside, header),
 .contents > aside > * {
-  max-inline-size: 75ch;
+  max-inline-size: 75rem;
   margin-inline: auto;
   padding-inline: var(--space-s-m);
 }
@@ -217,7 +217,8 @@ body > footer {
   column-gap: var(--space-xl-3xl);
   row-gap: var(--space-s-l);
   border-block-start: var(--width-divider-narrow) solid var(--color-divider-light);
-  max-inline-size: 75ch;
+  max-inline-size: 75rem;
+  inline-size: 100%;
   margin-block-start: var(--space-2xl-3xl);
   margin-inline: auto;
   padding-block: var(--space-xs-s) var(--space-s-l);
@@ -1448,7 +1449,7 @@ skip-link {
   padding-block: var(--space-2xs);
   padding-inline: var(--space-s-m);
   margin-inline: auto;
-  max-inline-size: 75ch;
+  max-inline-size: 75rem;
 
   & > span {
     flex: 1;
