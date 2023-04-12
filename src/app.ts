@@ -101,16 +101,6 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          doesPreprintExist: flow(
-            flip(getPreprintTitle)(env),
-            TE.map(() => true),
-            TE.orElseW(error =>
-              match(error)
-                .with('not-found', () => TE.right(false))
-                .with('unavailable', TE.left)
-                .exhaustive(),
-            ),
-          ),
           getRecentPrereviews: () =>
             getRecentPrereviewsFromZenodo()({
               ...env,

@@ -1,27 +1,18 @@
-import { Doi, parse } from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
-import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as T from 'fp-ts/Task'
-import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import * as D from 'io-ts/Decoder'
 import { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
-import { get } from 'spectacles-ts'
-import { P, match } from 'ts-pattern'
-import { InvalidE, getInput, invalidE } from './form'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { page } from './page'
-import { PreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
 import { findAPreprintMatch, reviewMatch } from './routes'
 
 export type RecentPrereview = {
@@ -37,10 +28,6 @@ interface GetRecentPrereviewsEnv {
   getRecentPrereviews: () => T.Task<ReadonlyArray<RecentPrereview>>
 }
 
-export interface DoesPreprintExistEnv {
-  doesPreprintExist: (doi: PreprintId['doi']) => TE.TaskEither<'unavailable', boolean>
-}
-
 const getRecentPrereviews = () =>
   pipe(
     RT.ask<GetRecentPrereviewsEnv>(),
@@ -49,164 +36,22 @@ const getRecentPrereviews = () =>
 
 export const home = pipe(
   fromReaderTask(getRecentPrereviews()),
-  chainReaderKW(recentPrereviews => createPage(E.right(undefined), recentPrereviews)),
+  chainReaderKW(createPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const UrlD = pipe(
-  D.string,
-  D.parse(s =>
-    pipe(
-      E.tryCatch(
-        () => new URL(s.trim()),
-        () => D.error(s, 'URL'),
-      ),
-      E.filterOrElse(
-        url => url.protocol === 'http:' || url.protocol === 'https:',
-        () => D.error(s, 'URL'),
-      ),
-    ),
-  ),
-)
-
-const DoiD = pipe(
-  D.string,
-  D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parsePreprintDoi(s))),
-)
-
-const PreprintUrlD = pipe(
-  UrlD,
-  D.parse(url => E.fromOption(() => D.error(url, 'PreprintUrl'))(fromUrl(url))),
-)
-
-const LookupPreprintD = pipe(
-  D.struct({
-    preprint: D.union(DoiD, PreprintUrlD),
-  }),
-  D.map(get('preprint')),
-)
-
-export const parseLookupPreprint = flow(
-  LookupPreprintD.decode,
-  E.mapLeft(
-    flow(
-      getInput('preprint'),
-      O.chain(input =>
-        pipe(
-          parse(input),
-          O.map(unsupportedDoiE),
-          O.altW(() => pipe(O.fromEither(UrlD.decode(input)), O.map(unsupportedUrlE))),
-          O.altW(() => O.some(invalidE(input))),
-        ),
-      ),
-      O.getOrElseW(() => invalidE('')),
-    ),
-  ),
-)
-
-interface UnsupportedDoiE {
-  readonly _tag: 'UnsupportedDoiE'
-  readonly actual: Doi
-}
-
-interface UnsupportedUrlE {
-  readonly _tag: 'UnsupportedUrlE'
-  readonly actual: URL
-}
-
-const unsupportedDoiE = (actual: Doi): UnsupportedDoiE => ({
-  _tag: 'UnsupportedDoiE',
-  actual,
-})
-
-const unsupportedUrlE = (actual: URL): UnsupportedUrlE => ({
-  _tag: 'UnsupportedUrlE',
-  actual,
-})
-
-type SubmittedLookupPreprint = E.Either<InvalidE, Doi>
-type UnsubmittedLookupPreprint = E.Right<undefined>
-type LookupPreprint = SubmittedLookupPreprint | UnsubmittedLookupPreprint
-
-function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyArray<RecentPrereview>) {
-  const error = E.isLeft(lookupPreprint)
-
+function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
   return page({
-    title: plainText`${error ? 'Error: ' : ''}PREreview`,
+    title: plainText`PREreview`,
     content: html`
       <main id="main-content">
-        ${error
-          ? html`
-              <error-summary aria-labelledby="error-summary-title" role="alert">
-                <h2 id="error-summary-title">There is a problem</h2>
-                <ul>
-                  ${E.isLeft(lookupPreprint)
-                    ? html`
-                        <li>
-                          <a href="#preprint">
-                            ${match(lookupPreprint.left)
-                              .with({ _tag: 'InvalidE' }, () => 'Enter a preprint DOI or URL')
-                              .exhaustive()}
-                          </a>
-                        </li>
-                      `
-                    : ''}
-                </ul>
-              </error-summary>
-            `
-          : ''}
-
         <div class="hero">
           <h1>Open preprint reviews.<br />For&nbsp;<em>all</em> researchers.</h1>
           <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
+
+          <a href="${format(findAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
         </div>
-
-        <form
-          method="post"
-          action="${format(findAPreprintMatch.formatter, {})}"
-          novalidate
-          aria-labelledby="find-title"
-        >
-          <div ${rawHtml(E.isLeft(lookupPreprint) ? 'class="error"' : '')}>
-            <h2 id="find-title">Find and publish PREreviews</h2>
-
-            <label for="preprint">Preprint DOI or URL</label>
-
-            <p id="preprint-tip" role="note">
-              A DOI is a unique identifier that you can find on the preprint. For example,
-              <q class="select-all" translate="no">10.1101/2022.10.06.511170</q> or
-              <q class="select-all" translate="no">https://doi.org/10.1101/2022.10.06.511170</q>.
-            </p>
-
-            ${error
-              ? html`
-                  <div class="error-message" id="preprint-error">
-                    <span class="visually-hidden">Error:</span>
-                    ${match(lookupPreprint.left)
-                      .with({ _tag: 'InvalidE' }, () => 'Enter a preprint DOI or URL')
-                      .exhaustive()}
-                  </div>
-                `
-              : ''}
-
-            <input
-              id="preprint"
-              name="preprint"
-              type="text"
-              size="40"
-              spellcheck="false"
-              aria-describedby="preprint-tip"
-              ${match(lookupPreprint)
-                .with({ right: P.select(P.string) }, value => html`value="${value}"`)
-                .with({ left: { actual: P.select() } }, value => html`value="${value}"`)
-                .otherwise(() => '')}
-              ${rawHtml(E.isLeft(lookupPreprint) ? 'aria-invalid="true" aria-errormessage="preprint-error"' : '')}
-            />
-          </div>
-
-          <button>Continue</button>
-        </form>
 
         ${pipe(
           recentPrereviews,
@@ -295,7 +140,6 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
         )}
       </main>
     `,
-    js: error ? ['error-summary.js'] : [],
     skipLinks: [[html`Skip to main content`, '#main-content']],
   })
 }
