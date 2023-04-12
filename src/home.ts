@@ -18,13 +18,14 @@ import { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
+import { findAPreprint } from './find-a-preprint'
 import { InvalidE, getInput, invalidE } from './form'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { PreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
-import { homeMatch, preprintMatch, reviewMatch } from './routes'
+import { findAPreprintMatch, homeMatch, preprintMatch, reviewMatch } from './routes'
 
 export type RecentPrereview = {
   readonly id: number
@@ -238,7 +239,12 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
             `
           : ''}
 
-        <form method="post" action="${format(homeMatch.formatter, {})}" novalidate aria-labelledby="find-title">
+        <form
+          method="post"
+          action="${format(findAPreprintMatch.formatter, {})}"
+          novalidate
+          aria-labelledby="find-title"
+        >
           <div ${rawHtml(E.isLeft(lookupPreprint) ? 'class="error"' : '')}>
             <h1 id="find-title">Find and publish PREreviews</h1>
 
