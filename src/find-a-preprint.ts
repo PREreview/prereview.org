@@ -3,41 +3,20 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
-import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import * as RA from 'fp-ts/ReadonlyArray'
-import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
-import * as T from 'fp-ts/Task'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { LanguageCode } from 'iso-639-1'
-import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { InvalidE, getInput, invalidE } from './form'
-import { Html, html, plainText, rawHtml, sendHtml } from './html'
-import * as assets from './manifest.json'
+import { html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { PreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
-import { findAPreprintMatch, preprintMatch, reviewMatch } from './routes'
-
-export type RecentPrereview = {
-  readonly id: number
-  readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
-  readonly preprint: {
-    readonly language: LanguageCode
-    readonly title: Html
-  }
-}
-
-interface GetRecentPrereviewsEnv {
-  getRecentPrereviews: () => T.Task<ReadonlyArray<RecentPrereview>>
-}
+import { findAPreprintMatch, preprintMatch } from './routes'
 
 export interface DoesPreprintExistEnv {
   doesPreprintExist: (doi: PreprintId['doi']) => TE.TaskEither<'unavailable', boolean>
@@ -52,12 +31,6 @@ export const findAPreprint = pipe(
   ),
 )
 
-const getRecentPrereviews = () =>
-  pipe(
-    RT.ask<GetRecentPrereviewsEnv>(),
-    RT.chainTaskK(({ getRecentPrereviews }) => getRecentPrereviews()),
-  )
-
 const doesPreprintExist = (doi: PreprintId['doi']) =>
   pipe(
     RTE.ask<DoesPreprintExistEnv>(),
@@ -65,19 +38,16 @@ const doesPreprintExist = (doi: PreprintId['doi']) =>
   )
 
 const showFindAPreprintPage = pipe(
-  fromReaderTask(getRecentPrereviews()),
-  chainReaderKW(recentPrereviews => createPage(E.right(undefined), recentPrereviews)),
+  RM.rightReader(createPage(E.right(undefined))),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showFindAPreprintErrorPage = (lookupPreprint: SubmittedLookupPreprint) =>
-  pipe(
-    fromReaderTask(getRecentPrereviews()),
-    chainReaderKW(recentPrereviews => createPage(lookupPreprint, recentPrereviews)),
-    RM.ichainFirst(() => RM.status(Status.BadRequest)),
-    RM.ichainMiddlewareK(sendHtml),
-  )
+const showFindAPreprintErrorPage = flow(
+  fromReaderK(createPage),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
+  RM.ichainMiddlewareK(sendHtml),
+)
 
 const showUnknownPreprintPage = flow(
   fromReaderK(createUnknownPreprintPage),
@@ -210,7 +180,7 @@ type SubmittedLookupPreprint = E.Either<InvalidE, Doi>
 type UnsubmittedLookupPreprint = E.Right<undefined>
 type LookupPreprint = SubmittedLookupPreprint | UnsubmittedLookupPreprint
 
-function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyArray<RecentPrereview>) {
+function createPage(lookupPreprint: LookupPreprint) {
   const error = E.isLeft(lookupPreprint)
 
   return page({
@@ -283,92 +253,6 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
 
           <button>Continue</button>
         </form>
-
-        ${pipe(
-          recentPrereviews,
-          RA.matchW(
-            () => '',
-            prereviews => html`
-              <section aria-labelledby="recent-prereviews-title">
-                <h2 id="recent-prereviews-title">Recent PREreviews</h2>
-
-                <ol class="cards">
-                  ${prereviews.map(
-                    prereview => html`
-                      <li>
-                        <article>
-                          <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                            ${formatList('en')(prereview.reviewers)} reviewed “<span
-                              dir="${getLangDir(prereview.preprint.language)}"
-                              lang="${prereview.preprint.language}"
-                              >${prereview.preprint.title}</span
-                            >”
-                          </a>
-                        </article>
-                      </li>
-                    `,
-                  )}
-                </ol>
-              </section>
-
-              <section aria-labelledby="funders-title">
-                <h2 id="funders-title">Funders</h2>
-
-                <ol class="logos">
-                  <li>
-                    <a href="https://sloan.org/grant-detail/8729">
-                      <img
-                        src="${assets['sloan.svg']}"
-                        width="350"
-                        height="190"
-                        loading="lazy"
-                        alt="Alfred P. Sloan Foundation"
-                      />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://chanzuckerberg.com/">
-                      <img
-                        src="${assets['czi.svg']}"
-                        width="192"
-                        height="192"
-                        loading="lazy"
-                        alt="Chan Zuckerberg Initiative"
-                      />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://elifesciences.org/">
-                      <img src="${assets['elife.svg']}" width="129" height="44" loading="lazy" alt="eLife" />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://wellcome.org/grant-funding/schemes/open-research-fund">
-                      <img
-                        src="${assets['wellcome.svg']}"
-                        width="181"
-                        height="181"
-                        loading="lazy"
-                        alt="Wellcome Trust"
-                      />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://foundation.mozilla.org/">
-                      <img
-                        src="${assets['mozilla.svg']}"
-                        width="280"
-                        height="80"
-                        loading="lazy"
-                        alt="Mozilla Foundation"
-                      />
-                    </a>
-                  </li>
-                </ol>
-              </section>
-            `,
-          ),
-        )}
       </main>
     `,
     js: error ? ['error-summary.js'] : [],
@@ -488,33 +372,9 @@ function failureMessage() {
   })
 }
 
-function formatList(
-  ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
-  const formatter = new Intl.ListFormat(...args)
-
-  return flow(
-    RNEA.map(item => html`${item}`.toString()),
-    list => formatter.format(list),
-    rawHtml,
-  )
-}
-
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
   f: (...a: A) => Reader<R, B>,
 ): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
   return (...a) => RM.rightReader(f(...a))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function chainReaderKW<R2, A, B>(
-  f: (a: A) => Reader<R2, B>,
-): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
-  return RM.chainW(fromReaderK(f))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/87
-function fromReaderTask<R, I = StatusOpen, A = never>(fa: RT.ReaderTask<R, A>): RM.ReaderMiddleware<R, I, I, never, A> {
-  return r => M.fromTask(fa(r))
 }

@@ -135,11 +135,6 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
                 .exhaustive(),
             ),
           ),
-          getRecentPrereviews: () =>
-            getRecentPrereviewsFromZenodo()({
-              ...env,
-              getPreprintTitle: flip(getPreprintTitle)(env),
-            }),
         })),
       ),
     ),
