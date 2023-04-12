@@ -1518,3 +1518,9 @@ skip-link {
     transform: rotate(360deg);
   }
 }
+
+.hero {
+  & p {
+    hyphens: manual;
+  }
+}

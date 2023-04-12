@@ -157,6 +157,11 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
             `
           : ''}
 
+        <div class="hero">
+          <h1>Open preprint reviews.<br />For&nbsp;<em>all</em> researchers.</h1>
+          <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
+        </div>
+
         <form
           method="post"
           action="${format(findAPreprintMatch.formatter, {})}"
@@ -164,7 +169,7 @@ function createPage(lookupPreprint: LookupPreprint, recentPrereviews: ReadonlyAr
           aria-labelledby="find-title"
         >
           <div ${rawHtml(E.isLeft(lookupPreprint) ? 'class="error"' : '')}>
-            <h1 id="find-title">Find and publish PREreviews</h1>
+            <h2 id="find-title">Find and publish PREreviews</h2>
 
             <label for="preprint">Preprint DOI or URL</label>
 
