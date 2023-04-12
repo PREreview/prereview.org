@@ -55,6 +55,8 @@ const PreprintDoiC = C.make(
 
 export const homeMatch = P.end
 
+export const findAPreprintMatch = pipe(P.lit('find-a-preprint'), P.then(P.end))
+
 export const logInMatch = pipe(P.lit('log-in'), P.then(P.end))
 
 export const logOutMatch = pipe(P.lit('log-out'), P.then(P.end))

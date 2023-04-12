@@ -21,6 +21,7 @@ import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
+import { findAPreprint } from './find-a-preprint'
 import { home } from './home'
 import { handleError } from './http-error'
 import {
@@ -37,6 +38,7 @@ import { PreprintId } from './preprint-id'
 import { PublicUrlEnv } from './public-url'
 import { review } from './review'
 import {
+  findAPreprintMatch,
   homeMatch,
   logInMatch,
   logOutMatch,
@@ -96,6 +98,30 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       homeMatch.parser,
       P.map(() => home),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          doesPreprintExist: flow(
+            flip(getPreprintTitle)(env),
+            TE.map(() => true),
+            TE.orElseW(error =>
+              match(error)
+                .with('not-found', () => TE.right(false))
+                .with('unavailable', TE.left)
+                .exhaustive(),
+            ),
+          ),
+          getRecentPrereviews: () =>
+            getRecentPrereviewsFromZenodo()({
+              ...env,
+              getPreprintTitle: flip(getPreprintTitle)(env),
+            }),
+        })),
+      ),
+    ),
+    pipe(
+      findAPreprintMatch.parser,
+      P.map(() => findAPreprint),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
