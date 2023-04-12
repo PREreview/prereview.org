@@ -1520,6 +1520,21 @@ skip-link {
 }
 
 .hero {
+  & em {
+    position: relative;
+    font-style: inherit;
+
+    &::after {
+      position: absolute;
+      content: '';
+      background-image: url('underline.svg');
+      background-repeat: no-repeat;
+      inset-block-start: 82%;
+      inset-inline: 0;
+      block-size: var(--space-xs);
+    }
+  }
+
   & p {
     hyphens: manual;
   }
