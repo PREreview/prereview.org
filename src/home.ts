@@ -51,6 +51,8 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
           <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
 
           <a href="${format(findAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
+
+          <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
         </div>
 
         ${pipe(

@@ -1520,6 +1520,8 @@ skip-link {
 }
 
 .hero {
+  display: flow-root;
+
   & em {
     position: relative;
     font-style: inherit;
@@ -1537,5 +1539,24 @@ skip-link {
 
   & p {
     hyphens: manual;
+
+    @media (min-width: 30em) {
+      max-inline-size: 58%;
+    }
+  }
+
+  & img {
+    float: inline-end;
+    inline-size: clamp(45%, 20vi, 55%);
+    max-block-size: 60vb;
+    margin-block-start: var(--space-2xs);
+
+    @media (min-width: 30em) {
+      margin-block-start: -15%;
+    }
+
+    @media (forced-colors: active) {
+      filter: drop-shadow(0 0 0.05em CanvasText);
+    }
   }
 }

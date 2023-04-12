@@ -27,7 +27,7 @@ module.exports = {
     'single-use-form': path.resolve('assets', 'single-use-form.ts'),
     'skip-link': path.resolve('assets', 'skip-link.ts'),
     style: path.resolve('assets', 'style.css'),
-    ...globSync(`assets/logos/**/*.svg`, { absolute: true, nodir: true }).reduce(
+    ...globSync(`assets/{illustrations,logos}/**/*.svg`, { absolute: true, nodir: true }).reduce(
       (files, file) => ({
         ...files,
         [path.basename(file)]: file,
