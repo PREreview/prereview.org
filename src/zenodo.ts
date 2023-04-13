@@ -169,6 +169,7 @@ function recordToRecentPrereview(record: Record): RTE.ReaderTaskEither<GetPrepri
       sequenceS(RTE.ApplyPar)({
         id: RTE.right(review.id),
         reviewers: RTE.right(pipe(review.metadata.creators, RNEA.map(get('name')))),
+        published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
         preprint: RTE.asksReaderTaskEither(
           RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintDoi)),
         ),

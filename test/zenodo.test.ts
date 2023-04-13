@@ -55,7 +55,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               license: {
                 id: 'CC-BY-4.0',
               },
-              publication_date: new Date('2022-07-05'),
+              publication_date: new Date('2022-07-04'),
               related_identifiers: [
                 {
                   scheme: 'doi',
@@ -141,6 +141,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       {
         id: 1061864,
         reviewers: ['PREreviewer'],
+        published: new Temporal.PlainDate(2022, 7, 4),
         preprint: {
           title: rawHtml('Preprint 10.1101/2022.01.13.476201'),
           language: 'en',
@@ -149,6 +150,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       {
         id: 1065236,
         reviewers: ['Josiah Carberry'],
+        published: new Temporal.PlainDate(2022, 7, 5),
         preprint: {
           title: rawHtml('Preprint 10.1101/2022.02.14.480364'),
           language: 'en',
@@ -244,6 +246,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       {
         id: 1061864,
         reviewers: ['PREreviewer'],
+        published: new Temporal.PlainDate(2022, 7, 5),
         preprint: {
           title: rawHtml('Preprint 10.1101/2022.02.14.480364'),
           language: 'en',

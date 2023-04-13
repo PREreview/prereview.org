@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
 import { Reader } from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
@@ -14,10 +15,14 @@ import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { page } from './page'
 import { findAPreprintMatch, reviewMatch } from './routes'
+import { renderDate } from './time'
+
+import PlainDate = Temporal.PlainDate
 
 export type RecentPrereview = {
   readonly id: number
   readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
+  readonly published: PlainDate
   readonly preprint: {
     readonly language: LanguageCode
     readonly title: Html
@@ -75,6 +80,8 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
                               >${prereview.preprint.title}</span
                             >”
                           </a>
+
+                          ${renderDate(prereview.published)}
                         </article>
                       </li>
                     `,
