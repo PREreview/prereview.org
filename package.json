@@ -55,7 +55,7 @@
     "@playwright/test": "^1.32.3",
     "@prettier/plugin-xml": "^2.2.0",
     "@rollup/plugin-url": "^8.0.1",
-    "@tiptap/core": "^2.0.2",
+    "@tiptap/core": "^2.0.3",
     "@tiptap/extension-link": "^2.0.1",
     "@tiptap/extension-subscript": "^2.0.1",
     "@tiptap/extension-superscript": "^2.0.1",
