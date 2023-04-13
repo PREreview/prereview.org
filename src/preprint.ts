@@ -281,7 +281,7 @@ function showReview(review: Prereview) {
         </header>
 
         <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
-          ${rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5 }))}
+          ${rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5, stripTags: ['a'] }))}
         </div>
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
