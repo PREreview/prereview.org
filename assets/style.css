@@ -959,7 +959,7 @@ error-summary {
   @media screen {
     max-block-size: 75vb;
 
-    @media (min-width: 50em) {
+    @media (width >= 50em) {
       max-block-size: 50vb;
     }
 
@@ -1190,7 +1190,7 @@ html-editor {
       flex-grow: 1;
     }
 
-    @media (min-width: 40em) {
+    @media (width >= 40em) {
       flex-wrap: nowrap;
     }
   }
@@ -1246,7 +1246,7 @@ html-editor {
     overflow-y: auto;
     scrollbar-gutter: stable;
 
-    @media (min-width: 50em) {
+    @media (width >= 50em) {
       max-block-size: 50vb;
     }
   }
@@ -1386,7 +1386,7 @@ skip-link {
 }
 
 .two-up {
-  @media screen and (min-width: 50em) {
+  @media screen and (width >= 50em) {
     & > * {
       margin-inline-start: 50%;
     }
@@ -1541,7 +1541,7 @@ skip-link {
     font-size: var(--step-1);
     hyphens: manual;
 
-    @media (min-width: 30em) {
+    @media (width >= 30em) {
       max-inline-size: 58%;
     }
   }
@@ -1556,7 +1556,7 @@ skip-link {
     max-block-size: 60vb;
     margin-block-start: var(--space-2xs);
 
-    @media (min-width: 30em) {
+    @media (width >= 30em) {
       margin-block-start: -15%;
     }
 
