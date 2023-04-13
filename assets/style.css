@@ -1304,7 +1304,9 @@ skip-link {
     position: relative;
     padding-block: var(--space-xs);
     padding-inline: var(--space-s);
+    block-size: 100%;
     inline-size: 100%;
+    margin-block-start: 0;
 
     & > header {
       & > :not(.visually-hidden):first-child,
@@ -1372,6 +1374,34 @@ skip-link {
     &:not(.more) {
       text-decoration: none;
       color: inherit;
+    }
+  }
+
+  &[aria-labelledby][tabindex] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s-m);
+
+    & > * {
+      flex-shrink: 0;
+      inline-size: min(95vw - var(--space-s-m) * 2, 20em);
+      font-size: var(--step--1);
+    }
+
+    @media screen {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scrollbar-gutter: stable;
+      scroll-snap-type: inline mandatory;
+      margin-inline: calc(50% - 50vw);
+      padding-inline-start: max(var(--space-s-m), (100vw - 75rem) / 2 + var(--space-s-m));
+      padding-inline-end: var(--space-s-m);
+      padding-block: var(--width-divider);
+
+      & > * {
+        scroll-snap-align: center;
+      }
     }
   }
 }

@@ -68,7 +68,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
               <section aria-labelledby="recent-prereviews-title">
                 <h2 id="recent-prereviews-title">Recent PREreviews</h2>
 
-                <ol class="cards">
+                <ol class="cards" aria-labelledby="recent-prereviews-title" tabindex="0">
                   ${prereviews.map(
                     prereview => html`
                       <li>
