@@ -81,65 +81,53 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
                   )}
                 </ol>
               </section>
-
-              <section aria-labelledby="funders-title">
-                <h2 id="funders-title">Funders</h2>
-
-                <ol class="logos">
-                  <li>
-                    <a href="https://sloan.org/grant-detail/8729">
-                      <img
-                        src="${assets['sloan.svg']}"
-                        width="350"
-                        height="190"
-                        loading="lazy"
-                        alt="Alfred P. Sloan Foundation"
-                      />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://chanzuckerberg.com/">
-                      <img
-                        src="${assets['czi.svg']}"
-                        width="192"
-                        height="192"
-                        loading="lazy"
-                        alt="Chan Zuckerberg Initiative"
-                      />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://elifesciences.org/">
-                      <img src="${assets['elife.svg']}" width="129" height="44" loading="lazy" alt="eLife" />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://wellcome.org/grant-funding/schemes/open-research-fund">
-                      <img
-                        src="${assets['wellcome.svg']}"
-                        width="181"
-                        height="181"
-                        loading="lazy"
-                        alt="Wellcome Trust"
-                      />
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://foundation.mozilla.org/">
-                      <img
-                        src="${assets['mozilla.svg']}"
-                        width="280"
-                        height="80"
-                        loading="lazy"
-                        alt="Mozilla Foundation"
-                      />
-                    </a>
-                  </li>
-                </ol>
-              </section>
             `,
           ),
         )}
+
+        <section aria-labelledby="funders-title">
+          <h2 id="funders-title">Funders</h2>
+
+          <ol class="logos">
+            <li>
+              <a href="https://sloan.org/grant-detail/8729">
+                <img
+                  src="${assets['sloan.svg']}"
+                  width="350"
+                  height="190"
+                  loading="lazy"
+                  alt="Alfred P. Sloan Foundation"
+                />
+              </a>
+            </li>
+            <li>
+              <a href="https://chanzuckerberg.com/">
+                <img
+                  src="${assets['czi.svg']}"
+                  width="192"
+                  height="192"
+                  loading="lazy"
+                  alt="Chan Zuckerberg Initiative"
+                />
+              </a>
+            </li>
+            <li>
+              <a href="https://elifesciences.org/">
+                <img src="${assets['elife.svg']}" width="129" height="44" loading="lazy" alt="eLife" />
+              </a>
+            </li>
+            <li>
+              <a href="https://wellcome.org/grant-funding/schemes/open-research-fund">
+                <img src="${assets['wellcome.svg']}" width="181" height="181" loading="lazy" alt="Wellcome Trust" />
+              </a>
+            </li>
+            <li>
+              <a href="https://foundation.mozilla.org/">
+                <img src="${assets['mozilla.svg']}" width="280" height="80" loading="lazy" alt="Mozilla Foundation" />
+              </a>
+            </li>
+          </ol>
+        </section>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
