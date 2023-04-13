@@ -146,9 +146,14 @@ test('can view a recent review', async ({ fetch, page }) => {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
+  const recentReviews = page.getByRole('region', { name: 'Recent PREreviews' })
+
   await page.goto('/')
-  await page
-    .getByRole('region', { name: 'Recent PREreviews' })
+  await recentReviews.scrollIntoViewIfNeeded()
+
+  await expect(page).toHaveScreenshot()
+
+  await recentReviews
     .getByRole('link', {
       name: 'CJ San Felipe reviewed “A conserved local structural motif controls the kinetics of PTP1B catalysis”',
     })
