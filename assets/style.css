@@ -1388,6 +1388,12 @@ skip-link {
       font-size: var(--step--1);
     }
 
+    & article {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
     @media screen {
       flex-wrap: nowrap;
       overflow-x: auto;
