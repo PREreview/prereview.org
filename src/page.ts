@@ -64,9 +64,11 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
             <header>
               ${phase
                 ? html`
-                    <div class="phase-banner">
-                      <strong class="tag">${phase.tag}</strong>
-                      <span>${phase.text}</span>
+                    <div class="navigation">
+                      <div class="phase-banner">
+                        <strong class="tag">${phase.tag}</strong>
+                        <span>${phase.text}</span>
+                      </div>
                     </div>
                   `
                 : ''}

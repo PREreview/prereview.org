@@ -1482,16 +1482,23 @@ skip-link {
   }
 }
 
-.phase-banner {
+.navigation {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  column-gap: var(--space-2xs);
+  column-gap: var(--space-xs-m);
+  row-gap: var(--space-xs-s);
+  font-size: var(--step--1);
   background-color: var(--color-background-alt);
   padding-block: var(--space-2xs);
-  padding-inline: var(--space-s-m);
-  margin-inline: auto;
-  max-inline-size: 75rem;
+  padding-inline: max(var(--space-s-m), calc(var(--space-s-m) + (100% - 75rem) / 2));
+}
+
+.phase-banner {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-2xs);
 
   & > span {
     flex: 1;
