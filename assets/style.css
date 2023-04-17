@@ -1659,6 +1659,10 @@ skip-link {
       hyphens: manual;
     }
 
+    & .forward {
+      margin-block-start: var(--space-xs);
+    }
+
     @media screen {
       border-color: transparent;
       padding-block: var(--space-m-xl);

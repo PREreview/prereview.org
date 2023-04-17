@@ -76,6 +76,8 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
             <h2 id="a-better-way-title">A better way</h2>
 
             <p>Making science and scholarship more equitable, transparent, and collaborative.</p>
+
+            <a href="https://content.prereview.org/mission/" class="forward">Our mission</a>
           </section>
         </div>
 
