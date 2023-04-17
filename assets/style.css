@@ -1621,6 +1621,10 @@ skip-link {
     border: var(--width-divider) solid var(--color-divider);
 
     &:not(:first-child) {
+      @media screen {
+        background-color: var(--color-red-200);
+      }
+
       @media (width < 40em) {
         border-block-start-width: calc(var(--width-divider) / 2);
       }
@@ -1630,6 +1634,10 @@ skip-link {
     }
 
     &:not(:last-child) {
+      @media screen {
+        background-color: var(--color-red-600);
+      }
+
       @media (width < 40em) {
         border-block-end-width: calc(var(--width-divider) / 2);
       }
@@ -1660,9 +1668,14 @@ skip-link {
   @media screen {
     color: var(--color-white);
     background-color: var(--color-red-600);
+    background-image: linear-gradient(180deg, transparent 50%, var(--color-red-200) 50%);
 
     @media not (forced-colors: active) {
       padding-inline: 0;
+    }
+
+    @media (width >= 40em) {
+      background-image: linear-gradient(90deg, transparent 50%, var(--color-red-200) 50%);
     }
   }
 
