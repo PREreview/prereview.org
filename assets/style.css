@@ -1492,6 +1492,12 @@ skip-link {
   background-color: var(--color-background-alt);
   padding-block: var(--space-2xs);
   padding-inline: max(var(--space-s-m), calc(var(--space-s-m) + (100% - 75rem) / 2));
+
+  @media screen {
+    @media (forced-colors: active) {
+      border-block-end: var(--width-divider-narrow) solid currentcolor;
+    }
+  }
 }
 
 .phase-banner {
@@ -1503,12 +1509,6 @@ skip-link {
   & > span {
     flex: 1;
     font-size: var(--step--1);
-  }
-
-  @media screen {
-    @media (forced-colors: active) {
-      border-block-end: var(--width-divider-narrow) solid currentcolor;
-    }
   }
 }
 
