@@ -60,6 +60,23 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
           <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
         </div>
 
+        <div class="overview">
+          <section aria-labelledby="for-underserved-researchers-title">
+            <h2 id="for-underserved-researchers-title">For underserved researchers</h2>
+
+            <p>
+              We support and empower diverse and historically excluded communities of researchers (particularly those at
+              early stages of their career) to find a voice, train, and engage in peer review.
+            </p>
+          </section>
+
+          <section aria-labelledby="a-better-way-title">
+            <h2 id="a-better-way-title">A better way</h2>
+
+            <p>Making science and scholarship more equitable, transparent, and collaborative.</p>
+          </section>
+        </div>
+
         ${pipe(
           recentPrereviews,
           RA.matchW(
