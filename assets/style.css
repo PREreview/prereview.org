@@ -1452,6 +1452,11 @@ skip-link {
         margin-inline-start: calc(var(--space-m-xl) - var(--space-s-m));
       }
 
+      & > header > .navigation {
+        max-inline-size: 75rem;
+        padding-inline: var(--space-s-m);
+      }
+
       & > aside > * {
         inline-size: calc(100% - var(--space-m-xl));
         margin-inline-end: calc(var(--space-m-xl) - var(--space-s-m));
