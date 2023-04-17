@@ -70,6 +70,8 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
             </p>
           </section>
 
+          <div></div>
+
           <section aria-labelledby="a-better-way-title">
             <h2 id="a-better-way-title">A better way</h2>
 
