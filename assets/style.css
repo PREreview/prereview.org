@@ -286,7 +286,7 @@ nav {
     justify-content: space-between;
   }
 
-  @nest :not(.contents) > & {
+  @nest :not(.contents, .navigation) > & {
     margin-block-start: var(--space-m);
   }
 }
@@ -409,6 +409,17 @@ h6 {
 :--list {
   margin-block-start: var(--space-s);
   padding-inline-start: var(--space-m);
+
+  @nest nav > & {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    column-gap: var(--space-xs-m);
+    row-gap: var(--space-3xs-2xs);
+    list-style-type: none;
+    margin-block-start: 0;
+    padding-inline-start: 0;
+  }
 
   @nest fieldset > & {
     list-style-type: none;
@@ -1497,6 +1508,17 @@ skip-link {
   background-color: var(--color-background-alt);
   padding-block: var(--space-2xs);
   padding-inline: max(var(--space-s-m), calc(var(--space-s-m) + (100% - 75rem) / 2));
+
+  & nav {
+    flex-grow: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  & :any-link {
+    color: inherit;
+  }
 
   @media screen {
     @media (forced-colors: active) {
