@@ -168,6 +168,12 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           getPreprint: flip(getPreprint)(env),
           getPrereviews: flip(getPrereviewsFromZenodo)(env),
           getRapidPrereviews: flip(getRapidPreviewsFromLegacyPrereview)(env),
+          getUser: () =>
+            pipe(
+              getSession(),
+              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
+              RM.orElseW(() => RM.right(undefined)),
+            )(env),
         })),
       ),
     ),

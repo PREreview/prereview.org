@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import * as _ from '../src/preprint'
 import * as fc from './fc'
@@ -12,6 +13,7 @@ describe('preprint', () => {
   describe('preprint', () => {
     test.prop([
       fc.connection(),
+      fc.option(fc.user(), { nil: undefined }),
       fc.preprint(),
       fc.array(
         fc.record({
@@ -54,7 +56,7 @@ describe('preprint', () => {
           }),
         }),
       ),
-    ])('when the reviews can be loaded', async (connection, preprint, prereviews, rapidPrereviews) => {
+    ])('when the reviews can be loaded', async (connection, user, preprint, prereviews, rapidPrereviews) => {
       const getPreprint: Mock<_.GetPreprintEnv['getPreprint']> = jest.fn(_ => TE.right(preprint))
       const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.right(prereviews))
       const getRapidPrereviews: Mock<_.GetRapidPrereviewsEnv['getRapidPrereviews']> = jest.fn(_ =>
@@ -66,6 +68,7 @@ describe('preprint', () => {
           getPreprint,
           getPrereviews,
           getRapidPrereviews,
+          getUser: () => M.of(user),
         }),
         connection,
       )()
@@ -82,14 +85,15 @@ describe('preprint', () => {
       expect(getRapidPrereviews).toHaveBeenCalledWith(preprint.id)
     })
 
-    test.prop([fc.connection(), fc.preprintDoi()])(
+    test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined }), fc.preprintDoi()])(
       'when the preprint is not found',
-      async (connection, preprintDoi) => {
+      async (connection, user, preprintDoi) => {
         const actual = await runMiddleware(
           _.preprint(preprintDoi)({
             getPreprint: () => TE.left('not-found'),
             getPrereviews: () => () => Promise.reject('should not be called'),
             getRapidPrereviews: () => () => Promise.reject('should not be called'),
+            getUser: () => M.of(user),
           }),
           connection,
         )()
@@ -105,14 +109,15 @@ describe('preprint', () => {
       },
     )
 
-    test.prop([fc.connection(), fc.preprintDoi()])(
+    test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined }), fc.preprintDoi()])(
       'when the preprint is unavailable',
-      async (connection, preprintDoi) => {
+      async (connection, user, preprintDoi) => {
         const actual = await runMiddleware(
           _.preprint(preprintDoi)({
             getPreprint: () => TE.left('unavailable'),
             getPrereviews: () => () => Promise.reject('should not be called'),
             getRapidPrereviews: () => () => Promise.reject('should not be called'),
+            getUser: () => M.of(user),
           }),
           connection,
         )()
@@ -129,6 +134,7 @@ describe('preprint', () => {
 
     test.prop([
       fc.connection(),
+      fc.option(fc.user(), { nil: undefined }),
       fc.preprint(),
       fc.array(
         fc.record({
@@ -155,12 +161,13 @@ describe('preprint', () => {
           }),
         }),
       ),
-    ])('when the reviews cannot be loaded', async (connection, preprint, rapidPrereviews) => {
+    ])('when the reviews cannot be loaded', async (connection, user, preprint, rapidPrereviews) => {
       const actual = await runMiddleware(
         _.preprint(preprint.id.doi)({
           getPreprint: () => TE.right(preprint),
           getPrereviews: () => TE.left('unavailable'),
           getRapidPrereviews: () => TE.right(rapidPrereviews),
+          getUser: () => M.of(user),
         }),
         connection,
       )()
@@ -176,6 +183,8 @@ describe('preprint', () => {
 
     test.prop([
       fc.connection(),
+
+      fc.option(fc.user(), { nil: undefined }),
       fc.preprint(),
       fc.array(
         fc.record({
@@ -193,12 +202,13 @@ describe('preprint', () => {
           text: fc.html(),
         }),
       ),
-    ])('when the rapid PREreviews cannot be loaded', async (connection, preprint, prereviews) => {
+    ])('when the rapid PREreviews cannot be loaded', async (connection, user, preprint, prereviews) => {
       const actual = await runMiddleware(
         _.preprint(preprint.id.doi)({
           getPreprint: () => TE.right(preprint),
           getPrereviews: () => TE.right(prereviews),
           getRapidPrereviews: () => TE.left('unavailable'),
+          getUser: () => M.of(user),
         }),
         connection,
       )()

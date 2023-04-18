@@ -24,6 +24,7 @@ import { page } from './page'
 import { PreprintId } from './preprint-id'
 import { preprintMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
+import { GetUserEnv, User, getUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
@@ -113,18 +114,19 @@ const getRapidPrereviews = (id: PreprintId) =>
 
 export const preprint = flow(
   RM.fromReaderTaskEitherK(getPreprint),
-  RM.chainReaderTaskEitherKW(preprint =>
-    sequenceS(RTE.ApplyPar)({
-      preprint: RTE.right<GetRapidPrereviewsEnv & GetPrereviewsEnv, never, Preprint>(preprint),
-      rapidPrereviews: getRapidPrereviews(preprint.id),
-      reviews: getPrereviews(preprint.id),
+  RM.chainW(preprint =>
+    sequenceS(RM.ApplyPar)({
+      preprint: RM.right<GetRapidPrereviewsEnv & GetPrereviewsEnv & GetUserEnv, StatusOpen, never, Preprint>(preprint),
+      rapidPrereviews: RM.fromReaderTaskEither(getRapidPrereviews(preprint.id)),
+      reviews: RM.fromReaderTaskEither(getPrereviews(preprint.id)),
+      user: getUser,
     }),
   ),
   RM.ichainW(sendPage),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)
-      .with('unavailable', () => showFailureMessage)
+      .with('unavailable', () => pipe(getUser, RM.ichainW(showFailureMessage)))
       .exhaustive(),
   ),
 )
@@ -140,13 +142,13 @@ export const redirectToPreprint = flow(
   ),
 )
 
-const showFailureMessage = pipe(
-  RM.rightReader(failureMessage()),
+const showFailureMessage = flow(
+  fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function failureMessage() {
+function failureMessage(user?: User) {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
@@ -159,6 +161,7 @@ function failureMessage() {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
@@ -166,10 +169,12 @@ function createPage({
   preprint,
   reviews,
   rapidPrereviews,
+  user,
 }: {
   preprint: Preprint
   reviews: ReadonlyArray<Prereview>
   rapidPrereviews: ReadonlyArray<RapidPrereview>
+  user?: User
 }) {
   return page({
     title: plainText`PREreviews of “${preprint.title.text}”`,
@@ -262,6 +267,7 @@ function createPage({
       [html`Skip to PREreviews`, '#prereviews'],
     ],
     type: 'two-up',
+    user,
   })
 }
 

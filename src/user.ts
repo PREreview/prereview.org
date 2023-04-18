@@ -11,7 +11,7 @@ import { isOrcid } from 'orcid-id-ts'
 
 export type User = C.TypeOf<typeof UserC>
 
-interface GetUserEnv {
+export interface GetUserEnv {
   getUser: () => M.Middleware<StatusOpen, StatusOpen, never, User | undefined>
 }
 
