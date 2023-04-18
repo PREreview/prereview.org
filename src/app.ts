@@ -2,16 +2,18 @@ import express from 'express'
 import * as P from 'fp-ts-routing'
 import { Json } from 'fp-ts/Json'
 import { concatAll } from 'fp-ts/Monoid'
+import { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { constant, flip, flow, pipe } from 'fp-ts/function'
+import { Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
 import { OAuthEnv } from 'hyper-ts-oauth'
 import { route } from 'hyper-ts-routing'
-import { SessionEnv } from 'hyper-ts-session'
+import { SessionEnv, getSession } from 'hyper-ts-session'
+import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
@@ -59,6 +61,7 @@ import {
   writeReviewReviewMatch,
   writeReviewStartMatch,
 } from './routes'
+import { getUserFromSession } from './user'
 import {
   FormStoreEnv,
   NewPrereview,
@@ -106,6 +109,12 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ...env,
               getPreprintTitle: flip(getPreprintTitle)(env),
             }),
+          getUser: () =>
+            pipe(
+              getSession(),
+              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
+              RM.orElseW(() => RM.right(undefined)),
+            )(env),
         })),
       ),
     ),
@@ -342,4 +351,13 @@ export const app = (deps: AppEnv) => {
     })
 
   return http.createServer(app)
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/80
+function chainOptionKW<E2>(
+  onNone: Lazy<E2>,
+): <A, B>(
+  f: (a: A) => Option<B>,
+) => <R, I, E1>(ma: RM.ReaderMiddleware<R, I, I, E1, A>) => RM.ReaderMiddleware<R, I, I, E1 | E2, B> {
+  return f => RM.ichainMiddlewareKW((...a) => M.fromOption(onNone)(f(...a)))
 }

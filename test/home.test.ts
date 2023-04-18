@@ -3,25 +3,30 @@ import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import * as T from 'fp-ts/Task'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import * as _ from '../src/home'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
 describe('home', () => {
-  test.prop([fc.connection({ method: fc.requestMethod() })])('home', async connection => {
-    const actual = await runMiddleware(
-      _.home({
-        getRecentPrereviews: () => T.of([]),
-      }),
-      connection,
-    )()
+  test.prop([fc.connection({ method: fc.requestMethod() }), fc.option(fc.user(), { nil: undefined })])(
+    'home',
+    async (connection, user) => {
+      const actual = await runMiddleware(
+        _.home({
+          getRecentPrereviews: () => T.of([]),
+          getUser: () => M.of(user),
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.OK },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.OK },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 })

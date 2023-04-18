@@ -16,6 +16,7 @@ import * as assets from './manifest.json'
 import { page } from './page'
 import { findAPreprintMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
+import { User, getUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
@@ -41,12 +42,14 @@ const getRecentPrereviews = () =>
 
 export const home = pipe(
   fromReaderTask(getRecentPrereviews()),
-  chainReaderKW(createPage),
+  RM.bindTo('recentPrereviews'),
+  RM.apSW('user', getUser),
+  chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
+function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: User) {
   return page({
     title: plainText`PREreview`,
     content: html`
@@ -159,6 +162,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
