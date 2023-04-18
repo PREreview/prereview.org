@@ -5,6 +5,7 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import * as H from 'hyper-ts'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import { ExpressConnection } from 'hyper-ts/lib/express'
 import type { Mock } from 'jest-mock'
 import { createRequest, createResponse } from 'node-mocks-http'
@@ -99,25 +100,26 @@ describe('parseLookupPreprint', () => {
 })
 
 describe('find-a-preprint', () => {
-  test.prop([fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') })])(
-    'findAPreprint',
-    async connection => {
-      const actual = await runMiddleware(
-        _.findAPreprint({
-          doesPreprintExist: () => () => Promise.reject('should not be called'),
-        }),
-        connection,
-      )()
+  test.prop([
+    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+    fc.option(fc.user(), { nil: undefined }),
+  ])('findAPreprint', async (connection, user) => {
+    const actual = await runMiddleware(
+      _.findAPreprint({
+        doesPreprintExist: () => () => Promise.reject('should not be called'),
+        getUser: () => M.of(user),
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.OK },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.OK },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 
   describe('looking up a preprint', () => {
     test.prop(
@@ -180,7 +182,13 @@ describe('find-a-preprint', () => {
     )('with a preprint DOI', async ([doi, connection]) => {
       const doesPreprintExist: Mock<_.DoesPreprintExistEnv['doesPreprintExist']> = jest.fn(_ => TE.of(true))
 
-      const actual = await runMiddleware(_.findAPreprint({ doesPreprintExist }), connection)()
+      const actual = await runMiddleware(
+        _.findAPreprint({
+          doesPreprintExist,
+          getUser: () => () => () => Promise.reject('should not be called'),
+        }),
+        connection,
+      )()
 
       expect(actual).toStrictEqual(
         E.right([
@@ -196,49 +204,60 @@ describe('find-a-preprint', () => {
       expect(doesPreprintExist).toHaveBeenCalledWith(doi)
     })
 
-    test.prop([fc.connection({ body: fc.record({ preprint: fc.preprintDoi() }), method: fc.constant('POST') })])(
-      "with a preprint DOI that doesn't exist",
-      async connection => {
-        const actual = await runMiddleware(_.findAPreprint({ doesPreprintExist: () => TE.of(false) }), connection)()
+    test.prop([
+      fc.connection({ body: fc.record({ preprint: fc.preprintDoi() }), method: fc.constant('POST') }),
+      fc.option(fc.user(), { nil: undefined }),
+    ])("with a preprint DOI that doesn't exist", async (connection, user) => {
+      const actual = await runMiddleware(
+        _.findAPreprint({
+          doesPreprintExist: () => TE.of(false),
+          getUser: () => M.of(user),
+        }),
+        connection,
+      )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.BadRequest },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.BadRequest },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
 
-    test.prop([fc.connection({ body: fc.record({ preprint: fc.preprintDoi() }), method: fc.constant('POST') })])(
-      "when we can't see if the preprint exists",
-      async connection => {
-        const actual = await runMiddleware(
-          _.findAPreprint({ doesPreprintExist: () => TE.left('unavailable') }),
-          connection,
-        )()
+    test.prop([
+      fc.connection({
+        body: fc.record({ preprint: fc.preprintDoi() }),
+        method: fc.constant('POST'),
+      }),
+      fc.option(fc.user(), { nil: undefined }),
+    ])("when we can't see if the preprint exists", async (connection, user) => {
+      const actual = await runMiddleware(
+        _.findAPreprint({ doesPreprintExist: () => TE.left('unavailable'), getUser: () => M.of(user) }),
+        connection,
+      )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
 
     test.prop([
       fc.connection({
         body: fc.record({ doi: fc.oneof(fc.string(), fc.doi()) }, { withDeletedKeys: true }),
         method: fc.constant('POST'),
       }),
-    ])('with a non-preprint DOI', async connection => {
+      fc.option(fc.user(), { nil: undefined }),
+    ])('with a non-preprint DOI', async (connection, user) => {
       const actual = await runMiddleware(
         _.findAPreprint({
           doesPreprintExist: () => () => Promise.reject('should not be called'),
+          getUser: () => M.of(user),
         }),
         connection,
       )()

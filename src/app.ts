@@ -134,6 +134,12 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
                 .exhaustive(),
             ),
           ),
+          getUser: () =>
+            pipe(
+              getSession(),
+              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
+              RM.orElseW(() => RM.right(undefined)),
+            )(env),
         })),
       ),
     ),

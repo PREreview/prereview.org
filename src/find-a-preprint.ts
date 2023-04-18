@@ -17,6 +17,7 @@ import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { PreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
 import { findAPreprintMatch, preprintMatch } from './routes'
+import { User, getUser } from './user'
 
 export interface DoesPreprintExistEnv {
   doesPreprintExist: (doi: PreprintId['doi']) => TE.TaskEither<'unavailable', boolean>
@@ -38,7 +39,8 @@ const doesPreprintExist = (doi: PreprintId['doi']) =>
   )
 
 const showFindAPreprintPage = pipe(
-  RM.rightReader(createPage(E.right(undefined))),
+  getUser,
+  chainReaderKW(user => createPage(E.right(undefined), user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -70,8 +72,8 @@ const showUnsupportedUrlPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showFailureMessage = pipe(
-  RM.rightReader(failureMessage()),
+const showFailureMessage = flow(
+  fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -137,12 +139,17 @@ const lookupPreprint = pipe(
   ),
   RM.ichainMiddlewareK(doi => seeOther(format(preprintMatch.formatter, { doi }))),
   RM.orElseW(error =>
-    match(error)
-      .with({ _tag: 'UnknownPreprintE', actual: P.select() }, showUnknownPreprintPage)
-      .with({ _tag: 'UnsupportedDoiE', actual: P.select() }, showUnsupportedDoiPage)
-      .with({ _tag: 'UnsupportedUrlE', actual: P.select() }, showUnsupportedUrlPage)
-      .with('unavailable', () => showFailureMessage)
-      .otherwise(flow(E.left, showFindAPreprintErrorPage)),
+    pipe(
+      getUser,
+      RM.ichainW(user =>
+        match(error)
+          .with({ _tag: 'UnknownPreprintE', actual: P.select() }, doi => showUnknownPreprintPage(doi, user))
+          .with({ _tag: 'UnsupportedDoiE' }, () => showUnsupportedDoiPage(user))
+          .with({ _tag: 'UnsupportedUrlE' }, () => showUnsupportedUrlPage(user))
+          .with('unavailable', () => showFailureMessage(user))
+          .otherwise(flow(E.left, form => showFindAPreprintErrorPage(form, user))),
+      ),
+    ),
   ),
 )
 
@@ -180,7 +187,7 @@ type SubmittedLookupPreprint = E.Either<InvalidE, Doi>
 type UnsubmittedLookupPreprint = E.Right<undefined>
 type LookupPreprint = SubmittedLookupPreprint | UnsubmittedLookupPreprint
 
-function createPage(lookupPreprint: LookupPreprint) {
+function createPage(lookupPreprint: LookupPreprint, user?: User) {
   const error = E.isLeft(lookupPreprint)
 
   return page({
@@ -257,10 +264,11 @@ function createPage(lookupPreprint: LookupPreprint) {
     `,
     js: error ? ['error-summary.js'] : [],
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
-function createUnknownPreprintPage(doi: PreprintId['doi']) {
+function createUnknownPreprintPage(doi: PreprintId['doi'], user?: User) {
   return page({
     title: plainText`Sorry, we don’t know this preprint`,
     content: html`
@@ -303,10 +311,11 @@ function createUnknownPreprintPage(doi: PreprintId['doi']) {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
-function createUnsupportedDoiPage() {
+function createUnsupportedDoiPage(user?: User) {
   return page({
     title: plainText`Sorry, we don’t support this DOI`,
     content: html`
@@ -327,10 +336,11 @@ function createUnsupportedDoiPage() {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
-function createUnsupportedUrlPage() {
+function createUnsupportedUrlPage(user?: User) {
   return page({
     title: plainText`Sorry, we don’t support this URL`,
     content: html`
@@ -353,10 +363,11 @@ function createUnsupportedUrlPage() {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
-function failureMessage() {
+function failureMessage(user?: User) {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
@@ -369,6 +380,7 @@ function failureMessage() {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
@@ -377,4 +389,11 @@ function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E =
   f: (...a: A) => Reader<R, B>,
 ): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
   return (...a) => RM.rightReader(f(...a))
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function chainReaderKW<R2, A, B>(
+  f: (a: A) => Reader<R2, B>,
+): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
+  return RM.chainW(fromReaderK(f))
 }
