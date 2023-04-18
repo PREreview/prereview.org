@@ -18,6 +18,7 @@ import { page } from './page'
 import { PreprintId } from './preprint-id'
 import { preprintMatch } from './routes'
 import { renderDate } from './time'
+import { User, getUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
@@ -50,21 +51,23 @@ const sendPage = flow(
 
 export const review = flow(
   RM.fromReaderTaskEitherK(getPrereview),
-  RM.ichainW(sendPage),
+  RM.bindTo('prereview'),
+  RM.apSW('user', getUser),
+  RM.ichainW(({ prereview, user }) => sendPage(prereview, user)),
   RM.orElseW(error =>
     match(error)
       .with({ status: Status.NotFound }, () => notFound)
-      .otherwise(() => showFailureMessage),
+      .otherwise(() => pipe(getUser, RM.ichainW(showFailureMessage))),
   ),
 )
 
-const showFailureMessage = pipe(
-  RM.rightReader(failureMessage()),
+const showFailureMessage = flow(
+  fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function failureMessage() {
+function failureMessage(user?: User) {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
@@ -77,10 +80,11 @@ function failureMessage() {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
-function createPage(review: Prereview) {
+function createPage(review: Prereview, user?: User) {
   return page({
     title: plainText`PREreview of “${review.preprint.title}”`,
     content: html`
@@ -137,6 +141,7 @@ function createPage(review: Prereview) {
       </main>
     `,
     skipLinks: [[html`Skip to PREreview`, '#prereview']],
+    user,
   })
 }
 

@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import * as _ from '../src/review'
 import * as fc from './fc'
@@ -26,10 +27,11 @@ describe('review', () => {
         }),
         text: fc.html(),
       }),
-    ])('when the review can be loaded', async (id, connection, prereview) => {
+      fc.option(fc.user(), { nil: undefined }),
+    ])('when the review can be loaded', async (id, connection, prereview, user) => {
       const getPrereview: Mock<_.GetPrereviewEnv['getPrereview']> = jest.fn(_ => TE.right(prereview))
 
-      const actual = await runMiddleware(_.review(id)({ getPrereview }), connection)()
+      const actual = await runMiddleware(_.review(id)({ getPrereview, getUser: () => M.of(user) }), connection)()
 
       expect(actual).toStrictEqual(
         E.right([
@@ -41,31 +43,36 @@ describe('review', () => {
       expect(getPrereview).toHaveBeenCalledWith(id)
     })
 
-    test.prop([fc.integer(), fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') })])(
-      'when the review is not found',
-      async (id, connection) => {
-        const actual = await runMiddleware(
-          _.review(id)({ getPrereview: () => TE.left({ status: Status.NotFound }) }),
-          connection,
-        )()
+    test.prop([
+      fc.integer(),
+      fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+      fc.option(fc.user(), { nil: undefined }),
+    ])('when the review is not found', async (id, connection, user) => {
+      const actual = await runMiddleware(
+        _.review(id)({ getPrereview: () => TE.left({ status: Status.NotFound }), getUser: () => M.of(user) }),
+        connection,
+      )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.NotFound },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.NotFound },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
 
     test.prop([
       fc.integer(),
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.anything(),
-    ])('when the review cannot be loaded', async (id, connection, error) => {
-      const actual = await runMiddleware(_.review(id)({ getPrereview: () => TE.left(error) }), connection)()
+      fc.option(fc.user(), { nil: undefined }),
+    ])('when the review cannot be loaded', async (id, connection, error, user) => {
+      const actual = await runMiddleware(
+        _.review(id)({ getPrereview: () => TE.left(error), getUser: () => M.of(user) }),
+        connection,
+      )()
 
       expect(actual).toStrictEqual(
         E.right([

@@ -191,6 +191,12 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
             ...env,
             getPreprintTitle: flip(getPreprintTitle)(env),
           }),
+          getUser: () =>
+            pipe(
+              getSession(),
+              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
+              RM.orElseW(() => RM.right(undefined)),
+            )(env),
         })),
       ),
     ),
