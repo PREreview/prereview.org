@@ -15,7 +15,7 @@ import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { FathomEnv, PhaseEnv, page } from '../page'
 import { PublicUrlEnv } from '../public-url'
 import { preprintMatch, writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../routes'
-import { getUserFromSession } from '../user'
+import { User, getUserFromSession } from '../user'
 import { Form, getForm, nextFormMatch } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -25,8 +25,12 @@ export const writeReviewStart = flow(
     pipe(
       getSession(),
       chainOptionKW(() => 'no-session' as const)(getUserFromSession),
-      RM.chainReaderTaskEitherKW(user => getForm(user.orcid, preprint.doi)),
-      RM.ichainW(form => showCarryOnPage(preprint, form)),
+      RM.bindTo('user'),
+      RM.bindW(
+        'form',
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
+      ),
+      RM.ichainW(({ form, user }) => showCarryOnPage(preprint, form, user)),
       RM.orElseW(error =>
         match(error)
           .with(
@@ -55,7 +59,7 @@ const showCarryOnPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function carryOnPage(preprint: Preprint, form: Form) {
+function carryOnPage(preprint: Preprint, form: Form, user: User) {
   return page({
     title: plainText`Write a PREreview`,
     content: html`
@@ -80,6 +84,7 @@ function carryOnPage(preprint: Preprint, form: Form) {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 

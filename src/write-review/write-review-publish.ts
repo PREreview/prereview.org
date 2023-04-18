@@ -217,6 +217,7 @@ function publishForm(preprint: Preprint, review: CompletedForm, user: User) {
     `,
     js: ['single-use-form.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    user,
   })
 }
 

@@ -68,31 +68,31 @@ export const writeReviewReview = flow(
 )
 
 const showWriteReviewForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
-    writeReviewForm(preprint, { review: E.right(form.review) }),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+    writeReviewForm(preprint, { review: E.right(form.review) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showWriteReviewErrorForm = (preprint: Preprint) =>
+const showWriteReviewErrorForm = (preprint: Preprint, user: User) =>
   flow(
-    fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form)),
+    fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
 const showPasteReviewForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
-    pasteReviewForm(preprint, { review: E.right(form.review) }),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+    pasteReviewForm(preprint, { review: E.right(form.review) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showPasteReviewErrorForm = (preprint: Preprint) =>
+const showPasteReviewErrorForm = (preprint: Preprint, user: User) =>
   flow(
-    fromReaderK((form: PasteReviewForm) => pasteReviewForm(preprint, form)),
+    fromReaderK((form: PasteReviewForm) => pasteReviewForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -121,7 +121,7 @@ const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ review: P.any }, showWriteReviewErrorForm(preprint))
+        .with({ review: P.any }, showWriteReviewErrorForm(preprint, user))
         .exhaustive(),
     ),
   )
@@ -144,7 +144,7 @@ const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ review: P.any }, showPasteReviewErrorForm(preprint))
+        .with({ review: P.any }, showPasteReviewErrorForm(preprint, user))
         .exhaustive(),
     ),
   )
@@ -164,7 +164,7 @@ type PasteReviewForm = {
   readonly review: E.Either<MissingE, Html | undefined>
 }
 
-function writeReviewForm(preprint: Preprint, form: WriteReviewForm) {
+function writeReviewForm(preprint: Preprint, form: WriteReviewForm, user: User) {
   const error = hasAnError(form)
 
   return page({
@@ -300,10 +300,11 @@ ${turndown.turndown(review)}</textarea
     `,
     js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    user,
   })
 }
 
-function pasteReviewForm(preprint: Preprint, form: PasteReviewForm) {
+function pasteReviewForm(preprint: Preprint, form: PasteReviewForm, user: User) {
   const error = hasAnError(form)
 
   return page({
@@ -392,6 +393,7 @@ ${turndown.turndown(review.toString())}</textarea
     `,
     js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    user,
   })
 }
 

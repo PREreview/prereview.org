@@ -56,16 +56,16 @@ export const writeReviewAlreadyWritten = flow(
 )
 
 const showAlreadyWrittenForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
-    alreadyWrittenForm(preprint, { alreadyWritten: E.right(form.alreadyWritten) }),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+    alreadyWrittenForm(preprint, { alreadyWritten: E.right(form.alreadyWritten) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showAlreadyWrittenErrorForm = (preprint: Preprint) =>
+const showAlreadyWrittenErrorForm = (preprint: Preprint, user: User) =>
   flow(
-    fromReaderK((form: AlreadyWrittenForm) => alreadyWrittenForm(preprint, form)),
+    fromReaderK((form: AlreadyWrittenForm) => alreadyWrittenForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -86,7 +86,7 @@ const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; prepri
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ alreadyWritten: P.any }, showAlreadyWrittenErrorForm(preprint))
+        .with({ alreadyWritten: P.any }, showAlreadyWrittenErrorForm(preprint, user))
         .exhaustive(),
     ),
   )
@@ -102,7 +102,7 @@ type AlreadyWrittenForm = {
   readonly alreadyWritten: E.Either<MissingE, 'yes' | 'no' | undefined>
 }
 
-function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm) {
+function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm, user: User) {
   const error = hasAnError(form)
 
   return page({
@@ -204,6 +204,7 @@ function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm) {
     `,
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    user,
   })
 }
 

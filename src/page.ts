@@ -1,3 +1,4 @@
+import { format } from 'fp-ts-routing'
 import { Eq } from 'fp-ts/Eq'
 import * as R from 'fp-ts/Reader'
 import * as RA from 'fp-ts/ReadonlyArray'
@@ -5,6 +6,8 @@ import { pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { Html, PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
+import { logOutMatch } from './routes'
+import { User } from './user'
 
 export interface FathomEnv {
   readonly fathomId?: string
@@ -23,9 +26,17 @@ type Page = {
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
+  readonly user?: User
 }
 
-export function page({ title, type, content, skipLinks = [], js = [] }: Page): R.Reader<FathomEnv & PhaseEnv, Html> {
+export function page({
+  title,
+  type,
+  content,
+  skipLinks = [],
+  js = [],
+  user,
+}: Page): R.Reader<FathomEnv & PhaseEnv, Html> {
   return R.asks(
     ({ fathomId, phase }) => html`
       <!DOCTYPE html>
@@ -76,6 +87,7 @@ export function page({ title, type, content, skipLinks = [], js = [] }: Page): R
                   <ul>
                     <li><a href="https://content.prereview.org/">Blog</a></li>
                     <li><a href="https://content.prereview.org/mission/">About</a></li>
+                    ${user ? html`<li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
                   </ul>
                 </nav>
               </div>

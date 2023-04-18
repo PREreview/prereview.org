@@ -54,16 +54,16 @@ export const writeReviewConduct = flow(
 )
 
 const showCodeOfConductForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
-    codeOfConductForm(preprint, { conduct: E.right(form.conduct) }),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+    codeOfConductForm(preprint, { conduct: E.right(form.conduct) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showCodeOfConductErrorForm = (preprint: Preprint) =>
+const showCodeOfConductErrorForm = (preprint: Preprint, user: User) =>
   flow(
-    fromReaderK((form: CodeOfConductForm) => codeOfConductForm(preprint, form)),
+    fromReaderK((form: CodeOfConductForm) => codeOfConductForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -84,7 +84,7 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ conduct: P.any }, showCodeOfConductErrorForm(preprint))
+        .with({ conduct: P.any }, showCodeOfConductErrorForm(preprint, user))
         .exhaustive(),
     ),
   )
@@ -100,7 +100,7 @@ type CodeOfConductForm = {
   readonly conduct: E.Either<MissingE, 'yes' | undefined>
 }
 
-function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm) {
+function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm, user: User) {
   const error = hasAnError(form)
 
   return page({
@@ -219,6 +219,7 @@ function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm) {
     `,
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    user,
   })
 }
 

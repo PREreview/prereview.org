@@ -58,19 +58,23 @@ export const writeReviewAuthors = flow(
 )
 
 const showAuthorsForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
-    authorsForm(preprint, {
-      moreAuthors: E.right(form.moreAuthors),
-      moreAuthorsApproved: E.right(form.moreAuthorsApproved),
-    }),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+    authorsForm(
+      preprint,
+      {
+        moreAuthors: E.right(form.moreAuthors),
+        moreAuthorsApproved: E.right(form.moreAuthorsApproved),
+      },
+      user,
+    ),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showAuthorsErrorForm = (preprint: Preprint) =>
+const showAuthorsErrorForm = (preprint: Preprint, user: User) =>
   flow(
-    fromReaderK((form: AuthorsForm) => authorsForm(preprint, form)),
+    fromReaderK((form: AuthorsForm) => authorsForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -110,7 +114,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ moreAuthors: P.any }, showAuthorsErrorForm(preprint))
+        .with({ moreAuthors: P.any }, showAuthorsErrorForm(preprint, user))
         .exhaustive(),
     ),
   )
@@ -134,7 +138,7 @@ type AuthorsForm = {
   readonly moreAuthorsApproved: E.Either<MissingE, 'yes' | undefined>
 }
 
-function authorsForm(preprint: Preprint, form: AuthorsForm) {
+function authorsForm(preprint: Preprint, form: AuthorsForm, user: User) {
   const error = hasAnError(form)
 
   return page({
@@ -302,6 +306,7 @@ function authorsForm(preprint: Preprint, form: AuthorsForm) {
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    user,
   })
 }
 

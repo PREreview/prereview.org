@@ -11,7 +11,7 @@ import { html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
-import { getUserFromSession } from '../user'
+import { User, getUserFromSession } from '../user'
 import { Form, getForm, redirectToNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -53,7 +53,7 @@ export const writeReviewAddAuthors = flow(
 )
 
 const showCannotAddAuthorsForm = flow(
-  fromReaderK(({ preprint }: { preprint: Preprint }) => cannotAddAuthorsForm(preprint)),
+  fromReaderK(({ preprint, user }: { preprint: Preprint; user: User }) => cannotAddAuthorsForm(preprint, user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -61,7 +61,7 @@ const showCannotAddAuthorsForm = flow(
 const handleCannotAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
   redirectToNextForm(preprint.doi)(form)
 
-function cannotAddAuthorsForm(preprint: Preprint) {
+function cannotAddAuthorsForm(preprint: Preprint, user: User) {
   return page({
     title: plainText`Add more authors – PREreview of “${preprint.title}”`,
     content: html`
@@ -88,6 +88,7 @@ function cannotAddAuthorsForm(preprint: Preprint) {
     `,
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    user,
   })
 }
 

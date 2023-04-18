@@ -56,19 +56,23 @@ export const writeReviewCompetingInterests = flow(
 )
 
 const showCompetingInterestsForm = flow(
-  fromReaderK(({ form, preprint }: { form: Form; preprint: Preprint }) =>
-    competingInterestsForm(preprint, {
-      competingInterests: E.right(form.competingInterests),
-      competingInterestsDetails: E.right(form.competingInterestsDetails),
-    }),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+    competingInterestsForm(
+      preprint,
+      {
+        competingInterests: E.right(form.competingInterests),
+        competingInterestsDetails: E.right(form.competingInterestsDetails),
+      },
+      user,
+    ),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showCompetingInterestsErrorForm = (preprint: Preprint) =>
+const showCompetingInterestsErrorForm = (preprint: Preprint, user: User) =>
   flow(
-    fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form)),
+    fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -101,7 +105,7 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint))
+        .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, user))
         .exhaustive(),
     ),
   )
@@ -121,7 +125,7 @@ type CompetingInterestsForm = {
   readonly competingInterestsDetails: E.Either<MissingE, NonEmptyString | undefined>
 }
 
-function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm) {
+function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm, user: User) {
   const error = hasAnError(form)
 
   return page({
@@ -286,6 +290,7 @@ ${match(form.competingInterestsDetails)
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    user,
   })
 }
 
