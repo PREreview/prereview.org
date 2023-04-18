@@ -4,6 +4,7 @@ import cookieSignature from 'cookie-signature'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { UserC } from '../../src/user'
@@ -54,7 +55,14 @@ describe('writeReviewPersona', () => {
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const actual = await runMiddleware(
-        _.writeReviewPersona(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+        _.writeReviewPersona(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
         connection,
       )()
 
@@ -122,7 +130,14 @@ describe('writeReviewPersona', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewPersona(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+        _.writeReviewPersona(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
         connection,
       )()
 
@@ -170,7 +185,14 @@ describe('writeReviewPersona', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewPersona(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+        _.writeReviewPersona(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
         connection,
       )()
 
@@ -227,7 +249,14 @@ describe('writeReviewPersona', () => {
       const getPreprintTitle = () => TE.left('unavailable' as const)
 
       const actual = await runMiddleware(
-        _.writeReviewPersona(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+        _.writeReviewPersona(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
         connection,
       )()
 
@@ -279,7 +308,14 @@ describe('writeReviewPersona', () => {
       const getPreprintTitle = () => TE.left('not-found' as const)
 
       const actual = await runMiddleware(
-        _.writeReviewPersona(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+        _.writeReviewPersona(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
         connection,
       )()
 
@@ -306,7 +342,14 @@ describe('writeReviewPersona', () => {
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReviewPersona(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+      _.writeReviewPersona(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(undefined),
+        secret,
+        sessionCookie,
+        sessionStore,
+      }),
       connection,
     )()
 
@@ -363,7 +406,14 @@ describe('writeReviewPersona', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewPersona(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+        _.writeReviewPersona(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
         connection,
       )()
 

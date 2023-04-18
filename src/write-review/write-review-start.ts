@@ -15,7 +15,7 @@ import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { FathomEnv, PhaseEnv, page } from '../page'
 import { PublicUrlEnv } from '../public-url'
 import { preprintMatch, writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../routes'
-import { User, getUserFromSession } from '../user'
+import { GetUserEnv, User, getUserFromSession } from '../user'
 import { Form, getForm, nextFormMatch } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -35,9 +35,14 @@ export const writeReviewStart = flow(
         match(error)
           .with(
             'no-form',
-            fromMiddlewareK<FathomEnv & PhaseEnv & PublicUrlEnv & OAuthEnv, [], void, StatusOpen, ResponseEnded, never>(
-              () => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.doi })),
-            ),
+            fromMiddlewareK<
+              GetUserEnv & FathomEnv & PhaseEnv & PublicUrlEnv & OAuthEnv,
+              [],
+              void,
+              StatusOpen,
+              ResponseEnded,
+              never
+            >(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.doi }))),
           )
           .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { doi: preprint.doi }))
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)

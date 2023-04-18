@@ -4,6 +4,7 @@ import cookieSignature from 'cookie-signature'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { UserC } from '../../src/user'
@@ -53,7 +54,14 @@ describe('writeReview', () => {
         const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
         const actual = await runMiddleware(
-          _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+          _.writeReview(preprintDoi)({
+            formStore,
+            getPreprintTitle,
+            getUser: () => M.of(user),
+            secret,
+            sessionCookie,
+            sessionStore,
+          }),
           connection,
         )()
 
@@ -98,7 +106,14 @@ describe('writeReview', () => {
         const getPreprintTitle = () => TE.right(preprintTitle)
 
         const actual = await runMiddleware(
-          _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+          _.writeReview(preprintDoi)({
+            formStore,
+            getPreprintTitle,
+            getUser: () => M.of(user),
+            secret,
+            sessionCookie,
+            sessionStore,
+          }),
           connection,
         )()
 
@@ -128,7 +143,14 @@ describe('writeReview', () => {
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+      _.writeReview(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(undefined),
+        secret,
+        sessionCookie,
+        sessionStore,
+      }),
       connection,
     )()
 
@@ -149,13 +171,21 @@ describe('writeReview', () => {
     }),
     fc.cookieName(),
     fc.string(),
-  ])('when the preprint cannot be loaded', async (preprintDoi, connection, sessionCookie, secret) => {
+    fc.option(fc.user(), { nil: undefined }),
+  ])('when the preprint cannot be loaded', async (preprintDoi, connection, sessionCookie, secret, user) => {
     const sessionStore = new Keyv()
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.left('unavailable' as const)
 
     const actual = await runMiddleware(
-      _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+      _.writeReview(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(user),
+        secret,
+        sessionCookie,
+        sessionStore,
+      }),
       connection,
     )()
 
@@ -177,13 +207,21 @@ describe('writeReview', () => {
     }),
     fc.cookieName(),
     fc.string(),
-  ])('when the preprint is not found', async (preprintDoi, connection, sessionCookie, secret) => {
+    fc.option(fc.user(), { nil: undefined }),
+  ])('when the preprint is not found', async (preprintDoi, connection, sessionCookie, secret, user) => {
     const sessionStore = new Keyv()
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.left('not-found' as const)
 
     const actual = await runMiddleware(
-      _.writeReview(preprintDoi)({ formStore, getPreprintTitle, secret, sessionCookie, sessionStore }),
+      _.writeReview(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(user),
+        secret,
+        sessionCookie,
+        sessionStore,
+      }),
       connection,
     )()
 

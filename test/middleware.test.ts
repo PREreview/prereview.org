@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import * as _ from '../src/middleware'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -31,8 +32,8 @@ describe('middleware', () => {
     )
   })
 
-  test.prop([fc.connection()])('notFound', async connection => {
-    const actual = await runMiddleware(_.notFound({}), connection)()
+  test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined })])('notFound', async (connection, user) => {
+    const actual = await runMiddleware(_.notFound({ getUser: () => M.of(user) }), connection)()
 
     expect(actual).toStrictEqual(
       E.right([
@@ -44,16 +45,19 @@ describe('middleware', () => {
     )
   })
 
-  test.prop([fc.connection()])('serviceUnavailable', async connection => {
-    const actual = await runMiddleware(_.serviceUnavailable({}), connection)()
+  test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined })])(
+    'serviceUnavailable',
+    async (connection, user) => {
+      const actual = await runMiddleware(_.serviceUnavailable({ getUser: () => M.of(user) }), connection)()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 })

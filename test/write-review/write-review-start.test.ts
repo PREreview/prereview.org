@@ -4,6 +4,7 @@ import cookieSignature from 'cookie-signature'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { UserC } from '../../src/user'
@@ -69,6 +70,7 @@ describe('writeReviewStart', () => {
           _.writeReviewStart(preprintDoi)({
             formStore,
             getPreprintTitle,
+            getUser: () => M.of(user),
             oauth,
             publicUrl,
             secret,
@@ -124,6 +126,7 @@ describe('writeReviewStart', () => {
           _.writeReviewStart(preprintDoi)({
             formStore,
             getPreprintTitle,
+            getUser: () => M.of(user),
             oauth,
             publicUrl,
             secret,
@@ -178,6 +181,7 @@ describe('writeReviewStart', () => {
         _.writeReviewStart(preprintDoi)({
           formStore,
           getPreprintTitle,
+          getUser: () => M.of(undefined),
           oauth,
           publicUrl,
           secret,
@@ -240,6 +244,7 @@ describe('writeReviewStart', () => {
       _.writeReviewStart(preprintDoi)({
         formStore,
         getPreprintTitle,
+        getUser: () => M.of(undefined),
         oauth,
         publicUrl,
         secret,
@@ -275,31 +280,36 @@ describe('writeReviewStart', () => {
     }),
     fc.cookieName(),
     fc.string(),
-  ])('when the preprint is not found', async (oauth, publicUrl, preprintDoi, connection, sessionCookie, secret) => {
-    const sessionStore = new Keyv()
-    const formStore = new Keyv()
-    const getPreprintTitle = () => TE.left('not-found' as const)
+    fc.option(fc.user(), { nil: undefined }),
+  ])(
+    'when the preprint is not found',
+    async (oauth, publicUrl, preprintDoi, connection, sessionCookie, secret, user) => {
+      const sessionStore = new Keyv()
+      const formStore = new Keyv()
+      const getPreprintTitle = () => TE.left('not-found' as const)
 
-    const actual = await runMiddleware(
-      _.writeReviewStart(preprintDoi)({
-        formStore,
-        getPreprintTitle,
-        oauth,
-        publicUrl,
-        secret,
-        sessionCookie,
-        sessionStore,
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.writeReviewStart(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+          oauth,
+          publicUrl,
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.NotFound },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.NotFound },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 })

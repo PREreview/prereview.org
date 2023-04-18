@@ -4,6 +4,7 @@ import cookieSignature from 'cookie-signature'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import all from 'it-all'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
@@ -55,6 +56,7 @@ describe('writeReviewPublished', () => {
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintDoi)({
           getPreprintTitle,
+          getUser: () => M.of(user),
           publicUrl,
           secret,
           sessionCookie,
@@ -103,6 +105,7 @@ describe('writeReviewPublished', () => {
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintDoi)({
           getPreprintTitle,
+          getUser: () => M.of(user),
           publicUrl: new URL('http://example.com'),
           secret,
           sessionCookie,
@@ -158,6 +161,7 @@ describe('writeReviewPublished', () => {
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintDoi)({
           getPreprintTitle,
+          getUser: () => M.of(user),
           publicUrl: new URL('http://example.com'),
           secret,
           sessionCookie,
@@ -208,6 +212,7 @@ describe('writeReviewPublished', () => {
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintDoi)({
           getPreprintTitle,
+          getUser: () => M.of(user),
           publicUrl: new URL('http://example.com'),
           secret,
           sessionCookie,
@@ -240,6 +245,7 @@ describe('writeReviewPublished', () => {
     const actual = await runMiddleware(
       _.writeReviewPublished(preprintDoi)({
         getPreprintTitle,
+        getUser: () => M.of(undefined),
         publicUrl: new URL('http://example.com'),
         secret,
         sessionCookie,

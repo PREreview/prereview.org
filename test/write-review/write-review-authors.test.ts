@@ -4,6 +4,7 @@ import cookieSignature from 'cookie-signature'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { UserC } from '../../src/user'
@@ -63,6 +64,7 @@ describe('writeReviewAuthors', () => {
           _.writeReviewAuthors(preprintDoi)({
             formStore,
             getPreprintTitle,
+            getUser: () => M.of(user),
             secret,
             sessionCookie,
             sessionStore,
@@ -135,6 +137,7 @@ describe('writeReviewAuthors', () => {
           _.writeReviewAuthors(preprintDoi)({
             formStore,
             getPreprintTitle,
+            getUser: () => M.of(user),
             secret,
             sessionCookie,
             sessionStore,
@@ -199,6 +202,7 @@ describe('writeReviewAuthors', () => {
             _.writeReviewAuthors(preprintDoi)({
               formStore,
               getPreprintTitle,
+              getUser: () => M.of(user),
               secret,
               sessionCookie,
               sessionStore,
@@ -274,6 +278,7 @@ describe('writeReviewAuthors', () => {
             _.writeReviewAuthors(preprintDoi)({
               formStore,
               getPreprintTitle,
+              getUser: () => M.of(user),
               secret,
               sessionCookie,
               sessionStore,
@@ -347,6 +352,7 @@ describe('writeReviewAuthors', () => {
           _.writeReviewAuthors(preprintDoi)({
             formStore,
             getPreprintTitle,
+            getUser: () => M.of(user),
             secret,
             sessionCookie,
             sessionStore,
@@ -422,6 +428,7 @@ describe('writeReviewAuthors', () => {
           _.writeReviewAuthors(preprintDoi)({
             formStore,
             getPreprintTitle,
+            getUser: () => M.of(user),
             secret,
             sessionCookie,
             sessionStore,
@@ -480,6 +487,7 @@ describe('writeReviewAuthors', () => {
         _.writeReviewAuthors(preprintDoi)({
           formStore,
           getPreprintTitle,
+          getUser: () => M.of(user),
           secret,
           sessionCookie,
           sessionStore,
@@ -547,6 +555,7 @@ describe('writeReviewAuthors', () => {
         _.writeReviewAuthors(preprintDoi)({
           formStore,
           getPreprintTitle,
+          getUser: () => M.of(user),
           secret,
           sessionCookie,
           sessionStore,
@@ -609,6 +618,7 @@ describe('writeReviewAuthors', () => {
         _.writeReviewAuthors(preprintDoi)({
           formStore,
           getPreprintTitle,
+          getUser: () => M.of(user),
           secret,
           sessionCookie,
           sessionStore,
@@ -648,6 +658,7 @@ describe('writeReviewAuthors', () => {
       _.writeReviewAuthors(preprintDoi)({
         formStore,
         getPreprintTitle,
+        getUser: () => M.of(undefined),
         secret,
         sessionCookie,
         sessionStore,
@@ -715,6 +726,7 @@ describe('writeReviewAuthors', () => {
         _.writeReviewAuthors(preprintDoi)({
           formStore,
           getPreprintTitle,
+          getUser: () => M.of(user),
           secret,
           sessionCookie,
           sessionStore,

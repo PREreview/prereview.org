@@ -4,6 +4,7 @@ import cookieSignature from 'cookie-signature'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { UserC } from '../../src/user'
@@ -55,6 +56,7 @@ describe('writeReviewPublish', () => {
         _.writeReviewPublish(preprintDoi)({
           formStore,
           getPreprintTitle,
+          getUser: () => M.of(user),
           publishPrereview,
           secret,
           sessionCookie,
@@ -139,6 +141,7 @@ describe('writeReviewPublish', () => {
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintDoi)({
           getPreprintTitle,
+          getUser: () => M.of(user),
           formStore,
           publishPrereview: () => TE.left(''),
           secret,
@@ -185,6 +188,7 @@ describe('writeReviewPublish', () => {
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintDoi)({
           getPreprintTitle,
+          getUser: () => M.of(user),
           formStore,
           publishPrereview: () => TE.left(''),
           secret,
@@ -239,6 +243,7 @@ describe('writeReviewPublish', () => {
         _.writeReviewPublish(preprintDoi)({
           formStore,
           getPreprintTitle,
+          getUser: () => M.of(user),
           publishPrereview,
           secret,
           sessionCookie,
@@ -287,6 +292,7 @@ describe('writeReviewPublish', () => {
         _.writeReviewPublish(preprintDoi)({
           formStore,
           getPreprintTitle,
+          getUser: () => M.of(user),
           publishPrereview,
           secret,
           sessionCookie,
@@ -320,6 +326,7 @@ describe('writeReviewPublish', () => {
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintDoi)({
         getPreprintTitle,
+        getUser: () => M.of(undefined),
         formStore,
         publishPrereview: () => TE.left(''),
         secret,
@@ -373,6 +380,7 @@ describe('writeReviewPublish', () => {
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintDoi)({
           getPreprintTitle,
+          getUser: () => M.of(user),
           formStore,
           publishPrereview: () => TE.left(response),
           secret,

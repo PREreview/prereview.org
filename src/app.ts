@@ -190,6 +190,12 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getPreprintDoiFromUuid: flip(getPreprintDoiFromLegacyPreviewUuid)(env),
+          getUser: () =>
+            pipe(
+              getSession(),
+              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
+              RM.orElseW(() => RM.right(undefined)),
+            )(env),
         })),
       ),
     ),
@@ -270,6 +276,12 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               RTE.chainFirstW(flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))),
             ),
           )(env),
+          getUser: () =>
+            pipe(
+              getSession(),
+              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
+              RM.orElseW(() => RM.right(undefined)),
+            )(env),
         })),
       ),
     ),
@@ -292,7 +304,23 @@ const getPreprintTitle = flow(
 
 const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
 
-const appMiddleware = pipe(routerMiddleware, RM.orElseW(handleError))
+const appMiddleware = pipe(
+  routerMiddleware,
+  RM.orElseW(
+    flow(
+      handleError,
+      R.local((env: AppEnv) => ({
+        ...env,
+        getUser: () =>
+          pipe(
+            getSession(),
+            chainOptionKW(() => 'no-session' as const)(getUserFromSession),
+            RM.orElseW(() => RM.right(undefined)),
+          )(env),
+      })),
+    ),
+  ),
+)
 
 export const app = (deps: AppEnv) => {
   const app = express()

@@ -1,17 +1,20 @@
+import { Reader } from 'fp-ts/Reader'
 import { pipe } from 'fp-ts/function'
 import { HttpError } from 'http-errors'
-import { Status } from 'hyper-ts'
+import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
+import { User, getUser } from './user'
 
 export function handleError(error: HttpError<typeof Status.NotFound | typeof Status.ServiceUnavailable>) {
   return pipe(
-    RM.rightReader(
+    getUser,
+    chainReaderKW(
       match(error)
-        .with({ status: Status.NotFound }, notFoundPage)
-        .with({ status: Status.ServiceUnavailable }, problemsPage)
+        .with({ status: Status.NotFound }, () => notFoundPage)
+        .with({ status: Status.ServiceUnavailable }, () => problemsPage)
         .exhaustive(),
     ),
     RM.ichainFirst(() => RM.status(error.status)),
@@ -20,7 +23,7 @@ export function handleError(error: HttpError<typeof Status.NotFound | typeof Sta
   )
 }
 
-function notFoundPage() {
+function notFoundPage(user?: User) {
   return page({
     title: plainText`Page not found`,
     content: html`
@@ -38,10 +41,11 @@ function notFoundPage() {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
-function problemsPage() {
+function problemsPage(user?: User) {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
@@ -52,5 +56,20 @@ function problemsPage() {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
+  f: (...a: A) => Reader<R, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return (...a) => RM.rightReader(f(...a))
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function chainReaderKW<R2, A, B>(
+  f: (a: A) => Reader<R2, B>,
+): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
+  return RM.chainW(fromReaderK(f))
 }

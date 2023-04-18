@@ -224,14 +224,17 @@ describe('preprint', () => {
   })
 
   describe('redirectToPreprint', () => {
-    test.prop([fc.connection(), fc.uuid(), fc.preprintDoi()])(
+    test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined }), fc.uuid(), fc.preprintDoi()])(
       'when the DOI is found',
-      async (connection, uuid, doi) => {
+      async (connection, user, uuid, doi) => {
         const getPreprintDoiFromUuid: Mock<_.GetPreprintDoiFromUuidEnv['getPreprintDoiFromUuid']> = jest.fn(_ =>
           TE.right(doi),
         )
 
-        const actual = await runMiddleware(_.redirectToPreprint(uuid)({ getPreprintDoiFromUuid }), connection)()
+        const actual = await runMiddleware(
+          _.redirectToPreprint(uuid)({ getPreprintDoiFromUuid, getUser: () => M.of(user) }),
+          connection,
+        )()
 
         expect(actual).toStrictEqual(
           E.right([
@@ -250,36 +253,45 @@ describe('preprint', () => {
       },
     )
 
-    test.prop([fc.connection(), fc.uuid()])('when the DOI is not found', async (connection, uuid) => {
-      const actual = await runMiddleware(
-        _.redirectToPreprint(uuid)({ getPreprintDoiFromUuid: () => TE.left('not-found') }),
-        connection,
-      )()
+    test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined }), fc.uuid()])(
+      'when the DOI is not found',
+      async (connection, user, uuid) => {
+        const actual = await runMiddleware(
+          _.redirectToPreprint(uuid)({ getPreprintDoiFromUuid: () => TE.left('not-found'), getUser: () => M.of(user) }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.NotFound },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
 
-    test.prop([fc.connection(), fc.uuid()])('when the DOI is unavailable', async (connection, uuid) => {
-      const actual = await runMiddleware(
-        _.redirectToPreprint(uuid)({ getPreprintDoiFromUuid: () => TE.left('unavailable') }),
-        connection,
-      )()
+    test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined }), fc.uuid()])(
+      'when the DOI is unavailable',
+      async (connection, user, uuid) => {
+        const actual = await runMiddleware(
+          _.redirectToPreprint(uuid)({
+            getPreprintDoiFromUuid: () => TE.left('unavailable'),
+            getUser: () => M.of(user),
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
   })
 })
