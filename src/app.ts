@@ -1,7 +1,7 @@
 import express from 'express'
 import * as P from 'fp-ts-routing'
 import { Json } from 'fp-ts/Json'
-import * as M from 'fp-ts/Monoid'
+import { concatAll } from 'fp-ts/Monoid'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
@@ -232,7 +232,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           P.map(({ doi }) => writeReviewPublished(doi)),
         ),
       ],
-      M.concatAll(P.getParserMonoid()),
+      concatAll(P.getParserMonoid()),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
@@ -247,7 +247,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       ),
     ),
   ],
-  M.concatAll(P.getParserMonoid()),
+  concatAll(P.getParserMonoid()),
   P.map(flow(R.local(collapseRequests()), R.local(logFetch))),
 )
 
