@@ -397,7 +397,7 @@ describe('writeReviewCompetingInterests', () => {
       _.writeReviewCompetingInterests(preprintDoi)({
         formStore,
         getPreprintTitle,
-        getUser: () => M.of(undefined),
+        getUser: () => M.left('no-session'),
         secret,
         sessionCookie,
         sessionStore,

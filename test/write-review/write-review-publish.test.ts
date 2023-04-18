@@ -326,7 +326,7 @@ describe('writeReviewPublish', () => {
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintDoi)({
         getPreprintTitle,
-        getUser: () => M.of(undefined),
+        getUser: () => M.left('no-session'),
         formStore,
         publishPrereview: () => TE.left(''),
         secret,

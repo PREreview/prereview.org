@@ -40,6 +40,7 @@ const doesPreprintExist = (doi: PreprintId['doi']) =>
 
 const showFindAPreprintPage = pipe(
   getUser,
+  RM.orElseW(() => RM.of(undefined)),
   chainReaderKW(user => createPage(E.right(undefined), user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -141,6 +142,7 @@ const lookupPreprint = pipe(
   RM.orElseW(error =>
     pipe(
       getUser,
+      RM.orElseW(() => RM.of(undefined)),
       RM.ichainW(user =>
         match(error)
           .with({ _tag: 'UnknownPreprintE', actual: P.select() }, doi => showUnknownPreprintPage(doi, user))

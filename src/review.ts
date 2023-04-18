@@ -52,12 +52,24 @@ const sendPage = flow(
 export const review = flow(
   RM.fromReaderTaskEitherK(getPrereview),
   RM.bindTo('prereview'),
-  RM.apSW('user', getUser),
+  RM.apSW(
+    'user',
+    pipe(
+      getUser,
+      RM.orElseW(() => RM.of(undefined)),
+    ),
+  ),
   RM.ichainW(({ prereview, user }) => sendPage(prereview, user)),
   RM.orElseW(error =>
     match(error)
       .with({ status: Status.NotFound }, () => notFound)
-      .otherwise(() => pipe(getUser, RM.ichainW(showFailureMessage))),
+      .otherwise(() =>
+        pipe(
+          getUser,
+          RM.orElseW(() => RM.of(undefined)),
+          RM.ichainW(showFailureMessage),
+        ),
+      ),
   ),
 )
 

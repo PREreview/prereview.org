@@ -245,7 +245,7 @@ describe('writeReviewPublished', () => {
     const actual = await runMiddleware(
       _.writeReviewPublished(preprintDoi)({
         getPreprintTitle,
-        getUser: () => M.of(undefined),
+        getUser: () => M.left('no-session'),
         publicUrl: new URL('http://example.com'),
         secret,
         sessionCookie,

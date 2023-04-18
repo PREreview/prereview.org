@@ -13,7 +13,7 @@ describe('preprint', () => {
   describe('preprint', () => {
     test.prop([
       fc.connection(),
-      fc.option(fc.user(), { nil: undefined }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
       fc.preprint(),
       fc.array(
         fc.record({
@@ -68,7 +68,7 @@ describe('preprint', () => {
           getPreprint,
           getPrereviews,
           getRapidPrereviews,
-          getUser: () => M.of(user),
+          getUser: () => M.fromEither(user),
         }),
         connection,
       )()
@@ -85,7 +85,7 @@ describe('preprint', () => {
       expect(getRapidPrereviews).toHaveBeenCalledWith(preprint.id)
     })
 
-    test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined }), fc.preprintDoi()])(
+    test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.preprintDoi()])(
       'when the preprint is not found',
       async (connection, user, preprintDoi) => {
         const actual = await runMiddleware(
@@ -93,7 +93,7 @@ describe('preprint', () => {
             getPreprint: () => TE.left('not-found'),
             getPrereviews: () => () => Promise.reject('should not be called'),
             getRapidPrereviews: () => () => Promise.reject('should not be called'),
-            getUser: () => M.of(user),
+            getUser: () => M.fromEither(user),
           }),
           connection,
         )()
@@ -109,7 +109,7 @@ describe('preprint', () => {
       },
     )
 
-    test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined }), fc.preprintDoi()])(
+    test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.preprintDoi()])(
       'when the preprint is unavailable',
       async (connection, user, preprintDoi) => {
         const actual = await runMiddleware(
@@ -117,7 +117,7 @@ describe('preprint', () => {
             getPreprint: () => TE.left('unavailable'),
             getPrereviews: () => () => Promise.reject('should not be called'),
             getRapidPrereviews: () => () => Promise.reject('should not be called'),
-            getUser: () => M.of(user),
+            getUser: () => M.fromEither(user),
           }),
           connection,
         )()
@@ -134,7 +134,7 @@ describe('preprint', () => {
 
     test.prop([
       fc.connection(),
-      fc.option(fc.user(), { nil: undefined }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
       fc.preprint(),
       fc.array(
         fc.record({
@@ -167,7 +167,7 @@ describe('preprint', () => {
           getPreprint: () => TE.right(preprint),
           getPrereviews: () => TE.left('unavailable'),
           getRapidPrereviews: () => TE.right(rapidPrereviews),
-          getUser: () => M.of(user),
+          getUser: () => M.fromEither(user),
         }),
         connection,
       )()
@@ -184,7 +184,7 @@ describe('preprint', () => {
     test.prop([
       fc.connection(),
 
-      fc.option(fc.user(), { nil: undefined }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
       fc.preprint(),
       fc.array(
         fc.record({
@@ -208,7 +208,7 @@ describe('preprint', () => {
           getPreprint: () => TE.right(preprint),
           getPrereviews: () => TE.right(prereviews),
           getRapidPrereviews: () => TE.left('unavailable'),
-          getUser: () => M.of(user),
+          getUser: () => M.fromEither(user),
         }),
         connection,
       )()
@@ -224,7 +224,7 @@ describe('preprint', () => {
   })
 
   describe('redirectToPreprint', () => {
-    test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined }), fc.uuid(), fc.preprintDoi()])(
+    test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.uuid(), fc.preprintDoi()])(
       'when the DOI is found',
       async (connection, user, uuid, doi) => {
         const getPreprintDoiFromUuid: Mock<_.GetPreprintDoiFromUuidEnv['getPreprintDoiFromUuid']> = jest.fn(_ =>
@@ -232,7 +232,7 @@ describe('preprint', () => {
         )
 
         const actual = await runMiddleware(
-          _.redirectToPreprint(uuid)({ getPreprintDoiFromUuid, getUser: () => M.of(user) }),
+          _.redirectToPreprint(uuid)({ getPreprintDoiFromUuid, getUser: () => M.fromEither(user) }),
           connection,
         )()
 
@@ -253,11 +253,14 @@ describe('preprint', () => {
       },
     )
 
-    test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined }), fc.uuid()])(
+    test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.uuid()])(
       'when the DOI is not found',
       async (connection, user, uuid) => {
         const actual = await runMiddleware(
-          _.redirectToPreprint(uuid)({ getPreprintDoiFromUuid: () => TE.left('not-found'), getUser: () => M.of(user) }),
+          _.redirectToPreprint(uuid)({
+            getPreprintDoiFromUuid: () => TE.left('not-found'),
+            getUser: () => M.fromEither(user),
+          }),
           connection,
         )()
 
@@ -272,13 +275,13 @@ describe('preprint', () => {
       },
     )
 
-    test.prop([fc.connection(), fc.option(fc.user(), { nil: undefined }), fc.uuid()])(
+    test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.uuid()])(
       'when the DOI is unavailable',
       async (connection, user, uuid) => {
         const actual = await runMiddleware(
           _.redirectToPreprint(uuid)({
             getPreprintDoiFromUuid: () => TE.left('unavailable'),
-            getUser: () => M.of(user),
+            getUser: () => M.fromEither(user),
           }),
           connection,
         )()

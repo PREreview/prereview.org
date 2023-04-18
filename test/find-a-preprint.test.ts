@@ -102,12 +102,12 @@ describe('parseLookupPreprint', () => {
 describe('find-a-preprint', () => {
   test.prop([
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-    fc.option(fc.user(), { nil: undefined }),
+    fc.either(fc.constant('no-session' as const), fc.user()),
   ])('findAPreprint', async (connection, user) => {
     const actual = await runMiddleware(
       _.findAPreprint({
         doesPreprintExist: () => () => Promise.reject('should not be called'),
-        getUser: () => M.of(user),
+        getUser: () => M.fromEither(user),
       }),
       connection,
     )()
@@ -206,12 +206,12 @@ describe('find-a-preprint', () => {
 
     test.prop([
       fc.connection({ body: fc.record({ preprint: fc.preprintDoi() }), method: fc.constant('POST') }),
-      fc.option(fc.user(), { nil: undefined }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
     ])("with a preprint DOI that doesn't exist", async (connection, user) => {
       const actual = await runMiddleware(
         _.findAPreprint({
           doesPreprintExist: () => TE.of(false),
-          getUser: () => M.of(user),
+          getUser: () => M.fromEither(user),
         }),
         connection,
       )()
@@ -231,10 +231,10 @@ describe('find-a-preprint', () => {
         body: fc.record({ preprint: fc.preprintDoi() }),
         method: fc.constant('POST'),
       }),
-      fc.option(fc.user(), { nil: undefined }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
     ])("when we can't see if the preprint exists", async (connection, user) => {
       const actual = await runMiddleware(
-        _.findAPreprint({ doesPreprintExist: () => TE.left('unavailable'), getUser: () => M.of(user) }),
+        _.findAPreprint({ doesPreprintExist: () => TE.left('unavailable'), getUser: () => M.fromEither(user) }),
         connection,
       )()
 
@@ -252,12 +252,12 @@ describe('find-a-preprint', () => {
         body: fc.record({ doi: fc.oneof(fc.string(), fc.doi()) }, { withDeletedKeys: true }),
         method: fc.constant('POST'),
       }),
-      fc.option(fc.user(), { nil: undefined }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
     ])('with a non-preprint DOI', async (connection, user) => {
       const actual = await runMiddleware(
         _.findAPreprint({
           doesPreprintExist: () => () => Promise.reject('should not be called'),
-          getUser: () => M.of(user),
+          getUser: () => M.fromEither(user),
         }),
         connection,
       )()

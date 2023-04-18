@@ -12,7 +12,7 @@ import { isOrcid } from 'orcid-id-ts'
 export type User = C.TypeOf<typeof UserC>
 
 export interface GetUserEnv {
-  getUser: () => M.Middleware<StatusOpen, StatusOpen, never, User | undefined>
+  getUser: () => M.Middleware<StatusOpen, StatusOpen, 'no-session' | Error, User>
 }
 
 export const getUser = pipe(

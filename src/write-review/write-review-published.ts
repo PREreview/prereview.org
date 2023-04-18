@@ -60,12 +60,7 @@ export const writeReviewPublished = flow(
 const showSuccessMessage = flow(
   fromReaderK(successMessage),
   RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainFirstW(() =>
-    pipe(
-      endSession(),
-      RM.orElseW(() => RM.right(undefined)),
-    ),
-  ),
+  RM.ichainFirstW(() => pipe(endSession())),
   RM.ichainMiddlewareKW(sendHtml),
 )
 function successMessage({ review: { doi, form, id }, preprint }: { review: PublishedReview; preprint: Preprint }) {

@@ -109,12 +109,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ...env,
               getPreprintTitle: flip(getPreprintTitle)(env),
             }),
-          getUser: () =>
-            pipe(
-              getSession(),
-              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
-              RM.orElseW(() => RM.right(undefined)),
-            )(env),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
     ),
@@ -134,12 +129,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
                 .exhaustive(),
             ),
           ),
-          getUser: () =>
-            pipe(
-              getSession(),
-              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
-              RM.orElseW(() => RM.right(undefined)),
-            )(env),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
     ),
@@ -174,12 +164,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           getPreprint: flip(getPreprint)(env),
           getPrereviews: flip(getPrereviewsFromZenodo)(env),
           getRapidPrereviews: flip(getRapidPreviewsFromLegacyPrereview)(env),
-          getUser: () =>
-            pipe(
-              getSession(),
-              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
-              RM.orElseW(() => RM.right(undefined)),
-            )(env),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
     ),
@@ -190,12 +175,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getPreprintDoiFromUuid: flip(getPreprintDoiFromLegacyPreviewUuid)(env),
-          getUser: () =>
-            pipe(
-              getSession(),
-              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
-              RM.orElseW(() => RM.right(undefined)),
-            )(env),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
     ),
@@ -209,12 +189,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
             ...env,
             getPreprintTitle: flip(getPreprintTitle)(env),
           }),
-          getUser: () =>
-            pipe(
-              getSession(),
-              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
-              RM.orElseW(() => RM.right(undefined)),
-            )(env),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
     ),
@@ -276,12 +251,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               RTE.chainFirstW(flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))),
             ),
           )(env),
-          getUser: () =>
-            pipe(
-              getSession(),
-              chainOptionKW(() => 'no-session' as const)(getUserFromSession),
-              RM.orElseW(() => RM.right(undefined)),
-            )(env),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
     ),
@@ -311,12 +281,7 @@ const appMiddleware = pipe(
       handleError,
       R.local((env: AppEnv) => ({
         ...env,
-        getUser: () =>
-          pipe(
-            getSession(),
-            chainOptionKW(() => 'no-session' as const)(getUserFromSession),
-            RM.orElseW(() => RM.right(undefined)),
-          )(env),
+        getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
       })),
     ),
   ),

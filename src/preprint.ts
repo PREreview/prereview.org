@@ -119,14 +119,23 @@ export const preprint = flow(
       preprint: RM.right<GetRapidPrereviewsEnv & GetPrereviewsEnv & GetUserEnv, StatusOpen, never, Preprint>(preprint),
       rapidPrereviews: RM.fromReaderTaskEither(getRapidPrereviews(preprint.id)),
       reviews: RM.fromReaderTaskEither(getPrereviews(preprint.id)),
-      user: getUser,
+      user: pipe(
+        getUser,
+        RM.orElseW(() => RM.of(undefined)),
+      ),
     }),
   ),
   RM.ichainW(sendPage),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)
-      .with('unavailable', () => pipe(getUser, RM.ichainW(showFailureMessage)))
+      .with('unavailable', () =>
+        pipe(
+          getUser,
+          RM.orElseW(() => RM.of(undefined)),
+          RM.ichainW(showFailureMessage),
+        ),
+      )
       .exhaustive(),
   ),
 )

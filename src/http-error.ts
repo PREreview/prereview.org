@@ -11,6 +11,7 @@ import { User, getUser } from './user'
 export function handleError(error: HttpError<typeof Status.NotFound | typeof Status.ServiceUnavailable>) {
   return pipe(
     getUser,
+    RM.orElseW(() => RM.of(undefined)),
     chainReaderKW(
       match(error)
         .with({ status: Status.NotFound }, () => notFoundPage)

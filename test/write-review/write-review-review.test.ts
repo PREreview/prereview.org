@@ -345,7 +345,7 @@ describe('writeReviewReview', () => {
       _.writeReviewReview(preprintDoi)({
         formStore,
         getPreprintTitle,
-        getUser: () => M.of(undefined),
+        getUser: () => M.left('no-session'),
         secret,
         sessionCookie,
         sessionStore,

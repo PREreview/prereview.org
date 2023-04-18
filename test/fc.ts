@@ -5,6 +5,7 @@ import { Doi, isDoi } from 'doi-ts'
 import { Request, Response } from 'express'
 import * as F from 'fetch-fp-ts'
 import { isNonEmpty } from 'fp-ts/Array'
+import * as E from 'fp-ts/Either'
 import { Json, JsonRecord } from 'fp-ts/Json'
 import { NonEmptyArray } from 'fp-ts/NonEmptyArray'
 import { Refinement } from 'fp-ts/Refinement'
@@ -60,6 +61,13 @@ export const {
   tuple,
   webUrl,
 } = fc
+
+const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<E.Either<E, never>> => arb.map(E.left)
+
+const right = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<E.Either<never, A>> => arb.map(E.right)
+
+export const either = <E, A>(leftArb: fc.Arbitrary<E>, rightArb: fc.Arbitrary<A>): fc.Arbitrary<E.Either<E, A>> =>
+  fc.oneof(left(leftArb), right(rightArb))
 
 export const json = (): fc.Arbitrary<Json> => fc.jsonValue() as fc.Arbitrary<Json>
 

@@ -146,7 +146,7 @@ describe('writeReview', () => {
       _.writeReview(preprintDoi)({
         formStore,
         getPreprintTitle,
-        getUser: () => M.of(undefined),
+        getUser: () => M.left('no-session'),
         secret,
         sessionCookie,
         sessionStore,
@@ -171,7 +171,7 @@ describe('writeReview', () => {
     }),
     fc.cookieName(),
     fc.string(),
-    fc.option(fc.user(), { nil: undefined }),
+    fc.either(fc.constant('no-session' as const), fc.user()),
   ])('when the preprint cannot be loaded', async (preprintDoi, connection, sessionCookie, secret, user) => {
     const sessionStore = new Keyv()
     const formStore = new Keyv()
@@ -181,7 +181,7 @@ describe('writeReview', () => {
       _.writeReview(preprintDoi)({
         formStore,
         getPreprintTitle,
-        getUser: () => M.of(user),
+        getUser: () => M.fromEither(user),
         secret,
         sessionCookie,
         sessionStore,
@@ -207,7 +207,7 @@ describe('writeReview', () => {
     }),
     fc.cookieName(),
     fc.string(),
-    fc.option(fc.user(), { nil: undefined }),
+    fc.either(fc.constant('no-session' as const), fc.user()),
   ])('when the preprint is not found', async (preprintDoi, connection, sessionCookie, secret, user) => {
     const sessionStore = new Keyv()
     const formStore = new Keyv()
@@ -217,7 +217,7 @@ describe('writeReview', () => {
       _.writeReview(preprintDoi)({
         formStore,
         getPreprintTitle,
-        getUser: () => M.of(user),
+        getUser: () => M.fromEither(user),
         secret,
         sessionCookie,
         sessionStore,

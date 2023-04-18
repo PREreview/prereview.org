@@ -27,11 +27,14 @@ describe('review', () => {
         }),
         text: fc.html(),
       }),
-      fc.option(fc.user(), { nil: undefined }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
     ])('when the review can be loaded', async (id, connection, prereview, user) => {
       const getPrereview: Mock<_.GetPrereviewEnv['getPrereview']> = jest.fn(_ => TE.right(prereview))
 
-      const actual = await runMiddleware(_.review(id)({ getPrereview, getUser: () => M.of(user) }), connection)()
+      const actual = await runMiddleware(
+        _.review(id)({ getPrereview, getUser: () => M.fromEither(user) }),
+        connection,
+      )()
 
       expect(actual).toStrictEqual(
         E.right([
@@ -46,10 +49,10 @@ describe('review', () => {
     test.prop([
       fc.integer(),
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-      fc.option(fc.user(), { nil: undefined }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
     ])('when the review is not found', async (id, connection, user) => {
       const actual = await runMiddleware(
-        _.review(id)({ getPrereview: () => TE.left({ status: Status.NotFound }), getUser: () => M.of(user) }),
+        _.review(id)({ getPrereview: () => TE.left({ status: Status.NotFound }), getUser: () => M.fromEither(user) }),
         connection,
       )()
 
@@ -67,10 +70,10 @@ describe('review', () => {
       fc.integer(),
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.anything(),
-      fc.option(fc.user(), { nil: undefined }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
     ])('when the review cannot be loaded', async (id, connection, error, user) => {
       const actual = await runMiddleware(
-        _.review(id)({ getPrereview: () => TE.left(error), getUser: () => M.of(user) }),
+        _.review(id)({ getPrereview: () => TE.left(error), getUser: () => M.fromEither(user) }),
         connection,
       )()
 

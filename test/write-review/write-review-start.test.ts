@@ -181,7 +181,7 @@ describe('writeReviewStart', () => {
         _.writeReviewStart(preprintDoi)({
           formStore,
           getPreprintTitle,
-          getUser: () => M.of(undefined),
+          getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
           secret,
@@ -244,7 +244,7 @@ describe('writeReviewStart', () => {
       _.writeReviewStart(preprintDoi)({
         formStore,
         getPreprintTitle,
-        getUser: () => M.of(undefined),
+        getUser: () => M.left('no-session'),
         oauth,
         publicUrl,
         secret,
@@ -280,7 +280,7 @@ describe('writeReviewStart', () => {
     }),
     fc.cookieName(),
     fc.string(),
-    fc.option(fc.user(), { nil: undefined }),
+    fc.either(fc.constant('no-session' as const), fc.user()),
   ])(
     'when the preprint is not found',
     async (oauth, publicUrl, preprintDoi, connection, sessionCookie, secret, user) => {
@@ -292,7 +292,7 @@ describe('writeReviewStart', () => {
         _.writeReviewStart(preprintDoi)({
           formStore,
           getPreprintTitle,
-          getUser: () => M.of(user),
+          getUser: () => M.fromEither(user),
           oauth,
           publicUrl,
           secret,

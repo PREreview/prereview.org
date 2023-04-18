@@ -9,13 +9,13 @@ import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
 describe('home', () => {
-  test.prop([fc.connection({ method: fc.requestMethod() }), fc.option(fc.user(), { nil: undefined })])(
+  test.prop([fc.connection({ method: fc.requestMethod() }), fc.either(fc.constant('no-session' as const), fc.user())])(
     'home',
     async (connection, user) => {
       const actual = await runMiddleware(
         _.home({
           getRecentPrereviews: () => T.of([]),
-          getUser: () => M.of(user),
+          getUser: () => M.fromEither(user),
         }),
         connection,
       )()

@@ -43,7 +43,13 @@ const getRecentPrereviews = () =>
 export const home = pipe(
   fromReaderTask(getRecentPrereviews()),
   RM.bindTo('recentPrereviews'),
-  RM.apSW('user', getUser),
+  RM.apSW(
+    'user',
+    pipe(
+      getUser,
+      RM.orElseW(() => RM.of(undefined)),
+    ),
+  ),
   chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
