@@ -3,6 +3,9 @@ import { Json, JsonRecord } from 'fp-ts/Json'
 import * as O from 'fp-ts/Option'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, pipe } from 'fp-ts/function'
+import { HeadersOpen } from 'hyper-ts'
+import { getSession, storeSession } from 'hyper-ts-session'
+import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { CompletedForm, CompletedFormC } from './completed-form'
@@ -24,3 +27,10 @@ export const getPublishedReviewFromSession: (session: JsonRecord) => O.Option<Pu
   RR.lookup('published-review'),
   O.chainEitherK(PublishedReviewC.decode),
 )
+
+export const storeInformationForWriteReviewPublishedPage = (doi: Doi, id: number, form: CompletedForm) =>
+  pipe(
+    getSession<HeadersOpen>(),
+    RM.map(session => storePublishedReviewInSession({ doi, form, id }, session)),
+    RM.chainW(storeSession),
+  )

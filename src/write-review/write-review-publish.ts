@@ -1,6 +1,5 @@
 import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import { JsonRecord } from 'fp-ts/Json'
 import { Option } from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -8,7 +7,7 @@ import * as R from 'fp-ts/Refinement'
 import * as TE from 'fp-ts/TaskEither'
 import { Lazy, flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
-import { endSession, getSession, storeSession } from 'hyper-ts-session'
+import { endSession, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { Orcid } from 'orcid-id-ts'
@@ -30,7 +29,7 @@ import { User, getUserFromSession } from '../user'
 import { CompletedForm, CompletedFormC } from './completed-form'
 import { deleteForm, getForm, redirectToNextForm } from './form'
 import { Preprint, getPreprint } from './preprint'
-import { storePublishedReviewInSession } from './published-review'
+import { storeInformationForWriteReviewPublishedPage } from './published-review'
 
 export type NewPrereview = {
   conduct: 'yes'
@@ -86,17 +85,7 @@ export const writeReviewPublish = flow(
   ),
 )
 
-const handlePublishForm = ({
-  form,
-  preprint,
-  session,
-  user,
-}: {
-  form: CompletedForm
-  preprint: Preprint
-  session: JsonRecord
-  user: User
-}) =>
+const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
   pipe(
     RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.doi)),
     RM.map(() => ({
@@ -109,7 +98,7 @@ const handlePublishForm = ({
     RM.chainReaderTaskEitherKW(publishPrereview),
     RM.ichainFirst(() => RM.status(Status.SeeOther)),
     RM.ichainFirst(() => RM.header('Location', format(writeReviewPublishedMatch.formatter, { doi: preprint.doi }))),
-    RM.ichainW(flow(([doi, id]) => storePublishedReviewInSession({ doi, form, id }, session), storeSession)),
+    RM.ichainW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
     RM.ichain(() => RM.closeHeaders()),
     RM.ichain(() => RM.end()),
     RM.orElseW(() => showFailureMessage(preprint)),
