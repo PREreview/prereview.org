@@ -1,9 +1,8 @@
 import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/Reader'
-import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
-import { endSession, getSession } from 'hyper-ts-session'
+import { endSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
@@ -12,7 +11,7 @@ import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { toUrl } from '../public-url'
 import { preprintMatch, reviewMatch, writeReviewMatch } from '../routes'
-import { getUserFromSession } from '../user'
+import { getUser } from '../user'
 import { Preprint, getPreprint } from './preprint'
 import { PublishedReview, getPublishedReview } from './published-review'
 
@@ -21,13 +20,7 @@ export const writeReviewPublished = flow(
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
-      RM.apS('session', getSession()),
-      RM.bindW(
-        'user',
-        RM.fromReaderTaskEitherK(
-          RTE.fromOptionK(() => 'no-session' as const)(({ session }) => getUserFromSession(session)),
-        ),
-      ),
+      RM.apSW('user', getUser),
       RM.apSW('review', getPublishedReview),
       RM.ichainW(showSuccessMessage),
       RM.orElseW(error =>
