@@ -1,12 +1,10 @@
 import { Doi, isDoi } from 'doi-ts'
+import * as E from 'fp-ts/Either'
 import { Json, JsonRecord } from 'fp-ts/Json'
-import * as O from 'fp-ts/Option'
-import { Option } from 'fp-ts/Option'
 import * as RR from 'fp-ts/ReadonlyRecord'
-import { Lazy, flow, pipe } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import { HeadersOpen } from 'hyper-ts'
 import { getSession, storeSession } from 'hyper-ts-session'
-import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
@@ -22,31 +20,18 @@ export const PublishedReviewC: C.Codec<unknown, JsonRecord, { doi: Doi; form: Co
   id: C.number,
 })
 
-export const storePublishedReviewInSession = (publishedReview: PublishedReview, session: JsonRecord): JsonRecord =>
-  pipe(session, RR.upsertAt('published-review', PublishedReviewC.encode(publishedReview) as Json))
-
-export const getPublishedReviewFromSession: (session: JsonRecord) => O.Option<PublishedReview> = flow(
+const getPublishedReviewFromSession: (session: JsonRecord) => E.Either<'no-published-review', PublishedReview> = flow(
   RR.lookup('published-review'),
-  O.chainEitherK(PublishedReviewC.decode),
+  E.fromOption(() => 'no-published-review' as const),
+  E.chainW(PublishedReviewC.decode),
+  E.mapLeft(() => 'no-published-review' as const),
 )
 
 export const storeInformationForWriteReviewPublishedPage = (doi: Doi, id: number, form: CompletedForm) =>
   pipe(
     getSession<HeadersOpen>(),
-    RM.map(session => storePublishedReviewInSession({ doi, form, id }, session)),
+    RM.map(RR.upsertAt('published-review', PublishedReviewC.encode({ doi, id, form }) as Json)),
     RM.chainW(storeSession),
   )
 
-export const getPublishedReview = pipe(
-  getSession(),
-  chainOptionKW(() => 'no-published-review' as const)(getPublishedReviewFromSession),
-)
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/80
-function chainOptionKW<E2>(
-  onNone: Lazy<E2>,
-): <A, B>(
-  f: (a: A) => Option<B>,
-) => <R, I, E1>(ma: RM.ReaderMiddleware<R, I, I, E1, A>) => RM.ReaderMiddleware<R, I, I, E1 | E2, B> {
-  return f => RM.ichainMiddlewareKW((...a) => M.fromOption(onNone)(f(...a)))
-}
+export const getPublishedReview = pipe(getSession(), RM.chainEitherKW(getPublishedReviewFromSession))
