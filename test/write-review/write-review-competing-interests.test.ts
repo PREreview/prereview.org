@@ -7,7 +7,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
-import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
@@ -39,9 +38,6 @@ describe('writeReviewCompetingInterests', () => {
             headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
             method: fc.constant('POST'),
           }),
-          fc.constant(sessionCookie),
-          fc.constant(sessionId),
-          fc.constant(secret),
         ),
       ),
     fc.user(),
@@ -56,15 +52,7 @@ describe('writeReviewCompetingInterests', () => {
     }),
   ])(
     'when the form is completed',
-    async (
-      preprintDoi,
-      preprintTitle,
-      [competingInterests, connection, sessionCookie, sessionId, secret],
-      user,
-      newReview,
-    ) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, { user: UserC.encode(user) })
+    async (preprintDoi, preprintTitle, [competingInterests, connection], user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
@@ -74,9 +62,6 @@ describe('writeReviewCompetingInterests', () => {
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),
-          secret,
-          sessionCookie,
-          sessionStore,
         }),
         connection,
       )()
@@ -125,9 +110,6 @@ describe('writeReviewCompetingInterests', () => {
             headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
             method: fc.constant('POST'),
           }),
-          fc.constant(sessionCookie),
-          fc.constant(sessionId),
-          fc.constant(secret),
         ),
       ),
     fc.user(),
@@ -148,15 +130,7 @@ describe('writeReviewCompetingInterests', () => {
     ),
   ])(
     'when the form is incomplete',
-    async (
-      preprintDoi,
-      preprintTitle,
-      [competingInterests, connection, sessionCookie, sessionId, secret],
-      user,
-      newReview,
-    ) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, { user: UserC.encode(user) })
+    async (preprintDoi, preprintTitle, [competingInterests, connection], user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
@@ -166,9 +140,6 @@ describe('writeReviewCompetingInterests', () => {
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),
-          secret,
-          sessionCookie,
-          sessionStore,
         }),
         connection,
       )()
@@ -196,78 +167,60 @@ describe('writeReviewCompetingInterests', () => {
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-      fc.tuple(
-        fc.connection({
-          body: fc.oneof(
-            fc.constant({
-              competingInterests: 'no',
-            }),
-            fc.record({
-              competingInterests: fc.constant('yes'),
-              competingInterestsDetails: fc.lorem(),
-            }),
-          ),
-          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
-        }),
-        fc.constant(sessionCookie),
-        fc.constant(sessionId),
-        fc.constant(secret),
-      ),
+      fc.connection({
+        body: fc.oneof(
+          fc.constant({
+            competingInterests: 'no',
+          }),
+          fc.record({
+            competingInterests: fc.constant('yes'),
+            competingInterestsDetails: fc.lorem(),
+          }),
+        ),
+        headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+        method: fc.constant('POST'),
+      }),
     ),
     fc.user(),
-  ])(
-    'when there is no form',
-    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, { user: UserC.encode(user) })
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
+  ])('when there is no form', async (preprintDoi, preprintTitle, connection, user) => {
+    const formStore = new Keyv()
+    const getPreprintTitle = () => TE.right(preprintTitle)
 
-      const actual = await runMiddleware(
-        _.writeReviewCompetingInterests(preprintDoi)({
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.of(user),
-          secret,
-          sessionCookie,
-          sessionStore,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewCompetingInterests(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(user),
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/write-a-prereview`,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.SeeOther },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: `/preprints/doi-${encodeURIComponent(
+            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+          )}/write-a-prereview`,
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+  })
 
   test.prop([
     fc.preprintDoi(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-      fc.tuple(
-        fc.connection({
-          body: fc.record({
-            competingInterests: fc.constantFrom('yes', 'no'),
-            competingInterestsDetails: fc.lorem(),
-          }),
-          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
+      fc.connection({
+        body: fc.record({
+          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterestsDetails: fc.lorem(),
         }),
-        fc.constant(sessionCookie),
-        fc.constant(sessionId),
-        fc.constant(secret),
-      ),
+        headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+        method: fc.constant('POST'),
+      }),
     ),
     fc.user(),
     fc.record(
@@ -282,54 +235,41 @@ describe('writeReviewCompetingInterests', () => {
       },
       { withDeletedKeys: true },
     ),
-  ])(
-    'when the preprint cannot be loaded',
-    async (preprintDoi, [connection, sessionCookie, sessionId, secret], user, newReview) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, { user: UserC.encode(user) })
-      const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-      const getPreprintTitle = () => TE.left('unavailable' as const)
+  ])('when the preprint cannot be loaded', async (preprintDoi, connection, user, newReview) => {
+    const formStore = new Keyv()
+    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+    const getPreprintTitle = () => TE.left('unavailable' as const)
 
-      const actual = await runMiddleware(
-        _.writeReviewCompetingInterests(preprintDoi)({
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.of(user),
-          secret,
-          sessionCookie,
-          sessionStore,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewCompetingInterests(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(user),
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 
   test.prop([
     fc.preprintDoi(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-      fc.tuple(
-        fc.connection({
-          body: fc.record({
-            competingInterests: fc.constantFrom('yes', 'no'),
-            competingInterestsDetails: fc.lorem(),
-          }),
-          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
+      fc.connection({
+        body: fc.record({
+          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterestsDetails: fc.lorem(),
         }),
-        fc.constant(sessionCookie),
-        fc.constant(sessionId),
-        fc.constant(secret),
-      ),
+        headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+        method: fc.constant('POST'),
+      }),
     ),
     fc.user(),
     fc.record(
@@ -344,37 +284,29 @@ describe('writeReviewCompetingInterests', () => {
       },
       { withDeletedKeys: true },
     ),
-  ])(
-    'when the preprint cannot be found',
-    async (preprintDoi, [connection, sessionCookie, sessionId, secret], user, newReview) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, { user: UserC.encode(user) })
-      const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-      const getPreprintTitle = () => TE.left('not-found' as const)
+  ])('when the preprint cannot be found', async (preprintDoi, connection, user, newReview) => {
+    const formStore = new Keyv()
+    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+    const getPreprintTitle = () => TE.left('not-found' as const)
 
-      const actual = await runMiddleware(
-        _.writeReviewCompetingInterests(preprintDoi)({
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.of(user),
-          secret,
-          sessionCookie,
-          sessionStore,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewCompetingInterests(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(user),
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.NotFound },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 
   test.prop([
     fc.preprintDoi(),
@@ -386,10 +318,7 @@ describe('writeReviewCompetingInterests', () => {
       }),
       method: fc.constant('POST'),
     }),
-    fc.cookieName(),
-    fc.string(),
-  ])("when there isn't a session", async (preprintDoi, preprintTitle, connection, sessionCookie, secret) => {
-    const sessionStore = new Keyv()
+  ])("when there isn't a session", async (preprintDoi, preprintTitle, connection) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.right(preprintTitle)
 
@@ -398,9 +327,6 @@ describe('writeReviewCompetingInterests', () => {
         formStore,
         getPreprintTitle,
         getUser: () => M.left('no-session'),
-        secret,
-        sessionCookie,
-        sessionStore,
       }),
       connection,
     )()
@@ -424,22 +350,17 @@ describe('writeReviewCompetingInterests', () => {
     fc.preprintDoi(),
     fc.record({ title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-      fc.tuple(
-        fc.connection({
-          body: fc.oneof(
-            fc.record({ competingInterests: fc.string() }, { withDeletedKeys: true }),
-            fc.record(
-              { competingInterests: fc.constant('yes'), competingInterestsDetails: fc.constant('') },
-              { withDeletedKeys: true },
-            ),
+      fc.connection({
+        body: fc.oneof(
+          fc.record({ competingInterests: fc.string() }, { withDeletedKeys: true }),
+          fc.record(
+            { competingInterests: fc.constant('yes'), competingInterestsDetails: fc.constant('') },
+            { withDeletedKeys: true },
           ),
-          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
-        }),
-        fc.constant(sessionCookie),
-        fc.constant(sessionId),
-        fc.constant(secret),
-      ),
+        ),
+        headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+        method: fc.constant('POST'),
+      }),
     ),
     fc.user(),
     fc.record(
@@ -454,34 +375,26 @@ describe('writeReviewCompetingInterests', () => {
       },
       { withDeletedKeys: true },
     ),
-  ])(
-    'without declaring any competing interests',
-    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], user, newReview) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, { user: UserC.encode(user) })
-      const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-      const getPreprintTitle = () => TE.right(preprintTitle)
+  ])('without declaring any competing interests', async (preprintDoi, preprintTitle, connection, user, newReview) => {
+    const formStore = new Keyv()
+    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+    const getPreprintTitle = () => TE.right(preprintTitle)
 
-      const actual = await runMiddleware(
-        _.writeReviewCompetingInterests(preprintDoi)({
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.of(user),
-          secret,
-          sessionCookie,
-          sessionStore,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewCompetingInterests(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(user),
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.BadRequest },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.BadRequest },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 })

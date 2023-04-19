@@ -7,7 +7,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
-import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
@@ -26,15 +25,10 @@ describe('writeReviewStart', () => {
       fc.preprintDoi(),
       fc.record({ title: fc.html(), language: fc.languageCode() }),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-        fc.tuple(
-          fc.connection({
-            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-            method: fc.requestMethod().filter(method => method !== 'POST'),
-          }),
-          fc.constant(sessionCookie),
-          fc.constant(sessionId),
-          fc.constant(secret),
-        ),
+        fc.connection({
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+          method: fc.requestMethod().filter(method => method !== 'POST'),
+        }),
       ),
       fc.record(
         {
@@ -49,47 +43,31 @@ describe('writeReviewStart', () => {
         { withDeletedKeys: true },
       ),
       fc.user(),
-    ])(
-      'there is a form',
-      async (
-        oauth,
-        publicUrl,
-        preprintDoi,
-        preprintTitle,
-        [connection, sessionCookie, sessionId, secret],
-        newReview,
-        user,
-      ) => {
-        const sessionStore = new Keyv()
-        await sessionStore.set(sessionId, { user: UserC.encode(user) })
-        const formStore = new Keyv()
-        await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
-        const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+    ])('there is a form', async (oauth, publicUrl, preprintDoi, preprintTitle, connection, newReview, user) => {
+      const formStore = new Keyv()
+      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
-        const actual = await runMiddleware(
-          _.writeReviewStart(preprintDoi)({
-            formStore,
-            getPreprintTitle,
-            getUser: () => M.of(user),
-            oauth,
-            publicUrl,
-            secret,
-            sessionCookie,
-            sessionStore,
-          }),
-          connection,
-        )()
+      const actual = await runMiddleware(
+        _.writeReviewStart(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+          oauth,
+          publicUrl,
+        }),
+        connection,
+      )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.OK },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-        expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.OK },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+      expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
+    })
 
     test.prop([
       fc.record({
@@ -103,54 +81,41 @@ describe('writeReviewStart', () => {
       fc.preprintDoi(),
       fc.record({ title: fc.html(), language: fc.languageCode() }),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-        fc.tuple(
-          fc.connection({
-            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-            method: fc.requestMethod().filter(method => method !== 'POST'),
-          }),
-          fc.constant(sessionCookie),
-          fc.constant(sessionId),
-          fc.constant(secret),
-        ),
+        fc.connection({
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+          method: fc.requestMethod().filter(method => method !== 'POST'),
+        }),
       ),
       fc.user(),
-    ])(
-      "there isn't a form",
-      async (oauth, publicUrl, preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
-        const sessionStore = new Keyv()
-        await sessionStore.set(sessionId, { user: UserC.encode(user) })
-        const formStore = new Keyv()
-        const getPreprintTitle = () => TE.right(preprintTitle)
+    ])("there isn't a form", async (oauth, publicUrl, preprintDoi, preprintTitle, connection, user) => {
+      const formStore = new Keyv()
+      const getPreprintTitle = () => TE.right(preprintTitle)
 
-        const actual = await runMiddleware(
-          _.writeReviewStart(preprintDoi)({
-            formStore,
-            getPreprintTitle,
-            getUser: () => M.of(user),
-            oauth,
-            publicUrl,
-            secret,
-            sessionCookie,
-            sessionStore,
-          }),
-          connection,
-        )()
+      const actual = await runMiddleware(
+        _.writeReviewStart(preprintDoi)({
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+          oauth,
+          publicUrl,
+        }),
+        connection,
+      )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: `/preprints/doi-${encodeURIComponent(
-                preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-              )}/write-a-prereview/already-written`,
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: `/preprints/doi-${encodeURIComponent(
+              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            )}/write-a-prereview/already-written`,
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
   })
 
   test.prop([
@@ -168,56 +133,47 @@ describe('writeReviewStart', () => {
       headers: fc.constant({}),
       method: fc.requestMethod().filter(method => method !== 'POST'),
     }),
-    fc.cookieName(),
-    fc.string(),
-  ])(
-    "when there isn't a session",
-    async (oauth, publicUrl, preprintDoi, preprintTitle, connection, sessionCookie, secret) => {
-      const sessionStore = new Keyv()
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
+  ])("when there isn't a session", async (oauth, publicUrl, preprintDoi, preprintTitle, connection) => {
+    const formStore = new Keyv()
+    const getPreprintTitle = () => TE.right(preprintTitle)
 
-      const actual = await runMiddleware(
-        _.writeReviewStart(preprintDoi)({
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.left('no-session'),
-          oauth,
-          publicUrl,
-          secret,
-          sessionCookie,
-          sessionStore,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewStart(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.left('no-session'),
+        oauth,
+        publicUrl,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Found },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                client_id: oauth.clientId,
-                response_type: 'code',
-                redirect_uri: oauth.redirectUri.href,
-                scope: '/authenticate',
-                state: new URL(
-                  `preprints/doi-${encodeURIComponent(
-                    preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-                  )}/write-a-prereview/start-now`,
-                  publicUrl,
-                ).href,
-              }).toString()}`,
-              oauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.Found },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: new URL(
+            `?${new URLSearchParams({
+              client_id: oauth.clientId,
+              response_type: 'code',
+              redirect_uri: oauth.redirectUri.href,
+              scope: '/authenticate',
+              state: new URL(
+                `preprints/doi-${encodeURIComponent(
+                  preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                )}/write-a-prereview/start-now`,
+                publicUrl,
+              ).href,
+            }).toString()}`,
+            oauth.authorizeUrl,
+          ).href,
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+  })
 
   test.prop([
     fc.record({
@@ -233,10 +189,7 @@ describe('writeReviewStart', () => {
       headers: fc.constant({}),
       method: fc.requestMethod().filter(method => method !== 'POST'),
     }),
-    fc.cookieName(),
-    fc.string(),
-  ])('when the preprint cannot be loaded', async (oauth, publicUrl, preprintDoi, connection, sessionCookie, secret) => {
-    const sessionStore = new Keyv()
+  ])('when the preprint cannot be loaded', async (oauth, publicUrl, preprintDoi, connection) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.left('unavailable' as const)
 
@@ -247,9 +200,6 @@ describe('writeReviewStart', () => {
         getUser: () => M.left('no-session'),
         oauth,
         publicUrl,
-        secret,
-        sessionCookie,
-        sessionStore,
       }),
       connection,
     )()
@@ -284,7 +234,6 @@ describe('writeReviewStart', () => {
   ])(
     'when the preprint is not found',
     async (oauth, publicUrl, preprintDoi, connection, sessionCookie, secret, user) => {
-      const sessionStore = new Keyv()
       const formStore = new Keyv()
       const getPreprintTitle = () => TE.left('not-found' as const)
 
@@ -295,9 +244,6 @@ describe('writeReviewStart', () => {
           getUser: () => M.fromEither(user),
           oauth,
           publicUrl,
-          secret,
-          sessionCookie,
-          sessionStore,
         }),
         connection,
       )()

@@ -4,7 +4,6 @@ import { Option } from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import { Lazy, flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
-import { getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
@@ -13,7 +12,7 @@ import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { preprintMatch, writeReviewStartMatch } from '../routes'
-import { User, getUserFromSession } from '../user'
+import { User, getUser } from '../user'
 import { getForm } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -21,8 +20,7 @@ export const writeReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
-      getSession(),
-      chainOptionKW(() => 'no-session' as const)(getUserFromSession),
+      getUser,
       RM.bindTo('user'),
       RM.bindW(
         'form',

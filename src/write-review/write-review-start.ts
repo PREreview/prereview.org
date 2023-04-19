@@ -4,7 +4,6 @@ import { Reader } from 'fp-ts/Reader'
 import { Lazy, flow, pipe } from 'fp-ts/function'
 import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
 import { OAuthEnv } from 'hyper-ts-oauth'
-import { getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
@@ -15,7 +14,7 @@ import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { FathomEnv, PhaseEnv, page } from '../page'
 import { PublicUrlEnv } from '../public-url'
 import { preprintMatch, writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../routes'
-import { GetUserEnv, User, getUserFromSession } from '../user'
+import { GetUserEnv, User, getUser } from '../user'
 import { Form, getForm, nextFormMatch } from './form'
 import { Preprint, getPreprint } from './preprint'
 
@@ -23,8 +22,7 @@ export const writeReviewStart = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
-      getSession(),
-      chainOptionKW(() => 'no-session' as const)(getUserFromSession),
+      getUser,
       RM.bindTo('user'),
       RM.bindW(
         'form',
