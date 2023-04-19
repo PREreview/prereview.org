@@ -35,3 +35,9 @@ export const storeInformationForWriteReviewPublishedPage = (doi: Doi, id: number
   )
 
 export const getPublishedReview = pipe(getSession(), RM.chainEitherKW(getPublishedReviewFromSession))
+
+export const removePublishedReview = pipe(
+  getSession<HeadersOpen>(),
+  RM.map(RR.deleteAt('published-review')),
+  RM.chainW(storeSession),
+)

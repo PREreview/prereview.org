@@ -2,7 +2,6 @@ import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
-import { endSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
@@ -13,7 +12,7 @@ import { toUrl } from '../public-url'
 import { preprintMatch, reviewMatch, writeReviewMatch } from '../routes'
 import { getUser } from '../user'
 import { Preprint, getPreprint } from './preprint'
-import { PublishedReview, getPublishedReview } from './published-review'
+import { PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
 
 export const writeReviewPublished = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -46,7 +45,7 @@ export const writeReviewPublished = flow(
 const showSuccessMessage = flow(
   fromReaderK(successMessage),
   RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainFirstW(() => pipe(endSession())),
+  RM.ichainFirstW(() => removePublishedReview),
   RM.ichainMiddlewareKW(sendHtml),
 )
 function successMessage({ review: { doi, form, id }, preprint }: { review: PublishedReview; preprint: Preprint }) {

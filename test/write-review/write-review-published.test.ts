@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import all from 'it-all'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { UserC } from '../../src/user'
@@ -65,13 +64,10 @@ describe('writeReviewPublished', () => {
         connection,
       )()
 
-      const sessions = await all(sessionStore.iterator(undefined))
-
-      expect(sessions).toStrictEqual([])
+      expect(await sessionStore.get(sessionId)).toStrictEqual({ user: UserC.encode(user) })
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.OK },
-          { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: expect.anything() },
         ]),

@@ -203,7 +203,7 @@ test.extend(canLogIn)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn)(
-  'are logged out after publishing',
+  'are taken to the start of the review process after successfully completing it',
   async ({ fetch, javaScriptEnabled, page }) => {
     const record: Record = {
       conceptdoi: '10.5072/zenodo.1055807' as Doi,
@@ -326,7 +326,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.goBack()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Write a PREreview')
-    await expect(page.getByRole('main')).toContainText('We will ask you to log in')
   },
 )
 
