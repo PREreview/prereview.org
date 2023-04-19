@@ -10,7 +10,7 @@ import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { toUrl } from '../public-url'
 import { preprintMatch, reviewMatch, writeReviewMatch } from '../routes'
-import { getUser } from '../user'
+import { User, getUser } from '../user'
 import { Preprint, getPreprint } from './preprint'
 import { PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
 
@@ -48,7 +48,15 @@ const showSuccessMessage = flow(
   RM.ichainFirstW(() => removePublishedReview),
   RM.ichainMiddlewareKW(sendHtml),
 )
-function successMessage({ review: { doi, form, id }, preprint }: { review: PublishedReview; preprint: Preprint }) {
+function successMessage({
+  review: { doi, form, id },
+  preprint,
+  user,
+}: {
+  review: PublishedReview
+  preprint: Preprint
+  user: User
+}) {
   return pipe(
     toUrl(reviewMatch.formatter, { id }),
     R.chainW(url =>
@@ -128,6 +136,7 @@ function successMessage({ review: { doi, form, id }, preprint }: { review: Publi
           </main>
         `,
         skipLinks: [[html`Skip to main content`, '#main-content']],
+        user,
       }),
     ),
   )
