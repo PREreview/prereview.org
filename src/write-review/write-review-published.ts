@@ -14,7 +14,7 @@ import { toUrl } from '../public-url'
 import { preprintMatch, reviewMatch, writeReviewMatch } from '../routes'
 import { getUserFromSession } from '../user'
 import { Preprint, getPreprint } from './preprint'
-import { PublishedReview, getPublishedReviewFromSession } from './published-review'
+import { PublishedReview, getPublishedReview } from './published-review'
 
 export const writeReviewPublished = flow(
   RM.fromReaderTaskEitherK(getPreprint),
@@ -28,14 +28,7 @@ export const writeReviewPublished = flow(
           RTE.fromOptionK(() => 'no-session' as const)(({ session }) => getUserFromSession(session)),
         ),
       ),
-      RM.bindW(
-        'review',
-        RM.fromReaderTaskEitherK(
-          RTE.fromOptionK(() => 'no-published-review' as const)(({ session }) =>
-            getPublishedReviewFromSession(session),
-          ),
-        ),
-      ),
+      RM.apSW('review', getPublishedReview),
       RM.ichainW(showSuccessMessage),
       RM.orElseW(error =>
         match(error)
