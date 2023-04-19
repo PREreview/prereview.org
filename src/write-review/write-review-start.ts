@@ -1,7 +1,6 @@
 import { format } from 'fp-ts-routing'
-import { Option } from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
-import { Lazy, flow, pipe } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
 import { OAuthEnv } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/lib/Middleware'
@@ -89,15 +88,6 @@ function carryOnPage(preprint: Preprint, form: Form, user: User) {
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/80
-function chainOptionKW<E2>(
-  onNone: Lazy<E2>,
-): <A, B>(
-  f: (a: A) => Option<B>,
-) => <R, I, E1>(ma: RM.ReaderMiddleware<R, I, I, E1, A>) => RM.ReaderMiddleware<R, I, I, E1 | E2, B> {
-  return f => RM.ichainMiddlewareKW((...a) => M.fromOption(onNone)(f(...a)))
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/83

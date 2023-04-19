@@ -1,8 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import { Option } from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
-import { Lazy, flow, pipe } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -205,15 +204,6 @@ function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm, user: 
     skipLinks: [[html`Skip to form`, '#form']],
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/80
-function chainOptionKW<E2>(
-  onNone: Lazy<E2>,
-): <A, B>(
-  f: (a: A) => Option<B>,
-) => <R, I, E1>(ma: RM.ReaderMiddleware<R, I, I, E1, A>) => RM.ReaderMiddleware<R, I, I, E1 | E2, B> {
-  return f => RM.ichainMiddlewareKW((...a) => M.fromOption(onNone)(f(...a)))
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/83
