@@ -1582,6 +1582,11 @@ skip-link {
     inline-size: 100%;
     max-inline-size: calc(var(--space-2xl) * 2);
     min-inline-size: var(--space-2xl);
+
+    &.wide {
+      max-inline-size: calc(var(--space-3xl) * 2);
+      min-inline-size: var(--space-3xl);
+    }
   }
 }
 

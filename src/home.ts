@@ -134,6 +134,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
                   height="311"
                   loading="lazy"
                   alt="Open Research Funders Group"
+                  class="wide"
                 />
               </a>
             </li>
@@ -150,7 +151,14 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
             </li>
             <li>
               <a href="https://www.jmir.org/announcements/296">
-                <img src="${assets['jmir.svg']}" width="275" height="43" loading="lazy" alt="JMIR Publications" />
+                <img
+                  src="${assets['jmir.svg']}"
+                  width="275"
+                  height="43"
+                  loading="lazy"
+                  alt="JMIR Publications"
+                  class="wide"
+                />
               </a>
             </li>
             <li>
