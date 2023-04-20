@@ -150,6 +150,17 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
               </a>
             </li>
             <li>
+              <a href="https://www.ohsu.edu/">
+                <img
+                  src="${assets['ohsu.svg']}"
+                  width="174"
+                  height="298"
+                  loading="lazy"
+                  alt="Oregon Health &amp; Science University"
+                />
+              </a>
+            </li>
+            <li>
               <a href="https://www.jmir.org/announcements/296">
                 <img
                   src="${assets['jmir.svg']}"
@@ -158,17 +169,6 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
                   loading="lazy"
                   alt="JMIR Publications"
                   class="wide"
-                />
-              </a>
-            </li>
-            <li>
-              <a href="https://www.ohsu.edu/">
-                <img
-                  src="${assets['ohsu.svg']}"
-                  width="174"
-                  height="298"
-                  loading="lazy"
-                  alt="Oregon Health &amp; Science University"
                 />
               </a>
             </li>
