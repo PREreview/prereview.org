@@ -347,6 +347,11 @@ article {
 
   @nest section & {
     margin-block-start: var(--space-l-xl);
+
+    &:has(+ :--list) {
+      padding-block-end: var(--space-4xs);
+      border-block-end: var(--width-divider-narrow) solid var(--color-red-60);
+    }
   }
 }
 
@@ -365,7 +370,7 @@ h2 {
     font-size: var(--step-3);
   }
 
-  @nest .preview & {
+  @nest :is(section, .preview) & {
     font-size: var(--step-2);
   }
 
@@ -1688,10 +1693,6 @@ skip-link {
 
     & > :first-child {
       margin-block-start: 0;
-    }
-
-    & h2 {
-      font-size: var(--step-2);
     }
 
     & p {
