@@ -1322,7 +1322,6 @@ skip-link {
     padding-inline: var(--space-s);
     block-size: 100%;
     inline-size: 100%;
-    margin-block-start: 0;
 
     & > header {
       & > :not(.visually-hidden):first-child,
@@ -1408,6 +1407,7 @@ skip-link {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      margin-block-start: 0;
     }
 
     @media screen {
