@@ -24,9 +24,9 @@
 
   <g transform="translate(-0.41520691,-0.5)">
     <g class="dots">
-      <circle cx="20.487217" cy="169.38551" r="20.07201" fill="#bfe5f6" />
-      <circle cx="86.910034" cy="169.61143" r="20.07201" fill="#0097db" />
-      <circle cx="153.51262" cy="169.61143" r="20.07201" fill="#0097db" />
+      <circle cx="20.487217" cy="169.38551" r="20.07201" fill="#c3e1f2" />
+      <circle cx="86.910034" cy="169.61143" r="20.07201" fill="#81c1e6" />
+      <circle cx="153.51262" cy="169.61143" r="20.07201" fill="#198ed2" />
     </g>
 
     <g class="text">
