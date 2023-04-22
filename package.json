@@ -49,7 +49,7 @@
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-typescript": "^7.21.4",
     "@csstools/postcss-global-data": "^1.0.3",
-    "@fast-check/jest": "^1.6.0",
+    "@fast-check/jest": "^1.6.1",
     "@ibm/plex": "^6.2.0",
     "@open-wc/testing": "^3.1.8",
     "@playwright/test": "^1.32.3",
