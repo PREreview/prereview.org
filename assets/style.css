@@ -131,6 +131,25 @@ summary > span {
       }
     }
 
+    &.mastodon {
+      &::before {
+        content: '';
+        padding-inline-end: 1.1em;
+        margin-inline-end: 0.4ch;
+        background-color: currentcolor;
+        mask-image: url('remixicon/icons/Logos/mastodon-fill.svg');
+        mask-repeat: no-repeat;
+        mask-origin: content-box;
+        mask-position: left bottom 40%;
+        mask-size: 1.1em;
+
+        @media (forced-colors: active) {
+          forced-color-adjust: none;
+          background-color: LinkText;
+        }
+      }
+    }
+
     &.linked-in {
       &::before {
         content: '';
@@ -138,6 +157,44 @@ summary > span {
         margin-inline-end: 0.4ch;
         background-color: currentcolor;
         mask-image: url('remixicon/icons/Logos/linkedin-box-fill.svg');
+        mask-repeat: no-repeat;
+        mask-origin: content-box;
+        mask-position: left bottom 40%;
+        mask-size: 1.1em;
+
+        @media (forced-colors: active) {
+          forced-color-adjust: none;
+          background-color: LinkText;
+        }
+      }
+    }
+
+    &.github {
+      &::before {
+        content: '';
+        padding-inline-end: 1.1em;
+        margin-inline-end: 0.4ch;
+        background-color: currentcolor;
+        mask-image: url('remixicon/icons/Logos/github-fill.svg');
+        mask-repeat: no-repeat;
+        mask-origin: content-box;
+        mask-position: left bottom 40%;
+        mask-size: 1.1em;
+
+        @media (forced-colors: active) {
+          forced-color-adjust: none;
+          background-color: LinkText;
+        }
+      }
+    }
+
+    &.email {
+      &::before {
+        content: '';
+        padding-inline-end: 1.1em;
+        margin-inline-end: 0.4ch;
+        background-color: currentcolor;
+        mask-image: url('remixicon/icons/Business/mail-fill.svg');
         mask-repeat: no-repeat;
         mask-origin: content-box;
         mask-position: left bottom 40%;
@@ -212,48 +269,55 @@ body > .contents {
 body > footer {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-end;
-  column-gap: var(--space-xl-3xl);
-  row-gap: var(--space-s-l);
-  border-block-start: var(--width-divider-narrow) solid var(--color-divider-light);
-  max-inline-size: 75rem;
+  column-gap: var(--space-2xl-3xl);
+  row-gap: var(--space-xs-s);
+  font-size: var(--step--1);
+  border-block-start: var(--width-divider-narrow) solid transparent;
   inline-size: 100%;
   margin-block-start: var(--space-2xl-3xl);
   margin-inline: auto;
-  padding-block: var(--space-xs-s) var(--space-s-l);
-  padding-inline: var(--space-s-m);
+  padding-block: var(--space-s-m);
+  padding-inline: max(var(--space-s-m), calc(var(--space-s-m) + (100vi - 75rem) / 2));
 
   & > div {
-    flex-grow: 1;
-    flex-basis: 25em;
-    display: flex;
-    flex-direction: column;
-    row-gap: var(--space-2xs-xs);
-    font-size: var(--step--2);
-
-    & > * {
-      margin-block-start: 0;
-    }
-
-    & > ul {
-      display: flex;
-      flex-wrap: wrap;
-      padding-inline-start: 0;
-      list-style-type: none;
-
-      & > :not(:last-child) {
-        margin-inline-end: var(--space-xs-s);
-      }
-    }
+    flex-basis: 100%;
   }
 
-  & > img {
-    max-block-size: var(--space-xl-2xl);
+  & ul {
+    margin-block-start: 0;
+    padding-inline-start: 0;
+    list-style-type: none;
+  }
+
+  & li:not(:first-child) {
+    margin-block-start: var(--space-3xs);
+  }
+
+  & small {
+    flex-basis: 100%;
+    font-size: var(--step--2);
+  }
+
+  & img {
+    block-size: var(--space-m-l);
+  }
+
+  & .contacts :any-link:not(:hover) {
+    @media screen {
+      text-decoration-line: none;
+    }
   }
 
   & :any-link {
     color: currentcolor;
+  }
+
+  @media print {
+    border-color: var(--color-divider-light);
+  }
+
+  @media screen {
+    background-color: var(--color-black-10);
   }
 }
 
@@ -1499,6 +1563,11 @@ skip-link {
           border-inline-end: var(--width-divider) solid;
         }
       }
+    }
+
+    & > footer {
+      max-inline-size: 75rem;
+      padding-inline: var(--space-s-m);
     }
   }
 }

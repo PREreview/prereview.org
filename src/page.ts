@@ -106,22 +106,48 @@ export function page({
 
           <footer>
             <div>
-              <ul aria-label="Support links">
-                <li><a href="https://content.prereview.org/coc/">Code of Conduct</a></li>
-                <li><a href="https://content.prereview.org/privacypolicy/">Privacy</a></li>
-                <li><a href="mailto:contact@prereview.org">Contact</a></li>
-                <li><a href="https://donorbox.org/prereview">Donate</a></li>
-              </ul>
-
-              <small>
-                All content is available under a Creative&nbsp;Commons
-                <a href="https://creativecommons.org/licenses/by/4.0/" rel="license"
-                  >Attribution&nbsp;4.0 International license</a
-                >, except where otherwise stated.
-              </small>
+              <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
             </div>
 
-            <img src="${assets['prereview-footer.svg']}" width="107" height="97" alt="PREreview" />
+            <div>
+              Learn about upcoming events and updates.
+              <a href="https://prereview.civicrm.org/civicrm/mailing/url?u=17&qid=30" class="forward"
+                >Subscribe to our newsletter</a
+              >
+            </div>
+
+            <ul aria-label="Support links">
+              <li><a href="https://donorbox.org/prereview">Donate</a></li>
+              <li><a href="https://content.prereview.org/coc/">Code of Conduct</a></li>
+              <li><a href="https://content.prereview.org/privacypolicy/">Privacy Policy</a></li>
+              <li><a href="https://content.prereview.org/">Blog</a></li>
+            </ul>
+
+            <ul class="contacts" aria-label="Contact us">
+              <li>
+                <span class="visually-hidden">Email us at</span>
+                <a href="mailto:contact@prereview.org" class="email" translate="no">contact@prereview.org</a>
+              </li>
+              <li>
+                <a href="https://twitter.com/PREreview_" class="twitter" translate="no">@PREreview_</a>
+                <span class="visually-hidden">on Twitter</span>
+              </li>
+              <li>
+                <a href="https://mas.to/@prereview" class="mastodon" translate="no">@prereview@mas.to</a>
+                <span class="visually-hidden">on Mastodon</span>
+              </li>
+              <li>
+                <a href="https://github.com/PREreview" class="github" translate="no">PREreview</a>
+                <span class="visually-hidden">on GitHub</span>
+              </li>
+            </ul>
+
+            <small>
+              All content is available under a Creative&nbsp;Commons
+              <a href="https://creativecommons.org/licenses/by/4.0/" rel="license"
+                >Attribution&nbsp;4.0 International license</a
+              >, except where otherwise stated.
+            </small>
           </footer>
         </body>
       </html>
