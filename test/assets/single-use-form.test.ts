@@ -19,7 +19,7 @@ describe('when the form is submitted', () => {
     singleUseForm.querySelector('form')?.requestSubmit()
     singleUseForm.querySelector('form')?.requestSubmit()
 
-    expect(submissions).to.equal(1)
+    await expect(submissions).to.equal(1)
   })
 
   it('disables the submit button', async () => {
