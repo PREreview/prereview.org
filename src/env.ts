@@ -28,7 +28,6 @@ const HtmlD = pipe(D.string, D.map(rawHtml))
 
 const EnvD = pipe(
   D.struct({
-    CACHE_PATH: D.string,
     LEGACY_PREREVIEW_API_APP: D.string,
     LEGACY_PREREVIEW_API_KEY: D.string,
     LEGACY_PREREVIEW_URL: UrlD,

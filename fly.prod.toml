@@ -2,7 +2,6 @@ app = "prereview"
 
 [env]
 ALLOW_SITE_CRAWLERS = "true"
-CACHE_PATH = "/data/cache"
 FATHOM_SITE_ID = "FEAJEBBA"
 LEGACY_PREREVIEW_URL = "https://prereview.org/"
 LEGACY_PREREVIEW_UPDATE = "true"
@@ -14,7 +13,7 @@ ZENODO_URL = "https://zenodo.org/"
 
 [mounts]
 source = "prereview_data"
-destination = "/data"
+destination = "/app/data"
 
 [[services]]
 internal_port = 3000

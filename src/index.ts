@@ -41,7 +41,7 @@ const server = app({
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS ?? false,
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
-    cachePath: env.CACHE_PATH,
+    cachePath: 'data/cache',
     headers: {
       'User-Agent': `PREreview (${env.PUBLIC_URL.href}; mailto:engineering@prereview.org)`,
     },
@@ -110,4 +110,4 @@ createTerminus(server, {
   signals: ['SIGINT', 'SIGTERM'],
 })
 
-void cacache.verify(env.CACHE_PATH).then(() => server.listen(3000))
+void cacache.verify('data/cache').then(() => server.listen(3000))
