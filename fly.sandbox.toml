@@ -9,10 +9,6 @@ PHASE_TAG = "sandbox"
 PHASE_TEXT = "This version is a sandbox."
 ZENODO_URL = "https://sandbox.zenodo.org/"
 
-[mounts]
-source = "prereview_sandbox_data"
-destination = "/app/data"
-
 [[services]]
 internal_port = 3000
 protocol = "tcp"
