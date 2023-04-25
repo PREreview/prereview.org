@@ -1,5 +1,6 @@
 import { createTerminus } from '@godaddy/terminus'
 import KeyvRedis from '@keyv/redis'
+import cacache from 'cacache'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
 import * as C from 'fp-ts/Console'
@@ -109,4 +110,4 @@ createTerminus(server, {
   signals: ['SIGINT', 'SIGTERM'],
 })
 
-server.listen(3000)
+void cacache.verify(env.CACHE_PATH).then(() => server.listen(3000))
