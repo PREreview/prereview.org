@@ -645,6 +645,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),
+      ghostApi: {
+        key: 'key',
+      },
       legacyPrereviewApi: {
         app: 'app',
         key: 'key',

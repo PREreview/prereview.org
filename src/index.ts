@@ -47,6 +47,9 @@ const server = app({
     },
   }),
   formStore: new Keyv({ namespace: 'forms', store: keyvStore }),
+  ghostApi: {
+    key: env.GHOST_API_KEY,
+  },
   legacyPrereviewApi: {
     app: env.LEGACY_PREREVIEW_API_APP,
     key: env.LEGACY_PREREVIEW_API_KEY,

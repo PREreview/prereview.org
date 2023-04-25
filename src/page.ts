@@ -6,7 +6,7 @@ import { pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { Html, PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
-import { logOutMatch } from './routes'
+import { logOutMatch, privacyPolicyMatch } from './routes'
 import { User } from './user'
 
 export interface FathomEnv {
@@ -119,7 +119,7 @@ export function page({
             <ul aria-label="Support links">
               <li><a href="https://donorbox.org/prereview">Donate</a></li>
               <li><a href="https://content.prereview.org/coc/">Code of Conduct</a></li>
-              <li><a href="https://content.prereview.org/privacypolicy/">Privacy Policy</a></li>
+              <li><a href="${format(privacyPolicyMatch.formatter, {})}">Privacy Policy</a></li>
               <li><a href="https://content.prereview.org/">Blog</a></li>
             </ul>
 

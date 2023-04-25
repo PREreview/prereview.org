@@ -24,6 +24,7 @@ import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
+import { GhostApiEnv } from './ghost'
 import { home } from './home'
 import { handleError } from './http-error'
 import {
@@ -37,6 +38,7 @@ import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { FathomEnv, PhaseEnv } from './page'
 import { preprint, redirectToPreprint } from './preprint'
 import { PreprintId } from './preprint-id'
+import { privacyPolicy } from './privacy-policy'
 import { PublicUrlEnv } from './public-url'
 import { review } from './review'
 import {
@@ -48,6 +50,7 @@ import {
   orcidErrorMatch,
   preprintMatch,
   preprintUuidMatch,
+  privacyPolicyMatch,
   reviewMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAlreadyWrittenMatch,
@@ -86,6 +89,7 @@ import {
 
 export type AppEnv = FathomEnv &
   FormStoreEnv &
+  GhostApiEnv &
   LegacyPrereviewApiEnv &
   L.LoggerEnv &
   OAuthEnv &
@@ -109,6 +113,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ...env,
               getPreprintTitle: flip(getPreprintTitle)(env),
             }),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      privacyPolicyMatch.parser,
+      P.map(() => privacyPolicy),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
