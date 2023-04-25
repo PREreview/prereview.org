@@ -12,10 +12,6 @@ PHASE_TAG = "beta"
 PHASE_TEXT = "This is the new version of PREreview."
 ZENODO_URL = "https://zenodo.org/"
 
-[mounts]
-source = "prereview_data"
-destination = "/data"
-
 [[services]]
 internal_port = 3000
 protocol = "tcp"
