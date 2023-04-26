@@ -1,6 +1,5 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
@@ -293,108 +292,101 @@ describe('getPseudonymFromLegacyPrereview', () => {
 })
 
 describe('getRapidPreviewsFromLegacyPrereview', () => {
-  test.prop([
-    fc.string(),
-    fc.string(),
-    fc.origin(),
-    fc.boolean(),
-    fc.constant({
-      type: 'biorxiv' as const,
-      doi: '10.1101/2022.02.14.480364' as Doi<'1101'>,
-    }),
-  ])('when the Rapid PREreviews can be loaded', async (app, key, url, update, preprintId) => {
-    const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
-      fetch: fetchMock
-        .sandbox()
-        .getOnce(
-          `${url}api/v2/preprints/doi-${preprintId.doi
-            .toLowerCase()
-            .replaceAll('-', '+')
-            .replaceAll('/', '-')}/rapid-reviews`,
+  test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintId()])(
+    'when the Rapid PREreviews can be loaded',
+    async (app, key, url, update, preprintId) => {
+      const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
+        fetch: fetchMock
+          .sandbox()
+          .getOnce(
+            `${url}api/v2/preprints/doi-${encodeURIComponent(
+              preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            )}/rapid-reviews`,
+            {
+              body: {
+                data: [
+                  {
+                    author: { name: 'Author 1', orcid: '0000-0002-1825-0097' },
+                    ynNovel: 'yes',
+                    ynFuture: 'yes',
+                    ynReproducibility: 'unsure',
+                    ynMethods: 'unsure',
+                    ynCoherent: 'yes',
+                    ynLimitations: 'unsure',
+                    ynEthics: 'yes',
+                    ynNewData: 'yes',
+                    ynRecommend: 'yes',
+                    ynPeerReview: 'yes',
+                    ynAvailableCode: 'no',
+                    ynAvailableData: 'no',
+                  },
+                  {
+                    author: { name: 'Author 2' },
+                    ynNovel: 'unsure',
+                    ynFuture: 'yes',
+                    ynReproducibility: 'unsure',
+                    ynMethods: 'yes',
+                    ynCoherent: 'yes',
+                    ynLimitations: 'no',
+                    ynEthics: 'N/A',
+                    ynNewData: 'yes',
+                    ynRecommend: 'yes',
+                    ynPeerReview: 'yes',
+                    ynAvailableCode: 'no',
+                    ynAvailableData: 'yes',
+                  },
+                ],
+              },
+            },
+          ),
+        legacyPrereviewApi: {
+          app,
+          key,
+          url,
+          update,
+        },
+      })()
+
+      expect(actual).toStrictEqual(
+        E.right([
           {
-            body: {
-              data: [
-                {
-                  author: { name: 'Author 1', orcid: '0000-0002-1825-0097' },
-                  ynNovel: 'yes',
-                  ynFuture: 'yes',
-                  ynReproducibility: 'unsure',
-                  ynMethods: 'unsure',
-                  ynCoherent: 'yes',
-                  ynLimitations: 'unsure',
-                  ynEthics: 'yes',
-                  ynNewData: 'yes',
-                  ynRecommend: 'yes',
-                  ynPeerReview: 'yes',
-                  ynAvailableCode: 'no',
-                  ynAvailableData: 'no',
-                },
-                {
-                  author: { name: 'Author 2' },
-                  ynNovel: 'unsure',
-                  ynFuture: 'yes',
-                  ynReproducibility: 'unsure',
-                  ynMethods: 'yes',
-                  ynCoherent: 'yes',
-                  ynLimitations: 'no',
-                  ynEthics: 'N/A',
-                  ynNewData: 'yes',
-                  ynRecommend: 'yes',
-                  ynPeerReview: 'yes',
-                  ynAvailableCode: 'no',
-                  ynAvailableData: 'yes',
-                },
-              ],
+            author: { name: 'Author 1', orcid: '0000-0002-1825-0097' },
+            questions: {
+              novel: 'yes',
+              future: 'yes',
+              reproducibility: 'unsure',
+              methods: 'unsure',
+              coherent: 'yes',
+              limitations: 'unsure',
+              ethics: 'yes',
+              newData: 'yes',
+              recommend: 'yes',
+              peerReview: 'yes',
+              availableCode: 'no',
+              availableData: 'no',
             },
           },
-        ),
-      legacyPrereviewApi: {
-        app,
-        key,
-        url,
-        update,
-      },
-    })()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        {
-          author: { name: 'Author 1', orcid: '0000-0002-1825-0097' },
-          questions: {
-            novel: 'yes',
-            future: 'yes',
-            reproducibility: 'unsure',
-            methods: 'unsure',
-            coherent: 'yes',
-            limitations: 'unsure',
-            ethics: 'yes',
-            newData: 'yes',
-            recommend: 'yes',
-            peerReview: 'yes',
-            availableCode: 'no',
-            availableData: 'no',
+          {
+            author: { name: 'Author 2', orcid: undefined },
+            questions: {
+              novel: 'unsure',
+              future: 'yes',
+              reproducibility: 'unsure',
+              methods: 'yes',
+              coherent: 'yes',
+              limitations: 'no',
+              ethics: 'na',
+              newData: 'yes',
+              recommend: 'yes',
+              peerReview: 'yes',
+              availableCode: 'no',
+              availableData: 'yes',
+            },
           },
-        },
-        {
-          author: { name: 'Author 2', orcid: undefined },
-          questions: {
-            novel: 'unsure',
-            future: 'yes',
-            reproducibility: 'unsure',
-            methods: 'yes',
-            coherent: 'yes',
-            limitations: 'no',
-            ethics: 'na',
-            newData: 'yes',
-            recommend: 'yes',
-            peerReview: 'yes',
-            availableCode: 'no',
-            availableData: 'yes',
-          },
-        },
-      ]),
-    )
-  })
+        ]),
+      )
+    },
+  )
 
   test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintId()])(
     'revalidates if the Rapid PREreviews are stale',
