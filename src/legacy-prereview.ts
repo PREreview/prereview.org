@@ -180,9 +180,9 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
   pipe(
     RTE.fromReader(
       legacyPrereviewUrl(
-        `preprints/${`doi-${encodeURIComponent(
+        `preprints/doi-${encodeURIComponent(
           id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-        )}`}/rapid-reviews`,
+        )}/rapid-reviews`,
       ),
     ),
     RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
