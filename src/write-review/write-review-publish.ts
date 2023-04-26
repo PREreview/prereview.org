@@ -50,7 +50,7 @@ export const writeReviewPublish = flow(
       RM.apSW('user', getUser),
       RM.bindW(
         'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
@@ -58,7 +58,7 @@ export const writeReviewPublish = flow(
           .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePublishForm)
           .with({ method: 'POST', preprint: P.select() }, showFailureMessage)
           .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, showPublishForm)
-          .otherwise(flow(({ form }) => form, fromMiddlewareK(redirectToNextForm(preprint.id.doi)))),
+          .otherwise(flow(({ form }) => form, fromMiddlewareK(redirectToNextForm(preprint.id)))),
       ),
       RM.orElseW(error =>
         match(error)
@@ -82,7 +82,7 @@ export const writeReviewPublish = flow(
 
 const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
   pipe(
-    RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.id.doi)),
+    RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.id)),
     RM.map(() => ({
       conduct: form.conduct,
       persona: form.persona,

@@ -21,7 +21,7 @@ export const writeReviewAddAuthors = flow(
       RM.apS('user', getUser),
       RM.bindW(
         'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
@@ -57,7 +57,7 @@ const showCannotAddAuthorsForm = flow(
 )
 
 const handleCannotAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
-  redirectToNextForm(preprint.id.doi)(form)
+  redirectToNextForm(preprint.id)(form)
 
 function cannotAddAuthorsForm(preprint: Preprint, user: User) {
   return page({

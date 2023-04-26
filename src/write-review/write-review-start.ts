@@ -25,7 +25,7 @@ export const writeReviewStart = flow(
       RM.bindTo('user'),
       RM.bindW(
         'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
       RM.ichainW(({ form, user }) => showCarryOnPage(preprint, form, user)),
       RM.orElseW(error =>

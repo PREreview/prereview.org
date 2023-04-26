@@ -1,4 +1,3 @@
-import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { JsonRecord } from 'fp-ts/Json'
@@ -32,11 +31,11 @@ export interface FormStoreEnv {
 
 export function getForm(
   user: Orcid,
-  preprint: Doi,
+  preprint: PreprintId,
 ): ReaderTaskEither<FormStoreEnv, 'no-form' | 'form-unavailable', Form> {
   return flow(
     TE.tryCatchK(
-      async ({ formStore }) => await formStore.get(`${user}_${preprint}`),
+      async ({ formStore }) => await formStore.get(`${user}_${preprint.doi}`),
       () => 'form-unavailable' as const,
     ),
     TE.chainEitherKW(
@@ -58,21 +57,24 @@ export function updateForm(originalForm: Form): (newForm: Form) => Form {
 
 export function saveForm(
   user: Orcid,
-  preprint: Doi,
+  preprint: PreprintId,
 ): (form: Form) => ReaderTaskEither<FormStoreEnv, 'form-unavailable', void> {
   return form =>
     TE.tryCatchK(
       async ({ formStore }) => {
-        await formStore.set(`${user}_${preprint}`, FormC.encode(form))
+        await formStore.set(`${user}_${preprint.doi}`, FormC.encode(form))
       },
       () => 'form-unavailable',
     )
 }
 
-export function deleteForm(user: Orcid, preprint: Doi): ReaderTaskEither<FormStoreEnv, 'form-unavailable', void> {
+export function deleteForm(
+  user: Orcid,
+  preprint: PreprintId,
+): ReaderTaskEither<FormStoreEnv, 'form-unavailable', void> {
   return TE.tryCatchK(
     async ({ formStore }) => {
-      await formStore.delete(`${user}_${preprint}`)
+      await formStore.delete(`${user}_${preprint.doi}`)
     },
     () => 'form-unavailable',
   )
@@ -91,8 +93,8 @@ export const nextFormMatch = (form: Form) =>
     .with({ conduct: P.optional(P.nullish) }, () => writeReviewConductMatch)
     .otherwise(() => writeReviewPublishMatch)
 
-export const redirectToNextForm = (preprint: PreprintId['doi']) =>
-  flow(nextFormMatch, match => format(match.formatter, { doi: preprint }), seeOther)
+export const redirectToNextForm = (preprint: PreprintId) =>
+  flow(nextFormMatch, match => format(match.formatter, { doi: preprint.doi }), seeOther)
 
 const FormC = C.partial({
   alreadyWritten: C.literal('yes', 'no'),

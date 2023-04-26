@@ -31,7 +31,7 @@ export const writeReviewAuthors = flow(
       RM.apS('user', getUser),
       RM.bindW(
         'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handleAuthorsForm).otherwise(showAuthorsForm)),
@@ -100,14 +100,14 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.bindTo('form'),
     RM.ichainMiddlewareKW(state =>
       match(state)
         .with({ form: { moreAuthors: 'yes' } }, () =>
           seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.id.doi })),
         )
-        .otherwise(flow(({ form }) => form, redirectToNextForm(preprint.id.doi))),
+        .otherwise(flow(({ form }) => form, redirectToNextForm(preprint.id))),
     ),
     RM.orElseW(error =>
       match(error)

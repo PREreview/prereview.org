@@ -25,7 +25,7 @@ export const writeReviewPersona = flow(
       RM.apS('user', getUser),
       RM.bindW(
         'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(showPersonaForm)),
@@ -75,8 +75,8 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id.doi)),
-    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)

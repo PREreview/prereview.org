@@ -24,7 +24,7 @@ export const writeReview = flow(
       RM.bindW(
         'form',
         flow(
-          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
+          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
           RM.map(E.right),
           RM.orElseW(error =>
             match(error).with('no-form', flow(E.left, RM.right)).with('form-unavailable', RM.left).exhaustive(),

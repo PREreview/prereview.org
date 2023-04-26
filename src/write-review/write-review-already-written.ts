@@ -26,7 +26,7 @@ export const writeReviewAlreadyWritten = flow(
       RM.bindW(
         'form',
         flow(
-          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
+          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
           RM.orElse(() => RM.of(createForm())),
         ),
       ),
@@ -79,7 +79,7 @@ const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; prepri
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainMiddlewareK(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint.id.doi }))),
     RM.orElseW(error =>
       match(error)
