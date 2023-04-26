@@ -242,10 +242,13 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Center for Open Science'),
       'group-title': D.literal('AfricArXiv'),
     }),
-    D.map(work => ({
-      type: 'africarxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'africarxiv',
+          doi: work.DOI,
+        } satisfies AfricarxivPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
@@ -253,40 +256,52 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Cold Spring Harbor Laboratory'),
       institution: D.fromTuple(D.struct({ name: D.literal('bioRxiv') })),
     }),
-    D.map(work => ({
-      type: 'biorxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'biorxiv',
+          doi: work.DOI,
+        } satisfies BiorxivPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('26434'), 'DOI'),
       publisher: D.literal('American Chemical Society (ACS)'),
     }),
-    D.map(work => ({
-      type: 'chemrxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'chemrxiv',
+          doi: work.DOI,
+        } satisfies ChemrxivPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('31223'), 'DOI'),
       publisher: D.literal('California Digital Library (CDL)'),
     }),
-    D.map(work => ({
-      type: 'eartharxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'eartharxiv',
+          doi: work.DOI,
+        } satisfies EartharxivPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('32942'), 'DOI'),
       publisher: D.literal('California Digital Library (CDL)'),
     }),
-    D.map(work => ({
-      type: 'ecoevorxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'ecoevorxiv',
+          doi: work.DOI,
+        } satisfies EcoevorxivPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
@@ -294,20 +309,26 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Center for Open Science'),
       'group-title': D.literal('EdArXiv'),
     }),
-    D.map(work => ({
-      type: 'edarxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'edarxiv',
+          doi: work.DOI,
+        } satisfies EdarxivPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('31224'), 'DOI'),
       publisher: D.literal('Open Engineering Inc'),
     }),
-    D.map(work => ({
-      type: 'engrxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'engrxiv',
+          doi: work.DOI,
+        } satisfies EngrxivPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
@@ -315,10 +336,13 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Cold Spring Harbor Laboratory'),
       institution: D.fromTuple(D.struct({ name: D.literal('medRxiv') })),
     }),
-    D.map(work => ({
-      type: 'medrxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'medrxiv',
+          doi: work.DOI,
+        } satisfies MedrxivPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
@@ -326,10 +350,13 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Center for Open Science'),
       'group-title': D.literal('MetaArXiv'),
     }),
-    D.map(work => ({
-      type: 'metaarxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'metaarxiv',
+          doi: work.DOI,
+        } satisfies MetaarxivPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
@@ -337,20 +364,26 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Center for Open Science', 'CABI Publishing'),
       'group-title': D.literal('Open Science Framework'),
     }),
-    D.map(work => ({
-      type: 'osf' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'osf',
+          doi: work.DOI,
+        } satisfies OsfPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('20944'), 'DOI'),
       publisher: D.literal('MDPI AG'),
     }),
-    D.map(work => ({
-      type: 'preprints.org' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'preprints.org',
+          doi: work.DOI,
+        } satisfies PreprintsorgPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
@@ -358,10 +391,13 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Center for Open Science'),
       'group-title': D.literal('PsyArXiv'),
     }),
-    D.map(work => ({
-      type: 'psyarxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'psyarxiv',
+          doi: work.DOI,
+        } satisfies PsyarxivPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
@@ -369,30 +405,39 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Research Square Platform LLC'),
       institution: D.fromTuple(D.struct({ name: D.literal('Research Square') })),
     }),
-    D.map(work => ({
-      type: 'research-square' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'research-square',
+          doi: work.DOI,
+        } satisfies ResearchSquarePreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('1590'), 'DOI'),
       publisher: D.literal('FapUNIFESP (SciELO)'),
     }),
-    D.map(work => ({
-      type: 'scielo' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'scielo',
+          doi: work.DOI,
+        } satisfies ScieloPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
       DOI: D.fromRefinement(hasRegistrant('14293'), 'DOI'),
       publisher: D.literal('ScienceOpen'),
     }),
-    D.map(work => ({
-      type: 'science-open' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'science-open',
+          doi: work.DOI,
+        } satisfies ScienceOpenPreprintId),
+    ),
   ),
   pipe(
     D.fromStruct({
@@ -400,9 +445,12 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       publisher: D.literal('Center for Open Science'),
       'group-title': D.literal('SocArXiv'),
     }),
-    D.map(work => ({
-      type: 'socarxiv' as const,
-      doi: work.DOI,
-    })),
+    D.map(
+      work =>
+        ({
+          type: 'socarxiv',
+          doi: work.DOI,
+        } satisfies SocarxivPreprintId),
+    ),
   ),
 )

@@ -128,8 +128,11 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = pipe(
     doi: D.fromRefinement(hasRegistrant('48550'), 'DOI'),
     publisher: D.literal('arXiv'),
   }),
-  D.map(work => ({
-    type: 'arxiv' as const,
-    doi: work.doi,
-  })),
+  D.map(
+    work =>
+      ({
+        type: 'arxiv',
+        doi: work.doi,
+      } satisfies ArxivPreprintId),
+  ),
 )
