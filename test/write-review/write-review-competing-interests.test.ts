@@ -14,7 +14,7 @@ import { runMiddleware } from '../middleware'
 describe('writeReviewCompetingInterests', () => {
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(
         fc.oneof(
@@ -54,7 +54,7 @@ describe('writeReviewCompetingInterests', () => {
     'when the form is completed',
     async (preprintDoi, preprintTitle, [competingInterests, connection], user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
       const actual = await runMiddleware(
@@ -66,7 +66,7 @@ describe('writeReviewCompetingInterests', () => {
         connection,
       )()
 
-      expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject(competingInterests)
+      expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject(competingInterests)
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.SeeOther },
@@ -74,7 +74,7 @@ describe('writeReviewCompetingInterests', () => {
             type: 'setHeader',
             name: 'Location',
             value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/write-a-prereview/check-your-prereview`,
           },
           { type: 'endResponse' },
@@ -86,7 +86,7 @@ describe('writeReviewCompetingInterests', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(
         fc.oneof(
@@ -132,7 +132,7 @@ describe('writeReviewCompetingInterests', () => {
     'when the form is incomplete',
     async (preprintDoi, preprintTitle, [competingInterests, connection], user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
@@ -144,7 +144,7 @@ describe('writeReviewCompetingInterests', () => {
         connection,
       )()
 
-      expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject(competingInterests)
+      expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject(competingInterests)
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.SeeOther },
@@ -153,7 +153,7 @@ describe('writeReviewCompetingInterests', () => {
             name: 'Location',
             value: expect.stringContaining(
               `/preprints/doi-${encodeURIComponent(
-                preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
               )}/write-a-prereview/`,
             ),
           },
@@ -165,7 +165,7 @@ describe('writeReviewCompetingInterests', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.oneof(
@@ -202,7 +202,7 @@ describe('writeReviewCompetingInterests', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview`,
         },
         { type: 'endResponse' },
@@ -310,7 +310,7 @@ describe('writeReviewCompetingInterests', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.connection({
       body: fc.record({
         competingInterests: fc.constantFrom('yes', 'no'),
@@ -338,7 +338,7 @@ describe('writeReviewCompetingInterests', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview`,
         },
         { type: 'endResponse' },
@@ -348,7 +348,7 @@ describe('writeReviewCompetingInterests', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.oneof(
@@ -377,7 +377,7 @@ describe('writeReviewCompetingInterests', () => {
     ),
   ])('without declaring any competing interests', async (preprintDoi, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(

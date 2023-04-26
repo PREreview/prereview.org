@@ -229,7 +229,7 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: NewPrereview) => 
         () => RTE.of(undefined),
         () =>
           pipe(
-            resolvePreprint(newPrereview.preprint.doi),
+            resolvePreprint(newPrereview.preprint.id.doi),
             RTE.chainReaderKW(preprint =>
               pipe(
                 legacyPrereviewUrl('full-reviews'),

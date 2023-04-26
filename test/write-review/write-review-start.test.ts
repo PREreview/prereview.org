@@ -23,7 +23,7 @@ describe('writeReviewStart', () => {
       }),
       fc.origin(),
       fc.preprintDoi(),
-      fc.record({ title: fc.html(), language: fc.languageCode() }),
+      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -45,7 +45,7 @@ describe('writeReviewStart', () => {
       fc.user(),
     ])('there is a form', async (oauth, publicUrl, preprintDoi, preprintTitle, connection, newReview, user) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
       const actual = await runMiddleware(
@@ -79,7 +79,7 @@ describe('writeReviewStart', () => {
       }),
       fc.origin(),
       fc.preprintDoi(),
-      fc.record({ title: fc.html(), language: fc.languageCode() }),
+      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -109,7 +109,7 @@ describe('writeReviewStart', () => {
             type: 'setHeader',
             name: 'Location',
             value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/write-a-prereview/already-written`,
           },
           { type: 'endResponse' },
@@ -128,7 +128,7 @@ describe('writeReviewStart', () => {
     }),
     fc.origin(),
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.connection({
       headers: fc.constant({}),
       method: fc.requestMethod().filter(method => method !== 'POST'),
@@ -162,7 +162,7 @@ describe('writeReviewStart', () => {
               scope: '/authenticate',
               state: new URL(
                 `preprints/doi-${encodeURIComponent(
-                  preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                  preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
                 )}/write-a-prereview/start-now`,
                 publicUrl,
               ).href,

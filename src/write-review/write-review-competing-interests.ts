@@ -27,7 +27,7 @@ export const writeReviewCompetingInterests = flow(
       RM.apS('user', getUser),
       RM.bindW(
         'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
@@ -38,7 +38,7 @@ export const writeReviewCompetingInterests = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -98,8 +98,8 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id.doi)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id.doi)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -130,13 +130,13 @@ function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm
     title: plainText`${error ? 'Error: ' : ''}Do you have any competing interests? – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.id.doi })}" class="back">Back</a>
       </nav>
 
       <main id="form">
         <form
           method="post"
-          action="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.doi })}"
+          action="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.id.doi })}"
           novalidate
         >
           ${error

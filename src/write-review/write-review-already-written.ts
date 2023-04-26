@@ -26,7 +26,7 @@ export const writeReviewAlreadyWritten = flow(
       RM.bindW(
         'form',
         flow(
-          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
+          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
           RM.orElse(() => RM.of(createForm())),
         ),
       ),
@@ -38,7 +38,7 @@ export const writeReviewAlreadyWritten = flow(
         match(error)
           .with(
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
           )
           .with(P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -79,8 +79,8 @@ const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; prepri
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareK(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint.doi }))),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id.doi)),
+    RM.ichainMiddlewareK(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint.id.doi }))),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -109,13 +109,13 @@ function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm, user: 
     }”`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: preprint.id.doi })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="form">
         <form
           method="post"
-          action="${format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.doi })}"
+          action="${format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.id.doi })}"
           novalidate
         >
           ${error

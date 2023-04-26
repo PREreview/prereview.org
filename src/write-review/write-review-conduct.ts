@@ -25,7 +25,7 @@ export const writeReviewConduct = flow(
       RM.apS('user', getUser),
       RM.bindW(
         'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
@@ -36,7 +36,7 @@ export const writeReviewConduct = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -77,8 +77,8 @@ const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprin
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.doi)),
-    RM.ichainMiddlewareKW(redirectToNextForm(preprint.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id.doi)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id.doi)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -105,11 +105,13 @@ function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm, user: Us
     title: plainText`${error ? 'Error: ' : ''}Code of Conduct – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.id.doi })}" class="back"
+          >Back</a
+        >
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(writeReviewConductMatch.formatter, { doi: preprint.doi })}" novalidate>
+        <form method="post" action="${format(writeReviewConductMatch.formatter, { doi: preprint.id.doi })}" novalidate>
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">

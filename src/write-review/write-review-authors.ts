@@ -31,7 +31,7 @@ export const writeReviewAuthors = flow(
       RM.apS('user', getUser),
       RM.bindW(
         'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state => match(state).with({ method: 'POST' }, handleAuthorsForm).otherwise(showAuthorsForm)),
@@ -40,7 +40,7 @@ export const writeReviewAuthors = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -100,14 +100,14 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
       ),
     ),
     RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.doi)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id.doi)),
     RM.bindTo('form'),
     RM.ichainMiddlewareKW(state =>
       match(state)
         .with({ form: { moreAuthors: 'yes' } }, () =>
-          seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })),
+          seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.id.doi })),
         )
-        .otherwise(flow(({ form }) => form, redirectToNextForm(preprint.doi))),
+        .otherwise(flow(({ form }) => form, redirectToNextForm(preprint.id.doi))),
     ),
     RM.orElseW(error =>
       match(error)
@@ -145,11 +145,11 @@ function authorsForm(preprint: Preprint, form: AuthorsForm, user: User) {
     }”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.id.doi })}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" novalidate>
+        <form method="post" action="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.id.doi })}" novalidate>
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">

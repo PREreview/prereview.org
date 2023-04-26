@@ -14,7 +14,7 @@ import { runMiddleware } from '../middleware'
 describe('writeReviewPersona', () => {
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(fc.constantFrom('public', 'pseudonym'), fc.cookieName(), fc.uuid(), fc.string())
       .chain(([persona, sessionCookie, sessionId, secret]) =>
@@ -44,7 +44,7 @@ describe('writeReviewPersona', () => {
     ),
   ])('when the form is completed', async (preprintDoi, preprintTitle, [persona, connection], user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
     const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
     const actual = await runMiddleware(
       _.writeReviewPersona(preprintDoi)({
@@ -55,7 +55,7 @@ describe('writeReviewPersona', () => {
       connection,
     )()
 
-    expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ persona })
+    expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({ persona })
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.SeeOther },
@@ -63,7 +63,7 @@ describe('writeReviewPersona', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview/check-your-prereview`,
         },
         { type: 'endResponse' },
@@ -74,7 +74,7 @@ describe('writeReviewPersona', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(fc.constantFrom('public', 'pseudonym'), fc.cookieName(), fc.uuid(), fc.string())
       .chain(([persona, sessionCookie, sessionId, secret]) =>
@@ -107,7 +107,7 @@ describe('writeReviewPersona', () => {
     ),
   ])('when the form is incomplete', async (preprintDoi, preprintTitle, [persona, connection], user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
@@ -119,7 +119,7 @@ describe('writeReviewPersona', () => {
       connection,
     )()
 
-    expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ persona })
+    expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({ persona })
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.SeeOther },
@@ -128,7 +128,7 @@ describe('writeReviewPersona', () => {
           name: 'Location',
           value: expect.stringContaining(
             `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/write-a-prereview/`,
           ),
         },
@@ -139,7 +139,7 @@ describe('writeReviewPersona', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({ persona: fc.constantFrom('public', 'pseudonym') }),
@@ -168,7 +168,7 @@ describe('writeReviewPersona', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview`,
         },
         { type: 'endResponse' },
@@ -270,7 +270,7 @@ describe('writeReviewPersona', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.connection({ body: fc.constant({ conduct: 'yes' }), method: fc.constant('POST') }),
   ])("when there isn't a session", async (preprintDoi, preprintTitle, connection) => {
     const formStore = new Keyv()
@@ -292,7 +292,7 @@ describe('writeReviewPersona', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview`,
         },
         { type: 'endResponse' },
@@ -302,7 +302,7 @@ describe('writeReviewPersona', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({ persona: fc.string() }, { withDeletedKeys: true }),
@@ -325,7 +325,7 @@ describe('writeReviewPersona', () => {
     ),
   ])('without a persona', async (preprintDoi, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(

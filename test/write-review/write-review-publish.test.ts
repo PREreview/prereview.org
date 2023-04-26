@@ -16,7 +16,7 @@ import * as fc from './fc'
 describe('writeReviewPublish', () => {
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
@@ -46,7 +46,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, CompletedFormC.encode(newReview))
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, CompletedFormC.encode(newReview))
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
         TE.right([reviewDoi, reviewId]),
@@ -69,10 +69,7 @@ describe('writeReviewPublish', () => {
       expect(publishPrereview).toHaveBeenCalledWith({
         conduct: 'yes',
         persona: newReview.persona,
-        preprint: {
-          doi: preprintDoi,
-          ...preprintTitle,
-        },
+        preprint: preprintTitle,
         review: expect.stringContaining(newReview.review.toString()),
         user,
       })
@@ -83,7 +80,7 @@ describe('writeReviewPublish', () => {
             type: 'setHeader',
             name: 'Location',
             value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/write-a-prereview/prereview-published`,
           },
           { type: 'endResponse' },
@@ -99,7 +96,7 @@ describe('writeReviewPublish', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
@@ -135,7 +132,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newPrereview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newPrereview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
@@ -164,7 +161,7 @@ describe('writeReviewPublish', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
@@ -205,7 +202,7 @@ describe('writeReviewPublish', () => {
             type: 'setHeader',
             name: 'Location',
             value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/write-a-prereview`,
           },
           { type: 'endResponse' },
@@ -314,7 +311,7 @@ describe('writeReviewPublish', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.connection({ method: fc.constant('POST') }),
     fc.cookieName(),
     fc.string(),
@@ -343,7 +340,7 @@ describe('writeReviewPublish', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview`,
         },
         { type: 'endResponse' },
@@ -353,7 +350,7 @@ describe('writeReviewPublish', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
@@ -374,7 +371,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, CompletedFormC.encode(newReview))
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, CompletedFormC.encode(newReview))
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(

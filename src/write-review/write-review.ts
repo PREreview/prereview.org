@@ -24,7 +24,7 @@ export const writeReview = flow(
       RM.bindW(
         'form',
         flow(
-          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
+          RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
           RM.map(E.right),
           RM.orElseW(error =>
             match(error).with('no-form', flow(E.left, RM.right)).with('form-unavailable', RM.left).exhaustive(),
@@ -35,7 +35,7 @@ export const writeReview = flow(
         match(state)
           .with(
             { form: P.when(E.isRight) },
-            fromMiddlewareK(() => seeOther(format(writeReviewStartMatch.formatter, { doi: preprint.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewStartMatch.formatter, { doi: preprint.id.doi }))),
           )
           .with({ form: P.when(E.isLeft) }, ({ user }) => showStartPage(preprint, user))
           .exhaustive(),
@@ -67,7 +67,7 @@ function startPage(preprint: Preprint, user?: User) {
     title: plainText`Write a PREreview`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: preprint.id.doi })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="main-content">
@@ -99,7 +99,7 @@ function startPage(preprint: Preprint, user?: User) {
               </details>
             `}
 
-        <a href="${format(writeReviewStartMatch.formatter, { doi: preprint.doi })}" role="button" draggable="false"
+        <a href="${format(writeReviewStartMatch.formatter, { doi: preprint.id.doi })}" role="button" draggable="false"
           >Start now</a
         >
       </main>

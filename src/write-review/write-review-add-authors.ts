@@ -21,7 +21,7 @@ export const writeReviewAddAuthors = flow(
       RM.apS('user', getUser),
       RM.bindW(
         'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
@@ -35,7 +35,7 @@ export const writeReviewAddAuthors = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -57,18 +57,22 @@ const showCannotAddAuthorsForm = flow(
 )
 
 const handleCannotAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
-  redirectToNextForm(preprint.doi)(form)
+  redirectToNextForm(preprint.id.doi)(form)
 
 function cannotAddAuthorsForm(preprint: Preprint, user: User) {
   return page({
     title: plainText`Add more authors – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.id.doi })}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.doi })}" novalidate>
+        <form
+          method="post"
+          action="${format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.id.doi })}"
+          novalidate
+        >
           <h1>Add more authors</h1>
 
           <p>Unfortunately, we’re unable to add more authors now.</p>

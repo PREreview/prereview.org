@@ -126,7 +126,7 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
     related_identifiers: [
       {
         scheme: 'doi',
-        identifier: newPrereview.preprint.doi,
+        identifier: newPrereview.preprint.id.doi,
         relation: 'reviews',
         resource_type: 'publication-preprint',
       },

@@ -1,27 +1,18 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { pipe } from 'fp-ts/function'
 import { LanguageCode } from 'iso-639-1'
 import { Html } from '../html'
 import { PreprintId } from '../preprint-id'
 
 export type Preprint = {
-  doi: PreprintId['doi']
+  id: PreprintId
   language: LanguageCode
   title: Html
 }
 
 export interface GetPreprintTitleEnv {
-  getPreprintTitle: (
-    doi: PreprintId['doi'],
-  ) => TE.TaskEither<'not-found' | 'unavailable', { title: Html; language: LanguageCode }>
+  getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
 }
 
 export const getPreprint = (doi: PreprintId['doi']) =>
-  pipe(
-    getPreprintTitle(doi),
-    RTE.let('doi', () => doi),
-  )
-
-const getPreprintTitle = (doi: PreprintId['doi']) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(doi)))

@@ -14,7 +14,7 @@ import { runMiddleware } from '../middleware'
 describe('writeReviewAlreadyWritten', () => {
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(fc.constantFrom('yes', 'no'), fc.cookieName(), fc.uuid(), fc.string())
       .chain(([alreadyWritten, sessionCookie, sessionId, secret]) =>
@@ -53,7 +53,7 @@ describe('writeReviewAlreadyWritten', () => {
     'when the form is completed',
     async (preprintDoi, preprintTitle, [alreadyWritten, connection], user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const actual = await runMiddleware(
         _.writeReviewAlreadyWritten(preprintDoi)({
@@ -64,7 +64,7 @@ describe('writeReviewAlreadyWritten', () => {
         connection,
       )()
 
-      expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ alreadyWritten })
+      expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({ alreadyWritten })
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.SeeOther },
@@ -72,7 +72,7 @@ describe('writeReviewAlreadyWritten', () => {
             type: 'setHeader',
             name: 'Location',
             value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/write-a-prereview/write-your-prereview`,
           },
           { type: 'endResponse' },
@@ -84,7 +84,7 @@ describe('writeReviewAlreadyWritten', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(fc.constantFrom('yes', 'no'), fc.cookieName(), fc.uuid(), fc.string())
       .chain(([alreadyWritten, sessionCookie, sessionId, secret]) =>
@@ -114,7 +114,7 @@ describe('writeReviewAlreadyWritten', () => {
     'when the form is incomplete',
     async (preprintDoi, preprintTitle, [alreadyWritten, connection], user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
@@ -126,7 +126,7 @@ describe('writeReviewAlreadyWritten', () => {
         connection,
       )()
 
-      expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ alreadyWritten })
+      expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({ alreadyWritten })
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.SeeOther },
@@ -134,7 +134,7 @@ describe('writeReviewAlreadyWritten', () => {
             type: 'setHeader',
             name: 'Location',
             value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/write-a-prereview/write-your-prereview`,
           },
           { type: 'endResponse' },
@@ -145,7 +145,7 @@ describe('writeReviewAlreadyWritten', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(fc.constantFrom('yes', 'no'), fc.cookieName(), fc.uuid(), fc.string())
       .chain(([alreadyWritten, sessionCookie, sessionId, secret]) =>
@@ -172,7 +172,7 @@ describe('writeReviewAlreadyWritten', () => {
       connection,
     )()
 
-    expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ alreadyWritten })
+    expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({ alreadyWritten })
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.SeeOther },
@@ -180,7 +180,7 @@ describe('writeReviewAlreadyWritten', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview/write-your-prereview`,
         },
         { type: 'endResponse' },
@@ -280,7 +280,7 @@ describe('writeReviewAlreadyWritten', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.connection({ body: fc.record({ alreadyWritten: fc.constantFrom('yes', 'no') }), method: fc.constant('POST') }),
   ])("when there isn't a session", async (preprintDoi, preprintTitle, connection) => {
     const formStore = new Keyv()
@@ -302,7 +302,7 @@ describe('writeReviewAlreadyWritten', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview`,
         },
         { type: 'endResponse' },
@@ -312,7 +312,7 @@ describe('writeReviewAlreadyWritten', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({ alreadyWritten: fc.lorem() }, { withDeletedKeys: true }),
@@ -335,7 +335,7 @@ describe('writeReviewAlreadyWritten', () => {
     'without saying if you have already written the PREreview',
     async (preprintDoi, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(

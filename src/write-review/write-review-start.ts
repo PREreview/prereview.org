@@ -25,7 +25,7 @@ export const writeReviewStart = flow(
       RM.bindTo('user'),
       RM.bindW(
         'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.doi)),
+        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id.doi)),
       ),
       RM.ichainW(({ form, user }) => showCarryOnPage(preprint, form, user)),
       RM.orElseW(error =>
@@ -39,9 +39,9 @@ export const writeReviewStart = flow(
               StatusOpen,
               ResponseEnded,
               never
-            >(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.doi }))),
+            >(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.id.doi }))),
           )
-          .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { doi: preprint.doi }))
+          .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { doi: preprint.id.doi }))
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
       ),
@@ -66,7 +66,7 @@ function carryOnPage(preprint: Preprint, form: Form, user: User) {
     title: plainText`Write a PREreview`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { doi: preprint.id.doi })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="main-content">
@@ -80,7 +80,7 @@ function carryOnPage(preprint: Preprint, form: Form, user: User) {
           >”, we’ll take you to the next step so you can carry&nbsp;on.
         </p>
 
-        <a href="${format(nextFormMatch(form).formatter, { doi: preprint.doi })}" role="button" draggable="false"
+        <a href="${format(nextFormMatch(form).formatter, { doi: preprint.id.doi })}" role="button" draggable="false"
           >Continue</a
         >
       </main>

@@ -1092,7 +1092,7 @@ describe('createRecordOnZenodo', () => {
       conduct: fc.constant('yes'),
       persona: fc.constant('public'),
       preprint: fc.record({
-        doi: fc.preprintDoi(),
+        id: fc.preprintId(),
         language: fc.languageCode(),
         title: fc.html(),
       }),
@@ -1151,7 +1151,7 @@ describe('createRecordOnZenodo', () => {
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: newPrereview.preprint.doi,
+                    identifier: newPrereview.preprint.id.doi,
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -1189,7 +1189,7 @@ describe('createRecordOnZenodo', () => {
       conduct: fc.constant('yes'),
       persona: fc.constant('pseudonym'),
       preprint: fc.record({
-        doi: fc.preprintDoi(),
+        id: fc.preprintId(),
         language: fc.languageCode(),
         title: fc.html(),
       }),
@@ -1248,7 +1248,7 @@ describe('createRecordOnZenodo', () => {
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: newPrereview.preprint.doi,
+                    identifier: newPrereview.preprint.id.doi,
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -1286,7 +1286,7 @@ describe('createRecordOnZenodo', () => {
       conduct: fc.constant('yes'),
       persona: fc.constantFrom('public', 'pseudonym'),
       preprint: fc.record({
-        doi: fc.preprintDoi(),
+        id: fc.preprintId(),
         language: fc.languageCode(),
         title: fc.html(),
       }),

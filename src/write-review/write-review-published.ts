@@ -27,7 +27,7 @@ export const writeReviewPublished = flow(
           .with(
             'no-session',
             'no-published-review',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
           )
           .with(P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -132,7 +132,7 @@ function successMessage({
               appreciation for their help!
             </p>
 
-            <a href="${format(preprintMatch.formatter, { doi: preprint.doi })}" class="button">Back to preprint</a>
+            <a href="${format(preprintMatch.formatter, { doi: preprint.id.doi })}" class="button">Back to preprint</a>
           </main>
         `,
         skipLinks: [[html`Skip to main content`, '#main-content']],

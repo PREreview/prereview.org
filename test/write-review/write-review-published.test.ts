@@ -16,7 +16,7 @@ import * as fc from './fc'
 describe('writeReviewPublished', () => {
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
@@ -78,7 +78,7 @@ describe('writeReviewPublished', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
@@ -117,7 +117,7 @@ describe('writeReviewPublished', () => {
             type: 'setHeader',
             name: 'Location',
             value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/write-a-prereview`,
           },
           { type: 'endResponse' },
@@ -230,7 +230,7 @@ describe('writeReviewPublished', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.connection({ method: fc.constant('POST') }),
     fc.cookieName(),
     fc.string(),
@@ -257,7 +257,7 @@ describe('writeReviewPublished', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview`,
         },
         { type: 'endResponse' },

@@ -15,7 +15,7 @@ describe('writeReviewAuthors', () => {
   describe('when there are more authors', () => {
     test.prop([
       fc.preprintDoi(),
-      fc.record({ title: fc.html(), language: fc.languageCode() }),
+      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           body: fc.constant({ moreAuthors: 'yes', moreAuthorsApproved: 'yes' }),
@@ -48,7 +48,7 @@ describe('writeReviewAuthors', () => {
       ),
     ])('when they have read and agreed', async (preprintDoi, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintDoi)({
@@ -59,7 +59,7 @@ describe('writeReviewAuthors', () => {
         connection,
       )()
 
-      expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({
+      expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({
         moreAuthors: 'yes',
         moreAuthorsApproved: 'yes',
       })
@@ -70,7 +70,7 @@ describe('writeReviewAuthors', () => {
             type: 'setHeader',
             name: 'Location',
             value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/write-a-prereview/add-more-authors`,
           },
           { type: 'endResponse' },
@@ -81,7 +81,7 @@ describe('writeReviewAuthors', () => {
 
     test.prop([
       fc.preprintDoi(),
-      fc.record({ title: fc.html(), language: fc.languageCode() }),
+      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           body: fc.record(
@@ -108,7 +108,7 @@ describe('writeReviewAuthors', () => {
       ),
     ])("when they haven't read and agreed", async (preprintDoi, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintDoi)({
@@ -131,7 +131,7 @@ describe('writeReviewAuthors', () => {
     describe("when they don't want to be listed", () => {
       test.prop([
         fc.preprintDoi(),
-        fc.record({ title: fc.html(), language: fc.languageCode() }),
+        fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
         fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
           fc.connection({
             body: fc.record(
@@ -158,7 +158,7 @@ describe('writeReviewAuthors', () => {
         ),
       ])('when the form is completed', async (preprintDoi, preprintTitle, connection, user, newReview) => {
         const formStore = new Keyv()
-        await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+        await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
         const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
         const actual = await runMiddleware(
           _.writeReviewAuthors(preprintDoi)({
@@ -169,7 +169,9 @@ describe('writeReviewAuthors', () => {
           connection,
         )()
 
-        expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ moreAuthors: 'yes-private' })
+        expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({
+          moreAuthors: 'yes-private',
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -177,7 +179,7 @@ describe('writeReviewAuthors', () => {
               type: 'setHeader',
               name: 'Location',
               value: `/preprints/doi-${encodeURIComponent(
-                preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
               )}/write-a-prereview/check-your-prereview`,
             },
             { type: 'endResponse' },
@@ -188,7 +190,7 @@ describe('writeReviewAuthors', () => {
 
       test.prop([
         fc.preprintDoi(),
-        fc.record({ title: fc.html(), language: fc.languageCode() }),
+        fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
         fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
           fc.connection({
             body: fc.record(
@@ -220,7 +222,7 @@ describe('writeReviewAuthors', () => {
         ),
       ])('when the form is incomplete', async (preprintDoi, preprintTitle, connection, user, newReview) => {
         const formStore = new Keyv()
-        await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+        await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
         const getPreprintTitle = () => TE.right(preprintTitle)
 
         const actual = await runMiddleware(
@@ -232,7 +234,9 @@ describe('writeReviewAuthors', () => {
           connection,
         )()
 
-        expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ moreAuthors: 'yes-private' })
+        expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({
+          moreAuthors: 'yes-private',
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -241,7 +245,7 @@ describe('writeReviewAuthors', () => {
               name: 'Location',
               value: expect.stringContaining(
                 `/preprints/doi-${encodeURIComponent(
-                  preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                  preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
                 )}/write-a-prereview/`,
               ),
             },
@@ -255,7 +259,7 @@ describe('writeReviewAuthors', () => {
   describe("when there aren't more authors", () => {
     test.prop([
       fc.preprintDoi(),
-      fc.record({ title: fc.html(), language: fc.languageCode() }),
+      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           body: fc.record(
@@ -282,7 +286,7 @@ describe('writeReviewAuthors', () => {
       ),
     ])('when the form is completed', async (preprintDoi, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintDoi)({
@@ -293,7 +297,7 @@ describe('writeReviewAuthors', () => {
         connection,
       )()
 
-      expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ moreAuthors: 'no' })
+      expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({ moreAuthors: 'no' })
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.SeeOther },
@@ -301,7 +305,7 @@ describe('writeReviewAuthors', () => {
             type: 'setHeader',
             name: 'Location',
             value: `/preprints/doi-${encodeURIComponent(
-              preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/write-a-prereview/check-your-prereview`,
           },
           { type: 'endResponse' },
@@ -312,7 +316,7 @@ describe('writeReviewAuthors', () => {
 
     test.prop([
       fc.preprintDoi(),
-      fc.record({ title: fc.html(), language: fc.languageCode() }),
+      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           body: fc.record(
@@ -344,7 +348,7 @@ describe('writeReviewAuthors', () => {
       ),
     ])('when the form is incomplete', async (preprintDoi, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
@@ -356,7 +360,7 @@ describe('writeReviewAuthors', () => {
         connection,
       )()
 
-      expect(await formStore.get(`${user.orcid}_${preprintDoi}`)).toMatchObject({ moreAuthors: 'no' })
+      expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({ moreAuthors: 'no' })
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.SeeOther },
@@ -365,7 +369,7 @@ describe('writeReviewAuthors', () => {
             name: 'Location',
             value: expect.stringContaining(
               `/preprints/doi-${encodeURIComponent(
-                preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
               )}/write-a-prereview/`,
             ),
           },
@@ -377,7 +381,7 @@ describe('writeReviewAuthors', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record(
@@ -409,7 +413,7 @@ describe('writeReviewAuthors', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview`,
         },
         { type: 'endResponse' },
@@ -519,7 +523,7 @@ describe('writeReviewAuthors', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.connection({
       body: fc.record(
         { moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'), moreAuthorsApproved: fc.constant('yes') },
@@ -549,7 +553,7 @@ describe('writeReviewAuthors', () => {
           type: 'setHeader',
           name: 'Location',
           value: `/preprints/doi-${encodeURIComponent(
-            preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/write-a-prereview`,
         },
         { type: 'endResponse' },
@@ -559,7 +563,7 @@ describe('writeReviewAuthors', () => {
 
   test.prop([
     fc.preprintDoi(),
-    fc.record({ title: fc.html(), language: fc.languageCode() }),
+    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record(
@@ -586,7 +590,7 @@ describe('writeReviewAuthors', () => {
     ),
   ])('without a moreAuthors', async (preprintDoi, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
+    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
