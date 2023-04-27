@@ -10,6 +10,7 @@ import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { writeReviewStartMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
+import { formKey } from '../../src/write-review/form'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 
@@ -42,7 +43,7 @@ describe('writeReview', () => {
       fc.user(),
     ])('there is a form already', async (preprintDoi, preprintTitle, connection, newReview, user) => {
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
+      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
       const actual = await runMiddleware(

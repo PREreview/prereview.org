@@ -10,6 +10,7 @@ import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
+import { formKey } from '../../src/write-review/form'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 
@@ -47,7 +48,7 @@ describe('writeReviewAddAuthors', () => {
     ),
   ])('when the form is completed', async (preprintDoi, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
+    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
     const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
     const actual = await runMiddleware(
       _.writeReviewAddAuthors(preprintDoi)({
@@ -98,7 +99,7 @@ describe('writeReviewAddAuthors', () => {
       .filter(newReview => Object.keys(newReview).length < 4),
   ])('when the form is incomplete', async (preprintDoi, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
+    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
     const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
     const actual = await runMiddleware(
       _.writeReviewAddAuthors(preprintDoi)({
@@ -183,7 +184,7 @@ describe('writeReviewAddAuthors', () => {
     ),
   ])('when there are no more authors', async (preprintDoi, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
+    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(

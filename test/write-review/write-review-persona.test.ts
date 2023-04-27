@@ -10,6 +10,7 @@ import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
+import { formKey } from '../../src/write-review/form'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 
@@ -46,7 +47,7 @@ describe('writeReviewPersona', () => {
     ),
   ])('when the form is completed', async (preprintDoi, preprintTitle, [persona, connection], user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
+    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
     const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
     const actual = await runMiddleware(
       _.writeReviewPersona(preprintDoi)({
@@ -57,7 +58,7 @@ describe('writeReviewPersona', () => {
       connection,
     )()
 
-    expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({ persona })
+    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ persona })
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.SeeOther },
@@ -107,7 +108,7 @@ describe('writeReviewPersona', () => {
     ),
   ])('when the form is incomplete', async (preprintDoi, preprintTitle, [persona, connection], user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
+    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
@@ -119,7 +120,7 @@ describe('writeReviewPersona', () => {
       connection,
     )()
 
-    expect(await formStore.get(`${user.orcid}_${preprintTitle.id.doi}`)).toMatchObject({ persona })
+    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ persona })
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.SeeOther },
@@ -291,7 +292,7 @@ describe('writeReviewPersona', () => {
     ),
   ])('without a persona', async (preprintDoi, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newReview)
+    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(

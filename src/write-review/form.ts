@@ -29,13 +29,17 @@ export interface FormStoreEnv {
   formStore: Keyv<JsonRecord>
 }
 
+export function formKey(user: Orcid, preprint: PreprintId) {
+  return `${user}_${preprint.doi}`
+}
+
 export function getForm(
   user: Orcid,
   preprint: PreprintId,
 ): ReaderTaskEither<FormStoreEnv, 'no-form' | 'form-unavailable', Form> {
   return flow(
     TE.tryCatchK(
-      async ({ formStore }) => await formStore.get(`${user}_${preprint.doi}`),
+      async ({ formStore }) => await formStore.get(formKey(user, preprint)),
       () => 'form-unavailable' as const,
     ),
     TE.chainEitherKW(
@@ -62,7 +66,7 @@ export function saveForm(
   return form =>
     TE.tryCatchK(
       async ({ formStore }) => {
-        await formStore.set(`${user}_${preprint.doi}`, FormC.encode(form))
+        await formStore.set(formKey(user, preprint), FormC.encode(form))
       },
       () => 'form-unavailable',
     )
@@ -74,7 +78,7 @@ export function deleteForm(
 ): ReaderTaskEither<FormStoreEnv, 'form-unavailable', void> {
   return TE.tryCatchK(
     async ({ formStore }) => {
-      await formStore.delete(`${user}_${preprint.doi}`)
+      await formStore.delete(formKey(user, preprint))
     },
     () => 'form-unavailable',
   )

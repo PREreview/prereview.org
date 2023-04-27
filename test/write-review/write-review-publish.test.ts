@@ -12,6 +12,7 @@ import { writeReviewPublishedMatch, writeReviewStartMatch } from '../../src/rout
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
+import { formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
 import * as fc from './fc'
 
@@ -48,7 +49,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, CompletedFormC.encode(newReview))
+      await formStore.set(formKey(user.orcid, preprintTitle.id), CompletedFormC.encode(newReview))
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
         TE.right([reviewDoi, reviewId]),
@@ -132,7 +133,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, newPrereview)
+      await formStore.set(formKey(user.orcid, preprintTitle.id), newPrereview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
@@ -360,7 +361,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintTitle.id.doi}`, CompletedFormC.encode(newReview))
+      await formStore.set(formKey(user.orcid, preprintTitle.id), CompletedFormC.encode(newReview))
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
