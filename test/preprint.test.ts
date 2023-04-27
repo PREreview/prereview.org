@@ -226,32 +226,34 @@ describe('preprint', () => {
   })
 
   describe('redirectToPreprint', () => {
-    test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.uuid(), fc.preprintId()])(
-      'when the DOI is found',
-      async (connection, user, uuid, id) => {
-        const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
-          TE.right(id),
-        )
+    test.prop([
+      fc.connection(),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.uuid(),
+      fc.indeterminatePreprintId(),
+    ])('when the DOI is found', async (connection, user, uuid, id) => {
+      const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
+        TE.right(id),
+      )
 
-        const actual = await runMiddleware(
-          _.redirectToPreprint(uuid)({ getPreprintIdFromUuid, getUser: () => M.fromEither(user) }),
-          connection,
-        )()
+      const actual = await runMiddleware(
+        _.redirectToPreprint(uuid)({ getPreprintIdFromUuid, getUser: () => M.fromEither(user) }),
+        connection,
+      )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.MovedPermanently },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: format(preprintMatch.formatter, { doi: id.doi }),
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-        expect(getPreprintIdFromUuid).toHaveBeenCalledWith(uuid)
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.MovedPermanently },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(preprintMatch.formatter, { doi: id.doi }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(getPreprintIdFromUuid).toHaveBeenCalledWith(uuid)
+    })
 
     test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.uuid()])(
       'when the DOI is not found',

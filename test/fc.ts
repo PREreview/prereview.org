@@ -23,12 +23,14 @@ import { Preprint } from '../src/preprint'
 import {
   AfricarxivPreprintId,
   ArxivPreprintId,
+  BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
   EartharxivPreprintId,
   EcoevorxivPreprintId,
   EdarxivPreprintId,
   EngrxivPreprintId,
+  IndeterminatePreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
   OsfPreprintId,
@@ -356,6 +358,12 @@ export const socarxivPreprintUrl = (): fc.Arbitrary<[URL, SocarxivPreprintId]> =
       { type: 'socarxiv', doi: `10.31235/osf.io/${id}` as Doi<'31235'> },
     ])
 
+export const biorxivOrMedrxivPreprintId = (): fc.Arbitrary<BiorxivOrMedrxivPreprintId> =>
+  fc.record({
+    type: fc.constant('biorxiv-medrxiv'),
+    doi: doi(fc.constant('1101')),
+  })
+
 export const preprintId = (): fc.Arbitrary<PreprintId> =>
   fc.oneof(
     africarxivPreprintId(),
@@ -376,6 +384,9 @@ export const preprintId = (): fc.Arbitrary<PreprintId> =>
     scienceOpenPreprintId(),
     socarxivPreprintId(),
   )
+
+export const indeterminatePreprintId = (): fc.Arbitrary<IndeterminatePreprintId> =>
+  fc.oneof(preprintId(), biorxivOrMedrxivPreprintId())
 
 export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(
