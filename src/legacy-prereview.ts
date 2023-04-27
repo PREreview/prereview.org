@@ -124,7 +124,7 @@ const LegacyPrereviewPreprintUuidD = pipe(
   ),
 )
 
-export const getPreprintDoiFromLegacyPreviewUuid = flow(
+export const getPreprintIdFromLegacyPreviewUuid = flow(
   RTE.fromReaderK((uuid: Uuid) => legacyPrereviewUrl(`preprints/${uuid}`)),
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
@@ -137,13 +137,7 @@ export const getPreprintDoiFromLegacyPreviewUuid = flow(
       .with({ status: Status.NotFound }, () => 'not-found' as const)
       .otherwise(() => 'unavailable' as const),
   ),
-  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(
-    flow(
-      get('data.[0].handle'),
-      parsePreprintDoi,
-      O.map(id => id.doi),
-    ),
-  ),
+  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(flow(get('data.[0].handle'), parsePreprintDoi)),
 )
 
 const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: string }) =>

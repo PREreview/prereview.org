@@ -21,12 +21,12 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
         },
       )
 
-      const actual = await _.getPreprintDoiFromLegacyPreviewUuid(uuid)({
+      const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
         fetch,
         legacyPrereviewApi: { app, key, url, update },
       })()
 
-      expect(actual).toStrictEqual(E.right(doi))
+      expect(actual).toStrictEqual(E.right(expect.objectContaining({ doi })))
     },
   )
 
@@ -43,7 +43,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
         },
       )
 
-      const actual = await _.getPreprintDoiFromLegacyPreviewUuid(uuid)({
+      const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
         fetch,
         legacyPrereviewApi: { app, key, url, update },
       })()
@@ -62,7 +62,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
   ])('when the response cannot be decoded', async (uuid, app, key, url, update, response) => {
     const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, response)
 
-    const actual = await _.getPreprintDoiFromLegacyPreviewUuid(uuid)({
+    const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
       fetch,
       legacyPrereviewApi: { app, key, url, update },
     })()
@@ -75,7 +75,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
     async (uuid, app, key, url, update) => {
       const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, Status.NotFound)
 
-      const actual = await _.getPreprintDoiFromLegacyPreviewUuid(uuid)({
+      const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
         fetch,
         legacyPrereviewApi: { app, key, url, update },
       })()
@@ -94,7 +94,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
   ])('when the response has a non-200/404 status code', async (uuid, app, key, url, update, status) => {
     const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, status)
 
-    const actual = await _.getPreprintDoiFromLegacyPreviewUuid(uuid)({
+    const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
       fetch,
       legacyPrereviewApi: { app, key, url, update },
     })()
@@ -105,7 +105,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
     'when fetch throws an error',
     async (uuid, app, key, url, update, error) => {
-      const actual = await _.getPreprintDoiFromLegacyPreviewUuid(uuid)({
+      const actual = await _.getPreprintIdFromLegacyPreviewUuid(uuid)({
         fetch: () => Promise.reject(error),
         legacyPrereviewApi: { app, key, url, update },
       })()

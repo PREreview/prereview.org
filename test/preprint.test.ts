@@ -224,15 +224,15 @@ describe('preprint', () => {
   })
 
   describe('redirectToPreprint', () => {
-    test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.uuid(), fc.preprintDoi()])(
+    test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.uuid(), fc.preprintId()])(
       'when the DOI is found',
-      async (connection, user, uuid, doi) => {
-        const getPreprintDoiFromUuid: Mock<_.GetPreprintDoiFromUuidEnv['getPreprintDoiFromUuid']> = jest.fn(_ =>
-          TE.right(doi),
+      async (connection, user, uuid, id) => {
+        const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
+          TE.right(id),
         )
 
         const actual = await runMiddleware(
-          _.redirectToPreprint(uuid)({ getPreprintDoiFromUuid, getUser: () => M.fromEither(user) }),
+          _.redirectToPreprint(uuid)({ getPreprintIdFromUuid, getUser: () => M.fromEither(user) }),
           connection,
         )()
 
@@ -243,13 +243,13 @@ describe('preprint', () => {
               type: 'setHeader',
               name: 'Location',
               value: `/preprints/doi-${encodeURIComponent(
-                doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
               )}`,
             },
             { type: 'endResponse' },
           ]),
         )
-        expect(getPreprintDoiFromUuid).toHaveBeenCalledWith(uuid)
+        expect(getPreprintIdFromUuid).toHaveBeenCalledWith(uuid)
       },
     )
 
@@ -258,7 +258,7 @@ describe('preprint', () => {
       async (connection, user, uuid) => {
         const actual = await runMiddleware(
           _.redirectToPreprint(uuid)({
-            getPreprintDoiFromUuid: () => TE.left('not-found'),
+            getPreprintIdFromUuid: () => TE.left('not-found'),
             getUser: () => M.fromEither(user),
           }),
           connection,
@@ -280,7 +280,7 @@ describe('preprint', () => {
       async (connection, user, uuid) => {
         const actual = await runMiddleware(
           _.redirectToPreprint(uuid)({
-            getPreprintDoiFromUuid: () => TE.left('unavailable'),
+            getPreprintIdFromUuid: () => TE.left('unavailable'),
             getUser: () => M.fromEither(user),
           }),
           connection,

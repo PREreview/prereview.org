@@ -30,7 +30,7 @@ import { handleError } from './http-error'
 import {
   LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
-  getPreprintDoiFromLegacyPreviewUuid,
+  getPreprintIdFromLegacyPreviewUuid,
   getPseudonymFromLegacyPrereview,
   getRapidPreviewsFromLegacyPrereview,
 } from './legacy-prereview'
@@ -188,7 +188,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPreprintDoiFromUuid: flip(getPreprintDoiFromLegacyPreviewUuid)(env),
+          getPreprintIdFromUuid: flip(getPreprintIdFromLegacyPreviewUuid)(env),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),

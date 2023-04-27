@@ -21,7 +21,7 @@ import { Uuid } from 'uuid-ts'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
-import { PreprintId } from './preprint-id'
+import { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
 import { GetUserEnv, User, getUser } from './user'
@@ -78,8 +78,8 @@ export interface GetPreprintEnv {
   getPreprint: (doi: PreprintId['doi']) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
 }
 
-export interface GetPreprintDoiFromUuidEnv {
-  getPreprintDoiFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', PreprintId['doi']>
+export interface GetPreprintIdFromUuidEnv {
+  getPreprintIdFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', IndeterminatePreprintId>
 }
 
 export interface GetPrereviewsEnv {
@@ -99,9 +99,9 @@ const sendPage = flow(
 const getPreprint = (doi: PreprintId['doi']) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(doi)))
 
-const getPreprintDoiFromUuid = (uuid: Uuid) =>
+const getPreprintIdFromUuid = (uuid: Uuid) =>
   RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ getPreprintDoiFromUuid }: GetPreprintDoiFromUuidEnv) => getPreprintDoiFromUuid(uuid)),
+    RTE.fromTaskEitherK(({ getPreprintIdFromUuid }: GetPreprintIdFromUuidEnv) => getPreprintIdFromUuid(uuid)),
   )
 
 const getPrereviews = (id: PreprintId) =>
@@ -141,8 +141,8 @@ export const preprint = flow(
 )
 
 export const redirectToPreprint = flow(
-  RM.fromReaderTaskEitherK(getPreprintDoiFromUuid),
-  RM.ichainMiddlewareK(doi => movedPermanently(format(preprintMatch.formatter, { doi }))),
+  RM.fromReaderTaskEitherK(getPreprintIdFromUuid),
+  RM.ichainMiddlewareK(id => movedPermanently(format(preprintMatch.formatter, { doi: id.doi }))),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)
