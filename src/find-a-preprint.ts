@@ -98,6 +98,7 @@ const UrlD = pipe(
 const DoiD = pipe(
   D.string,
   D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parsePreprintDoi(s))),
+  D.map(id => id.doi),
 )
 
 const PreprintUrlD = pipe(

@@ -24,6 +24,8 @@ export type PreprintId =
   | ScienceOpenPreprintId
   | SocarxivPreprintId
 
+export type IndeterminatePreprintId = PreprintId | BiorxivOrMedrxivPreprintId
+
 export interface AfricarxivPreprintId {
   readonly type: 'africarxiv'
   readonly doi: Doi<'31730'>
@@ -109,7 +111,12 @@ export interface SocarxivPreprintId {
   readonly doi: Doi<'31235'>
 }
 
-export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
+export interface BiorxivOrMedrxivPreprintId {
+  readonly type: 'biorxiv-medrxiv'
+  readonly doi: BiorxivPreprintId['doi'] | MedrxivPreprintId['doi']
+}
+
+export const isPreprintDoi: Refinement<Doi, IndeterminatePreprintId['doi']> = hasRegistrant(
   '1101',
   '1590',
   '14293',
@@ -128,14 +135,37 @@ export const isPreprintDoi: Refinement<Doi, PreprintId['doi']> = hasRegistrant(
   '48550',
 )
 
-export const PreprintDoiD: D.Decoder<unknown, PreprintId['doi']> = D.fromRefinement(
+export const PreprintDoiD: D.Decoder<unknown, IndeterminatePreprintId['doi']> = D.fromRefinement(
   pipe(isDoi, compose(isPreprintDoi)),
   'DOI',
 )
 
-export const parsePreprintDoi: (input: string) => O.Option<PreprintId['doi']> = flow(parse, O.filter(isPreprintDoi))
+export const parsePreprintDoi: (input: string) => O.Option<IndeterminatePreprintId> = flow(
+  parse,
+  O.filter(isPreprintDoi),
+  O.map(doi =>
+    match(doi)
+      .when(hasRegistrant('1101'), doi => ({ type: 'biorxiv-medrxiv', doi } satisfies BiorxivOrMedrxivPreprintId))
+      .when(hasRegistrant('1590'), doi => ({ type: 'scielo', doi } satisfies ScieloPreprintId))
+      .when(hasRegistrant('14293'), doi => ({ type: 'science-open', doi } satisfies ScienceOpenPreprintId))
+      .when(hasRegistrant('21203'), doi => ({ type: 'research-square', doi } satisfies ResearchSquarePreprintId))
+      .when(hasRegistrant('26434'), doi => ({ type: 'chemrxiv', doi } satisfies ChemrxivPreprintId))
+      .when(hasRegistrant('20944'), doi => ({ type: 'preprints.org', doi } satisfies PreprintsorgPreprintId))
+      .when(hasRegistrant('31219'), doi => ({ type: 'osf', doi } satisfies OsfPreprintId))
+      .when(hasRegistrant('31222'), doi => ({ type: 'metaarxiv', doi } satisfies MetaarxivPreprintId))
+      .when(hasRegistrant('31223'), doi => ({ type: 'eartharxiv', doi } satisfies EartharxivPreprintId))
+      .when(hasRegistrant('31224'), doi => ({ type: 'engrxiv', doi } satisfies EngrxivPreprintId))
+      .when(hasRegistrant('31234'), doi => ({ type: 'psyarxiv', doi } satisfies PsyarxivPreprintId))
+      .when(hasRegistrant('31235'), doi => ({ type: 'socarxiv', doi } satisfies SocarxivPreprintId))
+      .when(hasRegistrant('31730'), doi => ({ type: 'africarxiv', doi } satisfies AfricarxivPreprintId))
+      .when(hasRegistrant('32942'), doi => ({ type: 'ecoevorxiv', doi } satisfies EcoevorxivPreprintId))
+      .when(hasRegistrant('35542'), doi => ({ type: 'edarxiv', doi } satisfies EdarxivPreprintId))
+      .when(hasRegistrant('48550'), doi => ({ type: 'arxiv', doi } satisfies ArxivPreprintId))
+      .exhaustive(),
+  ),
+)
 
-export function fromUrl(url: URL): O.Option<PreprintId['doi']> {
+export function fromUrl(url: URL): O.Option<IndeterminatePreprintId['doi']> {
   return match([url.hostname.replace('www.', ''), url.pathname.slice(1)])
     .with([P.union('doi.org', 'dx.doi.org'), P.select()], extractFromDoiPath)
     .with(['arxiv.org', P.select()], extractFromArxivPath)

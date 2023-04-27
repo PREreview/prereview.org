@@ -137,7 +137,13 @@ export const getPreprintDoiFromLegacyPreviewUuid = flow(
       .with({ status: Status.NotFound }, () => 'not-found' as const)
       .otherwise(() => 'unavailable' as const),
   ),
-  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(flow(get('data.[0].handle'), parsePreprintDoi)),
+  RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(
+    flow(
+      get('data.[0].handle'),
+      parsePreprintDoi,
+      O.map(id => id.doi),
+    ),
+  ),
 )
 
 const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: string }) =>
