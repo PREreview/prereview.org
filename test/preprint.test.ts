@@ -1,11 +1,13 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import * as _ from '../src/preprint'
+import { preprintMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
@@ -242,9 +244,7 @@ describe('preprint', () => {
             {
               type: 'setHeader',
               name: 'Location',
-              value: `/preprints/doi-${encodeURIComponent(
-                id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-              )}`,
+              value: format(preprintMatch.formatter, { doi: id.doi }),
             },
             { type: 'endResponse' },
           ]),

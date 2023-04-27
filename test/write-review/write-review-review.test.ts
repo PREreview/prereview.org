@@ -1,12 +1,14 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import cookieSignature from 'cookie-signature'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
@@ -69,9 +71,7 @@ describe('writeReviewReview', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: `/preprints/doi-${encodeURIComponent(
-            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-          )}/write-a-prereview/check-your-prereview`,
+          value: format(writeReviewPublishMatch.formatter, { doi: preprintTitle.id.doi }),
         },
         { type: 'endResponse' },
       ]),
@@ -128,11 +128,7 @@ describe('writeReviewReview', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: expect.stringContaining(
-            `/preprints/doi-${encodeURIComponent(
-              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/write-a-prereview/`,
-          ),
+          value: expect.stringContaining(`${format(writeReviewMatch.formatter, { doi: preprintTitle.id.doi })}/`),
         },
         { type: 'endResponse' },
       ]),
@@ -169,9 +165,7 @@ describe('writeReviewReview', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: `/preprints/doi-${encodeURIComponent(
-            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-          )}/write-a-prereview`,
+          value: format(writeReviewMatch.formatter, { doi: preprintTitle.id.doi }),
         },
         { type: 'endResponse' },
       ]),
@@ -291,9 +285,7 @@ describe('writeReviewReview', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: `/preprints/doi-${encodeURIComponent(
-            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-          )}/write-a-prereview`,
+          value: format(writeReviewMatch.formatter, { doi: preprintTitle.id.doi }),
         },
         { type: 'endResponse' },
       ]),
@@ -389,9 +381,7 @@ describe('writeReviewReview', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: `/preprints/doi-${encodeURIComponent(
-              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/write-a-prereview/already-written`,
+            value: format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprintTitle.id.doi }),
           },
           { type: 'endResponse' },
         ]),

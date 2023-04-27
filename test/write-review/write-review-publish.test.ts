@@ -1,12 +1,14 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import cookieSignature from 'cookie-signature'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { writeReviewPublishedMatch, writeReviewStartMatch } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
@@ -14,7 +16,7 @@ import { runMiddleware } from '../middleware'
 import * as fc from './fc'
 
 describe('writeReviewPublish', () => {
-  test.prop([
+  test.only.prop([
     fc.preprintDoi(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
@@ -79,9 +81,7 @@ describe('writeReviewPublish', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: `/preprints/doi-${encodeURIComponent(
-              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/write-a-prereview/prereview-published`,
+            value: format(writeReviewPublishedMatch.formatter, { doi: preprintTitle.id.doi }),
           },
           { type: 'endResponse' },
         ]),
@@ -201,9 +201,7 @@ describe('writeReviewPublish', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: `/preprints/doi-${encodeURIComponent(
-              preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-            )}/write-a-prereview`,
+            value: format(writeReviewStartMatch.formatter, { doi: preprintTitle.id.doi }),
           },
           { type: 'endResponse' },
         ]),
@@ -339,9 +337,7 @@ describe('writeReviewPublish', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: `/preprints/doi-${encodeURIComponent(
-            preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-          )}/write-a-prereview`,
+          value: format(writeReviewStartMatch.formatter, { doi: preprintTitle.id.doi }),
         },
         { type: 'endResponse' },
       ]),

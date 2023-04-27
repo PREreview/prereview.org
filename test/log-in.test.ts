@@ -3,6 +3,7 @@ import { describe, expect } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
 import cookieSignature from 'cookie-signature'
 import fetchMock from 'fetch-mock'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import * as TE from 'fp-ts/TaskEither'
@@ -10,7 +11,7 @@ import { MediaType, Status } from 'hyper-ts'
 import all from 'it-all'
 import Keyv from 'keyv'
 import * as _ from '../src/log-in'
-import { writeReviewMatch } from '../src/routes'
+import { homeMatch, writeReviewMatch } from '../src/routes'
 import { UserC } from '../src/user'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -119,12 +120,7 @@ test.prop([
             response_type: 'code',
             redirect_uri: oauth.redirectUri.href,
             scope: '/authenticate',
-            state: new URL(
-              `/preprints/doi-${encodeURIComponent(
-                preprintDoi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-              )}/write-a-prereview`,
-              publicUrl,
-            ).toString(),
+            state: new URL(format(writeReviewMatch.formatter, { doi: preprintDoi }), publicUrl).toString(),
           }).toString()}`,
           oauth.authorizeUrl,
         ).href,
@@ -157,7 +153,7 @@ describe('logOut', () => {
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.Found },
-        { type: 'setHeader', name: 'Location', value: '/' },
+        { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
         { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
         { type: 'endResponse' },
       ]),
@@ -174,7 +170,7 @@ describe('logOut', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.Found },
-          { type: 'setHeader', name: 'Location', value: '/' },
+          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
           { type: 'endResponse' },
         ]),
       )
@@ -361,7 +357,7 @@ describe('authenticate', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.Found },
-          { type: 'setHeader', name: 'Location', value: '/' },
+          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
           {
             type: 'setCookie',
             name: sessionCookie,

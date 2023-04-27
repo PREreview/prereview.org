@@ -1,6 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Doi } from 'doi-ts'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import * as H from 'hyper-ts'
@@ -10,6 +11,7 @@ import { ExpressConnection } from 'hyper-ts/lib/express'
 import type { Mock } from 'jest-mock'
 import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/find-a-preprint'
+import { preprintMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
@@ -196,7 +198,7 @@ describe('find-a-preprint', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: `/preprints/doi-${encodeURIComponent(doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'))}`,
+            value: format(preprintMatch.formatter, { doi }),
           },
           { type: 'endResponse' },
         ]),
