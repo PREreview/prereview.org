@@ -2,7 +2,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { LanguageCode } from 'iso-639-1'
 import { Html } from '../html'
-import { PreprintId } from '../preprint-id'
+import { IndeterminatePreprintId, PreprintId } from '../preprint-id'
 
 export type Preprint = {
   id: PreprintId
@@ -11,8 +11,8 @@ export type Preprint = {
 }
 
 export interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
+  getPreprintTitle: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
 }
 
-export const getPreprint = (doi: PreprintId['doi']) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(doi)))
+export const getPreprint = (id: IndeterminatePreprintId) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(id)))

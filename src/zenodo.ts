@@ -33,7 +33,7 @@ import {
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { RecentPrereview } from './home'
 import { Html, plainText, sanitizeHtml } from './html'
-import { PreprintDoiD, PreprintId, fromPreprintDoi } from './preprint-id'
+import { IndeterminatePreprintId, PreprintDoiD, PreprintId, fromPreprintDoi } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
@@ -41,7 +41,7 @@ import PlainDate = Temporal.PlainDate
 
 interface GetPreprintTitleEnv {
   getPreprintTitle: (
-    doi: PreprintId['doi'],
+    id: IndeterminatePreprintId,
   ) => TE.TaskEither<unknown, { id: PreprintId; title: Html; language: LanguageCode; url: URL }>
 }
 
@@ -151,7 +151,7 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
         license: RTE.right(review.license),
         published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
         preprint: RTE.asksReaderTaskEither(
-          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintId.doi)),
+          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintId)),
         ),
         text: getReviewText(review.reviewTextUrl),
       }),
@@ -169,7 +169,7 @@ function recordToRecentPrereview(record: Record): RTE.ReaderTaskEither<GetPrepri
         reviewers: RTE.right(pipe(review.metadata.creators, RNEA.map(get('name')))),
         published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
         preprint: RTE.asksReaderTaskEither(
-          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintId.doi)),
+          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintId)),
         ),
       }),
     ),

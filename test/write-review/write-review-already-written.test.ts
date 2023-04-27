@@ -16,7 +16,7 @@ import { runMiddleware } from '../middleware'
 
 describe('writeReviewAlreadyWritten', () => {
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(fc.constantFrom('yes', 'no'), fc.cookieName(), fc.uuid(), fc.string())
@@ -52,39 +52,36 @@ describe('writeReviewAlreadyWritten', () => {
         ],
       },
     ),
-  ])(
-    'when the form is completed',
-    async (preprintDoi, preprintTitle, [alreadyWritten, connection], user, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
-      const actual = await runMiddleware(
-        _.writeReviewAlreadyWritten(preprintDoi)({
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.of(user),
-        }),
-        connection,
-      )()
+  ])('when the form is completed', async (preprintId, preprintTitle, [alreadyWritten, connection], user, newReview) => {
+    const formStore = new Keyv()
+    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+    const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+    const actual = await runMiddleware(
+      _.writeReviewAlreadyWritten(preprintId)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(user),
+      }),
+      connection,
+    )()
 
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ alreadyWritten })
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-      expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
-    },
-  )
+    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ alreadyWritten })
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.SeeOther },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+    expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
+  })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(fc.constantFrom('yes', 'no'), fc.cookieName(), fc.uuid(), fc.string())
@@ -113,13 +110,13 @@ describe('writeReviewAlreadyWritten', () => {
     ),
   ])(
     'when the form is incomplete',
-    async (preprintDoi, preprintTitle, [alreadyWritten, connection], user, newReview) => {
+    async (preprintId, preprintTitle, [alreadyWritten, connection], user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewAlreadyWritten(preprintDoi)({
+        _.writeReviewAlreadyWritten(preprintId)({
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),
@@ -143,7 +140,7 @@ describe('writeReviewAlreadyWritten', () => {
   )
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(fc.constantFrom('yes', 'no'), fc.cookieName(), fc.uuid(), fc.string())
@@ -158,12 +155,12 @@ describe('writeReviewAlreadyWritten', () => {
         ),
       ),
     fc.user(),
-  ])('when there is no form', async (preprintDoi, preprintTitle, [alreadyWritten, connection], user) => {
+  ])('when there is no form', async (preprintId, preprintTitle, [alreadyWritten, connection], user) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReviewAlreadyWritten(preprintDoi)({
+      _.writeReviewAlreadyWritten(preprintId)({
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -186,7 +183,7 @@ describe('writeReviewAlreadyWritten', () => {
   })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({ alreadyWritten: fc.constantFrom('yes', 'no') }),
@@ -195,11 +192,11 @@ describe('writeReviewAlreadyWritten', () => {
       }),
     ),
     fc.user(),
-  ])('when the preprint cannot be loaded', async (preprintDoi, connection, user) => {
+  ])('when the preprint cannot be loaded', async (preprintId, connection, user) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.left('unavailable' as const)
     const actual = await runMiddleware(
-      _.writeReviewAlreadyWritten(preprintDoi)({
+      _.writeReviewAlreadyWritten(preprintId)({
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -218,7 +215,7 @@ describe('writeReviewAlreadyWritten', () => {
   })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({ alreadyWritten: fc.constantFrom('yes', 'no') }),
@@ -227,11 +224,11 @@ describe('writeReviewAlreadyWritten', () => {
       }),
     ),
     fc.user(),
-  ])('when the preprint cannot be found', async (preprintDoi, connection, user) => {
+  ])('when the preprint cannot be found', async (preprintId, connection, user) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.left('not-found' as const)
     const actual = await runMiddleware(
-      _.writeReviewAlreadyWritten(preprintDoi)({
+      _.writeReviewAlreadyWritten(preprintId)({
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -250,15 +247,15 @@ describe('writeReviewAlreadyWritten', () => {
   })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.connection({ body: fc.record({ alreadyWritten: fc.constantFrom('yes', 'no') }), method: fc.constant('POST') }),
-  ])("when there isn't a session", async (preprintDoi, preprintTitle, connection) => {
+  ])("when there isn't a session", async (preprintId, preprintTitle, connection) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReviewAlreadyWritten(preprintDoi)({
+      _.writeReviewAlreadyWritten(preprintId)({
         formStore,
         getPreprintTitle,
         getUser: () => M.left('no-session'),
@@ -280,7 +277,7 @@ describe('writeReviewAlreadyWritten', () => {
   })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
@@ -302,13 +299,13 @@ describe('writeReviewAlreadyWritten', () => {
     ),
   ])(
     'without saying if you have already written the PREreview',
-    async (preprintDoi, preprintTitle, connection, user, newReview) => {
+    async (preprintId, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewAlreadyWritten(preprintDoi)({
+        _.writeReviewAlreadyWritten(preprintId)({
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),

@@ -75,7 +75,7 @@ type RapidPrereview = {
 }
 
 export interface GetPreprintEnv {
-  getPreprint: (doi: PreprintId['doi']) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
+  getPreprint: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
 }
 
 export interface GetPreprintIdFromUuidEnv {
@@ -96,8 +96,8 @@ const sendPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const getPreprint = (doi: PreprintId['doi']) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(doi)))
+const getPreprint = (id: IndeterminatePreprintId) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(id)))
 
 const getPreprintIdFromUuid = (uuid: Uuid) =>
   RTE.asksReaderTaskEither(

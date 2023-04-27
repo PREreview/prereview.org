@@ -16,7 +16,7 @@ import { runMiddleware } from '../middleware'
 
 describe('writeReviewCompetingInterests', () => {
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(
@@ -55,13 +55,13 @@ describe('writeReviewCompetingInterests', () => {
     }),
   ])(
     'when the form is completed',
-    async (preprintDoi, preprintTitle, [competingInterests, connection], user, newReview) => {
+    async (preprintId, preprintTitle, [competingInterests, connection], user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
       const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
       const actual = await runMiddleware(
-        _.writeReviewCompetingInterests(preprintDoi)({
+        _.writeReviewCompetingInterests(preprintId)({
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),
@@ -81,12 +81,12 @@ describe('writeReviewCompetingInterests', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
+      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
     },
   )
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc
       .tuple(
@@ -131,13 +131,13 @@ describe('writeReviewCompetingInterests', () => {
     ),
   ])(
     'when the form is incomplete',
-    async (preprintDoi, preprintTitle, [competingInterests, connection], user, newReview) => {
+    async (preprintId, preprintTitle, [competingInterests, connection], user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewCompetingInterests(preprintDoi)({
+        _.writeReviewCompetingInterests(preprintId)({
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),
@@ -161,7 +161,7 @@ describe('writeReviewCompetingInterests', () => {
   )
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
@@ -179,12 +179,12 @@ describe('writeReviewCompetingInterests', () => {
       }),
     ),
     fc.user(),
-  ])('when there is no form', async (preprintDoi, preprintTitle, connection, user) => {
+  ])('when there is no form', async (preprintId, preprintTitle, connection, user) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReviewCompetingInterests(preprintDoi)({
+      _.writeReviewCompetingInterests(preprintId)({
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -206,7 +206,7 @@ describe('writeReviewCompetingInterests', () => {
   })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({
@@ -218,12 +218,12 @@ describe('writeReviewCompetingInterests', () => {
       }),
     ),
     fc.user(),
-  ])('when the preprint cannot be loaded', async (preprintDoi, connection, user) => {
+  ])('when the preprint cannot be loaded', async (preprintId, connection, user) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.left('unavailable' as const)
 
     const actual = await runMiddleware(
-      _.writeReviewCompetingInterests(preprintDoi)({
+      _.writeReviewCompetingInterests(preprintId)({
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -242,7 +242,7 @@ describe('writeReviewCompetingInterests', () => {
   })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({
@@ -254,12 +254,12 @@ describe('writeReviewCompetingInterests', () => {
       }),
     ),
     fc.user(),
-  ])('when the preprint cannot be found', async (preprintDoi, connection, user) => {
+  ])('when the preprint cannot be found', async (preprintId, connection, user) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.left('not-found' as const)
 
     const actual = await runMiddleware(
-      _.writeReviewCompetingInterests(preprintDoi)({
+      _.writeReviewCompetingInterests(preprintId)({
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -278,7 +278,7 @@ describe('writeReviewCompetingInterests', () => {
   })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.connection({
       body: fc.record({
@@ -287,12 +287,12 @@ describe('writeReviewCompetingInterests', () => {
       }),
       method: fc.constant('POST'),
     }),
-  ])("when there isn't a session", async (preprintDoi, preprintTitle, connection) => {
+  ])("when there isn't a session", async (preprintId, preprintTitle, connection) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReviewCompetingInterests(preprintDoi)({
+      _.writeReviewCompetingInterests(preprintId)({
         formStore,
         getPreprintTitle,
         getUser: () => M.left('no-session'),
@@ -314,7 +314,7 @@ describe('writeReviewCompetingInterests', () => {
   })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
@@ -342,13 +342,13 @@ describe('writeReviewCompetingInterests', () => {
       },
       { withDeletedKeys: true },
     ),
-  ])('without declaring any competing interests', async (preprintDoi, preprintTitle, connection, user, newReview) => {
+  ])('without declaring any competing interests', async (preprintId, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReviewCompetingInterests(preprintDoi)({
+      _.writeReviewCompetingInterests(preprintId)({
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),

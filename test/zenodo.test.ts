@@ -135,10 +135,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
           status: Status.OK,
         },
       ),
-      getPreprintTitle: doi =>
+      getPreprintTitle: id =>
         TE.right({
           id: { type: 'biorxiv', doi: '10.1101/2022.10.06.511170' as Doi<'1101'> } satisfies BiorxivPreprintId,
-          title: rawHtml(`Preprint ${doi}`),
+          title: rawHtml(`Preprint ${id.doi}`),
           language: 'en',
           url: new URL('http://example.com'),
         }),
@@ -256,10 +256,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
 
     const actual = await _.getRecentPrereviewsFromZenodo()({
       fetch,
-      getPreprintTitle: doi =>
+      getPreprintTitle: id =>
         TE.right({
           id: { type: 'biorxiv', doi: '10.1101/2022.10.06.511170' as Doi<'1101'> } satisfies BiorxivPreprintId,
-          title: rawHtml(`Preprint ${doi}`),
+          title: rawHtml(`Preprint ${id.doi}`),
           language: 'en',
           url: new URL('http://example.com'),
         }),
@@ -386,7 +386,7 @@ describe('getPrereviewFromZenodo', () => {
         text: rawHtml('Some text'),
       }),
     )
-    expect(getPreprintTitle).toHaveBeenCalledWith(preprint.id.doi)
+    expect(getPreprintTitle).toHaveBeenCalledWith(expect.objectContaining({ doi: preprint.id.doi }))
   })
 
   test.prop([

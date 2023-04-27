@@ -37,7 +37,7 @@ import {
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { FathomEnv, PhaseEnv } from './page'
 import { preprint, redirectToPreprint } from './preprint'
-import { IndeterminatePreprintId, PreprintId } from './preprint-id'
+import { IndeterminatePreprintId } from './preprint-id'
 import { privacyPolicy } from './privacy-policy'
 import { PublicUrlEnv } from './public-url'
 import { review } from './review'
@@ -134,7 +134,6 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           doesPreprintExist: flow(
-            (id: IndeterminatePreprintId) => id.doi,
             flip(getPreprintTitle)(env),
             TE.map(() => true),
             TE.orElseW(error =>
@@ -172,7 +171,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       preprintMatch.parser,
-      P.map(({ id: { doi } }) => preprint(doi)),
+      P.map(({ id }) => preprint(id)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
@@ -212,47 +211,47 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       [
         pipe(
           writeReviewMatch.parser,
-          P.map(({ id: { doi } }) => writeReview(doi)),
+          P.map(({ id }) => writeReview(id)),
         ),
         pipe(
           writeReviewStartMatch.parser,
-          P.map(({ id: { doi } }) => writeReviewStart(doi)),
+          P.map(({ id }) => writeReviewStart(id)),
         ),
         pipe(
           writeReviewAlreadyWrittenMatch.parser,
-          P.map(({ id: { doi } }) => writeReviewAlreadyWritten(doi)),
+          P.map(({ id }) => writeReviewAlreadyWritten(id)),
         ),
         pipe(
           writeReviewReviewMatch.parser,
-          P.map(({ id: { doi } }) => writeReviewReview(doi)),
+          P.map(({ id }) => writeReviewReview(id)),
         ),
         pipe(
           writeReviewPersonaMatch.parser,
-          P.map(({ id: { doi } }) => writeReviewPersona(doi)),
+          P.map(({ id }) => writeReviewPersona(id)),
         ),
         pipe(
           writeReviewAuthorsMatch.parser,
-          P.map(({ id: { doi } }) => writeReviewAuthors(doi)),
+          P.map(({ id }) => writeReviewAuthors(id)),
         ),
         pipe(
           writeReviewAddAuthorsMatch.parser,
-          P.map(({ id: { doi } }) => writeReviewAddAuthors(doi)),
+          P.map(({ id }) => writeReviewAddAuthors(id)),
         ),
         pipe(
           writeReviewCompetingInterestsMatch.parser,
-          P.map(({ id: { doi } }) => writeReviewCompetingInterests(doi)),
+          P.map(({ id }) => writeReviewCompetingInterests(id)),
         ),
         pipe(
           writeReviewConductMatch.parser,
-          P.map(({ id: { doi } }) => writeReviewConduct(doi)),
+          P.map(({ id }) => writeReviewConduct(id)),
         ),
         pipe(
           writeReviewPublishMatch.parser,
-          P.map(({ id: { doi } }) => writeReviewPublish(doi)),
+          P.map(({ id }) => writeReviewPublish(id)),
         ),
         pipe(
           writeReviewPublishedMatch.parser,
-          P.map(({ id: { doi } }) => writeReviewPublished(doi)),
+          P.map(({ id }) => writeReviewPublished(id)),
         ),
       ],
       concatAll(P.getParserMonoid()),
@@ -275,8 +274,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
   P.map(flow(R.local(collapseRequests()), R.local(logFetch))),
 )
 
-const getPreprint = (doi: PreprintId['doi']) =>
-  match(doi)
+const getPreprint = (id: IndeterminatePreprintId) =>
+  match(id.doi)
     .when(isCrossrefPreprintDoi, getPreprintFromCrossref)
     .when(isDatacitePreprintDoi, getPreprintFromDatacite)
     .exhaustive()

@@ -18,7 +18,7 @@ import * as fc from './fc'
 
 describe('writeReviewPublish', () => {
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
@@ -38,7 +38,7 @@ describe('writeReviewPublish', () => {
   ])(
     'when the form is complete',
     async (
-      preprintDoi,
+      preprintId,
       preprintTitle,
       [connection, sessionCookie, sessionId, secret],
       newReview,
@@ -56,7 +56,7 @@ describe('writeReviewPublish', () => {
       )
 
       const actual = await runMiddleware(
-        _.writeReviewPublish(preprintDoi)({
+        _.writeReviewPublish(preprintId)({
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),
@@ -87,7 +87,7 @@ describe('writeReviewPublish', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(getPreprintTitle).toHaveBeenCalledWith(preprintDoi)
+      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
       expect(session).toStrictEqual({
         user: UserC.encode(user),
         'published-review': { doi: reviewDoi, form: CompletedFormC.encode(newReview), id: reviewId },
@@ -96,7 +96,7 @@ describe('writeReviewPublish', () => {
   )
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
@@ -129,7 +129,7 @@ describe('writeReviewPublish', () => {
     fc.user(),
   ])(
     'when the form is incomplete',
-    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], newPrereview, user) => {
+    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newPrereview, user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
@@ -137,7 +137,7 @@ describe('writeReviewPublish', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewPublish(preprintDoi)({
+        _.writeReviewPublish(preprintId)({
           getPreprintTitle,
           getUser: () => M.of(user),
           formStore,
@@ -161,7 +161,7 @@ describe('writeReviewPublish', () => {
   )
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
@@ -177,14 +177,14 @@ describe('writeReviewPublish', () => {
     fc.user(),
   ])(
     'when there is no form',
-    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
+    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewPublish(preprintDoi)({
+        _.writeReviewPublish(preprintId)({
           getPreprintTitle,
           getUser: () => M.of(user),
           formStore,
@@ -211,7 +211,7 @@ describe('writeReviewPublish', () => {
   )
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
@@ -224,41 +224,38 @@ describe('writeReviewPublish', () => {
       ),
     ),
     fc.user(),
-  ])(
-    'when the preprint cannot be loaded',
-    async (preprintDoi, [connection, sessionCookie, sessionId, secret], user) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, { user: UserC.encode(user) })
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.left('unavailable' as const)
-      const publishPrereview = () => () => Promise.reject('should not be called')
+  ])('when the preprint cannot be loaded', async (preprintId, [connection, sessionCookie, sessionId, secret], user) => {
+    const sessionStore = new Keyv()
+    await sessionStore.set(sessionId, { user: UserC.encode(user) })
+    const formStore = new Keyv()
+    const getPreprintTitle = () => TE.left('unavailable' as const)
+    const publishPrereview = () => () => Promise.reject('should not be called')
 
-      const actual = await runMiddleware(
-        _.writeReviewPublish(preprintDoi)({
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.of(user),
-          publishPrereview,
-          secret,
-          sessionCookie,
-          sessionStore,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewPublish(preprintId)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(user),
+        publishPrereview,
+        secret,
+        sessionCookie,
+        sessionStore,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
@@ -271,7 +268,7 @@ describe('writeReviewPublish', () => {
       ),
     ),
     fc.user(),
-  ])('when the preprint cannot be found', async (preprintDoi, [connection, sessionCookie, sessionId, secret], user) => {
+  ])('when the preprint cannot be found', async (preprintId, [connection, sessionCookie, sessionId, secret], user) => {
     const sessionStore = new Keyv()
     await sessionStore.set(sessionId, { user: UserC.encode(user) })
     const formStore = new Keyv()
@@ -279,7 +276,7 @@ describe('writeReviewPublish', () => {
     const publishPrereview = () => () => Promise.reject('should not be called')
 
     const actual = await runMiddleware(
-      _.writeReviewPublish(preprintDoi)({
+      _.writeReviewPublish(preprintId)({
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -302,18 +299,18 @@ describe('writeReviewPublish', () => {
   })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.connection({ method: fc.constant('POST') }),
     fc.cookieName(),
     fc.string(),
-  ])("when there isn't a session", async (preprintDoi, preprintTitle, connection, sessionCookie, secret) => {
+  ])("when there isn't a session", async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
     const sessionStore = new Keyv()
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReviewPublish(preprintDoi)({
+      _.writeReviewPublish(preprintId)({
         getPreprintTitle,
         getUser: () => M.left('no-session'),
         formStore,
@@ -339,7 +336,7 @@ describe('writeReviewPublish', () => {
   })
 
   test.prop([
-    fc.preprintDoi(),
+    fc.indeterminatePreprintId(),
     fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
@@ -357,7 +354,7 @@ describe('writeReviewPublish', () => {
     fc.user(),
   ])(
     'Zenodo is unavailable',
-    async (preprintDoi, preprintTitle, [connection, sessionCookie, sessionId, secret], response, newReview, user) => {
+    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], response, newReview, user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
@@ -365,7 +362,7 @@ describe('writeReviewPublish', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewPublish(preprintDoi)({
+        _.writeReviewPublish(preprintId)({
           getPreprintTitle,
           getUser: () => M.of(user),
           formStore,
