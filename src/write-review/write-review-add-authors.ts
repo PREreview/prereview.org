@@ -35,7 +35,7 @@ export const writeReviewAddAuthors = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -64,15 +64,11 @@ function cannotAddAuthorsForm(preprint: Preprint, user: User) {
     title: plainText`Add more authors – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.id.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form
-          method="post"
-          action="${format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.id.doi })}"
-          novalidate
-        >
+        <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}" novalidate>
           <h1>Add more authors</h1>
 
           <p>Unfortunately, we’re unable to add more authors now.</p>

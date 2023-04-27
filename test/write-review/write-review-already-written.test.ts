@@ -74,7 +74,7 @@ describe('writeReviewAlreadyWritten', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewReviewMatch.formatter, { doi: preprintTitle.id.doi }),
+            value: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
           },
           { type: 'endResponse' },
         ]),
@@ -134,7 +134,7 @@ describe('writeReviewAlreadyWritten', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewReviewMatch.formatter, { doi: preprintTitle.id.doi }),
+            value: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
           },
           { type: 'endResponse' },
         ]),
@@ -178,7 +178,7 @@ describe('writeReviewAlreadyWritten', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: format(writeReviewReviewMatch.formatter, { doi: preprintTitle.id.doi }),
+          value: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
         },
         { type: 'endResponse' },
       ]),
@@ -272,7 +272,7 @@ describe('writeReviewAlreadyWritten', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: format(writeReviewMatch.formatter, { doi: preprintTitle.id.doi }),
+          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         },
         { type: 'endResponse' },
       ]),

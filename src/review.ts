@@ -102,7 +102,7 @@ function createPage(review: Prereview, user?: User) {
     title: plainText`PREreview of “${review.preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: review.preprint.id.doi })}" class="back">See other reviews</a>
+        <a href="${format(preprintMatch.formatter, { id: review.preprint.id })}" class="back">See other reviews</a>
         <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
       </nav>
 

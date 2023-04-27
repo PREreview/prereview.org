@@ -96,12 +96,12 @@ test.prop([
     redirectUri: fc.url(),
     tokenUrl: fc.url(),
   }),
-  fc.preprintDoi(),
+  fc.preprintId(),
   fc.origin(),
   fc.connection(),
-])('logInAndRedirect', async (oauth, preprintDoi, publicUrl, connection) => {
+])('logInAndRedirect', async (oauth, preprintId, publicUrl, connection) => {
   const actual = await runMiddleware(
-    _.logInAndRedirect(writeReviewMatch.formatter, { doi: preprintDoi })({
+    _.logInAndRedirect(writeReviewMatch.formatter, { id: preprintId })({
       oauth,
       publicUrl,
     }),
@@ -120,7 +120,7 @@ test.prop([
             response_type: 'code',
             redirect_uri: oauth.redirectUri.href,
             scope: '/authenticate',
-            state: new URL(format(writeReviewMatch.formatter, { doi: preprintDoi }), publicUrl).toString(),
+            state: new URL(format(writeReviewMatch.formatter, { id: preprintId }), publicUrl).toString(),
           }).toString()}`,
           oauth.authorizeUrl,
         ).href,

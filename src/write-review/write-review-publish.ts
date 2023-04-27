@@ -65,7 +65,7 @@ export const writeReviewPublish = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -92,7 +92,7 @@ const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; prep
     })),
     RM.chainReaderTaskEitherKW(publishPrereview),
     RM.ichainFirst(() => RM.status(Status.SeeOther)),
-    RM.ichainFirst(() => RM.header('Location', format(writeReviewPublishedMatch.formatter, { doi: preprint.id.doi }))),
+    RM.ichainFirst(() => RM.header('Location', format(writeReviewPublishedMatch.formatter, { id: preprint.id }))),
     RM.ichainW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
     RM.ichain(() => RM.closeHeaders()),
     RM.ichain(() => RM.end()),
@@ -147,7 +147,7 @@ function failureMessage(preprint: Preprint) {
 
         <p>Please try again later.</p>
 
-        <a href="${format(preprintMatch.formatter, { doi: preprint.id.doi })}" class="button">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="button">Back to preprint</a>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
@@ -159,16 +159,12 @@ function publishForm(preprint: Preprint, review: CompletedForm, user: User) {
     title: plainText`Publish your PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewConductMatch.formatter, { doi: preprint.id.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
         <single-use-form>
-          <form
-            method="post"
-            action="${format(writeReviewPublishMatch.formatter, { doi: preprint.id.doi })}"
-            novalidate
-          >
+          <form method="post" action="${format(writeReviewPublishMatch.formatter, { id: preprint.id })}" novalidate>
             <h1 id="preview-label">Check your PREreview</h1>
 
             <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
@@ -187,8 +183,8 @@ function publishForm(preprint: Preprint, review: CompletedForm, user: User) {
             </blockquote>
 
             <div class="button-group" role="group">
-              <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.id.doi })}">Change PREreview</a>
-              <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.id.doi })}">Change name</a>
+              <a href="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}">Change PREreview</a>
+              <a href="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}">Change name</a>
             </div>
 
             <h2>Now publish your PREreview</h2>

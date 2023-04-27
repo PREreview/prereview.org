@@ -142,7 +142,7 @@ export const preprint = flow(
 
 export const redirectToPreprint = flow(
   RM.fromReaderTaskEitherK(getPreprintIdFromUuid),
-  RM.ichainMiddlewareK(id => movedPermanently(format(preprintMatch.formatter, { doi: id.doi }))),
+  RM.ichainMiddlewareK(id => movedPermanently(format(preprintMatch.formatter, { id }))),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)
@@ -264,7 +264,7 @@ function createPage({
 
         <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
 
-        <a href="${format(writeReviewMatch.formatter, { doi: preprint.id.doi })}" class="button">Write a PREreview</a>
+        <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}" class="button">Write a PREreview</a>
 
         <ol class="cards">
           ${reviews.map(showReview)}

@@ -36,7 +36,7 @@ export const writeReviewConduct = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -105,13 +105,11 @@ function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm, user: Us
     title: plainText`${error ? 'Error: ' : ''}Code of Conduct – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.id.doi })}" class="back"
-          >Back</a
-        >
+        <a href="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(writeReviewConductMatch.formatter, { doi: preprint.id.doi })}" novalidate>
+        <form method="post" action="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" novalidate>
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">

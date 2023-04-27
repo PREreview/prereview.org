@@ -35,7 +35,7 @@ export const writeReview = flow(
         match(state)
           .with(
             { form: P.when(E.isRight) },
-            fromMiddlewareK(() => seeOther(format(writeReviewStartMatch.formatter, { doi: preprint.id.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewStartMatch.formatter, { id: preprint.id }))),
           )
           .with({ form: P.when(E.isLeft) }, ({ user }) => showStartPage(preprint, user))
           .exhaustive(),
@@ -67,7 +67,7 @@ function startPage(preprint: Preprint, user?: User) {
     title: plainText`Write a PREreview`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: preprint.id.doi })}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="main-content">
@@ -99,7 +99,7 @@ function startPage(preprint: Preprint, user?: User) {
               </details>
             `}
 
-        <a href="${format(writeReviewStartMatch.formatter, { doi: preprint.id.doi })}" role="button" draggable="false"
+        <a href="${format(writeReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
           >Start now</a
         >
       </main>

@@ -4,7 +4,7 @@ import { pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { isUuid } from 'uuid-ts'
-import { PreprintDoiD } from './preprint-id'
+import { PreprintDoiD, fromPreprintDoi } from './preprint-id'
 
 const UuidD = D.fromRefinement(isUuid, 'UUID')
 
@@ -42,14 +42,14 @@ const PreprintDoiC = C.make(
       const [, match] = s.match(/^doi-(.+)$/) ?? []
 
       if (match && match.toLowerCase() === match) {
-        return PreprintDoiD.decode(match.replaceAll('-', '/').replaceAll('+', '-'))
+        return pipe(PreprintDoiD, D.map(fromPreprintDoi)).decode(match.replaceAll('-', '/').replaceAll('+', '-'))
       }
 
       return D.failure(s, 'DOI')
     }),
   ),
   {
-    encode: doi => `doi-${doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
+    encode: id => `doi-${id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
   },
 )
 
@@ -77,13 +77,13 @@ export const orcidErrorMatch = pipe(
 
 export const preprintUuidMatch = pipe(P.lit('preprints'), P.then(type('uuid', UuidC)), P.then(P.end))
 
-export const preprintMatch = pipe(P.lit('preprints'), P.then(type('doi', PreprintDoiC)), P.then(P.end))
+export const preprintMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintDoiC)), P.then(P.end))
 
 export const reviewMatch = pipe(P.lit('reviews'), P.then(type('id', IntegerFromStringC)), P.then(P.end))
 
 const writeReviewBaseMatch = pipe(
   P.lit('preprints'),
-  P.then(type('doi', PreprintDoiC)),
+  P.then(type('id', PreprintDoiC)),
   P.then(P.lit('write-a-prereview')),
 )
 

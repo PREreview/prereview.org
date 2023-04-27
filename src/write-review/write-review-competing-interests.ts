@@ -38,7 +38,7 @@ export const writeReviewCompetingInterests = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -130,13 +130,13 @@ function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm
     title: plainText`${error ? 'Error: ' : ''}Do you have any competing interests? – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.id.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
         <form
           method="post"
-          action="${format(writeReviewCompetingInterestsMatch.formatter, { doi: preprint.id.doi })}"
+          action="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}"
           novalidate
         >
           ${error

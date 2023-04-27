@@ -98,7 +98,7 @@ export const nextFormMatch = (form: Form) =>
     .otherwise(() => writeReviewPublishMatch)
 
 export const redirectToNextForm = (preprint: PreprintId) =>
-  flow(nextFormMatch, match => format(match.formatter, { doi: preprint.doi }), seeOther)
+  flow(nextFormMatch, match => format(match.formatter, { id: preprint }), seeOther)
 
 const FormC = C.partial({
   alreadyWritten: C.literal('yes', 'no'),

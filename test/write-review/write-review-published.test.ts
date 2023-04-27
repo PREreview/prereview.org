@@ -118,7 +118,7 @@ describe('writeReviewPublished', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewMatch.formatter, { doi: preprintTitle.id.doi }),
+            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
           },
           { type: 'endResponse' },
         ]),
@@ -256,7 +256,7 @@ describe('writeReviewPublished', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: format(writeReviewMatch.formatter, { doi: preprintTitle.id.doi }),
+          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         },
         { type: 'endResponse' },
       ]),

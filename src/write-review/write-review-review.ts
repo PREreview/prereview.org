@@ -41,7 +41,7 @@ export const writeReviewReview = flow(
           .with({ form: { alreadyWritten: 'no' } }, showWriteReviewForm)
           .with(
             { form: { alreadyWritten: P.optional(P.nullish) } },
-            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.id.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
           )
           .exhaustive(),
       ),
@@ -50,7 +50,7 @@ export const writeReviewReview = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -169,11 +169,11 @@ function writeReviewForm(preprint: Preprint, form: WriteReviewForm, user: User) 
     title: plainText`${error ? 'Error: ' : ''}Write your PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.id.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.id.doi })}" novalidate>
+        <form method="post" action="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" novalidate>
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
@@ -309,11 +309,11 @@ function pasteReviewForm(preprint: Preprint, form: PasteReviewForm, user: User) 
     title: plainText`${error ? 'Error: ' : ''}Paste your PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.id.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(writeReviewReviewMatch.formatter, { doi: preprint.id.doi })}" novalidate>
+        <form method="post" action="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" novalidate>
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">

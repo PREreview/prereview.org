@@ -171,7 +171,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       preprintMatch.parser,
-      P.map(({ doi }) => preprint(doi)),
+      P.map(({ id: { doi } }) => preprint(doi)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
@@ -211,47 +211,47 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       [
         pipe(
           writeReviewMatch.parser,
-          P.map(({ doi }) => writeReview(doi)),
+          P.map(({ id: { doi } }) => writeReview(doi)),
         ),
         pipe(
           writeReviewStartMatch.parser,
-          P.map(({ doi }) => writeReviewStart(doi)),
+          P.map(({ id: { doi } }) => writeReviewStart(doi)),
         ),
         pipe(
           writeReviewAlreadyWrittenMatch.parser,
-          P.map(({ doi }) => writeReviewAlreadyWritten(doi)),
+          P.map(({ id: { doi } }) => writeReviewAlreadyWritten(doi)),
         ),
         pipe(
           writeReviewReviewMatch.parser,
-          P.map(({ doi }) => writeReviewReview(doi)),
+          P.map(({ id: { doi } }) => writeReviewReview(doi)),
         ),
         pipe(
           writeReviewPersonaMatch.parser,
-          P.map(({ doi }) => writeReviewPersona(doi)),
+          P.map(({ id: { doi } }) => writeReviewPersona(doi)),
         ),
         pipe(
           writeReviewAuthorsMatch.parser,
-          P.map(({ doi }) => writeReviewAuthors(doi)),
+          P.map(({ id: { doi } }) => writeReviewAuthors(doi)),
         ),
         pipe(
           writeReviewAddAuthorsMatch.parser,
-          P.map(({ doi }) => writeReviewAddAuthors(doi)),
+          P.map(({ id: { doi } }) => writeReviewAddAuthors(doi)),
         ),
         pipe(
           writeReviewCompetingInterestsMatch.parser,
-          P.map(({ doi }) => writeReviewCompetingInterests(doi)),
+          P.map(({ id: { doi } }) => writeReviewCompetingInterests(doi)),
         ),
         pipe(
           writeReviewConductMatch.parser,
-          P.map(({ doi }) => writeReviewConduct(doi)),
+          P.map(({ id: { doi } }) => writeReviewConduct(doi)),
         ),
         pipe(
           writeReviewPublishMatch.parser,
-          P.map(({ doi }) => writeReviewPublish(doi)),
+          P.map(({ id: { doi } }) => writeReviewPublish(doi)),
         ),
         pipe(
           writeReviewPublishedMatch.parser,
-          P.map(({ doi }) => writeReviewPublished(doi)),
+          P.map(({ id: { doi } }) => writeReviewPublished(doi)),
         ),
       ],
       concatAll(P.getParserMonoid()),

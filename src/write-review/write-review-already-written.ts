@@ -38,7 +38,7 @@ export const writeReviewAlreadyWritten = flow(
         match(error)
           .with(
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with(P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -80,7 +80,7 @@ const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; prepri
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainMiddlewareK(() => seeOther(format(writeReviewReviewMatch.formatter, { doi: preprint.id.doi }))),
+    RM.ichainMiddlewareK(() => seeOther(format(writeReviewReviewMatch.formatter, { id: preprint.id }))),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -109,13 +109,13 @@ function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm, user: 
     }”`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: preprint.id.doi })}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="form">
         <form
           method="post"
-          action="${format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.id.doi })}"
+          action="${format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id })}"
           novalidate
         >
           ${error

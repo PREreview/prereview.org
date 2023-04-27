@@ -11,6 +11,7 @@ import { ExpressConnection } from 'hyper-ts/lib/express'
 import type { Mock } from 'jest-mock'
 import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/find-a-preprint'
+import { fromPreprintDoi } from '../src/preprint-id'
 import { preprintMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -182,6 +183,7 @@ describe('find-a-preprint', () => {
         ],
       },
     )('with a preprint DOI', async ([doi, connection]) => {
+      const id = fromPreprintDoi(doi)
       const doesPreprintExist: Mock<_.DoesPreprintExistEnv['doesPreprintExist']> = jest.fn(_ => TE.of(true))
 
       const actual = await runMiddleware(
@@ -198,7 +200,7 @@ describe('find-a-preprint', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(preprintMatch.formatter, { doi }),
+            value: format(preprintMatch.formatter, { id }),
           },
           { type: 'endResponse' },
         ]),

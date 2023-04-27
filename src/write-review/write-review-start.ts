@@ -39,9 +39,9 @@ export const writeReviewStart = flow(
               StatusOpen,
               ResponseEnded,
               never
-            >(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { doi: preprint.id.doi }))),
+            >(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
           )
-          .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { doi: preprint.id.doi }))
+          .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { id: preprint.id }))
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
       ),
@@ -66,7 +66,7 @@ function carryOnPage(preprint: Preprint, form: Form, user: User) {
     title: plainText`Write a PREreview`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: preprint.id.doi })}" class="back">Back to preprint</a>
+        <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="main-content">
@@ -80,7 +80,7 @@ function carryOnPage(preprint: Preprint, form: Form, user: User) {
           >”, we’ll take you to the next step so you can carry&nbsp;on.
         </p>
 
-        <a href="${format(nextFormMatch(form).formatter, { doi: preprint.id.doi })}" role="button" draggable="false"
+        <a href="${format(nextFormMatch(form).formatter, { id: preprint.id })}" role="button" draggable="false"
           >Continue</a
         >
       </main>

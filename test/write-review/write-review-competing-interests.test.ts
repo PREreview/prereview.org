@@ -76,7 +76,7 @@ describe('writeReviewCompetingInterests', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewPublishMatch.formatter, { doi: preprintTitle.id.doi }),
+            value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
           },
           { type: 'endResponse' },
         ]),
@@ -152,7 +152,7 @@ describe('writeReviewCompetingInterests', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { doi: preprintTitle.id.doi })}/`),
+            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
           },
           { type: 'endResponse' },
         ]),
@@ -198,7 +198,7 @@ describe('writeReviewCompetingInterests', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: format(writeReviewMatch.formatter, { doi: preprintTitle.id.doi }),
+          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         },
         { type: 'endResponse' },
       ]),
@@ -306,7 +306,7 @@ describe('writeReviewCompetingInterests', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: format(writeReviewMatch.formatter, { doi: preprintTitle.id.doi }),
+          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         },
         { type: 'endResponse' },
       ]),

@@ -137,7 +137,7 @@ const lookupPreprint = pipe(
       RM.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(preprint))),
     ),
   ),
-  RM.ichainMiddlewareK(preprint => seeOther(format(preprintMatch.formatter, { doi: preprint.doi }))),
+  RM.ichainMiddlewareK(preprint => seeOther(format(preprintMatch.formatter, { id: preprint }))),
   RM.orElseW(error =>
     pipe(
       getUser,

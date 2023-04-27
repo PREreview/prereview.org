@@ -61,7 +61,7 @@ describe('writeReview', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewStartMatch.formatter, { doi: preprintTitle.id.doi }),
+            value: format(writeReviewStartMatch.formatter, { id: preprintTitle.id }),
           },
           { type: 'endResponse' },
         ]),

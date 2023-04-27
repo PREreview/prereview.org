@@ -40,7 +40,7 @@ export const writeReviewAuthors = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -105,7 +105,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.ichainMiddlewareKW(state =>
       match(state)
         .with({ form: { moreAuthors: 'yes' } }, () =>
-          seeOther(format(writeReviewAddAuthorsMatch.formatter, { doi: preprint.id.doi })),
+          seeOther(format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })),
         )
         .otherwise(flow(({ form }) => form, redirectToNextForm(preprint.id))),
     ),
@@ -145,11 +145,11 @@ function authorsForm(preprint: Preprint, form: AuthorsForm, user: User) {
     }”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewPersonaMatch.formatter, { doi: preprint.id.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(writeReviewAuthorsMatch.formatter, { doi: preprint.id.doi })}" novalidate>
+        <form method="post" action="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" novalidate>
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">

@@ -34,7 +34,7 @@ export const writeReviewPersona = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { doi: preprint.id.doi }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -103,11 +103,11 @@ function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
     title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewReviewMatch.formatter, { doi: preprint.id.doi })}" class="back">Back</a>
+        <a href="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(writeReviewPersonaMatch.formatter, { doi: preprint.id.doi })}" novalidate>
+        <form method="post" action="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}" novalidate>
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">

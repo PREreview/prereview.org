@@ -247,7 +247,7 @@ describe('preprint', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(preprintMatch.formatter, { doi: id.doi }),
+            value: format(preprintMatch.formatter, { id }),
           },
           { type: 'endResponse' },
         ]),
