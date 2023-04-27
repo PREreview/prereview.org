@@ -34,9 +34,9 @@ describe('parseLookupPreprint', () => {
   test.prop([
     fc
       .tuple(fc.supportedPreprintUrl(), fc.stringOf(fc.constant(' ')), fc.stringOf(fc.constant(' ')))
-      .map(([[url, doi], whitespaceBefore, whitespaceAfter]) => [
+      .map(([[url, id], whitespaceBefore, whitespaceAfter]) => [
         { preprint: `${whitespaceBefore}${url}${whitespaceAfter}` },
-        doi,
+        id.doi,
       ]),
   ])('with a recognised preprint url', ([input, expected]) => {
     const actual = _.parseLookupPreprint(input)
