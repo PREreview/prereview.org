@@ -17,6 +17,7 @@ import {
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
 import { plainText, rawHtml } from '../src/html'
+import { BiorxivPreprintId } from '../src/preprint-id'
 import { NewPrereview } from '../src/write-review'
 import * as _ from '../src/zenodo'
 import * as fc from './fc'
@@ -135,7 +136,12 @@ describe('getRecentPrereviewsFromZenodo', () => {
         },
       ),
       getPreprintTitle: doi =>
-        TE.right({ title: rawHtml(`Preprint ${doi}`), language: 'en', url: new URL('http://example.com') }),
+        TE.right({
+          id: { type: 'biorxiv', doi: '10.1101/2022.10.06.511170' as Doi<'1101'> } satisfies BiorxivPreprintId,
+          title: rawHtml(`Preprint ${doi}`),
+          language: 'en',
+          url: new URL('http://example.com'),
+        }),
     })()
 
     expect(actual).toStrictEqual([
@@ -144,6 +150,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
         reviewers: ['PREreviewer'],
         published: new Temporal.PlainDate(2022, 7, 4),
         preprint: {
+          id: {
+            type: 'biorxiv',
+            doi: '10.1101/2022.10.06.511170',
+          },
           title: rawHtml('Preprint 10.1101/2022.01.13.476201'),
           language: 'en',
           url: new URL('http://example.com'),
@@ -154,6 +164,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
         reviewers: ['Josiah Carberry'],
         published: new Temporal.PlainDate(2022, 7, 5),
         preprint: {
+          id: {
+            type: 'biorxiv',
+            doi: '10.1101/2022.10.06.511170',
+          },
           title: rawHtml('Preprint 10.1101/2022.02.14.480364'),
           language: 'en',
           url: new URL('http://example.com'),
@@ -243,7 +257,12 @@ describe('getRecentPrereviewsFromZenodo', () => {
     const actual = await _.getRecentPrereviewsFromZenodo()({
       fetch,
       getPreprintTitle: doi =>
-        TE.right({ title: rawHtml(`Preprint ${doi}`), language: 'en', url: new URL('http://example.com') }),
+        TE.right({
+          id: { type: 'biorxiv', doi: '10.1101/2022.10.06.511170' as Doi<'1101'> } satisfies BiorxivPreprintId,
+          title: rawHtml(`Preprint ${doi}`),
+          language: 'en',
+          url: new URL('http://example.com'),
+        }),
     })()
 
     expect(actual).toStrictEqual([
@@ -252,6 +271,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
         reviewers: ['PREreviewer'],
         published: new Temporal.PlainDate(2022, 7, 5),
         preprint: {
+          id: {
+            type: 'biorxiv',
+            doi: '10.1101/2022.10.06.511170',
+          },
           title: rawHtml('Preprint 10.1101/2022.02.14.480364'),
           language: 'en',
           url: new URL('http://example.com'),
@@ -286,7 +309,7 @@ describe('getPrereviewFromZenodo', () => {
   test.prop([
     fc.integer(),
     fc.record({
-      doi: fc.preprintDoi(),
+      id: fc.preprintId(),
       language: fc.languageCode(),
       title: fc.html(),
       url: fc.url(),
@@ -323,7 +346,7 @@ describe('getPrereviewFromZenodo', () => {
         related_identifiers: [
           {
             scheme: 'doi',
-            identifier: preprint.doi,
+            identifier: preprint.id.doi,
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -363,13 +386,13 @@ describe('getPrereviewFromZenodo', () => {
         text: rawHtml('Some text'),
       }),
     )
-    expect(getPreprintTitle).toHaveBeenCalledWith(preprint.doi)
+    expect(getPreprintTitle).toHaveBeenCalledWith(preprint.id.doi)
   })
 
   test.prop([
     fc.integer(),
     fc.record({
-      doi: fc.preprintDoi(),
+      id: fc.preprintId(),
       language: fc.languageCode(),
       title: fc.html(),
       url: fc.url(),
@@ -405,7 +428,7 @@ describe('getPrereviewFromZenodo', () => {
         related_identifiers: [
           {
             scheme: 'doi',
-            identifier: preprint.doi,
+            identifier: preprint.id.doi,
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -460,7 +483,7 @@ describe('getPrereviewFromZenodo', () => {
   test.prop([
     fc.integer(),
     fc.record({
-      doi: fc.preprintDoi(),
+      id: fc.preprintId(),
       language: fc.languageCode(),
       title: fc.html(),
       url: fc.url(),
@@ -497,7 +520,7 @@ describe('getPrereviewFromZenodo', () => {
         related_identifiers: [
           {
             scheme: 'doi',
-            identifier: preprint.doi,
+            identifier: preprint.id.doi,
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -848,7 +871,7 @@ describe('getPrereviewFromZenodo', () => {
   test.prop([
     fc.integer(),
     fc.record({
-      doi: fc.preprintDoi(),
+      id: fc.preprintId(),
       language: fc.languageCode(),
       title: fc.html(),
       url: fc.url(),
@@ -886,7 +909,7 @@ describe('getPrereviewFromZenodo', () => {
         related_identifiers: [
           {
             scheme: 'doi',
-            identifier: preprint.doi,
+            identifier: preprint.id.doi,
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },

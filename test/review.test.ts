@@ -21,7 +21,7 @@ describe('review', () => {
         license: fc.constant('CC-BY-4.0' as const),
         published: fc.plainDate(),
         preprint: fc.record({
-          doi: fc.preprintDoi(),
+          id: fc.preprintId(),
           language: fc.languageCode(),
           title: fc.html(),
           url: fc.url(),

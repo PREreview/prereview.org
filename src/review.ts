@@ -29,7 +29,7 @@ export type Prereview = {
   license: 'CC-BY-4.0'
   published: PlainDate
   preprint: {
-    doi: PreprintId['doi']
+    id: PreprintId
     language: LanguageCode
     title: Html
     url: URL
@@ -102,7 +102,7 @@ function createPage(review: Prereview, user?: User) {
     title: plainText`PREreview of “${review.preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { doi: review.preprint.doi })}" class="back">See other reviews</a>
+        <a href="${format(preprintMatch.formatter, { doi: review.preprint.id.doi })}" class="back">See other reviews</a>
         <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
       </nav>
 

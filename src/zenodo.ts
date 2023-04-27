@@ -41,7 +41,7 @@ import PlainDate = Temporal.PlainDate
 interface GetPreprintTitleEnv {
   getPreprintTitle: (
     doi: PreprintId['doi'],
-  ) => TE.TaskEither<unknown, { title: Html; language: LanguageCode; url: URL }>
+  ) => TE.TaskEither<unknown, { id: PreprintId; title: Html; language: LanguageCode; url: URL }>
 }
 
 export const getRecentPrereviewsFromZenodo = () =>
@@ -144,18 +144,13 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
     RTE.bindW('license', RTE.fromEitherK(PrereviewLicenseD.decode)),
     RTE.chain(review =>
       sequenceS(RTE.ApplyPar)({
-        authors: RTE.right(review.metadata.creators),
+        authors: RTE.right<F.FetchEnv & GetPreprintTitleEnv>(review.metadata.creators as never),
         doi: RTE.right(review.metadata.doi),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
         license: RTE.right(review.license),
         published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
         preprint: RTE.asksReaderTaskEither(
-          flow(
-            RTE.fromTaskEitherK(({ getPreprintTitle }: F.FetchEnv & GetPreprintTitleEnv) =>
-              getPreprintTitle(review.preprintDoi),
-            ),
-            RTE.let('doi', () => review.preprintDoi),
-          ),
+          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintDoi)),
         ),
         text: getReviewText(review.reviewTextUrl),
       }),
