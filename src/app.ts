@@ -283,7 +283,12 @@ const getPreprint = (doi: PreprintId['doi']) =>
 const getPreprintTitle = flow(
   getPreprint,
   RTE.local(useStaleCache()),
-  RTE.map(preprint => ({ id: preprint.id, language: preprint.title.language, title: preprint.title.text })),
+  RTE.map(preprint => ({
+    id: preprint.id,
+    language: preprint.title.language,
+    title: preprint.title.text,
+    url: preprint.url,
+  })),
 )
 
 const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)

@@ -39,7 +39,9 @@ import { NewPrereview } from './write-review'
 import PlainDate = Temporal.PlainDate
 
 interface GetPreprintTitleEnv {
-  getPreprintTitle: (doi: PreprintId['doi']) => TE.TaskEither<unknown, { title: Html; language: LanguageCode }>
+  getPreprintTitle: (
+    doi: PreprintId['doi'],
+  ) => TE.TaskEither<unknown, { title: Html; language: LanguageCode; url: URL }>
 }
 
 export const getRecentPrereviewsFromZenodo = () =>

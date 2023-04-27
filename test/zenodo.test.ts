@@ -134,7 +134,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
           status: Status.OK,
         },
       ),
-      getPreprintTitle: doi => TE.right({ title: rawHtml(`Preprint ${doi}`), language: 'en' }),
+      getPreprintTitle: doi =>
+        TE.right({ title: rawHtml(`Preprint ${doi}`), language: 'en', url: new URL('http://example.com') }),
     })()
 
     expect(actual).toStrictEqual([
@@ -145,6 +146,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         preprint: {
           title: rawHtml('Preprint 10.1101/2022.01.13.476201'),
           language: 'en',
+          url: new URL('http://example.com'),
         },
       },
       {
@@ -154,6 +156,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         preprint: {
           title: rawHtml('Preprint 10.1101/2022.02.14.480364'),
           language: 'en',
+          url: new URL('http://example.com'),
         },
       },
     ])
@@ -239,7 +242,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
 
     const actual = await _.getRecentPrereviewsFromZenodo()({
       fetch,
-      getPreprintTitle: doi => TE.right({ title: rawHtml(`Preprint ${doi}`), language: 'en' }),
+      getPreprintTitle: doi =>
+        TE.right({ title: rawHtml(`Preprint ${doi}`), language: 'en', url: new URL('http://example.com') }),
     })()
 
     expect(actual).toStrictEqual([
@@ -250,6 +254,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         preprint: {
           title: rawHtml('Preprint 10.1101/2022.02.14.480364'),
           language: 'en',
+          url: new URL('http://example.com'),
         },
       },
     ])
@@ -284,6 +289,7 @@ describe('getPrereviewFromZenodo', () => {
       doi: fc.preprintDoi(),
       language: fc.languageCode(),
       title: fc.html(),
+      url: fc.url(),
     }),
   ])('when the PREreview can be loaded', async (id, preprint) => {
     const record: Record = {
@@ -366,6 +372,7 @@ describe('getPrereviewFromZenodo', () => {
       doi: fc.preprintDoi(),
       language: fc.languageCode(),
       title: fc.html(),
+      url: fc.url(),
     }),
   ])('revalidates if the PREreview is stale', async (id, preprint) => {
     const record: Record = {
@@ -456,6 +463,7 @@ describe('getPrereviewFromZenodo', () => {
       doi: fc.preprintDoi(),
       language: fc.languageCode(),
       title: fc.html(),
+      url: fc.url(),
     }),
     fc.integer({ min: 400, max: 599 }),
   ])('when the review text cannot be loaded', async (id, preprint, textStatus) => {
@@ -843,6 +851,7 @@ describe('getPrereviewFromZenodo', () => {
       doi: fc.preprintDoi(),
       language: fc.languageCode(),
       title: fc.html(),
+      url: fc.url(),
     }),
     fc.nonEmptyArray(
       fc.record({

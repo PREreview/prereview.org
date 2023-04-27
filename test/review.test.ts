@@ -24,6 +24,7 @@ describe('review', () => {
           doi: fc.preprintDoi(),
           language: fc.languageCode(),
           title: fc.html(),
+          url: fc.url(),
         }),
         text: fc.html(),
       }),

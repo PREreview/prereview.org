@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi, toUrl } from 'doi-ts'
+import { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -32,6 +32,7 @@ export type Prereview = {
     doi: PreprintId['doi']
     language: LanguageCode
     title: Html
+    url: URL
   }
   text: Html
 }
@@ -102,7 +103,7 @@ function createPage(review: Prereview, user?: User) {
     content: html`
       <nav>
         <a href="${format(preprintMatch.formatter, { doi: review.preprint.doi })}" class="back">See other reviews</a>
-        <a href="${toUrl(review.preprint.doi).href}" class="forward">Read the preprint</a>
+        <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
       </nav>
 
       <main id="prereview">
