@@ -345,8 +345,7 @@ describe('getPrereviewFromZenodo', () => {
         publication_date: new Date('2022-07-05'),
         related_identifiers: [
           {
-            scheme: 'doi',
-            identifier: preprint.id.value,
+            ..._.toExternalIdentifier(preprint.id),
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -427,8 +426,7 @@ describe('getPrereviewFromZenodo', () => {
         publication_date: new Date('2022-07-05'),
         related_identifiers: [
           {
-            scheme: 'doi',
-            identifier: preprint.id.value,
+            ..._.toExternalIdentifier(preprint.id),
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -519,8 +517,7 @@ describe('getPrereviewFromZenodo', () => {
         publication_date: new Date('2022-07-05'),
         related_identifiers: [
           {
-            scheme: 'doi',
-            identifier: preprint.id.value,
+            ..._.toExternalIdentifier(preprint.id),
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -908,8 +905,7 @@ describe('getPrereviewFromZenodo', () => {
         publication_date: new Date('2022-07-05'),
         related_identifiers: [
           {
-            scheme: 'doi',
-            identifier: preprint.id.value,
+            ..._.toExternalIdentifier(preprint.id),
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -984,7 +980,7 @@ describe('getPrereviewsFromZenodo', () => {
           url: 'https://zenodo.org/api/records/',
           query: {
             communities: 'prereview-reviews',
-            q: `related.identifier:"${preprint.value}"`,
+            q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
             sort: 'mostrecent',
             subtype: 'peerreview',
           },
@@ -1057,7 +1053,7 @@ describe('getPrereviewsFromZenodo', () => {
           url ===
             `https://zenodo.org/api/records/?${new URLSearchParams({
               communities: 'prereview-reviews',
-              q: `related.identifier:"${preprint.value}"`,
+              q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               size: '100',
               sort: 'mostrecent',
               subtype: 'peerreview',
@@ -1072,7 +1068,7 @@ describe('getPrereviewsFromZenodo', () => {
           url ===
             `https://zenodo.org/api/records/?${new URLSearchParams({
               communities: 'prereview-reviews',
-              q: `related.identifier:"${preprint.value}"`,
+              q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               size: '100',
               sort: 'mostrecent',
               subtype: 'peerreview',
@@ -1104,7 +1100,7 @@ describe('getPrereviewsFromZenodo', () => {
             url: 'https://zenodo.org/api/records/',
             query: {
               communities: 'prereview-reviews',
-              q: `related.identifier:"${preprint.value}"`,
+              q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               sort: 'mostrecent',
               subtype: 'peerreview',
             },
@@ -1182,8 +1178,7 @@ describe('createRecordOnZenodo', () => {
                 description: newPrereview.review.toString(),
                 related_identifiers: [
                   {
-                    scheme: 'doi',
-                    identifier: newPrereview.preprint.id.value,
+                    ..._.toExternalIdentifier(newPrereview.preprint.id),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -1279,8 +1274,7 @@ describe('createRecordOnZenodo', () => {
                 description: newPrereview.review.toString(),
                 related_identifiers: [
                   {
-                    scheme: 'doi',
-                    identifier: newPrereview.preprint.id.value,
+                    ..._.toExternalIdentifier(newPrereview.preprint.id),
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
