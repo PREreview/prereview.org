@@ -180,21 +180,8 @@ describe('writeReviewPersona', () => {
       }),
     ),
     fc.user(),
-    fc.record(
-      {
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
-        review: fc.nonEmptyString(),
-      },
-      { withDeletedKeys: true },
-    ),
-  ])('when the preprint cannot be loaded', async (preprintDoi, connection, user, newReview) => {
+  ])('when the preprint cannot be loaded', async (preprintDoi, connection, user) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
     const getPreprintTitle = () => TE.left('unavailable' as const)
 
     const actual = await runMiddleware(
@@ -226,21 +213,8 @@ describe('writeReviewPersona', () => {
       }),
     ),
     fc.user(),
-    fc.record(
-      {
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
-        review: fc.nonEmptyString(),
-      },
-      { withDeletedKeys: true },
-    ),
-  ])('when the preprint cannot be found', async (preprintDoi, connection, user, newReview) => {
+  ])('when the preprint cannot be found', async (preprintDoi, connection, user) => {
     const formStore = new Keyv()
-    await formStore.set(`${user.orcid}_${preprintDoi}`, newReview)
     const getPreprintTitle = () => TE.left('not-found' as const)
 
     const actual = await runMiddleware(

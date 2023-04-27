@@ -222,15 +222,13 @@ describe('writeReviewPublish', () => {
         fc.constant(secret),
       ),
     ),
-    fc.completedForm(),
     fc.user(),
   ])(
     'when the preprint cannot be loaded',
-    async (preprintDoi, [connection, sessionCookie, sessionId, secret], newReview, user) => {
+    async (preprintDoi, [connection, sessionCookie, sessionId, secret], user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, CompletedFormC.encode(newReview))
       const getPreprintTitle = () => TE.left('unavailable' as const)
       const publishPrereview = () => () => Promise.reject('should not be called')
 
@@ -271,41 +269,36 @@ describe('writeReviewPublish', () => {
         fc.constant(secret),
       ),
     ),
-    fc.completedForm(),
     fc.user(),
-  ])(
-    'when the preprint cannot be found',
-    async (preprintDoi, [connection, sessionCookie, sessionId, secret], newReview, user) => {
-      const sessionStore = new Keyv()
-      await sessionStore.set(sessionId, { user: UserC.encode(user) })
-      const formStore = new Keyv()
-      await formStore.set(`${user.orcid}_${preprintDoi}`, CompletedFormC.encode(newReview))
-      const getPreprintTitle = () => TE.left('not-found' as const)
-      const publishPrereview = () => () => Promise.reject('should not be called')
+  ])('when the preprint cannot be found', async (preprintDoi, [connection, sessionCookie, sessionId, secret], user) => {
+    const sessionStore = new Keyv()
+    await sessionStore.set(sessionId, { user: UserC.encode(user) })
+    const formStore = new Keyv()
+    const getPreprintTitle = () => TE.left('not-found' as const)
+    const publishPrereview = () => () => Promise.reject('should not be called')
 
-      const actual = await runMiddleware(
-        _.writeReviewPublish(preprintDoi)({
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.of(user),
-          publishPrereview,
-          secret,
-          sessionCookie,
-          sessionStore,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewPublish(preprintDoi)({
+        formStore,
+        getPreprintTitle,
+        getUser: () => M.of(user),
+        publishPrereview,
+        secret,
+        sessionCookie,
+        sessionStore,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.NotFound },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 
   test.prop([
     fc.preprintDoi(),
