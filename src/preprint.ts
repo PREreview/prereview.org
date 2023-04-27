@@ -237,7 +237,7 @@ function createPage({
               </div>
               <div>
                 <dt>DOI</dt>
-                <dd class="doi" translate="no">${preprint.id.doi}</dd>
+                <dd class="doi" translate="no">${preprint.id.value}</dd>
               </div>
             </dl>
           </header>

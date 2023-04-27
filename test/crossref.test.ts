@@ -20,7 +20,7 @@ describe('isCrossrefPreprintDoi', () => {
 describe('getPreprintFromCrossref', () => {
   describe('when the preprint can be loaded', () => {
     test.prop([fc.africarxivPreprintId(), fc.plainDate()])('from AfricArXiv', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -51,7 +51,7 @@ describe('getPreprintFromCrossref', () => {
             'short-container-title': [],
             abstract:
               '<p>The Beninese agricultural sector suffers mainly from a lack of financing. This study, conducted on a random sample of 150 households in Parakou commune, shows that participatory financing with a counterpart in agricultural product is an alternative to financing the production of local farms. Food among the population of Parakou consists mainly of cereals, particularly maize (according to 75% of households surveyed). Non-agricultural households purchase agricultural products according to their purchasing power and the economic situation. This study confirms that people are suffering from social injustice caused by an increase in product prices caused by the agricultural financing activity of loan sharks.  It should be noted that 75% of households are willing to adopt the participatory financing proposed in this article. Households are ready to buy at an average price of 12.172 XOF/Kg.</p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: {
               'date-parts': [[2019, 9, 10]],
@@ -85,7 +85,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -108,7 +108,7 @@ describe('getPreprintFromCrossref', () => {
     test.prop([fc.oneof(fc.biorxivPreprintId(), fc.medrxivPreprintId()), fc.sanitisedHtml(), fc.plainDate()])(
       'from bioRxiv/medRxiv',
       async (id, title, posted) => {
-        const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+        const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
           body: {
             status: 'ok',
             'message-type': 'work',
@@ -129,7 +129,7 @@ describe('getPreprintFromCrossref', () => {
               accepted: { 'date-parts': [[2022, 1, 14]] },
               abstract:
                 '<jats:title>Abstract</jats:title><jats:p>Non-photochemical quenching (NPQ) is the process that protects photosynthetic organisms from photodamage by dissipating the energy absorbed in excess as heat. In the model green alga <jats:italic>Chlamydomonas reinhardtii</jats:italic>, NPQ was abolished in the knock-out mutants of the pigment-protein complexes LHCSR3 and LHCBM1. However, while LHCSR3 was shown to be a pH sensor and switching to a quenched conformation at low pH, the role of LHCBM1 in NPQ has not been elucidated yet. In this work, we combine biochemical and physiological measurements to study short-term high light acclimation of <jats:italic>npq5</jats:italic>, the mutant lacking LHCBM1. We show that while in low light in the absence of this complex, the antenna size of PSII is smaller than in its presence, this effect is marginal in high light, implying that a reduction of the antenna is not responsible for the low NPQ. We also show that the mutant expresses LHCSR3 at the WT level in high light, indicating that the absence of this complex is also not the reason. Finally, NPQ remains low in the mutant even when the pH is artificially lowered to values that can switch LHCSR3 to the quenched conformation. It is concluded that both LHCSR3 and LHCBM1 need to be present for the induction of NPQ and that LHCBM1 is the interacting partner of LHCSR3. This interaction can either enhance the quenching capacity of LHCSR3 or connect this complex with the PSII supercomplex.</jats:p>',
-              DOI: id.doi,
+              DOI: id.value,
               type: 'posted-content',
               created: {
                 'date-parts': [[2022, 1, 15]],
@@ -533,7 +533,7 @@ describe('getPreprintFromCrossref', () => {
           },
         })
 
-        const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+        const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
         expect(actual).toStrictEqual(
           E.right({
@@ -559,7 +559,7 @@ describe('getPreprintFromCrossref', () => {
     )
 
     test.prop([fc.chemrxivPreprintId(), fc.plainDate()])('from ChemRxiv', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -583,7 +583,7 @@ describe('getPreprintFromCrossref', () => {
             accepted: { 'date-parts': [[2023, 1, 17]] },
             abstract:
               '<jats:p>ChemRxiv was launched on August 15, 2017 to provide researchers in chemistry and related fields a home for the immediate sharing of their latest research. In the past five years, ChemRxiv has grown into the premier preprint server for the chemical sciences, with a global audience and a wide array of scholarly content that helps advance science more rapidly. On the service\u2019s fifth anniversary, we would like to reflect on the past five years and take a look at what is next for ChemRxiv.</jats:p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: { 'date-parts': [[2023, 1, 18]], 'date-time': '2023-01-18T15:15:03Z', timestamp: 1674054903000 },
             source: 'Crossref',
@@ -666,7 +666,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -697,7 +697,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.eartharxivPreprintId(), fc.plainDate()])('from EarthArXiv', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -717,7 +717,7 @@ describe('getPreprintFromCrossref', () => {
             accepted: { 'date-parts': [[2022, 10, 24]] },
             abstract:
               '<jats:p>For many applications in environmental remote sensing, the interpretation of a given measurement depends strongly on what time of year the measurement was taken. This is particularly the case for phenology studies concerned with identifying when plant developmental transitions occur, but it is also true for a wide range of applications including vegetation species classification, crop yield estimation, and more. This study explores the use of Fisher Discriminant Analysis (FDA) as a method for extracting time-resolved information from multivariate environmental time series data. FDA is useful because it can be applied to multivariate input data and, for phenological estimation problems, produces a transformation that is physically interpretable. This work contains both theoretical and applied components. First, we use FDA to demonstrate the time-resolved nature of phenological information. Where curve-fitting and other commonly used data transformations that are sensitive to variation throughout a full time series, we show how FDA identifies application-relevant variation in specific variables at specific points in time. Next, we apply FDA to estimate county-average corn planting dates in the United States corn belt. We find that using multivariate data inputs can reduce prediction RMSE (in days) by 20% relative to models using only univariate inputs. We also compare FDA (which is linear) to nonlinear planting date estimation models based on curve-fitting and random forest estimators. We find that multivariate FDA models significantly improve on univariate curve-fitting and have comparable performance when using the same univariate inputs (despite the linearity of FDA). We also find that FDA-based approaches have lower RMSE than random forest in all configurations. Finally, we interpret FDA coefficients for individual measurements sensitive to vegetation density, land surface temperature, and soil moisture by relating them to physical mechanisms indicative of earlier or later planting.</jats:p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: {
               'date-parts': [[2022, 10, 24]],
@@ -763,7 +763,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -797,7 +797,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.ecoevorxivPreprintId(), fc.plainDate()])('from EcoEvoRxiv', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -813,7 +813,7 @@ describe('getPreprintFromCrossref', () => {
             accepted: { 'date-parts': [[2023, 1, 23]] },
             abstract:
               '<jats:p>Coral reefs are under threat from disease as climate change alters environmental conditions. Rising temperatures exacerbate coral disease, but this relationship is likely complex as other factors also influence coral disease prevalence. To better understand this relationship, we meta-analytically examined 108 studies for changes in global coral disease over time alongside temperature, expressed using average summer sea surface temperature (SST) and cumulative heat stress as weekly sea surface temperature anomalies (WSSTAs). We found both rising average summer SST and WSSTA were associated with global increases in the mean and variability in coral disease prevalence. We showed global coral disease prevalence reached 9.92% compared to 3.16% in 1992, and the effect of \u2018year\u2019 became more stable (i.e., has lower variance), contrasting to the effects of the two temperature stressors. Regional patterns diverged over time and differed in response to average summer SST. Our model predicted that, under the same trajectory, 76.8% of corals would be diseased globally by 2100, even assuming moderate average summer SST and WSSTA. These results highlight the need for urgent action to mitigate coral disease. Mitigating the impact of rising ocean temperatures on coral disease alone is a complex challenge requiring global discussion and further study.</jats:p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: { 'date-parts': [[2023, 1, 23]], 'date-time': '2023-01-23T19:52:56Z', timestamp: 1674503576000 },
             source: 'Crossref',
@@ -856,7 +856,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -889,7 +889,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.edarxivPreprintId(), fc.plainDate()])('from EdArXiv', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -916,7 +916,7 @@ describe('getPreprintFromCrossref', () => {
             'short-container-title': [],
             abstract:
               '<p>Einer ihrer Kernt\u00e4tigkeiten nachkommend, erarbeiten Hochschuldozierende jedesSemester unter Einsatz personeller, zeitlicher und finanzieller Ressourcen eineVielzahl an Lehrkonzepten und Lehr-/Lernmaterialien. Lehrbezogenem Wissensmanagement, d. h. der systematischen, effizienten und nachhaltigen Nutzung von Wissen im Kontext Lehre, wird bis dato h\u00e4ufig wenig Bedeutung beigemessen. Das \u00fcbergreifende Ziel bestand deshalb darin, ein theoriebasiertes und praktikables Reflexionsinstrument zu entwickeln, das es Dozierenden erm\u00f6glicht, ihr p\u00e4dagogisches Arbeitshandeln respektive ihren Umgang mit lehrbezogenem Wissen aus einer wissensmanagementtheoretischen Perspektive in den Blick zu nehmen. In diesem Beitrag beschreiben wir die theoretische Fundierung, die Entwicklung, den Aufbau und wesentliche Einsatzm\u00f6glichkeiten des Instruments (LeWiMa). Es soll Dozierenden dabei helfen, ihr lehrbezogenes Wissensmanagement systematisch zu reflektieren, etwaige  Verbesserungspotenziale, Kompetenz- und Fortbildungsbedarfe zu erkennen und bedarfsorientierte Ma\u00dfnahmen zu ergreifen, durch die sie ihre Lehre mittel- und langfristig effizienter, systematischer, offener und nachhaltiger gestalten k\u00f6nnen.</p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: { 'date-parts': [[2022, 5, 16]], 'date-time': '2022-05-16T15:52:23Z', timestamp: 1652716343000 },
             source: 'Crossref',
@@ -959,7 +959,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -997,7 +997,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.engrxivPreprintId(), fc.plainDate()])('from engrXiv', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -1025,7 +1025,7 @@ describe('getPreprintFromCrossref', () => {
             ],
             'content-domain': { domain: [], 'crossmark-restriction': false },
             'short-container-title': [],
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: {
               'date-parts': [[2022, 10, 20]],
@@ -1059,7 +1059,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1082,7 +1082,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.metaarxivPreprintId(), fc.plainDate()])('from MetaArXiv', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -1105,7 +1105,7 @@ describe('getPreprintFromCrossref', () => {
             'short-container-title': [],
             abstract:
               '<p>There is growing interest in enhancing research transparency and reproducibility in economics and other scientific fields. We survey existing work on these topics within economics, and discuss the evidence suggesting that publication bias, inability to replicate, and specification searching remain widespread in the discipline. We next discuss recent progress in this area, including through improved research design, study registration and pre-analysis plans, disclosure standards, and open sharing of data and materials, drawing on experiences in both economics and other social sciences. We discuss areas where consensus is emerging on new practices, as well as approaches that remain controversial, and speculate about the most effective ways to make economics research more credible in the future.</p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: { 'date-parts': [[2018, 7, 2]], 'date-time': '2018-07-02T10:45:16Z', timestamp: 1530528316000 },
             source: 'Crossref',
@@ -1134,7 +1134,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1166,7 +1166,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.osfPreprintId(), fc.plainDate()])('from OSF', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -1193,7 +1193,7 @@ describe('getPreprintFromCrossref', () => {
             'short-container-title': [],
             abstract:
               '<p>This article takes a look at the state of preservation in Hoi An, which is a world heritage and a famous tourist attraction in central Vietnam.</p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: {
               'date-parts': [[2021, 10, 11]],
@@ -1227,7 +1227,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1255,7 +1255,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.preprintsorgPreprintId(), fc.plainDate()])('from Preprints.org', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -1279,7 +1279,7 @@ describe('getPreprintFromCrossref', () => {
             accepted: { 'date-parts': [[2023, 3, 16]] },
             abstract:
               '<p>In the wake of the Covid-19 crisis, a need has arisen to prevent and treat two related conditions, Covid vaccine injury and long Covid, both of which have a significant vascular component. Therefore, the management of these conditions require the development of strategies to prevent or dissolve blood clots and restore circulatory health. This review summarizes the evidence on strategies that can be applied to treat both long and vaccine injuries based on similar mechanisms of action.</p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: { 'date-parts': [[2023, 3, 21]], 'date-time': '2023-03-21T01:12:05Z', timestamp: 1679361125000 },
             source: 'Crossref',
@@ -1309,7 +1309,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1336,7 +1336,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.psyarxivPreprintId(), fc.plainDate()])('from PsyArXiv', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -1363,7 +1363,7 @@ describe('getPreprintFromCrossref', () => {
             'short-container-title': [],
             abstract:
               '<p>We review how often distortions on the cognitive mechanisms underlying the virtuosism of mental athletes, including the frequent link to autistic savants or synesthesia, result from the confusion, misconceptions and even lack of rigor found in scientific literature. We present specific cases were ignorance about the basic training techniques of mental athlete\u2019s world causes serious interpretation and methodological problems. Calculations seem obviously more impressive if they mysteriously pop-out in the air from unexplained virtues of an unexplained brain. The task of cognitive neuroscience is the opposite. It is to find and reveal the trick and seek to unfold which operations (often much more normal than they seem) result in these seemingly extraordinary performances.</p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: { 'date-parts': [[2018, 7, 2]], 'date-time': '2018-07-02T10:43:11Z', timestamp: 1530528191000 },
             source: 'Crossref',
@@ -1396,7 +1396,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1428,7 +1428,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.researchSquarePreprintId(), fc.plainDate()])('from Research Square', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -1466,7 +1466,7 @@ describe('getPreprintFromCrossref', () => {
             },
             abstract:
               '<jats:title>Abstract</jats:title>\n        <jats:p>The evidence base available to trialists to support trial process decisions– e.g. how best to recruit and retain participants, how to collect data or how to share the results with participants – is thin. One way to fill gaps in evidence is to run Studies Within A Trial, or SWATs. These are self-contained research studies embedded within a host trial that aim to evaluate or explore alternative ways of delivering or organising a particular trial process.\nSWATs are increasingly being supported by funders and considered by trialists, especially in the UK and Ireland. At some point, increasing SWAT evidence will lead funders and trialists to ask : given the current body of evidence for a SWAT, do we need a further evaluation in a another host trial? A framework for answering such a question is needed to avoid SWATs themselves contributing to research waste.\nThis paper presents criteria on when enough evidence is available for SWATs that use randomised allocation to compare different interventions.</jats:p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: {
               'date-parts': [[2018, 10, 22]],
@@ -1703,7 +1703,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1833,7 +1833,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.scieloPreprintId(), fc.plainDate()])('from SciELO', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -1863,7 +1863,7 @@ describe('getPreprintFromCrossref', () => {
             'short-container-title': [],
             abstract:
               '<jats:p>El art\u00edculo aborda la extensi\u00f3n universitaria como un proceso formativo en el contexto de la Universidad de Pinar del R\u00edo, Cuba. \u00a0El objetivo estuvo dirigido a su socializar un enfoque reflexivo \u2013 cr\u00edtico acerca del car\u00e1cter formativo de la extensi\u00f3n universitaria fundamentado en cuatro concepciones pedag\u00f3gicas, de las que se presentan sus ejes fundamentales. El estudio se realiz\u00f3 desde el enfoque cualitativo y como m\u00e9todos fundamentales estuvieron el dial\u00e9ctico- materialista como soporte te\u00f3rico, pr\u00e1ctico y metodol\u00f3gico de la investigaci\u00f3n, as\u00ed como te\u00f3ricos como el hist\u00f3rico\u2013l\u00f3gico en correspondencia con cada una de las concepciones dirigidas a la formaci\u00f3n para la promoci\u00f3n de lectura, la formaci\u00f3n de promotores de estilos de vida saludables, la formaci\u00f3n para la labor extensionista del estudiante y la gesti\u00f3n de la extensi\u00f3n en el Departamento Docente. Las conclusiones que se presentan, son de tipo te\u00f3rico y resultan generalizables a contextos universitarios y territoriales de manera general, permitieron corroborar el car\u00e1cter formativo del proceso, dado en la transversalidad, la profesionalizaci\u00f3n, la formaci\u00f3n integral, el Departamento docente, como c\u00e9lula de trabajo extensionista y las relaciones de jerarquizaci\u00f3n, coordinaci\u00f3n, subordinaci\u00f3n entre los diferentes actores universitarios.</jats:p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: {
               'date-parts': [[2022, 8, 5]],
@@ -1911,7 +1911,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1937,7 +1937,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.scienceOpenPreprintId(), fc.plainDate()])('from ScienceOpen', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -1960,7 +1960,7 @@ describe('getPreprintFromCrossref', () => {
             'short-container-title': [],
             abstract:
               '<jats:p>El presente art\u00edculo esboza algunos aspectos relevantes del punk espa\u00f1ol y sus contextos y provee referencias para un estudio en profundidad.</jats:p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: { 'date-parts': [[2022, 10, 4]], 'date-time': '2022-10-04T09:00:12Z', timestamp: 1664874012000 },
             source: 'Crossref',
@@ -2013,7 +2013,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -2039,7 +2039,7 @@ describe('getPreprintFromCrossref', () => {
     })
 
     test.prop([fc.socarxivPreprintId(), fc.plainDate()])('from SocArXiv', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',
           'message-type': 'work',
@@ -2070,7 +2070,7 @@ describe('getPreprintFromCrossref', () => {
             'short-container-title': [],
             abstract:
               '<p>The restitution of a S\u00e1mi drum confiscated in 1691 in Karasjok, present-day  Norway, was made in early 2022. This good incorporates historical meaning, culture and own values as well as marks of colonization and inequalities in S\u00e1pmi. It can talk about the long coloniality and racist invisibilization in the far north of Europe and about the historical resistances and current processes for justice andreparation. A bibliographical synthesis is presented on the Eurocentric invention of races operated from the center of Europe in which it aimed particularly at the S\u00e1mi populations, their lands and cultures, with colonial, patriarchal and capacitist demarcations. Possible lines of intervention and reconfiguration of the work on biographical and bibliographical sources that sustain, encourage anddisseminate the incorporation of knowledge inherited and to be passed on by originary cultures with recognition and justice.</p>',
-            DOI: id.doi,
+            DOI: id.value,
             type: 'posted-content',
             created: {
               'date-parts': [[2022, 11, 27]],
@@ -2115,7 +2115,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -2147,7 +2147,7 @@ describe('getPreprintFromCrossref', () => {
         .sandbox()
         .getOnce(
           (url, { cache }) =>
-            url === `https://api.crossref.org/works/${encodeURIComponent(id.doi)}` && cache === 'force-cache',
+            url === `https://api.crossref.org/works/${encodeURIComponent(id.value)}` && cache === 'force-cache',
           {
             body: {
               status: 'ok',
@@ -2178,7 +2178,7 @@ describe('getPreprintFromCrossref', () => {
                 'short-container-title': [],
                 abstract:
                   '<jats:p>El art\u00edculo aborda la extensi\u00f3n universitaria como un proceso formativo en el contexto de la Universidad de Pinar del R\u00edo, Cuba. \u00a0El objetivo estuvo dirigido a su socializar un enfoque reflexivo \u2013 cr\u00edtico acerca del car\u00e1cter formativo de la extensi\u00f3n universitaria fundamentado en cuatro concepciones pedag\u00f3gicas, de las que se presentan sus ejes fundamentales. El estudio se realiz\u00f3 desde el enfoque cualitativo y como m\u00e9todos fundamentales estuvieron el dial\u00e9ctico- materialista como soporte te\u00f3rico, pr\u00e1ctico y metodol\u00f3gico de la investigaci\u00f3n, as\u00ed como te\u00f3ricos como el hist\u00f3rico\u2013l\u00f3gico en correspondencia con cada una de las concepciones dirigidas a la formaci\u00f3n para la promoci\u00f3n de lectura, la formaci\u00f3n de promotores de estilos de vida saludables, la formaci\u00f3n para la labor extensionista del estudiante y la gesti\u00f3n de la extensi\u00f3n en el Departamento Docente. Las conclusiones que se presentan, son de tipo te\u00f3rico y resultan generalizables a contextos universitarios y territoriales de manera general, permitieron corroborar el car\u00e1cter formativo del proceso, dado en la transversalidad, la profesionalizaci\u00f3n, la formaci\u00f3n integral, el Departamento docente, como c\u00e9lula de trabajo extensionista y las relaciones de jerarquizaci\u00f3n, coordinaci\u00f3n, subordinaci\u00f3n entre los diferentes actores universitarios.</jats:p>',
-                DOI: id.doi,
+                DOI: id.value,
                 type: 'posted-content',
                 created: {
                   'date-parts': [[2022, 8, 5]],
@@ -2231,11 +2231,11 @@ describe('getPreprintFromCrossref', () => {
         )
         .getOnce(
           (url, { cache }) =>
-            url === `https://api.crossref.org/works/${encodeURIComponent(id.doi)}` && cache === 'no-cache',
+            url === `https://api.crossref.org/works/${encodeURIComponent(id.value)}` && cache === 'no-cache',
           { throws: new Error('Network error') },
         )
 
-      const actual = await _.getPreprintFromCrossref(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right(

@@ -19,10 +19,10 @@ import Instant = Temporal.Instant
 
 export type DatacitePreprintId = ArxivPreprintId
 
-export const isDatacitePreprintDoi: R.Refinement<Doi, DatacitePreprintId['doi']> = hasRegistrant('48550')
+export const isDatacitePreprintDoi: R.Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant('48550')
 
 export const getPreprintFromDatacite = flow(
-  (doi: DatacitePreprintId['doi']) => getWork(doi),
+  (doi: DatacitePreprintId['value']) => getWork(doi),
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
@@ -132,7 +132,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = pipe(
     work =>
       ({
         type: 'arxiv',
-        doi: work.doi,
+        value: work.doi,
       } satisfies ArxivPreprintId),
   ),
 )

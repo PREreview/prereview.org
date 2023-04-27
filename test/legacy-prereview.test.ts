@@ -26,7 +26,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
         legacyPrereviewApi: { app, key, url, update },
       })()
 
-      expect(actual).toStrictEqual(E.right(expect.objectContaining({ doi })))
+      expect(actual).toStrictEqual(E.right(expect.objectContaining({ value: doi })))
     },
   )
 
@@ -300,7 +300,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           .sandbox()
           .getOnce(
             `${url}api/v2/preprints/doi-${encodeURIComponent(
-              preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/rapid-reviews`,
             {
               body: {
@@ -397,7 +397,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           (requestUrl, { cache }) =>
             requestUrl ===
               `${url}api/v2/preprints/doi-${encodeURIComponent(
-                preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
               )}/rapid-reviews` && cache === 'force-cache',
           {
             body: {
@@ -426,7 +426,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           (requestUrl, { cache }) =>
             requestUrl ===
               `${url}api/v2/preprints/doi-${encodeURIComponent(
-                preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+                preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
               )}/rapid-reviews` && cache === 'no-cache',
           { throws: new Error('Network error') },
         )
@@ -474,7 +474,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
           .sandbox()
           .getOnce(
             `${url}api/v2/preprints/doi-${encodeURIComponent(
-              preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+              preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
             )}/rapid-reviews`,
             { status: Status.NotFound },
           ),
@@ -504,7 +504,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
 
         .getOnce(
           `${url}api/v2/preprints/doi-${encodeURIComponent(
-            preprintId.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+            preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
           )}/rapid-reviews`,
           { status },
         ),
@@ -527,7 +527,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
       async (app, key, url, orcid, preprintId, preprintUuid, reviewDoi) => {
         const fetch = fetchMock
           .sandbox()
-          .getOnce(`${url}api/v2/resolve?identifier=${preprintId.doi}`, { body: { uuid: preprintUuid } })
+          .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, { body: { uuid: preprintUuid } })
           .postOnce(
             {
               url: `${url}api/v2/full-reviews`,
@@ -576,7 +576,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
       async (app, key, url, orcid, preprintId, preprintUuid, reviewDoi, response) => {
         const fetch = fetchMock
           .sandbox()
-          .getOnce(`${url}api/v2/resolve?identifier=${preprintId.doi}`, { body: { uuid: preprintUuid } })
+          .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, { body: { uuid: preprintUuid } })
           .postOnce(
             {
               url: `${url}api/v2/full-reviews`,
@@ -623,7 +623,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
     ])(
       'when the preprint cannot be resolved',
       async (app, key, url, orcid, preprintId, preprintUuid, reviewDoi, response) => {
-        const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/resolve?identifier=${preprintId.doi}`, response)
+        const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, response)
 
         const actual = await _.createPrereviewOnLegacyPrereview({
           conduct: 'yes',

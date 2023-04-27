@@ -181,7 +181,7 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
     RTE.fromReader(
       legacyPrereviewUrl(
         `preprints/doi-${encodeURIComponent(
-          id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+          id.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
         )}/rapid-reviews`,
       ),
     ),
@@ -229,7 +229,7 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: NewPrereview) => 
         () => RTE.of(undefined),
         () =>
           pipe(
-            resolvePreprint(newPrereview.preprint.id.doi),
+            resolvePreprint(newPrereview.preprint.id.value),
             RTE.chainReaderKW(preprint =>
               pipe(
                 legacyPrereviewUrl('full-reviews'),
@@ -260,7 +260,7 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: NewPrereview) => 
   )
 
 const resolvePreprint = flow(
-  RTE.fromReaderK((doi: PreprintId['doi']) => legacyPrereviewUrl(`resolve?identifier=${doi}`)),
+  RTE.fromReaderK((doi: PreprintId['value']) => legacyPrereviewUrl(`resolve?identifier=${doi}`)),
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
   RTE.filterOrElseW(F.hasStatus(Status.OK), identity),

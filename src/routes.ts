@@ -49,7 +49,7 @@ const PreprintDoiC = C.make(
     }),
   ),
   {
-    encode: id => `doi-${id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
+    encode: id => `doi-${id.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
   },
 )
 

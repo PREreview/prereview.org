@@ -275,7 +275,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
 )
 
 const getPreprint = (id: IndeterminatePreprintId) =>
-  match(id.doi)
+  match(id.value)
     .when(isCrossrefPreprintDoi, getPreprintFromCrossref)
     .when(isDatacitePreprintDoi, getPreprintFromDatacite)
     .exhaustive()

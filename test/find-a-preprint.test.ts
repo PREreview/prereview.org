@@ -31,7 +31,7 @@ describe('parseLookupPreprint', () => {
       ]),
   ])('with a doi for a supported preprint server', ([input, expected]) => {
     const actual = _.parseLookupPreprint(input)
-    expect(actual).toStrictEqual(E.right(expect.objectContaining({ doi: expected })))
+    expect(actual).toStrictEqual(E.right(expect.objectContaining({ value: expected })))
   })
 
   test.prop([
@@ -205,7 +205,7 @@ describe('find-a-preprint', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(doesPreprintExist).toHaveBeenCalledWith(expect.objectContaining({ doi: id.doi }))
+      expect(doesPreprintExist).toHaveBeenCalledWith(expect.objectContaining({ value: id.value }))
     })
 
     test.prop([

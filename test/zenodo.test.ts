@@ -137,8 +137,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
       ),
       getPreprintTitle: id =>
         TE.right({
-          id: { type: 'biorxiv', doi: '10.1101/2022.10.06.511170' as Doi<'1101'> } satisfies BiorxivPreprintId,
-          title: rawHtml(`Preprint ${id.doi}`),
+          id: { type: 'biorxiv', value: '10.1101/2022.10.06.511170' as Doi<'1101'> } satisfies BiorxivPreprintId,
+          title: rawHtml(`Preprint ${id.value}`),
           language: 'en',
           url: new URL('http://example.com'),
         }),
@@ -152,7 +152,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         preprint: {
           id: {
             type: 'biorxiv',
-            doi: '10.1101/2022.10.06.511170',
+            value: '10.1101/2022.10.06.511170',
           },
           title: rawHtml('Preprint 10.1101/2022.01.13.476201'),
           language: 'en',
@@ -166,7 +166,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         preprint: {
           id: {
             type: 'biorxiv',
-            doi: '10.1101/2022.10.06.511170',
+            value: '10.1101/2022.10.06.511170',
           },
           title: rawHtml('Preprint 10.1101/2022.02.14.480364'),
           language: 'en',
@@ -258,8 +258,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
       fetch,
       getPreprintTitle: id =>
         TE.right({
-          id: { type: 'biorxiv', doi: '10.1101/2022.10.06.511170' as Doi<'1101'> } satisfies BiorxivPreprintId,
-          title: rawHtml(`Preprint ${id.doi}`),
+          id: { type: 'biorxiv', value: '10.1101/2022.10.06.511170' as Doi<'1101'> } satisfies BiorxivPreprintId,
+          title: rawHtml(`Preprint ${id.value}`),
           language: 'en',
           url: new URL('http://example.com'),
         }),
@@ -273,7 +273,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         preprint: {
           id: {
             type: 'biorxiv',
-            doi: '10.1101/2022.10.06.511170',
+            value: '10.1101/2022.10.06.511170',
           },
           title: rawHtml('Preprint 10.1101/2022.02.14.480364'),
           language: 'en',
@@ -346,7 +346,7 @@ describe('getPrereviewFromZenodo', () => {
         related_identifiers: [
           {
             scheme: 'doi',
-            identifier: preprint.id.doi,
+            identifier: preprint.id.value,
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -386,7 +386,7 @@ describe('getPrereviewFromZenodo', () => {
         text: rawHtml('Some text'),
       }),
     )
-    expect(getPreprintTitle).toHaveBeenCalledWith(expect.objectContaining({ doi: preprint.id.doi }))
+    expect(getPreprintTitle).toHaveBeenCalledWith(expect.objectContaining({ value: preprint.id.value }))
   })
 
   test.prop([
@@ -428,7 +428,7 @@ describe('getPrereviewFromZenodo', () => {
         related_identifiers: [
           {
             scheme: 'doi',
-            identifier: preprint.id.doi,
+            identifier: preprint.id.value,
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -520,7 +520,7 @@ describe('getPrereviewFromZenodo', () => {
         related_identifiers: [
           {
             scheme: 'doi',
-            identifier: preprint.id.doi,
+            identifier: preprint.id.value,
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -909,7 +909,7 @@ describe('getPrereviewFromZenodo', () => {
         related_identifiers: [
           {
             scheme: 'doi',
-            identifier: preprint.id.doi,
+            identifier: preprint.id.value,
             relation: 'reviews',
             resource_type: 'publication-preprint',
           },
@@ -984,7 +984,7 @@ describe('getPrereviewsFromZenodo', () => {
           url: 'https://zenodo.org/api/records/',
           query: {
             communities: 'prereview-reviews',
-            q: `related.identifier:"${preprint.doi}"`,
+            q: `related.identifier:"${preprint.value}"`,
             sort: 'mostrecent',
             subtype: 'peerreview',
           },
@@ -1057,7 +1057,7 @@ describe('getPrereviewsFromZenodo', () => {
           url ===
             `https://zenodo.org/api/records/?${new URLSearchParams({
               communities: 'prereview-reviews',
-              q: `related.identifier:"${preprint.doi}"`,
+              q: `related.identifier:"${preprint.value}"`,
               size: '100',
               sort: 'mostrecent',
               subtype: 'peerreview',
@@ -1072,7 +1072,7 @@ describe('getPrereviewsFromZenodo', () => {
           url ===
             `https://zenodo.org/api/records/?${new URLSearchParams({
               communities: 'prereview-reviews',
-              q: `related.identifier:"${preprint.doi}"`,
+              q: `related.identifier:"${preprint.value}"`,
               size: '100',
               sort: 'mostrecent',
               subtype: 'peerreview',
@@ -1104,7 +1104,7 @@ describe('getPrereviewsFromZenodo', () => {
             url: 'https://zenodo.org/api/records/',
             query: {
               communities: 'prereview-reviews',
-              q: `related.identifier:"${preprint.doi}"`,
+              q: `related.identifier:"${preprint.value}"`,
               sort: 'mostrecent',
               subtype: 'peerreview',
             },
@@ -1183,7 +1183,7 @@ describe('createRecordOnZenodo', () => {
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: newPrereview.preprint.id.doi,
+                    identifier: newPrereview.preprint.id.value,
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },
@@ -1280,7 +1280,7 @@ describe('createRecordOnZenodo', () => {
                 related_identifiers: [
                   {
                     scheme: 'doi',
-                    identifier: newPrereview.preprint.id.doi,
+                    identifier: newPrereview.preprint.id.value,
                     relation: 'reviews',
                     resource_type: 'publication-preprint',
                   },

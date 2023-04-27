@@ -26,7 +26,7 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some(_.fromPreprintDoi(doi)))
   })
 
-  test.prop([fc.africarxivPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.africarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('https://www.osf.io/preprints/africarxiv/grxt6'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // www.
       [[new URL('http://osf.io/preprints/africarxiv/grxt6'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // http
@@ -35,10 +35,10 @@ describe('fromUrl', () => {
       [[new URL('https://osf.io/preprints/africarxiv/grxt6/download'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // download
     ],
   })('with an AfricArXiv URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'africarxiv', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'africarxiv', value: doi }))
   })
 
-  test.prop([fc.arxivPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.arxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('http://arxiv.org/abs/1501.00001'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // http
       [[new URL('https://www.arxiv.org/abs/1501.00001'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // www.
@@ -54,10 +54,10 @@ describe('fromUrl', () => {
       [[new URL('https://arxiv.org/pdf/1501.00001.pdf'), '10.48550/arXiv.1501.00001' as Doi<'48550'>]], // pdf with extension
     ],
   })('with an arxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'arxiv', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'arxiv', value: doi }))
   })
 
-  test.prop([fc.biorxivPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.biorxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [
         [
@@ -103,7 +103,7 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a biorxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'biorxiv', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'biorxiv', value: doi }))
   })
 
   test.prop([fc.chemrxivPreprintUrl()], {
@@ -154,7 +154,7 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.none)
   })
 
-  test.prop([fc.edarxivPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.edarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('https://www.edarxiv.org/wc6r7'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // www.
       [[new URL('http://edarxiv.org/wc6r7'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // http
@@ -165,10 +165,10 @@ describe('fromUrl', () => {
       [[new URL('https://edarxiv.org/wc6r7/download?format=pdf'), '10.35542/osf.io/wc6r7' as Doi<'35542'>]], // download pdf
     ],
   })('with an edarxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'edarxiv', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'edarxiv', value: doi }))
   })
 
-  test.prop([fc.engrxivPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.engrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('https://www.engrxiv.org/preprint/view/2172'), '10.31224/2172' as Doi<'31224'>]], // www.
       [[new URL('http://engrxiv.org/preprint/view/2172'), '10.31224/2172' as Doi<'31224'>]], // http
@@ -179,10 +179,10 @@ describe('fromUrl', () => {
       [[new URL('https://engrxiv.org/preprint/download/2172/4288/3228'), '10.31224/2172' as Doi<'31224'>]], // download
     ],
   })('with an engrxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'engrxiv', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'engrxiv', value: doi }))
   })
 
-  test.prop([fc.medrxivPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.medrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [
         [
@@ -246,10 +246,10 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a medrxiv.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'medrxiv', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'medrxiv', value: doi }))
   })
 
-  test.prop([fc.metaarxivPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.metaarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('https://www.osf.io/preprints/metaarxiv/9a3rw'), '10.31222/osf.io/9a3rw' as Doi<'31222'>]], // www.
       [[new URL('http://osf.io/preprints/metaarxiv/9a3rw'), '10.31222/osf.io/9a3rw' as Doi<'31222'>]], // http
@@ -258,10 +258,10 @@ describe('fromUrl', () => {
       [[new URL('https://osf.io/preprints/metaarxiv/9a3rw/download'), '10.31222/osf.io/9a3rw' as Doi<'31222'>]], // download
     ],
   })('with a MetaArXiv URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'metaarxiv', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'metaarxiv', value: doi }))
   })
 
-  test.prop([fc.osfPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.osfPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('https://www.osf.io/ewdn8'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // www.
       [[new URL('http://osf.io/ewdn8'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // http
@@ -272,10 +272,10 @@ describe('fromUrl', () => {
       [[new URL('https://osf.io/ewdn8/download?format=pdf'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // download pdf
     ],
   })('with an OSF URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'osf', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'osf', value: doi }))
   })
 
-  test.prop([fc.preprintsorgPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.preprintsorgPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [
         [
@@ -315,10 +315,10 @@ describe('fromUrl', () => {
       ],
     ],
   })('with an preprints.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'preprints.org', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'preprints.org', value: doi }))
   })
 
-  test.prop([fc.psyarxivPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.psyarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('https://www.psyarxiv.com/k9mn3'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // www.
       [[new URL('http://psyarxiv.com/k9mn3'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // http
@@ -329,10 +329,10 @@ describe('fromUrl', () => {
       [[new URL('https://psyarxiv.com/k9mn3/download?format=pdf'), '10.31234/osf.io/k9mn3' as Doi<'31234'>]], // download pdf
     ],
   })('with an psyarxiv.com URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'psyarxiv', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'psyarxiv', value: doi }))
   })
 
-  test.prop([fc.researchSquarePreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.researchSquarePreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('https://researchsquare.com/article/rs-2609755/v1'), '10.21203/rs.3.rs-2609755/v1' as Doi<'21203'>]], // no www.
       [
@@ -361,10 +361,10 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a researchsquare.com URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'research-square', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'research-square', value: doi }))
   })
 
-  test.prop([fc.scieloPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.scieloPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [
         [
@@ -392,10 +392,10 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a SciELO URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'scielo', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'scielo', value: doi }))
   })
 
-  test.prop([fc.scienceOpenPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.scienceOpenPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [
         [
@@ -427,10 +427,10 @@ describe('fromUrl', () => {
       ],
     ],
   })('with a scienceopen.com URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'science-open', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'science-open', value: doi }))
   })
 
-  test.prop([fc.socarxivPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
+  test.prop([fc.socarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('https://www.osf.io/preprints/socarxiv/8374m'), '10.31235/osf.io/8374m' as Doi<'31235'>]], // www.
       [[new URL('http://osf.io/preprints/socarxiv/8374m'), '10.31235/osf.io/8374m' as Doi<'31235'>]], // http
@@ -439,7 +439,7 @@ describe('fromUrl', () => {
       [[new URL('https://osf.io/preprints/socarxiv/8374m/download'), '10.31235/osf.io/8374m' as Doi<'31235'>]], // download
     ],
   })('with an SocArXiv URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'socarxiv', doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'socarxiv', value: doi }))
   })
 
   test.prop([fc.url()], {

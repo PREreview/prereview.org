@@ -74,7 +74,7 @@ export const getPrereviewsFromZenodo = flow(
   (preprint: PreprintId) =>
     new URLSearchParams({
       communities: 'prereview-reviews',
-      q: `related.identifier:"${preprint.doi}"`,
+      q: `related.identifier:"${preprint.value}"`,
       size: '100',
       sort: 'mostrecent',
       subtype: 'peerreview',
@@ -129,7 +129,7 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
     related_identifiers: [
       {
         scheme: 'doi',
-        identifier: newPrereview.preprint.id.doi,
+        identifier: newPrereview.preprint.id.value,
         relation: 'reviews',
         resource_type: 'publication-preprint',
       },

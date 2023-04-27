@@ -30,7 +30,7 @@ export interface FormStoreEnv {
 }
 
 export function formKey(user: Orcid, preprint: PreprintId) {
-  return `${user}_${preprint.doi}`
+  return `${user}_${preprint.value}`
 }
 
 export function getForm(

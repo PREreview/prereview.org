@@ -20,13 +20,13 @@ describe('isDatacitePreprintDoi', () => {
 describe('getPreprintFromDatacite', () => {
   describe('when the preprint can be loaded', () => {
     test.prop([fc.arxivPreprintId(), fc.instant()])('from arXiv', async (id, posted) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.doi)}`, {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
         body: {
           data: {
             id: '10.48550/arxiv.2207.10516',
             type: 'dois',
             attributes: {
-              doi: id.doi,
+              doi: id.value,
               identifiers: [{ identifier: '2207.10516', identifierType: 'arXiv' }],
               alternateIdentifiers: [{ alternateIdentifierType: 'arXiv', alternateIdentifier: '2207.10516' }],
               creators: [
@@ -176,7 +176,7 @@ describe('getPreprintFromDatacite', () => {
         },
       })
 
-      const actual = await _.getPreprintFromDatacite(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -208,14 +208,14 @@ describe('getPreprintFromDatacite', () => {
         .sandbox()
         .getOnce(
           (url, { cache }) =>
-            url === `https://api.datacite.org/dois/${encodeURIComponent(id.doi)}` && cache === 'force-cache',
+            url === `https://api.datacite.org/dois/${encodeURIComponent(id.value)}` && cache === 'force-cache',
           {
             body: {
               data: {
                 id: '10.48550/arxiv.2207.10516',
                 type: 'dois',
                 attributes: {
-                  doi: id.doi,
+                  doi: id.value,
                   identifiers: [{ identifier: '2207.10516', identifierType: 'arXiv' }],
                   alternateIdentifiers: [{ alternateIdentifierType: 'arXiv', alternateIdentifier: '2207.10516' }],
                   creators: [
@@ -370,11 +370,11 @@ describe('getPreprintFromDatacite', () => {
         )
         .getOnce(
           (url, { cache }) =>
-            url === `https://api.datacite.org/dois/${encodeURIComponent(id.doi)}` && cache === 'no-cache',
+            url === `https://api.datacite.org/dois/${encodeURIComponent(id.value)}` && cache === 'no-cache',
           { throws: new Error('Network error') },
         )
 
-      const actual = await _.getPreprintFromDatacite(id.doi)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id.value)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right(

@@ -277,7 +277,7 @@ function createUnknownPreprintPage(preprint: IndeterminatePreprintId, user?: Use
         <h1>Sorry, we don’t know this preprint</h1>
 
         <p>
-          We think the DOI <q class="select-all" translate="no">${preprint.doi}</q> could be
+          We think the DOI <q class="select-all" translate="no">${preprint.value}</q> could be
           ${match(preprint.type)
             .with('africarxiv', () => 'an AfricArXiv')
             .with('arxiv', () => 'an arXiv')

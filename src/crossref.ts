@@ -55,7 +55,7 @@ export type CrossrefPreprintId =
   | ScienceOpenPreprintId
   | SocarxivPreprintId
 
-export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['doi']> = hasRegistrant(
+export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']> = hasRegistrant(
   '1101',
   '1590',
   '14293',
@@ -74,7 +74,7 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['doi']> =
 )
 
 export const getPreprintFromCrossref = flow(
-  (doi: CrossrefPreprintId['doi']) => getWork(doi),
+  (doi: CrossrefPreprintId['value']) => getWork(doi),
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
@@ -246,7 +246,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'africarxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies AfricarxivPreprintId),
     ),
   ),
@@ -260,7 +260,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'biorxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies BiorxivPreprintId),
     ),
   ),
@@ -273,7 +273,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'chemrxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies ChemrxivPreprintId),
     ),
   ),
@@ -286,7 +286,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'eartharxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies EartharxivPreprintId),
     ),
   ),
@@ -299,7 +299,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'ecoevorxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies EcoevorxivPreprintId),
     ),
   ),
@@ -313,7 +313,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'edarxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies EdarxivPreprintId),
     ),
   ),
@@ -326,7 +326,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'engrxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies EngrxivPreprintId),
     ),
   ),
@@ -340,7 +340,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'medrxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies MedrxivPreprintId),
     ),
   ),
@@ -354,7 +354,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'metaarxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies MetaarxivPreprintId),
     ),
   ),
@@ -368,7 +368,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'osf',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies OsfPreprintId),
     ),
   ),
@@ -381,7 +381,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'preprints.org',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies PreprintsorgPreprintId),
     ),
   ),
@@ -395,7 +395,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'psyarxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies PsyarxivPreprintId),
     ),
   ),
@@ -409,7 +409,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'research-square',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies ResearchSquarePreprintId),
     ),
   ),
@@ -422,7 +422,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'scielo',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies ScieloPreprintId),
     ),
   ),
@@ -435,7 +435,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'science-open',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies ScienceOpenPreprintId),
     ),
   ),
@@ -449,7 +449,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
       work =>
         ({
           type: 'socarxiv',
-          doi: work.DOI,
+          value: work.DOI,
         } satisfies SocarxivPreprintId),
     ),
   ),
