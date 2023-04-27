@@ -205,7 +205,7 @@ describe('find-a-preprint', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(doesPreprintExist).toHaveBeenCalledWith(doi)
+      expect(doesPreprintExist).toHaveBeenCalledWith(expect.objectContaining({ doi: id.doi }))
     })
 
     test.prop([

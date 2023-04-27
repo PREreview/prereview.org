@@ -14,12 +14,12 @@ import { InvalidE, getInput, invalidE } from './form'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
-import { IndeterminatePreprintId, PreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
+import { IndeterminatePreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
 import { findAPreprintMatch, preprintMatch } from './routes'
 import { User, getUser } from './user'
 
 export interface DoesPreprintExistEnv {
-  doesPreprintExist: (doi: PreprintId['doi']) => TE.TaskEither<'unavailable', boolean>
+  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'unavailable', boolean>
 }
 
 export const findAPreprint = pipe(
@@ -31,10 +31,10 @@ export const findAPreprint = pipe(
   ),
 )
 
-const doesPreprintExist = (doi: PreprintId['doi']) =>
+const doesPreprintExist = (id: IndeterminatePreprintId) =>
   pipe(
     RTE.ask<DoesPreprintExistEnv>(),
-    RTE.chainTaskEitherK(({ doesPreprintExist }) => doesPreprintExist(doi)),
+    RTE.chainTaskEitherK(({ doesPreprintExist }) => doesPreprintExist(id)),
   )
 
 const showFindAPreprintPage = pipe(
@@ -133,7 +133,7 @@ const lookupPreprint = pipe(
   RM.decodeBody(parseLookupPreprint),
   RM.chainFirstW(preprint =>
     pipe(
-      RM.fromReaderTaskEither(doesPreprintExist(preprint.doi)),
+      RM.fromReaderTaskEither(doesPreprintExist(preprint)),
       RM.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(preprint))),
     ),
   ),

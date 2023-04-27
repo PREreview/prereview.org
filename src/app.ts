@@ -37,7 +37,7 @@ import {
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { FathomEnv, PhaseEnv } from './page'
 import { preprint, redirectToPreprint } from './preprint'
-import { PreprintId } from './preprint-id'
+import { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { privacyPolicy } from './privacy-policy'
 import { PublicUrlEnv } from './public-url'
 import { review } from './review'
@@ -134,6 +134,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           doesPreprintExist: flow(
+            (id: IndeterminatePreprintId) => id.doi,
             flip(getPreprintTitle)(env),
             TE.map(() => true),
             TE.orElseW(error =>
