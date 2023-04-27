@@ -23,7 +23,7 @@ describe('fromUrl', () => {
       [[new URL('http://dx.doi.org/10.1101/2021.06.18.21258689'), '10.1101/2021.06.18.21258689' as Doi<'1101'>]],
     ],
   })('with a doi.org URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(_.parsePreprintDoi(doi))
+    expect(_.fromUrl(url)).toStrictEqual(O.some(_.fromPreprintDoi(doi)))
   })
 
   test.prop([fc.africarxivPreprintUrl().map(([url, id]) => [url, id.doi] as const)], {
