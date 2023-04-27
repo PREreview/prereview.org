@@ -28,7 +28,7 @@ describe('parseLookupPreprint', () => {
       ]),
   ])('with a doi for a supported preprint server', ([input, expected]) => {
     const actual = _.parseLookupPreprint(input)
-    expect(actual).toStrictEqual(E.right(expected))
+    expect(actual).toStrictEqual(E.right(expect.objectContaining({ doi: expected })))
   })
 
   test.prop([
@@ -36,7 +36,7 @@ describe('parseLookupPreprint', () => {
       .tuple(fc.supportedPreprintUrl(), fc.stringOf(fc.constant(' ')), fc.stringOf(fc.constant(' ')))
       .map(([[url, id], whitespaceBefore, whitespaceAfter]) => [
         { preprint: `${whitespaceBefore}${url}${whitespaceAfter}` },
-        id.doi,
+        id,
       ]),
   ])('with a recognised preprint url', ([input, expected]) => {
     const actual = _.parseLookupPreprint(input)

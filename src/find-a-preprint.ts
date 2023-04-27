@@ -1,4 +1,4 @@
-import { Doi, getRegistrant, parse } from 'doi-ts'
+import { Doi, parse } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
@@ -9,13 +9,12 @@ import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { InvalidE, getInput, invalidE } from './form'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
-import { PreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
+import { IndeterminatePreprintId, PreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
 import { findAPreprintMatch, preprintMatch } from './routes'
 import { User, getUser } from './user'
 
@@ -98,20 +97,18 @@ const UrlD = pipe(
 const DoiD = pipe(
   D.string,
   D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parsePreprintDoi(s))),
-  D.map(id => id.doi),
 )
 
 const PreprintUrlD = pipe(
   UrlD,
   D.parse(url => E.fromOption(() => D.error(url, 'PreprintUrl'))(fromUrl(url))),
-  D.map(id => id.doi),
 )
 
 const LookupPreprintD = pipe(
   D.struct({
     preprint: D.union(DoiD, PreprintUrlD),
   }),
-  D.map(get('preprint')),
+  D.map(form => form.preprint),
 )
 
 export const parseLookupPreprint = flow(
@@ -134,20 +131,20 @@ export const parseLookupPreprint = flow(
 
 const lookupPreprint = pipe(
   RM.decodeBody(parseLookupPreprint),
-  RM.chainFirstW(doi =>
+  RM.chainFirstW(preprint =>
     pipe(
-      RM.fromReaderTaskEither(doesPreprintExist(doi)),
-      RM.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(doi))),
+      RM.fromReaderTaskEither(doesPreprintExist(preprint.doi)),
+      RM.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(preprint))),
     ),
   ),
-  RM.ichainMiddlewareK(doi => seeOther(format(preprintMatch.formatter, { doi }))),
+  RM.ichainMiddlewareK(preprint => seeOther(format(preprintMatch.formatter, { doi: preprint.doi }))),
   RM.orElseW(error =>
     pipe(
       getUser,
       RM.orElseW(() => RM.of(undefined)),
       RM.ichainW(user =>
         match(error)
-          .with({ _tag: 'UnknownPreprintE', actual: P.select() }, doi => showUnknownPreprintPage(doi, user))
+          .with({ _tag: 'UnknownPreprintE', actual: P.select() }, preprint => showUnknownPreprintPage(preprint, user))
           .with({ _tag: 'UnsupportedDoiE' }, () => showUnsupportedDoiPage(user))
           .with({ _tag: 'UnsupportedUrlE' }, () => showUnsupportedUrlPage(user))
           .with('unavailable', () => showFailureMessage(user))
@@ -159,7 +156,7 @@ const lookupPreprint = pipe(
 
 interface UnknownPreprintE {
   readonly _tag: 'UnknownPreprintE'
-  readonly actual: PreprintId['doi']
+  readonly actual: IndeterminatePreprintId
 }
 
 interface UnsupportedDoiE {
@@ -172,7 +169,7 @@ interface UnsupportedUrlE {
   readonly actual: URL
 }
 
-const unknownPreprintE = (actual: PreprintId['doi']): UnknownPreprintE => ({
+const unknownPreprintE = (actual: IndeterminatePreprintId): UnknownPreprintE => ({
   _tag: 'UnknownPreprintE',
   actual,
 })
@@ -272,7 +269,7 @@ function createPage(lookupPreprint: LookupPreprint, user?: User) {
   })
 }
 
-function createUnknownPreprintPage(doi: PreprintId['doi'], user?: User) {
+function createUnknownPreprintPage(preprint: IndeterminatePreprintId, user?: User) {
   return page({
     title: plainText`Sorry, we don’t know this preprint`,
     content: html`
@@ -280,24 +277,26 @@ function createUnknownPreprintPage(doi: PreprintId['doi'], user?: User) {
         <h1>Sorry, we don’t know this preprint</h1>
 
         <p>
-          We think the DOI <q class="select-all" translate="no">${doi}</q> could be
-          ${match(getRegistrant(doi))
-            .with('1101', () => 'a bioRxiv or medRxiv')
-            .with('1590', () => 'a SciELO')
-            .with('14293', () => 'a ScienceOpen')
-            .with('20944', () => 'a Preprints.org')
-            .with('21203', () => 'a Research Square')
-            .with('26434', () => 'a ChemRxiv')
-            .with('31219', () => 'an OSF')
-            .with('31222', () => 'a MetaArXiv')
-            .with('31223', () => 'an EarthArXiv')
-            .with('31224', () => 'an engrXiv')
-            .with('31234', () => 'a PsyArXiv')
-            .with('31235', () => 'a SocArXiv')
-            .with('31730', () => 'an AfricArXiv')
-            .with('32942', () => 'an EcoEvoRxiv')
-            .with('35542', () => 'an EdArXiv')
-            .with('48550', () => 'an arXiv')
+          We think the DOI <q class="select-all" translate="no">${preprint.doi}</q> could be
+          ${match(preprint.type)
+            .with('africarxiv', () => 'an AfricArXiv')
+            .with('arxiv', () => 'an arXiv')
+            .with('biorxiv', () => 'a bioRxiv')
+            .with('biorxiv-medrxiv', () => 'a bioRxiv or medRxiv')
+            .with('chemrxiv', () => 'a ChemRxiv')
+            .with('eartharxiv', () => 'an EarthArXiv')
+            .with('ecoevorxiv', () => 'an EcoEvoRxiv')
+            .with('edarxiv', () => 'an EdArXiv')
+            .with('engrxiv', () => 'an engrXiv')
+            .with('medrxiv', () => 'a medRxiv')
+            .with('metaarxiv', () => 'a MetaArXiv')
+            .with('osf', () => 'an OSF')
+            .with('preprints.org', () => 'a Preprints.org')
+            .with('psyarxiv', () => 'a PsyArXiv')
+            .with('research-square', () => 'a Research Square')
+            .with('scielo', () => 'a SciELO')
+            .with('science-open', () => 'a ScienceOpen')
+            .with('socarxiv', () => 'a SocArXiv')
             .exhaustive()}
           preprint, but we can’t find any details.
         </p>
