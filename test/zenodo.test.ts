@@ -270,7 +270,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         },
         { status },
       ),
-      getPreprintTitle: doi => TE.right({ title: rawHtml(`Preprint ${doi}`), language: 'en' }),
+      getPreprintTitle: () => () => Promise.reject('should not be called'),
     })()
 
     expect(actual).toStrictEqual([])
