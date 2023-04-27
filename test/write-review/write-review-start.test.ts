@@ -8,7 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
-import { writeReviewAlreadyWrittenMatch } from '../../src/routes'
+import { writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
 import * as fc from '../fc'
@@ -161,12 +161,7 @@ describe('writeReviewStart', () => {
               response_type: 'code',
               redirect_uri: oauth.redirectUri.href,
               scope: '/authenticate',
-              state: new URL(
-                `preprints/doi-${encodeURIComponent(
-                  preprintTitle.id.doi.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-                )}/write-a-prereview/start-now`,
-                publicUrl,
-              ).href,
+              state: new URL(format(writeReviewStartMatch.formatter, { id: preprintTitle.id }), publicUrl).href,
             }).toString()}`,
             oauth.authorizeUrl,
           ).href,
