@@ -3,6 +3,7 @@ import { Doi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
+import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { and } from 'fp-ts/Predicate'
 import * as RT from 'fp-ts/ReaderTask'
@@ -32,7 +33,7 @@ import {
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { RecentPrereview } from './home'
 import { Html, plainText, sanitizeHtml } from './html'
-import { PreprintDoiD, PreprintId } from './preprint-id'
+import { PreprintDoiD, PreprintId, fromPreprintDoi } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
@@ -139,7 +140,7 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
 function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & GetPreprintTitleEnv, unknown, Prereview> {
   return pipe(
     RTE.of(record),
-    RTE.bindW('preprintDoi', RTE.fromOptionK(() => new NotFound())(getReviewedDoi)),
+    RTE.bindW('preprintId', RTE.fromOptionK(() => new NotFound())(getReviewedPreprintId)),
     RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
     RTE.bindW('license', RTE.fromEitherK(PrereviewLicenseD.decode)),
     RTE.chain(review =>
@@ -150,7 +151,7 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
         license: RTE.right(review.license),
         published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
         preprint: RTE.asksReaderTaskEither(
-          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintDoi)),
+          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintId.doi)),
         ),
         text: getReviewText(review.reviewTextUrl),
       }),
@@ -161,14 +162,14 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
 function recordToRecentPrereview(record: Record): RTE.ReaderTaskEither<GetPreprintTitleEnv, unknown, RecentPrereview> {
   return pipe(
     RTE.of(record),
-    RTE.bindW('preprintDoi', RTE.fromOptionK(() => 'no reviewed DOI')(getReviewedDoi)),
+    RTE.bindW('preprintId', RTE.fromOptionK(() => 'no reviewed preprint')(getReviewedPreprintId)),
     RTE.chain(review =>
       sequenceS(RTE.ApplyPar)({
         id: RTE.right(review.id),
         reviewers: RTE.right(pipe(review.metadata.creators, RNEA.map(get('name')))),
         published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
         preprint: RTE.asksReaderTaskEither(
-          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintDoi)),
+          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintId.doi)),
         ),
       }),
     ),
@@ -207,7 +208,7 @@ const getReviewText = flow(
   RTE.map(sanitizeHtml),
 )
 
-const getReviewedDoi = flow(
+const getReviewedPreprintId = flow(
   O.fromNullableK((record: Record) => record.metadata.related_identifiers),
   O.chain(
     A.findFirst(
@@ -217,7 +218,7 @@ const getReviewedDoi = flow(
         identifier.resource_type === 'publication-preprint',
     ),
   ),
-  O.chainEitherK(flow(get('identifier'), PreprintDoiD.decode)),
+  O.chainEitherK(flow(get('identifier'), PreprintDoiD.decode, E.map(fromPreprintDoi))),
 )
 
 function iso633To1(code: string): O.Option<LanguageCode> {
