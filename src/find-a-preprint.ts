@@ -104,6 +104,7 @@ const DoiD = pipe(
 const PreprintUrlD = pipe(
   UrlD,
   D.parse(url => E.fromOption(() => D.error(url, 'PreprintUrl'))(fromUrl(url))),
+  D.map(id => id.doi),
 )
 
 const LookupPreprintD = pipe(
