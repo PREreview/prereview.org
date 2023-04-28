@@ -1333,3 +1333,12 @@ describe('createRecordOnZenodo', () => {
     expect(actual).toStrictEqual(E.left(expect.anything()))
   })
 })
+
+describe('toExternalIdentifier', () => {
+  test.prop([fc.preprintId()])('with a DOI preprint ID', preprintId => {
+    expect(_.toExternalIdentifier(preprintId)).toStrictEqual({
+      scheme: 'doi',
+      identifier: preprintId.value,
+    })
+  })
+})
