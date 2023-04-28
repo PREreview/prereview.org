@@ -34,6 +34,7 @@ import {
   MedrxivPreprintId,
   MetaarxivPreprintId,
   OsfPreprintId,
+  PhilsciPreprintId,
   PreprintId,
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
@@ -276,8 +277,14 @@ export const osfPreprintUrl = (): fc.Arbitrary<[URL, OsfPreprintId]> =>
     .stringOf(alphanumeric(), { minLength: 1 })
     .map(id => [new URL(`https://osf.io/${id}`), { type: 'osf', value: `10.31219/osf.io/${id}` as Doi<'31219'> }])
 
+export const philsciPreprintId = (): fc.Arbitrary<PhilsciPreprintId> =>
+  fc.record({
+    type: fc.constant('philsci'),
+    value: fc.integer({ min: 1 }),
+  })
+
 export const philsciPreprintUrl = (): fc.Arbitrary<URL> =>
-  fc.integer({ min: 1 }).map(id => new URL(`https://philsci-archive.pitt.edu/${id}/`))
+  philsciPreprintId().map(id => new URL(`https://philsci-archive.pitt.edu/${id.value}/`))
 
 export const preprintsorgPreprintId = (): fc.Arbitrary<PreprintsorgPreprintId> =>
   fc.record({
@@ -370,7 +377,7 @@ export const biorxivOrMedrxivPreprintId = (): fc.Arbitrary<BiorxivOrMedrxivPrepr
     value: doi(fc.constant('1101')),
   })
 
-export const preprintId = (): fc.Arbitrary<PreprintId> => preprintIdWithDoi()
+export const preprintId = (): fc.Arbitrary<PreprintId> => fc.oneof(philsciPreprintId(), preprintIdWithDoi())
 
 export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>> =>
   fc.oneof(

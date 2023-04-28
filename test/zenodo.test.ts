@@ -1341,4 +1341,11 @@ describe('toExternalIdentifier', () => {
       identifier: preprintId.value,
     })
   })
+
+  test.prop([fc.philsciPreprintId()])('with a PhilSci preprint ID', preprintId => {
+    expect(_.toExternalIdentifier(preprintId)).toStrictEqual({
+      scheme: 'url',
+      identifier: `https://philsci-archive.pitt.edu/${preprintId.value}/`,
+    })
+  })
 })

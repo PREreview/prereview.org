@@ -14,7 +14,7 @@ import { InvalidE, getInput, invalidE } from './form'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
-import { IndeterminatePreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
+import { IndeterminatePreprintId, PhilsciPreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
 import { findAPreprintMatch, preprintMatch } from './routes'
 import { User, getUser } from './user'
 
@@ -271,6 +271,7 @@ function createPage(lookupPreprint: LookupPreprint, user?: User) {
 
 function createUnknownPreprintPage(preprint: IndeterminatePreprintId, user?: User) {
   return match(preprint)
+    .with({ type: 'philsci' }, preprint => createUnknownPhilsciPreprintPage(preprint, user))
     .with({ value: P.when(isDoi) }, preprint => createUnknownPreprintWithDoiPage(preprint, user))
     .exhaustive()
 }
@@ -313,6 +314,35 @@ function createUnknownPreprintWithDoiPage(preprint: Extract<IndeterminatePreprin
 
         <p>
           If the DOI is correct or you selected a link or button, please
+          <a href="mailto:help@prereview.org">get in touch</a>.
+        </p>
+
+        <a href="${format(findAPreprintMatch.formatter, {})}" class="button">Back</a>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
+  })
+}
+
+function createUnknownPhilsciPreprintPage(preprint: PhilsciPreprintId, user?: User) {
+  return page({
+    title: plainText`Sorry, we don’t know this preprint`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we don’t know this preprint</h1>
+        <p>
+          We think the URL
+          <q class="select-all" translate="no">https://philsci-archive.pitt.edu/${preprint.value}/</q> could be a
+          PhilSci-Archive preprint, but we can’t find any details.
+        </p>
+
+        <p>If you typed the URL, check it is correct.</p>
+
+        <p>If you pasted the URL, check you copied the entire address.</p>
+
+        <p>
+          If the URL is correct or you selected a link or button, please
           <a href="mailto:help@prereview.org">get in touch</a>.
         </p>
 

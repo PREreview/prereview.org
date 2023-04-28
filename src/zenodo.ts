@@ -33,7 +33,7 @@ import {
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { RecentPrereview } from './home'
 import { Html, plainText, sanitizeHtml } from './html'
-import { IndeterminatePreprintId, PreprintDoiD, PreprintId, fromPreprintDoi } from './preprint-id'
+import { IndeterminatePreprintId, PhilsciPreprintId, PreprintDoiD, PreprintId, fromPreprintDoi } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
@@ -138,6 +138,10 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
 
 export function toExternalIdentifier(preprint: IndeterminatePreprintId) {
   return match(preprint)
+    .with({ type: 'philsci' }, preprint => ({
+      scheme: 'url',
+      identifier: `https://philsci-archive.pitt.edu/${preprint.value}/`,
+    }))
     .with({ value: P.when(isDoi) }, preprint => ({
       scheme: 'doi',
       identifier: preprint.value,
@@ -228,7 +232,20 @@ const getReviewedPreprintId = flow(
             resource_type: 'publication-preprint',
             identifier: P.select(),
           },
-          flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)),
+          flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)) as (doi: string) => O.Option<PreprintId>,
+        )
+        .with(
+          {
+            relation: 'reviews',
+            scheme: 'url',
+            resource_type: 'publication-preprint',
+            identifier: P.select(),
+          },
+          flow(
+            O.fromNullableK((url: string) => url.match(/^https:\/\/philsci-archive\.pitt\.edu\/([1-9][0-9]*)\/$/)?.[1]),
+            O.chainEitherK(flow(id => parseInt(id, 10), D.number.decode)),
+            O.map(id => ({ type: 'philsci', value: id } satisfies PhilsciPreprintId)),
+          ),
         )
         .otherwise(() => O.none),
     ),

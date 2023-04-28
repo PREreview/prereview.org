@@ -17,6 +17,7 @@ export type PreprintId =
   | MedrxivPreprintId
   | MetaarxivPreprintId
   | OsfPreprintId
+  | PhilsciPreprintId
   | PreprintsorgPreprintId
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
@@ -79,6 +80,11 @@ export interface MetaarxivPreprintId {
 export interface OsfPreprintId {
   readonly type: 'osf'
   readonly value: Doi<'31219'>
+}
+
+export interface PhilsciPreprintId {
+  readonly type: 'philsci'
+  readonly value: number
 }
 
 export interface PreprintsorgPreprintId {

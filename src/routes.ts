@@ -1,10 +1,12 @@
+import { isDoi } from 'doi-ts'
 import * as P from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import { pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+import { match, P as p } from 'ts-pattern'
 import { isUuid } from 'uuid-ts'
-import { PreprintDoiD, fromPreprintDoi } from './preprint-id'
+import { PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './preprint-id'
 
 const UuidD = D.fromRefinement(isUuid, 'UUID')
 
@@ -53,6 +55,34 @@ const PreprintDoiC = C.make(
   },
 )
 
+const PreprintPhilsciC = C.make(
+  pipe(
+    D.string,
+    D.parse(s => {
+      const [, match] = s.match(/^philsci-([1-9][0-9]*)$/) ?? []
+
+      if (match) {
+        return D.success({ type: 'philsci', value: parseInt(match, 10) } satisfies PhilsciPreprintId)
+      }
+
+      return D.failure(s, 'ID')
+    }),
+  ),
+  {
+    encode: id => `philsci-${id.value}`,
+  },
+)
+
+// Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
+// Refs https://github.com/gcanti/io-ts/issues/625#issuecomment-1007478009
+const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
+  encode: id =>
+    match(id)
+      .with({ type: 'philsci' }, PreprintPhilsciC.encode)
+      .with({ value: p.when(isDoi) }, PreprintDoiC.encode)
+      .exhaustive(),
+})
+
 export const homeMatch = P.end
 
 export const privacyPolicyMatch = pipe(P.lit('privacy-policy'), P.then(P.end))
@@ -77,13 +107,13 @@ export const orcidErrorMatch = pipe(
 
 export const preprintUuidMatch = pipe(P.lit('preprints'), P.then(type('uuid', UuidC)), P.then(P.end))
 
-export const preprintMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintDoiC)), P.then(P.end))
+export const preprintMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))
 
 export const reviewMatch = pipe(P.lit('reviews'), P.then(type('id', IntegerFromStringC)), P.then(P.end))
 
 const writeReviewBaseMatch = pipe(
   P.lit('preprints'),
-  P.then(type('id', PreprintDoiC)),
+  P.then(type('id', PreprintIdC)),
   P.then(P.lit('write-a-prereview')),
 )
 

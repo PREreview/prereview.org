@@ -284,6 +284,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
 
 const getPreprint = (id: IndeterminatePreprintId) =>
   match(id)
+    .with({ type: 'philsci' }, () => RTE.left('not-found' as const))
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
     .exhaustive()

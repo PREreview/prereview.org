@@ -227,6 +227,7 @@ function createPage({
                     .with('medrxiv', () => 'medRxiv')
                     .with('metaarxiv', () => 'MetaArXiv')
                     .with('osf', () => 'OSF Preprints')
+                    .with('philsci', () => 'PhilSci-Archive')
                     .with('preprints.org', () => 'Preprints.org')
                     .with('psyarxiv', () => 'PsyArXiv')
                     .with('research-square', () => 'Research Square')
@@ -237,6 +238,15 @@ function createPage({
                 </dd>
               </div>
               ${match(preprint.id)
+                .with(
+                  { type: 'philsci' },
+                  id => html`
+                    <div>
+                      <dt>Item ID</dt>
+                      <dd>${id.value}</dd>
+                    </div>
+                  `,
+                )
                 .with(
                   { value: p.when(isDoi) },
                   id => html`
