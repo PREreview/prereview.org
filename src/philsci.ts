@@ -98,7 +98,7 @@ const EprintD = pipe(
 
 export const getPreprintFromPhilsci = flow(
   (id: PhilsciPreprintId) => getEprint(id.value),
-  RTE.local(timeoutRequest(2000)),
+  RTE.local(timeoutRequest(3000)),
   RTE.chainEitherKW(eprintToPreprint),
   RTE.mapLeft(error =>
     match(error)
