@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
+import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { sequenceS } from 'fp-ts/Apply'
 import * as I from 'fp-ts/Identity'
@@ -16,7 +17,7 @@ import { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
-import { match } from 'ts-pattern'
+import { match, P as p } from 'ts-pattern'
 import { Uuid } from 'uuid-ts'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { movedPermanently, notFound, serviceUnavailable } from './middleware'
@@ -235,10 +236,17 @@ function createPage({
                     .exhaustive()}
                 </dd>
               </div>
-              <div>
-                <dt>DOI</dt>
-                <dd class="doi" translate="no">${preprint.id.value}</dd>
-              </div>
+              ${match(preprint.id)
+                .with(
+                  { value: p.when(isDoi) },
+                  id => html`
+                    <div>
+                      <dt>DOI</dt>
+                      <dd class="doi" translate="no">${id.value}</dd>
+                    </div>
+                  `,
+                )
+                .exhaustive()}
             </dl>
           </header>
 
