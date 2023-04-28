@@ -116,7 +116,7 @@ export interface BiorxivOrMedrxivPreprintId {
   readonly value: BiorxivPreprintId['value'] | MedrxivPreprintId['value']
 }
 
-export const isPreprintDoi: Refinement<Doi, IndeterminatePreprintId['value']> = hasRegistrant(
+export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> = hasRegistrant(
   '1101',
   '1590',
   '14293',
@@ -135,18 +135,18 @@ export const isPreprintDoi: Refinement<Doi, IndeterminatePreprintId['value']> = 
   '48550',
 )
 
-export const PreprintDoiD: D.Decoder<unknown, IndeterminatePreprintId['value']> = D.fromRefinement(
-  pipe(isDoi, compose(isPreprintDoi)),
-  'DOI',
-)
+export const PreprintDoiD: D.Decoder<unknown, Extract<IndeterminatePreprintId, { value: Doi }>['value']> =
+  D.fromRefinement(pipe(isDoi, compose(isPreprintDoi)), 'DOI')
 
-export const parsePreprintDoi: (input: string) => O.Option<IndeterminatePreprintId> = flow(
+export const parsePreprintDoi: (input: string) => O.Option<Extract<IndeterminatePreprintId, { value: Doi }>> = flow(
   parse,
   O.filter(isPreprintDoi),
   O.map(fromPreprintDoi),
 )
 
-export function fromPreprintDoi(doi: IndeterminatePreprintId['value']): IndeterminatePreprintId {
+export function fromPreprintDoi(
+  doi: Extract<IndeterminatePreprintId, { value: Doi }>['value'],
+): Extract<IndeterminatePreprintId, { value: Doi }> {
   return match(doi)
     .when(hasRegistrant('1101'), doi => ({ type: 'biorxiv-medrxiv', value: doi } satisfies BiorxivOrMedrxivPreprintId))
     .when(hasRegistrant('1590'), doi => ({ type: 'scielo', value: doi } satisfies ScieloPreprintId))

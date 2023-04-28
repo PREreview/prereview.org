@@ -1,4 +1,4 @@
-import { Doi, parse } from 'doi-ts'
+import { Doi, isDoi, parse } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
@@ -270,6 +270,12 @@ function createPage(lookupPreprint: LookupPreprint, user?: User) {
 }
 
 function createUnknownPreprintPage(preprint: IndeterminatePreprintId, user?: User) {
+  return match(preprint)
+    .with({ value: P.when(isDoi) }, preprint => createUnknownPreprintWithDoiPage(preprint, user))
+    .exhaustive()
+}
+
+function createUnknownPreprintWithDoiPage(preprint: Extract<IndeterminatePreprintId, { value: Doi }>, user?: User) {
   return page({
     title: plainText`Sorry, we don’t know this preprint`,
     content: html`

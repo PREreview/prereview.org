@@ -1,3 +1,4 @@
+import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { JsonRecord } from 'fp-ts/Json'
@@ -30,7 +31,9 @@ export interface FormStoreEnv {
 }
 
 export function formKey(user: Orcid, preprint: PreprintId) {
-  return `${user}_${preprint.value}`
+  return match(preprint)
+    .with({ value: P.when(isDoi) }, preprint => `${user}_${preprint.value}`)
+    .exhaustive()
 }
 
 export function getForm(

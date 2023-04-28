@@ -33,11 +33,13 @@ import {
   getPreprintIdFromLegacyPreviewUuid,
   getPseudonymFromLegacyPrereview,
   getRapidPreviewsFromLegacyPrereview,
+  isLegacyCompatiblePreprint,
+  isLegacyCompatiblePrereview,
 } from './legacy-prereview'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { FathomEnv, PhaseEnv } from './page'
 import { preprint, redirectToPreprint } from './preprint'
-import { IndeterminatePreprintId } from './preprint-id'
+import { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { privacyPolicy } from './privacy-policy'
 import { PublicUrlEnv } from './public-url'
 import { review } from './review'
@@ -177,7 +179,9 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getPreprint: flip(getPreprint)(env),
           getPrereviews: flip(getPrereviewsFromZenodo)(env),
-          getRapidPrereviews: flip(getRapidPreviewsFromLegacyPrereview)(env),
+          getRapidPrereviews: flip((id: PreprintId) =>
+            isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([]),
+          )(env),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
@@ -262,7 +266,11 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           publishPrereview: flip((newPrereview: NewPrereview) =>
             pipe(
               createRecordOnZenodo(newPrereview),
-              RTE.chainFirstW(flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))),
+              RTE.chainFirstW(
+                isLegacyCompatiblePrereview(newPrereview)
+                  ? flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))
+                  : () => RTE.right(undefined),
+              ),
             ),
           )(env),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),

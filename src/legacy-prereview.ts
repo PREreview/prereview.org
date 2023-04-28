@@ -1,4 +1,4 @@
-import { Doi } from 'doi-ts'
+import { Doi, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
@@ -176,7 +176,7 @@ export const getPseudonymFromLegacyPrereview = (user: { orcid: Orcid; name: stri
     ),
   )
 
-export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
+export const getRapidPreviewsFromLegacyPrereview = (id: Extract<PreprintId, { value: Doi }>) =>
   pipe(
     RTE.fromReader(
       legacyPrereviewUrl(
@@ -221,7 +221,15 @@ export const getRapidPreviewsFromLegacyPrereview = (id: PreprintId) =>
     ),
   )
 
-export const createPrereviewOnLegacyPrereview = (newPrereview: NewPrereview) => (doi: Doi) =>
+export type LegacyCompatibleNewPrereview = NewPrereview & { preprint: { id: Extract<PreprintId, { value: Doi }> } }
+
+export const isLegacyCompatiblePreprint = (preprint: PreprintId): preprint is Extract<PreprintId, { value: Doi }> =>
+  isDoi(preprint.value)
+
+export const isLegacyCompatiblePrereview = (newPrereview: NewPrereview): newPrereview is LegacyCompatibleNewPrereview =>
+  isLegacyCompatiblePreprint(newPrereview.preprint.id)
+
+export const createPrereviewOnLegacyPrereview = (newPrereview: LegacyCompatibleNewPrereview) => (doi: Doi) =>
   pipe(
     shouldUpdate,
     R.chain(
@@ -260,7 +268,9 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: NewPrereview) => 
   )
 
 const resolvePreprint = flow(
-  RTE.fromReaderK((doi: PreprintId['value']) => legacyPrereviewUrl(`resolve?identifier=${doi}`)),
+  RTE.fromReaderK((doi: Extract<PreprintId, { value: Doi }>['value']) =>
+    legacyPrereviewUrl(`resolve?identifier=${doi}`),
+  ),
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
   RTE.filterOrElseW(F.hasStatus(Status.OK), identity),

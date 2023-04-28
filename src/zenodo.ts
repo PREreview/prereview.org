@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi } from 'doi-ts'
+import { Doi, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
@@ -20,6 +20,7 @@ import * as D from 'io-ts/Decoder'
 import iso6391, { LanguageCode } from 'iso-639-1'
 import iso6393To1 from 'iso-639-3/to-1.json'
 import { get } from 'spectacles-ts'
+import { P, match } from 'ts-pattern'
 import {
   DepositMetadata,
   Record,
@@ -137,10 +138,12 @@ function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
 }
 
 export function toExternalIdentifier(preprint: IndeterminatePreprintId) {
-  return {
-    scheme: 'doi',
-    identifier: preprint.value.toString(),
-  }
+  return match(preprint)
+    .with({ value: P.when(isDoi) }, preprint => ({
+      scheme: 'doi',
+      identifier: preprint.value,
+    }))
+    .exhaustive()
 }
 
 function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & GetPreprintTitleEnv, unknown, Prereview> {
