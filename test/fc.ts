@@ -127,7 +127,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
   )
 
 export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>
-  fc.oneof(chemrxivPreprintUrl(), eartharxivPreprintUrl(), ecoevorxivPreprintUrl())
+  fc.oneof(chemrxivPreprintUrl(), eartharxivPreprintUrl(), ecoevorxivPreprintUrl(), philsciPreprintUrl())
 
 export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']> =>
   crossrefPreprintId().map(id => id.value)
@@ -275,6 +275,9 @@ export const osfPreprintUrl = (): fc.Arbitrary<[URL, OsfPreprintId]> =>
   fc
     .stringOf(alphanumeric(), { minLength: 1 })
     .map(id => [new URL(`https://osf.io/${id}`), { type: 'osf', value: `10.31219/osf.io/${id}` as Doi<'31219'> }])
+
+export const philsciPreprintUrl = (): fc.Arbitrary<URL> =>
+  fc.integer({ min: 1 }).map(id => new URL(`https://philsci-archive.pitt.edu/${id}/`))
 
 export const preprintsorgPreprintId = (): fc.Arbitrary<PreprintsorgPreprintId> =>
   fc.record({
