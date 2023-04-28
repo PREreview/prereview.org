@@ -1,4 +1,3 @@
-import { Temporal } from '@js-temporal/polyfill'
 import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { sequenceS } from 'fp-ts/Apply'
@@ -24,10 +23,8 @@ import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
 import { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintMatch, reviewMatch, writeReviewMatch } from './routes'
-import { renderDate } from './time'
+import { PartialDate, renderDate } from './time'
 import { GetUserEnv, User, getUser } from './user'
-
-import PlainDate = Temporal.PlainDate
 
 export type Preprint = {
   abstract?: {
@@ -39,7 +36,7 @@ export type Preprint = {
     orcid?: Orcid
   }>
   id: PreprintId
-  posted: PlainDate
+  posted: PartialDate
   title: {
     language: LanguageCode
     text: Html

@@ -1,11 +1,8 @@
-import { Temporal } from '@js-temporal/polyfill'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { Orcid } from 'orcid-id-ts'
 import { html } from './html'
 import { Preprint } from './preprint'
 import { PhilsciPreprintId } from './preprint-id'
-
-import PlainDate = Temporal.PlainDate
 
 export const getPreprintFromPhilsci = (id: PhilsciPreprintId) =>
   id.value === 21986
@@ -35,7 +32,7 @@ export const getPreprintFromPhilsci = (id: PhilsciPreprintId) =>
           type: 'philsci',
           value: 21986,
         },
-        posted: new PlainDate(2023, 4, 13),
+        posted: 2023,
         title: {
           language: 'en',
           text: html`Philosophy of Open Science`,

@@ -1,12 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import { Temporal } from '@js-temporal/polyfill'
 import * as E from 'fp-ts/Either'
 import { rawHtml } from '../src/html'
 import * as _ from '../src/philsci'
 import * as fc from './fc'
-
-import PlainDate = Temporal.PlainDate
 
 describe('getPreprintFromPhilsci', () => {
   test('when the ID is 21986', async () => {
@@ -28,7 +25,7 @@ describe('getPreprintFromPhilsci', () => {
           type: 'philsci',
           value: 21986,
         },
-        posted: new PlainDate(2023, 4, 13),
+        posted: 2023,
         title: {
           language: 'en',
           text: rawHtml('Philosophy of Open Science'),
