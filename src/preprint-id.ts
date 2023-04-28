@@ -182,6 +182,7 @@ export function fromUrl(url: URL): O.Option<IndeterminatePreprintId> {
     .with(['engrxiv.org', P.select()], extractFromEngrxivPath)
     .with(['medrxiv.org', P.select()], extractFromBiorxivMedrxivPath('medrxiv'))
     .with(['osf.io', P.select()], extractFromOsfPath)
+    .with(['philsci-archive.pitt.edu', P.select()], extractFromPhilsciPath)
     .with(['preprints.org', P.select()], extractFromPreprintsorgPath)
     .with(['psyarxiv.com', P.select()], extractFromPsyarxivPath)
     .with([P.union('researchsquare.com', 'assets.researchsquare.com'), P.select()], extractFromResearchSquarePath)
@@ -232,6 +233,13 @@ const extractFromOsfPath = flow(
       .otherwise(() => `10.31219/osf.io/${id}`),
   ),
   O.chain(parsePreprintDoi),
+)
+
+const extractFromPhilsciPath = flow(
+  decodeURIComponent,
+  O.fromNullableK(s => s.match(/^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/)?.[1]),
+  O.chainEitherK(flow(id => parseInt(id, 10), D.number.decode)),
+  O.map(id => ({ type: 'philsci', value: id } satisfies PhilsciPreprintId)),
 )
 
 const extractFromPreprintsorgPath = flow(

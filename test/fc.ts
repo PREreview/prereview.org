@@ -119,6 +119,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
     medrxivPreprintUrl(),
     metaarxivPreprintUrl(),
     osfPreprintUrl(),
+    philsciPreprintUrl(),
     preprintsorgPreprintUrl(),
     psyarxivPreprintUrl(),
     researchSquarePreprintUrl(),
@@ -128,7 +129,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
   )
 
 export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>
-  fc.oneof(chemrxivPreprintUrl(), eartharxivPreprintUrl(), ecoevorxivPreprintUrl(), philsciPreprintUrl())
+  fc.oneof(chemrxivPreprintUrl(), eartharxivPreprintUrl(), ecoevorxivPreprintUrl())
 
 export const crossrefPreprintDoi = (): fc.Arbitrary<CrossrefPreprintId['value']> =>
   crossrefPreprintId().map(id => id.value)
@@ -283,8 +284,8 @@ export const philsciPreprintId = (): fc.Arbitrary<PhilsciPreprintId> =>
     value: fc.integer({ min: 1 }),
   })
 
-export const philsciPreprintUrl = (): fc.Arbitrary<URL> =>
-  philsciPreprintId().map(id => new URL(`https://philsci-archive.pitt.edu/${id.value}/`))
+export const philsciPreprintUrl = (): fc.Arbitrary<[URL, PhilsciPreprintId]> =>
+  philsciPreprintId().map(id => [new URL(`https://philsci-archive.pitt.edu/${id.value}/`), id])
 
 export const preprintsorgPreprintId = (): fc.Arbitrary<PreprintsorgPreprintId> =>
   fc.record({

@@ -275,20 +275,20 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'osf', value: doi }))
   })
 
-  test.prop([fc.philsciPreprintUrl()], {
+  test.prop([fc.philsciPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
-      [new URL('https://philsci-archive.pitt.edu/21986/')],
-      [new URL('https://www.philsci-archive.pitt.edu/21986/')], // www.
-      [new URL('http://philsci-archive.pitt.edu/21986/')], // http
-      [new URL('https://philsci-archive.pitt.edu/21986')], // no trailing slash
-      [new URL('http://philsci-archive.pitt.edu/id/eprint/21986')], // ID
-      [new URL('https://philsci-archive.pitt.edu/21986/1/preprint_OS_2023.pdf')], // download
-      [new URL('https://philsci-archive.pitt.edu/21986/1.haslightboxThumbnailVersion/preprint_OS_2023.pdf')], // preview
-      [new URL('http://philsci-archive.pitt.edu/cgi/export/21986/HTML/philsci-archive-21986.html')], // HTML citation
-      [new URL('https://philsci-archive.pitt.edu/cgi/export/21986/Text_Chicago/philsci-archive-21986.txt')], // text citation
+      [[new URL('https://philsci-archive.pitt.edu/21986/'), 21986]],
+      [[new URL('https://www.philsci-archive.pitt.edu/21986/'), 21986]], // www.
+      [[new URL('http://philsci-archive.pitt.edu/21986/'), 21986]], // http
+      [[new URL('https://philsci-archive.pitt.edu/21986'), 21986]], // no trailing slash
+      [[new URL('http://philsci-archive.pitt.edu/id/eprint/21986'), 21986]], // ID
+      [[new URL('https://philsci-archive.pitt.edu/21986/1/preprint_OS_2023.pdf'), 21986]], // download
+      [[new URL('https://philsci-archive.pitt.edu/21986/1.haslightboxThumbnailVersion/preprint_OS_2023.pdf'), 21986]], // preview
+      [[new URL('http://philsci-archive.pitt.edu/cgi/export/21986/HTML/philsci-archive-21986.html'), 21986]], // HTML citation
+      [[new URL('https://philsci-archive.pitt.edu/cgi/export/21986/Text_Chicago/philsci-archive-21986.txt'), 21986]], // text citation
     ],
-  })('with a philsci-archive.pitt.edu URL', url => {
-    expect(_.fromUrl(url)).toStrictEqual(O.none)
+  })('with a philsci-archive.pitt.edu URL', ([url, id]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'philsci', value: id }))
   })
 
   test.prop([fc.preprintsorgPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
