@@ -3,6 +3,7 @@ import { Doi, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
+import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { and } from 'fp-ts/Predicate'
 import * as RT from 'fp-ts/ReaderTask'
@@ -33,7 +34,7 @@ import {
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { RecentPrereview } from './home'
 import { Html, plainText, sanitizeHtml } from './html'
-import { IndeterminatePreprintId, PhilsciPreprintId, PreprintDoiD, PreprintId, fromPreprintDoi } from './preprint-id'
+import { IndeterminatePreprintId, PreprintDoiD, PreprintId, fromPreprintDoi, fromUrl } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
@@ -232,7 +233,7 @@ const getReviewedPreprintId = flow(
             resource_type: 'publication-preprint',
             identifier: P.select(),
           },
-          flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)) as (doi: string) => O.Option<PreprintId>,
+          flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)),
         )
         .with(
           {
@@ -241,13 +242,19 @@ const getReviewedPreprintId = flow(
             resource_type: 'publication-preprint',
             identifier: P.select(),
           },
-          flow(
-            O.fromNullableK((url: string) => url.match(/^https:\/\/philsci-archive\.pitt\.edu\/([1-9][0-9]*)\/$/)?.[1]),
-            O.chainEitherK(flow(id => parseInt(id, 10), D.number.decode)),
-            O.map(id => ({ type: 'philsci', value: id } satisfies PhilsciPreprintId)),
-          ),
+          flow(O.fromEitherK(UrlD.decode), O.chain(fromUrl)),
         )
         .otherwise(() => O.none),
+    ),
+  ),
+)
+
+const UrlD = pipe(
+  D.string,
+  D.parse(s =>
+    E.tryCatch(
+      () => new URL(s),
+      () => D.error(s, 'URL'),
     ),
   ),
 )
