@@ -95,7 +95,7 @@
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-fp-ts": "^0.3.2",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-wc": "^1.4.0",
+    "eslint-plugin-wc": "^1.5.0",
     "fetch-mock": "^9.11.0",
     "fp-ts-contrib": "^0.1.29",
     "glob": "^10.2.1",
