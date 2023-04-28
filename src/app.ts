@@ -18,7 +18,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
-import { match } from 'ts-pattern'
+import { match, P as p } from 'ts-pattern'
 import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
@@ -275,9 +275,9 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
 )
 
 const getPreprint = (id: IndeterminatePreprintId) =>
-  match(id.value)
-    .when(isCrossrefPreprintDoi, getPreprintFromCrossref)
-    .when(isDatacitePreprintDoi, getPreprintFromDatacite)
+  match(id)
+    .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
+    .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
     .exhaustive()
 
 const getPreprintTitle = flow(

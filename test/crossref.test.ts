@@ -85,7 +85,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -533,7 +533,7 @@ describe('getPreprintFromCrossref', () => {
           },
         })
 
-        const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+        const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
         expect(actual).toStrictEqual(
           E.right({
@@ -666,7 +666,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -763,7 +763,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -856,7 +856,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -959,7 +959,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1059,7 +1059,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1134,7 +1134,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1227,7 +1227,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1309,7 +1309,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1396,7 +1396,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1703,7 +1703,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -1911,7 +1911,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -2013,7 +2013,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -2115,7 +2115,7 @@ describe('getPreprintFromCrossref', () => {
         },
       })
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -2235,7 +2235,7 @@ describe('getPreprintFromCrossref', () => {
           { throws: new Error('Network error') },
         )
 
-      const actual = await _.getPreprintFromCrossref(id.value)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right(
@@ -2248,17 +2248,18 @@ describe('getPreprintFromCrossref', () => {
     })
   })
 
-  test.prop([fc.crossrefPreprintDoi()])('when the preprint is not found', async doi => {
+  test.prop([fc.crossrefPreprintId()])('when the preprint is not found', async id => {
     const fetch = fetchMock
       .sandbox()
-      .getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, { status: Status.NotFound })
+      .getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, { status: Status.NotFound })
 
-    const actual = await _.getPreprintFromCrossref(doi)({ fetch })()
+    const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
   test.prop([
+    fc.crossrefPreprintId(),
     fc.record(
       {
         author: fc.array(fc.record({ name: fc.string() })),
@@ -2311,22 +2312,24 @@ describe('getPreprintFromCrossref', () => {
         ],
       },
     ),
-  ])('when the DOI is not for a preprint', async work => {
+  ])('when the DOI is not for a preprint', async (id, work) => {
     const fetch = fetchMock
       .sandbox()
-      .getOnce(`https://api.crossref.org/works/${encodeURIComponent(work.DOI)}`, { body: { message: work } })
+      .getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, { body: { message: work } })
 
-    const actual = await _.getPreprintFromCrossref(work.DOI)({ fetch })()
+    const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.crossrefPreprintDoi(), fc.record({ status: fc.integer(), body: fc.string() })])(
+  test.prop([fc.crossrefPreprintId(), fc.record({ status: fc.integer(), body: fc.string() })])(
     'when the preprint cannot be loaded',
-    async (doi, response) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(doi)}`, response)
+    async (id, response) => {
+      const fetch = fetchMock
+        .sandbox()
+        .getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, response)
 
-      const actual = await _.getPreprintFromCrossref(doi)({ fetch })()
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },

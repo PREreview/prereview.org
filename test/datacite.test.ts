@@ -176,7 +176,7 @@ describe('getPreprintFromDatacite', () => {
         },
       })
 
-      const actual = await _.getPreprintFromDatacite(id.value)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right({
@@ -374,7 +374,7 @@ describe('getPreprintFromDatacite', () => {
           { throws: new Error('Network error') },
         )
 
-      const actual = await _.getPreprintFromDatacite(id.value)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
 
       expect(actual).toStrictEqual(
         E.right(
@@ -390,22 +390,24 @@ describe('getPreprintFromDatacite', () => {
     })
   })
 
-  test.prop([fc.datacitePreprintDoi()])('when the preprint is not found', async doi => {
+  test.prop([fc.datacitePreprintId()])('when the preprint is not found', async id => {
     const fetch = fetchMock
       .sandbox()
-      .getOnce(`https://api.datacite.org/dois/${encodeURIComponent(doi)}`, { status: Status.NotFound })
+      .getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, { status: Status.NotFound })
 
-    const actual = await _.getPreprintFromDatacite(doi)({ fetch })()
+    const actual = await _.getPreprintFromDatacite(id)({ fetch })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.datacitePreprintDoi(), fc.record({ status: fc.integer(), body: fc.string() })])(
+  test.prop([fc.datacitePreprintId(), fc.record({ status: fc.integer(), body: fc.string() })])(
     'when the preprint cannot be loaded',
-    async (doi, response) => {
-      const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(doi)}`, response)
+    async (id, response) => {
+      const fetch = fetchMock
+        .sandbox()
+        .getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, response)
 
-      const actual = await _.getPreprintFromDatacite(doi)({ fetch })()
+      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },

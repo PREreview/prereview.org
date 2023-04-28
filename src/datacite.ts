@@ -22,7 +22,7 @@ export type DatacitePreprintId = ArxivPreprintId
 export const isDatacitePreprintDoi: R.Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant('48550')
 
 export const getPreprintFromDatacite = flow(
-  (doi: DatacitePreprintId['value']) => getWork(doi),
+  (id: DatacitePreprintId) => getWork(id.value),
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
