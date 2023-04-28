@@ -38,6 +38,7 @@ import {
 } from './legacy-prereview'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { FathomEnv, PhaseEnv } from './page'
+import { getPreprintFromPhilsci } from './philsci'
 import { preprint, redirectToPreprint } from './preprint'
 import { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { privacyPolicy } from './privacy-policy'
@@ -284,7 +285,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
 
 const getPreprint = (id: IndeterminatePreprintId) =>
   match(id)
-    .with({ type: 'philsci' }, () => RTE.left('not-found' as const))
+    .with({ type: 'philsci' }, getPreprintFromPhilsci)
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
     .exhaustive()
