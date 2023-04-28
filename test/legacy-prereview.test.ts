@@ -292,7 +292,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
 })
 
 describe('getRapidPreviewsFromLegacyPrereview', () => {
-  test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintId()])(
+  test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintIdWithDoi()])(
     'when the Rapid PREreviews can be loaded',
     async (app, key, url, update, preprintId) => {
       const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
@@ -388,7 +388,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     },
   )
 
-  test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintId()])(
+  test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintIdWithDoi()])(
     'revalidates if the Rapid PREreviews are stale',
     async (app, key, url, update, preprintId) => {
       const fetch = fetchMock
@@ -466,7 +466,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     },
   )
 
-  test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintId()])(
+  test.prop([fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintIdWithDoi()])(
     'when the Rapid PREreviews cannot be found',
     async (app, key, url, update, preprintId) => {
       const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
@@ -495,7 +495,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     fc.string(),
     fc.origin(),
     fc.boolean(),
-    fc.preprintId(),
+    fc.preprintIdWithDoi(),
     fc.integer({ min: 400, max: 599 }).filter(status => status !== Status.NotFound),
   ])('when the Rapid PREreviews cannot be loaded', async (app, key, url, update, preprintId, status) => {
     const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
@@ -522,7 +522,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
 
 describe('createPrereviewOnLegacyPrereview', () => {
   describe('when the legacy PREreview should be updated', () => {
-    test.prop([fc.string(), fc.string(), fc.origin(), fc.orcid(), fc.preprintId(), fc.uuid(), fc.doi()])(
+    test.prop([fc.string(), fc.string(), fc.origin(), fc.orcid(), fc.preprintIdWithDoi(), fc.uuid(), fc.doi()])(
       'when the review can be posted',
       async (app, key, url, orcid, preprintId, preprintUuid, reviewDoi) => {
         const fetch = fetchMock
@@ -567,7 +567,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.string(),
       fc.origin(),
       fc.orcid(),
-      fc.preprintId(),
+      fc.preprintIdWithDoi(),
       fc.uuid(),
       fc.doi(),
       fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
@@ -616,7 +616,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.string(),
       fc.origin(),
       fc.orcid(),
-      fc.preprintId(),
+      fc.preprintIdWithDoi(),
       fc.uuid(),
       fc.doi(),
       fc.record({ status: fc.integer(), body: fc.string() }),
@@ -644,7 +644,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
       },
     )
 
-    test.prop([fc.orcid(), fc.string(), fc.string(), fc.origin(), fc.preprintId(), fc.doi(), fc.error()])(
+    test.prop([fc.orcid(), fc.string(), fc.string(), fc.origin(), fc.preprintIdWithDoi(), fc.doi(), fc.error()])(
       'when fetch throws an error',
       async (orcid, app, key, url, preprintId, reviewDoi, error) => {
         const actual = await _.createPrereviewOnLegacyPrereview({
@@ -667,7 +667,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
     )
   })
 
-  test.prop([fc.string(), fc.string(), fc.origin(), fc.orcid(), fc.preprintId(), fc.uuid(), fc.doi()])(
+  test.prop([fc.string(), fc.string(), fc.origin(), fc.orcid(), fc.preprintIdWithDoi(), fc.uuid(), fc.doi()])(
     'when the legacy PREreview should not be updated',
     async (app, key, url, orcid, preprintId, preprintUuid, reviewDoi) => {
       const actual = await _.createPrereviewOnLegacyPrereview({

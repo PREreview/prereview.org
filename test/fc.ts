@@ -105,7 +105,8 @@ export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbi
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
     .filter(isDoi as Refinement<unknown, Doi<R>>)
 
-export const preprintDoi = (): fc.Arbitrary<PreprintId['value']> => preprintId().map(id => id.value)
+export const preprintDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>['value']> =>
+  preprintIdWithDoi().map(id => id.value)
 
 export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
   fc.oneof(
@@ -366,7 +367,9 @@ export const biorxivOrMedrxivPreprintId = (): fc.Arbitrary<BiorxivOrMedrxivPrepr
     value: doi(fc.constant('1101')),
   })
 
-export const preprintId = (): fc.Arbitrary<PreprintId> =>
+export const preprintId = (): fc.Arbitrary<PreprintId> => preprintIdWithDoi()
+
+export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>> =>
   fc.oneof(
     africarxivPreprintId(),
     arxivPreprintId(),

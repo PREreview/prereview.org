@@ -1335,7 +1335,7 @@ describe('createRecordOnZenodo', () => {
 })
 
 describe('toExternalIdentifier', () => {
-  test.prop([fc.preprintId()])('with a DOI preprint ID', preprintId => {
+  test.prop([fc.preprintIdWithDoi()])('with a DOI preprint ID', preprintId => {
     expect(_.toExternalIdentifier(preprintId)).toStrictEqual({
       scheme: 'doi',
       identifier: preprintId.value,
