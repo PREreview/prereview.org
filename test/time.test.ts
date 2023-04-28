@@ -11,6 +11,12 @@ describe('time', () => {
       expect(actual.toString()).toContain(`<time datetime="${date.toString()}"`)
     })
 
+    test.prop([fc.plainYearMonth()])('with a plain year-month', date => {
+      const actual = _.renderDate(date)
+
+      expect(actual.toString()).toContain(`<time datetime="${date.toString()}"`)
+    })
+
     test.prop([fc.year()])('with a year', year => {
       const actual = _.renderDate(year)
 
