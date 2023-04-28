@@ -3,7 +3,6 @@ import { Doi, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
-import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { and } from 'fp-ts/Predicate'
 import * as RT from 'fp-ts/ReaderTask'
@@ -220,14 +219,20 @@ const getReviewText = flow(
 const getReviewedPreprintId = flow(
   O.fromNullableK((record: Record) => record.metadata.related_identifiers),
   O.chain(
-    A.findFirst(
-      identifier =>
-        identifier.relation === 'reviews' &&
-        identifier.scheme === 'doi' &&
-        identifier.resource_type === 'publication-preprint',
+    A.findFirstMap(relatedIdentifier =>
+      match(relatedIdentifier)
+        .with(
+          {
+            relation: 'reviews',
+            scheme: 'doi',
+            resource_type: 'publication-preprint',
+            identifier: P.select(),
+          },
+          flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)),
+        )
+        .otherwise(() => O.none),
     ),
   ),
-  O.chainEitherK(flow(get('identifier'), PreprintDoiD.decode, E.map(fromPreprintDoi))),
 )
 
 function iso633To1(code: string): O.Option<LanguageCode> {
