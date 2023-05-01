@@ -47,6 +47,7 @@ test('can find and view a preprint', async ({ contextOptions, fetch, page }, tes
     {
       body: RecordsC.encode({
         hits: {
+          total: 1,
           hits: [
             {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -158,7 +159,7 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
       url: 'http://zenodo.test/api/records/',
       query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
-    new Promise(() => setTimeout(() => ({ body: RecordsC.encode({ hits: { hits: [] } }) }), 2000)),
+    new Promise(() => setTimeout(() => ({ body: RecordsC.encode({ hits: { total: 0, hits: [] } }) }), 2000)),
   )
 
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -274,7 +275,7 @@ test('can skip to the preprint details', async ({ fetch, javaScriptEnabled, page
       url: 'http://zenodo.test/api/records/',
       query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
-    { body: RecordsC.encode({ hits: { hits: [] } }) },
+    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
   )
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')

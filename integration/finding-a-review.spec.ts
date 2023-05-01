@@ -65,7 +65,7 @@ test('can find and view a review', async ({ fetch, page }) => {
       url: 'http://zenodo.test/api/records/',
       query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
-    { body: RecordsC.encode({ hits: { hits: [record] } }) },
+    { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
   )
 
   fetch
@@ -223,7 +223,7 @@ test('can skip to the reviews', async ({ fetch, javaScriptEnabled, page }) => {
       url: 'http://zenodo.test/api/records/',
       query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
-    { body: RecordsC.encode({ hits: { hits: [record] } }) },
+    { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
   )
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
