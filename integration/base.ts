@@ -70,6 +70,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       {
         body: RecordsC.encode({
           hits: {
+            total: 2,
             hits: [
               {
                 conceptdoi: '10.5281/zenodo.7820083' as Doi,
