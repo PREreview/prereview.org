@@ -28,6 +28,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
   test('when the PREreviews can be loaded', async () => {
     const records: Records = {
       hits: {
+        total: 2,
         hits: [
           {
             conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -179,6 +180,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
   test('revalidates if the PREreviews are stale', async () => {
     const records: Records = {
       hits: {
+        total: 1,
         hits: [
           {
             conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -934,6 +936,7 @@ describe('getPrereviewsFromZenodo', () => {
   test.prop([fc.preprintId()])('when the PREreviews can be loaded', async preprint => {
     const records: Records = {
       hits: {
+        total: 1,
         hits: [
           {
             conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -1007,6 +1010,7 @@ describe('getPrereviewsFromZenodo', () => {
   test.prop([fc.preprintId()])('revalidates if the PREreviews are stale', async preprint => {
     const records: Records = {
       hits: {
+        total: 1,
         hits: [
           {
             conceptdoi: '10.5072/zenodo.1061863' as Doi,
