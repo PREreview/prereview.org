@@ -1460,6 +1460,7 @@ skip-link {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-s-m);
+    justify-content: center;
 
     & > * {
       flex-shrink: 0;
@@ -1475,18 +1476,21 @@ skip-link {
     }
 
     @media screen {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      overscroll-behavior-inline: contain;
-      scrollbar-gutter: stable;
-      scroll-snap-type: inline mandatory;
       margin-inline: calc(50% - 50vw);
-      padding-inline-start: max(var(--space-s-m), (100vw - 75rem) / 2 + var(--space-s-m));
-      padding-inline-end: var(--space-s-m);
-      padding-block: var(--width-divider);
+      padding-inline: var(--space-s-m);
 
-      & > * {
-        scroll-snap-align: center;
+      @media (width < 50em) {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-gutter: stable;
+        scroll-snap-type: inline mandatory;
+        padding-block: var(--width-divider);
+
+        & > * {
+          scroll-snap-align: center;
+        }
       }
     }
   }
