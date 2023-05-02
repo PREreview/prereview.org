@@ -90,6 +90,25 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
           </section>
         </div>
 
+        <section aria-labelledby="statistics-title">
+          <h2 id="statistics-title">Statistics</h2>
+
+          <ul class="statistics">
+            <li>
+              <data value="717">717</data>
+              PREreviews
+            </li>
+            <li>
+              <data value="18">18</data>
+              preprint servers
+            </li>
+            <li>
+              <data value="2161">2,161</data>
+              PREreviewers
+            </li>
+          </ul>
+        </section>
+
         ${pipe(
           recentPrereviews,
           RA.matchW(

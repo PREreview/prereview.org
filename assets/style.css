@@ -1831,3 +1831,27 @@ skip-link {
     justify-content: center;
   }
 }
+
+.statistics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-s-m);
+  padding-inline-start: 0;
+  list-style-type: none;
+
+  & > * {
+    font-size: var(--step-1);
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+    padding: var(--space-2xs-s);
+  }
+
+  & data {
+    display: block;
+    font-size: var(--step-5);
+    font-weight: 700;
+    line-height: 1;
+  }
+}
