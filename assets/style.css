@@ -1841,11 +1841,42 @@ skip-link {
   list-style-type: none;
 
   & > * {
+    flex: 1;
     font-size: var(--step-1);
     font-weight: 500;
     text-align: center;
     line-height: 1.2;
     padding: var(--space-2xs-s);
+    border: var(--width-divider) solid transparent;
+
+    &:nth-child(3n - 2) {
+      border-color: var(--color-yellow-40);
+
+      @media screen {
+        background-color: var(--color-yellow-40);
+      }
+    }
+
+    &:nth-child(3n - 1) {
+      border-color: var(--color-blue-50);
+
+      @media screen {
+        background-color: var(--color-blue-50);
+      }
+    }
+
+    &:nth-child(3n) {
+      border-color: var(--color-green-50);
+
+      @media screen {
+        background-color: var(--color-green-50);
+      }
+    }
+
+    @media screen {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
   }
 
   & data {
