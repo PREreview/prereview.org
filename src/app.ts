@@ -10,7 +10,6 @@ import { Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { createProxyMiddleware } from 'http-proxy-middleware'
-import { LogProviderCallback } from 'http-proxy-middleware/dist/types'
 import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
 import { OAuthEnv } from 'hyper-ts-oauth'
 import { route } from 'hyper-ts-routing'
@@ -371,8 +370,31 @@ export const app = (deps: AppEnv) => {
       createProxyMiddleware({
         target: deps.legacyPrereviewApi.url.href,
         changeOrigin: true,
-        logLevel: 'debug',
-        logProvider: toProxyMiddlewareLogProvider(deps),
+        logLevel: 'silent',
+        onProxyReq: (proxyReq, req) => {
+          const payload = {
+            url: `${proxyReq.protocol}//${proxyReq.host}${proxyReq.path}`,
+            method: proxyReq.method,
+            requestId: req.header('Fly-Request-Id') ?? null,
+          }
+
+          L.debugP('Sending proxy HTTP request')(payload)(deps)()
+
+          proxyReq.once('response', response => {
+            L.debugP('Received proxy HTTP response')({
+              ...payload,
+              status: response.statusCode as Json,
+              headers: response.headers as Json,
+            })(deps)()
+          })
+
+          proxyReq.once('error', error => {
+            L.warnP('Did not receive a proxy HTTP response')({
+              ...payload,
+              error: error.message,
+            })(deps)()
+          })
+        },
       }),
     )
     .use(express.urlencoded({ extended: true }))
@@ -402,26 +424,6 @@ export const app = (deps: AppEnv) => {
     })
 
   return http.createServer(app)
-}
-
-function toProxyMiddlewareLogProvider(deps: L.LoggerEnv): LogProviderCallback {
-  return () => ({
-    log: (message: string) => {
-      L.info(message)(deps)()
-    },
-    debug: (message: string) => {
-      L.debug(message)(deps)()
-    },
-    info: (message: string) => {
-      L.info(message)(deps)()
-    },
-    warn: (message: string) => {
-      L.warn(message)(deps)()
-    },
-    error: (message: string) => {
-      L.error(message)(deps)()
-    },
-  })
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/80
