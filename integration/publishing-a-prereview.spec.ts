@@ -72,6 +72,7 @@ test.extend(canLogIn)(
     await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -82,6 +83,7 @@ test.extend(canLogIn)(
 
     await page.getByLabel('No').check()
 
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -96,6 +98,7 @@ test.extend(canLogIn)(
       await expect(page.getByLabel('Write your PREreview')).toHaveValue(/^Write a short summary of/)
     }
 
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     if (javaScriptEnabled) {
@@ -121,24 +124,28 @@ test.extend(canLogIn)(
 
     await page.getByLabel('Josiah Carberry').check()
 
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('No, I reviewed it alone').check()
 
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('No').check()
 
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByLabel('I’m following the Code of Conduct').check()
 
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -152,6 +159,7 @@ test.extend(canLogIn)(
       await expect(preview).toContainText('Lorem ipsum dolor sit "amet", consectetur adipiscing elit.')
     }
     await expect(preview).toContainText('The author declares that they have no competing interests.')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     fetch
@@ -198,6 +206,7 @@ test.extend(canLogIn)(
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
@@ -401,6 +410,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Enter')
@@ -416,6 +426,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Enter')
@@ -433,6 +444,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
 
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Enter')
@@ -448,6 +460,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Enter')
@@ -463,6 +476,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Enter')
@@ -478,6 +492,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Enter')
@@ -493,6 +508,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Enter')
@@ -547,6 +563,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetc
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Enter')
@@ -720,6 +737,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     }
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Paste your PREreview')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     const newPage = await context.newPage()
@@ -803,6 +821,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     }
 
     await page.keyboard.type('Lorem')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
     await page.keyboard.press('Enter')
 
@@ -840,6 +859,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.keyboard.press('ArrowRight')
     await expect(page.getByRole('button', { name: 'Link' })).toHaveAttribute('aria-pressed', 'true')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('ArrowDown')
@@ -869,6 +889,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.keyboard.press('ArrowUp')
     await page.keyboard.press('ArrowRight')
     await expect(page.getByRole('button', { name: 'Italic' })).toBeFocused()
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Enter')
@@ -920,6 +941,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.keyboard.press('Shift+Tab')
     await page.keyboard.press('ArrowUp')
     await expect(page.getByRole('button', { name: 'Bold' })).toBeFocused()
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Enter')
@@ -950,6 +972,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.keyboard.press('Enter')
     await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'false')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('ArrowUp')
@@ -960,6 +983,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('Write your PREreview')).toBeFocused()
     await expect(page.getByRole('button', { name: 'Bulleted list' })).toHaveAttribute('aria-pressed', 'false')
     await expect(page.getByRole('button', { name: 'Numbered list' })).toHaveAttribute('aria-pressed', 'true')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
@@ -1039,6 +1063,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('Add more authors')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1097,6 +1122,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
     await expect(page.getByRole('main')).toContainText('other authors’ details')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
@@ -1308,6 +1334,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1319,6 +1346,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await expect(preview).toContainText('Maecenas sed dapibus massa.')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     fetch
@@ -1714,6 +1742,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await expect(page.getByRole('main')).not.toContainText('ORCID')
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1754,6 +1783,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1798,6 +1828,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.keyboard.press('Enter')
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1829,6 +1860,7 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
   await page.goto(`${new URL(redirectUri).pathname}?error=access_denied&state=${state}`)
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t log you in')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -1855,6 +1887,7 @@ test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page
   await page.keyboard.press('Enter')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -1897,6 +1930,7 @@ test('might not authenticate with ORCID in time', async ({ fetch, javaScriptEnab
   await page.keyboard.press('Enter')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -1938,6 +1972,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Tab')
@@ -1979,6 +2014,7 @@ test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, jav
   await page.keyboard.press('Enter')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -2011,11 +2047,13 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'aria-invalid',
       'true',
     )
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Select yes if you have already written your PREreview' }).click()
 
     await expect(page.getByLabel('No')).toBeFocused()
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
@@ -2041,6 +2079,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Enter your PREreview' }).click()
@@ -2049,6 +2088,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
@@ -2073,6 +2113,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('Write your PREreview')).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Enter your PREreview' }).click()
@@ -2081,6 +2122,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
@@ -2101,6 +2143,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('Paste your PREreview')).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Paste your PREreview' }).click()
@@ -2108,6 +2151,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('Paste your PREreview')).toBeFocused()
 
     testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
@@ -2135,11 +2179,13 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
     'aria-invalid',
     'true',
   )
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.getByRole('link', { name: 'Select the name that you would like to use' }).click()
 
   await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
 
@@ -2172,11 +2218,13 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'aria-invalid',
       'true',
     )
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Select yes if you reviewed the preprint with someone else' }).click()
 
     await expect(page.getByLabel('No, I reviewed it alone')).toBeFocused()
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
@@ -2208,6 +2256,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('They have read and approved the PREreview')).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page
@@ -2215,6 +2264,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('They have read and approved the PREreview')).toBeFocused()
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
@@ -2248,11 +2298,13 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'aria-invalid',
       'true',
     )
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Select yes if you have any competing interests' }).click()
 
     await expect(page.getByLabel('No')).toBeFocused()
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Yes').check()
@@ -2265,6 +2317,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('What are they?')).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Enter details of your competing interests' }).click()
@@ -2273,6 +2326,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
@@ -2305,11 +2359,13 @@ test.extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByRole('group', { name: 'Code of Conduct' })).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Confirm that you are following the Code of Conduct' }).click()
 
     await expect(page.getByLabel('I’m following the Code of Conduct')).toBeFocused()
+    await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
