@@ -1460,6 +1460,7 @@ skip-link {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-s-m);
+    justify-content: center;
 
     & > * {
       flex-shrink: 0;
@@ -1475,18 +1476,21 @@ skip-link {
     }
 
     @media screen {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      overscroll-behavior-inline: contain;
-      scrollbar-gutter: stable;
-      scroll-snap-type: inline mandatory;
       margin-inline: calc(50% - 50vw);
-      padding-inline-start: max(var(--space-s-m), (100vw - 75rem) / 2 + var(--space-s-m));
-      padding-inline-end: var(--space-s-m);
-      padding-block: var(--width-divider);
+      padding-inline: var(--space-s-m);
 
-      & > * {
-        scroll-snap-align: center;
+      @media (width < 50em) {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        scrollbar-gutter: stable;
+        scroll-snap-type: inline mandatory;
+        padding-block: var(--width-divider);
+
+        & > * {
+          scroll-snap-align: center;
+        }
       }
     }
   }
@@ -1825,5 +1829,60 @@ skip-link {
   @media (width >= 40em) {
     flex-direction: row;
     justify-content: center;
+  }
+}
+
+.statistics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-s-m);
+  padding-inline-start: 0;
+  list-style-type: none;
+
+  & > * {
+    flex: 1;
+    font-size: var(--step-1);
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+    padding: var(--space-2xs-s);
+    border: var(--width-divider) solid transparent;
+
+    &:nth-child(3n - 2) {
+      border-color: var(--color-yellow-40);
+
+      @media screen {
+        background-color: var(--color-yellow-40);
+      }
+    }
+
+    &:nth-child(3n - 1) {
+      border-color: var(--color-blue-50);
+
+      @media screen {
+        background-color: var(--color-blue-50);
+      }
+    }
+
+    &:nth-child(3n) {
+      border-color: var(--color-green-50);
+
+      @media screen {
+        background-color: var(--color-green-50);
+      }
+    }
+
+    @media screen {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+
+  & data {
+    display: block;
+    font-size: var(--step-5);
+    font-weight: 700;
+    line-height: 1;
   }
 }

@@ -11,6 +11,7 @@ test('can read the privacy policy', async ({ fetch, page }) => {
   await page.getByRole('link', { name: 'Privacy Policy' }).click()
 
   await expect(page.getByRole('main')).toContainText('This is the Privacy Policy.')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
 

@@ -81,6 +81,7 @@ test('can find and view a review', async ({ fetch, page }) => {
     .click()
 
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
 

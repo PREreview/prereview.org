@@ -9,6 +9,7 @@ import * as TE from 'fp-ts/TaskEither'
 import { Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
+import { createProxyMiddleware } from 'http-proxy-middleware'
 import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
 import { OAuthEnv } from 'hyper-ts-oauth'
 import { route } from 'hyper-ts-routing'
@@ -361,6 +362,38 @@ export const app = (deps: AppEnv) => {
           if (path.match(/\.[a-z0-9]{8,}\.[A-z0-9]+(?:\.map)?$/)) {
             res.setHeader('Cache-Control', `public, max-age=${60 * 60 * 24 * 365}, immutable`)
           }
+        },
+      }),
+    )
+    .use(
+      '/api/v2',
+      createProxyMiddleware({
+        target: deps.legacyPrereviewApi.url.href,
+        changeOrigin: true,
+        logLevel: 'silent',
+        onProxyReq: (proxyReq, req) => {
+          const payload = {
+            url: `${proxyReq.protocol}//${proxyReq.host}${proxyReq.path}`,
+            method: proxyReq.method,
+            requestId: req.header('Fly-Request-Id') ?? null,
+          }
+
+          L.debugP('Sending proxy HTTP request')(payload)(deps)()
+
+          proxyReq.once('response', response => {
+            L.debugP('Received proxy HTTP response')({
+              ...payload,
+              status: response.statusCode as Json,
+              headers: response.headers as Json,
+            })(deps)()
+          })
+
+          proxyReq.once('error', error => {
+            L.warnP('Did not receive a proxy HTTP response')({
+              ...payload,
+              error: error.message,
+            })(deps)()
+          })
         },
       }),
     )

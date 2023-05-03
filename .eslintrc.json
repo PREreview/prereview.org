@@ -54,6 +54,7 @@
           "fp-ts-contrib/*",
           "io-ts/*",
           "iso-639-3/to-*.json",
+          "http-proxy-middleware/dist/types",
           "hyper-ts/lib/*",
           "logging-ts/lib/*",
           "nanohtml/*",

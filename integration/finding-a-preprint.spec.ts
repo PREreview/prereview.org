@@ -15,6 +15,7 @@ test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t know this preprint')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -37,6 +38,7 @@ test('can find and view a preprint', async ({ contextOptions, fetch, page }, tes
 
   testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   fetch.getOnce(
@@ -118,6 +120,7 @@ test('can find and view a preprint', async ({ contextOptions, fetch, page }, tes
       .getByRole('article', { name: 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' }),
   ).toContainText('Non-photochemical quenching (NPQ) is the process that protects')
   await expect(page.getByRole('main')).toContainText('1 PREreview')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
 
@@ -134,6 +137,7 @@ test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, p
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -165,6 +169,7 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -188,6 +193,7 @@ test('when is DOI is not supported', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this DOI')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -213,6 +219,7 @@ test('when is URL is not supported', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this URL')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -242,6 +249,7 @@ test('have to enter a preprint DOI or URL', async ({ contextOptions, javaScriptE
     await expect(alert).toBeInViewport()
   }
   await expect(page.getByLabel('Preprint DOI or URL')).toHaveAttribute('aria-invalid', 'true')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await alert.getByRole('link', { name: 'Enter a preprint DOI or URL' }).click()
@@ -251,6 +259,7 @@ test('have to enter a preprint DOI or URL', async ({ contextOptions, javaScriptE
 
   testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
 
