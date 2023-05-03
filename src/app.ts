@@ -9,6 +9,7 @@ import * as TE from 'fp-ts/TaskEither'
 import { Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
+import { createProxyMiddleware } from 'http-proxy-middleware'
 import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
 import { OAuthEnv } from 'hyper-ts-oauth'
 import { route } from 'hyper-ts-routing'
@@ -364,6 +365,7 @@ export const app = (deps: AppEnv) => {
         },
       }),
     )
+    .use('/api/v2', createProxyMiddleware({ target: deps.legacyPrereviewApi.url.href, changeOrigin: true }))
     .use(express.urlencoded({ extended: true }))
     .use((req, res, next) => {
       res.set('Cache-Control', 'no-cache, private')
