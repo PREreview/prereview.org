@@ -365,7 +365,31 @@ export const app = (deps: AppEnv) => {
         },
       }),
     )
-    .use('/api/v2', createProxyMiddleware({ target: deps.legacyPrereviewApi.url.href, changeOrigin: true }))
+    .use(
+      '/api/v2',
+      createProxyMiddleware({
+        target: deps.legacyPrereviewApi.url.href,
+        changeOrigin: true,
+        logLevel: 'debug',
+        logProvider: () => ({
+          log: (message: string) => {
+            L.info(message)(deps)()
+          },
+          debug: (message: string) => {
+            L.debug(message)(deps)()
+          },
+          info: (message: string) => {
+            L.info(message)(deps)()
+          },
+          warn: (message: string) => {
+            L.warn(message)(deps)()
+          },
+          error: (message: string) => {
+            L.error(message)(deps)()
+          },
+        }),
+      }),
+    )
     .use(express.urlencoded({ extended: true }))
     .use((req, res, next) => {
       res.set('Cache-Control', 'no-cache, private')
