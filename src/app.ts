@@ -10,6 +10,7 @@ import { Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { createProxyMiddleware } from 'http-proxy-middleware'
+import { LogProviderCallback } from 'http-proxy-middleware/dist/types'
 import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
 import { OAuthEnv } from 'hyper-ts-oauth'
 import { route } from 'hyper-ts-routing'
@@ -371,23 +372,7 @@ export const app = (deps: AppEnv) => {
         target: deps.legacyPrereviewApi.url.href,
         changeOrigin: true,
         logLevel: 'debug',
-        logProvider: () => ({
-          log: (message: string) => {
-            L.info(message)(deps)()
-          },
-          debug: (message: string) => {
-            L.debug(message)(deps)()
-          },
-          info: (message: string) => {
-            L.info(message)(deps)()
-          },
-          warn: (message: string) => {
-            L.warn(message)(deps)()
-          },
-          error: (message: string) => {
-            L.error(message)(deps)()
-          },
-        }),
+        logProvider: toProxyMiddlewareLogProvider(deps),
       }),
     )
     .use(express.urlencoded({ extended: true }))
@@ -417,6 +402,26 @@ export const app = (deps: AppEnv) => {
     })
 
   return http.createServer(app)
+}
+
+function toProxyMiddlewareLogProvider(deps: L.LoggerEnv): LogProviderCallback {
+  return () => ({
+    log: (message: string) => {
+      L.info(message)(deps)()
+    },
+    debug: (message: string) => {
+      L.debug(message)(deps)()
+    },
+    info: (message: string) => {
+      L.info(message)(deps)()
+    },
+    warn: (message: string) => {
+      L.warn(message)(deps)()
+    },
+    error: (message: string) => {
+      L.error(message)(deps)()
+    },
+  })
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/80
