@@ -248,7 +248,7 @@ function createPage(lookupPreprint: LookupPreprint, user?: User) {
               id="preprint"
               name="preprint"
               type="text"
-              size="40"
+              size="60"
               spellcheck="false"
               aria-describedby="preprint-tip"
               ${match(lookupPreprint)
