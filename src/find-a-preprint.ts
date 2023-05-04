@@ -192,7 +192,7 @@ function createPage(lookupPreprint: LookupPreprint, user?: User) {
   const error = E.isLeft(lookupPreprint)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}PREreview`,
+    title: plainText`${error ? 'Error: ' : ''}Find and publish PREreviews`,
     content: html`
       <main id="main-content">
         ${error
