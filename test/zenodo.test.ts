@@ -6,6 +6,7 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
+import { match } from 'ts-pattern'
 import {
   Record,
   RecordC,
@@ -17,7 +18,6 @@ import {
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
 import { plainText, rawHtml } from '../src/html'
-import { BiorxivPreprintId } from '../src/preprint-id'
 import { NewPrereview } from '../src/write-review'
 import * as _ from '../src/zenodo'
 import * as fc from './fc'
@@ -25,7 +25,20 @@ import * as fc from './fc'
 import PlainDate = Temporal.PlainDate
 
 describe('getRecentPrereviewsFromZenodo', () => {
-  test('when the PREreviews can be loaded', async () => {
+  test.prop([
+    fc.record({
+      id: fc.preprintId(),
+      language: fc.languageCode(),
+      title: fc.html(),
+      url: fc.url(),
+    }),
+    fc.record({
+      id: fc.preprintId(),
+      language: fc.languageCode(),
+      title: fc.html(),
+      url: fc.url(),
+    }),
+  ])('when the PREreviews can be loaded', async (preprint1, preprint2) => {
     const records: Records = {
       hits: {
         total: 2,
@@ -137,12 +150,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
         },
       ),
       getPreprintTitle: id =>
-        TE.right({
-          id: { type: 'biorxiv', value: '10.1101/2022.10.06.511170' as Doi<'1101'> } satisfies BiorxivPreprintId,
-          title: rawHtml(`Preprint ${id.value}`),
-          language: 'en',
-          url: new URL('http://example.com'),
-        }),
+        match(id.value as unknown)
+          .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
+          .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
+          .otherwise(() => TE.left('not-found')),
     })()
 
     expect(actual).toStrictEqual([
@@ -150,34 +161,25 @@ describe('getRecentPrereviewsFromZenodo', () => {
         id: 1061864,
         reviewers: ['PREreviewer'],
         published: new Temporal.PlainDate(2022, 7, 4),
-        preprint: {
-          id: {
-            type: 'biorxiv',
-            value: '10.1101/2022.10.06.511170',
-          },
-          title: rawHtml('Preprint 10.1101/2022.01.13.476201'),
-          language: 'en',
-          url: new URL('http://example.com'),
-        },
+        preprint: preprint1,
       },
       {
         id: 1065236,
         reviewers: ['Josiah Carberry'],
         published: new Temporal.PlainDate(2022, 7, 5),
-        preprint: {
-          id: {
-            type: 'biorxiv',
-            value: '10.1101/2022.10.06.511170',
-          },
-          title: rawHtml('Preprint 10.1101/2022.02.14.480364'),
-          language: 'en',
-          url: new URL('http://example.com'),
-        },
+        preprint: preprint2,
       },
     ])
   })
 
-  test('revalidates if the PREreviews are stale', async () => {
+  test.prop([
+    fc.record({
+      id: fc.preprintId(),
+      language: fc.languageCode(),
+      title: fc.html(),
+      url: fc.url(),
+    }),
+  ])('revalidates if the PREreviews are stale', async preprint => {
     const records: Records = {
       hits: {
         total: 1,
@@ -258,13 +260,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
 
     const actual = await _.getRecentPrereviewsFromZenodo()({
       fetch,
-      getPreprintTitle: id =>
-        TE.right({
-          id: { type: 'biorxiv', value: '10.1101/2022.10.06.511170' as Doi<'1101'> } satisfies BiorxivPreprintId,
-          title: rawHtml(`Preprint ${id.value}`),
-          language: 'en',
-          url: new URL('http://example.com'),
-        }),
+      getPreprintTitle: () => TE.right(preprint),
     })()
 
     expect(actual).toStrictEqual([
@@ -272,15 +268,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         id: 1061864,
         reviewers: ['PREreviewer'],
         published: new Temporal.PlainDate(2022, 7, 5),
-        preprint: {
-          id: {
-            type: 'biorxiv',
-            value: '10.1101/2022.10.06.511170',
-          },
-          title: rawHtml('Preprint 10.1101/2022.02.14.480364'),
-          language: 'en',
-          url: new URL('http://example.com'),
-        },
+        preprint,
       },
     ])
     expect(fetch.done()).toBeTruthy()
