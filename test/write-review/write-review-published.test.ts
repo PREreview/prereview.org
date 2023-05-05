@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewMatch } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
@@ -52,7 +53,7 @@ describe('writeReviewPublished', () => {
         user: UserC.encode(user),
         'published-review': PublishedReviewC.encode(publishedReview),
       })
-      const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({

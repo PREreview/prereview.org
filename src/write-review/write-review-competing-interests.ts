@@ -13,11 +13,11 @@ import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
+import { PreprintTitle, getPreprintTitle } from '../preprint'
 import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
 import { NonEmptyString, NonEmptyStringC } from '../string'
 import { User, getUser } from '../user'
 import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
-import { PreprintTitle, getPreprintTitle } from './preprint'
 
 export const writeReviewCompetingInterests = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),

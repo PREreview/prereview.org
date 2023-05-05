@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewStartMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
@@ -44,7 +45,7 @@ describe('writeReview', () => {
     ])('there is a form already', async (preprintId, preprintTitle, connection, newReview, user) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
       const actual = await runMiddleware(
         _.writeReview(preprintId)({

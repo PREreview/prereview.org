@@ -25,9 +25,22 @@ export type Preprint = {
   url: URL
 }
 
+export type PreprintTitle = {
+  id: PreprintId
+  language: LanguageCode
+  title: Html
+}
+
 export interface GetPreprintEnv {
   getPreprint: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
 }
 
+export interface GetPreprintTitleEnv {
+  getPreprintTitle: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', PreprintTitle>
+}
+
 export const getPreprint = (id: IndeterminatePreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(id)))
+
+export const getPreprintTitle = (id: IndeterminatePreprintId) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(id)))

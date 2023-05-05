@@ -13,11 +13,11 @@ import { InvalidE, MissingE, hasAnError, invalidE, missingE } from '../form'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
+import { PreprintTitle, getPreprintTitle } from '../preprint'
 import { writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewReviewMatch } from '../routes'
 import { NonEmptyStringC } from '../string'
 import { User, getUser } from '../user'
 import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
-import { PreprintTitle, getPreprintTitle } from './preprint'
 
 const turndown = new TurndownService({ bulletListMarker: '-', emDelimiter: '*', headingStyle: 'atx' })
 turndown.keep(['sub', 'sup'])

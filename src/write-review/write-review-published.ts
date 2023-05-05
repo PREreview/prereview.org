@@ -8,10 +8,10 @@ import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
+import { PreprintTitle, getPreprintTitle } from '../preprint'
 import { toUrl } from '../public-url'
 import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from '../routes'
 import { User, getUser } from '../user'
-import { PreprintTitle, getPreprintTitle } from './preprint'
 import { PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
 
 export const writeReviewPublished = flow(

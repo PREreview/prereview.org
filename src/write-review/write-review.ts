@@ -10,10 +10,10 @@ import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
+import { PreprintTitle, getPreprintTitle } from '../preprint'
 import { preprintReviewsMatch, writeReviewStartMatch } from '../routes'
 import { User, getUser } from '../user'
 import { getForm } from './form'
-import { PreprintTitle, getPreprintTitle } from './preprint'
 
 export const writeReview = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
