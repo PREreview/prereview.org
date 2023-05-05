@@ -8,7 +8,8 @@ import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { Orcid } from 'orcid-id-ts'
-import { RecordsC } from 'zenodo-ts'
+import { URL } from 'url'
+import { RecordsC, SubmittedDepositionC, UnsubmittedDepositionC, Record as ZenodoRecord } from 'zenodo-ts'
 import { app } from '../src/app'
 import { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
@@ -722,6 +723,109 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
     await expect(page).toHaveTitle(/PREreview/)
 
     await use(page)
+  },
+}
+
+export const willPublishAReview: Fixtures<
+  Pick<AppFixtures, 'fetch'>,
+  Record<never, never>,
+  Pick<AppFixtures, 'fetch'>
+> = {
+  fetch: async ({ fetch }, use) => {
+    const record: ZenodoRecord = {
+      conceptdoi: '10.5072/zenodo.1055805' as Doi,
+      conceptrecid: 1055805,
+      files: [
+        {
+          links: {
+            self: new URL('http://example.com/file'),
+          },
+          key: 'review.html',
+          type: 'html',
+          size: 58,
+        },
+      ],
+      id: 1055806,
+      links: {
+        latest: new URL('http://example.com/latest'),
+        latest_html: new URL('http://example.com/latest_html'),
+      },
+      metadata: {
+        communities: [{ id: 'prereview-reviews' }],
+        creators: [
+          {
+            name: 'Josiah Carberry',
+            orcid: '0000-0002-1825-0097' as Orcid,
+          },
+        ],
+        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+        doi: '10.5072/zenodo.1055806' as Doi,
+        license: {
+          id: 'CC-BY-4.0',
+        },
+        publication_date: new Date('2022-07-05'),
+        related_identifiers: [
+          {
+            identifier: '10.1101/2022.01.13.476201',
+            relation: 'reviews',
+            resource_type: 'publication-preprint',
+            scheme: 'doi',
+          },
+          {
+            identifier: '10.5072/zenodo.1061863',
+            relation: 'isVersionOf',
+            scheme: 'doi',
+          },
+        ],
+        resource_type: {
+          type: 'publication',
+          subtype: 'peerreview',
+        },
+        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      },
+    }
+
+    fetch
+      .postOnce('http://zenodo.test/api/deposit/depositions', {
+        body: UnsubmittedDepositionC.encode({
+          ...record,
+          links: {
+            bucket: new URL('http://example.com/bucket'),
+            publish: new URL('http://example.com/publish'),
+          },
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            prereserve_doi: {
+              doi: record.metadata.doi,
+            },
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'unsubmitted',
+          submitted: false,
+        }),
+        status: Status.Created,
+      })
+      .putOnce('http://example.com/bucket/review.html', {
+        status: Status.Created,
+      })
+      .postOnce('http://example.com/publish', {
+        body: SubmittedDepositionC.encode({
+          ...record,
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'done',
+          submitted: true,
+        }),
+        status: Status.Accepted,
+      })
+
+    await use(fetch)
   },
 }
 

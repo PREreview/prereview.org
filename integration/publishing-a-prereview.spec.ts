@@ -1,66 +1,11 @@
-import { Doi } from 'doi-ts'
 import { Status } from 'hyper-ts'
-import { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import { Record, RecordsC, SubmittedDepositionC, UnsubmittedDepositionC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview } from './base'
+import { RecordsC } from 'zenodo-ts'
+import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview, willPublishAReview } from './base'
 
-test.extend(canLogIn)(
+test.extend(canLogIn).extend(willPublishAReview)(
   'can publish a PREreview',
   async ({ contextOptions, fetch, javaScriptEnabled, page }, testInfo) => {
-    const record: Record = {
-      conceptdoi: '10.5072/zenodo.1055805' as Doi,
-      conceptrecid: 1055805,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/file'),
-          },
-          key: 'review.html',
-          type: 'html',
-          size: 58,
-        },
-      ],
-      id: 1055806,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          {
-            name: 'Josiah Carberry',
-            orcid: '0000-0002-1825-0097' as Orcid,
-          },
-        ],
-        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
-        doi: '10.5072/zenodo.1055806' as Doi,
-        license: {
-          id: 'CC-BY-4.0',
-        },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-      },
-    }
-
     fetch.get(
       {
         url: 'http://zenodo.test/api/records/',
@@ -162,46 +107,6 @@ test.extend(canLogIn)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    fetch
-      .postOnce('http://zenodo.test/api/deposit/depositions', {
-        body: UnsubmittedDepositionC.encode({
-          ...record,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-          },
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            prereserve_doi: {
-              doi: record.metadata.doi,
-            },
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }),
-        status: Status.Created,
-      })
-      .putOnce('http://example.com/bucket/review.html', {
-        status: Status.Created,
-      })
-      .postOnce('http://example.com/publish', {
-        body: SubmittedDepositionC.encode({
-          ...record,
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'done',
-          submitted: true,
-        }),
-        status: Status.Accepted,
-      })
-
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
@@ -211,57 +116,9 @@ test.extend(canLogIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'are taken to the start of the review process after successfully completing it',
   async ({ fetch, javaScriptEnabled, page }) => {
-    const record: Record = {
-      conceptdoi: '10.5072/zenodo.1055807' as Doi,
-      conceptrecid: 1055807,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/file'),
-          },
-          key: 'review.html',
-          type: 'html',
-          size: 58,
-        },
-      ],
-      id: 1055808,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [{ name: 'Orange Panda' }],
-        description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
-        doi: '10.5072/zenodo.1055808' as Doi,
-        license: {
-          id: 'CC-BY-4.0',
-        },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1055807',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-      },
-    }
-
     fetch.get(
       {
         url: 'http://zenodo.test/api/records/',
@@ -287,47 +144,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    fetch
-      .postOnce('http://zenodo.test/api/deposit/depositions', {
-        body: UnsubmittedDepositionC.encode({
-          ...record,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-          },
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            prereserve_doi: {
-              doi: record.metadata.doi,
-            },
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }),
-        status: Status.Created,
-      })
-      .putOnce('http://example.com/bucket/review.html', {
-        status: Status.Created,
-      })
-      .postOnce('http://example.com/publish', {
-        body: SubmittedDepositionC.encode({
-          ...record,
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'done',
-          submitted: true,
-        }),
-        status: Status.Accepted,
-      })
-
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
@@ -338,298 +154,155 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)('can skip to the forms', async ({ fetch, javaScriptEnabled, page }) => {
-  const record: Record = {
-    conceptdoi: '10.5072/zenodo.1055805' as Doi,
-    conceptrecid: 1055805,
-    files: [
-      {
-        links: {
-          self: new URL('http://example.com/file'),
-        },
-        key: 'review.html',
-        type: 'html',
-        size: 58,
-      },
-    ],
-    id: 1055806,
-    links: {
-      latest: new URL('http://example.com/latest'),
-      latest_html: new URL('http://example.com/latest_html'),
-    },
-    metadata: {
-      communities: [{ id: 'prereview-reviews' }],
-      creators: [
-        {
-          name: 'Josiah Carberry',
-          orcid: '0000-0002-1825-0097' as Orcid,
-        },
-      ],
-      description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
-      doi: '10.5072/zenodo.1055806' as Doi,
-      license: {
-        id: 'CC-BY-4.0',
-      },
-      publication_date: new Date('2022-07-05'),
-      related_identifiers: [
-        {
-          identifier: '10.1101/2022.01.13.476201',
-          relation: 'reviews',
-          resource_type: 'publication-preprint',
-          scheme: 'doi',
-        },
-        {
-          identifier: '10.5072/zenodo.1061863',
-          relation: 'isVersionOf',
-          scheme: 'doi',
-        },
-      ],
-      resource_type: {
-        type: 'publication',
-        subtype: 'peerreview',
-      },
-      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-    },
-  }
+test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
+  'can skip to the forms',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.keyboard.press('Tab')
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+    await expect(page).toHaveScreenshot()
 
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
+    await page.keyboard.press('Enter')
 
-  await page.keyboard.press('Enter')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
 
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.waitForLoadState()
-  await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.keyboard.press('Enter')
 
-  await page.keyboard.press('Enter')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
 
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForLoadState()
-  await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.keyboard.press('Enter')
 
-  await page.keyboard.press('Enter')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+      await page.locator('[contenteditable]').waitFor()
+    }
+    await expect(page).toHaveScreenshot()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-    await page.locator('[contenteditable]').waitFor()
-  }
-  await expect(page).toHaveScreenshot()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
 
-  await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.waitForLoadState()
-  await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
 
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.keyboard.press('Enter')
 
-  await page.keyboard.press('Enter')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
 
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.waitForLoadState()
-  await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.keyboard.press('Enter')
 
-  await page.keyboard.press('Enter')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
 
-  await page.getByLabel('No, I reviewed it alone').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.waitForLoadState()
-  await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.keyboard.press('Enter')
 
-  await page.keyboard.press('Enter')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
 
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.waitForLoadState()
-  await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.keyboard.press('Enter')
 
-  await page.keyboard.press('Enter')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
 
-  await page.getByLabel('I’m following the Code of Conduct').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.waitForLoadState()
-  await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.keyboard.press('Enter')
 
-  await page.keyboard.press('Enter')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
 
-  fetch
-    .postOnce('http://zenodo.test/api/deposit/depositions', {
-      body: UnsubmittedDepositionC.encode({
-        ...record,
-        links: {
-          bucket: new URL('http://example.com/bucket'),
-          publish: new URL('http://example.com/publish'),
-        },
-        metadata: {
-          ...record.metadata,
-          communities: [{ identifier: 'prereview-reviews' }],
-          prereserve_doi: {
-            doi: record.metadata.doi,
-          },
-          upload_type: 'publication',
-          publication_type: 'peerreview',
-        },
-        state: 'unsubmitted',
-        submitted: false,
-      }),
-      status: Status.Created,
-    })
-    .putOnce('http://example.com/bucket/review.html', {
-      status: Status.Created,
-    })
-    .postOnce('http://example.com/publish', {
-      body: SubmittedDepositionC.encode({
-        ...record,
-        metadata: {
-          ...record.metadata,
-          communities: [{ identifier: 'prereview-reviews' }],
-          upload_type: 'publication',
-          publication_type: 'peerreview',
-        },
-        state: 'done',
-        submitted: true,
-      }),
-      status: Status.Accepted,
-    })
+    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Publish PREreview' }).click()
-  await page.waitForLoadState()
-  await page.keyboard.press('Tab')
+    await page.keyboard.press('Enter')
 
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+  },
+)
 
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
-})
-
-test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn)(
+test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'updates the legacy PREreview',
   async ({ fetch, javaScriptEnabled, page }) => {
-    const record: Record = {
-      conceptdoi: '10.5072/zenodo.1055805' as Doi,
-      conceptrecid: 1055805,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/file'),
-          },
-          key: 'review.html',
-          type: 'html',
-          size: 58,
-        },
-      ],
-      id: 1055806,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          {
-            name: 'Josiah Carberry',
-            orcid: '0000-0002-1825-0097' as Orcid,
-          },
-        ],
-        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
-        doi: '10.5072/zenodo.1055806' as Doi,
-        license: {
-          id: 'CC-BY-4.0',
-        },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-      },
-    }
-
     fetch.get(
       {
         url: 'http://zenodo.test/api/records/',
@@ -659,44 +332,6 @@ test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     fetch
-      .postOnce('http://zenodo.test/api/deposit/depositions', {
-        body: UnsubmittedDepositionC.encode({
-          ...record,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-          },
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            prereserve_doi: {
-              doi: record.metadata.doi,
-            },
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }),
-        status: Status.Created,
-      })
-      .putOnce('http://example.com/bucket/review.html', {
-        status: Status.Created,
-      })
-      .postOnce('http://example.com/publish', {
-        body: SubmittedDepositionC.encode({
-          ...record,
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'done',
-          submitted: true,
-        }),
-        status: Status.Accepted,
-      })
       .getOnce('http://prereview.test/api/v2/resolve?identifier=10.1101/2022.01.13.476201', {
         body: {
           uuid: 'e7d28fbe-013a-4987-9faa-7f44a9f7683a',
@@ -988,57 +623,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'can publish a PREreview with more authors',
   async ({ fetch, javaScriptEnabled, page }) => {
-    const record: Record = {
-      conceptdoi: '10.5072/zenodo.1055807' as Doi,
-      conceptrecid: 1055807,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/file'),
-          },
-          key: 'review.html',
-          type: 'html',
-          size: 58,
-        },
-      ],
-      id: 1055808,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [{ name: 'Orange Panda' }],
-        description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
-        doi: '10.5072/zenodo.1055808' as Doi,
-        license: {
-          id: 'CC-BY-4.0',
-        },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1055807',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-      },
-    }
-
     fetch.get(
       {
         url: 'http://zenodo.test/api/records/',
@@ -1077,107 +664,19 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
 
-    fetch
-      .postOnce('http://zenodo.test/api/deposit/depositions', {
-        body: UnsubmittedDepositionC.encode({
-          ...record,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-          },
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            prereserve_doi: {
-              doi: record.metadata.doi,
-            },
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }),
-        status: Status.Created,
-      })
-      .putOnce('http://example.com/bucket/review.html', {
-        status: Status.Created,
-      })
-      .postOnce('http://example.com/publish', {
-        body: SubmittedDepositionC.encode({
-          ...record,
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'done',
-          submitted: true,
-        }),
-        status: Status.Accepted,
-      })
-
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
     await expect(page.getByRole('main')).toContainText('other authors’ details')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   "can publish a PREreview with more authors who don't want to be listed as authors",
   async ({ fetch, javaScriptEnabled, page }) => {
-    const record: Record = {
-      conceptdoi: '10.5072/zenodo.1055807' as Doi,
-      conceptrecid: 1055807,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/file'),
-          },
-          key: 'review.html',
-          type: 'html',
-          size: 58,
-        },
-      ],
-      id: 1055808,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [{ name: 'Orange Panda' }],
-        description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
-        doi: '10.5072/zenodo.1055808' as Doi,
-        license: {
-          id: 'CC-BY-4.0',
-        },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1055807',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-      },
-    }
-
     fetch.get(
       {
         url: 'http://zenodo.test/api/records/',
@@ -1208,105 +707,17 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
 
-    fetch
-      .postOnce('http://zenodo.test/api/deposit/depositions', {
-        body: UnsubmittedDepositionC.encode({
-          ...record,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-          },
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            prereserve_doi: {
-              doi: record.metadata.doi,
-            },
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }),
-        status: Status.Created,
-      })
-      .putOnce('http://example.com/bucket/review.html', {
-        status: Status.Created,
-      })
-      .postOnce('http://example.com/publish', {
-        body: SubmittedDepositionC.encode({
-          ...record,
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'done',
-          submitted: true,
-        }),
-        status: Status.Accepted,
-      })
-
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
     await expect(page.getByRole('main')).not.toContainText('other authors’ details')
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'can publish a PREreview with competing interests',
   async ({ contextOptions, fetch, javaScriptEnabled, page }, testInfo) => {
-    const record: Record = {
-      conceptdoi: '10.5072/zenodo.1055807' as Doi,
-      conceptrecid: 1055807,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/file'),
-          },
-          key: 'review.html',
-          type: 'html',
-          size: 58,
-        },
-      ],
-      id: 1055808,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [{ name: 'Orange Panda' }],
-        description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
-        doi: '10.5072/zenodo.1055808' as Doi,
-        license: {
-          id: 'CC-BY-4.0',
-        },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1055807',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-      },
-    }
-
     fetch.get(
       {
         url: 'http://zenodo.test/api/records/',
@@ -1349,104 +760,16 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    fetch
-      .postOnce('http://zenodo.test/api/deposit/depositions', {
-        body: UnsubmittedDepositionC.encode({
-          ...record,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-          },
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            prereserve_doi: {
-              doi: record.metadata.doi,
-            },
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }),
-        status: Status.Created,
-      })
-      .putOnce('http://example.com/bucket/review.html', {
-        status: Status.Created,
-      })
-      .postOnce('http://example.com/publish', {
-        body: SubmittedDepositionC.encode({
-          ...record,
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'done',
-          submitted: true,
-        }),
-        status: Status.Accepted,
-      })
-
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'can publish a PREreview using a pseudonym',
   async ({ fetch, javaScriptEnabled, page }) => {
-    const record: Record = {
-      conceptdoi: '10.5072/zenodo.1055807' as Doi,
-      conceptrecid: 1055807,
-      files: [
-        {
-          links: {
-            self: new URL('http://example.com/file'),
-          },
-          key: 'review.html',
-          type: 'html',
-          size: 58,
-        },
-      ],
-      id: 1055808,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [{ name: 'Orange Panda' }],
-        description: '<p>Vestibulum nulla turpis, convallis a tincidunt at, pellentesque at nibh.</p>',
-        doi: '10.5072/zenodo.1055808' as Doi,
-        license: {
-          id: 'CC-BY-4.0',
-        },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1055807',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-      },
-    }
-
     fetch.get(
       {
         url: 'http://zenodo.test/api/records/',
@@ -1478,50 +801,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(preview).toContainText('Orange Panda')
     await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
 
-    fetch
-      .postOnce('http://zenodo.test/api/deposit/depositions', {
-        body: UnsubmittedDepositionC.encode({
-          ...record,
-          links: {
-            bucket: new URL('http://example.com/bucket'),
-            publish: new URL('http://example.com/publish'),
-          },
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            prereserve_doi: {
-              doi: record.metadata.doi,
-            },
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'unsubmitted',
-          submitted: false,
-        }),
-        status: Status.Created,
-      })
-      .putOnce('http://example.com/bucket/review.html', {
-        status: Status.Created,
-      })
-      .postOnce('http://example.com/publish', {
-        body: SubmittedDepositionC.encode({
-          ...record,
-          metadata: {
-            ...record.metadata,
-            communities: [{ identifier: 'prereview-reviews' }],
-            upload_type: 'publication',
-            publication_type: 'peerreview',
-          },
-          state: 'done',
-          submitted: true,
-        }),
-        status: Status.Accepted,
-      })
-
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055808')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
   },
 )
 
