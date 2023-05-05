@@ -15,7 +15,7 @@ import { html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { IndeterminatePreprintId, PhilsciPreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
-import { findAPreprintMatch, preprintMatch } from './routes'
+import { findAPreprintMatch, preprintReviewsMatch } from './routes'
 import { User, getUser } from './user'
 
 export interface DoesPreprintExistEnv {
@@ -137,7 +137,7 @@ const lookupPreprint = pipe(
       RM.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(preprint))),
     ),
   ),
-  RM.ichainMiddlewareK(preprint => seeOther(format(preprintMatch.formatter, { id: preprint }))),
+  RM.ichainMiddlewareK(preprint => seeOther(format(preprintReviewsMatch.formatter, { id: preprint }))),
   RM.orElseW(error =>
     pipe(
       getUser,

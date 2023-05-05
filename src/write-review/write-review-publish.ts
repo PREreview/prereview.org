@@ -16,7 +16,7 @@ import { Html, html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import {
-  preprintMatch,
+  preprintReviewsMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
@@ -147,7 +147,7 @@ function failureMessage(preprint: Preprint) {
 
         <p>Please try again later.</p>
 
-        <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="button">Back to preprint</a>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="button">Back to preprint</a>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],

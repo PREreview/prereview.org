@@ -16,7 +16,7 @@ import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound } from './middleware'
 import { page } from './page'
 import { PreprintId } from './preprint-id'
-import { preprintMatch } from './routes'
+import { preprintReviewsMatch } from './routes'
 import { renderDate } from './time'
 import { User, getUser } from './user'
 
@@ -102,7 +102,9 @@ function createPage(review: Prereview, user?: User) {
     title: plainText`PREreview of “${review.preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { id: review.preprint.id })}" class="back">See other reviews</a>
+        <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
+          >See other reviews</a
+        >
         <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
       </nav>
 

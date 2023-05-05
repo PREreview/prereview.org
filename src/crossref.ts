@@ -15,7 +15,6 @@ import { P, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { Html, rawHtml, sanitizeHtml } from './html'
-import { Preprint } from './preprint'
 import {
   AfricarxivPreprintId,
   BiorxivPreprintId,
@@ -34,6 +33,7 @@ import {
   ScienceOpenPreprintId,
   SocarxivPreprintId,
 } from './preprint-id'
+import { Preprint } from './preprint-reviews'
 
 import PlainDate = Temporal.PlainDate
 

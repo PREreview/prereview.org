@@ -19,7 +19,6 @@ import { Uuid, isUuid } from 'uuid-ts'
 import { CrossrefPreprintId } from '../src/crossref'
 import { DatacitePreprintId } from '../src/datacite'
 import { Html, sanitizeHtml, html as toHtml } from '../src/html'
-import { Preprint } from '../src/preprint'
 import {
   AfricarxivPreprintId,
   ArxivPreprintId,
@@ -43,6 +42,7 @@ import {
   ScienceOpenPreprintId,
   SocarxivPreprintId,
 } from '../src/preprint-id'
+import { Preprint } from '../src/preprint-reviews'
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
 

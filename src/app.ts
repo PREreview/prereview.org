@@ -40,8 +40,8 @@ import {
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { FathomEnv, PhaseEnv } from './page'
 import { getPreprintFromPhilsci } from './philsci'
-import { preprint, redirectToPreprint } from './preprint'
 import { IndeterminatePreprintId, PreprintId } from './preprint-id'
+import { preprintReviews, redirectToPreprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import { PublicUrlEnv } from './public-url'
 import { review } from './review'
@@ -52,8 +52,8 @@ import {
   logOutMatch,
   orcidCodeMatch,
   orcidErrorMatch,
-  preprintMatch,
-  preprintUuidMatch,
+  preprintReviewsMatch,
+  preprintReviewsUuidMatch,
   privacyPolicyMatch,
   reviewMatch,
   writeReviewAddAuthorsMatch,
@@ -174,8 +174,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(({ error }) => authenticateError(error)),
     ),
     pipe(
-      preprintMatch.parser,
-      P.map(({ id }) => preprint(id)),
+      preprintReviewsMatch.parser,
+      P.map(({ id }) => preprintReviews(id)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
@@ -189,8 +189,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       ),
     ),
     pipe(
-      preprintUuidMatch.parser,
-      P.map(({ uuid }) => redirectToPreprint(uuid)),
+      preprintReviewsUuidMatch.parser,
+      P.map(({ uuid }) => redirectToPreprintReviews(uuid)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,

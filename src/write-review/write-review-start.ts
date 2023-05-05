@@ -12,7 +12,7 @@ import { logInAndRedirect } from '../log-in'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { FathomEnv, PhaseEnv, page } from '../page'
 import { PublicUrlEnv } from '../public-url'
-import { preprintMatch, writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../routes'
+import { preprintReviewsMatch, writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../routes'
 import { GetUserEnv, User, getUser } from '../user'
 import { Form, getForm, nextFormMatch } from './form'
 import { Preprint, getPreprint } from './preprint'
@@ -66,7 +66,7 @@ function carryOnPage(preprint: Preprint, form: Form, user: User) {
     title: plainText`Write a PREreview`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="main-content">

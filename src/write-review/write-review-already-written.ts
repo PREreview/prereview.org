@@ -12,7 +12,12 @@ import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import { preprintMatch, writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewReviewMatch } from '../routes'
+import {
+  preprintReviewsMatch,
+  writeReviewAlreadyWrittenMatch,
+  writeReviewMatch,
+  writeReviewReviewMatch,
+} from '../routes'
 import { User, getUser } from '../user'
 import { Form, createForm, getForm, saveForm, updateForm } from './form'
 import { Preprint, getPreprint } from './preprint'
@@ -109,7 +114,7 @@ function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm, user: 
     }”`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="form">

@@ -22,7 +22,7 @@ import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
 import { IndeterminatePreprintId, PreprintId } from './preprint-id'
-import { preprintMatch, reviewMatch, writeReviewMatch } from './routes'
+import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from './routes'
 import { PartialDate, renderDate } from './time'
 import { GetUserEnv, User, getUser } from './user'
 
@@ -110,7 +110,7 @@ const getRapidPrereviews = (id: PreprintId) =>
     RTE.fromTaskEitherK(({ getRapidPrereviews }: GetRapidPrereviewsEnv) => getRapidPrereviews(id)),
   )
 
-export const preprint = flow(
+export const preprintReviews = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.chainW(preprint =>
     sequenceS(RM.ApplyPar)({
@@ -138,9 +138,9 @@ export const preprint = flow(
   ),
 )
 
-export const redirectToPreprint = flow(
+export const redirectToPreprintReviews = flow(
   RM.fromReaderTaskEitherK(getPreprintIdFromUuid),
-  RM.ichainMiddlewareK(id => movedPermanently(format(preprintMatch.formatter, { id }))),
+  RM.ichainMiddlewareK(id => movedPermanently(format(preprintReviewsMatch.formatter, { id }))),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)

@@ -10,7 +10,7 @@ import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import { preprintMatch, writeReviewStartMatch } from '../routes'
+import { preprintReviewsMatch, writeReviewStartMatch } from '../routes'
 import { User, getUser } from '../user'
 import { getForm } from './form'
 import { Preprint, getPreprint } from './preprint'
@@ -67,7 +67,7 @@ function startPage(preprint: Preprint, user?: User) {
     title: plainText`Write a PREreview`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="main-content">

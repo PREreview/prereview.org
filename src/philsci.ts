@@ -12,8 +12,8 @@ import { isOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { sanitizeHtml } from './html'
-import { Preprint } from './preprint'
 import { PhilsciPreprintId } from './preprint-id'
+import { Preprint } from './preprint-reviews'
 
 import PlainDate = Temporal.PlainDate
 import PlainYearMonth = Temporal.PlainYearMonth

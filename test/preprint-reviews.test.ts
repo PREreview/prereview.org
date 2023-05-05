@@ -6,12 +6,12 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
-import * as _ from '../src/preprint'
-import { preprintMatch } from '../src/routes'
+import * as _ from '../src/preprint-reviews'
+import { preprintReviewsMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
-describe('preprint', () => {
+describe('preprintReviews', () => {
   test.prop([
     fc.connection(),
     fc.either(fc.constant('no-session' as const), fc.user()),
@@ -65,7 +65,7 @@ describe('preprint', () => {
     )
 
     const actual = await runMiddleware(
-      _.preprint(preprint.id)({
+      _.preprintReviews(preprint.id)({
         getPreprint,
         getPrereviews,
         getRapidPrereviews,
@@ -90,7 +90,7 @@ describe('preprint', () => {
     'when the preprint is not found',
     async (connection, user, preprintId) => {
       const actual = await runMiddleware(
-        _.preprint(preprintId)({
+        _.preprintReviews(preprintId)({
           getPreprint: () => TE.left('not-found'),
           getPrereviews: () => () => Promise.reject('should not be called'),
           getRapidPrereviews: () => () => Promise.reject('should not be called'),
@@ -114,7 +114,7 @@ describe('preprint', () => {
     'when the preprint is unavailable',
     async (connection, user, preprintId) => {
       const actual = await runMiddleware(
-        _.preprint(preprintId)({
+        _.preprintReviews(preprintId)({
           getPreprint: () => TE.left('unavailable'),
           getPrereviews: () => () => Promise.reject('should not be called'),
           getRapidPrereviews: () => () => Promise.reject('should not be called'),
@@ -164,7 +164,7 @@ describe('preprint', () => {
     ),
   ])('when the reviews cannot be loaded', async (connection, user, preprint, rapidPrereviews) => {
     const actual = await runMiddleware(
-      _.preprint(preprint.id)({
+      _.preprintReviews(preprint.id)({
         getPreprint: () => TE.right(preprint),
         getPrereviews: () => TE.left('unavailable'),
         getRapidPrereviews: () => TE.right(rapidPrereviews),
@@ -205,7 +205,7 @@ describe('preprint', () => {
     ),
   ])('when the rapid PREreviews cannot be loaded', async (connection, user, preprint, prereviews) => {
     const actual = await runMiddleware(
-      _.preprint(preprint.id)({
+      _.preprintReviews(preprint.id)({
         getPreprint: () => TE.right(preprint),
         getPrereviews: () => TE.right(prereviews),
         getRapidPrereviews: () => TE.left('unavailable'),
@@ -224,7 +224,7 @@ describe('preprint', () => {
   })
 })
 
-describe('redirectToPreprint', () => {
+describe('redirectToPreprintReviews', () => {
   test.prop([
     fc.connection(),
     fc.either(fc.constant('no-session' as const), fc.user()),
@@ -234,7 +234,7 @@ describe('redirectToPreprint', () => {
     const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ => TE.right(id))
 
     const actual = await runMiddleware(
-      _.redirectToPreprint(uuid)({ getPreprintIdFromUuid, getUser: () => M.fromEither(user) }),
+      _.redirectToPreprintReviews(uuid)({ getPreprintIdFromUuid, getUser: () => M.fromEither(user) }),
       connection,
     )()
 
@@ -244,7 +244,7 @@ describe('redirectToPreprint', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: format(preprintMatch.formatter, { id }),
+          value: format(preprintReviewsMatch.formatter, { id }),
         },
         { type: 'endResponse' },
       ]),
@@ -256,7 +256,7 @@ describe('redirectToPreprint', () => {
     'when the DOI is not found',
     async (connection, user, uuid) => {
       const actual = await runMiddleware(
-        _.redirectToPreprint(uuid)({
+        _.redirectToPreprintReviews(uuid)({
           getPreprintIdFromUuid: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
         }),
@@ -278,7 +278,7 @@ describe('redirectToPreprint', () => {
     'when the DOI is unavailable',
     async (connection, user, uuid) => {
       const actual = await runMiddleware(
-        _.redirectToPreprint(uuid)({
+        _.redirectToPreprintReviews(uuid)({
           getPreprintIdFromUuid: () => TE.left('unavailable'),
           getUser: () => M.fromEither(user),
         }),

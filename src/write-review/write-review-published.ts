@@ -9,7 +9,7 @@ import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { toUrl } from '../public-url'
-import { preprintMatch, reviewMatch, writeReviewMatch } from '../routes'
+import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from '../routes'
 import { User, getUser } from '../user'
 import { Preprint, getPreprint } from './preprint'
 import { PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
@@ -132,7 +132,7 @@ function successMessage({
               appreciation for their help!
             </p>
 
-            <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="button">Back to preprint</a>
+            <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="button">Back to preprint</a>
           </main>
         `,
         skipLinks: [[html`Skip to main content`, '#main-content']],
