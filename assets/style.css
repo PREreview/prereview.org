@@ -1032,6 +1032,10 @@ error-summary {
     margin-block-start: var(--space-2xs);
   }
 
+  @nest details + & {
+    margin-block-start: var(--space-m-l);
+  }
+
   &:read-only {
     cursor: not-allowed;
   }

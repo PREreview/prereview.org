@@ -6,8 +6,7 @@ import { RecordsC } from 'zenodo-ts'
 import { expect, test } from './base'
 
 test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.goto('/find-a-preprint')
   await page.getByLabel('Preprint DOI or URL').fill('10.1101/this-should-not-find-anything')
 
   fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
@@ -32,8 +31,7 @@ test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
 })
 
 test('can find and view a preprint', async ({ contextOptions, fetch, page }, testInfo) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.goto('/find-a-preprint')
   await page.getByLabel('Preprint DOI or URL').fill('10.1101/2022.01.13.476201')
 
   testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
@@ -125,8 +123,7 @@ test('can find and view a preprint', async ({ contextOptions, fetch, page }, tes
 })
 
 test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.goto('/find-a-preprint')
   await page.getByLabel('Preprint DOI or URL').fill('10.1101/this-should-take-too-long')
 
   fetch.get(
@@ -154,8 +151,7 @@ test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, p
 })
 
 test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, page }) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.goto('/find-a-preprint')
   await page.getByLabel('Preprint DOI or URL').fill('10.1101/2022.01.13.476201')
 
   fetch.getOnce(
@@ -186,8 +182,7 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
 })
 
 test('when is DOI is not supported', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.goto('/find-a-preprint')
   await page.getByLabel('Preprint DOI or URL').fill('10.5555/12345678')
 
   await page.getByRole('button', { name: 'Continue' }).click()
@@ -210,8 +205,7 @@ test('when is DOI is not supported', async ({ javaScriptEnabled, page }) => {
 })
 
 test('when is URL is not supported', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.goto('/find-a-preprint')
   await page
     .getByLabel('Preprint DOI or URL')
     .fill('https://chemrxiv.org/engage/chemrxiv/article-details/6424647b91074bccd07d1aa5')
@@ -238,8 +232,7 @@ test('when is URL is not supported', async ({ javaScriptEnabled, page }) => {
 test('have to enter a preprint DOI or URL', async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
   const alert = page.getByRole('alert', { name: 'There is a problem' })
 
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.goto('/find-a-preprint')
   await page.getByLabel('Preprint DOI or URL').fill(' not a DOI ')
   await page.getByRole('button', { name: 'Continue' }).click()
 

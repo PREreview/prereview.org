@@ -117,6 +117,8 @@ const writeReviewBaseMatch = pipe(
   P.then(P.lit('write-a-prereview')),
 )
 
+export const reviewAPreprintMatch = pipe(P.lit('review-a-preprint'), P.then(P.end))
+
 export const writeReviewMatch = pipe(writeReviewBaseMatch, P.then(P.end))
 
 export const writeReviewStartMatch = pipe(writeReviewBaseMatch, P.then(P.lit('start-now')), P.then(P.end))

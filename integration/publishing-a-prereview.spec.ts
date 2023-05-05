@@ -5,16 +5,15 @@ import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview, willPublis
 
 test.extend(canLogIn).extend(willPublishAReview)(
   'can publish a PREreview',
-  async ({ contextOptions, fetch, javaScriptEnabled, page }, testInfo) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/')
+    await page.getByRole('link', { name: 'Review a preprint' }).click()
+    await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
     await page.mouse.move(0, 0)
@@ -112,6 +111,30 @@ test.extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
   },
 )
+
+test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ fetch, page }) => {
+  fetch.get(
+    {
+      url: 'http://zenodo.test/api/records/',
+      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+    },
+    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  )
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
+  await page.getByRole('link', { name: 'Write a PREreview' }).click()
+
+  await expect(page.getByRole('main')).toContainText('We will ask you to log in')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Start now' }).click()
+
+  await page.locator('[type=email]').fill('test@example.com')
+  await page.locator('[type=password]').fill('password')
+  await page.keyboard.press('Enter')
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Have you already written your PREreview?')
+})
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'are taken to the start of the review process after successfully completing it',
@@ -944,7 +967,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.goto('/')
+    await page.getByRole('link', { name: 'Review a preprint' }).click()
+    await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
     await page.mouse.move(0, 0)
@@ -976,7 +1002,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.goto('/log-out')
-    await page.goBack()
+    await page.getByRole('link', { name: 'Review a preprint' }).click()
+    await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
+    await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
 
     await page.locator('[type=email]').fill('test@example.com')
@@ -1004,6 +1032,111 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write your PREreview')
   },
 )
+
+test('when the preprint is not found', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/this-should-not-find-anything')
+
+  fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t know this preprint')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
+
+test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/this-should-take-too-long')
+
+  fetch.get(
+    'https://api.crossref.org/works/10.1101%2Fthis-should-take-too-long',
+    new Promise(() => setTimeout(() => ({ status: Status.NotFound }), 2000)),
+  )
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
+
+test('when is DOI is not supported', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.getByLabel('Which preprint are you reviewing?').fill('10.5555/12345678')
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this DOI')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
+
+test('when is URL is not supported', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page
+    .getByLabel('Which preprint are you reviewing?')
+    .fill('https://chemrxiv.org/engage/chemrxiv/article-details/6424647b91074bccd07d1aa5')
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this URL')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
 
 test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')

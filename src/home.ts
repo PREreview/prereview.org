@@ -14,7 +14,7 @@ import { getLangDir } from 'rtl-detect'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { page } from './page'
-import { findAPreprintMatch, reviewMatch } from './routes'
+import { reviewAPreprintMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
 import { User, getUser } from './user'
 
@@ -64,7 +64,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
           <h1>Open preprint reviews.<br />For&nbsp;<em>all</em> researchers.</h1>
           <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
 
-          <a href="${format(findAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
+          <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
 
           <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
         </div>

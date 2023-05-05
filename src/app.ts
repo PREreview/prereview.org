@@ -45,6 +45,7 @@ import { preprintReviews, redirectToPreprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import { PublicUrlEnv } from './public-url'
 import { review } from './review'
+import { reviewAPreprint } from './review-a-preprint'
 import {
   findAPreprintMatch,
   homeMatch,
@@ -55,6 +56,7 @@ import {
   preprintReviewsMatch,
   preprintReviewsUuidMatch,
   privacyPolicyMatch,
+  reviewAPreprintMatch,
   reviewMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAlreadyWrittenMatch,
@@ -134,6 +136,26 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       findAPreprintMatch.parser,
       P.map(() => findAPreprint),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          doesPreprintExist: flow(
+            flip(getPreprintTitle)(env),
+            TE.map(() => true),
+            TE.orElseW(error =>
+              match(error)
+                .with('not-found', () => TE.right(false))
+                .with('unavailable', TE.left)
+                .exhaustive(),
+            ),
+          ),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      reviewAPreprintMatch.parser,
+      P.map(() => reviewAPreprint),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
