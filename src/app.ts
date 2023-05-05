@@ -207,7 +207,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getPrereview: flip(getPrereviewFromZenodo)({
             ...env,
-            getPreprintTitle: flip(getPreprintTitle)(env),
+            getPreprint: flip(getPreprint)(env),
           }),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
