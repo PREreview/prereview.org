@@ -21,28 +21,11 @@ import { Uuid } from 'uuid-ts'
 import { Html, html, plainText, rawHtml, sendHtml } from './html'
 import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
+import { Preprint, getPreprint } from './preprint'
 import { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from './routes'
-import { PartialDate, renderDate } from './time'
+import { renderDate } from './time'
 import { GetUserEnv, User, getUser } from './user'
-
-export type Preprint = {
-  abstract?: {
-    language: LanguageCode
-    text: Html
-  }
-  authors: ReadonlyNonEmptyArray<{
-    name: string
-    orcid?: Orcid
-  }>
-  id: PreprintId
-  posted: PartialDate
-  title: {
-    language: LanguageCode
-    text: Html
-  }
-  url: URL
-}
 
 export type Prereview = {
   authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
@@ -72,10 +55,6 @@ type RapidPrereview = {
   }
 }
 
-export interface GetPreprintEnv {
-  getPreprint: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
-}
-
 export interface GetPreprintIdFromUuidEnv {
   getPreprintIdFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', IndeterminatePreprintId>
 }
@@ -93,9 +72,6 @@ const sendPage = flow(
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
-
-const getPreprint = (id: IndeterminatePreprintId) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(id)))
 
 const getPreprintIdFromUuid = (uuid: Uuid) =>
   RTE.asksReaderTaskEither(

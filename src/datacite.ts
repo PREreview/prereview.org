@@ -12,8 +12,8 @@ import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { sanitizeHtml } from './html'
+import { Preprint } from './preprint'
 import { ArxivPreprintId } from './preprint-id'
-import { Preprint } from './preprint-reviews'
 
 import Instant = Temporal.Instant
 
