@@ -298,7 +298,6 @@ const getPreprintTitle = flow(
     id: preprint.id,
     language: preprint.title.language,
     title: preprint.title.text,
-    url: preprint.url,
   })),
 )
 

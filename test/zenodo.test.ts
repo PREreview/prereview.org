@@ -30,13 +30,11 @@ describe('getRecentPrereviewsFromZenodo', () => {
       id: fc.preprintId(),
       language: fc.languageCode(),
       title: fc.html(),
-      url: fc.url(),
     }),
     fc.record({
       id: fc.preprintId(),
       language: fc.languageCode(),
       title: fc.html(),
-      url: fc.url(),
     }),
   ])('when the PREreviews can be loaded', async (preprint1, preprint2) => {
     const records: Records = {
@@ -177,7 +175,6 @@ describe('getRecentPrereviewsFromZenodo', () => {
       id: fc.preprintId(),
       language: fc.languageCode(),
       title: fc.html(),
-      url: fc.url(),
     }),
   ])('revalidates if the PREreviews are stale', async preprint => {
     const records: Records = {
