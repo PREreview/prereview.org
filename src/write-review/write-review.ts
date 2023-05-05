@@ -13,10 +13,10 @@ import { page } from '../page'
 import { preprintReviewsMatch, writeReviewStartMatch } from '../routes'
 import { User, getUser } from '../user'
 import { getForm } from './form'
-import { Preprint, getPreprint } from './preprint'
+import { PreprintTitle, getPreprintTitle } from './preprint'
 
 export const writeReview = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       getUser,
@@ -62,7 +62,7 @@ const showStartPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function startPage(preprint: Preprint, user?: User) {
+function startPage(preprint: PreprintTitle, user?: User) {
   return page({
     title: plainText`Write a PREreview`,
     content: html`

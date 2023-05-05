@@ -11,11 +11,11 @@ import { page } from '../page'
 import { toUrl } from '../public-url'
 import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from '../routes'
 import { User, getUser } from '../user'
-import { Preprint, getPreprint } from './preprint'
+import { PreprintTitle, getPreprintTitle } from './preprint'
 import { PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
 
 export const writeReviewPublished = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -54,7 +54,7 @@ function successMessage({
   user,
 }: {
   review: PublishedReview
-  preprint: Preprint
+  preprint: PreprintTitle
   user: User
 }) {
   return pipe(

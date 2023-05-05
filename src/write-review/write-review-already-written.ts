@@ -20,10 +20,10 @@ import {
 } from '../routes'
 import { User, getUser } from '../user'
 import { Form, createForm, getForm, saveForm, updateForm } from './form'
-import { Preprint, getPreprint } from './preprint'
+import { PreprintTitle, getPreprintTitle } from './preprint'
 
 export const writeReviewAlreadyWritten = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -59,21 +59,21 @@ export const writeReviewAlreadyWritten = flow(
 )
 
 const showAlreadyWrittenForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     alreadyWrittenForm(preprint, { alreadyWritten: E.right(form.alreadyWritten) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showAlreadyWrittenErrorForm = (preprint: Preprint, user: User) =>
+const showAlreadyWrittenErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
     fromReaderK((form: AlreadyWrittenForm) => alreadyWrittenForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.decodeBody(body => E.right({ alreadyWritten: pipe(AlreadyWrittenFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
@@ -105,7 +105,7 @@ type AlreadyWrittenForm = {
   readonly alreadyWritten: E.Either<MissingE, 'yes' | 'no' | undefined>
 }
 
-function alreadyWrittenForm(preprint: Preprint, form: AlreadyWrittenForm, user: User) {
+function alreadyWrittenForm(preprint: PreprintTitle, form: AlreadyWrittenForm, user: User) {
   const error = hasAnError(form)
 
   return page({

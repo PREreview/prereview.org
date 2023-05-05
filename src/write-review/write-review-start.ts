@@ -15,10 +15,10 @@ import { PublicUrlEnv } from '../public-url'
 import { preprintReviewsMatch, writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../routes'
 import { GetUserEnv, User, getUser } from '../user'
 import { Form, getForm, nextFormMatch } from './form'
-import { Preprint, getPreprint } from './preprint'
+import { PreprintTitle, getPreprintTitle } from './preprint'
 
 export const writeReviewStart = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       getUser,
@@ -61,7 +61,7 @@ const showCarryOnPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function carryOnPage(preprint: Preprint, form: Form, user: User) {
+function carryOnPage(preprint: PreprintTitle, form: Form, user: User) {
   return page({
     title: plainText`Write a PREreview`,
     content: html`

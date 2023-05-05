@@ -17,10 +17,10 @@ import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeRevie
 import { NonEmptyString, NonEmptyStringC } from '../string'
 import { User, getUser } from '../user'
 import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
-import { Preprint, getPreprint } from './preprint'
+import { PreprintTitle, getPreprintTitle } from './preprint'
 
 export const writeReviewCompetingInterests = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -54,7 +54,7 @@ export const writeReviewCompetingInterests = flow(
 )
 
 const showCompetingInterestsForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     competingInterestsForm(
       preprint,
       {
@@ -68,14 +68,14 @@ const showCompetingInterestsForm = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showCompetingInterestsErrorForm = (preprint: Preprint, user: User) =>
+const showCompetingInterestsErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
     fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.decodeBody(E.right),
     RM.map(body =>
@@ -123,7 +123,7 @@ type CompetingInterestsForm = {
   readonly competingInterestsDetails: E.Either<MissingE, NonEmptyString | undefined>
 }
 
-function competingInterestsForm(preprint: Preprint, form: CompetingInterestsForm, user: User) {
+function competingInterestsForm(preprint: PreprintTitle, form: CompetingInterestsForm, user: User) {
   const error = hasAnError(form)
 
   return page({

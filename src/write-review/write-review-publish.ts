@@ -27,13 +27,13 @@ import {
 import { User, getUser } from '../user'
 import { CompletedForm, CompletedFormC } from './completed-form'
 import { deleteForm, getForm, redirectToNextForm } from './form'
-import { Preprint, getPreprint } from './preprint'
+import { PreprintTitle, getPreprintTitle } from './preprint'
 import { storeInformationForWriteReviewPublishedPage } from './published-review'
 
 export type NewPrereview = {
   conduct: 'yes'
   persona: 'public' | 'pseudonym'
-  preprint: Preprint
+  preprint: PreprintTitle
   review: Html
   user: User
 }
@@ -43,7 +43,7 @@ export interface PublishPrereviewEnv {
 }
 
 export const writeReviewPublish = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -80,7 +80,7 @@ export const writeReviewPublish = flow(
   ),
 )
 
-const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
+const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.id)),
     RM.map(() => ({
@@ -100,7 +100,7 @@ const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; prep
   )
 
 const showPublishForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: CompletedForm; preprint: Preprint; user: User }) =>
+  fromReaderK(({ form, preprint, user }: { form: CompletedForm; preprint: PreprintTitle; user: User }) =>
     publishForm(preprint, form, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
@@ -136,7 +136,7 @@ function renderReview(form: CompletedForm) {
     </p>`
 }
 
-function failureMessage(preprint: Preprint) {
+function failureMessage(preprint: PreprintTitle) {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
@@ -154,7 +154,7 @@ function failureMessage(preprint: Preprint) {
   })
 }
 
-function publishForm(preprint: Preprint, review: CompletedForm, user: User) {
+function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User) {
   return page({
     title: plainText`Publish your PREreview of “${preprint.title}”`,
     content: html`

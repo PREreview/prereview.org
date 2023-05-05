@@ -15,10 +15,10 @@ import { page } from '../page'
 import { writeReviewCompetingInterestsMatch, writeReviewConductMatch, writeReviewMatch } from '../routes'
 import { User, getUser } from '../user'
 import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
-import { Preprint, getPreprint } from './preprint'
+import { PreprintTitle, getPreprintTitle } from './preprint'
 
 export const writeReviewConduct = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -52,21 +52,21 @@ export const writeReviewConduct = flow(
 )
 
 const showCodeOfConductForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     codeOfConductForm(preprint, { conduct: E.right(form.conduct) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showCodeOfConductErrorForm = (preprint: Preprint, user: User) =>
+const showCodeOfConductErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
     fromReaderK((form: CodeOfConductForm) => codeOfConductForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+const handleCodeOfConductForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.decodeBody(body => E.right({ conduct: pipe(ConductFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
@@ -98,7 +98,7 @@ type CodeOfConductForm = {
   readonly conduct: E.Either<MissingE, 'yes' | undefined>
 }
 
-function codeOfConductForm(preprint: Preprint, form: CodeOfConductForm, user: User) {
+function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, user: User) {
   const error = hasAnError(form)
 
   return page({

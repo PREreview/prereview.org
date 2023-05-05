@@ -11,10 +11,10 @@ import { page } from '../page'
 import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
 import { User, getUser } from '../user'
 import { Form, getForm, redirectToNextForm } from './form'
-import { Preprint, getPreprint } from './preprint'
+import { PreprintTitle, getPreprintTitle } from './preprint'
 
 export const writeReviewAddAuthors = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -51,15 +51,15 @@ export const writeReviewAddAuthors = flow(
 )
 
 const showCannotAddAuthorsForm = flow(
-  fromReaderK(({ preprint, user }: { preprint: Preprint; user: User }) => cannotAddAuthorsForm(preprint, user)),
+  fromReaderK(({ preprint, user }: { preprint: PreprintTitle; user: User }) => cannotAddAuthorsForm(preprint, user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const handleCannotAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: Preprint }) =>
+const handleCannotAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
   redirectToNextForm(preprint.id)(form)
 
-function cannotAddAuthorsForm(preprint: Preprint, user: User) {
+function cannotAddAuthorsForm(preprint: PreprintTitle, user: User) {
   return page({
     title: plainText`Add more authors – PREreview of “${preprint.title}”`,
     content: html`

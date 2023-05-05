@@ -15,10 +15,10 @@ import { page } from '../page'
 import { writeReviewMatch, writeReviewPersonaMatch, writeReviewReviewMatch } from '../routes'
 import { User, getUser } from '../user'
 import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
-import { Preprint, getPreprint } from './preprint'
+import { PreprintTitle, getPreprintTitle } from './preprint'
 
 export const writeReviewPersona = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -50,21 +50,21 @@ export const writeReviewPersona = flow(
 )
 
 const showPersonaForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     personaForm(preprint, { persona: E.right(form.persona) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showPersonaErrorForm = (preprint: Preprint, user: User) =>
+const showPersonaErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
     fromReaderK((form: PersonaForm) => personaForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.decodeBody(body => E.right({ persona: pipe(PersonaFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
@@ -96,7 +96,7 @@ type PersonaForm = {
   readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>
 }
 
-function personaForm(preprint: Preprint, form: PersonaForm, user: User) {
+function personaForm(preprint: PreprintTitle, form: PersonaForm, user: User) {
   const error = hasAnError(form)
 
   return page({
