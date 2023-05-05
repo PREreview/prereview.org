@@ -118,16 +118,8 @@ test.extend(canLogIn).extend(willPublishAReview)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'are taken to the start of the review process after successfully completing it',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -303,15 +295,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
 test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'updates the legacy PREreview',
   async ({ fetch, javaScriptEnabled, page }) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -353,16 +337,8 @@ test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn).extend(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can paste an already-written PREreview',
-  async ({ browserName, context, contextOptions, fetch, javaScriptEnabled, page }, testInfo) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ browserName, context, contextOptions, javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Yes').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -419,16 +395,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can format a PREreview',
-  async ({ browserName, contextOptions, fetch, javaScriptEnabled, page }, testInfo) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ browserName, contextOptions, javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -625,16 +593,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'can publish a PREreview with more authors',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -676,16 +636,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   "can publish a PREreview with more authors who don't want to be listed as authors",
-  async ({ fetch, javaScriptEnabled, page }) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -717,16 +669,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'can publish a PREreview with competing interests',
-  async ({ contextOptions, fetch, javaScriptEnabled, page }, testInfo) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -769,16 +713,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'can publish a PREreview using a pseudonym',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -1011,17 +947,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   "aren't told about ORCID when already logged in",
-  async ({ fetch, javaScriptEnabled, page }) => {
-    fetch.getOnce(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
 
     await expect(page.getByRole('main')).not.toContainText('ORCID')
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
@@ -1048,22 +975,13 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step if you have already started a PREreview',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByRole('link', { name: 'Back' }).click()
-    await page.getByRole('link', { name: 'Back to preprint' }).click()
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+    await page.waitForLoadState()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
     await page.mouse.move(0, 0)
@@ -1089,16 +1007,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'are returned to the next step after logging in if you have already started a PREreview',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    fetch.get(
-      {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-      },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
-    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
