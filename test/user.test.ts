@@ -7,38 +7,36 @@ import * as D from 'io-ts/Decoder'
 import * as _ from '../src/user'
 import * as fc from './fc'
 
-describe('user', () => {
-  describe('UserC', () => {
-    test.prop([fc.user()])('when the user can be decoded', user => {
-      const actual = pipe(user, _.UserC.encode, _.UserC.decode)
+describe('UserC', () => {
+  test.prop([fc.user()])('when the user can be decoded', user => {
+    const actual = pipe(user, _.UserC.encode, _.UserC.decode)
 
-      expect(actual).toStrictEqual(D.success(user))
-    })
-
-    test.prop([fc.string()])('when the user cannot be decoded', string => {
-      const actual = _.UserC.decode(string)
-
-      expect(actual).toStrictEqual(E.left(expect.anything()))
-    })
+    expect(actual).toStrictEqual(D.success(user))
   })
 
-  test.prop([fc.user()])('newSessionForUser', user => {
-    const actual = _.newSessionForUser(user)
+  test.prop([fc.string()])('when the user cannot be decoded', string => {
+    const actual = _.UserC.decode(string)
 
-    expect(actual).toStrictEqual({ user })
+    expect(actual).toStrictEqual(E.left(expect.anything()))
+  })
+})
+
+test.prop([fc.user()])('newSessionForUser', user => {
+  const actual = _.newSessionForUser(user)
+
+  expect(actual).toStrictEqual({ user })
+})
+
+describe('getUserFromSession', () => {
+  test.prop([fc.user()])('when there is a user', user => {
+    const actual = _.getUserFromSession({ user })
+
+    expect(actual).toStrictEqual(O.some(user))
   })
 
-  describe('getUserFromSession', () => {
-    test.prop([fc.user()])('when there is a user', user => {
-      const actual = _.getUserFromSession({ user })
+  test.prop([fc.jsonRecord()])("when there isn't a user", session => {
+    const actual = _.getUserFromSession(session)
 
-      expect(actual).toStrictEqual(O.some(user))
-    })
-
-    test.prop([fc.jsonRecord()])("when there isn't a user", session => {
-      const actual = _.getUserFromSession(session)
-
-      expect(actual).toStrictEqual(O.none)
-    })
+    expect(actual).toStrictEqual(O.none)
   })
 })

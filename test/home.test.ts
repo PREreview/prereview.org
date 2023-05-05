@@ -1,5 +1,5 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import * as T from 'fp-ts/Task'
 import { MediaType, Status } from 'hyper-ts'
@@ -8,25 +8,23 @@ import * as _ from '../src/home'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
-describe('home', () => {
-  test.prop([fc.connection({ method: fc.requestMethod() }), fc.either(fc.constant('no-session' as const), fc.user())])(
-    'home',
-    async (connection, user) => {
-      const actual = await runMiddleware(
-        _.home({
-          getRecentPrereviews: () => T.of([]),
-          getUser: () => M.fromEither(user),
-        }),
-        connection,
-      )()
+test.prop([fc.connection({ method: fc.requestMethod() }), fc.either(fc.constant('no-session' as const), fc.user())])(
+  'home',
+  async (connection, user) => {
+    const actual = await runMiddleware(
+      _.home({
+        getRecentPrereviews: () => T.of([]),
+        getUser: () => M.fromEither(user),
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.OK },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
-})
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.OK },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  },
+)
