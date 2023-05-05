@@ -32,10 +32,7 @@ test.extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByLabel('Write your PREreview')).toHaveText(/^Write a short summary of/)
@@ -118,14 +115,12 @@ test.extend(canLogIn).extend(willPublishAReview)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'are taken to the start of the review process after successfully completing it',
-  async ({ javaScriptEnabled, page }) => {
+  async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -187,10 +182,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Enter')
+    await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
-      await page.locator('[contenteditable]').waitFor()
     }
     await expect(page).toHaveScreenshot()
 
@@ -294,16 +289,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
 
 test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'updates the legacy PREreview',
-  async ({ fetch, javaScriptEnabled, page }) => {
+  async ({ fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
-
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -342,10 +333,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Yes').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Paste your PREreview')
     await page.mouse.move(0, 0)
@@ -400,8 +388,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
 
-    await page.getByLabel('Write your PREreview').waitFor()
     await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
 
     if (!javaScriptEnabled) {
@@ -411,7 +399,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     }
     testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
-    await page.locator('[contenteditable]').waitFor()
     await page.getByLabel('Write your PREreview').clear()
 
     await page.getByRole('button', { name: 'Heading level 1' }).click()
@@ -593,14 +580,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'can publish a PREreview with more authors',
-  async ({ javaScriptEnabled, page }) => {
+  async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -636,14 +621,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   "can publish a PREreview with more authors who don't want to be listed as authors",
-  async ({ javaScriptEnabled, page }) => {
+  async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -669,14 +652,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'can publish a PREreview with competing interests',
-  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
+  async ({ contextOptions, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -713,14 +694,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   'can publish a PREreview using a pseudonym',
-  async ({ javaScriptEnabled, page }) => {
+  async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Orange Panda').check()
@@ -744,87 +723,73 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
-  'can change the review after previewing',
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
-    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No, I reviewed it alone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I’m following the Code of Conduct').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn)('can change the review after previewing', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.waitForLoadState()
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, I reviewed it alone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
+  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  )
 
-    await page.getByRole('link', { name: 'Change PREreview' }).click()
+  await page.getByRole('link', { name: 'Change PREreview' }).click()
+  await page.waitForLoadState()
 
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
-    await page
-      .getByLabel('Write your PREreview')
-      .fill('Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page
+    .getByLabel('Write your PREreview')
+    .fill('Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
-      'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
-    )
-  },
-)
+  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+    'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
+  )
+})
 
-test.extend(canLogIn).extend(areLoggedIn)(
-  'can change the name after previewing',
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
-    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No, I reviewed it alone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I’m following the Code of Conduct').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn)('can change the name after previewing', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.waitForLoadState()
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, I reviewed it alone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Josiah Carberry')
+  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Josiah Carberry')
 
-    await page.getByRole('link', { name: 'Change name' }).click()
+  await page.getByRole('link', { name: 'Change name' }).click()
 
-    await page.getByLabel('Orange Panda').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Orange Panda').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Orange Panda')
-  },
-)
+  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Orange Panda')
+})
 
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Continue' }).click()
-  if (javaScriptEnabled) {
-    await page.locator('[contenteditable]').waitFor()
-  }
+  await page.waitForLoadState()
   await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByLabel('Josiah Carberry').check()
@@ -882,9 +847,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1146,9 +1109,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1258,11 +1219,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
-
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').clear()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -1293,11 +1250,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
-
+    await page.waitForLoadState()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     if (javaScriptEnabled) {
@@ -1354,10 +1307,7 @@ test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ java
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Continue' }).click()
-
-  if (javaScriptEnabled) {
-    await page.locator('[contenteditable]').waitFor()
-  }
+  await page.waitForLoadState()
   await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -1389,10 +1339,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -1429,10 +1376,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -1469,10 +1413,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
@@ -1531,10 +1472,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await page.locator('[contenteditable]').waitFor()
-    }
+    await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
