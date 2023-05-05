@@ -19,7 +19,7 @@ import { Uuid, isUuid } from 'uuid-ts'
 import { CrossrefPreprintId } from '../src/crossref'
 import { DatacitePreprintId } from '../src/datacite'
 import { Html, sanitizeHtml, html as toHtml } from '../src/html'
-import { Preprint } from '../src/preprint'
+import { Preprint, PreprintTitle } from '../src/preprint'
 import {
   AfricarxivPreprintId,
   ArxivPreprintId,
@@ -559,3 +559,10 @@ export const preprint = (): fc.Arbitrary<Preprint> =>
     },
     { requiredKeys: ['authors', 'id', 'posted', 'title', 'url'] },
   )
+
+export const preprintTitle = (): fc.Arbitrary<PreprintTitle> =>
+  fc.record({
+    id: preprintId(),
+    language: languageCode(),
+    title: html(),
+  })

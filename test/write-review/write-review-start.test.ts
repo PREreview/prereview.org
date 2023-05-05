@@ -27,7 +27,7 @@ describe('writeReviewStart', () => {
       }),
       fc.origin(),
       fc.indeterminatePreprintId(),
-      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+      fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -83,7 +83,7 @@ describe('writeReviewStart', () => {
       }),
       fc.origin(),
       fc.indeterminatePreprintId(),
-      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+      fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -130,7 +130,7 @@ describe('writeReviewStart', () => {
     }),
     fc.origin(),
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.connection({
       headers: fc.constant({}),
       method: fc.requestMethod().filter(method => method !== 'POST'),

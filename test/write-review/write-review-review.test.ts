@@ -18,7 +18,7 @@ import { runMiddleware } from '../middleware'
 describe('writeReviewReview', () => {
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc
       .tuple(fc.html().map(String), fc.cookieName(), fc.uuid(), fc.string())
       .chain(([review, sessionCookie, sessionId, secret]) =>
@@ -83,7 +83,7 @@ describe('writeReviewReview', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc
       .tuple(fc.html().map(String), fc.cookieName(), fc.uuid(), fc.string())
       .chain(([review, sessionCookie, sessionId, secret]) =>
@@ -139,7 +139,7 @@ describe('writeReviewReview', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({ review: fc.lorem() }),
@@ -240,7 +240,7 @@ describe('writeReviewReview', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.connection({ body: fc.record({ review: fc.lorem() }), method: fc.constant('POST') }),
   ])("when there isn't a session", async (preprintId, preprintTitle, connection) => {
     const formStore = new Keyv()
@@ -270,7 +270,7 @@ describe('writeReviewReview', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({ review: fc.constant('') }, { withDeletedKeys: true }),
@@ -316,7 +316,7 @@ describe('writeReviewReview', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({ review: fc.lorem() }, { withDeletedKeys: true }),
