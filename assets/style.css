@@ -593,6 +593,10 @@ p {
   hyphens: auto;
   margin-block-start: var(--space-xs);
   max-inline-size: 64ch;
+
+  @nest article + & {
+    margin-block-start: var(--space-s-m);
+  }
 }
 
 blockquote {
@@ -1330,8 +1334,16 @@ html-editor {
     overflow-y: auto;
     scrollbar-gutter: stable;
 
-    @media (width >= 50em) {
+    &:is(article) {
+      max-block-size: 40vb;
+    }
+
+    @media (height >= 50em) {
       max-block-size: 50vb;
+
+      &:is(article) {
+        max-block-size: 25vb;
+      }
     }
   }
 }
