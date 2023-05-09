@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { GetPreprintEnv } from '../../src/preprint'
 import { writeReviewStartMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
@@ -18,7 +19,7 @@ describe('writeReview', () => {
   describe('when there is a session', () => {
     test.prop([
       fc.indeterminatePreprintId(),
-      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+      fc.preprint(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -41,15 +42,15 @@ describe('writeReview', () => {
         fc.constant({}),
       ),
       fc.user(),
-    ])('there is a form already', async (preprintId, preprintTitle, connection, newReview, user) => {
+    ])('there is a form already', async (preprintId, preprint, connection, newReview, user) => {
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      await formStore.set(formKey(user.orcid, preprint.id), newReview)
+      const getPreprint: Mock<GetPreprintEnv['getPreprint']> = jest.fn(_ => TE.right(preprint))
 
       const actual = await runMiddleware(
         _.writeReview(preprintId)({
           formStore,
-          getPreprintTitle,
+          getPreprint,
           getUser: () => M.of(user),
         }),
         connection,
@@ -61,17 +62,17 @@ describe('writeReview', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewStartMatch.formatter, { id: preprintTitle.id }),
+            value: format(writeReviewStartMatch.formatter, { id: preprint.id }),
           },
           { type: 'endResponse' },
         ]),
       )
-      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
+      expect(getPreprint).toHaveBeenCalledWith(preprintId)
     })
 
     test.prop([
       fc.indeterminatePreprintId(),
-      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+      fc.preprint(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -79,14 +80,14 @@ describe('writeReview', () => {
         }),
       ),
       fc.user(),
-    ])("there isn't a form", async (preprintId, preprintTitle, connection, user) => {
+    ])("there isn't a form", async (preprintId, preprint, connection, user) => {
       const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
+      const getPreprint = () => TE.right(preprint)
 
       const actual = await runMiddleware(
         _.writeReview(preprintId)({
           formStore,
-          getPreprintTitle,
+          getPreprint,
           getUser: () => M.of(user),
         }),
         connection,
@@ -104,21 +105,21 @@ describe('writeReview', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprint(),
     fc.connection({
       headers: fc.constant({}),
       method: fc.requestMethod().filter(method => method !== 'POST'),
     }),
     fc.cookieName(),
     fc.string(),
-  ])("when there isn't a session", async (preprintId, preprintTitle, connection) => {
+  ])("when there isn't a session", async (preprintId, preprint, connection) => {
     const formStore = new Keyv()
-    const getPreprintTitle = () => TE.right(preprintTitle)
+    const getPreprint = () => TE.right(preprint)
 
     const actual = await runMiddleware(
       _.writeReview(preprintId)({
         formStore,
-        getPreprintTitle,
+        getPreprint,
         getUser: () => M.left('no-session'),
       }),
       connection,
@@ -142,12 +143,12 @@ describe('writeReview', () => {
     fc.either(fc.constant('no-session' as const), fc.user()),
   ])('when the preprint cannot be loaded', async (preprintId, connection, user) => {
     const formStore = new Keyv()
-    const getPreprintTitle = () => TE.left('unavailable' as const)
+    const getPreprint = () => TE.left('unavailable' as const)
 
     const actual = await runMiddleware(
       _.writeReview(preprintId)({
         formStore,
-        getPreprintTitle,
+        getPreprint,
         getUser: () => M.fromEither(user),
       }),
       connection,
@@ -172,12 +173,12 @@ describe('writeReview', () => {
     fc.either(fc.constant('no-session' as const), fc.user()),
   ])('when the preprint is not found', async (preprintId, connection, user) => {
     const formStore = new Keyv()
-    const getPreprintTitle = () => TE.left('not-found' as const)
+    const getPreprint = () => TE.left('not-found' as const)
 
     const actual = await runMiddleware(
       _.writeReview(preprintId)({
         formStore,
-        getPreprintTitle,
+        getPreprint,
         getUser: () => M.fromEither(user),
       }),
       connection,

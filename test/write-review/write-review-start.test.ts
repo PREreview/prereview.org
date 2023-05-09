@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
@@ -26,7 +27,7 @@ describe('writeReviewStart', () => {
       }),
       fc.origin(),
       fc.indeterminatePreprintId(),
-      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+      fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -49,7 +50,7 @@ describe('writeReviewStart', () => {
     ])('there is a form', async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
@@ -82,7 +83,7 @@ describe('writeReviewStart', () => {
       }),
       fc.origin(),
       fc.indeterminatePreprintId(),
-      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+      fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -129,7 +130,7 @@ describe('writeReviewStart', () => {
     }),
     fc.origin(),
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.connection({
       headers: fc.constant({}),
       method: fc.requestMethod().filter(method => method !== 'POST'),

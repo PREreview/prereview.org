@@ -105,9 +105,9 @@ export const orcidErrorMatch = pipe(
   P.then(P.end),
 )
 
-export const preprintUuidMatch = pipe(P.lit('preprints'), P.then(type('uuid', UuidC)), P.then(P.end))
+export const preprintReviewsUuidMatch = pipe(P.lit('preprints'), P.then(type('uuid', UuidC)), P.then(P.end))
 
-export const preprintMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))
+export const preprintReviewsMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))
 
 export const reviewMatch = pipe(P.lit('reviews'), P.then(type('id', IntegerFromStringC)), P.then(P.end))
 
@@ -116,6 +116,8 @@ const writeReviewBaseMatch = pipe(
   P.then(type('id', PreprintIdC)),
   P.then(P.lit('write-a-prereview')),
 )
+
+export const reviewAPreprintMatch = pipe(P.lit('review-a-preprint'), P.then(P.end))
 
 export const writeReviewMatch = pipe(writeReviewBaseMatch, P.then(P.end))
 

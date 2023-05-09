@@ -15,7 +15,7 @@ import { html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { IndeterminatePreprintId, PhilsciPreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
-import { findAPreprintMatch, preprintMatch } from './routes'
+import { findAPreprintMatch, preprintReviewsMatch } from './routes'
 import { User, getUser } from './user'
 
 export interface DoesPreprintExistEnv {
@@ -137,7 +137,7 @@ const lookupPreprint = pipe(
       RM.chainEitherKW(E.fromPredicate(identity, () => unknownPreprintE(preprint))),
     ),
   ),
-  RM.ichainMiddlewareK(preprint => seeOther(format(preprintMatch.formatter, { id: preprint }))),
+  RM.ichainMiddlewareK(preprint => seeOther(format(preprintReviewsMatch.formatter, { id: preprint }))),
   RM.orElseW(error =>
     pipe(
       getUser,
@@ -192,7 +192,7 @@ function createPage(lookupPreprint: LookupPreprint, user?: User) {
   const error = E.isLeft(lookupPreprint)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}PREreview`,
+    title: plainText`${error ? 'Error: ' : ''}Find and publish PREreviews`,
     content: html`
       <main id="main-content">
         ${error
@@ -248,7 +248,7 @@ function createPage(lookupPreprint: LookupPreprint, user?: User) {
               id="preprint"
               name="preprint"
               type="text"
-              size="40"
+              size="60"
               spellcheck="false"
               aria-describedby="preprint-tip"
               ${match(lookupPreprint)

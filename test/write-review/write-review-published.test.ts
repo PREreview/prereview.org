@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewMatch } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
@@ -18,7 +19,7 @@ import * as fc from './fc'
 describe('writeReviewPublished', () => {
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
@@ -52,7 +53,7 @@ describe('writeReviewPublished', () => {
         user: UserC.encode(user),
         'published-review': PublishedReviewC.encode(publishedReview),
       })
-      const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
@@ -80,7 +81,7 @@ describe('writeReviewPublished', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
@@ -230,7 +231,7 @@ describe('writeReviewPublished', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.connection({ method: fc.constant('POST') }),
     fc.cookieName(),
     fc.string(),

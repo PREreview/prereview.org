@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
@@ -17,7 +18,7 @@ import { runMiddleware } from '../middleware'
 describe('writeReviewCompetingInterests', () => {
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc
       .tuple(
         fc.oneof(
@@ -58,7 +59,7 @@ describe('writeReviewCompetingInterests', () => {
     async (preprintId, preprintTitle, [competingInterests, connection], user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
       const actual = await runMiddleware(
         _.writeReviewCompetingInterests(preprintId)({
@@ -87,7 +88,7 @@ describe('writeReviewCompetingInterests', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc
       .tuple(
         fc.oneof(
@@ -162,7 +163,7 @@ describe('writeReviewCompetingInterests', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.oneof(
@@ -279,7 +280,7 @@ describe('writeReviewCompetingInterests', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.connection({
       body: fc.record({
         competingInterests: fc.constantFrom('yes', 'no'),
@@ -315,7 +316,7 @@ describe('writeReviewCompetingInterests', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.oneof(

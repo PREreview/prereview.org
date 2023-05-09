@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
@@ -17,7 +18,7 @@ import { runMiddleware } from '../middleware'
 describe('writeReviewPersona', () => {
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc
       .tuple(fc.constantFrom('public', 'pseudonym'), fc.cookieName(), fc.uuid(), fc.string())
       .chain(([persona, sessionCookie, sessionId, secret]) =>
@@ -48,7 +49,7 @@ describe('writeReviewPersona', () => {
   ])('when the form is completed', async (preprintId, preprintTitle, [persona, connection], user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-    const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+    const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
     const actual = await runMiddleware(
       _.writeReviewPersona(preprintId)({
         formStore,
@@ -75,7 +76,7 @@ describe('writeReviewPersona', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc
       .tuple(fc.constantFrom('public', 'pseudonym'), fc.cookieName(), fc.uuid(), fc.string())
       .chain(([persona, sessionCookie, sessionId, secret]) =>
@@ -136,7 +137,7 @@ describe('writeReviewPersona', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({ persona: fc.constantFrom('public', 'pseudonym') }),
@@ -239,7 +240,7 @@ describe('writeReviewPersona', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.connection({ body: fc.constant({ conduct: 'yes' }), method: fc.constant('POST') }),
   ])("when there isn't a session", async (preprintId, preprintTitle, connection) => {
     const formStore = new Keyv()
@@ -269,7 +270,7 @@ describe('writeReviewPersona', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({ persona: fc.string() }, { withDeletedKeys: true }),

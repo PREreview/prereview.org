@@ -8,14 +8,14 @@ import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
+import { PreprintTitle, getPreprintTitle } from '../preprint'
 import { toUrl } from '../public-url'
-import { preprintMatch, reviewMatch, writeReviewMatch } from '../routes'
+import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from '../routes'
 import { User, getUser } from '../user'
-import { Preprint, getPreprint } from './preprint'
 import { PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
 
 export const writeReviewPublished = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -54,7 +54,7 @@ function successMessage({
   user,
 }: {
   review: PublishedReview
-  preprint: Preprint
+  preprint: PreprintTitle
   user: User
 }) {
   return pipe(
@@ -132,7 +132,7 @@ function successMessage({
               appreciation for their help!
             </p>
 
-            <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="button">Back to preprint</a>
+            <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="button">Back to preprint</a>
           </main>
         `,
         skipLinks: [[html`Skip to main content`, '#main-content']],

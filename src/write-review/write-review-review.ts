@@ -13,17 +13,17 @@ import { InvalidE, MissingE, hasAnError, invalidE, missingE } from '../form'
 import { Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
+import { PreprintTitle, getPreprintTitle } from '../preprint'
 import { writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewReviewMatch } from '../routes'
 import { NonEmptyStringC } from '../string'
 import { User, getUser } from '../user'
 import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
-import { Preprint, getPreprint } from './preprint'
 
 const turndown = new TurndownService({ bulletListMarker: '-', emDelimiter: '*', headingStyle: 'atx' })
 turndown.keep(['sub', 'sup'])
 
 export const writeReviewReview = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -66,14 +66,14 @@ export const writeReviewReview = flow(
 )
 
 const showWriteReviewForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     writeReviewForm(preprint, { review: E.right(form.review) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showWriteReviewErrorForm = (preprint: Preprint, user: User) =>
+const showWriteReviewErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
     fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
@@ -81,21 +81,21 @@ const showWriteReviewErrorForm = (preprint: Preprint, user: User) =>
   )
 
 const showPasteReviewForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     pasteReviewForm(preprint, { review: E.right(form.review) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showPasteReviewErrorForm = (preprint: Preprint, user: User) =>
+const showPasteReviewErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
     fromReaderK((form: PasteReviewForm) => pasteReviewForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.decodeBody(body =>
       E.right({
@@ -124,7 +124,7 @@ const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
     ),
   )
 
-const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.decodeBody(
       flow(
@@ -162,7 +162,7 @@ type PasteReviewForm = {
   readonly review: E.Either<MissingE, Html | undefined>
 }
 
-function writeReviewForm(preprint: Preprint, form: WriteReviewForm, user: User) {
+function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm, user: User) {
   const error = hasAnError(form)
 
   return page({
@@ -302,7 +302,7 @@ ${turndown.turndown(review)}</textarea
   })
 }
 
-function pasteReviewForm(preprint: Preprint, form: PasteReviewForm, user: User) {
+function pasteReviewForm(preprint: PreprintTitle, form: PasteReviewForm, user: User) {
   const error = hasAnError(form)
 
   return page({

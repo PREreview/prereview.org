@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewAddAuthorsMatch, writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
@@ -18,7 +19,7 @@ describe('writeReviewAuthors', () => {
   describe('when there are more authors', () => {
     test.prop([
       fc.indeterminatePreprintId(),
-      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+      fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           body: fc.constant({ moreAuthors: 'yes', moreAuthorsApproved: 'yes' }),
@@ -52,7 +53,7 @@ describe('writeReviewAuthors', () => {
     ])('when they have read and agreed', async (preprintId, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintId)({
           formStore,
@@ -82,7 +83,7 @@ describe('writeReviewAuthors', () => {
 
     test.prop([
       fc.indeterminatePreprintId(),
-      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+      fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           body: fc.record(
@@ -132,7 +133,7 @@ describe('writeReviewAuthors', () => {
     describe("when they don't want to be listed", () => {
       test.prop([
         fc.indeterminatePreprintId(),
-        fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+        fc.preprintTitle(),
         fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
           fc.connection({
             body: fc.record(
@@ -160,7 +161,7 @@ describe('writeReviewAuthors', () => {
       ])('when the form is completed', async (preprintId, preprintTitle, connection, user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-        const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+        const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
         const actual = await runMiddleware(
           _.writeReviewAuthors(preprintId)({
             formStore,
@@ -189,7 +190,7 @@ describe('writeReviewAuthors', () => {
 
       test.prop([
         fc.indeterminatePreprintId(),
-        fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+        fc.preprintTitle(),
         fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
           fc.connection({
             body: fc.record(
@@ -254,7 +255,7 @@ describe('writeReviewAuthors', () => {
   describe("when there aren't more authors", () => {
     test.prop([
       fc.indeterminatePreprintId(),
-      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+      fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           body: fc.record(
@@ -282,7 +283,7 @@ describe('writeReviewAuthors', () => {
     ])('when the form is completed', async (preprintId, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintId)({
           formStore,
@@ -309,7 +310,7 @@ describe('writeReviewAuthors', () => {
 
     test.prop([
       fc.indeterminatePreprintId(),
-      fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+      fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           body: fc.record(
@@ -370,7 +371,7 @@ describe('writeReviewAuthors', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record(
@@ -482,7 +483,7 @@ describe('writeReviewAuthors', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.connection({
       body: fc.record(
         { moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'), moreAuthorsApproved: fc.constant('yes') },
@@ -520,7 +521,7 @@ describe('writeReviewAuthors', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record(

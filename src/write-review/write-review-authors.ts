@@ -13,6 +13,7 @@ import { MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
+import { PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
@@ -21,10 +22,9 @@ import {
 } from '../routes'
 import { User, getUser } from '../user'
 import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
-import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewAuthors = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint }),
@@ -56,7 +56,7 @@ export const writeReviewAuthors = flow(
 )
 
 const showAuthorsForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     authorsForm(
       preprint,
       {
@@ -70,14 +70,14 @@ const showAuthorsForm = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showAuthorsErrorForm = (preprint: Preprint, user: User) =>
+const showAuthorsErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
     fromReaderK((form: AuthorsForm) => authorsForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Preprint; user: User }) =>
+const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.decodeBody(body =>
       pipe(
@@ -136,7 +136,7 @@ type AuthorsForm = {
   readonly moreAuthorsApproved: E.Either<MissingE, 'yes' | undefined>
 }
 
-function authorsForm(preprint: Preprint, form: AuthorsForm, user: User) {
+function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User) {
   const error = hasAnError(form)
 
   return page({

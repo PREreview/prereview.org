@@ -12,7 +12,6 @@ import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RR from 'fp-ts/ReadonlyRecord'
-import * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
@@ -33,18 +32,13 @@ import {
 } from 'zenodo-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { RecentPrereview } from './home'
-import { Html, plainText, sanitizeHtml } from './html'
+import { plainText, sanitizeHtml } from './html'
+import { GetPreprintEnv, GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
 import { IndeterminatePreprintId, PreprintDoiD, PreprintId, fromPreprintDoi, fromUrl } from './preprint-id'
 import { Prereview } from './review'
 import { NewPrereview } from './write-review'
 
 import PlainDate = Temporal.PlainDate
-
-interface GetPreprintTitleEnv {
-  getPreprintTitle: (
-    id: IndeterminatePreprintId,
-  ) => TE.TaskEither<unknown, { id: PreprintId; title: Html; language: LanguageCode; url: URL }>
-}
 
 export const getRecentPrereviewsFromZenodo = () =>
   pipe(
@@ -150,7 +144,7 @@ export function toExternalIdentifier(preprint: IndeterminatePreprintId) {
     .exhaustive()
 }
 
-function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & GetPreprintTitleEnv, unknown, Prereview> {
+function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & GetPreprintEnv, unknown, Prereview> {
   return pipe(
     RTE.of(record),
     RTE.bindW('preprintId', RTE.fromOptionK(() => new NotFound())(getReviewedPreprintId)),
@@ -158,13 +152,19 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
     RTE.bindW('license', RTE.fromEitherK(PrereviewLicenseD.decode)),
     RTE.chain(review =>
       sequenceS(RTE.ApplyPar)({
-        authors: RTE.right<F.FetchEnv & GetPreprintTitleEnv>(review.metadata.creators as never),
+        authors: RTE.right<F.FetchEnv & GetPreprintEnv>(review.metadata.creators as never),
         doi: RTE.right(review.metadata.doi),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
         license: RTE.right(review.license),
         published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
-        preprint: RTE.asksReaderTaskEither(
-          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintId)),
+        preprint: pipe(
+          getPreprint(review.preprintId),
+          RTE.map(preprint => ({
+            id: preprint.id,
+            title: preprint.title.text,
+            language: preprint.title.language,
+            url: preprint.url,
+          })),
         ),
         text: getReviewText(review.reviewTextUrl),
       }),
@@ -176,14 +176,12 @@ function recordToRecentPrereview(record: Record): RTE.ReaderTaskEither<GetPrepri
   return pipe(
     RTE.of(record),
     RTE.bindW('preprintId', RTE.fromOptionK(() => 'no reviewed preprint')(getReviewedPreprintId)),
-    RTE.chain(review =>
+    RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
         id: RTE.right(review.id),
         reviewers: RTE.right(pipe(review.metadata.creators, RNEA.map(get('name')))),
         published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
-        preprint: RTE.asksReaderTaskEither(
-          RTE.fromTaskEitherK(({ getPreprintTitle }: GetPreprintTitleEnv) => getPreprintTitle(review.preprintId)),
-        ),
+        preprint: getPreprintTitle(review.preprintId),
       }),
     ),
   )

@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
@@ -17,7 +18,7 @@ import { runMiddleware } from '../middleware'
 describe('writeReviewAddAuthors', () => {
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -49,7 +50,7 @@ describe('writeReviewAddAuthors', () => {
   ])('when the form is completed', async (preprintId, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-    const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+    const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
     const actual = await runMiddleware(
       _.writeReviewAddAuthors(preprintId)({
         formStore,
@@ -75,7 +76,7 @@ describe('writeReviewAddAuthors', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -100,7 +101,7 @@ describe('writeReviewAddAuthors', () => {
   ])('when the form is incomplete', async (preprintId, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-    const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+    const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
     const actual = await runMiddleware(
       _.writeReviewAddAuthors(preprintId)({
         formStore,
@@ -126,7 +127,7 @@ describe('writeReviewAddAuthors', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -136,7 +137,7 @@ describe('writeReviewAddAuthors', () => {
     fc.user(),
   ])('when there is no form', async (preprintId, preprintTitle, connection, user) => {
     const formStore = new Keyv()
-    const getPreprintTitle: Mock<_.GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+    const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
     const actual = await runMiddleware(
       _.writeReviewAddAuthors(preprintId)({
         formStore,
@@ -162,7 +163,7 @@ describe('writeReviewAddAuthors', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
+    fc.preprintTitle(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -270,33 +271,32 @@ describe('writeReviewAddAuthors', () => {
     )
   })
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.record({ id: fc.preprintId(), title: fc.html(), language: fc.languageCode() }),
-    fc.connection({ method: fc.constant('POST') }),
-  ])("when there isn't a session", async (preprintId, preprintTitle, connection) => {
-    const formStore = new Keyv()
-    const getPreprintTitle = () => TE.right(preprintTitle)
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection({ method: fc.constant('POST') })])(
+    "when there isn't a session",
+    async (preprintId, preprintTitle, connection) => {
+      const formStore = new Keyv()
+      const getPreprintTitle = () => TE.right(preprintTitle)
 
-    const actual = await runMiddleware(
-      _.writeReviewAddAuthors(preprintId)({
-        formStore,
-        getPreprintTitle,
-        getUser: () => M.left('no-session'),
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.writeReviewAddAuthors(preprintId)({
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.left('no-session'),
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
 })

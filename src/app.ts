@@ -40,11 +40,12 @@ import {
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { FathomEnv, PhaseEnv } from './page'
 import { getPreprintFromPhilsci } from './philsci'
-import { preprint, redirectToPreprint } from './preprint'
 import { IndeterminatePreprintId, PreprintId } from './preprint-id'
+import { preprintReviews, redirectToPreprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import { PublicUrlEnv } from './public-url'
 import { review } from './review'
+import { reviewAPreprint } from './review-a-preprint'
 import {
   findAPreprintMatch,
   homeMatch,
@@ -52,9 +53,10 @@ import {
   logOutMatch,
   orcidCodeMatch,
   orcidErrorMatch,
-  preprintMatch,
-  preprintUuidMatch,
+  preprintReviewsMatch,
+  preprintReviewsUuidMatch,
   privacyPolicyMatch,
+  reviewAPreprintMatch,
   reviewMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAlreadyWrittenMatch,
@@ -152,6 +154,26 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       ),
     ),
     pipe(
+      reviewAPreprintMatch.parser,
+      P.map(() => reviewAPreprint),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          doesPreprintExist: flow(
+            flip(getPreprintTitle)(env),
+            TE.map(() => true),
+            TE.orElseW(error =>
+              match(error)
+                .with('not-found', () => TE.right(false))
+                .with('unavailable', TE.left)
+                .exhaustive(),
+            ),
+          ),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
       logInMatch.parser,
       P.map(() => logIn),
     ),
@@ -174,8 +196,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(({ error }) => authenticateError(error)),
     ),
     pipe(
-      preprintMatch.parser,
-      P.map(({ id }) => preprint(id)),
+      preprintReviewsMatch.parser,
+      P.map(({ id }) => preprintReviews(id)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
@@ -189,8 +211,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       ),
     ),
     pipe(
-      preprintUuidMatch.parser,
-      P.map(({ uuid }) => redirectToPreprint(uuid)),
+      preprintReviewsUuidMatch.parser,
+      P.map(({ uuid }) => redirectToPreprintReviews(uuid)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
@@ -207,7 +229,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getPrereview: flip(getPrereviewFromZenodo)({
             ...env,
-            getPreprintTitle: flip(getPreprintTitle)(env),
+            getPreprint: flip(getPreprint)(env),
           }),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
@@ -264,6 +286,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
+          getPreprint: flip(getPreprint)(env),
           getPreprintTitle: flip(getPreprintTitle)(env),
           publishPrereview: flip((newPrereview: NewPrereview) =>
             pipe(
@@ -298,7 +321,6 @@ const getPreprintTitle = flow(
     id: preprint.id,
     language: preprint.title.language,
     title: preprint.title.text,
-    url: preprint.url,
   })),
 )
 

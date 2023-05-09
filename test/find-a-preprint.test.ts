@@ -12,7 +12,7 @@ import type { Mock } from 'jest-mock'
 import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/find-a-preprint'
 import { fromPreprintDoi } from '../src/preprint-id'
-import { preprintMatch } from '../src/routes'
+import { preprintReviewsMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
@@ -200,7 +200,7 @@ describe('find-a-preprint', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(preprintMatch.formatter, { id }),
+            value: format(preprintReviewsMatch.formatter, { id }),
           },
           { type: 'endResponse' },
         ]),

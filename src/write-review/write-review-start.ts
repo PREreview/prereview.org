@@ -11,14 +11,14 @@ import { html, plainText, sendHtml } from '../html'
 import { logInAndRedirect } from '../log-in'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { FathomEnv, PhaseEnv, page } from '../page'
+import { PreprintTitle, getPreprintTitle } from '../preprint'
 import { PublicUrlEnv } from '../public-url'
-import { preprintMatch, writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../routes'
+import { preprintReviewsMatch, writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../routes'
 import { GetUserEnv, User, getUser } from '../user'
 import { Form, getForm, nextFormMatch } from './form'
-import { Preprint, getPreprint } from './preprint'
 
 export const writeReviewStart = flow(
-  RM.fromReaderTaskEitherK(getPreprint),
+  RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
       getUser,
@@ -61,12 +61,12 @@ const showCarryOnPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function carryOnPage(preprint: Preprint, form: Form, user: User) {
+function carryOnPage(preprint: PreprintTitle, form: Form, user: User) {
   return page({
     title: plainText`Write a PREreview`,
     content: html`
       <nav>
-        <a href="${format(preprintMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="main-content">
