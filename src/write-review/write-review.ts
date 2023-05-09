@@ -1,22 +1,25 @@
+import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Reader } from 'fp-ts/Reader'
+import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { html, plainText, sendHtml } from '../html'
+import { Html, html, plainText, rawHtml, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import { PreprintTitle, getPreprintTitle } from '../preprint'
+import { Preprint, getPreprint } from '../preprint'
 import { preprintReviewsMatch, writeReviewStartMatch } from '../routes'
+import { renderDate } from '../time'
 import { User, getUser } from '../user'
 import { getForm } from './form'
 
 export const writeReview = flow(
-  RM.fromReaderTaskEitherK(getPreprintTitle),
+  RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
       getUser,
@@ -62,7 +65,7 @@ const showStartPage = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function startPage(preprint: PreprintTitle, user?: User) {
+function startPage(preprint: Preprint, user?: User) {
   return page({
     title: plainText`Write a PREreview`,
     content: html`
@@ -73,9 +76,88 @@ function startPage(preprint: PreprintTitle, user?: User) {
       <main id="main-content">
         <h1>Write a PREreview</h1>
 
+        <article class="preview" tabindex="0" aria-labelledby="preprint-title">
+          <header>
+            <h2 lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}" id="preprint-title">
+              ${preprint.title.text}
+            </h2>
+
+            <div class="byline">
+              <span class="visually-hidden">Authored</span> by
+              ${pipe(
+                preprint.authors,
+                RNEA.map(author => author.name),
+                formatList('en'),
+              )}
+            </div>
+
+            <dl>
+              <div>
+                <dt>Posted</dt>
+                <dd>${renderDate(preprint.posted)}</dd>
+              </div>
+              <div>
+                <dt>Server</dt>
+                <dd>
+                  ${match(preprint.id.type)
+                    .with('africarxiv', () => 'AfricArXiv Preprints')
+                    .with('arxiv', () => 'arXiv')
+                    .with('biorxiv', () => 'bioRxiv')
+                    .with('chemrxiv', () => 'ChemRxiv')
+                    .with('eartharxiv', () => 'EarthArXiv')
+                    .with('ecoevorxiv', () => 'EcoEvoRxiv')
+                    .with('edarxiv', () => 'EdArXiv')
+                    .with('engrxiv', () => 'engrXiv')
+                    .with('medrxiv', () => 'medRxiv')
+                    .with('metaarxiv', () => 'MetaArXiv')
+                    .with('osf', () => 'OSF Preprints')
+                    .with('philsci', () => 'PhilSci-Archive')
+                    .with('preprints.org', () => 'Preprints.org')
+                    .with('psyarxiv', () => 'PsyArXiv')
+                    .with('research-square', () => 'Research Square')
+                    .with('scielo', () => 'SciELO Preprints')
+                    .with('science-open', () => 'ScienceOpen Preprints')
+                    .with('socarxiv', () => 'SocArXiv')
+                    .exhaustive()}
+                </dd>
+              </div>
+              ${match(preprint.id)
+                .with(
+                  { type: 'philsci' },
+                  id => html`
+                    <div>
+                      <dt>Item ID</dt>
+                      <dd>${id.value}</dd>
+                    </div>
+                  `,
+                )
+                .with(
+                  { value: P.when(isDoi) },
+                  id => html`
+                    <div>
+                      <dt>DOI</dt>
+                      <dd class="doi" translate="no">${id.value}</dd>
+                    </div>
+                  `,
+                )
+                .exhaustive()}
+            </dl>
+          </header>
+
+          ${preprint.abstract
+            ? html`
+                <div lang="${preprint.abstract.language}" dir="${getLangDir(preprint.abstract.language)}">
+                  ${preprint.abstract.text}
+                </div>
+              `
+            : ''}
+        </article>
+
         <p>
-          You can write a PREreview of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}"
-            >${preprint.title}</span
+          You can write a PREreview of “<span
+            lang="${preprint.title.language}"
+            dir="${getLangDir(preprint.title.language)}"
+            >${preprint.title.text}</span
           >”. A PREreview is a free-text review of a preprint and can vary from a few sentences to a lengthy report,
           similar to a journal-organized peer-review report.
         </p>
@@ -107,6 +189,18 @@ function startPage(preprint: PreprintTitle, user?: User) {
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
+}
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    RNEA.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/83
