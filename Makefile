@@ -1,4 +1,4 @@
-.PHONY: check format lint-css lint-ts test test-fast test-integration update-snapshots test-integration-image
+.PHONY: check format lint-css lint-ts typecheck test test-fast test-integration update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -6,7 +6,7 @@ node_modules: package.json package-lock.json
 	npm install
 	touch node_modules
 
-check: format lint-ts lint-css test-fast
+check: format lint-ts lint-css typecheck test-fast
 
 format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location=.cache/prettier/ src '**'
@@ -16,6 +16,9 @@ lint-ts: node_modules
 
 lint-css: node_modules
 	npx stylelint '**/*.css'
+
+typecheck: node_modules
+	npx tsc --incremental --noEmit --tsBuildInfoFile ".cache/tsc"
 
 test: node_modules
 	npx jest ${TEST}
