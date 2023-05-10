@@ -1,4 +1,4 @@
-.PHONY: check test test-fast test-integration update-snapshots test-integration-image
+.PHONY: check lint-ts test test-fast test-integration update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -6,7 +6,10 @@ node_modules: package.json package-lock.json
 	npm install
 	touch node_modules
 
-check: test-fast
+check: lint-ts test-fast
+
+lint-ts: node_modules
+	npx eslint . --cache --cache-location ".cache/eslint/" --max-warnings 0
 
 test: node_modules
 	npx jest ${TEST}
