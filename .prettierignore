@@ -1,7 +1,6 @@
 /.cache/
 /.idea/
 /.vscode/
-/.webpack/
 /data/
 /dist/
 /integration/snapshots/

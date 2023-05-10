@@ -10,7 +10,7 @@ const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts')
 module.exports = {
   cache: {
     buildDependencies: { config: [__filename] },
-    cacheDirectory: path.resolve(__dirname, '.webpack'),
+    cacheDirectory: path.resolve(__dirname, '.cache/webpack'),
     compression: false,
     type: 'filesystem',
   },
