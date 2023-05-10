@@ -325,3 +325,19 @@ jobs:
         run: flyctl deploy --config fly.${{ matrix.instance }}.toml --image ${{ needs.push.outputs.image }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  notify:
+    name: 'Notify of failure'
+    runs-on: ubuntu-20.04
+    needs:
+      - deploy
+    if: failure() && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: voxmedia/github-action-slack-notify-build@v1.1.2
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        with:
+          channel_id: CR6B5804W
+          status: FAILED
+          color: danger
