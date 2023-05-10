@@ -8,6 +8,10 @@ node_modules: package.json package-lock.json
 
 check: format lint-ts lint-css typecheck test-fast
 
+start:
+	docker-compose up -d
+	REDIS_URI=redis://localhost:6379 npm start
+
 format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location=.cache/prettier/ src '**'
 
