@@ -1,4 +1,4 @@
-.PHONY: check lint-css lint-ts test test-fast test-integration update-snapshots test-integration-image
+.PHONY: check format lint-css lint-ts test test-fast test-integration update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -6,7 +6,10 @@ node_modules: package.json package-lock.json
 	npm install
 	touch node_modules
 
-check: lint-ts lint-css test-fast
+check: format lint-ts lint-css test-fast
+
+format: node_modules
+	npx prettier --ignore-unknown --check '**'
 
 lint-ts: node_modules
 	npx eslint . --cache --cache-location ".cache/eslint/" --max-warnings 0
