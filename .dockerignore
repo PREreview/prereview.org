@@ -1,6 +1,6 @@
+/.cache/
 /.git/
 /.github/
-/.webpack/
 /data/
 /dist/
 /integration/snapshots/

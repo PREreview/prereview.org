@@ -46,6 +46,10 @@ import {
 import { NonEmptyString, isNonEmptyString } from '../src/string'
 import { User } from '../src/user'
 
+if (process.env.FAST_CHECK_SINGLE_RUN) {
+  fc.configureGlobal({ numRuns: 1 })
+}
+
 export type Arbitrary<T> = fc.Arbitrary<T>
 
 export const {

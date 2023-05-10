@@ -1,5 +1,8 @@
-/.webpack/
+/.cache/
+/.idea/
+/.vscode/
 /data/
 /dist/
+/integration/snapshots/
 /integration-results/
 /src/manifest.json

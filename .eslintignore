@@ -1,4 +1,4 @@
-/.webpack/
+/.cache/
 /data/
 /dist/
 /integration-results/
