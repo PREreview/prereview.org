@@ -13,7 +13,7 @@ start:
 	REDIS_URI=redis://localhost:6379 npm start
 
 format: node_modules
-	npx prettier --ignore-unknown --check --cache --cache-location=.cache/prettier/ src '**'
+	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
 
 lint-ts: node_modules
 	npx eslint . --cache --cache-location ".cache/eslint/" --max-warnings 0
