@@ -9,7 +9,7 @@ node_modules: package.json package-lock.json
 check: format lint-ts lint-css test-fast
 
 format: node_modules
-	npx prettier --ignore-unknown --check '**'
+	npx prettier --ignore-unknown --check --cache --cache-location=.cache/prettier/ src '**'
 
 lint-ts: node_modules
 	npx eslint . --cache --cache-location ".cache/eslint/" --max-warnings 0
