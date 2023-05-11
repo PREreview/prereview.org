@@ -63,8 +63,8 @@ jobs:
         with:
           provenance: false
           outputs: type=docker,dest=/tmp/image.tar
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,ignore-error=true
+          cache-to: type=gha,mode=max,ignore-error=true
 
       - name: 'Upload build'
         uses: actions/upload-artifact@v3.1.2
@@ -169,8 +169,8 @@ jobs:
         with:
           load: true
           target: test-integration
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,ignore-error=true
+          cache-to: type=gha,mode=max,ignore-error=true
 
       - name: 'Run Playwright'
         id: 'playwright'
