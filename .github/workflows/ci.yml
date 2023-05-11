@@ -334,7 +334,7 @@ jobs:
     if: failure() && github.ref == 'refs/heads/main'
 
     steps:
-      - uses: voxmedia/github-action-slack-notify-build@v1.1.2
+      - uses: voxmedia/github-action-slack-notify-build@v1.6.0
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
         with:
