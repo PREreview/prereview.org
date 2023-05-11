@@ -12,7 +12,7 @@ env:
 jobs:
   build-assets:
     name: 'Build assets'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: 'Checkout code'
@@ -46,7 +46,7 @@ jobs:
 
   build-image:
     name: 'Build image'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       image: ${{ steps.build.outputs.imageid }}
 
@@ -74,7 +74,7 @@ jobs:
 
   format:
     name: 'Format'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: 'Checkout code'
@@ -94,7 +94,7 @@ jobs:
 
   lint:
     name: 'Lint'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - build-assets
 
@@ -122,7 +122,7 @@ jobs:
 
   test:
     name: 'Test'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - build-assets
 
@@ -150,7 +150,7 @@ jobs:
 
   test-integration:
     name: 'Integration test (${{ matrix.shard }}/${{ strategy.job-total }})'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -185,7 +185,7 @@ jobs:
 
   test-smoke:
     name: 'Smoke test'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - build-image
 
@@ -207,7 +207,7 @@ jobs:
 
   test-web:
     name: 'Web Tests'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: 'Checkout code'
@@ -233,7 +233,7 @@ jobs:
 
   typecheck:
     name: 'Typecheck'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - build-assets
 
@@ -261,7 +261,7 @@ jobs:
 
   push:
     name: 'Push image'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     outputs:
       image: ${{ steps.image.outputs.image }}
@@ -305,7 +305,7 @@ jobs:
 
   deploy:
     name: 'Deploy (${{ matrix.instance }})'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     needs:
       - push
@@ -328,7 +328,7 @@ jobs:
 
   notify:
     name: 'Notify of failure'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - deploy
     if: failure() && github.ref == 'refs/heads/main'
