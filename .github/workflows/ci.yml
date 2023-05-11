@@ -12,7 +12,7 @@ env:
 jobs:
   build-assets:
     name: 'Build assets'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: 'Checkout code'
@@ -46,7 +46,7 @@ jobs:
 
   build-image:
     name: 'Build image'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       image: ${{ steps.build.outputs.imageid }}
 
@@ -63,8 +63,8 @@ jobs:
         with:
           provenance: false
           outputs: type=docker,dest=/tmp/image.tar
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,ignore-error=true
+          cache-to: type=gha,mode=max,ignore-error=true
 
       - name: 'Upload build'
         uses: actions/upload-artifact@v3.1.2
@@ -74,7 +74,7 @@ jobs:
 
   format:
     name: 'Format'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: 'Checkout code'
@@ -94,7 +94,7 @@ jobs:
 
   lint:
     name: 'Lint'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - build-assets
 
@@ -122,7 +122,7 @@ jobs:
 
   test:
     name: 'Test'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - build-assets
 
@@ -150,7 +150,7 @@ jobs:
 
   test-integration:
     name: 'Integration test (${{ matrix.shard }}/${{ strategy.job-total }})'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -169,8 +169,8 @@ jobs:
         with:
           load: true
           target: test-integration
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,ignore-error=true
+          cache-to: type=gha,mode=max,ignore-error=true
 
       - name: 'Run Playwright'
         id: 'playwright'
@@ -185,7 +185,7 @@ jobs:
 
   test-smoke:
     name: 'Smoke test'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - build-image
 
@@ -207,7 +207,7 @@ jobs:
 
   test-web:
     name: 'Web Tests'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: 'Checkout code'
@@ -233,7 +233,7 @@ jobs:
 
   typecheck:
     name: 'Typecheck'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - build-assets
 
@@ -261,7 +261,7 @@ jobs:
 
   push:
     name: 'Push image'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     outputs:
       image: ${{ steps.image.outputs.image }}
@@ -277,7 +277,7 @@ jobs:
 
     steps:
       - name: 'Set up flyctl'
-        uses: superfly/flyctl-actions/setup-flyctl@master
+        uses: superfly/flyctl-actions/setup-flyctl@v1.4
 
       - name: 'Log in to the registry'
         run: flyctl auth docker
@@ -305,7 +305,7 @@ jobs:
 
   deploy:
     name: 'Deploy (${{ matrix.instance }})'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     needs:
       - push
@@ -319,7 +319,7 @@ jobs:
         uses: actions/checkout@v3.5.2
 
       - name: 'Set up flyctl'
-        uses: superfly/flyctl-actions/setup-flyctl@master
+        uses: superfly/flyctl-actions/setup-flyctl@v1.4
 
       - name: 'Deploy app'
         run: flyctl deploy --config fly.${{ matrix.instance }}.toml --image ${{ needs.push.outputs.image }}
@@ -328,7 +328,7 @@ jobs:
 
   notify:
     name: 'Notify of failure'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs:
       - deploy
     if: failure() && github.ref == 'refs/heads/main'
@@ -338,6 +338,6 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
         with:
-          channel_id: CR6B5804W
+          channel_id: G015ZLXJA9W
           status: FAILED
           color: danger
