@@ -62,9 +62,12 @@
         ]
       }
     ],
+    "import/no-named-as-default": "off",
+    "import/no-named-as-default-member": "off",
     "quotes": ["error", "single", { "avoidEscape": true }]
   },
   "settings": {
-    "import/core-modules": ["@jest/globals"]
+    "import/core-modules": ["@jest/globals"],
+    "import/resolver": { "typescript": true }
   }
 }
