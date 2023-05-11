@@ -1,35 +1,35 @@
 import express from 'express'
 import * as P from 'fp-ts-routing'
-import { Json } from 'fp-ts/Json'
+import type { Json } from 'fp-ts/Json'
 import { concatAll } from 'fp-ts/Monoid'
-import { Option } from 'fp-ts/Option'
+import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
+import { type Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { createProxyMiddleware } from 'http-proxy-middleware'
-import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
-import { OAuthEnv } from 'hyper-ts-oauth'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import type { OAuthEnv } from 'hyper-ts-oauth'
 import { route } from 'hyper-ts-routing'
-import { SessionEnv, getSession } from 'hyper-ts-session'
+import { type SessionEnv, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
-import { ZenodoAuthenticatedEnv } from 'zenodo-ts'
+import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
-import { GhostApiEnv } from './ghost'
+import type { GhostApiEnv } from './ghost'
 import { home } from './home'
 import { handleError } from './http-error'
 import {
-  LegacyPrereviewApiEnv,
+  type LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
   getPreprintIdFromLegacyPreviewUuid,
   getPseudonymFromLegacyPrereview,
@@ -38,12 +38,12 @@ import {
   isLegacyCompatiblePrereview,
 } from './legacy-prereview'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
-import { FathomEnv, PhaseEnv } from './page'
+import type { FathomEnv, PhaseEnv } from './page'
 import { getPreprintFromPhilsci } from './philsci'
-import { IndeterminatePreprintId, PreprintId } from './preprint-id'
+import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintReviews, redirectToPreprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
-import { PublicUrlEnv } from './public-url'
+import type { PublicUrlEnv } from './public-url'
 import { review } from './review'
 import { reviewAPreprint } from './review-a-preprint'
 import {
@@ -72,8 +72,8 @@ import {
 } from './routes'
 import { getUserFromSession } from './user'
 import {
-  FormStoreEnv,
-  NewPrereview,
+  type FormStoreEnv,
+  type NewPrereview,
   writeReview,
   writeReviewAddAuthors,
   writeReviewAlreadyWritten,

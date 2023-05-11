@@ -1,6 +1,6 @@
 import { pipe } from 'fp-ts/function'
 import { NotFound, ServiceUnavailable } from 'http-errors'
-import { ResponseEnded, Status, StatusOpen } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import { handleError } from './http-error'
 

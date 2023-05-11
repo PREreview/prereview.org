@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { P, match } from 'ts-pattern'
-import { Html, html } from './html'
+import { type Html, html } from './html'
 
 import PlainDate = Temporal.PlainDate
 import PlainYearMonth = Temporal.PlainYearMonth

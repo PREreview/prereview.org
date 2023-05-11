@@ -1,11 +1,11 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
-import * as TE from 'fp-ts/TaskEither'
-import { LanguageCode } from 'iso-639-1'
-import { Orcid } from 'orcid-id-ts'
-import { Html } from './html'
-import { IndeterminatePreprintId, PreprintId } from './preprint-id'
-import { PartialDate } from './time'
+import type { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
+import type * as TE from 'fp-ts/TaskEither'
+import type { LanguageCode } from 'iso-639-1'
+import type { Orcid } from 'orcid-id-ts'
+import type { Html } from './html'
+import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
+import type { PartialDate } from './time'
 
 export type Preprint = {
   abstract?: {

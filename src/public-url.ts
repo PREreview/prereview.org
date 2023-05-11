@@ -1,4 +1,4 @@
-import { Formatter, format } from 'fp-ts-routing'
+import { type Formatter, format } from 'fp-ts-routing'
 import * as R from 'fp-ts/Reader'
 import * as RE from 'fp-ts/ReaderEither'
 import { constant, pipe } from 'fp-ts/function'

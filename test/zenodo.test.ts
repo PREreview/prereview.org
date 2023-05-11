@@ -1,24 +1,24 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi } from 'doi-ts'
+import type { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import {
-  Record,
+  type Record,
   RecordC,
-  Records,
+  type Records,
   RecordsC,
-  SubmittedDeposition,
+  type SubmittedDeposition,
   SubmittedDepositionC,
-  UnsubmittedDeposition,
+  type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
 import { plainText, rawHtml } from '../src/html'
-import { NewPrereview } from '../src/write-review'
+import type { NewPrereview } from '../src/write-review'
 import * as _ from '../src/zenodo'
 import * as fc from './fc'
 

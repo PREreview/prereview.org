@@ -6,7 +6,7 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { match, P as p } from 'ts-pattern'
 import { isUuid } from 'uuid-ts'
-import { PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './preprint-id'
+import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './preprint-id'
 
 const UuidD = D.fromRefinement(isUuid, 'UUID')
 

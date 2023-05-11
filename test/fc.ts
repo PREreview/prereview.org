@@ -1,26 +1,26 @@
 import { fc } from '@fast-check/jest'
 import { Temporal } from '@js-temporal/polyfill'
 import { mod11_2 } from 'cdigit'
-import { Doi, isDoi } from 'doi-ts'
-import { Request, Response } from 'express'
-import * as F from 'fetch-fp-ts'
+import { type Doi, isDoi } from 'doi-ts'
+import type { Request, Response } from 'express'
+import type * as F from 'fetch-fp-ts'
 import { isNonEmpty } from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
-import { Json, JsonRecord } from 'fp-ts/Json'
-import { NonEmptyArray } from 'fp-ts/NonEmptyArray'
-import { Refinement } from 'fp-ts/Refinement'
-import * as H from 'hyper-ts'
+import type { Json, JsonRecord } from 'fp-ts/Json'
+import type { NonEmptyArray } from 'fp-ts/NonEmptyArray'
+import type { Refinement } from 'fp-ts/Refinement'
+import type * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
-import ISO6391, { LanguageCode } from 'iso-639-1'
+import ISO6391, { type LanguageCode } from 'iso-639-1'
 import { Headers as FetchHeaders } from 'node-fetch'
-import { Body, Headers, RequestMethod, createRequest, createResponse } from 'node-mocks-http'
-import { Orcid, isOrcid } from 'orcid-id-ts'
-import { Uuid, isUuid } from 'uuid-ts'
-import { CrossrefPreprintId } from '../src/crossref'
-import { DatacitePreprintId } from '../src/datacite'
-import { Html, sanitizeHtml, html as toHtml } from '../src/html'
-import { Preprint, PreprintTitle } from '../src/preprint'
-import {
+import { type Body, type Headers, type RequestMethod, createRequest, createResponse } from 'node-mocks-http'
+import { type Orcid, isOrcid } from 'orcid-id-ts'
+import { type Uuid, isUuid } from 'uuid-ts'
+import type { CrossrefPreprintId } from '../src/crossref'
+import type { DatacitePreprintId } from '../src/datacite'
+import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
+import type { Preprint, PreprintTitle } from '../src/preprint'
+import type {
   AfricarxivPreprintId,
   ArxivPreprintId,
   BiorxivOrMedrxivPreprintId,
@@ -43,8 +43,8 @@ import {
   ScienceOpenPreprintId,
   SocarxivPreprintId,
 } from '../src/preprint-id'
-import { NonEmptyString, isNonEmptyString } from '../src/string'
-import { User } from '../src/user'
+import { type NonEmptyString, isNonEmptyString } from '../src/string'
+import type { User } from '../src/user'
 
 if (process.env.FAST_CHECK_SINGLE_RUN) {
   fc.configureGlobal({ numRuns: 1 })

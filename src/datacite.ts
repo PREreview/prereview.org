@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Work, getWork } from 'datacite-ts'
-import { Doi, hasRegistrant } from 'doi-ts'
+import { type Work, getWork } from 'datacite-ts'
+import { type Doi, hasRegistrant } from 'doi-ts'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -12,8 +12,8 @@ import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { sanitizeHtml } from './html'
-import { Preprint } from './preprint'
-import { ArxivPreprintId } from './preprint-id'
+import type { Preprint } from './preprint'
+import type { ArxivPreprintId } from './preprint-id'
 
 import Instant = Temporal.Instant
 

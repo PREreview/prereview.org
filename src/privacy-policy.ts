@@ -1,12 +1,12 @@
-import { Reader } from 'fp-ts/Reader'
+import type { Reader } from 'fp-ts/Reader'
 import { pipe } from 'fp-ts/function'
-import { Status, StatusOpen } from 'hyper-ts'
+import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getPage } from './ghost'
-import { Html, html, plainText, sendHtml } from './html'
+import { type Html, html, plainText, sendHtml } from './html'
 import { serviceUnavailable } from './middleware'
 import { page } from './page'
-import { User, getUser } from './user'
+import { type User, getUser } from './user'
 
 export const privacyPolicy = pipe(
   RM.fromReaderTaskEither(getPage('6154aa157741400e8722bb0f')),

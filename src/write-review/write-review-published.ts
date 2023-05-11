@@ -1,18 +1,18 @@
 import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, StatusOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
+import { Status, type StatusOpen } from 'hyper-ts'
+import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import { PreprintTitle, getPreprintTitle } from '../preprint'
+import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { toUrl } from '../public-url'
 import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from '../routes'
-import { User, getUser } from '../user'
-import { PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
+import { type User, getUser } from '../user'
+import { type PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
 
 export const writeReviewPublished = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
