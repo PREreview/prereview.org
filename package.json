@@ -52,7 +52,7 @@
     "@babel/preset-typescript": "^7.21.5",
     "@csstools/postcss-global-data": "^1.0.3",
     "@fast-check/jest": "^1.6.1",
-    "@ibm/plex": "^6.2.0",
+    "@ibm/plex": "^6.3.0",
     "@open-wc/testing": "^3.1.8",
     "@playwright/test": "^1.33.0",
     "@prettier/plugin-xml": "^2.2.0",
