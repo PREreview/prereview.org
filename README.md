@@ -12,14 +12,15 @@ The source code for [beta.prereview.org].
 
 ### Running the app
 
-To build and run the app locally, create a `.env` file (based on [`.env.dist`](.env.dist)) and execute:
+To build and run the app for development, execute:
 
 ```shell
-npm ci
-npm start
+make start
 ```
 
 You can now access the app at <http://localhost:3000>.
+
+You will also have a `.env` file. This file contains environment variables controlling specific behaviours, including credentials for accessing external services.
 
 ## Operations
 
