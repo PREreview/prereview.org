@@ -1,14 +1,14 @@
-import { Doi, isDoi } from 'doi-ts'
+import { type Doi, isDoi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
-import { Json, JsonRecord } from 'fp-ts/Json'
+import type { Json, JsonRecord } from 'fp-ts/Json'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, pipe } from 'fp-ts/function'
-import { HeadersOpen } from 'hyper-ts'
+import type { HeadersOpen } from 'hyper-ts'
 import { getSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
-import { CompletedForm, CompletedFormC } from './completed-form'
+import { type CompletedForm, CompletedFormC } from './completed-form'
 
 export type PublishedReview = C.TypeOf<typeof PublishedReviewC>
 

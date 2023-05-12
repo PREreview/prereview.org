@@ -11,17 +11,11 @@
 @import url('step.css');
 
 @custom-selector :--button button:not([aria-pressed]), [role='button']:not([aria-pressed]), .button;
-
 @custom-selector :--heading h1, h2, h3, h4, h5, h6;
-
 @custom-selector :--input [type='text'], :--textarea;
-
 @custom-selector :--list ol, ul;
-
 @custom-selector :--scroller [role='region'][aria-labelledby][tabindex];
-
 @custom-selector :--textarea textarea, [contenteditable];
-
 @custom-selector :--toggle-button button[aria-pressed], [role='button'][aria-pressed];
 
 .visually-hidden:not(:focus, :active) {
@@ -1761,6 +1755,7 @@ skip-link {
       @media (width < 40em) {
         border-block-start-width: calc(var(--width-divider) / 2);
       }
+
       @media (width >= 40em) {
         border-inline-start-width: calc(var(--width-divider) / 2);
       }

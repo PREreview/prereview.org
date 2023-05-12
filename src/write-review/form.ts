@@ -1,18 +1,18 @@
 import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import { JsonRecord } from 'fp-ts/Json'
-import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
+import type { JsonRecord } from 'fp-ts/Json'
+import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { flow } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
 import * as C from 'io-ts/Codec'
-import Keyv from 'keyv'
-import { Orcid } from 'orcid-id-ts'
+import type Keyv from 'keyv'
+import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { RawHtmlC } from '../html'
 import { seeOther } from '../middleware'
-import { PreprintId } from '../preprint-id'
+import type { PreprintId } from '../preprint-id'
 import {
   writeReviewAlreadyWrittenMatch,
   writeReviewAuthorsMatch,

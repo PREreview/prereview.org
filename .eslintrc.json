@@ -40,8 +40,11 @@
     "project": "./tsconfig.json"
   },
   "rules": {
+    "@typescript-eslint/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
+    "@typescript-eslint/no-import-type-side-effects": "error",
     "fp-ts/no-module-imports": "off",
     "import/no-cycle": "error",
+    "import/no-duplicates": ["error", { "prefer-inline": true }],
     "import/no-extraneous-dependencies": [
       "error",
       { "devDependencies": ["assets/**/*.ts", "integration/**/*.ts", "test/**/*.ts", "*.ts"] }
@@ -62,9 +65,12 @@
         ]
       }
     ],
+    "import/no-named-as-default": "off",
+    "import/no-named-as-default-member": "off",
     "quotes": ["error", "single", { "avoidEscape": true }]
   },
   "settings": {
-    "import/core-modules": ["@jest/globals"]
+    "import/core-modules": ["@jest/globals"],
+    "import/resolver": { "typescript": true }
   }
 }

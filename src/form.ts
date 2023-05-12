@@ -4,7 +4,7 @@ import * as RR from 'fp-ts/ReadonlyRecord'
 import { pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import * as DE from 'io-ts/DecodeError'
-import * as D from 'io-ts/Decoder'
+import type * as D from 'io-ts/Decoder'
 import * as FS from 'io-ts/FreeSemigroup'
 
 export interface InvalidE {

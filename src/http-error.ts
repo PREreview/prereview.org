@@ -1,12 +1,12 @@
-import { Reader } from 'fp-ts/Reader'
+import type { Reader } from 'fp-ts/Reader'
 import { pipe } from 'fp-ts/function'
-import { HttpError } from 'http-errors'
-import { Status, StatusOpen } from 'hyper-ts'
+import type { HttpError } from 'http-errors'
+import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
-import { User, getUser } from './user'
+import { type User, getUser } from './user'
 
 export function handleError(error: HttpError<typeof Status.NotFound | typeof Status.ServiceUnavailable>) {
   return pipe(

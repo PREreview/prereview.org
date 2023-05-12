@@ -1,27 +1,27 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as I from 'fp-ts/Identity'
-import { Reader } from 'fp-ts/Reader'
+import type { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, StatusOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
+import { Status, type StatusOpen } from 'hyper-ts'
+import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { MissingE, hasAnError, missingE } from '../form'
+import { type MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import { PreprintTitle, getPreprintTitle } from '../preprint'
+import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
 } from '../routes'
-import { User, getUser } from '../user'
-import { Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
+import { type User, getUser } from '../user'
+import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
 export const writeReviewAuthors = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),

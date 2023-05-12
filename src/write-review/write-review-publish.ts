@@ -1,21 +1,21 @@
-import { Doi } from 'doi-ts'
+import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import { Reader } from 'fp-ts/Reader'
+import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as R from 'fp-ts/Refinement'
-import * as TE from 'fp-ts/TaskEither'
+import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, StatusOpen } from 'hyper-ts'
+import { Status, type StatusOpen } from 'hyper-ts'
 import { endSession } from 'hyper-ts-session'
-import * as M from 'hyper-ts/lib/Middleware'
+import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import { Orcid } from 'orcid-id-ts'
+import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { Html, html, plainText, sendHtml } from '../html'
+import { type Html, html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import { PreprintTitle, getPreprintTitle } from '../preprint'
+import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   preprintReviewsMatch,
   writeReviewConductMatch,
@@ -25,8 +25,8 @@ import {
   writeReviewPublishedMatch,
   writeReviewReviewMatch,
 } from '../routes'
-import { User, getUser } from '../user'
-import { CompletedForm, CompletedFormC } from './completed-form'
+import { type User, getUser } from '../user'
+import { type CompletedForm, CompletedFormC } from './completed-form'
 import { deleteForm, getForm, redirectToNextForm } from './form'
 import { storeInformationForWriteReviewPublishedPage } from './published-review'
 

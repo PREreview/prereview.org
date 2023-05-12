@@ -1,5 +1,5 @@
 import merge from 'ts-deepmerge'
-import { CompletedForm } from '../../src/write-review/completed-form'
+import type { CompletedForm } from '../../src/write-review/completed-form'
 import * as fc from '../fc'
 
 export * from '../fc'

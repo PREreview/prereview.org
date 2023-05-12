@@ -1,17 +1,23 @@
-import { Fixtures, PlaywrightTestArgs, PlaywrightTestOptions, test as baseTest, expect } from '@playwright/test'
+import {
+  type Fixtures,
+  type PlaywrightTestArgs,
+  type PlaywrightTestOptions,
+  test as baseTest,
+  expect,
+} from '@playwright/test'
 import { SystemClock } from 'clock-ts'
-import { Doi } from 'doi-ts'
-import fetchMock, { FetchMockSandbox } from 'fetch-mock'
+import type { Doi } from 'doi-ts'
+import fetchMock, { type FetchMockSandbox } from 'fetch-mock'
 import * as fs from 'fs/promises'
-import { Server } from 'http'
+import type { Server } from 'http'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
-import { Orcid } from 'orcid-id-ts'
+import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import { RecordsC, SubmittedDepositionC, UnsubmittedDepositionC, Record as ZenodoRecord } from 'zenodo-ts'
+import { RecordsC, SubmittedDepositionC, UnsubmittedDepositionC, type Record as ZenodoRecord } from 'zenodo-ts'
 import { app } from '../src/app'
-import { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
+import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
 import Logger = L.Logger
 import LogEntry = L.LogEntry

@@ -1,6 +1,6 @@
-import { Doi, hasRegistrant, isDoi, parse } from 'doi-ts'
+import { type Doi, hasRegistrant, isDoi, parse } from 'doi-ts'
 import * as O from 'fp-ts/Option'
-import { Refinement, compose } from 'fp-ts/Refinement'
+import { type Refinement, compose } from 'fp-ts/Refinement'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'

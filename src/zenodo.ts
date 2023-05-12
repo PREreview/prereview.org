@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Doi, isDoi } from 'doi-ts'
+import { type Doi, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
@@ -8,7 +8,7 @@ import * as O from 'fp-ts/Option'
 import { and } from 'fp-ts/Predicate'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
+import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RR from 'fp-ts/ReadonlyRecord'
@@ -16,14 +16,14 @@ import { flow, identity, pipe } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
-import iso6391, { LanguageCode } from 'iso-639-1'
+import iso6391, { type LanguageCode } from 'iso-639-1'
 import iso6393To1 from 'iso-639-3/to-1.json'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
-  DepositMetadata,
-  Record,
-  ZenodoAuthenticatedEnv,
+  type DepositMetadata,
+  type Record,
+  type ZenodoAuthenticatedEnv,
   createDeposition,
   getRecord,
   getRecords,
@@ -31,12 +31,12 @@ import {
   uploadFile,
 } from 'zenodo-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { RecentPrereview } from './home'
+import type { RecentPrereview } from './home'
 import { plainText, sanitizeHtml } from './html'
-import { GetPreprintEnv, GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
-import { IndeterminatePreprintId, PreprintDoiD, PreprintId, fromPreprintDoi, fromUrl } from './preprint-id'
-import { Prereview } from './review'
-import { NewPrereview } from './write-review'
+import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
+import { type IndeterminatePreprintId, PreprintDoiD, type PreprintId, fromPreprintDoi, fromUrl } from './preprint-id'
+import type { Prereview } from './review'
+import type { NewPrereview } from './write-review'
 
 import PlainDate = Temporal.PlainDate
 

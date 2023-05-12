@@ -1,6 +1,6 @@
-import { Doi } from 'doi-ts'
+import type { Doi } from 'doi-ts'
 import { Status } from 'hyper-ts'
-import { Orcid } from 'orcid-id-ts'
+import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordsC } from 'zenodo-ts'
 import { expect, test } from './base'

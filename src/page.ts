@@ -1,13 +1,13 @@
 import { format } from 'fp-ts-routing'
-import { Eq } from 'fp-ts/Eq'
+import type { Eq } from 'fp-ts/Eq'
 import * as R from 'fp-ts/Reader'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
-import { Html, PlainText, html, rawHtml } from './html'
+import { type Html, type PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
 import { logOutMatch, privacyPolicyMatch } from './routes'
-import { User } from './user'
+import type { User } from './user'
 
 export interface FathomEnv {
   readonly fathomId?: string

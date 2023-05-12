@@ -1,11 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
-import { Work, getWork } from 'crossref-ts'
-import { Doi, hasRegistrant } from 'doi-ts'
+import { type Work, getWork } from 'crossref-ts'
+import { type Doi, hasRegistrant } from 'doi-ts'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import { Refinement } from 'fp-ts/Refinement'
+import type { Refinement } from 'fp-ts/Refinement'
 import { flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { Status } from 'hyper-ts'
@@ -14,9 +14,9 @@ import sanitize from 'sanitize-html'
 import { P, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { Html, rawHtml, sanitizeHtml } from './html'
-import { Preprint } from './preprint'
-import {
+import { type Html, rawHtml, sanitizeHtml } from './html'
+import type { Preprint } from './preprint'
+import type {
   AfricarxivPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,

@@ -1,9 +1,9 @@
 import * as L from 'fp-ts-contrib/List'
 import * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
-import { Middleware } from 'hyper-ts/lib/Middleware'
+import type { Middleware } from 'hyper-ts/lib/Middleware'
 import * as M from 'hyper-ts/lib/Middleware'
-import { Action, ExpressConnection } from 'hyper-ts/lib/express'
+import type { Action, ExpressConnection } from 'hyper-ts/lib/express'
 
 export function runMiddleware<I, O, E, A>(
   ma: Middleware<I, O, E, A>,
