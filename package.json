@@ -140,7 +140,7 @@
     "lint:css": "stylelint '**/*.css'",
     "lint:ts": "eslint . --max-warnings 0",
     "start": "run-p start:*",
-    "start:app": "wait-on src/manifest.json && ts-node-dev --require dotenv/config --transpile-only src/index.ts",
+    "start:app": "wait-on src/manifest.json && ts-node-dev --require dotenv/config --watch .env --transpile-only src/index.ts",
     "start:assets": "webpack watch --mode development",
     "test": "jest",
     "test:integration": "docker run --rm --volume \"$(pwd)\"/integration/snapshots:/app/integration/snapshots --volume \"$(pwd)\"/integration-results:/app/integration-results",
