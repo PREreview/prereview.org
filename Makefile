@@ -1,4 +1,4 @@
-.PHONY: check format lint-css lint-ts typecheck test test-fast test-integration update-snapshots test-integration-image
+.PHONY: check start start-services format lint-css lint-ts typecheck test test-fast test-integration update-snapshots test-integration-image
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
@@ -8,9 +8,11 @@ node_modules: package.json package-lock.json
 
 check: format lint-ts lint-css typecheck test-fast
 
-start:
-	docker compose up --detach
+start: start-services
 	REDIS_URI=redis://localhost:6379 npm start
+
+start-services:
+	docker compose up --detach
 
 format: node_modules
 	npx prettier --ignore-unknown --check --cache --cache-location ".cache/prettier" src '**'
