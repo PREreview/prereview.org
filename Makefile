@@ -33,7 +33,7 @@ test: node_modules
 	npx jest ${TEST}
 
 test-fast: node_modules
-	FAST_CHECK_SINGLE_RUN=true npx jest --onlyChanged
+	FAST_CHECK_NUM_RUNS=10 npx jest --onlyChanged
 
 test-integration: test-integration-image
 	docker run --rm --volume "$$(pwd)"/integration/snapshots:/app/integration/snapshots --volume "$$(pwd)"/integration-results:/app/integration-results ${INTEGRATION_TEST_IMAGE_TAG} ${TEST} ${ARGS}

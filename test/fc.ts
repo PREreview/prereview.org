@@ -51,8 +51,8 @@ import type {
 import { type NonEmptyString, isNonEmptyString } from '../src/string'
 import type { User } from '../src/user'
 
-if (process.env.FAST_CHECK_SINGLE_RUN) {
-  fc.configureGlobal({ numRuns: 1 })
+if (process.env.FAST_CHECK_NUM_RUNS) {
+  fc.configureGlobal({ numRuns: parseInt(process.env.FAST_CHECK_NUM_RUNS, 10) })
 }
 
 export type Arbitrary<T> = fc.Arbitrary<T>
