@@ -12,8 +12,13 @@ import type { Refinement } from 'fp-ts/Refinement'
 import type * as H from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
-import { Headers as FetchHeaders } from 'node-fetch'
-import { type Body, type Headers, type RequestMethod, createRequest, createResponse } from 'node-mocks-http'
+import {
+  type Body,
+  type Headers as RequestHeaders,
+  type RequestMethod,
+  createRequest,
+  createResponse,
+} from 'node-mocks-http'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
 import type { CrossrefPreprintId } from '../src/crossref'
@@ -475,7 +480,7 @@ const headerName = () =>
   )
 
 export const headers = () =>
-  fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init => new FetchHeaders(init))
+  fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init => new Headers(init))
 
 export const fetchResponse = ({ status }: { status?: fc.Arbitrary<number> } = {}): fc.Arbitrary<F.Response> =>
   fc.record({
@@ -493,7 +498,7 @@ export const request = ({
   method,
 }: {
   body?: fc.Arbitrary<Body>
-  headers?: fc.Arbitrary<Headers>
+  headers?: fc.Arbitrary<RequestHeaders>
   method?: fc.Arbitrary<RequestMethod>
 } = {}): fc.Arbitrary<Request> =>
   fc
