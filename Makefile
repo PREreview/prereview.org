@@ -9,7 +9,7 @@ node_modules: package.json package-lock.json
 check: format lint-ts lint-css typecheck test-fast
 
 start:
-	docker-compose up -d
+	docker compose up --detach
 	REDIS_URI=redis://localhost:6379 npm start
 
 format: node_modules
