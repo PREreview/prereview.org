@@ -6,9 +6,18 @@ The source code for [beta.prereview.org].
 
 ## Development
 
-### Requirements
+<details>
 
-- [Node.js] v18
+<summary>Requirements</summary>
+
+- [Docker]
+- [Docker Compose]
+- [GNU Make]
+- [Node.js]
+- [Git LFS]
+- Unix-like operating system
+
+</details>
 
 ### Running the app
 
@@ -27,7 +36,11 @@ You will also have a `.env` file. This file contains environment variables contr
 Once it passes CI, we deploy every commit on the `main` branch to [beta.prereview.org] and [sandbox.prereview.org], which [Fly.io] hosts.
 
 [beta.prereview.org]: https://beta.prereview.org/
+[docker]: https://www.docker.com/
+[docker compose]: https://docs.docker.com/compose/
 [fly.io]: https://fly.io/
+[git lfs]: https://git-lfs.github.com/
+[gnu make]: https://www.gnu.org/software/make/
 [node.js]: https://nodejs.org/
 [prereview.org]: https://prereview.org/
 [sandbox.prereview.org]: https://sandbox.prereview.org/
