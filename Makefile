@@ -2,13 +2,16 @@
 
 INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 
+.env:
+	cp .env.dist .env
+
 node_modules: package.json package-lock.json
 	npm install
 	touch node_modules
 
 check: format lint-ts lint-css typecheck test-fast
 
-start: node_modules start-services
+start: .env node_modules start-services
 	REDIS_URI=redis://$(shell docker compose port redis 6379) npm start
 
 start-services:
