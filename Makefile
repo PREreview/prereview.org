@@ -8,7 +8,7 @@ node_modules: package.json package-lock.json
 
 check: format lint-ts lint-css typecheck test-fast
 
-start: start-services
+start: node_modules start-services
 	REDIS_URI=redis://$(shell docker compose port redis 6379) npm start
 
 start-services:
