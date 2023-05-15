@@ -14,7 +14,7 @@ import { getLangDir } from 'rtl-detect'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { page } from './page'
-import { reviewAPreprintMatch, reviewMatch } from './routes'
+import { aboutUsMatch, reviewAPreprintMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
 import { type User, getUser } from './user'
 
@@ -86,7 +86,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
 
             <p>Making science and scholarship more equitable, transparent, and collaborative.</p>
 
-            <a href="https://content.prereview.org/mission/" class="forward">Our mission</a>
+            <a href="${format(aboutUsMatch.formatter, {})}" class="forward">Our mission</a>
           </section>
         </div>
 
