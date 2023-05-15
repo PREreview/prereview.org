@@ -12,13 +12,13 @@ export const codeOfConduct = pipe(
   RM.fromReaderTaskEither(getPage('6154aa157741400e8722bb00')),
   RM.bindTo('content'),
   RM.apSW('user', maybeGetUser),
-  chainReaderKW(({ content, user }) => createPage(content, user)),
+  chainReaderKW(createPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(() => serviceUnavailable),
 )
 
-function createPage(content: Html, user?: User) {
+function createPage({ content, user }: { content: Html; user?: User }) {
   return page({
     title: plainText`Code of Conduct`,
     content: html`
