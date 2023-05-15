@@ -13,7 +13,12 @@ import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import { writeReviewCompetingInterestsMatch, writeReviewConductMatch, writeReviewMatch } from '../routes'
+import {
+  codeOfConductMatch,
+  writeReviewCompetingInterestsMatch,
+  writeReviewConductMatch,
+  writeReviewMatch,
+} from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -146,7 +151,7 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
 
               <p id="conduct-tip" role="note">
                 As a member of our community, we expect you to abide by the
-                <a href="https://content.prereview.org/coc/">PREreview Code&nbsp;of&nbsp;Conduct</a>.
+                <a href="${format(codeOfConductMatch.formatter, {})}">PREreview Code&nbsp;of&nbsp;Conduct</a>.
               </p>
 
               <details>

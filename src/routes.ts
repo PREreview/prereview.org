@@ -87,6 +87,8 @@ export const homeMatch = P.end
 
 export const aboutUsMatch = pipe(P.lit('about'), P.then(P.end))
 
+export const codeOfConductMatch = pipe(P.lit('code-of-conduct'), P.then(P.end))
+
 export const privacyPolicyMatch = pipe(P.lit('privacy-policy'), P.then(P.end))
 
 export const findAPreprintMatch = pipe(P.lit('find-a-preprint'), P.then(P.end))

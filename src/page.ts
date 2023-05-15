@@ -6,7 +6,7 @@ import { pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { type Html, type PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
-import { aboutUsMatch, logOutMatch, privacyPolicyMatch } from './routes'
+import { aboutUsMatch, codeOfConductMatch, logOutMatch, privacyPolicyMatch } from './routes'
 import type { User } from './user'
 
 export interface FathomEnv {
@@ -25,7 +25,7 @@ type Page = {
   readonly type?: 'two-up'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
-  readonly current?: 'about-us' | 'home' | 'privacy-policy'
+  readonly current?: 'about-us' | 'code-of-conduct' | 'home' | 'privacy-policy'
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
   readonly user?: User
 }
@@ -126,7 +126,13 @@ export function page({
 
             <ul aria-label="Support links">
               <li><a href="https://donorbox.org/prereview">Donate</a></li>
-              <li><a href="https://content.prereview.org/coc/">Code of Conduct</a></li>
+              <li>
+                <a
+                  href="${format(codeOfConductMatch.formatter, {})}"
+                  ${current === 'code-of-conduct' ? html`aria-current="page"` : ''}
+                  >Code of Conduct</a
+                >
+              </li>
               <li>
                 <a
                   href="${format(privacyPolicyMatch.formatter, {})}"
