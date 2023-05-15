@@ -21,6 +21,7 @@ import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
+import { aboutUs } from './about-us'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
@@ -47,6 +48,7 @@ import type { PublicUrlEnv } from './public-url'
 import { review } from './review'
 import { reviewAPreprint } from './review-a-preprint'
 import {
+  aboutUsMatch,
   findAPreprintMatch,
   homeMatch,
   logInMatch,
@@ -119,6 +121,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ...env,
               getPreprintTitle: flip(getPreprintTitle)(env),
             }),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      aboutUsMatch.parser,
+      P.map(() => aboutUs),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),

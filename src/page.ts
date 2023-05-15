@@ -6,7 +6,7 @@ import { pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { type Html, type PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
-import { logOutMatch, privacyPolicyMatch } from './routes'
+import { aboutUsMatch, logOutMatch, privacyPolicyMatch } from './routes'
 import type { User } from './user'
 
 export interface FathomEnv {
@@ -86,7 +86,7 @@ export function page({
                 <nav>
                   <ul>
                     <li><a href="https://content.prereview.org/">Blog</a></li>
-                    <li><a href="https://content.prereview.org/mission/">About</a></li>
+                    <li><a href="${format(aboutUsMatch.formatter, {})}">About</a></li>
                     ${user ? html`<li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
                   </ul>
                 </nav>
