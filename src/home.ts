@@ -239,6 +239,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
         </section>
       </main>
     `,
+    current: 'home',
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })

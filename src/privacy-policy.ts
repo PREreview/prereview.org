@@ -34,6 +34,7 @@ function createPage(content: Html, user?: User) {
         ${content}
       </main>
     `,
+    current: 'privacy-policy',
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })

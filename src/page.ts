@@ -25,6 +25,7 @@ type Page = {
   readonly type?: 'two-up'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
+  readonly current?: 'about-us' | 'home' | 'privacy-policy'
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
   readonly user?: User
 }
@@ -34,6 +35,7 @@ export function page({
   type,
   content,
   skipLinks = [],
+  current,
   js = [],
   user,
 }: Page): R.Reader<FathomEnv & PhaseEnv, Html> {
@@ -86,7 +88,13 @@ export function page({
                 <nav>
                   <ul>
                     <li><a href="https://content.prereview.org/">Blog</a></li>
-                    <li><a href="${format(aboutUsMatch.formatter, {})}">About</a></li>
+                    <li>
+                      <a
+                        href="${format(aboutUsMatch.formatter, {})}"
+                        ${current === 'about-us' ? html`aria-current="page"` : ''}
+                        >About</a
+                      >
+                    </li>
                     ${user ? html`<li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
                   </ul>
                 </nav>
@@ -94,7 +102,7 @@ export function page({
 
               <div class="header">
                 <div class="logo">
-                  <a href="https://prereview.org/">
+                  <a href="https://prereview.org/" ${current === 'home' ? html`aria-current="page"` : ''}>
                     <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
                   </a>
                 </div>
@@ -119,7 +127,13 @@ export function page({
             <ul aria-label="Support links">
               <li><a href="https://donorbox.org/prereview">Donate</a></li>
               <li><a href="https://content.prereview.org/coc/">Code of Conduct</a></li>
-              <li><a href="${format(privacyPolicyMatch.formatter, {})}">Privacy Policy</a></li>
+              <li>
+                <a
+                  href="${format(privacyPolicyMatch.formatter, {})}"
+                  ${current === 'privacy-policy' ? html`aria-current="page"` : ''}
+                  >Privacy Policy</a
+                >
+              </li>
               <li><a href="https://content.prereview.org/">Blog</a></li>
             </ul>
 

@@ -35,6 +35,7 @@ function createPage(content: Html, user?: User) {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    current: 'about-us',
     user,
   })
 }

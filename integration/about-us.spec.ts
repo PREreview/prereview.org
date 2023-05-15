@@ -11,6 +11,7 @@ test('can read about us', async ({ fetch, page }) => {
   await page.getByRole('link', { name: 'about' }).click()
 
   await expect(page.getByRole('main')).toContainText('Some information about us.')
+  await expect(page.getByRole('link', { name: 'about' })).toHaveAttribute('aria-current', 'page')
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
