@@ -98,6 +98,12 @@ summary > span {
       text-decoration-skip: none;
     }
 
+    &[aria-current] {
+      &:not(:hover) {
+        text-decoration-line: none;
+      }
+    }
+
     & abbr {
       text-decoration-line: none;
     }
