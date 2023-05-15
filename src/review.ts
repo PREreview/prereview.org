@@ -18,7 +18,8 @@ import { page } from './page'
 import type { PreprintId } from './preprint-id'
 import { preprintReviewsMatch } from './routes'
 import { renderDate } from './time'
-import { type User, getUser } from './user'
+import type { User } from './user'
+import { maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
@@ -53,24 +54,12 @@ const sendPage = flow(
 export const review = flow(
   RM.fromReaderTaskEitherK(getPrereview),
   RM.bindTo('prereview'),
-  RM.apSW(
-    'user',
-    pipe(
-      getUser,
-      RM.orElseW(() => RM.of(undefined)),
-    ),
-  ),
+  RM.apSW('user', maybeGetUser),
   RM.ichainW(({ prereview, user }) => sendPage(prereview, user)),
   RM.orElseW(error =>
     match(error)
       .with({ status: Status.NotFound }, () => notFound)
-      .otherwise(() =>
-        pipe(
-          getUser,
-          RM.orElseW(() => RM.of(undefined)),
-          RM.ichainW(showFailureMessage),
-        ),
-      ),
+      .otherwise(() => pipe(maybeGetUser, RM.ichainW(showFailureMessage))),
   ),
 )
 

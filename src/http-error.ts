@@ -6,12 +6,12 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
-import { type User, getUser } from './user'
+import type { User } from './user'
+import { maybeGetUser } from './user'
 
 export function handleError(error: HttpError<typeof Status.NotFound | typeof Status.ServiceUnavailable>) {
   return pipe(
-    getUser,
-    RM.orElseW(() => RM.of(undefined)),
+    maybeGetUser,
     chainReaderKW(
       match(error)
         .with({ status: Status.NotFound }, () => notFoundPage)

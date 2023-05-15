@@ -6,18 +6,13 @@ import { getPage } from './ghost'
 import { type Html, html, plainText, sendHtml } from './html'
 import { serviceUnavailable } from './middleware'
 import { page } from './page'
-import { type User, getUser } from './user'
+import type { User } from './user'
+import { maybeGetUser } from './user'
 
 export const privacyPolicy = pipe(
   RM.fromReaderTaskEither(getPage('6154aa157741400e8722bb0f')),
   RM.bindTo('content'),
-  RM.apSW(
-    'user',
-    pipe(
-      getUser,
-      RM.orElseW(() => RM.of(undefined)),
-    ),
-  ),
+  RM.apSW('user', maybeGetUser),
   chainReaderKW(({ content, user }) => createPage(content, user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),

@@ -25,7 +25,8 @@ import { type Preprint, getPreprint } from './preprint'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
-import { type GetUserEnv, type User, getUser } from './user'
+import type { GetUserEnv, User } from './user'
+import { maybeGetUser } from './user'
 
 export type Prereview = {
   authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
@@ -93,23 +94,14 @@ export const preprintReviews = flow(
       preprint: RM.right<GetRapidPrereviewsEnv & GetPrereviewsEnv & GetUserEnv, StatusOpen, never, Preprint>(preprint),
       rapidPrereviews: RM.fromReaderTaskEither(getRapidPrereviews(preprint.id)),
       reviews: RM.fromReaderTaskEither(getPrereviews(preprint.id)),
-      user: pipe(
-        getUser,
-        RM.orElseW(() => RM.of(undefined)),
-      ),
+      user: maybeGetUser,
     }),
   ),
   RM.ichainW(sendPage),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)
-      .with('unavailable', () =>
-        pipe(
-          getUser,
-          RM.orElseW(() => RM.of(undefined)),
-          RM.ichainW(showFailureMessage),
-        ),
-      )
+      .with('unavailable', () => pipe(maybeGetUser, RM.ichainW(showFailureMessage)))
       .exhaustive(),
   ),
 )

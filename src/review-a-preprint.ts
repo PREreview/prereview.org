@@ -16,7 +16,8 @@ import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { type IndeterminatePreprintId, type PhilsciPreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
 import { homeMatch, reviewAPreprintMatch, writeReviewMatch } from './routes'
-import { type User, getUser } from './user'
+import type { User } from './user'
+import { maybeGetUser } from './user'
 
 export interface DoesPreprintExistEnv {
   doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'unavailable', boolean>
@@ -38,8 +39,7 @@ const doesPreprintExist = (id: IndeterminatePreprintId) =>
   )
 
 const showReviewAPreprintPage = pipe(
-  getUser,
-  RM.orElseW(() => RM.of(undefined)),
+  maybeGetUser,
   chainReaderKW(user => createPage(E.right(undefined), user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -140,8 +140,7 @@ const whichPreprint = pipe(
   RM.ichainMiddlewareK(preprint => seeOther(format(writeReviewMatch.formatter, { id: preprint }))),
   RM.orElseW(error =>
     pipe(
-      getUser,
-      RM.orElseW(() => RM.of(undefined)),
+      maybeGetUser,
       RM.ichainW(user =>
         match(error)
           .with({ _tag: 'UnknownPreprintE', actual: P.select() }, preprint => showUnknownPreprintPage(preprint, user))

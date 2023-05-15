@@ -16,7 +16,8 @@ import * as assets from './manifest.json'
 import { page } from './page'
 import { aboutUsMatch, reviewAPreprintMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
-import { type User, getUser } from './user'
+import type { User } from './user'
+import { maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
@@ -43,13 +44,7 @@ const getRecentPrereviews = () =>
 export const home = pipe(
   fromReaderTask(getRecentPrereviews()),
   RM.bindTo('recentPrereviews'),
-  RM.apSW(
-    'user',
-    pipe(
-      getUser,
-      RM.orElseW(() => RM.of(undefined)),
-    ),
-  ),
+  RM.apSW('user', maybeGetUser),
   chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),

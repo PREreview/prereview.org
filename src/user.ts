@@ -20,6 +20,11 @@ export const getUser = pipe(
   RM.chainMiddlewareK(({ getUser }) => getUser()),
 )
 
+export const maybeGetUser = pipe(
+  getUser,
+  RM.orElseW(() => RM.of(undefined)),
+)
+
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
 export const UserC = C.struct({
