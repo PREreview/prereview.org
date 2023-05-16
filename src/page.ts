@@ -6,7 +6,7 @@ import { pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { type Html, type PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
-import { aboutUsMatch, codeOfConductMatch, logOutMatch, privacyPolicyMatch } from './routes'
+import { aboutUsMatch, codeOfConductMatch, communitiesMatch, logOutMatch, privacyPolicyMatch } from './routes'
 import type { User } from './user'
 
 export interface FathomEnv {
@@ -25,7 +25,7 @@ type Page = {
   readonly type?: 'two-up'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
-  readonly current?: 'about-us' | 'code-of-conduct' | 'home' | 'privacy-policy'
+  readonly current?: 'about-us' | 'communities' | 'code-of-conduct' | 'home' | 'privacy-policy'
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
   readonly user?: User
 }
@@ -106,6 +106,18 @@ export function page({
                     <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
                   </a>
                 </div>
+
+                <nav>
+                  <ul>
+                    <li>
+                      <a
+                        href="${format(communitiesMatch.formatter, {})}"
+                        ${current === 'communities' ? html`aria-current="page"` : ''}
+                        >Communities</a
+                      >
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </header>
 

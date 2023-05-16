@@ -1,14 +1,17 @@
 import { expect, test } from './base'
 
 test('can read about communities', async ({ fetch, page }) => {
+  await page.goto('/')
+
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/64637b4c07fb34a92c7f84ec', query: { key: 'key' } },
     { body: { pages: [{ html: '<p>Some information about communities.</p>' }] } },
   )
 
-  await page.goto('/communities')
+  await page.getByRole('link', { name: 'Communities' }).click()
 
   await expect(page.getByRole('main')).toContainText('Some information about communities.')
+  await expect(page.getByRole('link', { name: 'Communities' })).toHaveAttribute('aria-current', 'page')
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
