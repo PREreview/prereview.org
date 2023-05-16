@@ -8,7 +8,7 @@
     "@godaddy/terminus": "^4.12.0",
     "@js-temporal/polyfill": "^0.4.3",
     "@keyv/redis": "^2.5.8",
-    "cacache": "^17.1.0",
+    "cacache": "^17.1.2",
     "clock-ts": "^0.1.2",
     "crossref-ts": "^0.1.4",
     "datacite-ts": "^0.1.2",
