@@ -23,6 +23,7 @@ import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { codeOfConduct } from './code-of-conduct'
+import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
@@ -51,6 +52,7 @@ import { reviewAPreprint } from './review-a-preprint'
 import {
   aboutUsMatch,
   codeOfConductMatch,
+  communitiesMatch,
   findAPreprintMatch,
   homeMatch,
   logInMatch,
@@ -140,6 +142,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       codeOfConductMatch.parser,
       P.map(() => codeOfConduct),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      communitiesMatch.parser,
+      P.map(() => communities),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
