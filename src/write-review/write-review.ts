@@ -187,6 +187,7 @@ function startPage(preprint: Preprint, user?: User) {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    type: 'streamline',
     user,
   })
 }

@@ -304,6 +304,7 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User) {
     `,
     js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    type: 'streamline',
     user,
   })
 }

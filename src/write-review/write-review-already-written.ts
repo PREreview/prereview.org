@@ -207,6 +207,7 @@ function alreadyWrittenForm(preprint: PreprintTitle, form: AlreadyWrittenForm, u
     `,
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    type: 'streamline',
     user,
   })
 }

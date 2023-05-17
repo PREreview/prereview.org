@@ -151,6 +151,7 @@ function failureMessage(preprint: PreprintTitle) {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    type: 'streamline',
   })
 }
 
@@ -201,6 +202,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
     `,
     js: ['single-use-form.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    type: 'streamline',
     user,
   })
 }

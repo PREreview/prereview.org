@@ -216,6 +216,7 @@ function personaForm(preprint: PreprintTitle, form: PersonaForm, user: User) {
     `,
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    type: 'streamline',
     user,
   })
 }

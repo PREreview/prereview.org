@@ -86,6 +86,7 @@ function cannotAddAuthorsForm(preprint: PreprintTitle, user: User) {
     `,
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    type: 'streamline',
     user,
   })
 }

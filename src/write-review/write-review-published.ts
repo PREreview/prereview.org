@@ -136,6 +136,7 @@ function successMessage({
           </main>
         `,
         skipLinks: [[html`Skip to main content`, '#main-content']],
+        type: 'streamline',
         user,
       }),
     ),

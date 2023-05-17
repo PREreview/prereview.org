@@ -22,7 +22,7 @@ export interface PhaseEnv {
 
 type Page = {
   readonly title: PlainText
-  readonly type?: 'two-up'
+  readonly type?: 'two-up' | 'streamline'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
   readonly current?: 'about-us' | 'communities' | 'code-of-conduct' | 'home' | 'privacy-policy'
@@ -68,7 +68,7 @@ export function page({
 
         <title>${title}</title>
 
-        <body ${rawHtml(type ? `class="${type}"` : '')}>
+        <body ${rawHtml(type === 'two-up' ? `class="${type}"` : '')}>
           ${skipLinks.length > 0
             ? html` <skip-link>${skipLinks.map(([text, link]) => html`<a href="${link}">${text}</a>`)}</skip-link>`
             : ''}
@@ -84,20 +84,27 @@ export function page({
                       </div>
                     `
                   : ''}
-
-                <nav>
-                  <ul>
-                    <li><a href="https://content.prereview.org/">Blog</a></li>
-                    <li>
-                      <a
-                        href="${format(aboutUsMatch.formatter, {})}"
-                        ${current === 'about-us' ? html`aria-current="page"` : ''}
-                        >About</a
-                      >
-                    </li>
-                    ${user ? html`<li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
-                  </ul>
-                </nav>
+                ${user || type !== 'streamline'
+                  ? html`
+                      <nav>
+                        <ul>
+                          ${type !== 'streamline'
+                            ? html`
+                                <li><a href="https://content.prereview.org/">Blog</a></li>
+                                <li>
+                                  <a
+                                    href="${format(aboutUsMatch.formatter, {})}"
+                                    ${current === 'about-us' ? html`aria-current="page"` : ''}
+                                    >About</a
+                                  >
+                                </li>
+                              `
+                            : ''}
+                          ${user ? html` <li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
+                        </ul>
+                      </nav>
+                    `
+                  : ''}
               </div>
 
               <div class="header">
@@ -107,17 +114,21 @@ export function page({
                   </a>
                 </div>
 
-                <nav>
-                  <ul>
-                    <li>
-                      <a
-                        href="${format(communitiesMatch.formatter, {})}"
-                        ${current === 'communities' ? html`aria-current="page"` : ''}
-                        >Communities</a
-                      >
-                    </li>
-                  </ul>
-                </nav>
+                ${type !== 'streamline'
+                  ? html`
+                      <nav>
+                        <ul>
+                          <li>
+                            <a
+                              href="${format(communitiesMatch.formatter, {})}"
+                              ${current === 'communities' ? html`aria-current="page"` : ''}
+                              >Communities</a
+                            >
+                          </li>
+                        </ul>
+                      </nav>
+                    `
+                  : ''}
               </div>
             </header>
 
@@ -125,54 +136,58 @@ export function page({
           </div>
 
           <footer>
-            <div>
-              <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
-            </div>
+            ${type !== 'streamline'
+              ? html`
+                  <div>
+                    <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
+                  </div>
 
-            <div>
-              Learn about upcoming events and updates.
-              <a href="https://prereview.civicrm.org/civicrm/mailing/url?u=17&qid=30" class="forward"
-                >Subscribe to our newsletter</a
-              >
-            </div>
+                  <div>
+                    Learn about upcoming events and updates.
+                    <a href="https://prereview.civicrm.org/civicrm/mailing/url?u=17&qid=30" class="forward"
+                      >Subscribe to our newsletter</a
+                    >
+                  </div>
 
-            <ul aria-label="Support links">
-              <li><a href="https://donorbox.org/prereview">Donate</a></li>
-              <li>
-                <a
-                  href="${format(codeOfConductMatch.formatter, {})}"
-                  ${current === 'code-of-conduct' ? html`aria-current="page"` : ''}
-                  >Code of Conduct</a
-                >
-              </li>
-              <li>
-                <a
-                  href="${format(privacyPolicyMatch.formatter, {})}"
-                  ${current === 'privacy-policy' ? html`aria-current="page"` : ''}
-                  >Privacy Policy</a
-                >
-              </li>
-              <li><a href="https://content.prereview.org/">Blog</a></li>
-            </ul>
+                  <ul aria-label="Support links">
+                    <li><a href="https://donorbox.org/prereview">Donate</a></li>
+                    <li>
+                      <a
+                        href="${format(codeOfConductMatch.formatter, {})}"
+                        ${current === 'code-of-conduct' ? html`aria-current="page"` : ''}
+                        >Code of Conduct</a
+                      >
+                    </li>
+                    <li>
+                      <a
+                        href="${format(privacyPolicyMatch.formatter, {})}"
+                        ${current === 'privacy-policy' ? html`aria-current="page"` : ''}
+                        >Privacy Policy</a
+                      >
+                    </li>
+                    <li><a href="https://content.prereview.org/">Blog</a></li>
+                  </ul>
 
-            <ul class="contacts" aria-label="Contact us">
-              <li>
-                <span class="visually-hidden">Email us at</span>
-                <a href="mailto:contact@prereview.org" class="email" translate="no">contact@prereview.org</a>
-              </li>
-              <li>
-                <a href="https://twitter.com/PREreview_" class="twitter" translate="no">@PREreview_</a>
-                <span class="visually-hidden">on Twitter</span>
-              </li>
-              <li>
-                <a href="https://mas.to/@prereview" class="mastodon" translate="no">@prereview@mas.to</a>
-                <span class="visually-hidden">on Mastodon</span>
-              </li>
-              <li>
-                <a href="https://github.com/PREreview" class="github" translate="no">PREreview</a>
-                <span class="visually-hidden">on GitHub</span>
-              </li>
-            </ul>
+                  <ul class="contacts" aria-label="Contact us">
+                    <li>
+                      <span class="visually-hidden">Email us at</span>
+                      <a href="mailto:contact@prereview.org" class="email" translate="no">contact@prereview.org</a>
+                    </li>
+                    <li>
+                      <a href="https://twitter.com/PREreview_" class="twitter" translate="no">@PREreview_</a>
+                      <span class="visually-hidden">on Twitter</span>
+                    </li>
+                    <li>
+                      <a href="https://mas.to/@prereview" class="mastodon" translate="no">@prereview@mas.to</a>
+                      <span class="visually-hidden">on Mastodon</span>
+                    </li>
+                    <li>
+                      <a href="https://github.com/PREreview" class="github" translate="no">PREreview</a>
+                      <span class="visually-hidden">on GitHub</span>
+                    </li>
+                  </ul>
+                `
+              : ''}
 
             <small>
               All content is available under a Creative&nbsp;Commons

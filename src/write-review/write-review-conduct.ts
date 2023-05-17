@@ -222,6 +222,7 @@ function codeOfConductForm(preprint: PreprintTitle, form: CodeOfConductForm, use
     `,
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    type: 'streamline',
     user,
   })
 }

@@ -86,6 +86,7 @@ function carryOnPage(preprint: PreprintTitle, form: Form, user: User) {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    type: 'streamline',
     user,
   })
 }

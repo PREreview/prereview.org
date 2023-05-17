@@ -298,6 +298,7 @@ ${turndown.turndown(review)}</textarea
     `,
     js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    type: 'streamline',
     user,
   })
 }
@@ -391,6 +392,7 @@ ${turndown.turndown(review.toString())}</textarea
     `,
     js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
     skipLinks: [[html`Skip to form`, '#form']],
+    type: 'streamline',
     user,
   })
 }
