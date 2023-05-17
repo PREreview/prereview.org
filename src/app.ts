@@ -64,6 +64,7 @@ import {
   privacyPolicyMatch,
   reviewAPreprintMatch,
   reviewMatch,
+  trainingsMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAlreadyWrittenMatch,
   writeReviewAuthorsMatch,
@@ -76,6 +77,7 @@ import {
   writeReviewReviewMatch,
   writeReviewStartMatch,
 } from './routes'
+import { trainings } from './trainings'
 import { getUserFromSession } from './user'
 import {
   type FormStoreEnv,
@@ -152,6 +154,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       communitiesMatch.parser,
       P.map(() => communities),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      trainingsMatch.parser,
+      P.map(() => trainings),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
