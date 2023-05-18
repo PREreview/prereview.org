@@ -26,6 +26,37 @@ function createPage(user?: User) {
 
         <ol class="logos">
           <li>
+            <a href="https://info.africarxiv.org/">
+              <img src="${assets['africarxiv.svg']}" width="518" height="551" loading="lazy" alt="AfricArXiv" />
+            </a>
+          </li>
+          <li>
+            <a href="https://asapbio.org/">
+              <img src="${assets['asapbio.svg']}" width="1851" height="308" loading="lazy" alt="ASAPbio" />
+            </a>
+          </li>
+          <li>
+            <a href="https://www.coar-repositories.org/">
+              <img src="${assets['coar.svg']}" width="440" height="343" loading="lazy" alt="COAR" />
+            </a>
+          </li>
+          <li>
+            <a href="https://www.cshl.edu/">
+              <img
+                src="${assets['cshl.svg']}"
+                width="280"
+                height="134"
+                loading="lazy"
+                alt="Cold Spring Harbor Laboratory"
+              />
+            </a>
+          </li>
+          <li>
+            <a href="https://eiderafricaltd.org/">
+              <img src="${assets['eider-africa.svg']}" width="895" height="927" loading="lazy" alt="Eider Africa" />
+            </a>
+          </li>
+          <li>
             <a href="https://elifesciences.org/">
               <img src="${assets['elife.svg']}" width="129" height="44" loading="lazy" alt="eLife" />
             </a>
@@ -51,6 +82,21 @@ function createPage(user?: User) {
                 alt="Open Research Funders Group"
                 class="wide"
               />
+            </a>
+          </li>
+          <li>
+            <a href="https://www.peerref.com/">
+              <img src="${assets['peerref.svg']}" width="2019" height="326" loading="lazy" alt="PeerRef" />
+            </a>
+          </li>
+          <li>
+            <a href="https://scielo.org/">
+              <img src="${assets['scielo.svg']}" width="538" height="562" loading="lazy" alt="SciELO" />
+            </a>
+          </li>
+          <li>
+            <a href="https://sciety.org/">
+              <img src="${assets['sciety.svg']}" width="119" height="36" loading="lazy" alt="Sciety" />
             </a>
           </li>
         </ol>
