@@ -220,6 +220,12 @@ export function page({
                       <span class="visually-hidden">on Mastodon</span>
                     </li>
                     <li>
+                      <a href="https://www.linkedin.com/company/prereview/" class="linked-in" translate="no"
+                        >PREreview</a
+                      >
+                      <span class="visually-hidden">on LinkedIn</span>
+                    </li>
+                    <li>
                       <a href="https://github.com/PREreview" class="github" translate="no">PREreview</a>
                       <span class="visually-hidden">on GitHub</span>
                     </li>
