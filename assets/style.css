@@ -249,10 +249,6 @@ body {
       display: inline-flex;
       block-size: 100%;
     }
-
-    & img {
-      block-size: 100%;
-    }
   }
 
   & :any-link {
@@ -1677,14 +1673,11 @@ skip-link {
   & img {
     block-size: 100%;
     max-block-size: calc(var(--space-xl) * 2);
-    min-block-size: var(--space-xl);
     inline-size: 100%;
     max-inline-size: calc(var(--space-2xl) * 2);
-    min-inline-size: var(--space-2xl);
 
     &.wide {
       max-inline-size: calc(var(--space-3xl) * 2);
-      min-inline-size: var(--space-3xl);
     }
   }
 }
