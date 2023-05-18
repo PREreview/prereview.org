@@ -540,7 +540,7 @@ test.prop([fc.html().map(html => [html.toString(), html.toString()])], {
     ],
   ],
 })('rawHtml', ([input, expected]) => {
-  const actual = _.sanitizeHtml(input)
+  const actual = _.rawHtml(input)
 
   expect(actual.toString()).toBe(expected)
 })
