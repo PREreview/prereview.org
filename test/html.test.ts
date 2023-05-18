@@ -518,6 +518,8 @@ test.each([
     '$$g_J$$',
     '<math display="block"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
   ],
+  ['with money', '$1 to $2', '$1 to $2'],
+  ['with lots of money', '$100,000 to $200,000', '$100,000 to $200,000'],
 ])('sanitizeHtml (%s)', (_name, input, expected) => {
   const actual = _.sanitizeHtml(input)
 
@@ -538,6 +540,8 @@ test.prop([fc.html().map(html => [html.toString(), html.toString()])], {
         '<math display="block"><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
       ],
     ],
+    [['$1 to $2', '$1 to $2']],
+    [['$100,000 to $200,000', '$100,000 to $200,000']],
   ],
 })('rawHtml', ([input, expected]) => {
   const actual = _.rawHtml(input)
