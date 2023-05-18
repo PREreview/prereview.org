@@ -28,6 +28,7 @@ import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
+import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
 import { handleError } from './http-error'
@@ -55,6 +56,7 @@ import {
   codeOfConductMatch,
   communitiesMatch,
   findAPreprintMatch,
+  fundingMatch,
   homeMatch,
   logInMatch,
   logOutMatch,
@@ -156,6 +158,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       communitiesMatch.parser,
       P.map(() => communities),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      fundingMatch.parser,
+      P.map(() => funding),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
