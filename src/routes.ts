@@ -91,6 +91,8 @@ export const codeOfConductMatch = pipe(P.lit('code-of-conduct'), P.then(P.end))
 
 export const communitiesMatch = pipe(P.lit('communities'), P.then(P.end))
 
+export const partnersMatch = pipe(P.lit('partners'), P.then(P.end))
+
 export const privacyPolicyMatch = pipe(P.lit('privacy-policy'), P.then(P.end))
 
 export const trainingsMatch = pipe(P.lit('trainings'), P.then(P.end))

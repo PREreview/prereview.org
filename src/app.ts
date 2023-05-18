@@ -42,6 +42,7 @@ import {
 } from './legacy-prereview'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import type { FathomEnv, PhaseEnv } from './page'
+import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintReviews, redirectToPreprintReviews } from './preprint-reviews'
@@ -59,6 +60,7 @@ import {
   logOutMatch,
   orcidCodeMatch,
   orcidErrorMatch,
+  partnersMatch,
   preprintReviewsMatch,
   preprintReviewsUuidMatch,
   privacyPolicyMatch,
@@ -164,6 +166,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       trainingsMatch.parser,
       P.map(() => trainings),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      partnersMatch.parser,
+      P.map(() => partners),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
