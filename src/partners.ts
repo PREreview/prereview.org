@@ -90,6 +90,7 @@ function createPage(user?: User) {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    current: 'partners',
     user,
   })
 }

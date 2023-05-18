@@ -11,6 +11,7 @@ import {
   codeOfConductMatch,
   communitiesMatch,
   logOutMatch,
+  partnersMatch,
   privacyPolicyMatch,
   trainingsMatch,
 } from './routes'
@@ -32,7 +33,14 @@ type Page = {
   readonly type?: 'two-up' | 'streamline'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
-  readonly current?: 'about-us' | 'communities' | 'code-of-conduct' | 'home' | 'privacy-policy' | 'trainings'
+  readonly current?:
+    | 'about-us'
+    | 'communities'
+    | 'code-of-conduct'
+    | 'home'
+    | 'partners'
+    | 'privacy-policy'
+    | 'trainings'
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
   readonly user?: User
 }
@@ -137,6 +145,13 @@ export function page({
                               href="${format(communitiesMatch.formatter, {})}"
                               ${current === 'communities' ? html`aria-current="page"` : ''}
                               >Communities</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="${format(partnersMatch.formatter, {})}"
+                              ${current === 'partners' ? html`aria-current="page"` : ''}
+                              >Partners</a
                             >
                           </li>
                         </ul>
