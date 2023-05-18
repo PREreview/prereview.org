@@ -10,6 +10,7 @@ import {
   aboutUsMatch,
   codeOfConductMatch,
   communitiesMatch,
+  fundingMatch,
   logOutMatch,
   partnersMatch,
   privacyPolicyMatch,
@@ -37,6 +38,7 @@ type Page = {
     | 'about-us'
     | 'communities'
     | 'code-of-conduct'
+    | 'funding'
     | 'home'
     | 'partners'
     | 'privacy-policy'
@@ -180,6 +182,13 @@ export function page({
 
                   <ul aria-label="Support links">
                     <li><a href="https://donorbox.org/prereview">Donate</a></li>
+                    <li>
+                      <a
+                        href="${format(fundingMatch.formatter, {})}"
+                        ${current === 'funding' ? html`aria-current="page"` : ''}
+                        >How we’re funded</a
+                      >
+                    </li>
                     <li>
                       <a
                         href="${format(codeOfConductMatch.formatter, {})}"
