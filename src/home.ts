@@ -144,11 +144,10 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
               <a href="https://www.orfg.org/">
                 <img
                   src="${assets['ofrg.svg']}"
-                  width="1327"
-                  height="311"
+                  width="268"
+                  height="201"
                   loading="lazy"
                   alt="Open Research Funders Group"
-                  class="wide"
                 />
               </a>
             </li>

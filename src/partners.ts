@@ -62,13 +62,7 @@ function createPage(user?: User) {
           </li>
           <li>
             <a href="https://www.orfg.org/">
-              <img
-                src="${assets['ofrg.svg']}"
-                width="1327"
-                height="311"
-                alt="Open Research Funders Group"
-                class="wide"
-              />
+              <img src="${assets['ofrg.svg']}" width="268" height="201" alt="Open Research Funders Group" />
             </a>
           </li>
           <li>
