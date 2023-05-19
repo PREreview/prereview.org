@@ -193,7 +193,7 @@ describe('transformJatsToHtml', () => {
     [
       '<jats:ext-link> with attributes',
       '<jats:ext-link ext-link-type="uri" xlink:href="http://example.com/" xml:lang="en" id="a" foo="a">ext-link</jats:ext-link>',
-      rawHtml('<a href="http://example.com/">ext-link</a>'),
+      rawHtml('<a href="http://example.com/" lang="en">ext-link</a>'),
     ],
     [
       '<jats:ext-link> with a protocol-relative link',
@@ -296,7 +296,7 @@ describe('transformJatsToHtml', () => {
     [
       '<jats:italic> with attributes',
       '<jats:italic xml:lang="en" id="a" foo="a">italic</jats:italic>',
-      rawHtml('<i>italic</i>'),
+      rawHtml('<i lang="en">italic</i>'),
     ],
     ['<jats:journal-id>', '<jats:journal-id>journal-id</jats:journal-id>', rawHtml('journal-id')],
     ['<jats:journal-meta>', '<jats:journal-meta>journal-meta</jats:journal-meta>', rawHtml('journal-meta')],
@@ -350,7 +350,7 @@ describe('transformJatsToHtml', () => {
     ['<jats:option>', '<jats:option>option</jats:option>', rawHtml('option')],
     ['<jats:overline>', '<jats:overline>overline</jats:overline>', rawHtml('overline')],
     ['<jats:p>', '<jats:p>p</jats:p>', rawHtml('<p>p</p>')],
-    ['<jats:p> with attributes', '<jats:p xml:lang="en" id="a" foo="a">p</jats:p>', rawHtml('<p>p</p>')],
+    ['<jats:p> with attributes', '<jats:p xml:lang="en" id="a" foo="a">p</jats:p>', rawHtml('<p lang="en">p</p>')],
     ['<jats:page-count>', '<jats:page-count>page-count</jats:page-count>', rawHtml('page-count')],
     ['<jats:page-range>', '<jats:page-range>page-range</jats:page-range>', rawHtml('page-range')],
     ['<jats:part-title>', '<jats:part-title>part-title</jats:part-title>', rawHtml('part-title')],
@@ -419,7 +419,7 @@ describe('transformJatsToHtml', () => {
     [
       '<jats:related-object> with attributes',
       '<jats:related-object ext-link-type="uri" xlink:href="http://example.com/" xml:lang="en" id="a" foo="a">related-object</jats:related-object>',
-      rawHtml('<a href="http://example.com/">related-object</a>'),
+      rawHtml('<a href="http://example.com/" lang="en">related-object</a>'),
     ],
     [
       '<jats:related-object> with a protocol-relative link',
@@ -496,14 +496,18 @@ describe('transformJatsToHtml', () => {
     ['<jats:string-name>', '<jats:string-name>string-name</jats:string-name>', rawHtml('string-name')],
     ['<jats:styled-content>', '<jats:styled-content>styled-content</jats:styled-content>', rawHtml('styled-content')],
     ['<jats:sub>', '<jats:sub>sub</jats:sub>', rawHtml('<sub>sub</sub>')],
-    ['<jats:sub> with attributes', '<jats:sub xml:lang="en" id="a" foo="a">sub</jats:sub>', rawHtml('<sub>sub</sub>')],
+    [
+      '<jats:sub> with attributes',
+      '<jats:sub xml:lang="en" id="a" foo="a">sub</jats:sub>',
+      rawHtml('<sub lang="en">sub</sub>'),
+    ],
     ['<jats:sub-article>', '<jats:sub-article>sub-article</jats:sub-article>', rawHtml('sub-article')],
     ['<jats:subj-group>', '<jats:subj-group>subj-group</jats:subj-group>', rawHtml('subj-group')],
     ['<jats:subject>', '<jats:subject>subject</jats:subject>', rawHtml('subject')],
     ['<jats:subtitle>', '<jats:subtitle>subtitle</jats:subtitle>', rawHtml('subtitle')],
     ['<jats:suffix>', '<jats:suffix>suffix</jats:suffix>', rawHtml('suffix')],
     ['<jats:sup>', '<jats:sup>sup</jats:sup>', rawHtml('<sup>sup</sup>')],
-    ['<jats:sup>', '<jats:sup xml:lang="en" id="a" foo="a">sup</jats:sup>', rawHtml('<sup>sup</sup>')],
+    ['<jats:sup>', '<jats:sup xml:lang="en" id="a" foo="a">sup</jats:sup>', rawHtml('<sup lang="en">sup</sup>')],
     ['<jats:supplement>', '<jats:supplement>supplement</jats:supplement>', rawHtml('supplement')],
     [
       '<jats:supplementary-material>',
@@ -546,7 +550,7 @@ describe('transformJatsToHtml', () => {
     [
       '<jats:title> with attributes',
       '<jats:title xml:lang="en" id="a" foo="a">title</jats:title>',
-      rawHtml('<h4>title</h4>'),
+      rawHtml('<h4 lang="en">title</h4>'),
     ],
     ["<jats:title> with 'Abstract' title", '<jats:title>Abstract</jats:title>', rawHtml('')],
     ["<jats:title> with 'Graphical Abstract' title", '<jats:title>Graphical Abstract</jats:title>', rawHtml('')],

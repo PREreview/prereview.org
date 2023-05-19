@@ -11,6 +11,14 @@ export function transformJatsToHtml(jats: string): Html {
       frame.tag === 'jats:title' &&
       (frame.text.toLowerCase() === 'abstract' || frame.text.toLowerCase() === 'graphical abstract'),
     transformTags: {
+      '*': (tagName, attribs) => {
+        if (attribs['xml:lang']) {
+          attribs['lang'] = attribs['xml:lang']
+          delete attribs['xml:lang']
+        }
+
+        return { tagName, attribs }
+      },
       'jats:ext-link': (_, attribs) => {
         if (
           attribs['ext-link-type'] !== 'uri' ||
