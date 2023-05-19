@@ -130,7 +130,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getRecentPrereviews: () =>
             pipe(
-              getRecentPrereviewsFromZenodo(),
+              getRecentPrereviewsFromZenodo(1),
               RTE.getOrElseW(() => RT.of(RA.empty)),
             )({
               ...env,

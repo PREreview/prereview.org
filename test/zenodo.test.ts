@@ -25,9 +25,9 @@ import * as fc from './fc'
 import PlainDate = Temporal.PlainDate
 
 describe('getRecentPrereviewsFromZenodo', () => {
-  test.prop([fc.preprintTitle(), fc.preprintTitle()])(
+  test.prop([fc.integer({ min: 1 }), fc.preprintTitle(), fc.preprintTitle()])(
     'when the PREreviews can be loaded',
-    async (preprint1, preprint2) => {
+    async (page, preprint1, preprint2) => {
       const records: Records = {
         hits: {
           total: 2,
@@ -122,12 +122,13 @@ describe('getRecentPrereviewsFromZenodo', () => {
         },
       }
 
-      const actual = await _.getRecentPrereviewsFromZenodo()({
+      const actual = await _.getRecentPrereviewsFromZenodo(page)({
         fetch: fetchMock.sandbox().getOnce(
           {
             url: 'https://zenodo.org/api/records/',
             query: {
               communities: 'prereview-reviews',
+              page,
               size: '5',
               sort: 'mostrecent',
               subtype: 'peerreview',
@@ -164,121 +165,139 @@ describe('getRecentPrereviewsFromZenodo', () => {
     },
   )
 
-  test.prop([fc.preprintTitle()])('revalidates if the PREreviews are stale', async preprint => {
-    const records: Records = {
-      hits: {
-        total: 1,
-        hits: [
-          {
-            conceptdoi: '10.5072/zenodo.1061863' as Doi,
-            conceptrecid: 1061863,
-            files: [
-              {
-                links: {
-                  self: new URL('http://example.com/file'),
-                },
-                key: 'review.html',
-                type: 'html',
-                size: 58,
-              },
-            ],
-            id: 1061864,
-            links: {
-              latest: new URL('http://example.com/latest'),
-              latest_html: new URL('http://example.com/latest_html'),
-            },
-            metadata: {
-              communities: [{ id: 'prereview-reviews' }],
-              creators: [{ name: 'PREreviewer' }],
-              description: 'Description',
-              doi: '10.5281/zenodo.1061864' as Doi,
-              license: {
-                id: 'CC-BY-4.0',
-              },
-              publication_date: new Date('2022-07-05'),
-              related_identifiers: [
+  test.prop([fc.integer({ min: 1 }), fc.preprintTitle()])(
+    'revalidates if the PREreviews are stale',
+    async (page, preprint) => {
+      const records: Records = {
+        hits: {
+          total: 1,
+          hits: [
+            {
+              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptrecid: 1061863,
+              files: [
                 {
-                  scheme: 'doi',
-                  identifier: '10.1101/2022.02.14.480364' as Doi,
-                  relation: 'reviews',
-                  resource_type: 'publication-preprint',
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
                 },
               ],
-              resource_type: {
-                type: 'publication',
-                subtype: 'peerreview',
+              id: 1061864,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
               },
-              title: 'Title',
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'PREreviewer' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1061864' as Doi,
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-05'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
+            },
+          ],
+        },
+      }
+
+      const fetch = fetchMock
+        .sandbox()
+        .getOnce(
+          (url, { cache }) =>
+            url ===
+              `https://zenodo.org/api/records/?${new URLSearchParams({
+                communities: 'prereview-reviews',
+                page: page.toString(),
+                size: '5',
+                sort: 'mostrecent',
+                subtype: 'peerreview',
+              }).toString()}` && cache === 'force-cache',
+          {
+            body: RecordsC.encode(records),
+            headers: { 'X-Local-Cache-Status': 'stale' },
+          },
+        )
+        .getOnce(
+          (url, { cache }) =>
+            url ===
+              `https://zenodo.org/api/records/?${new URLSearchParams({
+                communities: 'prereview-reviews',
+                page: page.toString(),
+                size: '5',
+                sort: 'mostrecent',
+                subtype: 'peerreview',
+              }).toString()}` && cache === 'no-cache',
+          { throws: new Error('Network error') },
+        )
+
+      const actual = await _.getRecentPrereviewsFromZenodo(page)({
+        fetch,
+        getPreprintTitle: () => TE.right(preprint),
+      })()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          {
+            id: 1061864,
+            reviewers: ['PREreviewer'],
+            published: new Temporal.PlainDate(2022, 7, 5),
+            preprint,
+          },
+        ]),
+      )
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
+
+  test.prop([fc.integer({ min: 1 }), fc.integer({ min: 400, max: 599 })])(
+    'when the PREreviews cannot be loaded',
+    async (page, status) => {
+      const actual = await _.getRecentPrereviewsFromZenodo(page)({
+        fetch: fetchMock.sandbox().getOnce(
+          {
+            url: 'https://zenodo.org/api/records/',
+            query: {
+              communities: 'prereview-reviews',
+              page,
+              size: '5',
+              sort: 'mostrecent',
+              subtype: 'peerreview',
             },
           },
-        ],
-      },
-    }
+          { status },
+        ),
+        getPreprintTitle: () => () => Promise.reject('should not be called'),
+      })()
 
-    const fetch = fetchMock
-      .sandbox()
-      .getOnce(
-        (url, { cache }) =>
-          url ===
-            `https://zenodo.org/api/records/?${new URLSearchParams({
-              communities: 'prereview-reviews',
-              size: '5',
-              sort: 'mostrecent',
-              subtype: 'peerreview',
-            }).toString()}` && cache === 'force-cache',
-        {
-          body: RecordsC.encode(records),
-          headers: { 'X-Local-Cache-Status': 'stale' },
-        },
-      )
-      .getOnce(
-        (url, { cache }) =>
-          url ===
-            `https://zenodo.org/api/records/?${new URLSearchParams({
-              communities: 'prereview-reviews',
-              size: '5',
-              sort: 'mostrecent',
-              subtype: 'peerreview',
-            }).toString()}` && cache === 'no-cache',
-        { throws: new Error('Network error') },
-      )
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
 
-    const actual = await _.getRecentPrereviewsFromZenodo()({
-      fetch,
-      getPreprintTitle: () => TE.right(preprint),
-    })()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        {
-          id: 1061864,
-          reviewers: ['PREreviewer'],
-          published: new Temporal.PlainDate(2022, 7, 5),
-          preprint,
-        },
-      ]),
-    )
-    expect(fetch.done()).toBeTruthy()
-  })
-
-  test.prop([fc.integer({ min: 400, max: 599 })])('when the PREreviews cannot be loaded', async status => {
-    const actual = await _.getRecentPrereviewsFromZenodo()({
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'https://zenodo.org/api/records/',
-          query: {
-            communities: 'prereview-reviews',
-            size: '5',
-            sort: 'mostrecent',
-            subtype: 'peerreview',
-          },
-        },
-        { status },
-      ),
+  test.prop([fc.integer({ max: 0 })])('when the page number is impossible', async page => {
+    const actual = await _.getRecentPrereviewsFromZenodo(page)({
+      fetch: fetchMock.sandbox(),
       getPreprintTitle: () => () => Promise.reject('should not be called'),
     })()
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(actual).toStrictEqual(E.left('not-found'))
   })
 })
 

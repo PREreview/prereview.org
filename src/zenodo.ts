@@ -39,21 +39,34 @@ import type { NewPrereview } from './write-review'
 
 import PlainDate = Temporal.PlainDate
 
-export const getRecentPrereviewsFromZenodo = () =>
-  pipe(
-    new URLSearchParams({
-      communities: 'prereview-reviews',
-      size: '5',
-      sort: 'mostrecent',
-      subtype: 'peerreview',
-    }),
-    getRecords,
-    RTE.local(revalidateIfStale()),
-    RTE.local(useStaleCache()),
-    RTE.local(timeoutRequest(2000)),
-    RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToRecentPrereview))),
-    RTE.mapLeft(() => 'unavailable' as const),
-  )
+export const getRecentPrereviewsFromZenodo = flow(
+  RTE.fromPredicate(
+    (currentPage: number) => currentPage > 0,
+    () => 'not-found' as const,
+  ),
+  RTE.chainW(
+    flow(
+      currentPage =>
+        new URLSearchParams({
+          communities: 'prereview-reviews',
+          page: currentPage.toString(),
+          size: '5',
+          sort: 'mostrecent',
+          subtype: 'peerreview',
+        }),
+      getRecords,
+    ),
+  ),
+  RTE.local(revalidateIfStale()),
+  RTE.local(useStaleCache()),
+  RTE.local(timeoutRequest(2000)),
+  RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToRecentPrereview))),
+  RTE.mapLeft(error =>
+    match(error)
+      .with('not-found', identity)
+      .otherwise(() => 'unavailable' as const),
+  ),
+)
 
 export const getPrereviewFromZenodo = flow(
   getRecord,
