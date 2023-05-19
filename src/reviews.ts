@@ -115,7 +115,6 @@ function createPage({ currentPage, totalPages, recentPrereviews }: RecentPrerevi
         )}
       </main>
     `,
-    current: 'home',
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })

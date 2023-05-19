@@ -163,7 +163,7 @@ test('can view a recent review', async ({ fetch, page }) => {
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
 })
 
-test.only('can view an older review', async ({ fetch, page }) => {
+test('can view an older review', async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
     conceptrecid: 1061863,
