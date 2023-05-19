@@ -266,6 +266,29 @@ describe('getRecentPrereviewsFromZenodo', () => {
       expect(fetch.done()).toBeTruthy()
     },
   )
+  test.prop([fc.integer({ min: 1 })])('when the list is empty', async page => {
+    const actual = await _.getRecentPrereviewsFromZenodo(page)({
+      fetch: fetchMock.sandbox().getOnce(
+        {
+          url: 'https://zenodo.org/api/records/',
+          query: {
+            communities: 'prereview-reviews',
+            page,
+            size: '5',
+            sort: 'mostrecent',
+            subtype: 'peerreview',
+          },
+        },
+        {
+          body: RecordsC.encode({ hits: { total: 0, hits: [] } }),
+          status: Status.OK,
+        },
+      ),
+      getPreprintTitle: () => () => Promise.reject('should not be called'),
+    })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
 
   test.prop([fc.integer({ min: 1 }), fc.integer({ min: 400, max: 599 })])(
     'when the PREreviews cannot be loaded',
