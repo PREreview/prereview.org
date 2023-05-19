@@ -4,7 +4,9 @@ import type { Json } from 'fp-ts/Json'
 import { concatAll } from 'fp-ts/Monoid'
 import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
+import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as RA from 'fp-ts/ReadonlyArray'
 import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import http from 'http'
@@ -127,7 +129,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getRecentPrereviews: () =>
-            getRecentPrereviewsFromZenodo()({
+            pipe(
+              getRecentPrereviewsFromZenodo(),
+              RTE.getOrElseW(() => RT.of(RA.empty)),
+            )({
               ...env,
               getPreprintTitle: flip(getPreprintTitle)(env),
             }),

@@ -145,20 +145,22 @@ describe('getRecentPrereviewsFromZenodo', () => {
             .otherwise(() => TE.left('not-found')),
       })()
 
-      expect(actual).toStrictEqual([
-        {
-          id: 1061864,
-          reviewers: ['PREreviewer'],
-          published: new Temporal.PlainDate(2022, 7, 4),
-          preprint: preprint1,
-        },
-        {
-          id: 1065236,
-          reviewers: ['Josiah Carberry'],
-          published: new Temporal.PlainDate(2022, 7, 5),
-          preprint: preprint2,
-        },
-      ])
+      expect(actual).toStrictEqual(
+        E.right([
+          {
+            id: 1061864,
+            reviewers: ['PREreviewer'],
+            published: new Temporal.PlainDate(2022, 7, 4),
+            preprint: preprint1,
+          },
+          {
+            id: 1065236,
+            reviewers: ['Josiah Carberry'],
+            published: new Temporal.PlainDate(2022, 7, 5),
+            preprint: preprint2,
+          },
+        ]),
+      )
     },
   )
 
@@ -246,14 +248,16 @@ describe('getRecentPrereviewsFromZenodo', () => {
       getPreprintTitle: () => TE.right(preprint),
     })()
 
-    expect(actual).toStrictEqual([
-      {
-        id: 1061864,
-        reviewers: ['PREreviewer'],
-        published: new Temporal.PlainDate(2022, 7, 5),
-        preprint,
-      },
-    ])
+    expect(actual).toStrictEqual(
+      E.right([
+        {
+          id: 1061864,
+          reviewers: ['PREreviewer'],
+          published: new Temporal.PlainDate(2022, 7, 5),
+          preprint,
+        },
+      ]),
+    )
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -274,7 +278,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       getPreprintTitle: () => () => Promise.reject('should not be called'),
     })()
 
-    expect(actual).toStrictEqual([])
+    expect(actual).toStrictEqual(E.left('unavailable'))
   })
 })
 
