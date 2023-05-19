@@ -10,11 +10,11 @@ import { flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
-import sanitize from 'sanitize-html'
 import { P, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { type Html, rawHtml, sanitizeHtml } from './html'
+import { sanitizeHtml } from './html'
+import { transformJatsToHtml } from './jats'
 import type { Preprint } from './preprint'
 import type {
   AfricarxivPreprintId,
@@ -191,41 +191,6 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
     ),
     E.let('url', () => toHttps(work.resource.primary.URL)),
   )
-}
-
-function transformJatsToHtml(jats: string): Html {
-  const sanitized = sanitize(jats, {
-    allowedAttributes: {
-      '*': ['dir', 'lang'],
-      a: ['href'],
-    },
-    exclusiveFilter: frame =>
-      frame.tag === 'jats:title' &&
-      (frame.text.toLowerCase() === 'abstract' || frame.text.toLowerCase() === 'graphical abstract'),
-    transformTags: {
-      'jats:ext-link': (_, attribs) => {
-        if (attribs['ext-link-type'] !== 'uri') {
-          return { tagName: 'a', attribs }
-        }
-
-        return { tagName: 'a', attribs: { ...attribs, href: attribs['xlink:href'] } }
-      },
-      'jats:italic': 'i',
-      'jats:p': 'p',
-      'jats:related-object': (_, attribs) => {
-        if (attribs['ext-link-type'] !== 'uri') {
-          return { tagName: 'a', attribs }
-        }
-
-        return { tagName: 'a', attribs: { ...attribs, href: attribs['xlink:href'] } }
-      },
-      'jats:sub': 'sub',
-      'jats:sup': 'sup',
-      'jats:title': 'h4',
-    },
-  })
-
-  return rawHtml(sanitized)
 }
 
 function toHttps(url: URL): URL {
