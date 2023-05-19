@@ -53,6 +53,7 @@ import { privacyPolicy } from './privacy-policy'
 import type { PublicUrlEnv } from './public-url'
 import { review } from './review'
 import { reviewAPreprint } from './review-a-preprint'
+import { reviews } from './reviews'
 import {
   aboutUsMatch,
   codeOfConductMatch,
@@ -70,6 +71,7 @@ import {
   privacyPolicyMatch,
   reviewAPreprintMatch,
   reviewMatch,
+  reviewsMatch,
   trainingsMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAlreadyWrittenMatch,
@@ -136,6 +138,20 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ...env,
               getPreprintTitle: flip(getPreprintTitle)(env),
             }),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      reviewsMatch.parser,
+      P.map(({ page }) => reviews(page)),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)({
+            ...env,
+            getPreprintTitle: flip(getPreprintTitle)(env),
+          }),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),

@@ -356,6 +356,14 @@ nav {
   }
 }
 
+.pager {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: var(--space-s-l);
+  row-gap: var(--space-2xs-xs);
+}
+
 header {
   @nest :not(.contents) > & {
     & :any-link {

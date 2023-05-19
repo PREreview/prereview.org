@@ -121,6 +121,8 @@ export const preprintReviewsUuidMatch = pipe(P.lit('preprints'), P.then(type('uu
 
 export const preprintReviewsMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))
 
+export const reviewsMatch = pipe(P.lit('reviews'), P.then(query(C.struct({ page: IntegerFromStringC }))), P.then(P.end))
+
 export const reviewMatch = pipe(P.lit('reviews'), P.then(type('id', IntegerFromStringC)), P.then(P.end))
 
 const writeReviewBaseMatch = pipe(
