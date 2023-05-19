@@ -14,6 +14,7 @@ import {
   logOutMatch,
   partnersMatch,
   privacyPolicyMatch,
+  reviewsMatch,
   trainingsMatch,
 } from './routes'
 import type { User } from './user'
@@ -42,6 +43,7 @@ type Page = {
     | 'home'
     | 'partners'
     | 'privacy-policy'
+    | 'reviews'
     | 'trainings'
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
   readonly user?: User
@@ -135,6 +137,13 @@ export function page({
                   ? html`
                       <nav>
                         <ul>
+                          <li>
+                            <a
+                              href="${format(reviewsMatch.formatter, { page: 1 })}"
+                              ${current === 'reviews' ? html`aria-current="page"` : ''}
+                              >Reviews</a
+                            >
+                          </li>
                           <li>
                             <a
                               href="${format(trainingsMatch.formatter, {})}"

@@ -225,13 +225,18 @@ test('can view an older review', async ({ fetch, page }) => {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
-  await page.goto('/reviews?page=1')
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Reviews' }).click()
 
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent PREreviews')
+  await expect(page.getByRole('link', { name: 'Reviews' })).toHaveAttribute('aria-current', 'page')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.getByRole('link', { name: 'Older' }).click()
 
   await expect(page.getByRole('link', { name: 'Newer' })).toBeVisible()
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page
