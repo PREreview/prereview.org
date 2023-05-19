@@ -94,29 +94,21 @@ function createPage({ currentPage, totalPages, recentPrereviews }: RecentPrerevi
               </ol>
 
               <nav class="pager">
-                ${
-                  currentPage > 1
-                    ? html`
-                        <a href="${format(reviewsMatch.formatter, { page: currentPage - 1 })}" class="back" rel="prev"
-                          >Newer</a
-                        >
-                      `
-                    : ''
-                }
-                ${
-                  currentPage < totalPages
-                    ? html`
-                        <a
-                          href="${format(reviewsMatch.formatter, { page: currentPage + 1 })}"
-                          class="forward"
-                          rel="next"
-                          >Older</a
-                        >
-                      `
-                    : ''
-                }
+                ${currentPage > 1
+                  ? html`
+                      <a href="${format(reviewsMatch.formatter, { page: currentPage - 1 })}" class="back" rel="prev"
+                        >Newer</a
+                      >
+                    `
+                  : ''}
+                ${currentPage < totalPages
+                  ? html`
+                      <a href="${format(reviewsMatch.formatter, { page: currentPage + 1 })}" class="forward" rel="next"
+                        >Older</a
+                      >
+                    `
+                  : ''}
               </nav>
-              </section>
             `,
           ),
         )}
