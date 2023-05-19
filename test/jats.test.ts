@@ -196,6 +196,11 @@ describe('transformJatsToHtml', () => {
       rawHtml('<a href="http://example.com/">ext-link</a>'),
     ],
     [
+      '<jats:ext-link> with a protocol-relative link',
+      '<jats:ext-link ext-link-type="uri" xlink:href="//example.com/">a</jats:ext-link>',
+      '<a>a</a>',
+    ],
+    [
       '<jats:ext-link> with a HTTPS link',
       '<jats:ext-link ext-link-type="uri" xlink:href="https://example.com/">a</jats:ext-link>',
       '<a href="https://example.com/">a</a>',
@@ -209,6 +214,16 @@ describe('transformJatsToHtml', () => {
       '<jats:ext-link> with an email link',
       '<jats:ext-link ext-link-type="uri" xlink:href="mailto:hello@example.com">a</jats:ext-link>',
       '<a href="mailto:hello@example.com">a</a>',
+    ],
+    [
+      '<jats:ext-link> with a fragment link',
+      '<jats:ext-link ext-link-type="uri" xlink:href="#foo">a</jats:ext-link>',
+      '<a>a</a>',
+    ],
+    [
+      '<jats:ext-link> with a relative link',
+      '<jats:ext-link ext-link-type="uri" xlink:href="/foo">a</jats:ext-link>',
+      '<a>a</a>',
     ],
     [
       '<jats:ext-link> with a javascript link',
@@ -407,6 +422,11 @@ describe('transformJatsToHtml', () => {
       rawHtml('<a href="http://example.com/">related-object</a>'),
     ],
     [
+      '<jats:related-object> with a protocol-relative link',
+      '<jats:related-object ext-link-type="uri" xlink:href="//example.com/">a</jats:related-object>',
+      '<a>a</a>',
+    ],
+    [
       '<jats:related-object> with a HTTPS link',
       '<jats:related-object ext-link-type="uri" xlink:href="https://example.com/">a</jats:related-object>',
       '<a href="https://example.com/">a</a>',
@@ -420,6 +440,16 @@ describe('transformJatsToHtml', () => {
       '<jats:related-object> with an email link',
       '<jats:related-object ext-link-type="uri" xlink:href="mailto:hello@example.com">a</jats:related-object>',
       '<a href="mailto:hello@example.com">a</a>',
+    ],
+    [
+      '<jats:related-object> with a fragment link',
+      '<jats:related-object ext-link-type="uri" xlink:href="#foo">a</jats:related-object>',
+      '<a>a</a>',
+    ],
+    [
+      '<jats:related-object> with a relative link',
+      '<jats:related-object ext-link-type="uri" xlink:href="/foo">a</jats:related-object>',
+      '<a>a</a>',
     ],
     [
       '<jats:related-object> with a javascript link',

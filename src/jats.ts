@@ -12,7 +12,11 @@ export function transformJatsToHtml(jats: string): Html {
       (frame.text.toLowerCase() === 'abstract' || frame.text.toLowerCase() === 'graphical abstract'),
     transformTags: {
       'jats:ext-link': (_, attribs) => {
-        if (attribs['ext-link-type'] !== 'uri') {
+        if (
+          attribs['ext-link-type'] !== 'uri' ||
+          !attribs['xlink:href'] ||
+          !/^[A-z][A-z0-9+\-.]*:/.test(attribs['xlink:href'])
+        ) {
           return { tagName: 'a', attribs }
         }
 
@@ -21,7 +25,11 @@ export function transformJatsToHtml(jats: string): Html {
       'jats:italic': 'i',
       'jats:p': 'p',
       'jats:related-object': (_, attribs) => {
-        if (attribs['ext-link-type'] !== 'uri') {
+        if (
+          attribs['ext-link-type'] !== 'uri' ||
+          !attribs['xlink:href'] ||
+          !/^[A-z][A-z0-9+\-.]*:/.test(attribs['xlink:href'])
+        ) {
           return { tagName: 'a', attribs }
         }
 
