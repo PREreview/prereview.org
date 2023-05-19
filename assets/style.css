@@ -360,8 +360,47 @@ nav {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  column-gap: var(--space-s-l);
-  row-gap: var(--space-2xs-xs);
+  font-weight: 500;
+
+  & :any-link {
+    padding-block: var(--space-3xs);
+    padding-inline: var(--space-2xs);
+
+    &:focus-visible {
+      outline-offset: 0;
+    }
+  }
+
+  & [rel='prev'] {
+    display: inline-flex;
+    align-items: center;
+
+    &::before {
+      content: '←\00a0';
+      display: inline-block;
+      text-decoration: none;
+    }
+  }
+
+  & [rel='next'] {
+    display: inline-flex;
+    align-items: center;
+
+    &::after {
+      content: '\00a0→';
+      display: inline-block;
+      text-decoration: none;
+    }
+  }
+
+  @media print {
+    display: none;
+  }
+
+  @media screen {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 header {
