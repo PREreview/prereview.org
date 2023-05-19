@@ -4,7 +4,6 @@ import type { Json } from 'fp-ts/Json'
 import { concatAll } from 'fp-ts/Monoid'
 import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
-import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as TE from 'fp-ts/TaskEither'
@@ -21,6 +20,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
+import { get } from 'spectacles-ts'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
@@ -131,7 +131,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           getRecentPrereviews: () =>
             pipe(
               getRecentPrereviewsFromZenodo(1),
-              RTE.getOrElseW(() => RT.of(RA.empty)),
+              RTE.matchW(() => RA.empty, get('recentPrereviews')),
             )({
               ...env,
               getPreprintTitle: flip(getPreprintTitle)(env),

@@ -44,9 +44,11 @@ export const getRecentPrereviewsFromZenodo = flow(
     (currentPage: number) => currentPage > 0,
     () => 'not-found' as const,
   ),
-  RTE.chainW(
+  RTE.bindTo('currentPage'),
+  RTE.bindW(
+    'records',
     flow(
-      currentPage =>
+      ({ currentPage }) =>
         new URLSearchParams({
           communities: 'prereview-reviews',
           page: currentPage.toString(),
@@ -60,12 +62,24 @@ export const getRecentPrereviewsFromZenodo = flow(
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
-  RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToRecentPrereview))),
-  RTE.chainOptionKW(() => 'not-found' as const)(RNEA.fromReadonlyArray),
-  RTE.mapLeft(error =>
-    match(error)
-      .with('not-found', identity)
-      .otherwise(() => 'unavailable' as const),
+  RTE.bindW(
+    'recentPrereviews',
+    flow(
+      ({ records }) => records.hits.hits,
+      RTE.traverseArray(recordToRecentPrereview),
+      RTE.chainOptionKW(() => 'not-found' as const)(RNEA.fromReadonlyArray),
+    ),
+  ),
+  RTE.bimap(
+    error =>
+      match(error)
+        .with('not-found', identity)
+        .otherwise(() => 'unavailable' as const),
+    ({ currentPage, recentPrereviews, records }) => ({
+      currentPage,
+      recentPrereviews,
+      totalPages: Math.ceil(records.hits.total / 5),
+    }),
   ),
 )
 
