@@ -63,7 +63,7 @@ export const reviews = (currentPage: number) =>
 
 function createPage({ currentPage, totalPages, recentPrereviews }: RecentPrereviews, user?: User) {
   return page({
-    title: plainText`Recent PREreviews`,
+    title: plainText`Recent PREreviews (page ${currentPage})`,
     content: html`
       <main id="main-content">
         <h1>Recent PREreviews</h1>
