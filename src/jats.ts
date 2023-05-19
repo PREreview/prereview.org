@@ -31,6 +31,10 @@ export function transformJatsToHtml(jats: string): Html {
         return { tagName: 'a', attribs: { ...attribs, href: attribs['xlink:href'] } }
       },
       'jats:italic': 'i',
+      'jats:list': (_, attribs) => {
+        return { tagName: attribs['list-type'] === 'order' ? 'ol' : 'ul', attribs }
+      },
+      'jats:list-item': 'li',
       'jats:p': 'p',
       'jats:related-object': (_, attribs) => {
         if (
