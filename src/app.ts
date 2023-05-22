@@ -8,6 +8,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
+import helmet from 'helmet'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { createProxyMiddleware } from 'http-proxy-middleware'
@@ -467,6 +468,19 @@ export const app = (deps: AppEnv) => {
 
       next()
     })
+    .use(
+      helmet({
+        contentSecurityPolicy: {
+          directives: {
+            'script-src': ["'self'", 'cdn.usefathom.com'],
+            'img-src': ["'self'", 'data:', 'cdn.usefathom.com'],
+          },
+        },
+        crossOriginEmbedderPolicy: {
+          policy: 'credentialless',
+        },
+      }),
+    )
     .get('/robots.txt', (req, res) => {
       res.type('text/plain')
       res.send('User-agent: *\nAllow: /')

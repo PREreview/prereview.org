@@ -17,6 +17,7 @@
     "fetch-fp-ts": "^0.1.6",
     "fp-ts": "^2.15.0",
     "fp-ts-routing": "^0.5.4",
+    "helmet": "^7.0.0",
     "html-entities": "^2.3.3",
     "http-errors": "^2.0.0",
     "http-proxy-middleware": "^2.0.6",
