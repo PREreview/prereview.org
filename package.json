@@ -87,7 +87,7 @@
     "babel-loader": "^9.1.2",
     "cdigit": "^3.2.1",
     "cookie-signature": "^1.2.1",
-    "css-loader": "^6.7.3",
+    "css-loader": "^6.7.4",
     "css-minimizer-webpack-plugin": "^5.0.0",
     "del-cli": "^5.0.0",
     "dotenv": "^16.0.3",
