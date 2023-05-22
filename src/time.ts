@@ -18,7 +18,7 @@ export function renderDate(date: PartialDate): Html {
       P.instanceOf(PlainYearMonth),
       date =>
         html`<time datetime="${date.toString()}"
-          >${date.toLocaleString('en', { calendar: date.calendar, month: 'long', year: 'numeric' })}</time
+          >${date.toLocaleString('en', { calendar: date.calendarId, month: 'long', year: 'numeric' })}</time
         >`,
     )
     .with(
