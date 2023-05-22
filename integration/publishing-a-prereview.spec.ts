@@ -1192,7 +1192,7 @@ test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page
   await expect(page).toHaveScreenshot()
 })
 
-test('might not authenticate with ORCID in time', async ({ browserName, fetch, javaScriptEnabled, page }, testInfo) => {
+test('might not authenticate with ORCID in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()
 
@@ -1220,7 +1220,6 @@ test('might not authenticate with ORCID in time', async ({ browserName, fetch, j
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await page.mouse.move(0, 0)
-  testInfo.skip(browserName === 'webkit' && javaScriptEnabled, 'https://github.com/microsoft/playwright/issues/22903')
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
@@ -1277,50 +1276,46 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn)(
-  'mind not find the pseudonym in time',
-  async ({ browserName, fetch, javaScriptEnabled, page }, testInfo) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
+test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
+  await page.locator('[type=email]').fill('test@example.com')
+  await page.locator('[type=password]').fill('password')
 
-    fetch.get(
-      {
-        url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
-        headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-      },
-      new Promise(() =>
-        setTimeout(
-          () => ({
-            status: Status.NotFound,
-          }),
-          2000,
-        ),
+  fetch.get(
+    {
+      url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
+      headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
+    },
+    new Promise(() =>
+      setTimeout(
+        () => ({
+          status: Status.NotFound,
+        }),
+        2000,
       ),
-      { overwriteRoutes: true },
-    )
-    await page.keyboard.press('Enter')
+    ),
+    { overwriteRoutes: true },
+  )
+  await page.keyboard.press('Enter')
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-    await page.mouse.move(0, 0)
-    testInfo.skip(browserName === 'webkit' && javaScriptEnabled, 'https://github.com/microsoft/playwright/issues/22903')
-    await expect(page).toHaveScreenshot()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.keyboard.press('Tab')
+  await page.keyboard.press('Tab')
 
-    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-    await expect(page).toHaveScreenshot()
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
 
-    await page.keyboard.press('Enter')
+  await page.keyboard.press('Enter')
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('main')).toBeFocused()
-    }
-    await expect(page).toHaveScreenshot()
-  },
-)
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you have already written your PREreview',
