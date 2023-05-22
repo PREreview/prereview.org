@@ -1796,7 +1796,7 @@ skip-link {
 
     &:not(:first-child) {
       @media screen {
-        background-color: var(--color-red-200);
+        background-color: var(--color-red-600);
       }
 
       @media (width < 40em) {
@@ -1810,7 +1810,7 @@ skip-link {
 
     &:not(:last-child) {
       @media screen {
-        background-color: var(--color-red-600);
+        background-color: var(--color-red-700);
       }
 
       @media (width < 40em) {
@@ -1848,13 +1848,13 @@ skip-link {
         position: relative;
         flex-basis: var(--space-xl-3xl);
         display: block;
-        background-color: var(--color-red-600);
-        background-image: linear-gradient(180deg, transparent 95%, var(--color-red-200) 95%);
+        background-color: var(--color-red-700);
+        background-image: linear-gradient(180deg, transparent 95%, var(--color-red-600) 95%);
 
         &::after {
           position: absolute;
           content: '';
-          background-color: var(--color-red-200);
+          background-color: var(--color-red-600);
           inset: 0;
           clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 50% 90%, 0% 0%);
 
@@ -1864,7 +1864,7 @@ skip-link {
         }
 
         @media (width >= 40em) {
-          background-image: linear-gradient(90deg, transparent 95%, var(--color-red-200) 95%);
+          background-image: linear-gradient(90deg, transparent 95%, var(--color-red-600) 95%);
         }
       }
     }
@@ -1872,15 +1872,15 @@ skip-link {
 
   @media screen {
     color: var(--color-white);
-    background-color: var(--color-red-600);
-    background-image: linear-gradient(180deg, transparent 50%, var(--color-red-200) 50%);
+    background-color: var(--color-red-700);
+    background-image: linear-gradient(180deg, transparent 50%, var(--color-red-600) 50%);
 
     @media not (forced-colors: active) {
       padding-inline: 0;
     }
 
     @media (width >= 40em) {
-      background-image: linear-gradient(90deg, transparent 50%, var(--color-red-200) 50%);
+      background-image: linear-gradient(90deg, transparent 50%, var(--color-red-600) 50%);
     }
   }
 
