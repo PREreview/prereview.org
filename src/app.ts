@@ -474,11 +474,13 @@ export const app = (deps: AppEnv) => {
           directives: {
             'script-src': ["'self'", 'cdn.usefathom.com'],
             'img-src': ["'self'", 'data:', 'cdn.usefathom.com'],
+            upgradeInsecureRequests: deps.publicUrl.protocol === 'https:' ? [] : null,
           },
         },
         crossOriginEmbedderPolicy: {
           policy: 'credentialless',
         },
+        strictTransportSecurity: deps.publicUrl.protocol === 'https:',
       }),
     )
     .get('/robots.txt', (req, res) => {
