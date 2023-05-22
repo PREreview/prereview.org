@@ -7,14 +7,14 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin')
 const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts')
 
-module.exports = {
+module.exports = (env, argv) => ({
   cache: {
     buildDependencies: { config: [__filename] },
     cacheDirectory: path.resolve(__dirname, '.cache/webpack'),
     compression: false,
     type: 'filesystem',
   },
-  mode: process.env.NODE_ENV,
+  devtool: argv.mode === 'development' ? 'source-map' : false,
   entry: {
     'conditional-inputs': path.resolve('assets', 'conditional-inputs.ts'),
     'editor-toolbar': path.resolve('assets', 'editor-toolbar.ts'),
@@ -155,4 +155,4 @@ module.exports = {
         }, {}),
     }),
   ],
-}
+})
