@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import type { Eq } from 'fp-ts/Eq'
 import * as R from 'fp-ts/Reader'
 import * as RA from 'fp-ts/ReadonlyArray'
-import { pipe } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { type Html, type PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
@@ -58,6 +58,8 @@ export function page({
   js = [],
   user,
 }: Page): R.Reader<FathomEnv & PhaseEnv, Html> {
+  const scripts = pipe(js, RA.uniq(stringEq()), RA.concatW(skipLinks.length > 0 ? ['skip-link.js' as const] : []))
+
   return R.asks(
     ({ fathomId, phase }) => html`
       <!DOCTYPE html>
@@ -65,17 +67,16 @@ export function page({
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+        <title>${title}</title>
+
+        ${scripts.map(file => html`<script src="${assets[file].path}" type="module"></script>`)}
+
         <link href="${assets['style.css']}" rel="stylesheet" />
-        ${pipe(
-          js,
-          RA.uniq(stringEq()),
-          RA.concatW(skipLinks.length > 0 ? ['skip-link.js' as const] : []),
-          RA.chain(file =>
-            pipe(
-              assets[file].preload as ReadonlyArray<string>,
-              RA.map(preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
-              RA.prepend(html` <script src="${assets[file].path}" type="module"></script>`),
-            ),
+
+        ${scripts.flatMap(
+          flow(
+            file => assets[file].preload as ReadonlyArray<string>,
+            RA.map(preload => html`<link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
           ),
         )}
         ${fathomId
@@ -84,8 +85,6 @@ export function page({
 
         <link rel="icon" href="${assets['favicon.ico']}" sizes="any" />
         <link rel="icon" href="${assets['favicon.svg']}" type="image/svg+xml" />
-
-        <title>${title}</title>
 
         <body ${rawHtml(type === 'two-up' ? `class="${type}"` : '')}>
           ${skipLinks.length > 0
