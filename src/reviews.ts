@@ -141,7 +141,7 @@ function formatList(
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`${item}`.toString()),
+    RNEA.map(item => html`<b>${item}</b>`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

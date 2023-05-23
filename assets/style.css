@@ -1463,6 +1463,10 @@ skip-link {
     font-size: var(--step-3);
   }
 
+  & b {
+    font-weight: 500;
+  }
+
   & time {
     display: block;
     color: var(--color-text-light);
