@@ -14,6 +14,7 @@ import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound } from './middleware'
 import { page } from './page'
+import type { PreprintId } from './preprint-id'
 import { reviewMatch, reviewsMatch } from './routes'
 import { renderDate } from './time'
 import type { User } from './user'
@@ -29,6 +30,7 @@ type RecentPrereviews = {
     readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
     readonly published: PlainDate
     readonly preprint: {
+      readonly id: PreprintId
       readonly language: LanguageCode
       readonly title: Html
     }
@@ -112,6 +114,29 @@ function createPage({ currentPage, totalPages, recentPrereviews }: RecentPrerevi
                         <dl>
                           <dt>Review published</dt>
                           <dd>${renderDate(prereview.published)}</dd>
+                          <dt>Preprint server</dt>
+                          <dd>
+                            ${match(prereview.preprint.id.type)
+                              .with('africarxiv', () => 'AfricArXiv Preprints')
+                              .with('arxiv', () => 'arXiv')
+                              .with('biorxiv', () => 'bioRxiv')
+                              .with('chemrxiv', () => 'ChemRxiv')
+                              .with('eartharxiv', () => 'EarthArXiv')
+                              .with('ecoevorxiv', () => 'EcoEvoRxiv')
+                              .with('edarxiv', () => 'EdArXiv')
+                              .with('engrxiv', () => 'engrXiv')
+                              .with('medrxiv', () => 'medRxiv')
+                              .with('metaarxiv', () => 'MetaArXiv')
+                              .with('osf', () => 'OSF Preprints')
+                              .with('philsci', () => 'PhilSci-Archive')
+                              .with('preprints.org', () => 'Preprints.org')
+                              .with('psyarxiv', () => 'PsyArXiv')
+                              .with('research-square', () => 'Research Square')
+                              .with('scielo', () => 'SciELO Preprints')
+                              .with('science-open', () => 'ScienceOpen Preprints')
+                              .with('socarxiv', () => 'SocArXiv')
+                              .exhaustive()}
+                          </dd>
                         </dl>
                       </article>
                     </li>

@@ -21,7 +21,6 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
-import { get } from 'spectacles-ts'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
@@ -134,7 +133,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           getRecentPrereviews: () =>
             pipe(
               getRecentPrereviewsFromZenodo(1),
-              RTE.matchW(() => RA.empty, get('recentPrereviews')),
+              RTE.matchW(
+                () => RA.empty,
+                ({ recentPrereviews }) => recentPrereviews,
+              ),
             )({
               ...env,
               getPreprintTitle: flip(getPreprintTitle)(env),
