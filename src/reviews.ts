@@ -109,7 +109,10 @@ function createPage({ currentPage, totalPages, recentPrereviews }: RecentPrerevi
                           >”
                         </a>
 
-                        ${renderDate(prereview.published)}
+                        <dl>
+                          <dt>Review published</dt>
+                          <dd>${renderDate(prereview.published)}</dd>
+                        </dl>
                       </article>
                     </li>
                   `,

@@ -1467,10 +1467,23 @@ skip-link {
     font-weight: 500;
   }
 
-  & time {
-    display: block;
+  & dl {
+    display: flex;
+    justify-content: space-between;
+    column-gap: var(--space-m);
+    row-gap: var(--space-4xs);
     color: var(--color-text-light);
     margin-block-start: var(--space-2xs);
+  }
+
+  & dt {
+    position: absolute;
+    white-space: nowrap;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    block-size: 1px;
+    inline-size: 1px;
   }
 
   & a {
