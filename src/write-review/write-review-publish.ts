@@ -170,9 +170,8 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
 
             <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
               <h2>
-                PREreview of “<span lang="${preprint.language}" dir="${getLangDir(preprint.language)}"
-                  >${preprint.title}</span
-                >”
+                PREreview of
+                <cite lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</cite>
               </h2>
 
               <div class="byline">

@@ -121,11 +121,10 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
                       <li>
                         <article>
                           <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                            ${formatList('en')(prereview.reviewers)} reviewed “<span
-                              dir="${getLangDir(prereview.preprint.language)}"
-                              lang="${prereview.preprint.language}"
-                              >${prereview.preprint.title}</span
-                            >”
+                            ${formatList('en')(prereview.reviewers)} reviewed
+                            <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
+                              >${prereview.preprint.title}</cite
+                            >
                           </a>
 
                           <dl>

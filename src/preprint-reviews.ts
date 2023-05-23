@@ -155,9 +155,10 @@ function createPage({
     title: plainText`PREreviews of “${preprint.title.text}”`,
     content: html`
       <h1 class="visually-hidden">
-        PREreviews of “<span lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
-          >${preprint.title.text}</span
-        >”
+        PREreviews of
+        <cite lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
+          >${preprint.title.text}</cite
+        >
       </h1>
 
       <aside id="preprint-details" tabindex="0" aria-label="Preprint details">

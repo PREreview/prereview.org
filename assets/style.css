@@ -688,6 +688,19 @@ q {
   quotes: inherit;
 }
 
+cite {
+  quotes: inherit;
+  font-style: normal;
+
+  &::before {
+    content: open-quote;
+  }
+
+  &::after {
+    content: close-quote;
+  }
+}
+
 small {
   font-size: inherit;
 }

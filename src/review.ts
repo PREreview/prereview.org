@@ -100,9 +100,10 @@ function createPage(review: Prereview, user?: User) {
       <main id="prereview">
         <header>
           <h1>
-            PREreview of “<span lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
-              >${review.preprint.title}</span
-            >”
+            PREreview of
+            <cite lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
+              >${review.preprint.title}</cite
+            >
           </h1>
 
           <div class="byline">

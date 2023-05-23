@@ -156,7 +156,7 @@ test('can view a recent review', async ({ fetch, page }) => {
 
   await recentReviews
     .getByRole('link', {
-      name: 'CJ San Felipe reviewed “A conserved local structural motif controls the kinetics of PTP1B catalysis”',
+      name: 'CJ San Felipe reviewed A conserved local structural motif controls the kinetics of PTP1B catalysis',
     })
     .click()
 
@@ -244,7 +244,7 @@ test('can view an older review', async ({ fetch, page }) => {
 
   await page
     .getByRole('link', {
-      name: 'CJ San Felipe reviewed “A conserved local structural motif controls the kinetics of PTP1B catalysis”',
+      name: 'CJ San Felipe reviewed A conserved local structural motif controls the kinetics of PTP1B catalysis',
     })
     .click()
 

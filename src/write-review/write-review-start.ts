@@ -73,11 +73,9 @@ function carryOnPage(preprint: PreprintTitle, form: Form, user: User) {
         <h1>Write a PREreview</h1>
 
         <p>
-          As you’ve already started a PREreview of “<span
-            lang="${preprint.language}"
-            dir="${getLangDir(preprint.language)}"
-            >${preprint.title}</span
-          >”, we’ll take you to the next step so you can carry&nbsp;on.
+          As you’ve already started a PREreview of
+          <cite lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</cite>, we’ll take
+          you to the next step so you can carry&nbsp;on.
         </p>
 
         <a href="${format(nextFormMatch(form).formatter, { id: preprint.id })}" role="button" draggable="false"

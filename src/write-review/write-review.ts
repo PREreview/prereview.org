@@ -154,11 +154,10 @@ function startPage(preprint: Preprint, user?: User) {
         </article>
 
         <p>
-          You can write a PREreview of “<span
-            lang="${preprint.title.language}"
-            dir="${getLangDir(preprint.title.language)}"
-            >${preprint.title.text}</span
-          >”. A PREreview is a free-text review of a preprint and can vary from a few sentences to a lengthy report,
+          You can write a PREreview of
+          <cite lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
+            >${preprint.title.text}</cite
+          >. A PREreview is a free-text review of a preprint and can vary from a few sentences to a lengthy report,
           similar to a journal-organized peer-review report.
         </p>
 
