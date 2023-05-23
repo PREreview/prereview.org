@@ -82,7 +82,6 @@ describe('reviews', () => {
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: expect.anything() },
       ]),

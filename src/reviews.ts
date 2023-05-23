@@ -12,7 +12,7 @@ import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
-import { notFound, serviceUnavailable } from './middleware'
+import { notFound } from './middleware'
 import { page } from './page'
 import { reviewMatch, reviewsMatch } from './routes'
 import { renderDate } from './time'
@@ -56,10 +56,33 @@ export const reviews = (currentPage: number) =>
     RM.orElseW(error =>
       match(error)
         .with('not-found', () => notFound)
-        .with('unavailable', () => serviceUnavailable)
+        .with('unavailable', () => pipe(maybeGetUser, RM.ichainW(showFailureMessage)))
         .exhaustive(),
     ),
   )
+
+const showFailureMessage = flow(
+  fromReaderK(failureMessage),
+  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+function failureMessage(user?: User) {
+  return page({
+    title: plainText`Sorry, we’re having problems`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we’re having problems</h1>
+
+        <p>We’re unable to show this page of recent PREreviews now.</p>
+
+        <p>Please try again later.</p>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
+  })
+}
 
 function createPage({ currentPage, totalPages, recentPrereviews }: RecentPrereviews, user?: User) {
   return page({
