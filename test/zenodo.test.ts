@@ -1,9 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { Temporal } from '@js-temporal/polyfill'
+import { SystemClock } from 'clock-ts'
 import type { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as IO from 'fp-ts/IO'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
@@ -123,6 +125,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       }
 
       const actual = await _.getRecentPrereviewsFromZenodo(page)({
+        clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(
           {
             url: 'https://zenodo.org/api/records/',
@@ -144,6 +147,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
             .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
             .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
             .otherwise(() => TE.left('not-found')),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(
@@ -253,8 +257,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
         )
 
       const actual = await _.getRecentPrereviewsFromZenodo(page)({
+        clock: SystemClock,
         fetch,
         getPreprintTitle: () => TE.right(preprint),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(
@@ -375,6 +381,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
     }
 
     const actual = await _.getRecentPrereviewsFromZenodo(page)({
+      clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
         {
           url: 'https://zenodo.org/api/records/',
@@ -395,6 +402,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         match(id.value as unknown)
           .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
           .otherwise(() => TE.left(error)),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(
@@ -513,6 +521,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
     }
 
     const actual = await _.getRecentPrereviewsFromZenodo(page)({
+      clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
         {
           url: 'https://zenodo.org/api/records/',
@@ -533,6 +542,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         match(id.value as unknown)
           .with('10.1101/2022.01.13.476201', () => TE.left(error1))
           .otherwise(() => TE.left(error2)),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -540,6 +550,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
 
   test.prop([fc.integer({ min: 1 })])('when the list is empty', async page => {
     const actual = await _.getRecentPrereviewsFromZenodo(page)({
+      clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
         {
           url: 'https://zenodo.org/api/records/',
@@ -557,6 +568,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         },
       ),
       getPreprintTitle: () => () => Promise.reject('should not be called'),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
@@ -566,6 +578,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
     'when the PREreviews cannot be loaded',
     async (page, status) => {
       const actual = await _.getRecentPrereviewsFromZenodo(page)({
+        clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(
           {
             url: 'https://zenodo.org/api/records/',
@@ -580,6 +593,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           { status },
         ),
         getPreprintTitle: () => () => Promise.reject('should not be called'),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
@@ -588,8 +602,10 @@ describe('getRecentPrereviewsFromZenodo', () => {
 
   test.prop([fc.integer({ max: 0 })])('when the page number is impossible', async page => {
     const actual = await _.getRecentPrereviewsFromZenodo(page)({
+      clock: SystemClock,
       fetch: fetchMock.sandbox(),
       getPreprintTitle: () => () => Promise.reject('should not be called'),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
@@ -644,6 +660,7 @@ describe('getPrereviewFromZenodo', () => {
     const getPreprint = jest.fn(_ => TE.right(preprint))
 
     const actual = await _.getPrereviewFromZenodo(id)({
+      clock: SystemClock,
       fetch: fetchMock
         .sandbox()
         .getOnce(`https://zenodo.org/api/records/${id}`, {
@@ -655,6 +672,7 @@ describe('getPrereviewFromZenodo', () => {
           { body: 'Some text' },
         ),
       getPreprint,
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(
@@ -730,7 +748,12 @@ describe('getPrereviewFromZenodo', () => {
       })
       .getOnce('http://example.com/file', { body: 'Some text' })
 
-    const actual = await _.getPrereviewFromZenodo(id)({ fetch, getPreprint: () => TE.right(preprint) })()
+    const actual = await _.getPrereviewFromZenodo(id)({
+      clock: SystemClock,
+      fetch,
+      getPreprint: () => TE.right(preprint),
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(
       E.right({
@@ -753,11 +776,13 @@ describe('getPrereviewFromZenodo', () => {
 
   test.prop([fc.integer()])('when the review is not found', async id => {
     const actual = await _.getPrereviewFromZenodo(id)({
+      clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
         body: undefined,
         status: Status.NotFound,
       }),
       getPreprint: () => () => Promise.reject('should not be called'),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
@@ -809,6 +834,7 @@ describe('getPrereviewFromZenodo', () => {
       }
 
       const actual = await _.getPrereviewFromZenodo(id)({
+        clock: SystemClock,
         fetch: fetchMock
           .sandbox()
           .getOnce(`https://zenodo.org/api/records/${id}`, {
@@ -817,6 +843,7 @@ describe('getPrereviewFromZenodo', () => {
           })
           .getOnce('http://example.com/file', { status: textStatus }),
         getPreprint: () => TE.right(preprint),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left(expect.anything()))
@@ -825,11 +852,13 @@ describe('getPrereviewFromZenodo', () => {
 
   test.prop([fc.integer()])('when the review cannot be loaded', async id => {
     const actual = await _.getPrereviewFromZenodo(id)({
+      clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
         body: undefined,
         status: Status.ServiceUnavailable,
       }),
       getPreprint: () => () => Promise.reject('should not be called'),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left(expect.anything()))
@@ -882,6 +911,7 @@ describe('getPrereviewFromZenodo', () => {
       }
 
       const actual = await _.getPrereviewFromZenodo(id)({
+        clock: SystemClock,
         fetch: fetchMock
           .sandbox()
           .getOnce(`https://zenodo.org/api/records/${id}`, {
@@ -890,6 +920,7 @@ describe('getPrereviewFromZenodo', () => {
           })
           .getOnce('http://example.com/file', { body: 'Some text' }),
         getPreprint: () => TE.left(error),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left(error))
@@ -940,11 +971,13 @@ describe('getPrereviewFromZenodo', () => {
     }
 
     const actual = await _.getPrereviewFromZenodo(id)({
+      clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
         body: RecordC.encode(record),
         status: Status.OK,
       }),
       getPreprint: () => () => Promise.reject('should not be called'),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
@@ -1018,11 +1051,13 @@ describe('getPrereviewFromZenodo', () => {
     }
 
     const actual = await _.getPrereviewFromZenodo(id)({
+      clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
         body: RecordC.encode(record),
         status: Status.OK,
       }),
       getPreprint: () => () => Promise.reject('should not be called'),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
@@ -1075,11 +1110,13 @@ describe('getPrereviewFromZenodo', () => {
       }
 
       const actual = await _.getPrereviewFromZenodo(id)({
+        clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
           body: RecordC.encode(record),
           status: Status.OK,
         }),
         getPreprint: () => () => Promise.reject('should not be called'),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left(expect.anything()))
@@ -1133,11 +1170,13 @@ describe('getPrereviewFromZenodo', () => {
       }
 
       const actual = await _.getPrereviewFromZenodo(id)({
+        clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
           body: RecordC.encode(record),
           status: Status.OK,
         }),
         getPreprint: () => () => Promise.reject('should not be called'),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
@@ -1193,11 +1232,13 @@ describe('getPrereviewFromZenodo', () => {
     }
 
     const actual = await _.getPrereviewFromZenodo(id)({
+      clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
         body: RecordC.encode(record),
         status: Status.OK,
       }),
       getPreprint: () => TE.right(preprint),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left(expect.anything()))

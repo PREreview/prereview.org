@@ -18,6 +18,7 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import iso6391, { type LanguageCode } from 'iso-639-1'
 import iso6393To1 from 'iso-639-3/to-1.json'
+import * as L from 'logger-fp-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
@@ -72,7 +73,10 @@ export const getRecentPrereviewsFromZenodo = flow(
     flow(
       ({ hits }) => hits,
       RT.traverseArray(recordToRecentPrereview),
-      RT.map(flow(RA.rights, E.fromOptionK(() => 'unavailable' as const)(RNEA.fromReadonlyArray))),
+      flow(
+        RT.map(flow(RA.rights, E.fromOptionK(() => 'unavailable' as const)(RNEA.fromReadonlyArray))),
+        RTE.orElseFirstW(RTE.fromReaderIOK(() => L.error('Unable to load any recent PREreviews'))),
+      ),
     ),
   ),
   RTE.bimap(
@@ -176,13 +180,21 @@ export function toExternalIdentifier(preprint: IndeterminatePreprintId) {
     .exhaustive()
 }
 
-function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & GetPreprintEnv, unknown, Prereview> {
+function recordToPrereview(
+  record: Record,
+): RTE.ReaderTaskEither<F.FetchEnv & GetPreprintEnv & L.LoggerEnv, unknown, Prereview> {
   return pipe(
     RTE.of(record),
-    RTE.bindW('preprintId', RTE.fromOptionK(() => new NotFound())(getReviewedPreprintId)),
+    RTE.bindW(
+      'preprintId',
+      flow(
+        getReviewedPreprintId,
+        RTE.mapLeft(() => new NotFound()),
+      ),
+    ),
     RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
     RTE.bindW('license', RTE.fromEitherK(PrereviewLicenseD.decode)),
-    RTE.chain(review =>
+    RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right<F.FetchEnv & GetPreprintEnv>(review.metadata.creators as never),
         doi: RTE.right(review.metadata.doi),
@@ -204,10 +216,12 @@ function recordToPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv & Ge
   )
 }
 
-function recordToRecentPrereview(record: Record): RTE.ReaderTaskEither<GetPreprintTitleEnv, unknown, RecentPrereview> {
+function recordToRecentPrereview(
+  record: Record,
+): RTE.ReaderTaskEither<GetPreprintTitleEnv & L.LoggerEnv, unknown, RecentPrereview> {
   return pipe(
     RTE.of(record),
-    RTE.bindW('preprintId', RTE.fromOptionK(() => 'no reviewed preprint')(getReviewedPreprintId)),
+    RTE.bindW('preprintId', getReviewedPreprintId),
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
         id: RTE.right(review.id),
@@ -251,33 +265,41 @@ const getReviewText = flow(
   RTE.map(sanitizeHtml),
 )
 
-const getReviewedPreprintId = flow(
-  O.fromNullableK((record: Record) => record.metadata.related_identifiers),
-  O.chain(
-    A.findFirstMap(relatedIdentifier =>
-      match(relatedIdentifier)
-        .with(
-          {
-            relation: 'reviews',
-            scheme: 'doi',
-            resource_type: 'publication-preprint',
-            identifier: P.select(),
-          },
-          flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)),
-        )
-        .with(
-          {
-            relation: 'reviews',
-            scheme: 'url',
-            resource_type: 'publication-preprint',
-            identifier: P.select(),
-          },
-          flow(O.fromEitherK(UrlD.decode), O.chain(fromUrl)),
-        )
-        .otherwise(() => O.none),
+const getReviewedPreprintId = (record: Record) =>
+  pipe(
+    RTE.fromNullable('no reviewed preprint' as const)(record.metadata.related_identifiers),
+    RTE.chainOptionK(() => 'no reviewed preprint' as const)(
+      A.findFirstMap(relatedIdentifier =>
+        match(relatedIdentifier)
+          .with(
+            {
+              relation: 'reviews',
+              scheme: 'doi',
+              resource_type: 'publication-preprint',
+              identifier: P.select(),
+            },
+            flow(O.fromEitherK(PreprintDoiD.decode), O.map(fromPreprintDoi)),
+          )
+          .with(
+            {
+              relation: 'reviews',
+              scheme: 'url',
+              resource_type: 'publication-preprint',
+              identifier: P.select(),
+            },
+            flow(O.fromEitherK(UrlD.decode), O.chain(fromUrl)),
+          )
+          .otherwise(() => O.none),
+      ),
     ),
-  ),
-)
+    RTE.orElseFirst(
+      RTE.fromReaderIOK(error =>
+        match(error)
+          .with('no reviewed preprint', () => pipe({ zenodoRecord: record.id }, L.warnP('No reviewed preprint found')))
+          .exhaustive(),
+      ),
+    ),
+  )
 
 const UrlD = pipe(
   D.string,
