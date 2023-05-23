@@ -1472,6 +1472,7 @@ skip-link {
     justify-content: space-between;
     column-gap: var(--space-m);
     row-gap: var(--space-4xs);
+    font-size: var(--step--1);
     color: var(--color-text-light);
     margin-block-start: var(--space-2xs);
   }
@@ -1550,6 +1551,10 @@ skip-link {
       flex-direction: column;
       justify-content: space-between;
       margin-block-start: 0;
+    }
+
+    & dl {
+      font-size: var(--step--2);
     }
 
     @media screen {
