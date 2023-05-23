@@ -6,6 +6,7 @@ import * as A from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { and } from 'fp-ts/Predicate'
+import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
@@ -63,11 +64,15 @@ export const getRecentPrereviewsFromZenodo = flow(
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.bindW(
+    'hits',
+    RTE.fromOptionK(() => 'not-found' as const)(({ records }) => RNEA.fromReadonlyArray(records.hits.hits)),
+  ),
+  RTE.bindW(
     'recentPrereviews',
     flow(
-      ({ records }) => records.hits.hits,
-      RTE.traverseArray(recordToRecentPrereview),
-      RTE.chainOptionKW(() => 'not-found' as const)(RNEA.fromReadonlyArray),
+      ({ hits }) => hits,
+      RT.traverseArray(recordToRecentPrereview),
+      RT.map(flow(RA.rights, E.fromOptionK(() => 'unavailable' as const)(RNEA.fromReadonlyArray))),
     ),
   ),
   RTE.bimap(
