@@ -10,18 +10,19 @@ import { flow, identity, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
+import { detectLanguageFrom } from './detect-language'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { sanitizeHtml } from './html'
 import type { Preprint } from './preprint'
-import type { ArxivPreprintId } from './preprint-id'
+import type { AfricarxivFigsharePreprintId, ArxivPreprintId } from './preprint-id'
 
 import Instant = Temporal.Instant
 import PlainDate = Temporal.PlainDate
 import PlainYearMonth = Temporal.PlainYearMonth
 
-export type DatacitePreprintId = ArxivPreprintId
+export type DatacitePreprintId = AfricarxivFigsharePreprintId | ArxivPreprintId
 
-export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant('48550')
+export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant('6084', '48550')
 
 export const getPreprintFromDatacite = flow(
   (id: DatacitePreprintId) => getWork(id.value),
@@ -69,7 +70,9 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
       'posted',
       pipe(
         work.dates,
-        E.fromOptionK(() => 'no published date' as const)(RA.findFirst(date => date.dateType === 'Submitted')),
+        E.fromOptionK(() => 'no published date' as const)(
+          RA.findFirst(({ dateType }) => dateType === 'Submitted' || dateType === 'Created'),
+        ),
         E.map(({ date }) =>
           match(date)
             .with(P.instanceOf(Instant), instant => instant.toZonedDateTimeISO('UTC').toPlainDate())
@@ -90,6 +93,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           'language',
           E.fromOptionK(() => 'unknown language' as const)(({ text }) =>
             match({ type, text })
+              .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
               .exhaustive(),
           ),
@@ -111,6 +115,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           'language',
           E.fromOptionK(() => 'unknown language')(({ text }) =>
             match({ type, text })
+              .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
               .exhaustive(),
           ),
@@ -121,16 +126,31 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
   )
 }
 
-const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = pipe(
-  D.fromStruct({
-    doi: D.fromRefinement(hasRegistrant('48550'), 'DOI'),
-    publisher: D.literal('arXiv'),
-  }),
-  D.map(
-    work =>
-      ({
-        type: 'arxiv',
-        value: work.doi,
-      } satisfies ArxivPreprintId),
+const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
+  pipe(
+    D.fromStruct({
+      doi: D.fromRefinement(hasRegistrant('6084'), 'DOI'),
+      publisher: D.literal('AfricArXiv'),
+    }),
+    D.map(
+      work =>
+        ({
+          type: 'africarxiv',
+          value: work.doi,
+        } satisfies AfricarxivFigsharePreprintId),
+    ),
+  ),
+  pipe(
+    D.fromStruct({
+      doi: D.fromRefinement(hasRegistrant('48550'), 'DOI'),
+      publisher: D.literal('arXiv'),
+    }),
+    D.map(
+      work =>
+        ({
+          type: 'arxiv',
+          value: work.doi,
+        } satisfies ArxivPreprintId),
+    ),
   ),
 )

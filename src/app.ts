@@ -1,4 +1,3 @@
-import { hasRegistrant } from 'doi-ts'
 import express from 'express'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/Json'
@@ -407,7 +406,6 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
 const getPreprint = (id: IndeterminatePreprintId) =>
   match(id)
     .with({ type: 'philsci' }, getPreprintFromPhilsci)
-    .with({ value: p.when(hasRegistrant('6084')) }, () => RTE.left('unavailable' as const))
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
     .exhaustive()
