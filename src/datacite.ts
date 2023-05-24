@@ -9,6 +9,7 @@ import type { Refinement } from 'fp-ts/Refinement'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
+import { parse } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { detectLanguageFrom } from './detect-language'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
@@ -53,9 +54,11 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
           match(author)
             .with({ givenName: P.string, familyName: P.string }, author => ({
               name: `${author.givenName} ${author.familyName}`,
+              orcid: findOrcid(author),
             }))
             .with({ familyName: P.string }, author => ({
               name: author.familyName,
+              orcid: findOrcid(author),
             }))
             .with({ name: P.string }, author => ({
               name: author.name,
@@ -125,6 +128,13 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
     E.let('url', () => work.url),
   )
 }
+
+const findOrcid = flow(
+  (person: Extract<Work['creators'][number], { nameIdentifiers: ReadonlyArray<unknown> }>) => person.nameIdentifiers,
+  RA.findFirst(({ nameIdentifierScheme }) => nameIdentifierScheme === 'ORCID'),
+  O.chain(({ nameIdentifier }) => parse(nameIdentifier)),
+  O.toUndefined,
+)
 
 const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
   pipe(
