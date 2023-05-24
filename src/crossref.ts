@@ -17,7 +17,7 @@ import { sanitizeHtml } from './html'
 import { transformJatsToHtml } from './jats'
 import type { Preprint } from './preprint'
 import type {
-  AfricarxivPreprintId,
+  AfricarxivOsfPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
   EartharxivPreprintId,
@@ -38,7 +38,7 @@ import type {
 import PlainDate = Temporal.PlainDate
 
 export type CrossrefPreprintId =
-  | AfricarxivPreprintId
+  | AfricarxivOsfPreprintId
   | BiorxivPreprintId
   | ChemrxivPreprintId
   | EartharxivPreprintId
@@ -212,7 +212,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'africarxiv',
           value: work.DOI,
-        } satisfies AfricarxivPreprintId),
+        } satisfies AfricarxivOsfPreprintId),
     ),
   ),
   pipe(

@@ -19,7 +19,7 @@ describe('isCrossrefPreprintDoi', () => {
 
 describe('getPreprintFromCrossref', () => {
   describe('when the preprint can be loaded', () => {
-    test.prop([fc.africarxivPreprintId(), fc.plainDate()])('from AfricArXiv', async (id, posted) => {
+    test.prop([fc.africarxivOsfPreprintId(), fc.plainDate()])('from AfricArXiv on OSF', async (id, posted) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',

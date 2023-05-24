@@ -27,7 +27,14 @@ export type PreprintId =
 
 export type IndeterminatePreprintId = PreprintId | BiorxivOrMedrxivPreprintId
 
-export interface AfricarxivPreprintId {
+export type AfricarxivPreprintId = AfricarxivFigsharePreprintId | AfricarxivOsfPreprintId
+
+export interface AfricarxivFigsharePreprintId {
+  readonly type: 'africarxiv'
+  readonly value: Doi<'6084'>
+}
+
+export interface AfricarxivOsfPreprintId {
   readonly type: 'africarxiv'
   readonly value: Doi<'31730'>
 }
@@ -125,6 +132,7 @@ export interface BiorxivOrMedrxivPreprintId {
 export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> = hasRegistrant(
   '1101',
   '1590',
+  '6084',
   '14293',
   '21203',
   '26434',
@@ -156,6 +164,7 @@ export function fromPreprintDoi(
   return match(doi)
     .when(hasRegistrant('1101'), doi => ({ type: 'biorxiv-medrxiv', value: doi } satisfies BiorxivOrMedrxivPreprintId))
     .when(hasRegistrant('1590'), doi => ({ type: 'scielo', value: doi } satisfies ScieloPreprintId))
+    .when(hasRegistrant('6084'), doi => ({ type: 'africarxiv', value: doi } satisfies AfricarxivFigsharePreprintId))
     .when(hasRegistrant('14293'), doi => ({ type: 'science-open', value: doi } satisfies ScienceOpenPreprintId))
     .when(hasRegistrant('21203'), doi => ({ type: 'research-square', value: doi } satisfies ResearchSquarePreprintId))
     .when(hasRegistrant('26434'), doi => ({ type: 'chemrxiv', value: doi } satisfies ChemrxivPreprintId))
@@ -166,7 +175,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('31224'), doi => ({ type: 'engrxiv', value: doi } satisfies EngrxivPreprintId))
     .when(hasRegistrant('31234'), doi => ({ type: 'psyarxiv', value: doi } satisfies PsyarxivPreprintId))
     .when(hasRegistrant('31235'), doi => ({ type: 'socarxiv', value: doi } satisfies SocarxivPreprintId))
-    .when(hasRegistrant('31730'), doi => ({ type: 'africarxiv', value: doi } satisfies AfricarxivPreprintId))
+    .when(hasRegistrant('31730'), doi => ({ type: 'africarxiv', value: doi } satisfies AfricarxivOsfPreprintId))
     .when(hasRegistrant('32942'), doi => ({ type: 'ecoevorxiv', value: doi } satisfies EcoevorxivPreprintId))
     .when(hasRegistrant('35542'), doi => ({ type: 'edarxiv', value: doi } satisfies EdarxivPreprintId))
     .when(hasRegistrant('48550'), doi => ({ type: 'arxiv', value: doi } satisfies ArxivPreprintId))

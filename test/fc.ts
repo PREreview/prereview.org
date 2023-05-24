@@ -26,6 +26,8 @@ import type { DatacitePreprintId } from '../src/datacite'
 import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
 import type { Preprint, PreprintTitle } from '../src/preprint'
 import type {
+  AfricarxivFigsharePreprintId,
+  AfricarxivOsfPreprintId,
   AfricarxivPreprintId,
   ArxivPreprintId,
   BiorxivOrMedrxivPreprintId,
@@ -147,12 +149,23 @@ export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value']>
   datacitePreprintId().map(id => id.value)
 
 export const africarxivPreprintId = (): fc.Arbitrary<AfricarxivPreprintId> =>
+  fc.oneof(africarxivFigsharePreprintId(), africarxivOsfPreprintId())
+
+export const africarxivPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivPreprintId]> => africarxivOsfPreprintUrl()
+
+export const africarxivFigsharePreprintId = (): fc.Arbitrary<AfricarxivFigsharePreprintId> =>
+  fc.record({
+    type: fc.constant('africarxiv'),
+    value: doi(fc.constant('6084')),
+  })
+
+export const africarxivOsfPreprintId = (): fc.Arbitrary<AfricarxivOsfPreprintId> =>
   fc.record({
     type: fc.constant('africarxiv'),
     value: doi(fc.constant('31730')),
   })
 
-export const africarxivPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivPreprintId]> =>
+export const africarxivOsfPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivOsfPreprintId]> =>
   fc
     .stringOf(alphanumeric(), { minLength: 1 })
     .map(id => [
@@ -415,7 +428,7 @@ export const indeterminatePreprintId = (): fc.Arbitrary<IndeterminatePreprintId>
 
 export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(
-    africarxivPreprintId(),
+    africarxivOsfPreprintId(),
     biorxivPreprintId(),
     chemrxivPreprintId(),
     eartharxivPreprintId(),
