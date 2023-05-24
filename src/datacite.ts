@@ -5,8 +5,8 @@ import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import * as R from 'fp-ts/Refinement'
-import { flow, pipe } from 'fp-ts/function'
+import type { Refinement } from 'fp-ts/Refinement'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
@@ -16,10 +16,12 @@ import type { Preprint } from './preprint'
 import type { ArxivPreprintId } from './preprint-id'
 
 import Instant = Temporal.Instant
+import PlainDate = Temporal.PlainDate
+import PlainYearMonth = Temporal.PlainYearMonth
 
 export type DatacitePreprintId = ArxivPreprintId
 
-export const isDatacitePreprintDoi: R.Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant('48550')
+export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant('48550')
 
 export const getPreprintFromDatacite = flow(
   (id: DatacitePreprintId) => getWork(id.value),
@@ -66,18 +68,13 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
       'posted',
       pipe(
         work.dates,
-        E.fromOptionK(() => 'no published date' as const)(
-          RA.findFirst(
-            R.fromOptionK(date =>
-              pipe(
-                O.Do,
-                O.apS('dateType', date.dateType === 'Submitted' ? O.some(date.dateType) : O.none),
-                O.apS('date', date.date instanceof Instant ? O.some(date.date) : O.none),
-              ),
-            ),
-          ),
+        E.fromOptionK(() => 'no published date' as const)(RA.findFirst(date => date.dateType === 'Submitted')),
+        E.map(({ date }) =>
+          match(date)
+            .with(P.instanceOf(Instant), instant => instant.toZonedDateTimeISO('UTC').toPlainDate())
+            .with(P.union(P.instanceOf(PlainDate), P.instanceOf(PlainYearMonth), P.number), identity)
+            .exhaustive(),
         ),
-        E.map(date => date.date.toZonedDateTimeISO('UTC').toPlainDate()),
       ),
     ),
     E.bindW('abstract', ({ id: { type } }) =>
