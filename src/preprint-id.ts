@@ -219,6 +219,7 @@ export function fromUrl(url: URL): O.Option<IndeterminatePreprintId> {
     .with([P.union('researchsquare.com', 'assets.researchsquare.com'), P.select()], extractFromResearchSquarePath)
     .with(['preprints.scielo.org', P.select()], extractFromScieloPath)
     .with(['scienceopen.com', 'hosted-document'], () => extractFromScienceOpenQueryString(url.searchParams))
+    .with(['zenodo.org', P.select()], extractFromZenodoPath)
     .otherwise(() => O.none)
 }
 
@@ -309,4 +310,10 @@ const extractFromScieloPath = flow(
 const extractFromScienceOpenQueryString = flow(
   O.fromNullableK((query: URLSearchParams) => query.get('doi')),
   O.chain(parsePreprintDoi),
+)
+
+const extractFromZenodoPath = flow(
+  decodeURIComponent,
+  O.fromNullableK(s => s.match(/^record\/([1-9][0-9]*)(?:$|\/)/)?.[1]),
+  O.chain(flow(id => `10.5281/zenodo.${id}`, parsePreprintDoi)),
 )

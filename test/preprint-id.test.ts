@@ -501,6 +501,29 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'socarxiv', value: doi }))
   })
 
+  test.prop([fc.zenodoPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+    examples: [
+      [[new URL('https://zenodo.org/record/4290795'), '10.5281/zenodo.4290795' as Doi<'5281'>]],
+      [[new URL('https://www.zenodo.org/record/4290795'), '10.5281/zenodo.4290795' as Doi<'5281'>]], // www.
+      [[new URL('http://zenodo.org/record/4290795'), '10.5281/zenodo.4290795' as Doi<'5281'>]], // http
+      [
+        [
+          new URL('https://zenodo.org/record/4290795/files/f1000research-revised.pdf'), // file
+          '10.5281/zenodo.4290795' as Doi<'5281'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://zenodo.org/record/4290795/preview/f1000research-revised.pdf'), // file preview
+          '10.5281/zenodo.4290795' as Doi<'5281'>,
+        ],
+      ],
+      [[new URL('https://zenodo.org/record/4290795/export/json'), '10.5281/zenodo.4290795' as Doi<'5281'>]], // export
+    ],
+  })('with a Zenodo URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'zenodo-africarxiv', value: doi }))
+  })
+
   test.prop([fc.url()], {
     examples: [
       [new URL('https://foo.doi.org/10.1101/2021.06.18.21258689')], // unknown subdomain

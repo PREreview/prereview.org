@@ -422,6 +422,14 @@ export const zenodoPreprintId = (): fc.Arbitrary<ZenodoPreprintId> =>
     value: doi(fc.constant('5281')),
   })
 
+export const zenodoPreprintUrl = (): fc.Arbitrary<[URL, ZenodoPreprintId]> =>
+  fc
+    .integer({ min: 1 })
+    .map(id => [
+      new URL(`https://zenodo.org/record/${id}`),
+      { type: 'zenodo', value: `10.5281/zenodo.${id}` as Doi<'5281'> },
+    ])
+
 export const biorxivOrMedrxivPreprintId = (): fc.Arbitrary<BiorxivOrMedrxivPreprintId> =>
   fc.record({
     type: fc.constant('biorxiv-medrxiv'),
