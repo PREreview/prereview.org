@@ -2319,7 +2319,7 @@ describe('getPreprintFromCrossref', () => {
 
     const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
-    expect(actual).toStrictEqual(E.left('not-found'))
+    expect(actual).toStrictEqual(E.left('not-a-preprint'))
   })
 
   test.prop([fc.crossrefPreprintId(), fc.record({ status: fc.integer(), body: fc.string() })])(

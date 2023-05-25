@@ -105,7 +105,7 @@ export const getPreprintFromPhilsci = flow(
   RTE.mapLeft(error =>
     match(error)
       .with({ status: P.union(Status.NotFound, Status.Unauthorized) }, () => 'not-found' as const)
-      .with('not a preprint', () => 'not-found' as const)
+      .with('not a preprint', () => 'not-a-preprint' as const)
       .otherwise(() => 'unavailable' as const),
   ),
 )

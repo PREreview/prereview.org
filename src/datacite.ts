@@ -34,7 +34,7 @@ export const getPreprintFromDatacite = flow(
   RTE.mapLeft(error =>
     match(error)
       .with({ status: Status.NotFound }, () => 'not-found' as const)
-      .with('not a preprint', () => 'not-found' as const)
+      .with('not a preprint', () => 'not-a-preprint' as const)
       .otherwise(() => 'unavailable' as const),
   ),
 )

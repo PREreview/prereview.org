@@ -8,6 +8,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
+import { identity } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -403,12 +404,19 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
   P.map(flow(R.local(collapseRequests()), R.local(logFetch))),
 )
 
-const getPreprint = (id: IndeterminatePreprintId) =>
-  match(id)
-    .with({ type: 'philsci' }, getPreprintFromPhilsci)
-    .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
-    .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
-    .exhaustive()
+const getPreprint = flow(
+  (id: IndeterminatePreprintId) =>
+    match(id)
+      .with({ type: 'philsci' }, getPreprintFromPhilsci)
+      .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
+      .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
+      .exhaustive(),
+  RTE.mapLeft(error =>
+    match(error)
+      .with('not-a-preprint', () => 'not-found' as const)
+      .otherwise(identity),
+  ),
+)
 
 const getPreprintTitle = flow(
   getPreprint,

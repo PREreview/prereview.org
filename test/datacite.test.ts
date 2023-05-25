@@ -759,7 +759,7 @@ describe('getPreprintFromDatacite', () => {
 
       const actual = await _.getPreprintFromDatacite(id)({ fetch })()
 
-      expect(actual).toStrictEqual(E.left('not-found'))
+      expect(actual).toStrictEqual(E.left('not-a-preprint'))
     },
   )
 
