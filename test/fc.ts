@@ -162,7 +162,11 @@ export const africarxivFigsharePreprintId = (): fc.Arbitrary<AfricarxivFigshareP
 
 export const africarxivFigsharePreprintUrl = (): fc.Arbitrary<[URL, AfricarxivFigsharePreprintId]> =>
   fc
-    .tuple(fc.asciiString(), fc.asciiString(), fc.integer({ min: 1 }))
+    .tuple(
+      fc.stringOf(fc.oneof(alphanumeric(), fc.constant('-')), { minLength: 1 }),
+      fc.stringOf(fc.oneof(alphanumeric(), fc.constantFrom('_')), { minLength: 1 }),
+      fc.integer({ min: 1 }),
+    )
     .map(([type, title, id]) => [
       new URL(`https://africarxiv.figshare.com/articles/${type}/${title}/${id}`),
       { type: 'africarxiv', value: `10.6084/m9.figshare.${id}.v1` as Doi<'6084'> },
