@@ -520,6 +520,7 @@ test.each([
   ],
   ['with money', '$1 to $2', '$1 to $2'],
   ['with lots of money', '$100,000 to $200,000', '$100,000 to $200,000'],
+  ['with even more money', '$1.5 to $2.1 million', '$1.5 to $2.1 million'],
 ])('sanitizeHtml (%s)', (_name, input, expected) => {
   const actual = _.sanitizeHtml(input)
 
@@ -542,6 +543,7 @@ test.prop([fc.html().map(html => [html.toString(), html.toString()])], {
     ],
     [['$1 to $2', '$1 to $2']],
     [['$100,000 to $200,000', '$100,000 to $200,000']],
+    [['$1.5 to $2.1 million', '$1.5 to $2.1 million']],
   ],
 })('rawHtml', ([input, expected]) => {
   const actual = _.rawHtml(input)

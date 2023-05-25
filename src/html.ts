@@ -158,7 +158,7 @@ export const RawHtmlC = C.make(
 )
 
 function texToMathml(input: string) {
-  return input.replace(/(\${1,2}(?!\d+(?:\s|,)))([\s\S]+?)\1/g, (original, mode: string, match: string) => {
+  return input.replace(/(\${1,2}(?!\d+[\s,.]))([\s\S]+?)\1/g, (original, mode: string, match: string) => {
     try {
       return sanitizeHtml(
         katex
