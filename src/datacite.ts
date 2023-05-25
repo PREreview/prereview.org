@@ -77,9 +77,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
       'posted',
       pipe(
         work.dates,
-        E.fromOptionK(() => 'no published date' as const)(
-          RA.findFirst(({ dateType }) => dateType === 'Submitted' || dateType === 'Created' || dateType === 'Issued'),
-        ),
+        E.fromOptionK(() => 'no published date' as const)(findPublishedDate),
         E.map(({ date }) =>
           match(date)
             .with(P.instanceOf(Instant), instant => instant.toZonedDateTimeISO('UTC').toPlainDate())
@@ -139,6 +137,29 @@ const findOrcid = flow(
   O.chain(({ nameIdentifier }) => parse(nameIdentifier)),
   O.toUndefined,
 )
+
+const findPublishedDate = (dates: Work['dates']) =>
+  pipe(
+    O.none,
+    O.alt(() =>
+      pipe(
+        dates,
+        RA.findFirst(({ dateType }) => dateType === 'Submitted'),
+      ),
+    ),
+    O.alt(() =>
+      pipe(
+        dates,
+        RA.findFirst(({ dateType }) => dateType === 'Created'),
+      ),
+    ),
+    O.alt(() =>
+      pipe(
+        dates,
+        RA.findFirst(({ dateType }) => dateType === 'Issued'),
+      ),
+    ),
+  )
 
 const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
   pipe(
