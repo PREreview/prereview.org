@@ -11,17 +11,26 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { parse } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import { detectLanguageFrom } from './detect-language'
+import { detectLanguage, detectLanguageFrom } from './detect-language'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { sanitizeHtml } from './html'
 import type { Preprint } from './preprint'
-import type { AfricarxivFigsharePreprintId, AfricarxivZenodoPreprintId, ArxivPreprintId } from './preprint-id'
+import type {
+  AfricarxivFigsharePreprintId,
+  AfricarxivZenodoPreprintId,
+  ArxivPreprintId,
+  ZenodoPreprintId,
+} from './preprint-id'
 
 import Instant = Temporal.Instant
 import PlainDate = Temporal.PlainDate
 import PlainYearMonth = Temporal.PlainYearMonth
 
-export type DatacitePreprintId = AfricarxivFigsharePreprintId | AfricarxivZenodoPreprintId | ArxivPreprintId
+export type DatacitePreprintId =
+  | AfricarxivFigsharePreprintId
+  | AfricarxivZenodoPreprintId
+  | ArxivPreprintId
+  | ZenodoPreprintId
 
 export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant(
   '5281',
@@ -100,6 +109,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
+              .with({ type: 'zenodo', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
         ),
@@ -122,6 +132,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
+              .with({ type: 'zenodo', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
         ),
@@ -215,6 +226,19 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
           type: 'arxiv',
           value: work.doi,
         } satisfies ArxivPreprintId),
+    ),
+  ),
+  pipe(
+    D.fromStruct({
+      doi: D.fromRefinement(hasRegistrant('5281'), 'DOI'),
+      publisher: D.literal('Zenodo'),
+    }),
+    D.map(
+      work =>
+        ({
+          type: 'zenodo',
+          value: work.doi,
+        } satisfies ZenodoPreprintId),
     ),
   ),
 )

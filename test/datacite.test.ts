@@ -573,6 +573,126 @@ describe('getPreprintFromDatacite', () => {
       )
     })
 
+    test.prop([fc.zenodoPreprintId(), fc.plainDate()])('from Zenodo', async (id, posted) => {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
+        body: {
+          data: {
+            id: '10.5281/zenodo.7955181',
+            type: 'dois',
+            attributes: {
+              doi: id.value,
+              prefix: '10.5281',
+              suffix: 'zenodo.7955181',
+              identifiers: [],
+              alternateIdentifiers: [],
+              creators: [
+                { name: 'Ding, Keyang', givenName: 'Keyang', familyName: 'Ding', affiliation: [], nameIdentifiers: [] },
+              ],
+              titles: [{ title: 'The Counting Functions of Prime Pairs' }],
+              publisher: 'Zenodo',
+              container: {},
+              publicationYear: 2023,
+              subjects: [{ subject: 'The counting functions of prime pairs, prime number' }],
+              contributors: [],
+              dates: [{ date: posted.toString(), dateType: 'Issued' }],
+              language: null,
+              types: {
+                ris: 'GEN',
+                bibtex: 'misc',
+                citeproc: 'article',
+                schemaOrg: 'CreativeWork',
+                resourceTypeGeneral: 'Preprint',
+              },
+              relatedIdentifiers: [
+                {
+                  relationType: 'IsVersionOf',
+                  relatedIdentifier: '10.5281/zenodo.7955180',
+                  relatedIdentifierType: 'DOI',
+                },
+              ],
+              relatedItems: [],
+              sizes: [],
+              formats: [],
+              version: null,
+              rightsList: [
+                {
+                  rights: 'Creative Commons Attribution 4.0 International',
+                  rightsUri: 'https://creativecommons.org/licenses/by/4.0/legalcode',
+                  schemeUri: 'https://spdx.org/licenses/',
+                  rightsIdentifier: 'cc-by-4.0',
+                  rightsIdentifierScheme: 'SPDX',
+                },
+                { rights: 'Open Access', rightsUri: 'info:eu-repo/semantics/openAccess' },
+              ],
+              descriptions: [
+                {
+                  description:
+                    'The counting functions of prime pairs are derived. The asymptotic behavior of the prime pair counting functions are also analyzed.',
+                  descriptionType: 'Abstract',
+                },
+              ],
+              geoLocations: [],
+              fundingReferences: [],
+              xml: 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPHJlc291cmNlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtNCBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC00LjEvbWV0YWRhdGEueHNkIj4KICA8aWRlbnRpZmllciBpZGVudGlmaWVyVHlwZT0iRE9JIj4xMC41MjgxL1pFTk9ETy43OTU1MTgxPC9pZGVudGlmaWVyPgogIDxjcmVhdG9ycz4KICAgIDxjcmVhdG9yPgogICAgICA8Y3JlYXRvck5hbWU+RGluZywgS2V5YW5nPC9jcmVhdG9yTmFtZT4KICAgICAgPGdpdmVuTmFtZT5LZXlhbmc8L2dpdmVuTmFtZT4KICAgICAgPGZhbWlseU5hbWU+RGluZzwvZmFtaWx5TmFtZT4KICAgIDwvY3JlYXRvcj4KICA8L2NyZWF0b3JzPgogIDx0aXRsZXM+CiAgICA8dGl0bGU+VGhlIENvdW50aW5nIEZ1bmN0aW9ucyBvZiBQcmltZSBQYWlyczwvdGl0bGU+CiAgPC90aXRsZXM+CiAgPHB1Ymxpc2hlcj5aZW5vZG88L3B1Ymxpc2hlcj4KICA8cHVibGljYXRpb25ZZWFyPjIwMjM8L3B1YmxpY2F0aW9uWWVhcj4KICA8c3ViamVjdHM+CiAgICA8c3ViamVjdD5UaGUgY291bnRpbmcgZnVuY3Rpb25zIG9mIHByaW1lIHBhaXJzLCBwcmltZSBudW1iZXI8L3N1YmplY3Q+CiAgPC9zdWJqZWN0cz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iSXNzdWVkIj4yMDIzLTA1LTIxPC9kYXRlPgogIDwvZGF0ZXM+CiAgPHJlc291cmNlVHlwZSByZXNvdXJjZVR5cGVHZW5lcmFsPSJQcmVwcmludCIvPgogIDxhbHRlcm5hdGVJZGVudGlmaWVycz4KICAgIDxhbHRlcm5hdGVJZGVudGlmaWVyIGFsdGVybmF0ZUlkZW50aWZpZXJUeXBlPSJ1cmwiPmh0dHBzOi8vemVub2RvLm9yZy9yZWNvcmQvNzk1NTE4MTwvYWx0ZXJuYXRlSWRlbnRpZmllcj4KICA8L2FsdGVybmF0ZUlkZW50aWZpZXJzPgogIDxyZWxhdGVkSWRlbnRpZmllcnM+CiAgICA8cmVsYXRlZElkZW50aWZpZXIgcmVsYXRlZElkZW50aWZpZXJUeXBlPSJET0kiIHJlbGF0aW9uVHlwZT0iSXNWZXJzaW9uT2YiPjEwLjUyODEvemVub2RvLjc5NTUxODA8L3JlbGF0ZWRJZGVudGlmaWVyPgogIDwvcmVsYXRlZElkZW50aWZpZXJzPgogIDxyaWdodHNMaXN0PgogICAgPHJpZ2h0cyByaWdodHNVUkk9Imh0dHBzOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvbGVnYWxjb2RlIj5DcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIDQuMCBJbnRlcm5hdGlvbmFsPC9yaWdodHM+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaW5mbzpldS1yZXBvL3NlbWFudGljcy9vcGVuQWNjZXNzIj5PcGVuIEFjY2VzczwvcmlnaHRzPgogIDwvcmlnaHRzTGlzdD4KICA8ZGVzY3JpcHRpb25zPgogICAgPGRlc2NyaXB0aW9uIGRlc2NyaXB0aW9uVHlwZT0iQWJzdHJhY3QiPiZsdDtwJmd0O1RoZSBjb3VudGluZyBmdW5jdGlvbnMgb2YgcHJpbWUgcGFpcnMgYXJlIGRlcml2ZWQuIFRoZSBhc3ltcHRvdGljIGJlaGF2aW9yIG9mIHRoZSBwcmltZSBwYWlyIGNvdW50aW5nIGZ1bmN0aW9ucyBhcmUgYWxzbyBhbmFseXplZC4mbHQ7L3AmZ3Q7PC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=',
+              url: 'https://zenodo.org/record/7955181',
+              contentUrl: null,
+              metadataVersion: 0,
+              schemaVersion: 'http://datacite.org/schema/kernel-4',
+              source: 'mds',
+              isActive: true,
+              state: 'findable',
+              reason: null,
+              viewCount: 0,
+              viewsOverTime: [],
+              downloadCount: 0,
+              downloadsOverTime: [],
+              referenceCount: 0,
+              citationCount: 0,
+              citationsOverTime: [],
+              partCount: 0,
+              partOfCount: 0,
+              versionCount: 0,
+              versionOfCount: 0,
+              created: '2023-05-21T21:17:21.000Z',
+              registered: '2023-05-21T21:17:22.000Z',
+              published: '2023',
+              updated: '2023-05-21T21:17:22.000Z',
+            },
+            relationships: {
+              client: { data: { id: 'cern.zenodo', type: 'clients' } },
+              provider: { data: { id: 'cern', type: 'providers' } },
+              media: { data: { id: '10.5281/zenodo.7955181', type: 'media' } },
+              references: { data: [] },
+              citations: { data: [] },
+              parts: { data: [] },
+              partOf: { data: [] },
+              versions: { data: [] },
+              versionOf: { data: [] },
+            },
+          },
+        },
+      })
+
+      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          abstract: {
+            language: 'en',
+            text: expect.stringContaining('<p>The counting functions of prime pairs'),
+          },
+          authors: [{ name: 'Keyang Ding', orcid: undefined }],
+          id,
+          posted,
+          title: {
+            language: 'en',
+            text: rawHtml('The Counting Functions of Prime Pairs'),
+          },
+          url: new URL('https://zenodo.org/record/7955181'),
+        }),
+      )
+    })
+
     test.prop([fc.arxivPreprintId(), fc.instant()])('when the response is stale', async (id, posted) => {
       const fetch = fetchMock
         .sandbox()
