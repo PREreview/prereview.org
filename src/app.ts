@@ -13,7 +13,7 @@ import helmet from 'helmet'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { createProxyMiddleware } from 'http-proxy-middleware'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import { route } from 'hyper-ts-routing'
 import { type SessionEnv, getSession } from 'hyper-ts-session'
@@ -44,6 +44,7 @@ import {
   isLegacyCompatiblePreprint,
   isLegacyCompatiblePrereview,
 } from './legacy-prereview'
+import { legacyRedirects } from './legacy-redirects'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import type { FathomEnv, PhaseEnv } from './page'
 import { partners } from './partners'
@@ -584,9 +585,7 @@ export const app = (deps: AppEnv) => {
 
       next()
     })
-    .use(/^\/preprints\/arxiv-([A-z0-9.+-]+?)(?:v[0-9]+)?$/, (req, res) => {
-      res.redirect(Status.MovedPermanently, `/preprints/doi-10.48550-arxiv.${req.params['0']}`)
-    })
+    .use(legacyRedirects)
     .use((req, res, next) => {
       return pipe(
         appMiddleware({
