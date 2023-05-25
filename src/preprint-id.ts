@@ -24,8 +24,9 @@ export type PreprintId =
   | ScieloPreprintId
   | ScienceOpenPreprintId
   | SocarxivPreprintId
+  | ZenodoPreprintId
 
-export type IndeterminatePreprintId = PreprintId | BiorxivOrMedrxivPreprintId
+export type IndeterminatePreprintId = PreprintId | BiorxivOrMedrxivPreprintId | ZenodoOrAfricarxivPreprintId
 
 export type AfricarxivPreprintId = AfricarxivFigsharePreprintId | AfricarxivOsfPreprintId | AfricarxivZenodoPreprintId
 
@@ -129,9 +130,19 @@ export interface SocarxivPreprintId {
   readonly value: Doi<'31235'>
 }
 
+export interface ZenodoPreprintId {
+  readonly type: 'zenodo'
+  readonly value: Doi<'5281'>
+}
+
 export interface BiorxivOrMedrxivPreprintId {
   readonly type: 'biorxiv-medrxiv'
   readonly value: BiorxivPreprintId['value'] | MedrxivPreprintId['value']
+}
+
+export interface ZenodoOrAfricarxivPreprintId {
+  readonly type: 'zenodo-africarxiv'
+  readonly value: AfricarxivZenodoPreprintId['value']
 }
 
 export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> = hasRegistrant(
@@ -170,7 +181,10 @@ export function fromPreprintDoi(
   return match(doi)
     .when(hasRegistrant('1101'), doi => ({ type: 'biorxiv-medrxiv', value: doi } satisfies BiorxivOrMedrxivPreprintId))
     .when(hasRegistrant('1590'), doi => ({ type: 'scielo', value: doi } satisfies ScieloPreprintId))
-    .when(hasRegistrant('5281'), doi => ({ type: 'africarxiv', value: doi } satisfies AfricarxivZenodoPreprintId))
+    .when(
+      hasRegistrant('5281'),
+      doi => ({ type: 'zenodo-africarxiv', value: doi } satisfies ZenodoOrAfricarxivPreprintId),
+    )
     .when(hasRegistrant('6084'), doi => ({ type: 'africarxiv', value: doi } satisfies AfricarxivFigsharePreprintId))
     .when(hasRegistrant('14293'), doi => ({ type: 'science-open', value: doi } satisfies ScienceOpenPreprintId))
     .when(hasRegistrant('21203'), doi => ({ type: 'research-square', value: doi } satisfies ResearchSquarePreprintId))

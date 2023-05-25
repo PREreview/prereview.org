@@ -310,6 +310,8 @@ function createUnknownPreprintWithDoiPage(preprint: Extract<IndeterminatePreprin
             .with('scielo', () => 'a SciELO')
             .with('science-open', () => 'a ScienceOpen')
             .with('socarxiv', () => 'a SocArXiv')
+            .with('zenodo', () => 'a Zenodo')
+            .with('zenodo-africarxiv', () => 'a Zenodo or AfricArXiv')
             .exhaustive()}
           preprint, but we can’t find any details.
         </p>

@@ -97,7 +97,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
               PREreviews
             </li>
             <li>
-              <data value="18">18</data>
+              <data value="19">19</data>
               preprint servers
             </li>
             <li>
@@ -151,6 +151,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
                                 .with('scielo', () => 'SciELO Preprints')
                                 .with('science-open', () => 'ScienceOpen Preprints')
                                 .with('socarxiv', () => 'SocArXiv')
+                                .with('zenodo', () => 'Zenodo')
                                 .exhaustive()}
                             </dd>
                           </dl>

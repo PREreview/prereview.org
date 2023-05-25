@@ -200,6 +200,7 @@ function createPage({
                     .with('scielo', () => 'SciELO Preprints')
                     .with('science-open', () => 'ScienceOpen Preprints')
                     .with('socarxiv', () => 'SocArXiv')
+                    .with('zenodo', () => 'Zenodo')
                     .exhaustive()}
                 </dd>
               </div>
