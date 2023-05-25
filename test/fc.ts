@@ -50,6 +50,8 @@ import type {
   ScieloPreprintId,
   ScienceOpenPreprintId,
   SocarxivPreprintId,
+  ZenodoOrAfricarxivPreprintId,
+  ZenodoPreprintId,
 } from '../src/preprint-id'
 import { type NonEmptyString, isNonEmptyString } from '../src/string'
 import type { User } from '../src/user'
@@ -414,10 +416,22 @@ export const socarxivPreprintUrl = (): fc.Arbitrary<[URL, SocarxivPreprintId]> =
       { type: 'socarxiv', value: `10.31235/osf.io/${id}` as Doi<'31235'> },
     ])
 
+export const zenodoPreprintId = (): fc.Arbitrary<ZenodoPreprintId> =>
+  fc.record({
+    type: fc.constant('zenodo'),
+    value: doi(fc.constant('5281')),
+  })
+
 export const biorxivOrMedrxivPreprintId = (): fc.Arbitrary<BiorxivOrMedrxivPreprintId> =>
   fc.record({
     type: fc.constant('biorxiv-medrxiv'),
     value: doi(fc.constant('1101')),
+  })
+
+export const zenodoOrAfricarxivPreprintId = (): fc.Arbitrary<ZenodoOrAfricarxivPreprintId> =>
+  fc.record({
+    type: fc.constant('zenodo-africarxiv'),
+    value: doi(fc.constant('5281')),
   })
 
 export const preprintId = (): fc.Arbitrary<PreprintId> => fc.oneof(philsciPreprintId(), preprintIdWithDoi())
@@ -441,10 +455,11 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
     scieloPreprintId(),
     scienceOpenPreprintId(),
     socarxivPreprintId(),
+    zenodoPreprintId(),
   )
 
 export const indeterminatePreprintId = (): fc.Arbitrary<IndeterminatePreprintId> =>
-  fc.oneof(preprintId(), biorxivOrMedrxivPreprintId())
+  fc.oneof(preprintId(), biorxivOrMedrxivPreprintId(), zenodoOrAfricarxivPreprintId())
 
 export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(
