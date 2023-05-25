@@ -28,6 +28,49 @@ describe('fromUrl', () => {
 
   test.prop([fc.africarxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
+      // figshare
+      [
+        [
+          new URL(
+            'https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801',
+          ),
+          '10.6084/m9.figshare.19064801.v1' as Doi<'6084'>,
+        ],
+      ],
+      [
+        [
+          new URL(
+            'https://www.africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801',
+          ),
+          '10.6084/m9.figshare.19064801.v1' as Doi<'6084'>,
+        ],
+      ], // www.
+      [
+        [
+          new URL(
+            'http://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801',
+          ),
+          '10.6084/m9.figshare.19064801.v1' as Doi<'6084'>,
+        ],
+      ], // http
+      [
+        [
+          new URL(
+            'https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801/',
+          ),
+          '10.6084/m9.figshare.19064801.v1' as Doi<'6084'>,
+        ],
+      ], // trailing slash
+
+      [
+        [
+          new URL(
+            'https://africarxiv.figshare.com/articles/preprint/Revisiting_drug_resistance_mechanisms_of_a_notorious_nosocomial_pathogen_Acinetobacter_baumannii/19064801/1/files/33888380.pdf',
+          ),
+          '10.6084/m9.figshare.19064801.v1' as Doi<'6084'>,
+        ],
+      ], // pdf
+      // ofs
       [[new URL('https://www.osf.io/preprints/africarxiv/grxt6'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // www.
       [[new URL('http://osf.io/preprints/africarxiv/grxt6'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // http
       [[new URL('https://osf.io/preprints/africarxiv/grxt6/'), '10.31730/osf.io/grxt6' as Doi<'31730'>]], // trailing slash

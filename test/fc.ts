@@ -151,13 +151,22 @@ export const datacitePreprintDoi = (): fc.Arbitrary<DatacitePreprintId['value']>
 export const africarxivPreprintId = (): fc.Arbitrary<AfricarxivPreprintId> =>
   fc.oneof(africarxivFigsharePreprintId(), africarxivOsfPreprintId())
 
-export const africarxivPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivPreprintId]> => africarxivOsfPreprintUrl()
+export const africarxivPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivPreprintId]> =>
+  fc.oneof(africarxivFigsharePreprintUrl(), africarxivOsfPreprintUrl())
 
 export const africarxivFigsharePreprintId = (): fc.Arbitrary<AfricarxivFigsharePreprintId> =>
   fc.record({
     type: fc.constant('africarxiv'),
     value: doi(fc.constant('6084')),
   })
+
+export const africarxivFigsharePreprintUrl = (): fc.Arbitrary<[URL, AfricarxivFigsharePreprintId]> =>
+  fc
+    .tuple(fc.asciiString(), fc.asciiString(), fc.integer({ min: 1 }))
+    .map(([type, title, id]) => [
+      new URL(`https://africarxiv.figshare.com/articles/${type}/${title}/${id}`),
+      { type: 'africarxiv', value: `10.6084/m9.figshare.${id}.v1` as Doi<'6084'> },
+    ])
 
 export const africarxivOsfPreprintId = (): fc.Arbitrary<AfricarxivOsfPreprintId> =>
   fc.record({

@@ -185,6 +185,7 @@ export function fromPreprintDoi(
 export function fromUrl(url: URL): O.Option<IndeterminatePreprintId> {
   return match([url.hostname.replace('www.', ''), url.pathname.slice(1)])
     .with([P.union('doi.org', 'dx.doi.org'), P.select()], extractFromDoiPath)
+    .with(['africarxiv.figshare.com', P.select()], extractFromFigsharePath('africarxiv'))
     .with(['arxiv.org', P.select()], extractFromArxivPath)
     .with(['biorxiv.org', P.select()], extractFromBiorxivMedrxivPath('biorxiv'))
     .with(['edarxiv.org', P.select()], extractFromEdarxivPath)
@@ -228,6 +229,15 @@ const extractFromEngrxivPath = flow(
   O.fromNullableK(s => s.match(/^preprint\/[^/]+\/([1-9][0-9]*)(?:\/|$)/i)?.[1]),
   O.chain(flow(id => `10.31224/${id}`, parsePreprintDoi)),
 )
+
+const extractFromFigsharePath = (type: 'africarxiv') =>
+  flow(
+    decodeURIComponent,
+    O.fromNullableK(s => s.match(/^articles\/.+?\/([1-9][0-9]*)(?:$|\/)/i)?.[1]),
+    O.map(id => `10.6084/m9.figshare.${id}.v1`),
+    O.filter(pipe(isDoi, compose(hasRegistrant('6084')))),
+    O.map(doi => ({ type, value: doi } satisfies AfricarxivFigsharePreprintId)),
+  )
 
 const extractFromOsfPath = flow(
   decodeURIComponent,
