@@ -467,7 +467,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   )
 
 export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
-  fc.oneof(africarxivFigsharePreprintId(), arxivPreprintId())
+  fc.oneof(africarxivFigsharePreprintId(), africarxivZenodoPreprintId(), arxivPreprintId())
 
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc

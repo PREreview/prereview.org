@@ -15,15 +15,19 @@ import { detectLanguageFrom } from './detect-language'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { sanitizeHtml } from './html'
 import type { Preprint } from './preprint'
-import type { AfricarxivFigsharePreprintId, ArxivPreprintId } from './preprint-id'
+import type { AfricarxivFigsharePreprintId, AfricarxivZenodoPreprintId, ArxivPreprintId } from './preprint-id'
 
 import Instant = Temporal.Instant
 import PlainDate = Temporal.PlainDate
 import PlainYearMonth = Temporal.PlainYearMonth
 
-export type DatacitePreprintId = AfricarxivFigsharePreprintId | ArxivPreprintId
+export type DatacitePreprintId = AfricarxivFigsharePreprintId | AfricarxivZenodoPreprintId | ArxivPreprintId
 
-export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant('6084', '48550')
+export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant(
+  '5281',
+  '6084',
+  '48550',
+)
 
 export const getPreprintFromDatacite = flow(
   (id: DatacitePreprintId) => getWork(id.value),
@@ -74,7 +78,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
       pipe(
         work.dates,
         E.fromOptionK(() => 'no published date' as const)(
-          RA.findFirst(({ dateType }) => dateType === 'Submitted' || dateType === 'Created'),
+          RA.findFirst(({ dateType }) => dateType === 'Submitted' || dateType === 'Created' || dateType === 'Issued'),
         ),
         E.map(({ date }) =>
           match(date)
@@ -148,6 +152,35 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
           type: 'africarxiv',
           value: work.doi,
         } satisfies AfricarxivFigsharePreprintId),
+    ),
+  ),
+  pipe(
+    D.fromStruct({
+      doi: D.fromRefinement(hasRegistrant('5281'), 'DOI'),
+      publisher: D.literal('Zenodo'),
+      relatedIdentifiers: pipe(
+        D.array(
+          D.struct({
+            relationType: D.string,
+            relatedIdentifier: D.string,
+          }),
+        ),
+        D.parse(
+          E.fromOptionK(() => D.error(undefined, 'AfricArXiv Community'))(
+            RA.findFirst(
+              ({ relationType, relatedIdentifier }) =>
+                relationType === 'IsPartOf' && relatedIdentifier === 'https://zenodo.org/communities/africarxiv',
+            ),
+          ),
+        ),
+      ),
+    }),
+    D.map(
+      work =>
+        ({
+          type: 'africarxiv',
+          value: work.doi,
+        } satisfies AfricarxivZenodoPreprintId),
     ),
   ),
   pipe(

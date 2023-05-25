@@ -216,6 +216,178 @@ describe('getPreprintFromDatacite', () => {
         )
       },
     )
+    test.prop([fc.africarxivZenodoPreprintId(), fc.plainDate()])('from AfricArXiv on Zenodo', async (id, posted) => {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
+        body: {
+          data: {
+            id: '10.5281/zenodo.4290795',
+            type: 'dois',
+            attributes: {
+              doi: id.value,
+              prefix: '10.5281',
+              suffix: 'zenodo.4290795',
+              identifiers: [],
+              alternateIdentifiers: [],
+              creators: [
+                {
+                  name: 'Bezuidenhout, Louise',
+                  givenName: 'Louise',
+                  familyName: 'Bezuidenhout',
+                  affiliation: ['University of Oxford'],
+                  nameIdentifiers: [
+                    {
+                      schemeUri: 'https://orcid.org',
+                      nameIdentifier: 'https://orcid.org/0000-0003-4328-3963',
+                      nameIdentifierScheme: 'ORCID',
+                    },
+                  ],
+                },
+                {
+                  name: 'Havemann, Johanna',
+                  givenName: 'Johanna',
+                  familyName: 'Havemann',
+                  affiliation: ['Access2Perspectives, AfricArXiv'],
+                  nameIdentifiers: [
+                    {
+                      schemeUri: 'https://orcid.org',
+                      nameIdentifier: 'https://orcid.org/0000-0002-6157-1494',
+                      nameIdentifierScheme: 'ORCID',
+                    },
+                  ],
+                },
+              ],
+              titles: [{ title: 'The Varying Openness of Digital Open Science Tools' }],
+              publisher: 'Zenodo',
+              container: {
+                type: 'Series',
+                identifier: 'https://zenodo.org/communities/access2perspectives',
+                identifierType: 'URL',
+              },
+              publicationYear: 2020,
+              subjects: [{ subject: 'Open Science, reproducible, digital, ecosystem' }],
+              contributors: [],
+              dates: [{ date: posted.toString(), dateType: 'Issued' }],
+              language: null,
+              types: {
+                ris: 'RPRT',
+                bibtex: 'article',
+                citeproc: 'article-journal',
+                schemaOrg: 'ScholarlyArticle',
+                resourceType: 'Preprint',
+                resourceTypeGeneral: 'Text',
+              },
+              relatedIdentifiers: [
+                {
+                  relationType: 'IsSupplementedBy',
+                  relatedIdentifier: '10.5281/zenodo.4013812',
+                  resourceTypeGeneral: 'Dataset',
+                  relatedIdentifierType: 'DOI',
+                },
+                {
+                  relationType: 'IsVersionOf',
+                  relatedIdentifier: '10.5281/zenodo.4013974',
+                  relatedIdentifierType: 'DOI',
+                },
+                {
+                  relationType: 'IsPartOf',
+                  relatedIdentifier: 'https://zenodo.org/communities/access2perspectives',
+                  relatedIdentifierType: 'URL',
+                },
+                {
+                  relationType: 'IsPartOf',
+                  relatedIdentifier: 'https://zenodo.org/communities/africarxiv',
+                  relatedIdentifierType: 'URL',
+                },
+              ],
+              relatedItems: [],
+              sizes: [],
+              formats: [],
+              version: null,
+              rightsList: [
+                {
+                  rights: 'Creative Commons Attribution 4.0 International',
+                  rightsUri: 'https://creativecommons.org/licenses/by/4.0/legalcode',
+                  schemeUri: 'https://spdx.org/licenses/',
+                  rightsIdentifier: 'cc-by-4.0',
+                  rightsIdentifierScheme: 'SPDX',
+                },
+                { rights: 'Open Access', rightsUri: 'info:eu-repo/semantics/openAccess' },
+              ],
+              descriptions: [
+                {
+                  description:
+                    'Digital tools that support Open Science practices play a key role in the seamless accumulation, archiving and dissemination of scholarly data, outcomes and conclusions. Despite their integration into Open Science practices, the providence and design of these digital tools are rarely explicitly scrutinized. This means that influential factors, such as the funding models of the parent organizations, their geographic location, and the dependency on digital infrastructures are rarely considered. Suggestions from literature and anecdotal evidence already draw attention to the impact of these factors, and raise the question of whether the Open Science ecosystem can realise the aspiration to become a truly “unlimited digital commons” in its current structure. In an online research approach, we compiled and analysed the geolocation, terms and conditions as well as funding models of 242 digital tools increasingly being used by researchers in various disciplines. Our findings indicate that design decisions and restrictions are biased towards researchers in North American and European scholarly communities. In order to make the future Open Science ecosystem inclusive and operable for researchers in all world regions including Africa, Latin America, Asia and Oceania, those should be actively included in design decision processes. Digital Open Science Tools carry the promise of enabling collaboration across disciplines, world regions and language groups through responsive design. We therefore encourage long term funding mechanisms and ethnically as well as culturally inclusive approaches serving local prerequisites and conditions to tool design and construction allowing a globally connected digital research infrastructure to evolve in a regionally balanced manner.',
+                  descriptionType: 'Abstract',
+                },
+              ],
+              geoLocations: [],
+              fundingReferences: [],
+              url: 'https://zenodo.org/record/4290795',
+              contentUrl: null,
+              metadataVersion: 0,
+              schemaVersion: 'http://datacite.org/schema/kernel-4',
+              source: 'mds',
+              isActive: true,
+              state: 'findable',
+              reason: null,
+              viewCount: 0,
+              viewsOverTime: [],
+              downloadCount: 0,
+              downloadsOverTime: [],
+              referenceCount: 0,
+              citationCount: 2,
+              citationsOverTime: [{ year: '2020', total: 2 }],
+              partCount: 0,
+              partOfCount: 0,
+              versionCount: 0,
+              versionOfCount: 1,
+              created: '2020-11-25T16:58:01.000Z',
+              registered: '2020-11-25T16:58:02.000Z',
+              published: '2020',
+              updated: '2020-11-25T16:58:02.000Z',
+            },
+            relationships: {
+              client: { data: { id: 'cern.zenodo', type: 'clients' } },
+              provider: { data: { id: 'cern', type: 'providers' } },
+              media: { data: { id: '10.5281/zenodo.4290795', type: 'media' } },
+              references: { data: [] },
+              citations: {
+                data: [
+                  { id: '10.5281/zenodo.4334113', type: 'dois' },
+                  { id: '10.5281/zenodo.4334112', type: 'dois' },
+                ],
+              },
+              parts: { data: [] },
+              partOf: { data: [] },
+              versions: { data: [] },
+              versionOf: { data: [{ id: '10.5281/zenodo.4013974', type: 'dois' }] },
+            },
+          },
+        },
+      })
+
+      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          abstract: {
+            language: 'en',
+            text: expect.stringContaining('<p>Digital tools that support'),
+          },
+          authors: [
+            { name: 'Louise Bezuidenhout', orcid: '0000-0003-4328-3963' },
+            { name: 'Johanna Havemann', orcid: '0000-0002-6157-1494' },
+          ],
+          id,
+          posted,
+          title: {
+            language: 'en',
+            text: rawHtml('The Varying Openness of Digital Open Science Tools'),
+          },
+          url: new URL('https://zenodo.org/record/4290795'),
+        }),
+      )
+    })
 
     test.prop([fc.arxivPreprintId(), fc.instant()])('from arXiv', async (id, posted) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
