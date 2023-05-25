@@ -140,7 +140,14 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ),
             )({
               ...env,
-              getPreprintTitle: flip(getPreprintTitle)(env),
+              getPreprintTitle: flow(
+                flip(getPreprintTitle)(env),
+                TE.mapLeft(error =>
+                  match(error)
+                    .with('not-a-preprint', () => 'not-found' as const)
+                    .otherwise(identity),
+                ),
+              ),
             }),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
@@ -154,7 +161,14 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)({
             ...env,
-            getPreprintTitle: flip(getPreprintTitle)(env),
+            getPreprintTitle: flow(
+              flip(getPreprintTitle)(env),
+              TE.mapLeft(error =>
+                match(error)
+                  .with('not-a-preprint', () => 'not-found' as const)
+                  .otherwise(identity),
+              ),
+            ),
           }),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
@@ -242,6 +256,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
             TE.orElseW(error =>
               match(error)
                 .with('not-found', () => TE.right(false))
+                .with('not-a-preprint', TE.left)
                 .with('unavailable', TE.left)
                 .exhaustive(),
             ),
@@ -262,6 +277,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
             TE.orElseW(error =>
               match(error)
                 .with('not-found', () => TE.right(false))
+                .with('not-a-preprint', TE.left)
                 .with('unavailable', TE.left)
                 .exhaustive(),
             ),
@@ -298,7 +314,14 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPreprint: flip(getPreprint)(env),
+          getPreprint: flow(
+            flip(getPreprint)(env),
+            TE.mapLeft(error =>
+              match(error)
+                .with('not-a-preprint', () => 'not-found' as const)
+                .otherwise(identity),
+            ),
+          ),
           getPrereviews: flip(getPrereviewsFromZenodo)(env),
           getRapidPrereviews: flip((id: PreprintId) =>
             isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([]),
@@ -326,7 +349,14 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getPrereview: flip(getPrereviewFromZenodo)({
             ...env,
-            getPreprint: flip(getPreprint)(env),
+            getPreprint: flow(
+              flip(getPreprint)(env),
+              TE.mapLeft(error =>
+                match(error)
+                  .with('not-a-preprint', () => 'not-found' as const)
+                  .otherwise(identity),
+              ),
+            ),
           }),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
@@ -383,8 +413,22 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPreprint: flip(getPreprint)(env),
-          getPreprintTitle: flip(getPreprintTitle)(env),
+          getPreprint: flow(
+            flip(getPreprint)(env),
+            TE.mapLeft(error =>
+              match(error)
+                .with('not-a-preprint', () => 'not-found' as const)
+                .otherwise(identity),
+            ),
+          ),
+          getPreprintTitle: flow(
+            flip(getPreprintTitle)(env),
+            TE.mapLeft(error =>
+              match(error)
+                .with('not-a-preprint', () => 'not-found' as const)
+                .otherwise(identity),
+            ),
+          ),
           publishPrereview: flip((newPrereview: NewPrereview) =>
             pipe(
               createRecordOnZenodo(newPrereview),
@@ -404,19 +448,12 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
   P.map(flow(R.local(collapseRequests()), R.local(logFetch))),
 )
 
-const getPreprint = flow(
-  (id: IndeterminatePreprintId) =>
-    match(id)
-      .with({ type: 'philsci' }, getPreprintFromPhilsci)
-      .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
-      .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
-      .exhaustive(),
-  RTE.mapLeft(error =>
-    match(error)
-      .with('not-a-preprint', () => 'not-found' as const)
-      .otherwise(identity),
-  ),
-)
+const getPreprint = (id: IndeterminatePreprintId) =>
+  match(id)
+    .with({ type: 'philsci' }, getPreprintFromPhilsci)
+    .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
+    .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
+    .exhaustive()
 
 const getPreprintTitle = flow(
   getPreprint,

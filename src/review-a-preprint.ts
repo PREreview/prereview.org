@@ -20,7 +20,7 @@ import type { User } from './user'
 import { maybeGetUser } from './user'
 
 export interface DoesPreprintExistEnv {
-  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'unavailable', boolean>
+  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'not-a-preprint' | 'unavailable', boolean>
 }
 
 export const reviewAPreprint = pipe(
@@ -69,6 +69,12 @@ const showUnsupportedUrlPage = flow(
   fromReaderK(createUnsupportedUrlPage),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+const showNotAPreprintPage = flow(
+  fromReaderK(createNotAPreprintPage),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
@@ -146,6 +152,7 @@ const whichPreprint = pipe(
           .with({ _tag: 'UnknownPreprintE', actual: P.select() }, preprint => showUnknownPreprintPage(preprint, user))
           .with({ _tag: 'UnsupportedDoiE' }, () => showUnsupportedDoiPage(user))
           .with({ _tag: 'UnsupportedUrlE' }, () => showUnsupportedUrlPage(user))
+          .with('not-a-preprint', () => showNotAPreprintPage(user))
           .with('unavailable', () => showFailureMessage(user))
           .otherwise(flow(E.left, form => showReviewAPreprintErrorPage(form, user))),
       ),
@@ -398,6 +405,29 @@ function createUnsupportedUrlPage(user?: User) {
         </p>
 
         <p>Otherwise, if the preprint has a DOI, please try using that instead.</p>
+
+        <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Back</a>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
+  })
+}
+
+function createNotAPreprintPage(user?: User) {
+  return page({
+    title: plainText`Sorry, we only support preprints`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we only support preprints</h1>
+
+        <p>
+          We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
+          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen
+          and SocArXiv.
+        </p>
+
+        <p>If this is a preprint, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
 
         <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Back</a>
       </main>

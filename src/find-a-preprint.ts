@@ -15,12 +15,12 @@ import { html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { type IndeterminatePreprintId, type PhilsciPreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
-import { findAPreprintMatch, preprintReviewsMatch } from './routes'
+import { findAPreprintMatch, preprintReviewsMatch, reviewAPreprintMatch } from './routes'
 import type { User } from './user'
 import { maybeGetUser } from './user'
 
 export interface DoesPreprintExistEnv {
-  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'unavailable', boolean>
+  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'not-a-preprint' | 'unavailable', boolean>
 }
 
 export const findAPreprint = pipe(
@@ -69,6 +69,12 @@ const showUnsupportedUrlPage = flow(
   fromReaderK(createUnsupportedUrlPage),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+const showNotAPreprintPage = flow(
+  fromReaderK(createNotAPreprintPage),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
@@ -146,6 +152,7 @@ const lookupPreprint = pipe(
           .with({ _tag: 'UnknownPreprintE', actual: P.select() }, preprint => showUnknownPreprintPage(preprint, user))
           .with({ _tag: 'UnsupportedDoiE' }, () => showUnsupportedDoiPage(user))
           .with({ _tag: 'UnsupportedUrlE' }, () => showUnsupportedUrlPage(user))
+          .with('not-a-preprint', () => showNotAPreprintPage(user))
           .with('unavailable', () => showFailureMessage(user))
           .otherwise(flow(E.left, form => showFindAPreprintErrorPage(form, user))),
       ),
@@ -372,6 +379,29 @@ function createUnsupportedDoiPage(user?: User) {
         </p>
 
         <a href="${format(findAPreprintMatch.formatter, {})}" class="button">Back</a>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
+  })
+}
+
+function createNotAPreprintPage(user?: User) {
+  return page({
+    title: plainText`Sorry, we only support preprints`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we only support preprints</h1>
+
+        <p>
+          We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
+          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen
+          and SocArXiv.
+        </p>
+
+        <p>If this is a preprint, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+
+        <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Back</a>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],

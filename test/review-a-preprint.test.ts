@@ -150,6 +150,27 @@ describe('reviewAPreprint', () => {
         method: fc.constant('POST'),
       }),
       fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when it is not a preprint', async (connection, user) => {
+      const actual = await runMiddleware(
+        _.reviewAPreprint({ doesPreprintExist: () => TE.left('not-a-preprint'), getUser: () => M.fromEither(user) }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.BadRequest },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.connection({
+        body: fc.record({ preprint: fc.preprintDoi() }),
+        method: fc.constant('POST'),
+      }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
     ])("when we can't see if the preprint exists", async (connection, user) => {
       const actual = await runMiddleware(
         _.reviewAPreprint({ doesPreprintExist: () => TE.left('unavailable'), getUser: () => M.fromEither(user) }),
