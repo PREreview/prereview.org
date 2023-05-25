@@ -371,8 +371,8 @@ function createUnsupportedDoiPage(user?: User) {
 
         <p>
           We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen
-          and SocArXiv.
+          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen,
+          SocArXiv and Zenodo.
         </p>
 
         <p>
@@ -397,8 +397,8 @@ function createNotAPreprintPage(user?: User) {
 
         <p>
           We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen
-          and SocArXiv.
+          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen,
+          SocArXiv and Zenodo.
         </p>
 
         <p>If this is a preprint, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
@@ -420,8 +420,8 @@ function createUnsupportedUrlPage(user?: User) {
 
         <p>
           We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen
-          and SocArXiv.
+          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen,
+          SocArXiv and Zenodo.
         </p>
 
         <p>
