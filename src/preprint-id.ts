@@ -233,7 +233,7 @@ const extractFromEngrxivPath = flow(
 const extractFromFigsharePath = (type: 'africarxiv') =>
   flow(
     decodeURIComponent,
-    O.fromNullableK(s => s.match(/^articles\/.+?\/([1-9][0-9]*)(?:$|\/)/i)?.[1]),
+    O.fromNullableK(s => s.match(/^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i)?.[1]),
     O.map(id => `10.6084/m9.figshare.${id}.v1`),
     O.filter(pipe(isDoi, compose(hasRegistrant('6084')))),
     O.map(doi => ({ type, value: doi } satisfies AfricarxivFigsharePreprintId)),
