@@ -1,10 +1,19 @@
 import type { Doi } from 'doi-ts'
-import express from 'express'
 import { format } from 'fp-ts-routing'
-import { Status } from 'hyper-ts'
+import * as P from 'fp-ts-routing'
+import { concatAll } from 'fp-ts/Monoid'
+import * as O from 'fp-ts/Option'
+import { constant, pipe, tuple } from 'fp-ts/function'
+import { NotFound } from 'http-errors'
+import type { ResponseEnded, StatusOpen } from 'hyper-ts'
+import { route } from 'hyper-ts-routing'
+import * as M from 'hyper-ts/lib/Middleware'
+import * as C from 'io-ts/Codec'
+import * as D from 'io-ts/Decoder'
 import { isUuid } from 'uuid-ts'
+import { movedPermanently } from './middleware'
+import type { ArxivPreprintId } from './preprint-id'
 import {
-  findAPreprintMatch,
   logInMatch,
   logOutMatch,
   preprintReviewsMatch,
@@ -13,45 +22,97 @@ import {
   reviewsMatch,
 } from './routes'
 
-export const legacyRedirects = express()
-  .use('/login', (req, res) => {
-    res.redirect(Status.MovedPermanently, format(logInMatch.formatter, {}))
-  })
-  .use('/logout', (req, res) => {
-    res.redirect(Status.MovedPermanently, format(logOutMatch.formatter, {}))
-  })
-  .use(/^\/preprints\/arxiv-([A-z0-9.+-]+?)(?:v[0-9]+)?$/, (req, res) => {
-    res.redirect(
-      Status.MovedPermanently,
-      format(preprintReviewsMatch.formatter, {
-        id: { type: 'arxiv', value: `10.48550/arxiv.${req.params['0']}` as Doi<'48550'> },
-      }),
-    )
-  })
-  .use(/^\/preprints\/([A-z0-9-]+)\/full-reviews/, (req, res, next) => {
-    if (isUuid(req.params['0'])) {
-      res.redirect(Status.MovedPermanently, format(preprintReviewsUuidMatch.formatter, { uuid: req.params['0'] }))
-    } else {
-      next()
-    }
-  })
-  .use('/reviews/new', (req, res) => {
-    res.redirect(Status.MovedPermanently, format(reviewAPreprintMatch.formatter, {}))
-  })
-  .use(/^\/reviews$/, (req, res, next) => {
-    if (!req.query.page) {
-      res.redirect(Status.MovedPermanently, format(reviewsMatch.formatter, { page: 1 }))
-    } else {
-      next()
-    }
-  })
-  .use(/^\/validate\/([A-z0-9-]+)$/, (req, res, next) => {
-    if (isUuid(req.params['0'])) {
-      res.redirect(Status.MovedPermanently, format(preprintReviewsUuidMatch.formatter, { uuid: req.params['0'] }))
-    } else {
-      next()
-    }
-  })
-  .use('/validate', (req, res) => {
-    res.redirect(Status.MovedPermanently, format(findAPreprintMatch.formatter, {}))
-  })
+const UuidD = D.fromRefinement(isUuid, 'UUID')
+
+const UuidC = C.make(
+  pipe(
+    D.string,
+    D.parse(s => {
+      if (s.toLowerCase() === s) {
+        return UuidD.decode(s)
+      }
+
+      return D.failure(s, 'UUID')
+    }),
+  ),
+  { encode: uuid => uuid.toLowerCase() },
+)
+
+const ArxivPreprintIdC = C.make(
+  pipe(
+    D.string,
+    D.parse(s => {
+      const [, match] = s.match(/^arxiv-([A-z0-9.+-]+?)(?:v[0-9]+)?$/) ?? []
+
+      if (match) {
+        return D.success({ type: 'arxiv', value: `10.48550/arxiv.${match}` as Doi<'48550'> } satisfies ArxivPreprintId)
+      }
+
+      return D.failure(s, 'ID')
+    }),
+  ),
+  {
+    encode: id => `philsci-${id.value}`,
+  },
+)
+
+const legacyRedirectsRouter: P.Parser<M.Middleware<StatusOpen, ResponseEnded, never, void>> = pipe(
+  [
+    pipe(
+      pipe(P.lit('login'), P.then(P.end)).parser,
+      P.map(() => movedPermanently(format(logInMatch.formatter, {}))),
+    ),
+    pipe(
+      pipe(P.lit('logout'), P.then(P.end)).parser,
+      P.map(() => movedPermanently(format(logOutMatch.formatter, {}))),
+    ),
+    pipe(
+      pipe(P.lit('preprints'), P.then(type('preprintId', ArxivPreprintIdC)), P.then(P.end)).parser,
+      P.map(({ preprintId }) => movedPermanently(format(preprintReviewsMatch.formatter, { id: preprintId }))),
+    ),
+    pipe(
+      pipe(
+        P.lit('preprints'),
+        P.then(type('preprintUuid', UuidC)),
+        P.then(P.lit('full-reviews')),
+        P.then(P.str('reviewUuid')),
+        P.then(P.end),
+      ).parser,
+      P.map(({ preprintUuid }) => movedPermanently(format(preprintReviewsUuidMatch.formatter, { uuid: preprintUuid }))),
+    ),
+    pipe(
+      pipe(P.lit('reviews'), P.then(P.lit('new')), P.then(P.end)).parser,
+      P.map(() => movedPermanently(format(reviewAPreprintMatch.formatter, {}))),
+    ),
+    pipe(
+      pipe(P.lit('reviews'), P.then(P.end)).parser,
+      P.map(() => movedPermanently(format(reviewsMatch.formatter, { page: 1 }))),
+    ),
+    pipe(
+      pipe(P.lit('validate'), P.then(type('preprintUuid', UuidC)), P.then(P.end)).parser,
+      P.map(({ preprintUuid }) => movedPermanently(format(preprintReviewsUuidMatch.formatter, { uuid: preprintUuid }))),
+    ),
+  ],
+  concatAll(P.getParserMonoid()),
+)
+
+export const legacyRedirects = pipe(route(legacyRedirectsRouter, constant(new NotFound())), M.iflatten)
+
+// https://github.com/gcanti/fp-ts-routing/pull/64
+function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Match<{ [_ in K]: A }> {
+  return new P.Match(
+    new P.Parser(r => {
+      if (r.parts.length === 0) {
+        return O.none
+      } else {
+        const head = r.parts[0]
+        const tail = r.parts.slice(1)
+        return O.Functor.map(O.fromEither(type.decode(head)), a => tuple(singleton(k, a), new P.Route(tail, r.query)))
+      }
+    }),
+    new P.Formatter((r, o) => new P.Route(r.parts.concat(type.encode(o[k])), r.query)),
+  )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+const singleton = <K extends string, V>(k: K, v: V): { [_ in K]: V } => ({ [k as any]: v } as any)

@@ -1,8 +1,11 @@
 import { test } from '@fast-check/jest'
 import { expect } from '@jest/globals'
+import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
-import supertest from 'supertest'
+import { ExpressConnection } from 'hyper-ts/lib/express'
+import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/legacy-redirects'
+import { runMiddleware } from './middleware'
 
 test.each([
   ['/login', '/log-in'],
@@ -21,8 +24,16 @@ test.each([
   ['/reviews/new', '/review-a-preprint'],
   ['/validate/838df174-081f-4701-b314-cf568c8d6839', '/preprints/838df174-081f-4701-b314-cf568c8d6839'],
 ])('legacyRedirects (%s)', async (path, expected) => {
-  const response = await supertest(_.legacyRedirects).get(path)
+  const actual = await runMiddleware(
+    _.legacyRedirects,
+    new ExpressConnection(createRequest({ path }), createResponse()),
+  )()
 
-  expect(response.status).toStrictEqual(Status.MovedPermanently)
-  expect(response.headers['location']).toStrictEqual(expected)
+  expect(actual).toStrictEqual(
+    E.right([
+      { type: 'setStatus', status: Status.MovedPermanently },
+      { type: 'setHeader', name: 'Location', value: expected },
+      { type: 'endResponse' },
+    ]),
+  )
 })

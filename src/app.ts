@@ -470,6 +470,7 @@ const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMi
 
 const appMiddleware = pipe(
   routerMiddleware,
+  RM.orElseMiddlewareK(() => legacyRedirects),
   RM.orElseW(
     flow(
       handleError,
@@ -585,7 +586,6 @@ export const app = (deps: AppEnv) => {
 
       next()
     })
-    .use(legacyRedirects)
     .use((req, res, next) => {
       return pipe(
         appMiddleware({
