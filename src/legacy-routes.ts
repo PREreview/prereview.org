@@ -77,8 +77,6 @@ const ArxivPreprintIdC = C.make(
   },
 )
 
-const preprintReviewsUuidMatch = pipe(P.lit('preprints'), P.then(type('uuid', UuidC)), P.then(P.end))
-
 const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
@@ -170,7 +168,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       ),
     ),
     pipe(
-      preprintReviewsUuidMatch.parser,
+      pipe(P.lit('preprints'), P.then(type('uuid', UuidC)), P.then(P.end)).parser,
       P.map(({ uuid }) => redirectToPreprintReviews(uuid)),
     ),
     pipe(
@@ -181,11 +179,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
         P.then(P.str('reviewUuid')),
         P.then(P.end),
       ).parser,
-      P.map(
-        fromMiddlewareK(({ preprintUuid }) =>
-          movedPermanently(format(preprintReviewsUuidMatch.formatter, { uuid: preprintUuid })),
-        ),
-      ),
+      P.map(({ preprintUuid }) => redirectToPreprintReviews(preprintUuid)),
     ),
     pipe(
       pipe(P.lit('prereviewers'), P.then(query(C.record(C.string))), P.then(P.end)).parser,
@@ -238,11 +232,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('validate'), P.then(type('preprintUuid', UuidC)), P.then(P.end)).parser,
-      P.map(
-        fromMiddlewareK(({ preprintUuid }) =>
-          movedPermanently(format(preprintReviewsUuidMatch.formatter, { uuid: preprintUuid })),
-        ),
-      ),
+      P.map(({ preprintUuid }) => redirectToPreprintReviews(preprintUuid)),
     ),
   ],
   concatAll(P.getParserMonoid()),

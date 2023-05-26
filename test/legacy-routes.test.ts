@@ -26,14 +26,6 @@ describe('legacyRoutes', () => {
     ['/logout', '/log-out'],
     ['/preprints/arxiv-2204.09673', '/preprints/doi-10.48550-arxiv.2204.09673'],
     ['/preprints/arxiv-1312.0906', '/preprints/doi-10.48550-arxiv.1312.0906'],
-    [
-      '/preprints/a5ff6309-cba7-4eb3-9e2c-b1eb4c391983/full-reviews/e7dc4769-827b-4b79-b38e-b0cf22758ec5',
-      '/preprints/a5ff6309-cba7-4eb3-9e2c-b1eb4c391983',
-    ],
-    [
-      '/preprints/96da7e82-2e5a-433b-b72e-2b5726220fe7/full-reviews/bdfb53db-491d-45c5-880f-31c88173ed28',
-      '/preprints/96da7e82-2e5a-433b-b72e-2b5726220fe7',
-    ],
     ['/reviews', '/reviews?page=1'],
     ['/reviews/new', '/review-a-preprint'],
     [
@@ -52,7 +44,6 @@ describe('legacyRoutes', () => {
       '/users/153686/articles/201763-where-can-you-find-preprints/_show_article',
       'https://www.authorea.com/users/153686/articles/201763-where-can-you-find-preprints',
     ],
-    ['/validate/838df174-081f-4701-b314-cf568c8d6839', '/preprints/838df174-081f-4701-b314-cf568c8d6839'],
   ])('redirects %s', async (path, expected) => {
     const actual = await runMiddleware(
       _.legacyRoutes({
@@ -124,6 +115,165 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/preprints/${uuid}`) })),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when the ID is unavailable', async (connection, user) => {
+      const actual = await runMiddleware(
+        _.legacyRoutes({
+          getPreprintIdFromUuid: () => TE.left('unavailable'),
+          getUser: () => M.fromEither(user),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+  })
+
+  describe("with a '/preprints/{uuid}/full-reviews/{uuid}' path", () => {
+    test.prop([
+      fc
+        .tuple(fc.uuid(), fc.uuid())
+        .chain(([uuid1, uuid2]) =>
+          fc.tuple(
+            fc.constant(uuid1),
+            fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) }),
+          ),
+        ),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.indeterminatePreprintId(),
+    ])('when the ID is found', async ([uuid, connection], user, id) => {
+      const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
+        TE.right(id),
+      )
+
+      const actual = await runMiddleware(
+        _.legacyRoutes({ getPreprintIdFromUuid, getUser: () => M.fromEither(user) }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.MovedPermanently },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(preprintReviewsMatch.formatter, { id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(getPreprintIdFromUuid).toHaveBeenCalledWith(uuid)
+    })
+
+    test.prop([
+      fc
+        .tuple(fc.uuid(), fc.uuid())
+        .chain(([uuid1, uuid2]) => fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) })),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when the ID is not found', async (connection, user) => {
+      const actual = await runMiddleware(
+        _.legacyRoutes({
+          getPreprintIdFromUuid: () => TE.left('not-found'),
+          getUser: () => M.fromEither(user),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.NotFound },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc
+        .tuple(fc.uuid(), fc.uuid())
+        .chain(([uuid1, uuid2]) => fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) })),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when the ID is unavailable', async (connection, user) => {
+      const actual = await runMiddleware(
+        _.legacyRoutes({
+          getPreprintIdFromUuid: () => TE.left('unavailable'),
+          getUser: () => M.fromEither(user),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+  })
+
+  describe("with a '/validate/{uuid}' path", () => {
+    test.prop([
+      fc.uuid().chain(uuid => fc.tuple(fc.constant(uuid), fc.connection({ path: fc.constant(`/validate/${uuid}`) }))),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.indeterminatePreprintId(),
+    ])('when the ID is found', async ([uuid, connection], user, id) => {
+      const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
+        TE.right(id),
+      )
+
+      const actual = await runMiddleware(
+        _.legacyRoutes({ getPreprintIdFromUuid, getUser: () => M.fromEither(user) }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.MovedPermanently },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(preprintReviewsMatch.formatter, { id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(getPreprintIdFromUuid).toHaveBeenCalledWith(uuid)
+    })
+
+    test.prop([
+      fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/validate/${uuid}`) })),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when the ID is not found', async (connection, user) => {
+      const actual = await runMiddleware(
+        _.legacyRoutes({
+          getPreprintIdFromUuid: () => TE.left('not-found'),
+          getUser: () => M.fromEither(user),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.NotFound },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/validate/${uuid}`) })),
       fc.either(fc.constant('no-session' as const), fc.user()),
     ])('when the ID is unavailable', async (connection, user) => {
       const actual = await runMiddleware(
