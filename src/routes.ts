@@ -5,24 +5,7 @@ import { pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { match, P as p } from 'ts-pattern'
-import { isUuid } from 'uuid-ts'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './preprint-id'
-
-const UuidD = D.fromRefinement(isUuid, 'UUID')
-
-const UuidC = C.make(
-  pipe(
-    D.string,
-    D.parse(s => {
-      if (s.toLowerCase() === s) {
-        return UuidD.decode(s)
-      }
-
-      return D.failure(s, 'UUID')
-    }),
-  ),
-  { encode: uuid => uuid.toLowerCase() },
-)
 
 const IntegerFromStringC = C.make(
   pipe(
@@ -116,8 +99,6 @@ export const orcidErrorMatch = pipe(
   P.then(query(C.struct({ error: C.string, state: C.string }))),
   P.then(P.end),
 )
-
-export const preprintReviewsUuidMatch = pipe(P.lit('preprints'), P.then(type('uuid', UuidC)), P.then(P.end))
 
 export const preprintReviewsMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))
 

@@ -1,6 +1,5 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
@@ -8,7 +7,6 @@ import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import type { GetPreprintEnv } from '../src/preprint'
 import * as _ from '../src/preprint-reviews'
-import { preprintReviewsMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
@@ -223,77 +221,4 @@ describe('preprintReviews', () => {
       ]),
     )
   })
-})
-
-describe('redirectToPreprintReviews', () => {
-  test.prop([
-    fc.connection(),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-    fc.uuid(),
-    fc.indeterminatePreprintId(),
-  ])('when the DOI is found', async (connection, user, uuid, id) => {
-    const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ => TE.right(id))
-
-    const actual = await runMiddleware(
-      _.redirectToPreprintReviews(uuid)({ getPreprintIdFromUuid, getUser: () => M.fromEither(user) }),
-      connection,
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.MovedPermanently },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: format(preprintReviewsMatch.formatter, { id }),
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-    expect(getPreprintIdFromUuid).toHaveBeenCalledWith(uuid)
-  })
-
-  test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.uuid()])(
-    'when the DOI is not found',
-    async (connection, user, uuid) => {
-      const actual = await runMiddleware(
-        _.redirectToPreprintReviews(uuid)({
-          getPreprintIdFromUuid: () => TE.left('not-found'),
-          getUser: () => M.fromEither(user),
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
-
-  test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user()), fc.uuid()])(
-    'when the DOI is unavailable',
-    async (connection, user, uuid) => {
-      const actual = await runMiddleware(
-        _.redirectToPreprintReviews(uuid)({
-          getPreprintIdFromUuid: () => TE.left('unavailable'),
-          getUser: () => M.fromEither(user),
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
 })

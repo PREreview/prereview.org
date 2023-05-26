@@ -553,17 +553,19 @@ export const request = ({
   body,
   headers,
   method,
+  path,
 }: {
   body?: fc.Arbitrary<Body>
   headers?: fc.Arbitrary<RequestHeaders>
   method?: fc.Arbitrary<RequestMethod>
+  path?: fc.Arbitrary<string>
 } = {}): fc.Arbitrary<Request> =>
   fc
     .record({
       body: body ?? fc.constant(undefined),
       headers: headers ?? fc.constant({}),
       method: method ?? requestMethod(),
-      url: fc.webUrl(),
+      url: path ? fc.tuple(path, url()).map(([path, base]) => new URL(path, base).href) : fc.webUrl(),
     })
     .map(args =>
       Object.defineProperties(createRequest(args), { [fc.toStringMethod]: { value: () => fc.stringify(args) } }),

@@ -1,11 +1,16 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import { ExpressConnection } from 'hyper-ts/lib/express'
+import type { Mock } from 'jest-mock'
 import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/legacy-routes'
+import { preprintReviewsMatch } from '../src/routes'
+import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
 describe('legacyRoutes', () => {
@@ -50,7 +55,10 @@ describe('legacyRoutes', () => {
     ['/validate/838df174-081f-4701-b314-cf568c8d6839', '/preprints/838df174-081f-4701-b314-cf568c8d6839'],
   ])('redirects %s', async (path, expected) => {
     const actual = await runMiddleware(
-      _.legacyRoutes({ getUser: () => () => () => Promise.reject('should not be called') }),
+      _.legacyRoutes({
+        getPreprintIdFromUuid: () => () => Promise.reject('should not be called'),
+        getUser: () => () => () => Promise.reject('should not be called'),
+      }),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
 
@@ -61,6 +69,80 @@ describe('legacyRoutes', () => {
         { type: 'endResponse' },
       ]),
     )
+  })
+
+  describe("with a '/preprints/{uuid}' path", () => {
+    test.prop([
+      fc.uuid().chain(uuid => fc.tuple(fc.constant(uuid), fc.connection({ path: fc.constant(`/preprints/${uuid}`) }))),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.indeterminatePreprintId(),
+    ])('when the ID is found', async ([uuid, connection], user, id) => {
+      const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
+        TE.right(id),
+      )
+
+      const actual = await runMiddleware(
+        _.legacyRoutes({ getPreprintIdFromUuid, getUser: () => M.fromEither(user) }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.MovedPermanently },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(preprintReviewsMatch.formatter, { id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(getPreprintIdFromUuid).toHaveBeenCalledWith(uuid)
+    })
+
+    test.prop([
+      fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/preprints/${uuid}`) })),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when the ID is not found', async (connection, user) => {
+      const actual = await runMiddleware(
+        _.legacyRoutes({
+          getPreprintIdFromUuid: () => TE.left('not-found'),
+          getUser: () => M.fromEither(user),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.NotFound },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/preprints/${uuid}`) })),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when the ID is unavailable', async (connection, user) => {
+      const actual = await runMiddleware(
+        _.legacyRoutes({
+          getPreprintIdFromUuid: () => TE.left('unavailable'),
+          getUser: () => M.fromEither(user),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
   })
 
   test.each([
@@ -89,7 +171,10 @@ describe('legacyRoutes', () => {
     ['/settings/drafts'],
   ])('removed page for %s', async path => {
     const actual = await runMiddleware(
-      _.legacyRoutes({ getUser: () => M.left('no-session') }),
+      _.legacyRoutes({
+        getPreprintIdFromUuid: () => () => Promise.reject('should not be called'),
+        getUser: () => M.left('no-session'),
+      }),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
 
@@ -111,7 +196,10 @@ describe('legacyRoutes', () => {
     ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
   ])('removed page for %s', async path => {
     const actual = await runMiddleware(
-      _.legacyRoutes({ getUser: () => M.left('no-session') }),
+      _.legacyRoutes({
+        getPreprintIdFromUuid: () => () => Promise.reject('should not be called'),
+        getUser: () => M.left('no-session'),
+      }),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
 

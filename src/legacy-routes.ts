@@ -4,7 +4,9 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/Monoid'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import { constant, pipe, tuple } from 'fp-ts/function'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import type * as TE from 'fp-ts/TaskEither'
+import { constant, flow, pipe, tuple } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { Status } from 'hyper-ts'
@@ -13,24 +15,33 @@ import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
-import { isUuid } from 'uuid-ts'
+import { match } from 'ts-pattern'
+import { type Uuid, isUuid } from 'uuid-ts'
 import { html, plainText, sendHtml } from './html'
-import { movedPermanently } from './middleware'
+import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
-import type { ArxivPreprintId } from './preprint-id'
+import type { ArxivPreprintId, IndeterminatePreprintId } from './preprint-id'
 import {
   aboutUsMatch,
   codeOfConductMatch,
   logInMatch,
   logOutMatch,
   preprintReviewsMatch,
-  preprintReviewsUuidMatch,
   reviewAPreprintMatch,
   reviewsMatch,
 } from './routes'
 import { type GetUserEnv, type User, maybeGetUser } from './user'
 
-type LegacyEnv = FathomEnv & GetUserEnv & PhaseEnv
+type LegacyEnv = FathomEnv & GetPreprintIdFromUuidEnv & GetUserEnv & PhaseEnv
+
+export interface GetPreprintIdFromUuidEnv {
+  getPreprintIdFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', IndeterminatePreprintId>
+}
+
+const getPreprintIdFromUuid = (uuid: Uuid) =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ getPreprintIdFromUuid }: GetPreprintIdFromUuidEnv) => getPreprintIdFromUuid(uuid)),
+  )
 
 const UuidD = D.fromRefinement(isUuid, 'UUID')
 
@@ -65,6 +76,8 @@ const ArxivPreprintIdC = C.make(
     encode: id => `philsci-${id.value}`,
   },
 )
+
+const preprintReviewsUuidMatch = pipe(P.lit('preprints'), P.then(type('uuid', UuidC)), P.then(P.end))
 
 const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -157,6 +170,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       ),
     ),
     pipe(
+      preprintReviewsUuidMatch.parser,
+      P.map(({ uuid }) => redirectToPreprintReviews(uuid)),
+    ),
+    pipe(
       pipe(
         P.lit('preprints'),
         P.then(type('preprintUuid', UuidC)),
@@ -245,6 +262,17 @@ const showRemovedForNowMessage = pipe(
   chainReaderKW(removedForNowMessage),
   RM.ichainFirst(() => RM.status(Status.NotFound)),
   RM.ichainMiddlewareK(sendHtml),
+)
+
+const redirectToPreprintReviews = flow(
+  RM.fromReaderTaskEitherK(getPreprintIdFromUuid),
+  RM.ichainMiddlewareK(id => movedPermanently(format(preprintReviewsMatch.formatter, { id }))),
+  RM.orElseW(error =>
+    match(error)
+      .with('not-found', () => notFound)
+      .with('unavailable', () => serviceUnavailable)
+      .exhaustive(),
+  ),
 )
 
 function removedPermanentlyMessage(user?: User) {

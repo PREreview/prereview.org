@@ -17,13 +17,12 @@ import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
-import type { Uuid } from 'uuid-ts'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
-import { movedPermanently, notFound, serviceUnavailable } from './middleware'
+import { notFound } from './middleware'
 import { page } from './page'
 import { type Preprint, getPreprint } from './preprint'
-import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
-import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from './routes'
+import type { PreprintId } from './preprint-id'
+import { reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
 import type { GetUserEnv, User } from './user'
 import { maybeGetUser } from './user'
@@ -56,10 +55,6 @@ type RapidPrereview = {
   }
 }
 
-export interface GetPreprintIdFromUuidEnv {
-  getPreprintIdFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', IndeterminatePreprintId>
-}
-
 export interface GetPrereviewsEnv {
   getPrereviews: (id: PreprintId) => TE.TaskEither<'unavailable', ReadonlyArray<Prereview>>
 }
@@ -73,11 +68,6 @@ const sendPage = flow(
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
-
-const getPreprintIdFromUuid = (uuid: Uuid) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ getPreprintIdFromUuid }: GetPreprintIdFromUuidEnv) => getPreprintIdFromUuid(uuid)),
-  )
 
 const getPrereviews = (id: PreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }: GetPrereviewsEnv) => getPrereviews(id)))
@@ -102,17 +92,6 @@ export const preprintReviews = flow(
     match(error)
       .with('not-found', () => notFound)
       .with('unavailable', () => pipe(maybeGetUser, RM.ichainW(showFailureMessage)))
-      .exhaustive(),
-  ),
-)
-
-export const redirectToPreprintReviews = flow(
-  RM.fromReaderTaskEitherK(getPreprintIdFromUuid),
-  RM.ichainMiddlewareK(id => movedPermanently(format(preprintReviewsMatch.formatter, { id }))),
-  RM.orElseW(error =>
-    match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
       .exhaustive(),
   ),
 )

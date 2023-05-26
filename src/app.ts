@@ -38,19 +38,19 @@ import { handleError } from './http-error'
 import {
   type LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
-  getPreprintIdFromLegacyPreviewUuid,
   getPseudonymFromLegacyPrereview,
   getRapidPreviewsFromLegacyPrereview,
   isLegacyCompatiblePreprint,
   isLegacyCompatiblePrereview,
 } from './legacy-prereview'
+import { getPreprintIdFromLegacyPreviewUuid } from './legacy-prereview'
 import { legacyRoutes } from './legacy-routes'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import type { FathomEnv, PhaseEnv } from './page'
 import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
-import { preprintReviews, redirectToPreprintReviews } from './preprint-reviews'
+import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import type { PublicUrlEnv } from './public-url'
 import { review } from './review'
@@ -69,7 +69,6 @@ import {
   orcidErrorMatch,
   partnersMatch,
   preprintReviewsMatch,
-  preprintReviewsUuidMatch,
   privacyPolicyMatch,
   reviewAPreprintMatch,
   reviewMatch,
@@ -332,17 +331,6 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       ),
     ),
     pipe(
-      preprintReviewsUuidMatch.parser,
-      P.map(({ uuid }) => redirectToPreprintReviews(uuid)),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          getPreprintIdFromUuid: flip(getPreprintIdFromLegacyPreviewUuid)(env),
-          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
-        })),
-      ),
-    ),
-    pipe(
       reviewMatch.parser,
       P.map(({ id }) => review(id)),
       P.map(
@@ -475,6 +463,7 @@ const appMiddleware = pipe(
       legacyRoutes,
       R.local((env: AppEnv) => ({
         ...env,
+        getPreprintIdFromUuid: flip(getPreprintIdFromLegacyPreviewUuid)(env),
         getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
       })),
     ),
