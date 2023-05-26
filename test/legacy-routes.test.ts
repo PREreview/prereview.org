@@ -40,6 +40,20 @@ describe('legacyRoutes', () => {
   })
 
   test.each([
+    ['/about/32e9ae30-8f83-4005-8f18-cce3c05c1061'],
+    ['/about/9513ca8a-eafc-4291-84be-74e4181e8903'],
+    ['/communities?page=1'],
+    ['/communities?search=&page=2&limit=10&offset=0'],
+    ['/communities/africarxiv'],
+    ['/communities/africarxiv?page=2'],
+    ['/communities/africarxiv?page=2&limit=10&offset=0&search='],
+    ['/communities/africarxiv/new'],
+    ['/communities/eLifeAmbassadors'],
+    ['/communities/eLifeAmbassadors?page=2'],
+    ['/communities/eLifeAmbassadors?page=2&limit=10&offset=0&search='],
+    ['/communities/eLifeAmbassadors/new'],
+    ['/community-settings/6abac91b-1bd6-4178-8c72-38695c2e9680'],
+    ['/community-settings/c36edcca-ba95-475d-a851-ad0f277ac99d'],
     ['/prereviewers'],
     ['/prereviewers?page=1'],
     [

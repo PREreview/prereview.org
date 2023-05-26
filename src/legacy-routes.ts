@@ -65,6 +65,26 @@ const ArxivPreprintIdC = C.make(
 const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
+      pipe(P.lit('about'), P.then(type('personaUuid', UuidC)), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
+      pipe(P.lit('communities'), P.then(query(C.partial({}))), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
+      pipe(P.lit('communities'), P.then(P.str('communityName')), P.then(query(C.partial({}))), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
+      pipe(P.lit('communities'), P.then(P.str('communityName')), P.then(P.lit('new')), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
+      pipe(P.lit('community-settings'), P.then(type('communityUuid', UuidC)), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
       pipe(P.lit('login'), P.then(P.end)).parser,
       P.map(fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
     ),
