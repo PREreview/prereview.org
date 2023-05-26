@@ -85,6 +85,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
+      pipe(P.lit('dashboard'), P.then(query(C.partial({}))), P.then(P.end)).parser,
+      P.map(() => showRemovedPermanentlyMessage),
+    ),
+    pipe(
       pipe(P.lit('login'), P.then(P.end)).parser,
       P.map(fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
     ),
@@ -140,11 +144,36 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
 
 export const legacyRoutes = pipe(route(legacyRouter, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
 
+const showRemovedPermanentlyMessage = pipe(
+  RM.rightReader(removedPermanentlyMessage()),
+  RM.ichainFirst(() => RM.status(Status.Gone)),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
 const showRemovedForNowMessage = pipe(
   RM.rightReader(removedForNowMessage()),
   RM.ichainFirst(() => RM.status(Status.NotFound)),
   RM.ichainMiddlewareK(sendHtml),
 )
+
+function removedPermanentlyMessage() {
+  return page({
+    title: plainText`Sorry, we’ve taken this page down`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we’ve taken this page down</h1>
+
+        <p>We’re making changes to PREreview and have removed this page</p>
+
+        <p>
+          If you have any questions or you selected a link or button, please
+          <a href="mailto:help@prereview.org">get in touch</a>.
+        </p>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+  })
+}
 
 function removedForNowMessage() {
   return page({
