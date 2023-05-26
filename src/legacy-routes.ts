@@ -69,6 +69,14 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
+      pipe(P.lit('admin'), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
+      pipe(P.lit('api'), P.then(P.lit('docs')), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
       pipe(P.lit('communities'), P.then(query(C.partial({}))), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
     ),
@@ -129,6 +137,14 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('reviews'), P.then(P.end)).parser,
       P.map(fromMiddlewareK(() => movedPermanently(format(reviewsMatch.formatter, { page: 1 })))),
+    ),
+    pipe(
+      pipe(P.lit('settings'), P.then(P.lit('api')), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
+      pipe(P.lit('settings'), P.then(P.lit('drafts')), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
     ),
     pipe(
       pipe(

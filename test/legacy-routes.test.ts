@@ -50,6 +50,8 @@ describe('legacyRoutes', () => {
   test.each([
     ['/about/32e9ae30-8f83-4005-8f18-cce3c05c1061'],
     ['/about/9513ca8a-eafc-4291-84be-74e4181e8903'],
+    ['/admin'],
+    ['/api/docs'],
     ['/communities?page=1'],
     ['/communities?search=&page=2&limit=10&offset=0'],
     ['/communities/africarxiv'],
@@ -67,6 +69,8 @@ describe('legacyRoutes', () => {
     [
       '/prereviewers?badges=Reviewer+Trainee%2CPREreview+V1&sort=dateJoined&page=2&limit=10&offset=10&communities=Photosynthesis',
     ],
+    ['/settings/api'],
+    ['/settings/drafts'],
   ])('removed page for %s', async path => {
     const actual = await runMiddleware(
       _.legacyRoutes({}),
