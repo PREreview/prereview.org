@@ -97,6 +97,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(() => showRemovedPermanentlyMessage),
     ),
     pipe(
+      pipe(P.lit('dashboard'), P.then(P.lit('new')), P.then(query(C.partial({}))), P.then(P.end)).parser,
+      P.map(() => showRemovedPermanentlyMessage),
+    ),
+    pipe(
       pipe(P.lit('login'), P.then(P.end)).parser,
       P.map(fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
     ),

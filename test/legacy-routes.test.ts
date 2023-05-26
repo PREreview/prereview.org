@@ -86,21 +86,25 @@ describe('legacyRoutes', () => {
     )
   })
 
-  test.each([['/dashboard'], ['/dashboard?page=2'], ['/dashboard?search=covid-19&page=2&limit=10&offset=0']])(
-    'removed page for %s',
-    async path => {
-      const actual = await runMiddleware(
-        _.legacyRoutes({}),
-        new ExpressConnection(createRequest({ path }), createResponse()),
-      )()
+  test.each([
+    ['/dashboard'],
+    ['/dashboard?page=2'],
+    ['/dashboard?search=covid-19&page=2&limit=10&offset=0'],
+    ['/dashboard/new'],
+    ['/dashboard/new?page=2'],
+    ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
+  ])('removed page for %s', async path => {
+    const actual = await runMiddleware(
+      _.legacyRoutes({}),
+      new ExpressConnection(createRequest({ path }), createResponse()),
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Gone },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.stringContaining('Sorry, we’ve taken this page down') },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.Gone },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.stringContaining('Sorry, we’ve taken this page down') },
+      ]),
+    )
+  })
 })
