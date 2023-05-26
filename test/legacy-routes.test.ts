@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import { MediaType, Status } from 'hyper-ts'
+import * as M from 'hyper-ts/lib/Middleware'
 import { ExpressConnection } from 'hyper-ts/lib/express'
 import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/legacy-routes'
@@ -49,7 +50,7 @@ describe('legacyRoutes', () => {
     ['/validate/838df174-081f-4701-b314-cf568c8d6839', '/preprints/838df174-081f-4701-b314-cf568c8d6839'],
   ])('redirects %s', async (path, expected) => {
     const actual = await runMiddleware(
-      _.legacyRoutes({}),
+      _.legacyRoutes({ getUser: () => () => () => Promise.reject('should not be called') }),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
 
@@ -88,7 +89,7 @@ describe('legacyRoutes', () => {
     ['/settings/drafts'],
   ])('removed page for %s', async path => {
     const actual = await runMiddleware(
-      _.legacyRoutes({}),
+      _.legacyRoutes({ getUser: () => M.left('no-session') }),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
 
@@ -110,7 +111,7 @@ describe('legacyRoutes', () => {
     ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
   ])('removed page for %s', async path => {
     const actual = await runMiddleware(
-      _.legacyRoutes({}),
+      _.legacyRoutes({ getUser: () => M.left('no-session') }),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
 

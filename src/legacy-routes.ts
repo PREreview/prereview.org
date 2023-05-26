@@ -3,6 +3,7 @@ import { format } from 'fp-ts-routing'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/Monoid'
 import * as O from 'fp-ts/Option'
+import type { Reader } from 'fp-ts/Reader'
 import { constant, pipe, tuple } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
@@ -27,8 +28,9 @@ import {
   reviewAPreprintMatch,
   reviewsMatch,
 } from './routes'
+import { type GetUserEnv, type User, maybeGetUser } from './user'
 
-type LegacyEnv = FathomEnv & PhaseEnv
+type LegacyEnv = FathomEnv & GetUserEnv & PhaseEnv
 
 const UuidD = D.fromRefinement(isUuid, 'UUID')
 
@@ -232,18 +234,20 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
 export const legacyRoutes = pipe(route(legacyRouter, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
 
 const showRemovedPermanentlyMessage = pipe(
-  RM.rightReader(removedPermanentlyMessage()),
+  maybeGetUser,
+  chainReaderKW(removedPermanentlyMessage),
   RM.ichainFirst(() => RM.status(Status.Gone)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showRemovedForNowMessage = pipe(
-  RM.rightReader(removedForNowMessage()),
+  maybeGetUser,
+  chainReaderKW(removedForNowMessage),
   RM.ichainFirst(() => RM.status(Status.NotFound)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function removedPermanentlyMessage() {
+function removedPermanentlyMessage(user?: User) {
   return page({
     title: plainText`Sorry, we’ve taken this page down`,
     content: html`
@@ -259,10 +263,11 @@ function removedPermanentlyMessage() {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
-function removedForNowMessage() {
+function removedForNowMessage(user?: User) {
   return page({
     title: plainText`Sorry, we’ve removed this page for now`,
     content: html`
@@ -280,6 +285,7 @@ function removedForNowMessage() {
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
   })
 }
 
@@ -288,6 +294,20 @@ function fromMiddlewareK<R, A extends ReadonlyArray<unknown>, B, I, O, E>(
   f: (...a: A) => M.Middleware<I, O, E, B>,
 ): (...a: A) => RM.ReaderMiddleware<R, I, O, E, B> {
   return (...a) => RM.fromMiddleware(f(...a))
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
+  f: (...a: A) => Reader<R, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return (...a) => RM.rightReader(f(...a))
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function chainReaderKW<R2, A, B>(
+  f: (a: A) => Reader<R2, B>,
+): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
+  return RM.chainW(fromReaderK(f))
 }
 
 // https://github.com/gcanti/fp-ts-routing/pull/64

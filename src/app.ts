@@ -470,7 +470,15 @@ const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMi
 
 const appMiddleware = pipe(
   routerMiddleware,
-  RM.orElseW(() => legacyRoutes),
+  RM.orElseW(() =>
+    pipe(
+      legacyRoutes,
+      R.local((env: AppEnv) => ({
+        ...env,
+        getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+      })),
+    ),
+  ),
   RM.orElseW(
     flow(
       handleError,
