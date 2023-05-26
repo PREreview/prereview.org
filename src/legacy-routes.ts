@@ -271,7 +271,7 @@ function removedForNowMessage() {
 
         <p>We’re making changes to PREreview and have removed this page for now.</p>
 
-        <p>We plan for it to return.</p>
+        <p>We are working to return it by the end of 2023.</p>
 
         <p>
           If you have any questions or you selected a link or button, please
