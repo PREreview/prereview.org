@@ -56,7 +56,7 @@ const ArxivPreprintIdC = C.make(
   },
 )
 
-const legacyRedirectsRouter: P.Parser<M.Middleware<StatusOpen, ResponseEnded, never, void>> = pipe(
+const legacyRouter: P.Parser<M.Middleware<StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       pipe(P.lit('login'), P.then(P.end)).parser,
@@ -96,7 +96,7 @@ const legacyRedirectsRouter: P.Parser<M.Middleware<StatusOpen, ResponseEnded, ne
   concatAll(P.getParserMonoid()),
 )
 
-export const legacyRedirects = pipe(route(legacyRedirectsRouter, constant(new NotFound())), M.iflatten)
+export const legacyRoutes = pipe(route(legacyRouter, constant(new NotFound())), M.iflatten)
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
 function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Match<{ [_ in K]: A }> {

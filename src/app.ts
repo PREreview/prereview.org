@@ -44,7 +44,7 @@ import {
   isLegacyCompatiblePreprint,
   isLegacyCompatiblePrereview,
 } from './legacy-prereview'
-import { legacyRedirects } from './legacy-redirects'
+import { legacyRoutes } from './legacy-routes'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import type { FathomEnv, PhaseEnv } from './page'
 import { partners } from './partners'
@@ -470,7 +470,7 @@ const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMi
 
 const appMiddleware = pipe(
   routerMiddleware,
-  RM.orElseMiddlewareK(() => legacyRedirects),
+  RM.orElseMiddlewareK(() => legacyRoutes),
   RM.orElseW(
     flow(
       handleError,
