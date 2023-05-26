@@ -6,12 +6,16 @@ import * as O from 'fp-ts/Option'
 import { constant, pipe, tuple } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
+import { Status } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
-import * as M from 'hyper-ts/lib/Middleware'
+import type * as M from 'hyper-ts/lib/Middleware'
+import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { isUuid } from 'uuid-ts'
+import { html, plainText, sendHtml } from './html'
 import { movedPermanently } from './middleware'
+import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { ArxivPreprintId } from './preprint-id'
 import {
   logInMatch,
@@ -21,6 +25,8 @@ import {
   reviewAPreprintMatch,
   reviewsMatch,
 } from './routes'
+
+type LegacyEnv = FathomEnv & PhaseEnv
 
 const UuidD = D.fromRefinement(isUuid, 'UUID')
 
@@ -56,19 +62,23 @@ const ArxivPreprintIdC = C.make(
   },
 )
 
-const legacyRouter: P.Parser<M.Middleware<StatusOpen, ResponseEnded, never, void>> = pipe(
+const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       pipe(P.lit('login'), P.then(P.end)).parser,
-      P.map(() => movedPermanently(format(logInMatch.formatter, {}))),
+      P.map(fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('logout'), P.then(P.end)).parser,
-      P.map(() => movedPermanently(format(logOutMatch.formatter, {}))),
+      P.map(fromMiddlewareK(() => movedPermanently(format(logOutMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('preprints'), P.then(type('preprintId', ArxivPreprintIdC)), P.then(P.end)).parser,
-      P.map(({ preprintId }) => movedPermanently(format(preprintReviewsMatch.formatter, { id: preprintId }))),
+      P.map(
+        fromMiddlewareK(({ preprintId }) =>
+          movedPermanently(format(preprintReviewsMatch.formatter, { id: preprintId })),
+        ),
+      ),
     ),
     pipe(
       pipe(
@@ -78,27 +88,82 @@ const legacyRouter: P.Parser<M.Middleware<StatusOpen, ResponseEnded, never, void
         P.then(P.str('reviewUuid')),
         P.then(P.end),
       ).parser,
-      P.map(({ preprintUuid }) => movedPermanently(format(preprintReviewsUuidMatch.formatter, { uuid: preprintUuid }))),
+      P.map(
+        fromMiddlewareK(({ preprintUuid }) =>
+          movedPermanently(format(preprintReviewsUuidMatch.formatter, { uuid: preprintUuid })),
+        ),
+      ),
+    ),
+    pipe(
+      pipe(P.lit('prereviewers'), P.then(query(C.record(C.string))), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
     ),
     pipe(
       pipe(P.lit('reviews'), P.then(P.lit('new')), P.then(P.end)).parser,
-      P.map(() => movedPermanently(format(reviewAPreprintMatch.formatter, {}))),
+      P.map(fromMiddlewareK(() => movedPermanently(format(reviewAPreprintMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('reviews'), P.then(P.end)).parser,
-      P.map(() => movedPermanently(format(reviewsMatch.formatter, { page: 1 }))),
+      P.map(fromMiddlewareK(() => movedPermanently(format(reviewsMatch.formatter, { page: 1 })))),
     ),
     pipe(
       pipe(P.lit('validate'), P.then(type('preprintUuid', UuidC)), P.then(P.end)).parser,
-      P.map(({ preprintUuid }) => movedPermanently(format(preprintReviewsUuidMatch.formatter, { uuid: preprintUuid }))),
+      P.map(
+        fromMiddlewareK(({ preprintUuid }) =>
+          movedPermanently(format(preprintReviewsUuidMatch.formatter, { uuid: preprintUuid })),
+        ),
+      ),
     ),
   ],
   concatAll(P.getParserMonoid()),
 )
 
-export const legacyRoutes = pipe(route(legacyRouter, constant(new NotFound())), M.iflatten)
+export const legacyRoutes = pipe(route(legacyRouter, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
+
+const showRemovedForNowMessage = pipe(
+  RM.rightReader(removedForNowMessage()),
+  RM.ichainFirst(() => RM.status(Status.NotFound)),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+function removedForNowMessage() {
+  return page({
+    title: plainText`Sorry, we’ve removed this page for now`,
+    content: html`
+      <main id="main-content">
+        <h1>Sorry, we’ve removed this page for now</h1>
+
+        <p>We’re making changes to PREreview and have removed this page for now.</p>
+
+        <p>We plan for it to return.</p>
+
+        <p>
+          If you have any questions or you selected a link or button, please
+          <a href="mailto:help@prereview.org">get in touch</a>.
+        </p>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+  })
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/83
+function fromMiddlewareK<R, A extends ReadonlyArray<unknown>, B, I, O, E>(
+  f: (...a: A) => M.Middleware<I, O, E, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, O, E, B> {
+  return (...a) => RM.fromMiddleware(f(...a))
+}
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
+function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
+  return new P.Match(
+    new P.Parser(r =>
+      O.Functor.map(O.fromEither(codec.decode(r.query)), query => tuple(query, new P.Route(r.parts, {}))),
+    ),
+    new P.Formatter((r, query) => new P.Route(r.parts, codec.encode(query))),
+  )
+}
+
 function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Match<{ [_ in K]: A }> {
   return new P.Match(
     new P.Parser(r => {

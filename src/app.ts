@@ -470,7 +470,7 @@ const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMi
 
 const appMiddleware = pipe(
   routerMiddleware,
-  RM.orElseMiddlewareK(() => legacyRoutes),
+  RM.orElseW(() => legacyRoutes),
   RM.orElseW(
     flow(
       handleError,

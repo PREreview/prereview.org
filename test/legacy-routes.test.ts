@@ -1,7 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
-import { Status } from 'hyper-ts'
+import { MediaType, Status } from 'hyper-ts'
 import { ExpressConnection } from 'hyper-ts/lib/express'
 import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/legacy-routes'
@@ -26,7 +26,7 @@ describe('legacyRoutes', () => {
     ['/validate/838df174-081f-4701-b314-cf568c8d6839', '/preprints/838df174-081f-4701-b314-cf568c8d6839'],
   ])('redirects %s', async (path, expected) => {
     const actual = await runMiddleware(
-      _.legacyRoutes,
+      _.legacyRoutes({}),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
 
@@ -35,6 +35,27 @@ describe('legacyRoutes', () => {
         { type: 'setStatus', status: Status.MovedPermanently },
         { type: 'setHeader', name: 'Location', value: expected },
         { type: 'endResponse' },
+      ]),
+    )
+  })
+
+  test.each([
+    ['/prereviewers'],
+    ['/prereviewers?page=1'],
+    [
+      '/prereviewers?badges=Reviewer+Trainee%2CPREreview+V1&sort=dateJoined&page=2&limit=10&offset=10&communities=Photosynthesis',
+    ],
+  ])('removed page for %s', async path => {
+    const actual = await runMiddleware(
+      _.legacyRoutes({}),
+      new ExpressConnection(createRequest({ path }), createResponse()),
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.NotFound },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.stringContaining('Sorry, we’ve removed this page for now') },
       ]),
     )
   })
