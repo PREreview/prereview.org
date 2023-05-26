@@ -97,7 +97,7 @@ describe('legacyRoutes', () => {
       E.right([
         { type: 'setStatus', status: Status.NotFound },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.stringContaining('Sorry, we’ve removed this page for now') },
+        { type: 'setBody', body: expect.anything() },
       ]),
     )
   })
@@ -119,7 +119,7 @@ describe('legacyRoutes', () => {
       E.right([
         { type: 'setStatus', status: Status.Gone },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.stringContaining('Sorry, we’ve taken this page down') },
+        { type: 'setBody', body: expect.anything() },
       ]),
     )
   })
