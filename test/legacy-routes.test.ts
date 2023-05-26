@@ -9,6 +9,13 @@ import { runMiddleware } from './middleware'
 
 describe('legacyRoutes', () => {
   test.each([
+    ['/10.1101/2020.08.27.270835', '/preprints/doi-10.1101-2020.08.27.270835'],
+    ['/blog', 'https://content.prereview.org/'],
+    ['/blog?articles_format=grid', 'https://content.prereview.org/'],
+    ['/coc', '/code-of-conduct'],
+    ['/docs/about', '/about'],
+    ['/docs/code_of_conduct', '/code-of-conduct'],
+    ['/docs/resources', 'https://content.prereview.org/resources/'],
     ['/login', '/log-in'],
     ['/logout', '/log-out'],
     ['/preprints/arxiv-2204.09673', '/preprints/doi-10.48550-arxiv.2204.09673'],
@@ -29,6 +36,14 @@ describe('legacyRoutes', () => {
     ],
     [
       '/users/153686/articles/201763-where-can-you-find-preprints',
+      'https://www.authorea.com/users/153686/articles/201763-where-can-you-find-preprints',
+    ],
+    [
+      '/users/153686/articles/200859-preprint-info-doc/_show_article',
+      'https://www.authorea.com/users/153686/articles/200859-preprint-info-doc',
+    ],
+    [
+      '/users/153686/articles/201763-where-can-you-find-preprints/_show_article',
       'https://www.authorea.com/users/153686/articles/201763-where-can-you-find-preprints',
     ],
     ['/validate/838df174-081f-4701-b314-cf568c8d6839', '/preprints/838df174-081f-4701-b314-cf568c8d6839'],

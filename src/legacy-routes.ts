@@ -18,6 +18,8 @@ import { movedPermanently } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { ArxivPreprintId } from './preprint-id'
 import {
+  aboutUsMatch,
+  codeOfConductMatch,
   logInMatch,
   logOutMatch,
   preprintReviewsMatch,
@@ -65,6 +67,21 @@ const ArxivPreprintIdC = C.make(
 const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
+      pipe(P.lit('10.1101'), P.then(P.str('suffix')), P.then(P.end)).parser,
+      P.map(
+        fromMiddlewareK(({ suffix }) =>
+          movedPermanently(
+            format(preprintReviewsMatch.formatter, {
+              id: {
+                type: 'biorxiv-medrxiv',
+                value: `10.1101/${suffix}` as Doi<'1101'>,
+              },
+            }),
+          ),
+        ),
+      ),
+    ),
+    pipe(
       pipe(P.lit('about'), P.then(type('personaUuid', UuidC)), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
     ),
@@ -75,6 +92,15 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('api'), P.then(P.lit('docs')), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
+      pipe(P.lit('blog'), P.then(query(C.partial({}))), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(() => movedPermanently('https://content.prereview.org/'))),
+    ),
+
+    pipe(
+      pipe(P.lit('coc'), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('communities'), P.then(query(C.partial({}))), P.then(P.end)).parser,
@@ -99,6 +125,18 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('dashboard'), P.then(P.lit('new')), P.then(query(C.partial({}))), P.then(P.end)).parser,
       P.map(() => showRemovedPermanentlyMessage),
+    ),
+    pipe(
+      pipe(P.lit('docs'), P.then(P.lit('about')), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(() => movedPermanently(format(aboutUsMatch.formatter, {})))),
+    ),
+    pipe(
+      pipe(P.lit('docs'), P.then(P.lit('code_of_conduct')), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
+    ),
+    pipe(
+      pipe(P.lit('docs'), P.then(P.lit('resources')), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(() => movedPermanently('https://content.prereview.org/resources/'))),
     ),
     pipe(
       pipe(P.lit('login'), P.then(P.end)).parser,
@@ -156,6 +194,21 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
         P.then(P.str('userId')),
         P.then(P.lit('articles')),
         P.then(P.str('articleId')),
+        P.then(P.end),
+      ).parser,
+      P.map(
+        fromMiddlewareK(({ userId, articleId }) =>
+          movedPermanently(`https://www.authorea.com/users/${userId}/articles/${articleId}`),
+        ),
+      ),
+    ),
+    pipe(
+      pipe(
+        P.lit('users'),
+        P.then(P.str('userId')),
+        P.then(P.lit('articles')),
+        P.then(P.str('articleId')),
+        P.then(P.str('_show_article')),
         P.then(P.end),
       ).parser,
       P.map(
