@@ -250,7 +250,7 @@ function removedPermanentlyMessage() {
       <main id="main-content">
         <h1>Sorry, we’ve taken this page down</h1>
 
-        <p>We’re making changes to PREreview and have removed this page</p>
+        <p>We’re making changes to PREreview and have removed this page.</p>
 
         <p>
           If you have any questions or you selected a link or button, please
