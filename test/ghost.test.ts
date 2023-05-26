@@ -4,6 +4,7 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import * as _ from '../src/ghost'
+import { rawHtml } from '../src/html'
 import * as fc from './fc'
 
 describe('getPage', () => {
@@ -24,6 +25,31 @@ describe('getPage', () => {
 
     expect(actual).toStrictEqual(E.right(html))
   })
+
+  test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.stringOf(fc.alphanumeric(), { minLength: 1 })])(
+    'when the page contains a button',
+    async (id, key) => {
+      const actual = await _.getPage(id)({
+        fetch: fetchMock.sandbox().getOnce(
+          { url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } },
+          {
+            body: {
+              pages: [
+                {
+                  html: '<div class="kg-card kg-button-card kg-align-center"><a href="https://donorbox.org/prereview" class="kg-btn kg-btn-accent">Donate</a></div>',
+                },
+              ],
+            },
+          },
+        ),
+        ghostApi: { key },
+      })()
+
+      expect(actual).toStrictEqual(
+        E.right(rawHtml('<a href="https://donorbox.org/prereview" class="button">Donate</a>')),
+      )
+    },
+  )
 
   test.prop([
     fc.stringOf(fc.alphanumeric(), { minLength: 1 }),

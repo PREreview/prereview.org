@@ -26,7 +26,10 @@ const JsonD = {
     ),
 }
 
-const HtmlD = pipe(D.string, D.map(sanitizeHtml))
+const HtmlD = pipe(
+  D.string,
+  D.map(string => sanitizeHtml(string, true)),
+)
 
 const GhostPageD = pipe(
   JsonD,

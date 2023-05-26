@@ -30,7 +30,7 @@ export function rawHtml(html: string): Html {
   return raw(texToMathml(html)) as unknown as Html
 }
 
-export function sanitizeHtml(html: string): Html {
+export function sanitizeHtml(html: string, allowButtons = false): Html {
   const sanitized = sanitize(html, {
     allowedTags: [
       'h1',
@@ -98,10 +98,17 @@ export function sanitizeHtml(html: string): Html {
       mspace: ['depth', 'height', 'width'],
       mtd: ['columnspan', 'rowspan'],
     },
+    allowedClasses: {
+      a: allowButtons ? ['button'] : [],
+    },
     transformTags: {
       a: (tagName, attribs) => {
         if (!/^[A-z][A-z0-9+\-.]*:/.test(attribs.href)) {
           delete attribs.href
+        }
+
+        if (allowButtons && attribs.class?.includes('kg-btn')) {
+          attribs.class = 'button'
         }
 
         return {
