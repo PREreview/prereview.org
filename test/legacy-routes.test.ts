@@ -23,6 +23,14 @@ describe('legacyRoutes', () => {
     ],
     ['/reviews', '/reviews?page=1'],
     ['/reviews/new', '/review-a-preprint'],
+    [
+      '/users/153686/articles/200859-preprint-info-doc',
+      'https://www.authorea.com/users/153686/articles/200859-preprint-info-doc',
+    ],
+    [
+      '/users/153686/articles/201763-where-can-you-find-preprints',
+      'https://www.authorea.com/users/153686/articles/201763-where-can-you-find-preprints',
+    ],
     ['/validate/838df174-081f-4701-b314-cf568c8d6839', '/preprints/838df174-081f-4701-b314-cf568c8d6839'],
   ])('redirects %s', async (path, expected) => {
     const actual = await runMiddleware(

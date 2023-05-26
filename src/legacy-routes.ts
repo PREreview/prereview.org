@@ -131,6 +131,20 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(fromMiddlewareK(() => movedPermanently(format(reviewsMatch.formatter, { page: 1 })))),
     ),
     pipe(
+      pipe(
+        P.lit('users'),
+        P.then(P.str('userId')),
+        P.then(P.lit('articles')),
+        P.then(P.str('articleId')),
+        P.then(P.end),
+      ).parser,
+      P.map(
+        fromMiddlewareK(({ userId, articleId }) =>
+          movedPermanently(`https://www.authorea.com/users/${userId}/articles/${articleId}`),
+        ),
+      ),
+    ),
+    pipe(
       pipe(P.lit('validate'), P.then(type('preprintUuid', UuidC)), P.then(P.end)).parser,
       P.map(
         fromMiddlewareK(({ preprintUuid }) =>
