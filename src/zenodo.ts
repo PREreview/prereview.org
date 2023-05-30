@@ -20,6 +20,7 @@ import * as D from 'io-ts/Decoder'
 import iso6391, { type LanguageCode } from 'iso-639-1'
 import iso6393To1 from 'iso-639-3/to-1.json'
 import * as L from 'logger-fp-ts'
+import type { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
@@ -103,108 +104,112 @@ export const getPrereviewFromZenodo = flow(
   RTE.chain(recordToPrereview),
 )
 
-export const getPrereviewsForOrcidFromZenodo = () =>
-  TE.of([
-    {
-      id: 6577344,
-      reviewers: ['Ahmet Bakirbas', 'Allison Barnes', 'JOHN LILLY JIMMY', 'Daniela Saderi', 'ARPITA YADAV'],
-      published: PlainDate.from('2022-05-24'),
-      preprint: {
-        id: { type: 'biorxiv', value: '10.1101/2021.06.10.447945' as Doi<'1101'> },
-        language: 'en',
-        title: html`Ovule siRNAs methylate protein-coding genes in <i>trans</i>`,
-      },
-    },
-    {
-      id: 6323771,
-      reviewers: [
-        'JOHN LILLY JIMMY',
-        'Priyanka Joshi',
-        'Dilip Kumar',
-        'Neha Nandwani',
-        'Ritam Neupane',
-        'Ailis OCarroll',
-        'Guto Rhys',
-        'Javier Aguirre Rivera',
-        'Daniela Saderi',
-        'Mohammad Salehin',
-        'Agata Witkowska',
-      ],
-      published: PlainDate.from('2022-03-02'),
-      preprint: {
-        id: { type: 'biorxiv', value: '10.1101/2021.11.05.467508' as Doi<'1101'> },
-        language: 'en',
-        title: html`Biochemical analysis of deacetylase activity of rice sirtuin OsSRT1, a class IV member in plants`,
-      },
-    },
-    {
-      id: 5767994,
-      reviewers: [
-        'Daniela Saderi',
-        'Sonisilpa Mohapatra',
-        'Nikhil Bhandarkar',
-        'Antony Gruness',
-        'Isha Soni',
-        'Iratxe Puebla',
-        'Jessica Polka',
-      ],
-      published: PlainDate.from('2021-12-08'),
-      preprint: {
-        id: { type: 'biorxiv', value: '10.1101/2021.10.21.465111' as Doi<'1101'> },
-        language: 'en',
-        title: html`Assessment of <i>Agaricus bisporus</i> Mushroom as Protective Agent Against Ultraviolet Exposure`,
-      },
-    },
-    {
-      id: 5551162,
-      reviewers: [
-        'Daniela Saderi',
-        'Katrina Murphy',
-        'Leire Abalde-Atristain',
-        'Cole Brashaw',
-        'Robin Elise Champieux',
-        'PREreview.org community member',
-      ],
-      published: PlainDate.from('2021-10-05'),
-      preprint: {
-        id: { type: 'medrxiv', value: '10.1101/2021.07.28.21260814' as Doi<'1101'> },
-        language: 'en',
-        title: html`Influence of social determinants of health and county vaccination rates on machine learning models
-        to predict COVID-19 case growth in Tennessee`,
-      },
-    },
-    {
-      id: 7621712,
-      reviewers: ['Daniela Saderi'],
-      published: PlainDate.from('2018-09-06'),
-      preprint: {
-        id: { type: 'biorxiv', value: '10.1101/410472' as Doi<'1101'> },
-        language: 'en',
-        title: html`EMT network-based feature selection improves prognosis prediction in lung adenocarcinoma`,
-      },
-    },
-    {
-      id: 7621012,
-      reviewers: ['Daniela Saderi'],
-      published: PlainDate.from('2017-09-28'),
-      preprint: {
-        id: { type: 'biorxiv', value: '10.1101/193268' as Doi<'1101'> },
-        language: 'en',
-        title: html`Age-related decline in behavioral discrimination of amplitude modulation frequencies compared to
-        envelope-following responses`,
-      },
-    },
-    {
-      id: 7620977,
-      reviewers: ['Daniela Saderi'],
-      published: PlainDate.from('2017-04-10'),
-      preprint: {
-        id: { type: 'biorxiv', value: '10.1101/124750' as Doi<'1101'> },
-        language: 'en',
-        title: html`Cortical Representations of Speech in a Multi-talker Auditory Scene`,
-      },
-    },
-  ] satisfies Prereviews)
+export const getPrereviewsForOrcidFromZenodo = (orcid: Orcid) =>
+  match(orcid)
+    .with('0000-0002-6109-0367' as Orcid, () =>
+      TE.of([
+        {
+          id: 6577344,
+          reviewers: ['Ahmet Bakirbas', 'Allison Barnes', 'JOHN LILLY JIMMY', 'Daniela Saderi', 'ARPITA YADAV'],
+          published: PlainDate.from('2022-05-24'),
+          preprint: {
+            id: { type: 'biorxiv', value: '10.1101/2021.06.10.447945' as Doi<'1101'> },
+            language: 'en',
+            title: html`Ovule siRNAs methylate protein-coding genes in <i>trans</i>`,
+          },
+        },
+        {
+          id: 6323771,
+          reviewers: [
+            'JOHN LILLY JIMMY',
+            'Priyanka Joshi',
+            'Dilip Kumar',
+            'Neha Nandwani',
+            'Ritam Neupane',
+            'Ailis OCarroll',
+            'Guto Rhys',
+            'Javier Aguirre Rivera',
+            'Daniela Saderi',
+            'Mohammad Salehin',
+            'Agata Witkowska',
+          ],
+          published: PlainDate.from('2022-03-02'),
+          preprint: {
+            id: { type: 'biorxiv', value: '10.1101/2021.11.05.467508' as Doi<'1101'> },
+            language: 'en',
+            title: html`Biochemical analysis of deacetylase activity of rice sirtuin OsSRT1, a class IV member in plants`,
+          },
+        },
+        {
+          id: 5767994,
+          reviewers: [
+            'Daniela Saderi',
+            'Sonisilpa Mohapatra',
+            'Nikhil Bhandarkar',
+            'Antony Gruness',
+            'Isha Soni',
+            'Iratxe Puebla',
+            'Jessica Polka',
+          ],
+          published: PlainDate.from('2021-12-08'),
+          preprint: {
+            id: { type: 'biorxiv', value: '10.1101/2021.10.21.465111' as Doi<'1101'> },
+            language: 'en',
+            title: html`Assessment of <i>Agaricus bisporus</i> Mushroom as Protective Agent Against Ultraviolet Exposure`,
+          },
+        },
+        {
+          id: 5551162,
+          reviewers: [
+            'Daniela Saderi',
+            'Katrina Murphy',
+            'Leire Abalde-Atristain',
+            'Cole Brashaw',
+            'Robin Elise Champieux',
+            'PREreview.org community member',
+          ],
+          published: PlainDate.from('2021-10-05'),
+          preprint: {
+            id: { type: 'medrxiv', value: '10.1101/2021.07.28.21260814' as Doi<'1101'> },
+            language: 'en',
+            title: html`Influence of social determinants of health and county vaccination rates on machine learning
+            models to predict COVID-19 case growth in Tennessee`,
+          },
+        },
+        {
+          id: 7621712,
+          reviewers: ['Daniela Saderi'],
+          published: PlainDate.from('2018-09-06'),
+          preprint: {
+            id: { type: 'biorxiv', value: '10.1101/410472' as Doi<'1101'> },
+            language: 'en',
+            title: html`EMT network-based feature selection improves prognosis prediction in lung adenocarcinoma`,
+          },
+        },
+        {
+          id: 7621012,
+          reviewers: ['Daniela Saderi'],
+          published: PlainDate.from('2017-09-28'),
+          preprint: {
+            id: { type: 'biorxiv', value: '10.1101/193268' as Doi<'1101'> },
+            language: 'en',
+            title: html`Age-related decline in behavioral discrimination of amplitude modulation frequencies compared to
+            envelope-following responses`,
+          },
+        },
+        {
+          id: 7620977,
+          reviewers: ['Daniela Saderi'],
+          published: PlainDate.from('2017-04-10'),
+          preprint: {
+            id: { type: 'biorxiv', value: '10.1101/124750' as Doi<'1101'> },
+            language: 'en',
+            title: html`Cortical Representations of Speech in a Multi-talker Auditory Scene`,
+          },
+        },
+      ] satisfies Prereviews),
+    )
+    .otherwise(() => TE.left('not-found' as const))
 
 export const getPrereviewsFromZenodo = flow(
   (preprint: PreprintId) =>

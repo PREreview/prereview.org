@@ -8,6 +8,7 @@ import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
+import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import {
   type Record,
@@ -1245,10 +1246,21 @@ describe('getPrereviewFromZenodo', () => {
   })
 })
 
-test('getPrereviewsForOrcidFromZenodo', async () => {
-  const actual = await _.getPrereviewsForOrcidFromZenodo()()
+describe('getPrereviewsForOrcidFromZenodo', () => {
+  test('when the ORCID iD is 0000-0002-6109-0367', async () => {
+    const actual = await _.getPrereviewsForOrcidFromZenodo('0000-0002-6109-0367' as Orcid)()
 
-  expect(actual).toStrictEqual(E.right(expect.anything()))
+    expect(actual).toStrictEqual(E.right(expect.anything()))
+  })
+
+  test.prop([fc.orcid().filter(orcid => orcid !== '0000-0002-6109-0367')])(
+    'when the ORCID iD is 0000-0002-6109-0367',
+    async orcid => {
+      const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)()
+
+      expect(actual).toStrictEqual(E.left('not-found'))
+    },
+  )
 })
 
 describe('getPrereviewsFromZenodo', () => {
