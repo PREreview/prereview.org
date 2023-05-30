@@ -240,20 +240,21 @@ body {
   justify-content: space-between;
   align-items: center;
   column-gap: var(--space-m);
-  block-size: var(--space-2xl-3xl);
   font-size: var(--step--1);
   max-inline-size: 75rem;
   margin-inline: auto;
+  padding-block: var(--space-2xs);
   padding-inline: var(--space-s-m);
 
   & > .logo {
-    flex-grow: 1;
-    block-size: 100%;
-    padding-block: var(--space-s-m);
+    padding-block: calc(var(--space-s-m) - var(--space-2xs));
 
     & > a {
-      display: inline-flex;
-      block-size: 100%;
+      display: block;
+    }
+
+    & img {
+      block-size: calc(var(--space-2xl-3xl) - 2 * var(--space-s-m));
     }
   }
 
