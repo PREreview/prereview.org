@@ -72,7 +72,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       {
         name: 'recent-prereviews',
         url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', size: 5, sort: 'mostrecent', subtype: 'peerreview' },
+        query: { communities: 'prereview-reviews', size: 5, sort: '-publication_date', subtype: 'peerreview' },
       },
       {
         body: RecordsC.encode({

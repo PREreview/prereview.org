@@ -256,7 +256,7 @@ test('might not load the older reviews in time', async ({ fetch, javaScriptEnabl
     {
       name: 'recent-prereviews',
       url: 'http://zenodo.test/api/records/',
-      query: { communities: 'prereview-reviews', size: 5, sort: 'mostrecent', subtype: 'peerreview' },
+      query: { communities: 'prereview-reviews', size: 5, sort: '-publication_date', subtype: 'peerreview' },
     },
     new Promise(() =>
       setTimeout(
