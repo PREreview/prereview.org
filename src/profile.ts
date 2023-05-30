@@ -134,18 +134,19 @@ const hardcodedPrereviews = [
 export const profile = pipe(
   RM.of(hardcodedPrereviews),
   RM.bindTo('prereviews'),
+  RM.apS('name', RM.of('Daniela Saderi')),
   RM.apS('user', maybeGetUser),
   chainReaderKW(createPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
 )
 
-function createPage({ prereviews, user }: { prereviews: Prereviews; user?: User }) {
+function createPage({ name, prereviews, user }: { name: string; prereviews: Prereviews; user?: User }) {
   return page({
-    title: plainText`Daniela Saderi’s PREreviews`,
+    title: plainText`${name}’s PREreviews`,
     content: html`
       <main id="main-content">
-        <h1>Daniela Saderi’s PREreviews</h1>
+        <h1>${name}’s PREreviews</h1>
 
         <ol class="cards">
           ${prereviews.map(
