@@ -1,17 +1,17 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
-import * as RT from 'fp-ts/ReaderTask'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
-import type * as T from 'fp-ts/Task'
+import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
+import { notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
 import { reviewMatch } from './routes'
@@ -32,31 +32,37 @@ type Prereviews = RNEA.ReadonlyNonEmptyArray<{
 }>
 
 export interface GetPrereviewsEnv {
-  getPrereviews: () => T.Task<Prereviews>
+  getPrereviews: () => TE.TaskEither<'not-found' | 'unavailable', Prereviews>
 }
 
 export interface GetNameEnv {
-  getName: () => T.Task<string>
+  getName: () => TE.TaskEither<'not-found' | 'unavailable', string>
 }
 
 const getPrereviews = pipe(
-  RT.ask<GetPrereviewsEnv>(),
-  RT.chainTaskK(({ getPrereviews }) => getPrereviews()),
+  RTE.ask<GetPrereviewsEnv>(),
+  RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews()),
 )
 
 const getName = pipe(
-  RT.ask<GetNameEnv>(),
-  RT.chainTaskK(({ getName }) => getName()),
+  RTE.ask<GetNameEnv>(),
+  RTE.chainTaskEitherK(({ getName }) => getName()),
 )
 
 export const profile = pipe(
-  fromReaderTask(getPrereviews),
+  RM.fromReaderTaskEither(getPrereviews),
   RM.bindTo('prereviews'),
-  RM.apSW('name', fromReaderTask(getName)),
+  RM.apSW('name', RM.fromReaderTaskEither(getName)),
   RM.apSW('user', maybeGetUser),
   chainReaderKW(createPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
+  RM.orElseW(error =>
+    match(error)
+      .with('not-found', () => notFound)
+      .with('unavailable', () => serviceUnavailable)
+      .exhaustive(),
+  ),
 )
 
 function createPage({ name, prereviews, user }: { name: string; prereviews: Prereviews; user?: User }) {
@@ -142,9 +148,4 @@ function chainReaderKW<R2, A, B>(
   f: (a: A) => Reader<R2, B>,
 ): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
   return RM.chainW(fromReaderK(f))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/87
-function fromReaderTask<R, I = StatusOpen, A = never>(fa: RT.ReaderTask<R, A>): RM.ReaderMiddleware<R, I, I, never, A> {
-  return r => M.fromTask(fa(r))
 }

@@ -8,7 +8,6 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import * as T from 'fp-ts/Task'
 import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import { identity } from 'fp-ts/function'
@@ -365,9 +364,9 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getName: () => T.of('Daniela Saderi'),
+          getName: () => TE.of('Daniela Saderi'),
           getPrereviews: () =>
-            T.of([
+            TE.of([
               {
                 id: 6577344,
                 reviewers: ['Ahmet Bakirbas', 'Allison Barnes', 'JOHN LILLY JIMMY', 'Daniela Saderi', 'ARPITA YADAV'],
