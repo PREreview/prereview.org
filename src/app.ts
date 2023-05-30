@@ -52,6 +52,7 @@ import { getPreprintFromPhilsci } from './philsci'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
+import { profile } from './profile'
 import type { PublicUrlEnv } from './public-url'
 import { review } from './review'
 import { reviewAPreprint } from './review-a-preprint'
@@ -70,6 +71,7 @@ import {
   partnersMatch,
   preprintReviewsMatch,
   privacyPolicyMatch,
+  profileMatch,
   reviewAPreprintMatch,
   reviewMatch,
   reviewsMatch,
@@ -347,6 +349,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ),
             ),
           }),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      profileMatch.parser,
+      P.map(() => profile),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),

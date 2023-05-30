@@ -100,6 +100,8 @@ export const orcidErrorMatch = pipe(
   P.then(P.end),
 )
 
+export const profileMatch = pipe(P.lit('profiles'), P.then(P.lit('0000-0002-6109-0367')), P.then(P.end))
+
 export const preprintReviewsMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))
 
 export const reviewsMatch = pipe(P.lit('reviews'), P.then(query(C.struct({ page: IntegerFromStringC }))), P.then(P.end))
