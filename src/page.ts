@@ -13,6 +13,7 @@ import {
   fundingMatch,
   logOutMatch,
   partnersMatch,
+  preprintJournalClubsMatch,
   privacyPolicyMatch,
   reviewsMatch,
   trainingsMatch,
@@ -42,6 +43,7 @@ type Page = {
     | 'funding'
     | 'home'
     | 'partners'
+    | 'preprint-journal-clubs'
     | 'privacy-policy'
     | 'reviews'
     | 'trainings'
@@ -148,6 +150,13 @@ export function page({
                               href="${format(trainingsMatch.formatter, {})}"
                               ${current === 'trainings' ? html`aria-current="page"` : ''}
                               >Trainings</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="${format(preprintJournalClubsMatch.formatter, {})}"
+                              ${current === 'preprint-journal-clubs' ? html`aria-current="page"` : ''}
+                              >Preprint journal clubs</a
                             >
                           </li>
                           <li>
