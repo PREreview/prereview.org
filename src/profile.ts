@@ -8,6 +8,7 @@ import { flow, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
+import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
@@ -32,38 +33,41 @@ export type Prereviews = RNEA.ReadonlyNonEmptyArray<{
 }>
 
 export interface GetPrereviewsEnv {
-  getPrereviews: () => TE.TaskEither<'not-found' | 'unavailable', Prereviews>
+  getPrereviews: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', Prereviews>
 }
 
 export interface GetNameEnv {
-  getName: () => TE.TaskEither<'not-found' | 'unavailable', string>
+  getName: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', string>
 }
 
-const getPrereviews = pipe(
-  RTE.ask<GetPrereviewsEnv>(),
-  RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews()),
-)
+const getPrereviews = (orcid: Orcid) =>
+  pipe(
+    RTE.ask<GetPrereviewsEnv>(),
+    RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews(orcid)),
+  )
 
-const getName = pipe(
-  RTE.ask<GetNameEnv>(),
-  RTE.chainTaskEitherK(({ getName }) => getName()),
-)
+const getName = (orcid: Orcid) =>
+  pipe(
+    RTE.ask<GetNameEnv>(),
+    RTE.chainTaskEitherK(({ getName }) => getName(orcid)),
+  )
 
-export const profile = pipe(
-  RM.fromReaderTaskEither(getPrereviews),
-  RM.bindTo('prereviews'),
-  RM.apSW('name', RM.fromReaderTaskEither(getName)),
-  RM.apSW('user', maybeGetUser),
-  chainReaderKW(createPage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareKW(sendHtml),
-  RM.orElseW(error =>
-    match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
-      .exhaustive(),
-  ),
-)
+export const profile = (orcid: Orcid) =>
+  pipe(
+    RM.fromReaderTaskEither(getPrereviews(orcid)),
+    RM.bindTo('prereviews'),
+    RM.apSW('name', RM.fromReaderTaskEither(getName(orcid))),
+    RM.apSW('user', maybeGetUser),
+    chainReaderKW(createPage),
+    RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainMiddlewareKW(sendHtml),
+    RM.orElseW(error =>
+      match(error)
+        .with('not-found', () => notFound)
+        .with('unavailable', () => serviceUnavailable)
+        .exhaustive(),
+    ),
+  )
 
 function createPage({ name, prereviews, user }: { name: string; prereviews: Prereviews; user?: User }) {
   return page({

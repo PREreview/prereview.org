@@ -1,9 +1,10 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
+import type { Mock } from 'jest-mock'
 import * as _ from '../src/profile'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -11,6 +12,7 @@ import { runMiddleware } from './middleware'
 describe('profile', () => {
   test.prop([
     fc.connection({ method: fc.requestMethod() }),
+    fc.orcid(),
     fc.string(),
     fc.nonEmptyArray(
       fc.record({
@@ -21,11 +23,14 @@ describe('profile', () => {
       }),
     ),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the data can be loaded', async (connection, name, prereviews, user) => {
+  ])('when the data can be loaded', async (connection, orcid, name, prereviews, user) => {
+    const getName: Mock<_.GetNameEnv['getName']> = jest.fn(_ => TE.of(name))
+    const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.of(prereviews))
+
     const actual = await runMiddleware(
-      _.profile({
-        getName: () => TE.of(name),
-        getPrereviews: () => TE.of(prereviews),
+      _.profile(orcid)({
+        getName,
+        getPrereviews,
         getUser: () => M.fromEither(user),
       }),
       connection,
@@ -38,15 +43,18 @@ describe('profile', () => {
         { type: 'setBody', body: expect.anything() },
       ]),
     )
+    expect(getName).toHaveBeenCalledWith(orcid)
+    expect(getPrereviews).toHaveBeenCalledWith(orcid)
   })
 
   test.prop([
     fc.connection({ method: fc.requestMethod() }),
+    fc.orcid(),
     fc.string(),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when there are no PREreviews', async (connection, name, user) => {
+  ])('when there are no PREreviews', async (connection, orcid, name, user) => {
     const actual = await runMiddleware(
-      _.profile({
+      _.profile(orcid)({
         getName: () => TE.of(name),
         getPrereviews: () => TE.left('not-found'),
         getUser: () => M.fromEither(user),
@@ -66,11 +74,12 @@ describe('profile', () => {
 
   test.prop([
     fc.connection({ method: fc.requestMethod() }),
+    fc.orcid(),
     fc.string(),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])("when the PREreviews can't be loaded", async (connection, name, user) => {
+  ])("when the PREreviews can't be loaded", async (connection, orcid, name, user) => {
     const actual = await runMiddleware(
-      _.profile({
+      _.profile(orcid)({
         getName: () => TE.of(name),
         getPrereviews: () => TE.left('unavailable'),
         getUser: () => M.fromEither(user),
@@ -90,6 +99,7 @@ describe('profile', () => {
 
   test.prop([
     fc.connection({ method: fc.requestMethod() }),
+    fc.orcid(),
     fc.nonEmptyArray(
       fc.record({
         id: fc.integer(),
@@ -99,9 +109,9 @@ describe('profile', () => {
       }),
     ),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])("when the name can't be found", async (connection, prereviews, user) => {
+  ])("when the name can't be found", async (connection, orcid, prereviews, user) => {
     const actual = await runMiddleware(
-      _.profile({
+      _.profile(orcid)({
         getName: () => TE.left('not-found'),
         getPrereviews: () => TE.of(prereviews),
         getUser: () => M.fromEither(user),
@@ -121,6 +131,7 @@ describe('profile', () => {
 
   test.prop([
     fc.connection({ method: fc.requestMethod() }),
+    fc.orcid(),
     fc.nonEmptyArray(
       fc.record({
         id: fc.integer(),
@@ -130,9 +141,9 @@ describe('profile', () => {
       }),
     ),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the name is unavailable', async (connection, prereviews, user) => {
+  ])('when the name is unavailable', async (connection, orcid, prereviews, user) => {
     const actual = await runMiddleware(
-      _.profile({
+      _.profile(orcid)({
         getName: () => TE.left('unavailable'),
         getPrereviews: () => TE.of(prereviews),
         getUser: () => M.fromEither(user),

@@ -22,7 +22,6 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
-import type { Orcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
@@ -358,12 +357,12 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       profileMatch.parser,
-      P.map(() => profile),
+      P.map(({ orcid }) => profile(orcid)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getName: () => getNameFromOrcid('0000-0002-6109-0367' as Orcid),
-          getPrereviews: () => getPrereviewsForOrcidFromZenodo('0000-0002-6109-0367' as Orcid),
+          getName: getNameFromOrcid,
+          getPrereviews: getPrereviewsForOrcidFromZenodo,
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),

@@ -4,6 +4,7 @@ import * as O from 'fp-ts/Option'
 import { pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './preprint-id'
 
@@ -19,6 +20,8 @@ const IntegerFromStringC = C.make(
     encode: String,
   },
 )
+
+const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
 const PreprintDoiC = C.make(
   pipe(
@@ -100,7 +103,7 @@ export const orcidErrorMatch = pipe(
   P.then(P.end),
 )
 
-export const profileMatch = pipe(P.lit('profiles'), P.then(P.lit('0000-0002-6109-0367')), P.then(P.end))
+export const profileMatch = pipe(P.lit('profiles'), P.then(type('orcid', OrcidC)), P.then(P.end))
 
 export const preprintReviewsMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))
 
