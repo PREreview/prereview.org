@@ -20,7 +20,7 @@ import { type User, maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
-type Prereviews = RNEA.ReadonlyNonEmptyArray<{
+export type Prereviews = RNEA.ReadonlyNonEmptyArray<{
   readonly id: number
   readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
   readonly published: PlainDate

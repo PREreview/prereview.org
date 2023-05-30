@@ -1245,6 +1245,12 @@ describe('getPrereviewFromZenodo', () => {
   })
 })
 
+test('getPrereviewsForOrcidFromZenodo', async () => {
+  const actual = await _.getPrereviewsForOrcidFromZenodo()()
+
+  expect(actual).toStrictEqual(E.right(expect.anything()))
+})
+
 describe('getPrereviewsFromZenodo', () => {
   test.prop([fc.preprintId()])('when the PREreviews can be loaded', async preprint => {
     const records: Records = {

@@ -1,5 +1,3 @@
-import { Temporal } from '@js-temporal/polyfill'
-import type { Doi } from 'doi-ts'
 import express from 'express'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/Json'
@@ -36,7 +34,6 @@ import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
-import { html } from './html'
 import { handleError } from './http-error'
 import {
   type LegacyPrereviewApiEnv,
@@ -49,6 +46,7 @@ import {
 import { getPreprintIdFromLegacyPreviewUuid } from './legacy-prereview'
 import { legacyRoutes } from './legacy-routes'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
+import { getNameFromOrcid } from './orcid'
 import type { FathomEnv, PhaseEnv } from './page'
 import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
@@ -111,11 +109,10 @@ import {
 import {
   createRecordOnZenodo,
   getPrereviewFromZenodo,
+  getPrereviewsForOrcidFromZenodo,
   getPrereviewsFromZenodo,
   getRecentPrereviewsFromZenodo,
 } from './zenodo'
-
-import PlainDate = Temporal.PlainDate
 
 export type AppEnv = FathomEnv &
   FormStoreEnv &
@@ -364,111 +361,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getName: () => TE.of('Daniela Saderi'),
-          getPrereviews: () =>
-            TE.of([
-              {
-                id: 6577344,
-                reviewers: ['Ahmet Bakirbas', 'Allison Barnes', 'JOHN LILLY JIMMY', 'Daniela Saderi', 'ARPITA YADAV'],
-                published: PlainDate.from('2022-05-24'),
-                preprint: {
-                  id: { type: 'biorxiv', value: '10.1101/2021.06.10.447945' as Doi<'1101'> },
-                  language: 'en',
-                  title: html`Ovule siRNAs methylate protein-coding genes in <i>trans</i>`,
-                },
-              },
-              {
-                id: 6323771,
-                reviewers: [
-                  'JOHN LILLY JIMMY',
-                  'Priyanka Joshi',
-                  'Dilip Kumar',
-                  'Neha Nandwani',
-                  'Ritam Neupane',
-                  'Ailis OCarroll',
-                  'Guto Rhys',
-                  'Javier Aguirre Rivera',
-                  'Daniela Saderi',
-                  'Mohammad Salehin',
-                  'Agata Witkowska',
-                ],
-                published: PlainDate.from('2022-03-02'),
-                preprint: {
-                  id: { type: 'biorxiv', value: '10.1101/2021.11.05.467508' as Doi<'1101'> },
-                  language: 'en',
-                  title: html`Biochemical analysis of deacetylase activity of rice sirtuin OsSRT1, a class IV member in
-                  plants`,
-                },
-              },
-              {
-                id: 5767994,
-                reviewers: [
-                  'Daniela Saderi',
-                  'Sonisilpa Mohapatra',
-                  'Nikhil Bhandarkar',
-                  'Antony Gruness',
-                  'Isha Soni',
-                  'Iratxe Puebla',
-                  'Jessica Polka',
-                ],
-                published: PlainDate.from('2021-12-08'),
-                preprint: {
-                  id: { type: 'biorxiv', value: '10.1101/2021.10.21.465111' as Doi<'1101'> },
-                  language: 'en',
-                  title: html`Assessment of <i>Agaricus bisporus</i> Mushroom as Protective Agent Against Ultraviolet
-                    Exposure`,
-                },
-              },
-              {
-                id: 5551162,
-                reviewers: [
-                  'Daniela Saderi',
-                  'Katrina Murphy',
-                  'Leire Abalde-Atristain',
-                  'Cole Brashaw',
-                  'Robin Elise Champieux',
-                  'PREreview.org community member',
-                ],
-                published: PlainDate.from('2021-10-05'),
-                preprint: {
-                  id: { type: 'medrxiv', value: '10.1101/2021.07.28.21260814' as Doi<'1101'> },
-                  language: 'en',
-                  title: html`Influence of social determinants of health and county vaccination rates on machine
-                  learning models to predict COVID-19 case growth in Tennessee`,
-                },
-              },
-              {
-                id: 7621712,
-                reviewers: ['Daniela Saderi'],
-                published: PlainDate.from('2018-09-06'),
-                preprint: {
-                  id: { type: 'biorxiv', value: '10.1101/410472' as Doi<'1101'> },
-                  language: 'en',
-                  title: html`EMT network-based feature selection improves prognosis prediction in lung adenocarcinoma`,
-                },
-              },
-              {
-                id: 7621012,
-                reviewers: ['Daniela Saderi'],
-                published: PlainDate.from('2017-09-28'),
-                preprint: {
-                  id: { type: 'biorxiv', value: '10.1101/193268' as Doi<'1101'> },
-                  language: 'en',
-                  title: html`Age-related decline in behavioral discrimination of amplitude modulation frequencies
-                  compared to envelope-following responses`,
-                },
-              },
-              {
-                id: 7620977,
-                reviewers: ['Daniela Saderi'],
-                published: PlainDate.from('2017-04-10'),
-                preprint: {
-                  id: { type: 'biorxiv', value: '10.1101/124750' as Doi<'1101'> },
-                  language: 'en',
-                  title: html`Cortical Representations of Speech in a Multi-talker Auditory Scene`,
-                },
-              },
-            ]),
+          getName: getNameFromOrcid,
+          getPrereviews: getPrereviewsForOrcidFromZenodo,
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
