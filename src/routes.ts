@@ -81,6 +81,8 @@ export const fundingMatch = pipe(P.lit('funding'), P.then(P.end))
 
 export const partnersMatch = pipe(P.lit('partners'), P.then(P.end))
 
+export const preprintJournalClubsMatch = pipe(P.lit('preprint-journal-clubs'), P.then(P.end))
+
 export const privacyPolicyMatch = pipe(P.lit('privacy-policy'), P.then(P.end))
 
 export const trainingsMatch = pipe(P.lit('trainings'), P.then(P.end))

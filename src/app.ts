@@ -51,6 +51,7 @@ import type { FathomEnv, PhaseEnv } from './page'
 import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
+import { preprintJournalClubs } from './preprint-journal-clubs'
 import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile'
@@ -70,6 +71,7 @@ import {
   orcidCodeMatch,
   orcidErrorMatch,
   partnersMatch,
+  preprintJournalClubsMatch,
   preprintReviewsMatch,
   privacyPolicyMatch,
   profileMatch,
@@ -231,6 +233,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     pipe(
       partnersMatch.parser,
       P.map(() => partners),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      preprintJournalClubsMatch.parser,
+      P.map(() => preprintJournalClubs),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
