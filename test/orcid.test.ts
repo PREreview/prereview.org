@@ -1,7 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
 import type { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/orcid'
@@ -11,9 +13,11 @@ describe('getNameFromOrcid', () => {
   describe('when the ORCID iD is 0000-0002-6109-0367', () => {
     test('when the request succeeds', async () => {
       const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
+        clock: SystemClock,
         fetch: fetchMock.sandbox().get('*', {
           body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
         }),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.right('Daniela Saderi'))
@@ -23,7 +27,9 @@ describe('getNameFromOrcid', () => {
       'when the request fails',
       async status => {
         const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
+          clock: SystemClock,
           fetch: fetchMock.sandbox().get('*', { status }),
+          logger: () => IO.of(undefined),
         })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
@@ -32,7 +38,9 @@ describe('getNameFromOrcid', () => {
 
     test('when the network fails', async () => {
       const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
+        clock: SystemClock,
         fetch: () => Promise.reject('network error'),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
@@ -43,7 +51,9 @@ describe('getNameFromOrcid', () => {
     'when the ORCID iD is not 0000-0002-6109-0367',
     async orcid => {
       const actual = await _.getNameFromOrcid(orcid)({
+        clock: SystemClock,
         fetch: () => Promise.reject('should not be called'),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
