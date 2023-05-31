@@ -349,6 +349,10 @@ body > footer {
       padding-right: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line liberty/use-logical-spec */
       padding-left: 0; /* stylelint-disable-line liberty/use-logical-spec */
       background-position: right 0.1ch bottom 40%;
+
+      @media (forced-colors: active) {
+        padding: 0;
+      }
     }
 
     @media (forced-colors: active) {
