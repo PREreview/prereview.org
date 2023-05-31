@@ -17,13 +17,16 @@ describe('getNameFromOrcid', () => {
       expect(actual).toStrictEqual(E.right('Daniela Saderi'))
     })
 
-    test.prop([fc.integer().filter(status => status !== Status.OK)])('when the request fails', async status => {
-      const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
-        fetch: fetchMock.sandbox().get('*', { status }),
-      })()
+    test.prop([fc.integer({ min: 100, max: 599 }).filter(status => status !== Status.OK)])(
+      'when the request fails',
+      async status => {
+        const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
+          fetch: fetchMock.sandbox().get('*', { status }),
+        })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    })
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      },
+    )
 
     test('when the network fails', async () => {
       const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
