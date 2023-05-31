@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import { Status } from 'hyper-ts'
 import type { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/orcid'
 import * as fc from './fc'
@@ -15,7 +16,16 @@ describe('getNameFromOrcid', () => {
 
       expect(actual).toStrictEqual(E.right('Daniela Saderi'))
     })
-    test('when the request fails', async () => {
+
+    test.prop([fc.integer().filter(status => status !== Status.OK)])('when the request fails', async status => {
+      const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
+        fetch: fetchMock.sandbox().get('*', { status }),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    })
+
+    test('when the network fails', async () => {
       const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
         fetch: () => Promise.reject('network error'),
       })()
