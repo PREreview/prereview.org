@@ -373,7 +373,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getName: getNameFromOrcid,
+          getName: flip(getNameFromOrcid)(env),
           getPrereviews: getPrereviewsForOrcidFromZenodo,
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
