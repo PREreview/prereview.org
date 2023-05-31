@@ -23,7 +23,6 @@ import { plainText, rawHtml } from '../src/html'
 import type { NewPrereview } from '../src/write-review'
 import * as _ from '../src/zenodo'
 import * as fc from './fc'
-import { orcid } from './fc'
 
 import PlainDate = Temporal.PlainDate
 
@@ -1613,7 +1612,7 @@ describe('getPrereviewsForOrcidFromZenodo', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the list is empty', async () => {
+  test.prop([fc.orcid()])('when the list is empty', async orcid => {
     const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)({
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
