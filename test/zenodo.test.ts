@@ -8,7 +8,6 @@ import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import {
   type Record,
@@ -24,6 +23,7 @@ import { plainText, rawHtml } from '../src/html'
 import type { NewPrereview } from '../src/write-review'
 import * as _ from '../src/zenodo'
 import * as fc from './fc'
+import { orcid } from './fc'
 
 import PlainDate = Temporal.PlainDate
 
@@ -1247,153 +1247,12 @@ describe('getPrereviewFromZenodo', () => {
 })
 
 describe('getPrereviewsForOrcidFromZenodo', () => {
-  describe('when the ORCID iD is 0000-0002-6109-0367', () => {
-    test.prop([fc.preprintTitle(), fc.preprintTitle()])(
-      'when the PREreviews can be loaded',
-      async (preprint1, preprint2) => {
-        const records: Records = {
-          hits: {
-            total: 2,
-            hits: [
-              {
-                conceptdoi: '10.5072/zenodo.1061863' as Doi,
-                conceptrecid: 1061863,
-                files: [
-                  {
-                    links: {
-                      self: new URL('http://example.com/file'),
-                    },
-                    key: 'review.html',
-                    type: 'html',
-                    size: 58,
-                  },
-                ],
-                id: 1061864,
-                links: {
-                  latest: new URL('http://example.com/latest'),
-                  latest_html: new URL('http://example.com/latest_html'),
-                },
-                metadata: {
-                  communities: [{ id: 'prereview-reviews' }],
-                  creators: [{ name: 'PREreviewer' }],
-                  description: 'Description',
-                  doi: '10.5281/zenodo.1061864' as Doi,
-                  language: 'eng',
-                  license: {
-                    id: 'CC-BY-4.0',
-                  },
-                  publication_date: new Date('2022-07-04'),
-                  related_identifiers: [
-                    {
-                      scheme: 'doi',
-                      identifier: '10.1101/2022.01.13.476201' as Doi,
-                      relation: 'reviews',
-                      resource_type: 'publication-preprint',
-                    },
-                  ],
-                  resource_type: {
-                    type: 'publication',
-                    subtype: 'peerreview',
-                  },
-                  title: 'Title',
-                },
-              },
-              {
-                conceptdoi: '10.5072/zenodo.1065235' as Doi,
-                conceptrecid: 1065235,
-                files: [
-                  {
-                    links: {
-                      self: new URL('http://example.com/file'),
-                    },
-                    key: 'review.html',
-                    type: 'html',
-                    size: 58,
-                  },
-                ],
-                id: 1065236,
-                links: {
-                  latest: new URL('http://example.com/latest'),
-                  latest_html: new URL('http://example.com/latest_html'),
-                },
-                metadata: {
-                  communities: [{ id: 'prereview-reviews' }],
-                  creators: [{ name: 'Josiah Carberry' }],
-                  description: 'Description',
-                  doi: '10.5281/zenodo.1065236' as Doi,
-                  language: 'eng',
-                  license: {
-                    id: 'CC-BY-4.0',
-                  },
-                  publication_date: new Date('2022-07-05'),
-                  related_identifiers: [
-                    {
-                      scheme: 'doi',
-                      identifier: '10.1101/2022.02.14.480364' as Doi,
-                      relation: 'reviews',
-                      resource_type: 'publication-preprint',
-                    },
-                  ],
-                  resource_type: {
-                    type: 'publication',
-                    subtype: 'peerreview',
-                  },
-                  title: 'Title',
-                },
-              },
-            ],
-          },
-        }
-
-        const actual = await _.getPrereviewsForOrcidFromZenodo('0000-0002-6109-0367' as Orcid)({
-          fetch: fetchMock.sandbox().getOnce(
-            {
-              url: 'https://zenodo.org/api/records/',
-              query: {
-                communities: 'prereview-reviews',
-                q: 'creators.orcid:0000-0002-6109-0367',
-                size: '100',
-                sort: '-publication_date',
-                subtype: 'peerreview',
-              },
-            },
-            {
-              body: RecordsC.encode(records),
-              status: Status.OK,
-            },
-          ),
-          getPreprintTitle: id =>
-            match(id.value as unknown)
-              .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
-              .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
-              .otherwise(() => TE.left('not-found')),
-          clock: SystemClock,
-          logger: () => IO.of(undefined),
-        })()
-
-        expect(actual).toStrictEqual(
-          E.right([
-            {
-              id: 1061864,
-              reviewers: ['PREreviewer'],
-              published: new Temporal.PlainDate(2022, 7, 4),
-              preprint: preprint1,
-            },
-            {
-              id: 1065236,
-              reviewers: ['Josiah Carberry'],
-              published: new Temporal.PlainDate(2022, 7, 5),
-              preprint: preprint2,
-            },
-          ]),
-        )
-      },
-    )
-
-    test.prop([fc.preprintTitle()])('revalidates if the PREreviews are stale', async preprint => {
+  test.prop([fc.orcid(), fc.preprintTitle(), fc.preprintTitle()])(
+    'when the PREreviews can be loaded',
+    async (orcid, preprint1, preprint2) => {
       const records: Records = {
         hits: {
-          total: 1,
+          total: 2,
           hits: [
             {
               conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -1418,6 +1277,50 @@ describe('getPrereviewsForOrcidFromZenodo', () => {
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
                 doi: '10.5281/zenodo.1061864' as Doi,
+                language: 'eng',
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-04'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
+            },
+            {
+              conceptdoi: '10.5072/zenodo.1065235' as Doi,
+              conceptrecid: 1065235,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
+              id: 1065236,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'Josiah Carberry' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1065236' as Doi,
+                language: 'eng',
                 license: {
                   id: 'CC-BY-4.0',
                 },
@@ -1441,40 +1344,29 @@ describe('getPrereviewsForOrcidFromZenodo', () => {
         },
       }
 
-      const fetch = fetchMock
-        .sandbox()
-        .getOnce(
-          (url, { cache }) =>
-            url ===
-              `https://zenodo.org/api/records/?${new URLSearchParams({
-                communities: 'prereview-reviews',
-                q: 'creators.orcid:0000-0002-6109-0367',
-                size: '100',
-                sort: '-publication_date',
-                subtype: 'peerreview',
-              }).toString()}` && cache === 'force-cache',
+      const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)({
+        fetch: fetchMock.sandbox().getOnce(
+          {
+            url: 'https://zenodo.org/api/records/',
+            query: {
+              communities: 'prereview-reviews',
+              q: `creators.orcid:${orcid}`,
+              size: '100',
+              sort: '-publication_date',
+              subtype: 'peerreview',
+            },
+          },
           {
             body: RecordsC.encode(records),
-            headers: { 'X-Local-Cache-Status': 'stale' },
+            status: Status.OK,
           },
-        )
-        .getOnce(
-          (url, { cache }) =>
-            url ===
-              `https://zenodo.org/api/records/?${new URLSearchParams({
-                communities: 'prereview-reviews',
-                q: 'creators.orcid:0000-0002-6109-0367',
-                size: '100',
-                sort: '-publication_date',
-                subtype: 'peerreview',
-              }).toString()}` && cache === 'no-cache',
-          { throws: new Error('Network error') },
-        )
-
-      const actual = await _.getPrereviewsForOrcidFromZenodo('0000-0002-6109-0367' as Orcid)({
+        ),
+        getPreprintTitle: id =>
+          match(id.value as unknown)
+            .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
+            .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
+            .otherwise(() => TE.left('not-found')),
         clock: SystemClock,
-        fetch,
-        getPreprintTitle: () => TE.right(preprint),
         logger: () => IO.of(undefined),
       })()
 
@@ -1483,200 +1375,298 @@ describe('getPrereviewsForOrcidFromZenodo', () => {
           {
             id: 1061864,
             reviewers: ['PREreviewer'],
+            published: new Temporal.PlainDate(2022, 7, 4),
+            preprint: preprint1,
+          },
+          {
+            id: 1065236,
+            reviewers: ['Josiah Carberry'],
             published: new Temporal.PlainDate(2022, 7, 5),
-            preprint,
+            preprint: preprint2,
           },
         ]),
       )
-      expect(fetch.done()).toBeTruthy()
-    })
+    },
+  )
 
-    test.prop([fc.constantFrom('not-found' as const, 'unavailable' as const)])(
-      'when a preprint cannot be loaded',
-      async error => {
-        const records: Records = {
-          hits: {
-            total: 2,
-            hits: [
+  test.prop([fc.orcid(), fc.preprintTitle()])('revalidates if the PREreviews are stale', async (orcid, preprint) => {
+    const records: Records = {
+      hits: {
+        total: 1,
+        hits: [
+          {
+            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptrecid: 1061863,
+            files: [
               {
-                conceptdoi: '10.5072/zenodo.1061863' as Doi,
-                conceptrecid: 1061863,
-                files: [
-                  {
-                    links: {
-                      self: new URL('http://example.com/file'),
-                    },
-                    key: 'review.html',
-                    type: 'html',
-                    size: 58,
-                  },
-                ],
-                id: 1061864,
                 links: {
-                  latest: new URL('http://example.com/latest'),
-                  latest_html: new URL('http://example.com/latest_html'),
+                  self: new URL('http://example.com/file'),
                 },
-                metadata: {
-                  communities: [{ id: 'prereview-reviews' }],
-                  creators: [{ name: 'PREreviewer' }],
-                  description: 'Description',
-                  doi: '10.5281/zenodo.1061864' as Doi,
-                  language: 'eng',
-                  license: {
-                    id: 'CC-BY-4.0',
-                  },
-                  publication_date: new Date('2022-07-04'),
-                  related_identifiers: [
-                    {
-                      scheme: 'doi',
-                      identifier: '10.1101/2022.01.13.476201' as Doi,
-                      relation: 'reviews',
-                      resource_type: 'publication-preprint',
-                    },
-                  ],
-                  resource_type: {
-                    type: 'publication',
-                    subtype: 'peerreview',
-                  },
-                  title: 'Title',
-                },
-              },
-              {
-                conceptdoi: '10.5072/zenodo.1065235' as Doi,
-                conceptrecid: 1065235,
-                files: [
-                  {
-                    links: {
-                      self: new URL('http://example.com/file'),
-                    },
-                    key: 'review.html',
-                    type: 'html',
-                    size: 58,
-                  },
-                ],
-                id: 1065236,
-                links: {
-                  latest: new URL('http://example.com/latest'),
-                  latest_html: new URL('http://example.com/latest_html'),
-                },
-                metadata: {
-                  communities: [{ id: 'prereview-reviews' }],
-                  creators: [{ name: 'Josiah Carberry' }],
-                  description: 'Description',
-                  doi: '10.5281/zenodo.1065236' as Doi,
-                  language: 'eng',
-                  license: {
-                    id: 'CC-BY-4.0',
-                  },
-                  publication_date: new Date('2022-07-05'),
-                  related_identifiers: [
-                    {
-                      scheme: 'doi',
-                      identifier: '10.1101/2022.02.14.480364' as Doi,
-                      relation: 'reviews',
-                      resource_type: 'publication-preprint',
-                    },
-                  ],
-                  resource_type: {
-                    type: 'publication',
-                    subtype: 'peerreview',
-                  },
-                  title: 'Title',
-                },
+                key: 'review.html',
+                type: 'html',
+                size: 58,
               },
             ],
-          },
-        }
-
-        const actual = await _.getPrereviewsForOrcidFromZenodo('0000-0002-6109-0367' as Orcid)({
-          clock: SystemClock,
-          fetch: fetchMock.sandbox().getOnce(
-            {
-              url: 'https://zenodo.org/api/records/',
-              query: {
-                communities: 'prereview-reviews',
-                q: 'creators.orcid:0000-0002-6109-0367',
-                size: '100',
-                sort: '-publication_date',
+            id: 1061864,
+            links: {
+              latest: new URL('http://example.com/latest'),
+              latest_html: new URL('http://example.com/latest_html'),
+            },
+            metadata: {
+              communities: [{ id: 'prereview-reviews' }],
+              creators: [{ name: 'PREreviewer' }],
+              description: 'Description',
+              doi: '10.5281/zenodo.1061864' as Doi,
+              license: {
+                id: 'CC-BY-4.0',
+              },
+              publication_date: new Date('2022-07-05'),
+              related_identifiers: [
+                {
+                  scheme: 'doi',
+                  identifier: '10.1101/2022.02.14.480364' as Doi,
+                  relation: 'reviews',
+                  resource_type: 'publication-preprint',
+                },
+              ],
+              resource_type: {
+                type: 'publication',
                 subtype: 'peerreview',
+              },
+              title: 'Title',
+            },
+          },
+        ],
+      },
+    }
+
+    const fetch = fetchMock
+      .sandbox()
+      .getOnce(
+        (url, { cache }) =>
+          url ===
+            `https://zenodo.org/api/records/?${new URLSearchParams({
+              communities: 'prereview-reviews',
+              q: `creators.orcid:${orcid}`,
+              size: '100',
+              sort: '-publication_date',
+              subtype: 'peerreview',
+            }).toString()}` && cache === 'force-cache',
+        {
+          body: RecordsC.encode(records),
+          headers: { 'X-Local-Cache-Status': 'stale' },
+        },
+      )
+      .getOnce(
+        (url, { cache }) =>
+          url ===
+            `https://zenodo.org/api/records/?${new URLSearchParams({
+              communities: 'prereview-reviews',
+              q: `creators.orcid:${orcid}`,
+              size: '100',
+              sort: '-publication_date',
+              subtype: 'peerreview',
+            }).toString()}` && cache === 'no-cache',
+        { throws: new Error('Network error') },
+      )
+
+    const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)({
+      clock: SystemClock,
+      fetch,
+      getPreprintTitle: () => TE.right(preprint),
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        {
+          id: 1061864,
+          reviewers: ['PREreviewer'],
+          published: new Temporal.PlainDate(2022, 7, 5),
+          preprint,
+        },
+      ]),
+    )
+    expect(fetch.done()).toBeTruthy()
+  })
+
+  test.prop([fc.orcid(), fc.constantFrom('not-found' as const, 'unavailable' as const)])(
+    'when a preprint cannot be loaded',
+    async (orcid, error) => {
+      const records: Records = {
+        hits: {
+          total: 2,
+          hits: [
+            {
+              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
+              id: 1061864,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'PREreviewer' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1061864' as Doi,
+                language: 'eng',
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-04'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
               },
             },
             {
-              body: RecordsC.encode(records),
-              status: Status.OK,
+              conceptdoi: '10.5072/zenodo.1065235' as Doi,
+              conceptrecid: 1065235,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
+              id: 1065236,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'Josiah Carberry' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1065236' as Doi,
+                language: 'eng',
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-05'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
             },
-          ),
-          getPreprintTitle: () => TE.left(error),
-          logger: () => IO.of(undefined),
-        })()
+          ],
+        },
+      }
 
-        expect(actual).toStrictEqual(E.left('unavailable'))
-      },
-    )
-
-    test('when the list is empty', async () => {
-      const actual = await _.getPrereviewsForOrcidFromZenodo('0000-0002-6109-0367' as Orcid)({
+      const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)({
         clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(
           {
             url: 'https://zenodo.org/api/records/',
             query: {
               communities: 'prereview-reviews',
-              q: 'creators.orcid:0000-0002-6109-0367',
+              q: `creators.orcid:${orcid}`,
               size: '100',
               sort: '-publication_date',
               subtype: 'peerreview',
             },
           },
           {
-            body: RecordsC.encode({ hits: { total: 0, hits: [] } }),
+            body: RecordsC.encode(records),
             status: Status.OK,
           },
         ),
-        getPreprintTitle: () => () => Promise.reject('should not be called'),
-        logger: () => IO.of(undefined),
-      })()
-
-      expect(actual).toStrictEqual(E.left('not-found'))
-    })
-
-    test.prop([fc.integer({ min: 400, max: 599 })])('when the PREreviews cannot be loaded', async status => {
-      const actual = await _.getPrereviewsForOrcidFromZenodo('0000-0002-6109-0367' as Orcid)({
-        clock: SystemClock,
-        fetch: fetchMock.sandbox().getOnce(
-          {
-            url: 'https://zenodo.org/api/records/',
-            query: {
-              communities: 'prereview-reviews',
-              q: 'creators.orcid:0000-0002-6109-0367',
-              size: '100',
-              sort: '-publication_date',
-              subtype: 'peerreview',
-            },
-          },
-          { status },
-        ),
-        getPreprintTitle: () => () => Promise.reject('should not be called'),
+        getPreprintTitle: () => TE.left(error),
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-    })
-  })
-
-  test.prop([fc.orcid().filter(orcid => orcid !== '0000-0002-6109-0367')])(
-    'when the ORCID iD is not 0000-0002-6109-0367',
-    async orcid => {
-      const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)({
-        fetch: () => Promise.reject('should not be called'),
-        getPreprintTitle: () => () => Promise.reject('should not be called'),
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
-
-      expect(actual).toStrictEqual(E.left('not-found'))
     },
   )
+
+  test.prop([fc.orcid()])('when the list is empty', async () => {
+    const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)({
+      clock: SystemClock,
+      fetch: fetchMock.sandbox().getOnce(
+        {
+          url: 'https://zenodo.org/api/records/',
+          query: {
+            communities: 'prereview-reviews',
+            q: `creators.orcid:${orcid}`,
+            size: '100',
+            sort: '-publication_date',
+            subtype: 'peerreview',
+          },
+        },
+        {
+          body: RecordsC.encode({ hits: { total: 0, hits: [] } }),
+          status: Status.OK,
+        },
+      ),
+      getPreprintTitle: () => () => Promise.reject('should not be called'),
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([
+    fc.orcid(),
+    fc.integer({
+      min: 400,
+      max: 599,
+    }),
+  ])('when the PREreviews cannot be loaded', async (orcid, status) => {
+    const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)({
+      clock: SystemClock,
+      fetch: fetchMock.sandbox().getOnce(
+        {
+          url: 'https://zenodo.org/api/records/',
+          query: {
+            communities: 'prereview-reviews',
+            q: `creators.orcid:${orcid}`,
+            size: '100',
+            sort: '-publication_date',
+            subtype: 'peerreview',
+          },
+        },
+        { status },
+      ),
+      getPreprintTitle: () => () => Promise.reject('should not be called'),
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
 })
 
 describe('getPrereviewsFromZenodo', () => {

@@ -5,58 +5,42 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
-import type { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/orcid'
 import * as fc from './fc'
 
 describe('getNameFromOrcid', () => {
-  describe('when the ORCID iD is 0000-0002-6109-0367', () => {
-    test('when the request succeeds', async () => {
-      const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
+  test.prop([fc.orcid()])('when the request succeeds', async orcid => {
+    const actual = await _.getNameFromOrcid(orcid)({
+      clock: SystemClock,
+      fetch: fetchMock.sandbox().get('*', {
+        body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
+      }),
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.right('Daniela Saderi'))
+  })
+
+  test.prop([fc.orcid(), fc.integer({ min: 100, max: 599 }).filter(status => status !== Status.OK)])(
+    'when the request fails',
+    async (orcid, status) => {
+      const actual = await _.getNameFromOrcid(orcid)({
         clock: SystemClock,
-        fetch: fetchMock.sandbox().get('*', {
-          body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
-        }),
-        logger: () => IO.of(undefined),
-      })()
-
-      expect(actual).toStrictEqual(E.right('Daniela Saderi'))
-    })
-
-    test.prop([fc.integer({ min: 100, max: 599 }).filter(status => status !== Status.OK)])(
-      'when the request fails',
-      async status => {
-        const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
-          clock: SystemClock,
-          fetch: fetchMock.sandbox().get('*', { status }),
-          logger: () => IO.of(undefined),
-        })()
-
-        expect(actual).toStrictEqual(E.left('unavailable'))
-      },
-    )
-
-    test('when the network fails', async () => {
-      const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
-        clock: SystemClock,
-        fetch: () => Promise.reject('network error'),
+        fetch: fetchMock.sandbox().get('*', { status }),
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
-    })
-  })
-
-  test.prop([fc.orcid().filter(orcid => orcid !== '0000-0002-6109-0367')])(
-    'when the ORCID iD is not 0000-0002-6109-0367',
-    async orcid => {
-      const actual = await _.getNameFromOrcid(orcid)({
-        clock: SystemClock,
-        fetch: () => Promise.reject('should not be called'),
-        logger: () => IO.of(undefined),
-      })()
-
-      expect(actual).toStrictEqual(E.left('not-found'))
     },
   )
+
+  test.prop([fc.orcid()])('when the network fails', async orcid => {
+    const actual = await _.getNameFromOrcid(orcid)({
+      clock: SystemClock,
+      fetch: () => Promise.reject('network error'),
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
 })

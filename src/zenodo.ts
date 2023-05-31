@@ -26,7 +26,6 @@ import {
   type DepositMetadata,
   type Record,
   type ZenodoAuthenticatedEnv,
-  type ZenodoEnv,
   createDeposition,
   getRecord,
   getRecords,
@@ -103,19 +102,11 @@ export const getPrereviewFromZenodo = flow(
   RTE.chain(recordToPrereview),
 )
 
-export const getPrereviewsForOrcidFromZenodo = (
-  orcid: Orcid,
-): RTE.ReaderTaskEither<
-  ZenodoEnv & GetPreprintTitleEnv & L.LoggerEnv,
-  'unavailable' | 'not-found',
-  RNEA.ReadonlyNonEmptyArray<RecentPrereview>
-> =>
-  match(orcid)
-    .with('0000-0002-6109-0367' as Orcid, () =>
-      pipe(
-        new URLSearchParams({
-          communities: 'prereview-reviews',
-          q: 'creators.orcid:0000-0002-6109-0367',
+export const getPrereviewsForOrcidFromZenodo = flow(
+  (orcid: Orcid) =>
+    new URLSearchParams({
+      communities: 'prereview-reviews',
+      q: `creators.orcid:${orcid}`,
           size: '100',
           sort: '-publication_date',
           subtype: 'peerreview',
@@ -127,9 +118,7 @@ export const getPrereviewsForOrcidFromZenodo = (
         RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToRecentPrereview))),
         RTE.mapLeft(() => 'unavailable' as const),
         RTE.chainOptionKW(() => 'not-found' as const)(RNEA.fromReadonlyArray),
-      ),
-    )
-    .otherwise(() => RTE.left('not-found' as const))
+)
 
 export const getPrereviewsFromZenodo = flow(
   (preprint: PreprintId) =>
