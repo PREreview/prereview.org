@@ -1,8 +1,6 @@
 # prereview.org
 
-The source code for [beta.prereview.org].
-
-🌱️ This site is under active development and will become [prereview.org].
+The source code for [prereview.org].
 
 ## Development
 
@@ -33,9 +31,8 @@ You will also have a `.env` file. This file contains environment variables contr
 
 ## Operations
 
-Once it passes CI, we deploy every commit on the `main` branch to [beta.prereview.org] and [sandbox.prereview.org], which [Fly.io] hosts.
+Once it passes CI, we deploy every commit on the `main` branch to [prereview.org] and [sandbox.prereview.org], which [Fly.io] hosts.
 
-[beta.prereview.org]: https://beta.prereview.org/
 [docker]: https://www.docker.com/
 [docker compose]: https://docs.docker.com/compose/
 [fly.io]: https://fly.io/
