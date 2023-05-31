@@ -330,12 +330,26 @@ body > footer {
 }
 
 .orcid {
+  &:any-link {
+    color: inherit;
+
+    &:not(:hover) {
+      text-decoration-line: none;
+    }
+  }
+
   @media screen {
-    padding-right: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line liberty/use-logical-spec */
+    padding-left: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line liberty/use-logical-spec */
     background-image: url('logos/orcid.svg');
-    background-position: right 0.1ch bottom 40%;
+    background-position: left 0.1ch bottom 40%;
     background-repeat: no-repeat;
     background-size: 1em;
+
+    @nest .byline & {
+      padding-right: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line liberty/use-logical-spec */
+      padding-left: 0; /* stylelint-disable-line liberty/use-logical-spec */
+      background-position: right 0.1ch bottom 40%;
+    }
 
     @media (forced-colors: active) {
       padding: 0;

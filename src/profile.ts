@@ -58,6 +58,7 @@ export const profile = (orcid: Orcid) =>
     RM.bindTo('prereviews'),
     RM.apSW('name', RM.fromReaderTaskEither(getName(orcid))),
     RM.apSW('user', maybeGetUser),
+    RM.apS('orcid', RM.of(orcid)),
     chainReaderKW(createPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareKW(sendHtml),
@@ -69,12 +70,24 @@ export const profile = (orcid: Orcid) =>
     ),
   )
 
-function createPage({ name, prereviews, user }: { name: string; prereviews: Prereviews; user?: User }) {
+function createPage({
+  orcid,
+  name,
+  prereviews,
+  user,
+}: {
+  name: string
+  orcid: Orcid
+  prereviews: Prereviews
+  user?: User
+}) {
   return page({
     title: plainText`${name}’s PREreviews`,
     content: html`
       <main id="main-content">
         <h1>${name}’s PREreviews</h1>
+
+        <a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a>
 
         <ol class="cards">
           ${prereviews.map(
