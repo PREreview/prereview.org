@@ -20,7 +20,7 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import { plainText, rawHtml } from '../src/html'
+import { html, plainText, rawHtml } from '../src/html'
 import type { NewPrereview } from '../src/write-review'
 import * as _ from '../src/zenodo'
 import * as fc from './fc'
@@ -1248,15 +1248,88 @@ describe('getPrereviewFromZenodo', () => {
 
 describe('getPrereviewsForOrcidFromZenodo', () => {
   test('when the ORCID iD is 0000-0002-6109-0367', async () => {
-    const actual = await _.getPrereviewsForOrcidFromZenodo('0000-0002-6109-0367' as Orcid)()
+    const records: Records = {
+      hits: {
+        total: 2,
+        hits: [
+          {
+            conceptdoi: '10.5072/zenodo.1061863' as Doi,
+            conceptrecid: 1061863,
+            files: [
+              {
+                links: {
+                  self: new URL('http://example.com/file'),
+                },
+                key: 'review.html',
+                type: 'html',
+                size: 58,
+              },
+            ],
+            id: 1061864,
+            links: {
+              latest: new URL('http://example.com/latest'),
+              latest_html: new URL('http://example.com/latest_html'),
+            },
+            metadata: {
+              communities: [{ id: 'prereview-reviews' }],
+              creators: [{ name: 'PREreviewer' }],
+              description: 'Description',
+              doi: '10.5281/zenodo.1061864' as Doi,
+              language: 'eng',
+              license: {
+                id: 'CC-BY-4.0',
+              },
+              publication_date: new Date('2022-07-04'),
+              related_identifiers: [
+                {
+                  scheme: 'doi',
+                  identifier: '10.1101/2022.01.13.476201' as Doi,
+                  relation: 'reviews',
+                  resource_type: 'publication-preprint',
+                },
+              ],
+              resource_type: {
+                type: 'publication',
+                subtype: 'peerreview',
+              },
+              title: 'Title',
+            },
+          },
+        ],
+      },
+    }
+
+    const actual = await _.getPrereviewsForOrcidFromZenodo('0000-0002-6109-0367' as Orcid)({
+      fetch: fetchMock.sandbox().getOnce('*', {
+        body: RecordsC.encode(records),
+        status: Status.OK,
+      }),
+      getPreprintTitle: id =>
+        match(id.value as unknown)
+          .with('10.1101/2022.01.13.476201', () =>
+            TE.right({
+              id: { type: 'biorxiv' as const, value: '10.1101/2022.01.13.476201' as Doi<'1101'> },
+              language: 'en' as const,
+              title: html`A title`,
+            }),
+          )
+          .otherwise(() => TE.left('not-found')),
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(expect.anything()))
   })
 
   test.prop([fc.orcid().filter(orcid => orcid !== '0000-0002-6109-0367')])(
-    'when the ORCID iD is 0000-0002-6109-0367',
+    'when the ORCID iD is not 0000-0002-6109-0367',
     async orcid => {
-      const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)()
+      const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)({
+        fetch: () => Promise.reject('should not be called'),
+        getPreprintTitle: () => () => Promise.reject('should not be called'),
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
     },
