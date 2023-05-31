@@ -1,6 +1,9 @@
+import { Status } from 'hyper-ts'
 import { expect, test } from './base'
 
-test('can find and view a profile', async ({ javaScriptEnabled, page }) => {
+test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) => {
+  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-6109-0367/personal-details', Status.NotFound)
+
   await page.goto('/profiles/0000-0002-6109-0367')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Daniela Saderi’s PREreviews')
