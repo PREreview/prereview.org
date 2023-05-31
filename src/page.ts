@@ -11,6 +11,7 @@ import {
   codeOfConductMatch,
   communitiesMatch,
   fundingMatch,
+  homeMatch,
   logOutMatch,
   partnersMatch,
   preprintJournalClubsMatch,
@@ -129,7 +130,7 @@ export function page({
 
               <div class="header">
                 <div class="logo">
-                  <a href="https://prereview.org/" ${current === 'home' ? html`aria-current="page"` : ''}>
+                  <a href="${format(homeMatch.formatter, {})}" ${current === 'home' ? html`aria-current="page"` : ''}>
                     <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
                   </a>
                 </div>
