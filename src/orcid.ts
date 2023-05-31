@@ -40,7 +40,7 @@ export const getNameFromOrcid = (
   match(orcid)
     .with('0000-0002-6109-0367' as Orcid, () =>
       pipe(
-        'https://pub.orcid.org/v3.0/0000-0002-6109-0367/personal-detailss',
+        'https://pub.orcid.org/v3.0/0000-0002-6109-0367/personal-details',
         F.Request('GET'),
         F.setHeader('Accept', 'application/json'),
         F.send,
