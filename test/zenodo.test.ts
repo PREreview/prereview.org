@@ -1390,6 +1390,107 @@ describe('getPrereviewsForOrcidFromZenodo', () => {
       },
     )
 
+    test.prop([fc.preprintTitle()])('revalidates if the PREreviews are stale', async preprint => {
+      const records: Records = {
+        hits: {
+          total: 1,
+          hits: [
+            {
+              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
+              id: 1061864,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'PREreviewer' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1061864' as Doi,
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-05'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
+            },
+          ],
+        },
+      }
+
+      const fetch = fetchMock
+        .sandbox()
+        .getOnce(
+          (url, { cache }) =>
+            url ===
+              `https://zenodo.org/api/records/?${new URLSearchParams({
+                communities: 'prereview-reviews',
+                q: 'creators.orcid:0000-0002-6109-0367',
+                size: '100',
+                sort: '-publication_date',
+                subtype: 'peerreview',
+              }).toString()}` && cache === 'force-cache',
+          {
+            body: RecordsC.encode(records),
+            headers: { 'X-Local-Cache-Status': 'stale' },
+          },
+        )
+        .getOnce(
+          (url, { cache }) =>
+            url ===
+              `https://zenodo.org/api/records/?${new URLSearchParams({
+                communities: 'prereview-reviews',
+                q: 'creators.orcid:0000-0002-6109-0367',
+                size: '100',
+                sort: '-publication_date',
+                subtype: 'peerreview',
+              }).toString()}` && cache === 'no-cache',
+          { throws: new Error('Network error') },
+        )
+
+      const actual = await _.getPrereviewsForOrcidFromZenodo('0000-0002-6109-0367' as Orcid)({
+        clock: SystemClock,
+        fetch,
+        getPreprintTitle: () => TE.right(preprint),
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          {
+            id: 1061864,
+            reviewers: ['PREreviewer'],
+            published: new Temporal.PlainDate(2022, 7, 5),
+            preprint,
+          },
+        ]),
+      )
+      expect(fetch.done()).toBeTruthy()
+    })
+
     test.prop([fc.constantFrom('not-found' as const, 'unavailable' as const)])(
       'when a preprint cannot be loaded',
       async error => {
