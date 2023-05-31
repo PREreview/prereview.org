@@ -107,17 +107,17 @@ export const getPrereviewsForOrcidFromZenodo = flow(
     new URLSearchParams({
       communities: 'prereview-reviews',
       q: `creators.orcid:${orcid}`,
-          size: '100',
-          sort: '-publication_date',
-          subtype: 'peerreview',
-        }),
-        getRecords,
-        RTE.local(revalidateIfStale()),
-        RTE.local(useStaleCache()),
-        RTE.local(timeoutRequest(2000)),
-        RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToRecentPrereview))),
-        RTE.mapLeft(() => 'unavailable' as const),
-        RTE.chainOptionKW(() => 'not-found' as const)(RNEA.fromReadonlyArray),
+      size: '100',
+      sort: '-publication_date',
+      subtype: 'peerreview',
+    }),
+  getRecords,
+  RTE.local(revalidateIfStale()),
+  RTE.local(useStaleCache()),
+  RTE.local(timeoutRequest(2000)),
+  RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToRecentPrereview))),
+  RTE.mapLeft(() => 'unavailable' as const),
+  RTE.chainOptionKW(() => 'not-found' as const)(RNEA.fromReadonlyArray),
 )
 
 export const getPrereviewsFromZenodo = flow(
