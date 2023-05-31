@@ -1637,7 +1637,7 @@ describe('getPrereviewsForOrcidFromZenodo', () => {
         logger: () => IO.of(undefined),
       })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(actual).toStrictEqual(E.left('not-found'))
     })
 
     test.prop([fc.integer({ min: 400, max: 599 })])('when the PREreviews cannot be loaded', async status => {
