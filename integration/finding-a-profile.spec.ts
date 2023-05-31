@@ -1,8 +1,9 @@
-import { Status } from 'hyper-ts'
 import { expect, test } from './base'
 
 test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) => {
-  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-6109-0367/personal-details', Status.OK)
+  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-6109-0367/personal-details', {
+    body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
+  })
 
   await page.goto('/profiles/0000-0002-6109-0367')
 

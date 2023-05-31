@@ -11,7 +11,9 @@ describe('getNameFromOrcid', () => {
   describe('when the ORCID iD is 0000-0002-6109-0367', () => {
     test('when the request succeeds', async () => {
       const actual = await _.getNameFromOrcid('0000-0002-6109-0367' as Orcid)({
-        fetch: fetchMock.sandbox().get('*', 200),
+        fetch: fetchMock.sandbox().get('*', {
+          body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
+        }),
       })()
 
       expect(actual).toStrictEqual(E.right('Daniela Saderi'))
