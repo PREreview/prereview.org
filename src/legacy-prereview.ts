@@ -17,6 +17,7 @@ import { URL } from 'url'
 import { type Uuid, isUuid } from 'uuid-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { type PreprintId, parsePreprintDoi } from './preprint-id'
+import { PseudonymC, isPseudonym } from './pseudonym'
 import type { NewPrereview } from './write-review'
 
 export interface LegacyPrereviewApiEnv {
@@ -153,7 +154,7 @@ const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: stri
     RTE.chainW(F.send),
     RTE.local(timeoutRequest(2000)),
     RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
-    RTE.chainTaskEitherKW(F.decode(D.string)),
+    RTE.chainTaskEitherKW(F.decode(PseudonymC)),
     RTE.mapLeft(() => 'unavailable' as const),
   )
 
@@ -167,7 +168,7 @@ export const getPseudonymFromLegacyPrereview = (user: { orcid: Orcid; name: stri
     RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
     RTE.chainTaskEitherKW(F.decode(LegacyPrereviewUserD)),
     RTE.chainOptionK(() => 'unknown-pseudonym' as unknown)(
-      flow(get('data.personas'), RA.findFirst(get('isAnonymous')), O.map(get('name'))),
+      flow(get('data.personas'), RA.findFirst(get('isAnonymous')), O.map(get('name')), O.filter(isPseudonym)),
     ),
     RTE.orElse(error =>
       match(error)

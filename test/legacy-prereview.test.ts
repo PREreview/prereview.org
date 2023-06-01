@@ -123,7 +123,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
     fc.string(),
     fc.origin(),
     fc.boolean(),
-    fc.tuple(fc.string(), fc.string()).chain(([pseudonym, realName]) =>
+    fc.tuple(fc.pseudonym(), fc.string()).chain(([pseudonym, realName]) =>
       fc.tuple(
         fc.constant(pseudonym),
         fc.oneof(
@@ -176,7 +176,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
   })
 
   describe('when the response has a 404 status code', () => {
-    test.prop([fc.orcid(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.string()])(
+    test.prop([fc.orcid(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.pseudonym()])(
       'when the response has a 404 status code',
       async (orcid, name, app, key, url, update, pseudonym) => {
         const fetch = fetchMock

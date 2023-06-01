@@ -19,12 +19,13 @@ import { match } from 'ts-pattern'
 import { timeoutRequest } from './fetch'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
+import type { Pseudonym } from './pseudonym'
 import { ifHasSameOrigin, toUrl } from './public-url'
 import { homeMatch } from './routes'
 import { newSessionForUser } from './user'
 
 export interface GetPseudonymEnv {
-  getPseudonym: (user: OrcidUser) => TE.TaskEither<'unavailable', string>
+  getPseudonym: (user: OrcidUser) => TE.TaskEither<'unavailable', Pseudonym>
 }
 
 export const logIn = pipe(
@@ -59,7 +60,7 @@ const OrcidUserD = D.struct({
 
 type OrcidUser = D.TypeOf<typeof OrcidUserD>
 
-const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'unavailable', string> =>
+const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'unavailable', Pseudonym> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPseudonym }: GetPseudonymEnv) => getPseudonym(user)))
 
 export const authenticate = flow(

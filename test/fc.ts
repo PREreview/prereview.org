@@ -1,5 +1,7 @@
 import { fc } from '@fast-check/jest'
 import { Temporal } from '@js-temporal/polyfill'
+import { animals, colors } from 'anonymus'
+import { capitalCase } from 'capital-case'
 import { mod11_2 } from 'cdigit'
 import { type Doi, isDoi } from 'doi-ts'
 import type { Request, Response } from 'express'
@@ -53,6 +55,7 @@ import type {
   ZenodoOrAfricarxivPreprintId,
   ZenodoPreprintId,
 } from '../src/preprint-id'
+import type { Pseudonym } from '../src/pseudonym'
 import { type NonEmptyString, isNonEmptyString } from '../src/string'
 import type { User } from '../src/user'
 
@@ -501,6 +504,11 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcid)
 
+export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
+  fc
+    .tuple(fc.constantFrom(...colors), fc.constantFrom(...animals))
+    .map(parts => capitalCase(parts.join(' ')) as Pseudonym)
+
 export const year = (): fc.Arbitrary<number> => fc.integer({ min: -271820, max: 275759 })
 
 export const plainYearMonth = (): fc.Arbitrary<Temporal.PlainYearMonth> =>
@@ -598,7 +606,7 @@ export const user = (): fc.Arbitrary<User> =>
   fc.record({
     name: fc.string(),
     orcid: orcid(),
-    pseudonym: fc.string(),
+    pseudonym: pseudonym(),
   })
 
 export const preprint = (): fc.Arbitrary<Preprint> =>
