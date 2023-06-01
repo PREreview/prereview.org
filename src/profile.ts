@@ -16,6 +16,7 @@ import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
+import type { Pseudonym } from './pseudonym'
 import { reviewMatch } from './routes'
 import { renderDate } from './time'
 import { type User, maybeGetUser } from './user'
@@ -34,14 +35,14 @@ export type Prereviews = ReadonlyArray<{
 }>
 
 export interface GetPrereviewsEnv {
-  getPrereviews: (orcid: Orcid) => TE.TaskEither<'unavailable', Prereviews>
+  getPrereviews: (profile: Orcid | Pseudonym) => TE.TaskEither<'unavailable', Prereviews>
 }
 
 export interface GetNameEnv {
   getName: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', string>
 }
 
-const getPrereviews = (orcid: Orcid) =>
+const getPrereviews = (orcid: Orcid | Pseudonym) =>
   pipe(
     RTE.ask<GetPrereviewsEnv>(),
     RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews(orcid)),
@@ -71,6 +72,22 @@ export const profile = (orcid: Orcid) =>
     ),
   )
 
+export const profilePseudonym = (pseudonym: Pseudonym) =>
+  pipe(
+    RM.fromReaderTaskEither(getPrereviews(pseudonym)),
+    RM.bindTo('prereviews'),
+    RM.apSW('name', RM.of(pseudonym)),
+    RM.apSW('user', maybeGetUser),
+    chainReaderKW(createPage),
+    RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainMiddlewareKW(sendHtml),
+    RM.orElseW(error =>
+      match(error)
+        .with('unavailable', () => serviceUnavailable)
+        .exhaustive(),
+    ),
+  )
+
 function createPage({
   orcid,
   name,
@@ -78,7 +95,7 @@ function createPage({
   user,
 }: {
   name: string
-  orcid: Orcid
+  orcid?: Orcid
   prereviews: Prereviews
   user?: User
 }) {
@@ -88,8 +105,7 @@ function createPage({
       <main id="main-content">
         <h1>${name}’s PREreviews</h1>
 
-        <a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a>
-
+        ${orcid ? html`<a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a> ` : ''}
         ${pipe(
           prereviews,
           RA.match(

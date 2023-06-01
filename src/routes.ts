@@ -1,12 +1,14 @@
+import { capitalCase } from 'capital-case'
 import { isDoi } from 'doi-ts'
 import * as P from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
-import { pipe, tuple } from 'fp-ts/function'
+import { identity, pipe, tuple } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './preprint-id'
+import { PseudonymC } from './pseudonym'
 
 const IntegerFromStringC = C.make(
   pipe(
@@ -22,6 +24,18 @@ const IntegerFromStringC = C.make(
 )
 
 const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
+
+const SlugC = C.make(
+  pipe(
+    D.string,
+    D.parse(s => (s.toLowerCase() === s ? D.success(s.replaceAll('-', ' ')) : D.failure(s, 'Slug'))),
+  ),
+  {
+    encode: string => string.toLowerCase().replaceAll(' ', '-'),
+  },
+)
+
+const PseudonymSlugC = pipe(SlugC, C.imap(capitalCase, identity), C.compose(PseudonymC))
 
 const PreprintDoiC = C.make(
   pipe(
@@ -106,6 +120,8 @@ export const orcidErrorMatch = pipe(
 )
 
 export const profileMatch = pipe(P.lit('profiles'), P.then(type('orcid', OrcidC)), P.then(P.end))
+
+export const profilePseudonymMatch = pipe(P.lit('profiles'), P.then(type('pseudonym', PseudonymSlugC)), P.then(P.end))
 
 export const preprintReviewsMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))
 

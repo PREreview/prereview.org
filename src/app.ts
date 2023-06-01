@@ -54,7 +54,7 @@ import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintJournalClubs } from './preprint-journal-clubs'
 import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
-import { profile } from './profile'
+import { profile, profilePseudonym } from './profile'
 import type { PublicUrlEnv } from './public-url'
 import { review } from './review'
 import { reviewAPreprint } from './review-a-preprint'
@@ -75,6 +75,7 @@ import {
   preprintReviewsMatch,
   privacyPolicyMatch,
   profileMatch,
+  profilePseudonymMatch,
   reviewAPreprintMatch,
   reviewMatch,
   reviewsMatch,
@@ -374,6 +375,27 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getName: flip(getNameFromOrcid)(env),
+          getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
+            ...env,
+            getPreprintTitle: flow(
+              flip(getPreprintTitle)(env),
+              TE.mapLeft(error =>
+                match(error)
+                  .with('not-a-preprint', () => 'not-found' as const)
+                  .otherwise(identity),
+              ),
+            ),
+          }),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      profilePseudonymMatch.parser,
+      P.map(({ pseudonym }) => profilePseudonym(pseudonym)),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
             ...env,
             getPreprintTitle: flow(
