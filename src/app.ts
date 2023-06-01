@@ -111,7 +111,7 @@ import {
 import {
   createRecordOnZenodo,
   getPrereviewFromZenodo,
-  getPrereviewsForOrcidFromZenodo,
+  getPrereviewsForProfileFromZenodo,
   getPrereviewsFromZenodo,
   getRecentPrereviewsFromZenodo,
 } from './zenodo'
@@ -374,7 +374,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getName: flip(getNameFromOrcid)(env),
-          getPrereviews: flip(getPrereviewsForOrcidFromZenodo)({
+          getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
             ...env,
             getPreprintTitle: flow(
               flip(getPreprintTitle)(env),
