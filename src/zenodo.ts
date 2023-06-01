@@ -117,7 +117,6 @@ export const getPrereviewsForOrcidFromZenodo = flow(
   RTE.local(timeoutRequest(2000)),
   RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToRecentPrereview))),
   RTE.mapLeft(() => 'unavailable' as const),
-  RTE.chainOptionKW(() => 'not-found' as const)(RNEA.fromReadonlyArray),
 )
 
 export const getPrereviewsFromZenodo = flow(

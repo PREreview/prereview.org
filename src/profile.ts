@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
@@ -21,7 +22,7 @@ import { type User, maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
-export type Prereviews = RNEA.ReadonlyNonEmptyArray<{
+export type Prereviews = ReadonlyArray<{
   readonly id: number
   readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
   readonly published: PlainDate
@@ -33,7 +34,7 @@ export type Prereviews = RNEA.ReadonlyNonEmptyArray<{
 }>
 
 export interface GetPrereviewsEnv {
-  getPrereviews: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', Prereviews>
+  getPrereviews: (orcid: Orcid) => TE.TaskEither<'unavailable', Prereviews>
 }
 
 export interface GetNameEnv {
@@ -89,51 +90,65 @@ function createPage({
 
         <a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a>
 
-        <ol class="cards">
-          ${prereviews.map(
-            prereview => html`
-              <li>
-                <article>
-                  <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                    ${formatList('en')(prereview.reviewers)} reviewed
-                    <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
-                      >${prereview.preprint.title}</cite
-                    >
-                  </a>
+        ${pipe(
+          prereviews,
+          RA.match(
+            () => html`
+              <div class="inset">
+                <p>${name} hasn’t published a PREreview yet.</p>
 
-                  <dl>
-                    <dt>Review published</dt>
-                    <dd>${renderDate(prereview.published)}</dd>
-                    <dt>Preprint server</dt>
-                    <dd>
-                      ${match(prereview.preprint.id.type)
-                        .with('africarxiv', () => 'AfricArXiv Preprints')
-                        .with('arxiv', () => 'arXiv')
-                        .with('biorxiv', () => 'bioRxiv')
-                        .with('chemrxiv', () => 'ChemRxiv')
-                        .with('eartharxiv', () => 'EarthArXiv')
-                        .with('ecoevorxiv', () => 'EcoEvoRxiv')
-                        .with('edarxiv', () => 'EdArXiv')
-                        .with('engrxiv', () => 'engrXiv')
-                        .with('medrxiv', () => 'medRxiv')
-                        .with('metaarxiv', () => 'MetaArXiv')
-                        .with('osf', () => 'OSF Preprints')
-                        .with('philsci', () => 'PhilSci-Archive')
-                        .with('preprints.org', () => 'Preprints.org')
-                        .with('psyarxiv', () => 'PsyArXiv')
-                        .with('research-square', () => 'Research Square')
-                        .with('scielo', () => 'SciELO Preprints')
-                        .with('science-open', () => 'ScienceOpen Preprints')
-                        .with('socarxiv', () => 'SocArXiv')
-                        .with('zenodo', () => 'Zenodo')
-                        .exhaustive()}
-                    </dd>
-                  </dl>
-                </article>
-              </li>
+                <p>When they do, it’ll appear here.</p>
+              </div>
             `,
-          )}
-        </ol>
+            prereviews => html`
+              <ol class="cards">
+                ${prereviews.map(
+                  prereview => html`
+                    <li>
+                      <article>
+                        <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                          ${formatList('en')(prereview.reviewers)} reviewed
+                          <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
+                            >${prereview.preprint.title}</cite
+                          >
+                        </a>
+
+                        <dl>
+                          <dt>Review published</dt>
+                          <dd>${renderDate(prereview.published)}</dd>
+                          <dt>Preprint server</dt>
+                          <dd>
+                            ${match(prereview.preprint.id.type)
+                              .with('africarxiv', () => 'AfricArXiv Preprints')
+                              .with('arxiv', () => 'arXiv')
+                              .with('biorxiv', () => 'bioRxiv')
+                              .with('chemrxiv', () => 'ChemRxiv')
+                              .with('eartharxiv', () => 'EarthArXiv')
+                              .with('ecoevorxiv', () => 'EcoEvoRxiv')
+                              .with('edarxiv', () => 'EdArXiv')
+                              .with('engrxiv', () => 'engrXiv')
+                              .with('medrxiv', () => 'medRxiv')
+                              .with('metaarxiv', () => 'MetaArXiv')
+                              .with('osf', () => 'OSF Preprints')
+                              .with('philsci', () => 'PhilSci-Archive')
+                              .with('preprints.org', () => 'Preprints.org')
+                              .with('psyarxiv', () => 'PsyArXiv')
+                              .with('research-square', () => 'Research Square')
+                              .with('scielo', () => 'SciELO Preprints')
+                              .with('science-open', () => 'ScienceOpen Preprints')
+                              .with('socarxiv', () => 'SocArXiv')
+                              .with('zenodo', () => 'Zenodo')
+                              .exhaustive()}
+                          </dd>
+                        </dl>
+                      </article>
+                    </li>
+                  `,
+                )}
+              </ol>
+            `,
+          ),
+        )}
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],

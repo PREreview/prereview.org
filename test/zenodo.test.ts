@@ -1612,32 +1612,6 @@ describe('getPrereviewsForOrcidFromZenodo', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the list is empty', async orcid => {
-    const actual = await _.getPrereviewsForOrcidFromZenodo(orcid)({
-      clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'https://zenodo.org/api/records/',
-          query: {
-            communities: 'prereview-reviews',
-            q: `creators.orcid:${orcid}`,
-            size: '100',
-            sort: '-publication_date',
-            subtype: 'peerreview',
-          },
-        },
-        {
-          body: RecordsC.encode({ hits: { total: 0, hits: [] } }),
-          status: Status.OK,
-        },
-      ),
-      getPreprintTitle: () => () => Promise.reject('should not be called'),
-      logger: () => IO.of(undefined),
-    })()
-
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
-
   test.prop([
     fc.orcid(),
     fc.integer({

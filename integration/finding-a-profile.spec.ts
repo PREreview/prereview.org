@@ -125,3 +125,28 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
   }
   await expect(page).toHaveScreenshot()
 })
+
+test('the list might be empty', async ({ fetch, page }) => {
+  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-6109-0367/personal-details', {
+    body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
+  })
+  fetch.get(
+    {
+      name: 'profile-prereviews',
+      url: 'http://zenodo.test/api/records/',
+      query: {
+        communities: 'prereview-reviews',
+        q: 'creators.orcid:0000-0002-6109-0367',
+        size: 100,
+        sort: '-publication_date',
+        subtype: 'peerreview',
+      },
+    },
+    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  )
+
+  await page.goto('/profiles/0000-0002-6109-0367')
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Daniela Saderi’s PREreviews')
+  await expect(page).toHaveScreenshot()
+})
