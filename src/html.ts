@@ -36,6 +36,9 @@ export function sanitizeHtml(html: string, allowButtons = false): Html {
       'h1',
       'h2',
       'h3',
+      'h4',
+      'h5',
+      'h6',
       'li',
       'ol',
       'p',
@@ -119,7 +122,8 @@ export function sanitizeHtml(html: string, allowButtons = false): Html {
       em: 'i',
       strong: 'b',
     },
-    exclusiveFilter: frame => ['h1', 'h2', 'h3', 'li', 'ol', 'p', 'ul'].includes(frame.tag) && frame.text.trim() === '',
+    exclusiveFilter: frame =>
+      ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'ol', 'p', 'ul'].includes(frame.tag) && frame.text.trim() === '',
     nonTextTags: ['style', 'script', 'textarea', 'option', 'annotation-xml'],
   })
 
