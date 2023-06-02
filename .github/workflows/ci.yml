@@ -160,21 +160,23 @@ jobs:
       - name: 'Checkout code'
         uses: nschloe/action-cached-lfs-checkout@v1.2.1
 
-      - name: 'Set up Docker Build'
-        uses: docker/setup-buildx-action@v2.5.0
-
-      - name: 'Build image'
-        id: build
-        uses: docker/build-push-action@v4.0.0
+      - name: 'Set up Node.js'
+        uses: actions/setup-node@v3.6.0
         with:
-          load: true
-          target: test-integration
-          cache-from: type=gha,ignore-error=true
-          cache-to: type=gha,mode=max,ignore-error=true
+          node-version-file: package.json
+          cache: ${{ !env.ACT && 'npm' || '' }}
+
+      - name: 'Install dependencies'
+        run: npm ci
+
+      - name: 'Build assets'
+        run: npm run build:assets
 
       - name: 'Run Playwright'
         id: 'playwright'
-        run: npm run test:integration -- ${{ steps.build.outputs.imageid }} --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
+        uses: docker://mcr.microsoft.com/playwright:v1.34.3-jammy
+        with:
+          args: env HOME=/root npx playwright test --forbid-only --shard=${{ matrix.shard }}/${{ strategy.job-total }} --retries 4
 
       - name: 'Store results'
         if: failure() && steps.playwright.outcome == 'failure'
