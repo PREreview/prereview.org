@@ -1,11 +1,68 @@
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
-import { RecordsC } from 'zenodo-ts'
+import { URL } from 'url'
+import { RecordC, RecordsC } from 'zenodo-ts'
 import { expect, test } from './base'
 
 test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) => {
-  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-6109-0367/personal-details', {
-    body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
+  fetch
+    .getOnce('http://zenodo.test/api/records/7747129', {
+      body: RecordC.encode({
+        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptrecid: 1061863,
+        files: [
+          {
+            links: {
+              self: new URL('http://example.com/file'),
+            },
+            key: 'review.html',
+            type: 'html',
+            size: 58,
+          },
+        ],
+        id: 1061864,
+        links: {
+          latest: new URL('http://example.com/latest'),
+          latest_html: new URL('http://example.com/latest_html'),
+        },
+        metadata: {
+          communities: [{ id: 'prereview-reviews' }],
+          creators: [{ name: 'CJ San Felipe', orcid: '0000-0002-2695-5951' as Orcid }],
+          description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+          doi: '10.5072/zenodo.1061864' as Doi,
+          license: {
+            id: 'CC-BY-4.0',
+          },
+          publication_date: new Date('2022-07-05'),
+          related_identifiers: [
+            {
+              identifier: '10.1101/2022.01.13.476201',
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
+              scheme: 'doi',
+            },
+            {
+              identifier: '10.5072/zenodo.1061863',
+              relation: 'isVersionOf',
+              scheme: 'doi',
+            },
+          ],
+          resource_type: {
+            type: 'publication',
+            subtype: 'peerreview',
+          },
+          title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+        },
+      }),
+    })
+    .getOnce('http://example.com/file', {
+      body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+    })
+
+  await page.goto('/reviews/7747129')
+
+  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-2695-5951/personal-details', {
+    body: { name: { 'given-names': { value: 'CJ' }, 'family-name': { value: 'San Felipe' } } },
   })
   fetch.get(
     {
@@ -13,7 +70,7 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
       url: 'http://zenodo.test/api/records/',
       query: {
         communities: 'prereview-reviews',
-        q: 'creators.orcid:0000-0002-6109-0367',
+        q: 'creators.orcid:0000-0002-2695-5951',
         size: 100,
         sort: '-publication_date',
         subtype: 'peerreview',
@@ -108,9 +165,10 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
     },
   )
 
-  await page.goto('/profiles/0000-0002-6109-0367')
+  await page.getByRole('link', { name: 'CJ San Felipe' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Daniela Saderi’s PREreviews')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('CJ San Felipe’s PREreviews')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
