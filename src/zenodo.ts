@@ -19,8 +19,6 @@ import * as D from 'io-ts/Decoder'
 import iso6391, { type LanguageCode } from 'iso-639-1'
 import iso6393To1 from 'iso-639-3/to-1.json'
 import * as L from 'logger-fp-ts'
-import type { Orcid } from 'orcid-id-ts'
-import { isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
@@ -38,7 +36,7 @@ import type { RecentPrereview } from './home'
 import { plainText, sanitizeHtml } from './html'
 import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
 import { type IndeterminatePreprintId, PreprintDoiD, type PreprintId, fromPreprintDoi, fromUrl } from './preprint-id'
-import { type Pseudonym, isPseudonym } from './pseudonym'
+import type { ProfileId } from './profile-id'
 import type { Prereview } from './review'
 import type { NewPrereview } from './write-review'
 
@@ -105,12 +103,12 @@ export const getPrereviewFromZenodo = flow(
 )
 
 export const getPrereviewsForProfileFromZenodo = flow(
-  (profile: Orcid | Pseudonym) =>
+  (profile: ProfileId) =>
     new URLSearchParams({
       communities: 'prereview-reviews',
       q: match(profile)
-        .when(isOrcid, orcid => `creators.orcid:${orcid}`)
-        .when(isPseudonym, pseudonym => `creators.name:"${pseudonym}"`)
+        .with({ type: 'orcid', value: P.select() }, orcid => `creators.orcid:${orcid}`)
+        .with({ type: 'pseudonym', value: P.select() }, pseudonym => `creators.name:"${pseudonym}"`)
         .exhaustive(),
       size: '100',
       sort: '-publication_date',

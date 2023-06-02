@@ -55,6 +55,7 @@ import type {
   ZenodoOrAfricarxivPreprintId,
   ZenodoPreprintId,
 } from '../src/preprint-id'
+import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/profile-id'
 import type { Pseudonym } from '../src/pseudonym'
 import { type NonEmptyString, isNonEmptyString } from '../src/string'
 import type { User } from '../src/user'
@@ -508,6 +509,20 @@ export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
   fc
     .tuple(fc.constantFrom(...colors), fc.constantFrom(...animals))
     .map(parts => capitalCase(parts.join(' ')) as Pseudonym)
+
+export const profileId = (): fc.Arbitrary<ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())
+
+export const orcidProfileId = (): fc.Arbitrary<OrcidProfileId> =>
+  fc.record({
+    type: fc.constant('orcid'),
+    value: orcid(),
+  })
+
+export const pseudonymProfileId = (): fc.Arbitrary<PseudonymProfileId> =>
+  fc.record({
+    type: fc.constant('pseudonym'),
+    value: pseudonym(),
+  })
 
 export const year = (): fc.Arbitrary<number> => fc.integer({ min: -271820, max: 275759 })
 

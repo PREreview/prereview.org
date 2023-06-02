@@ -44,7 +44,7 @@ describe('profile', () => {
       ]),
     )
     expect(getName).toHaveBeenCalledWith(orcid)
-    expect(getPrereviews).toHaveBeenCalledWith(orcid)
+    expect(getPrereviews).toHaveBeenCalledWith({ type: 'orcid', value: orcid })
   })
 
   test.prop([
@@ -168,7 +168,7 @@ describe('profilePseudonym', () => {
         { type: 'setBody', body: expect.anything() },
       ]),
     )
-    expect(getPrereviews).toHaveBeenCalledWith(pseudonym)
+    expect(getPrereviews).toHaveBeenCalledWith({ type: 'pseudonym', value: pseudonym })
   })
 
   test.prop([

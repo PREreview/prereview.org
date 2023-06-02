@@ -16,6 +16,7 @@ import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
+import type { ProfileId } from './profile-id'
 import type { Pseudonym } from './pseudonym'
 import { reviewMatch } from './routes'
 import { renderDate } from './time'
@@ -35,17 +36,17 @@ export type Prereviews = ReadonlyArray<{
 }>
 
 export interface GetPrereviewsEnv {
-  getPrereviews: (profile: Orcid | Pseudonym) => TE.TaskEither<'unavailable', Prereviews>
+  getPrereviews: (profile: ProfileId) => TE.TaskEither<'unavailable', Prereviews>
 }
 
 export interface GetNameEnv {
   getName: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', string>
 }
 
-const getPrereviews = (orcid: Orcid | Pseudonym) =>
+const getPrereviews = (profile: ProfileId) =>
   pipe(
     RTE.ask<GetPrereviewsEnv>(),
-    RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews(orcid)),
+    RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews(profile)),
   )
 
 const getName = (orcid: Orcid) =>
@@ -56,7 +57,7 @@ const getName = (orcid: Orcid) =>
 
 export const profile = (orcid: Orcid) =>
   pipe(
-    RM.fromReaderTaskEither(getPrereviews(orcid)),
+    RM.fromReaderTaskEither(getPrereviews({ type: 'orcid', value: orcid })),
     RM.bindTo('prereviews'),
     RM.apSW('name', RM.fromReaderTaskEither(getName(orcid))),
     RM.apSW('user', maybeGetUser),
@@ -74,7 +75,7 @@ export const profile = (orcid: Orcid) =>
 
 export const profilePseudonym = (pseudonym: Pseudonym) =>
   pipe(
-    RM.fromReaderTaskEither(getPrereviews(pseudonym)),
+    RM.fromReaderTaskEither(getPrereviews({ type: 'pseudonym', value: pseudonym })),
     RM.bindTo('prereviews'),
     RM.apSW('name', RM.of(pseudonym)),
     RM.apSW('user', maybeGetUser),
