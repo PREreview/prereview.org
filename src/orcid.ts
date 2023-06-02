@@ -34,7 +34,7 @@ const PersonalDetailsD = pipe(
   ),
 )
 
-export const getNameFromOrcid = flow(
+const getPersonalDetails = flow(
   (orcid: Orcid) => `https://pub.orcid.org/v3.0/${orcid}/personal-details`,
   F.Request('GET'),
   F.setHeader('Accept', 'application/json'),
@@ -42,6 +42,10 @@ export const getNameFromOrcid = flow(
   RTE.mapLeft(() => 'network-error' as const),
   RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
   RTE.chainTaskEitherKW(flow(F.decode(PersonalDetailsD), TE.mapLeft(D.draw))),
+)
+
+export const getNameFromOrcid = flow(
+  getPersonalDetails,
   RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get name from ORCID')))),
   RTE.bimap(
     () => 'unavailable' as const,
