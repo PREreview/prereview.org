@@ -2,6 +2,7 @@ import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
@@ -42,8 +43,7 @@ export const getNameFromOrcid = flow(
   ),
   RTE.mapLeft(() => 'network-error' as const),
   RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
-  RTE.chainTaskEitherKW(F.getText(() => 'no-text' as const)),
-  RTE.chainEitherKW(flow(PersonalDetailsD.decode, E.mapLeft(D.draw))),
+  RTE.chainTaskEitherKW(flow(F.decode(PersonalDetailsD), TE.mapLeft(D.draw))),
   RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get name from ORCID')))),
   RTE.bimap(
     () => 'unavailable' as const,
