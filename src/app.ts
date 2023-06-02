@@ -75,7 +75,6 @@ import {
   preprintReviewsMatch,
   privacyPolicyMatch,
   profileMatch,
-  profilePseudonymMatch,
   reviewAPreprintMatch,
   reviewMatch,
   reviewsMatch,
@@ -370,32 +369,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       profileMatch.parser,
-      P.map(({ orcid }) => profile(orcid)),
+      P.map(({ profile: profileId }) =>
+        match(profileId)
+          .with({ type: 'orcid', value: p.select() }, profile)
+          .with({ type: 'pseudonym', value: p.select() }, profilePseudonym)
+          .exhaustive(),
+      ),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
           getName: flip(getNameFromOrcid)(env),
-          getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
-            ...env,
-            getPreprintTitle: flow(
-              flip(getPreprintTitle)(env),
-              TE.mapLeft(error =>
-                match(error)
-                  .with('not-a-preprint', () => 'not-found' as const)
-                  .otherwise(identity),
-              ),
-            ),
-          }),
-          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
-        })),
-      ),
-    ),
-    pipe(
-      profilePseudonymMatch.parser,
-      P.map(({ pseudonym }) => profilePseudonym(pseudonym)),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
             ...env,
             getPreprintTitle: flow(
