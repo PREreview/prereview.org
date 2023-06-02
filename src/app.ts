@@ -43,7 +43,7 @@ import {
   isLegacyCompatiblePreprint,
   isLegacyCompatiblePrereview,
 } from './legacy-prereview'
-import { getPreprintIdFromLegacyPreviewUuid } from './legacy-prereview'
+import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview'
 import { legacyRoutes } from './legacy-routes'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { getNameFromOrcid } from './orcid'
@@ -502,6 +502,7 @@ const appMiddleware = pipe(
       R.local((env: AppEnv) => ({
         ...env,
         getPreprintIdFromUuid: flip(getPreprintIdFromLegacyPreviewUuid)(env),
+        getProfileIdFromUuid: flip(getProfileIdFromLegacyPreviewUuid)(env),
         getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
       })),
     ),

@@ -21,26 +21,37 @@ import { html, plainText, sendHtml } from './html'
 import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { ArxivPreprintId, IndeterminatePreprintId } from './preprint-id'
+import type { ProfileId } from './profile-id'
 import {
   aboutUsMatch,
   codeOfConductMatch,
   logInMatch,
   logOutMatch,
   preprintReviewsMatch,
+  profileMatch,
   reviewAPreprintMatch,
   reviewsMatch,
 } from './routes'
 import { type GetUserEnv, type User, maybeGetUser } from './user'
 
-type LegacyEnv = FathomEnv & GetPreprintIdFromUuidEnv & GetUserEnv & PhaseEnv
+type LegacyEnv = FathomEnv & GetPreprintIdFromUuidEnv & GetProfileIdFromUuidEnv & GetUserEnv & PhaseEnv
 
 export interface GetPreprintIdFromUuidEnv {
   getPreprintIdFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', IndeterminatePreprintId>
 }
 
+export interface GetProfileIdFromUuidEnv {
+  getProfileIdFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', ProfileId>
+}
+
 const getPreprintIdFromUuid = (uuid: Uuid) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ getPreprintIdFromUuid }: GetPreprintIdFromUuidEnv) => getPreprintIdFromUuid(uuid)),
+  )
+
+const getProfileIdFromUuid = (uuid: Uuid) =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ getProfileIdFromUuid }: GetProfileIdFromUuidEnv) => getProfileIdFromUuid(uuid)),
   )
 
 const UuidD = D.fromRefinement(isUuid, 'UUID')
@@ -96,7 +107,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('about'), P.then(type('personaUuid', UuidC)), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
+      P.map(({ personaUuid }) => redirectToProfile(personaUuid)),
     ),
     pipe(
       pipe(P.lit('admin'), P.then(P.end)).parser,
@@ -257,6 +268,17 @@ const showRemovedForNowMessage = pipe(
 const redirectToPreprintReviews = flow(
   RM.fromReaderTaskEitherK(getPreprintIdFromUuid),
   RM.ichainMiddlewareK(id => movedPermanently(format(preprintReviewsMatch.formatter, { id }))),
+  RM.orElseW(error =>
+    match(error)
+      .with('not-found', () => notFound)
+      .with('unavailable', () => serviceUnavailable)
+      .exhaustive(),
+  ),
+)
+
+const redirectToProfile = flow(
+  RM.fromReaderTaskEitherK(getProfileIdFromUuid),
+  RM.ichainMiddlewareK(profile => movedPermanently(format(profileMatch.formatter, { profile }))),
   RM.orElseW(error =>
     match(error)
       .with('not-found', () => notFound)

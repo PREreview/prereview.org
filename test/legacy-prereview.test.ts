@@ -115,6 +115,111 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
   )
 })
 
+describe('getProfileIdFromLegacyPreviewUuid', () => {
+  test.prop([
+    fc.uuid(),
+    fc.string(),
+    fc.string(),
+    fc.origin(),
+    fc.boolean(),
+    fc.oneof(
+      fc.orcidProfileId().map(profile => [
+        {
+          isAnonymous: false,
+          orcid: profile.value,
+        },
+        profile,
+      ]),
+      fc.pseudonymProfileId().map(profile => [
+        {
+          isAnonymous: true,
+          name: profile.value,
+        },
+        profile,
+      ]),
+    ),
+  ])('when the response can be decoded', async (uuid, app, key, url, update, [data, profile]) => {
+    const fetch = fetchMock.sandbox().getOnce(
+      {
+        url: `${url}api/v2/personas/${encodeURIComponent(uuid)}`,
+        headers: { 'X-Api-App': app, 'X-Api-Key': key },
+      },
+      {
+        body: { data: [data] },
+      },
+    )
+
+    const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
+      fetch,
+      legacyPrereviewApi: { app, key, url, update },
+    })()
+
+    expect(actual).toStrictEqual(E.right(profile))
+  })
+
+  test.prop([
+    fc.uuid(),
+    fc.string(),
+    fc.string(),
+    fc.origin(),
+    fc.boolean(),
+    fc.fetchResponse({ status: fc.constant(Status.OK) }),
+  ])('when the response cannot be decoded', async (uuid, app, key, url, update, response) => {
+    const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, response)
+
+    const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
+      fetch,
+      legacyPrereviewApi: { app, key, url, update },
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+
+  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
+    'when the response has a 404 status code',
+    async (uuid, app, key, url, update) => {
+      const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, Status.NotFound)
+
+      const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
+        fetch,
+        legacyPrereviewApi: { app, key, url, update },
+      })()
+
+      expect(actual).toStrictEqual(E.left('not-found'))
+    },
+  )
+
+  test.prop([
+    fc.uuid(),
+    fc.string(),
+    fc.string(),
+    fc.origin(),
+    fc.boolean(),
+    fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
+  ])('when the response has a non-200/404 status code', async (uuid, app, key, url, update, status) => {
+    const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, status)
+
+    const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
+      fetch,
+      legacyPrereviewApi: { app, key, url, update },
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+
+  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
+    'when fetch throws an error',
+    async (uuid, app, key, url, update, error) => {
+      const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
+        fetch: () => Promise.reject(error),
+        legacyPrereviewApi: { app, key, url, update },
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
+
 describe('getPseudonymFromLegacyPrereview', () => {
   test.prop([
     fc.orcid(),

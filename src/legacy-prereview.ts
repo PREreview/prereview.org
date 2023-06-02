@@ -12,11 +12,12 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import { type Uuid, isUuid } from 'uuid-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { type PreprintId, parsePreprintDoi } from './preprint-id'
+import type { OrcidProfileId, PseudonymProfileId } from './profile-id'
 import { PseudonymC, isPseudonym } from './pseudonym'
 import type { NewPrereview } from './write-review'
 
@@ -125,6 +126,26 @@ const LegacyPrereviewPreprintUuidD = pipe(
   ),
 )
 
+const LegacyPrereviewProfileUuidD = pipe(
+  JsonD,
+  D.compose(
+    D.struct({
+      data: D.tuple(
+        D.union(
+          D.struct({
+            isAnonymous: D.literal(false),
+            orcid: OrcidD,
+          }),
+          D.struct({
+            isAnonymous: D.literal(true),
+            name: PseudonymC,
+          }),
+        ),
+      ),
+    }),
+  ),
+)
+
 export const getPreprintIdFromLegacyPreviewUuid = flow(
   RTE.fromReaderK((uuid: Uuid) => legacyPrereviewUrl(`preprints/${uuid}`)),
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
@@ -139,6 +160,41 @@ export const getPreprintIdFromLegacyPreviewUuid = flow(
       .otherwise(() => 'unavailable' as const),
   ),
   RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(flow(get('data.[0].handle'), parsePreprintDoi)),
+)
+
+export const getProfileIdFromLegacyPreviewUuid = flow(
+  RTE.fromReaderK((uuid: Uuid) => legacyPrereviewUrl(`personas/${uuid}`)),
+  RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
+  RTE.chainW(F.send),
+  RTE.local(useStaleCache()),
+  RTE.local(timeoutRequest(2000)),
+  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+  RTE.chainTaskEitherKW(F.decode(LegacyPrereviewProfileUuidD)),
+  RTE.bimap(
+    error =>
+      match(error)
+        .with({ status: Status.NotFound }, () => 'not-found' as const)
+        .otherwise(() => 'unavailable' as const),
+    ({ data: [data] }) =>
+      match(data)
+        .with(
+          { isAnonymous: false, orcid: P.select() },
+          orcid =>
+            ({
+              type: 'orcid',
+              value: orcid,
+            } satisfies OrcidProfileId),
+        )
+        .with(
+          { isAnonymous: true, name: P.select() },
+          pseudonym =>
+            ({
+              type: 'pseudonym',
+              value: pseudonym,
+            } satisfies PseudonymProfileId),
+        )
+        .exhaustive(),
+  ),
 )
 
 const createUserOnLegacyPrereview = ({ orcid, name }: { orcid: Orcid; name: string }) =>
