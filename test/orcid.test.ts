@@ -12,7 +12,7 @@ describe('getNameFromOrcid', () => {
   test.prop([fc.orcid()])('when the request succeeds', async orcid => {
     const actual = await _.getNameFromOrcid(orcid)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().get('*', {
+      fetch: fetchMock.sandbox().get(`https://pub.orcid.org/v3.0/${orcid}/personal-details`, {
         body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
       }),
       logger: () => IO.of(undefined),
