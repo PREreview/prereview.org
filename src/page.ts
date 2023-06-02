@@ -13,6 +13,7 @@ import {
   fundingMatch,
   homeMatch,
   logOutMatch,
+  myDetailsMatch,
   partnersMatch,
   preprintJournalClubsMatch,
   privacyPolicyMatch,
@@ -43,6 +44,7 @@ type Page = {
     | 'code-of-conduct'
     | 'funding'
     | 'home'
+    | 'my-details'
     | 'partners'
     | 'preprint-journal-clubs'
     | 'privacy-policy'
@@ -120,6 +122,15 @@ export function page({
                                   >
                                 </li>
                               `
+                            : ''}
+                          ${user && type !== 'streamline'
+                            ? html` <li>
+                                <a
+                                  href="${format(myDetailsMatch.formatter, {})}"
+                                  ${current === 'my-details' ? html`aria-current="page"` : ''}
+                                  >My details</a
+                                >
+                              </li>`
                             : ''}
                           ${user ? html` <li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
                         </ul>

@@ -1,9 +1,11 @@
 import { areLoggedIn, canLogIn, expect, test } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/my-details')
+  await page.getByRole('link', { name: 'My details' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('My details')
+  await expect(page.getByRole('link', { name: 'My details' })).toHaveAttribute('aria-current', 'page')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
