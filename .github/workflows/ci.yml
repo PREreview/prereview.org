@@ -127,10 +127,14 @@ jobs:
         run: npm run lint
 
   test:
-    name: 'Test'
+    name: 'Test (${{ matrix.shard }}/${{ strategy.job-total }})'
     runs-on: ubuntu-22.04
     needs:
       - build-assets
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
 
     steps:
       - name: 'Checkout code'
@@ -152,7 +156,7 @@ jobs:
           path: src
 
       - name: 'Run the tests'
-        run: npm run test
+        run: npm run test -- --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
   test-integration:
     name: 'Integration test (${{ matrix.shard }}/${{ strategy.job-total }})'
