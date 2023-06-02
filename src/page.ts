@@ -72,18 +72,18 @@ export function page({
 
         <title>${title}</title>
 
-        ${scripts.map(file => html`<script src="${assets[file].path}" type="module"></script>`)}
+        ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
 
         <link href="${assets['style.css']}" rel="stylesheet" />
 
         ${scripts.flatMap(
           flow(
             file => assets[file].preload as ReadonlyArray<string>,
-            RA.map(preload => html`<link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
+            RA.map(preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
           ),
         )}
         ${fathomId
-          ? html`<script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
+          ? html` <script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
           : ''}
 
         <link rel="icon" href="${assets['favicon.ico']}" sizes="any" />

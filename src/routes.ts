@@ -146,6 +146,8 @@ export const orcidErrorMatch = pipe(
   P.then(P.end),
 )
 
+export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
+
 export const profileMatch = pipe(P.lit('profiles'), P.then(type('profile', ProfileIdC)), P.then(P.end))
 
 export const preprintReviewsMatch = pipe(P.lit('preprints'), P.then(type('id', PreprintIdC)), P.then(P.end))

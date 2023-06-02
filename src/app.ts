@@ -46,6 +46,7 @@ import {
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview'
 import { legacyRoutes } from './legacy-routes'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
+import { myDetails } from './my-details'
 import { getNameFromOrcid } from './orcid'
 import type { FathomEnv, PhaseEnv } from './page'
 import { partners } from './partners'
@@ -68,6 +69,7 @@ import {
   homeMatch,
   logInMatch,
   logOutMatch,
+  myDetailsMatch,
   orcidCodeMatch,
   orcidErrorMatch,
   partnersMatch,
@@ -363,6 +365,28 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ),
             ),
           }),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      myDetailsMatch.parser,
+      P.map(() => myDetails),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          /*getName: flip(getNameFromOrcid)(env),
+          getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
+            ...env,
+            getPreprintTitle: flow(
+              flip(getPreprintTitle)(env),
+              TE.mapLeft(error =>
+                match(error)
+                  .with('not-a-preprint', () => 'not-found' as const)
+                  .otherwise(identity),
+              ),
+            ),
+          }),*/
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),

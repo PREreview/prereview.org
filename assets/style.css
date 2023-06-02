@@ -596,9 +596,39 @@ dl {
       column-gap: var(--space-3xs-2xs);
     }
   }
+
+  @nest main > & {
+    margin-block-start: var(--space-m);
+    max-inline-size: 64ch;
+
+    & > div {
+      display: flex;
+      flex-wrap: wrap;
+      column-gap: var(--space-xs-m);
+      row-gap: var(--space-4xs);
+      margin-block-start: var(--space-2xs);
+
+      & + div {
+        border-block-start: var(--width-divider-narrow) solid var(--color-divider-light);
+        padding-block-start: var(--space-2xs);
+      }
+
+      @media screen {
+        @media (width < 30em) {
+          flex-direction: column;
+        }
+      }
+    }
+
+    & dt {
+      min-inline-size: 20ch;
+    }
+  }
 }
 
 dt {
+  font-weight: 500;
+
   @nest header & {
     font-weight: 700;
     -moz-osx-font-smoothing: grayscale;
