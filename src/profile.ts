@@ -16,8 +16,7 @@ import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
-import type { ProfileId } from './profile-id'
-import type { Pseudonym } from './pseudonym'
+import type { OrcidProfileId, ProfileId, PseudonymProfileId } from './profile-id'
 import { reviewMatch } from './routes'
 import { renderDate } from './time'
 import { type User, maybeGetUser } from './user'
@@ -55,13 +54,19 @@ const getName = (orcid: Orcid) =>
     RTE.chainTaskEitherK(({ getName }) => getName(orcid)),
   )
 
-export const profile = (orcid: Orcid) =>
+export const profile = (profileId: ProfileId) =>
+  match(profileId)
+    .with({ type: 'orcid' }, profileForOrcid)
+    .with({ type: 'pseudonym' }, profileForPseudonym)
+    .exhaustive()
+
+const profileForOrcid = (profile: OrcidProfileId) =>
   pipe(
-    RM.fromReaderTaskEither(getPrereviews({ type: 'orcid', value: orcid })),
+    RM.fromReaderTaskEither(getPrereviews(profile)),
     RM.bindTo('prereviews'),
-    RM.apSW('name', RM.fromReaderTaskEither(getName(orcid))),
+    RM.apSW('name', RM.fromReaderTaskEither(getName(profile.value))),
     RM.apSW('user', maybeGetUser),
-    RM.apS('orcid', RM.of(orcid)),
+    RM.apS('orcid', RM.of(profile.value)),
     chainReaderKW(createPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareKW(sendHtml),
@@ -73,11 +78,11 @@ export const profile = (orcid: Orcid) =>
     ),
   )
 
-export const profilePseudonym = (pseudonym: Pseudonym) =>
+const profileForPseudonym = (profileId: PseudonymProfileId) =>
   pipe(
-    RM.fromReaderTaskEither(getPrereviews({ type: 'pseudonym', value: pseudonym })),
+    RM.fromReaderTaskEither(getPrereviews(profileId)),
     RM.bindTo('prereviews'),
-    RM.apSW('name', RM.of(pseudonym)),
+    RM.apSW('name', RM.of(profileId.value)),
     RM.apSW('user', maybeGetUser),
     chainReaderKW(createPage),
     RM.ichainFirst(() => RM.status(Status.OK)),

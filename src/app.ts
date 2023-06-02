@@ -54,7 +54,7 @@ import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintJournalClubs } from './preprint-journal-clubs'
 import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
-import { profile, profilePseudonym } from './profile'
+import { profile } from './profile'
 import type { PublicUrlEnv } from './public-url'
 import { review } from './review'
 import { reviewAPreprint } from './review-a-preprint'
@@ -369,12 +369,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       profileMatch.parser,
-      P.map(({ profile: profileId }) =>
-        match(profileId)
-          .with({ type: 'orcid', value: p.select() }, profile)
-          .with({ type: 'pseudonym', value: p.select() }, profilePseudonym)
-          .exhaustive(),
-      ),
+      P.map(({ profile: profileId }) => profile(profileId)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
