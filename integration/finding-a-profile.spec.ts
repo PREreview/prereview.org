@@ -185,6 +185,62 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
 })
 
 test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
+  fetch
+    .getOnce('http://zenodo.test/api/records/7747129', {
+      body: RecordC.encode({
+        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptrecid: 1061863,
+        files: [
+          {
+            links: {
+              self: new URL('http://example.com/file'),
+            },
+            key: 'review.html',
+            type: 'html',
+            size: 58,
+          },
+        ],
+        id: 1061864,
+        links: {
+          latest: new URL('http://example.com/latest'),
+          latest_html: new URL('http://example.com/latest_html'),
+        },
+        metadata: {
+          communities: [{ id: 'prereview-reviews' }],
+          creators: [{ name: 'Blue Sheep' }],
+          description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+          doi: '10.5072/zenodo.1061864' as Doi,
+          license: {
+            id: 'CC-BY-4.0',
+          },
+          publication_date: new Date('2022-07-05'),
+          related_identifiers: [
+            {
+              identifier: '10.1101/2022.01.13.476201',
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
+              scheme: 'doi',
+            },
+            {
+              identifier: '10.5072/zenodo.1061863',
+              relation: 'isVersionOf',
+              scheme: 'doi',
+            },
+          ],
+          resource_type: {
+            type: 'publication',
+            subtype: 'peerreview',
+          },
+          title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+        },
+      }),
+    })
+    .getOnce('http://example.com/file', {
+      body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+    })
+
+  await page.goto('/reviews/7747129')
+
   fetch.get(
     {
       name: 'profile-prereviews',
@@ -286,9 +342,10 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
     },
   )
 
-  await page.goto('/profiles/blue-sheep')
+  await page.getByRole('link', { name: 'Blue Sheep' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Blue Sheep’s PREreviews')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
 
