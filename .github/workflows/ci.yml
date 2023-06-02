@@ -38,6 +38,12 @@ jobs:
       - name: 'Build assets'
         run: npm run build:assets
 
+      - name: 'Upload assets'
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: assets
+          path: dist/assets
+
       - name: 'Upload manifest'
         uses: actions/upload-artifact@v3.1.2
         with:
@@ -151,6 +157,8 @@ jobs:
   test-integration:
     name: 'Integration test (${{ matrix.shard }}/${{ strategy.job-total }})'
     runs-on: ubuntu-22.04
+    needs:
+      - build-assets
     strategy:
       fail-fast: false
       matrix:
@@ -169,8 +177,17 @@ jobs:
       - name: 'Install dependencies'
         run: npm ci
 
-      - name: 'Build assets'
-        run: npm run build:assets
+      - name: 'Download assets'
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: assets
+          path: dist/assets
+
+      - name: 'Download assets manifest'
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: manifest
+          path: src
 
       - name: 'Run Playwright'
         id: 'playwright'
