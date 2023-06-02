@@ -8,6 +8,7 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
+import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { NonEmptyStringC } from './string'
 
 const JsonD = {
@@ -46,6 +47,9 @@ const getPersonalDetails = flow(
 
 export const getNameFromOrcid = flow(
   getPersonalDetails,
+  RTE.local(revalidateIfStale()),
+  RTE.local(useStaleCache()),
+  RTE.local(timeoutRequest(2000)),
   RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get name from ORCID')))),
   RTE.bimap(
     () => 'unavailable' as const,

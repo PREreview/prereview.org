@@ -21,6 +21,31 @@ describe('getNameFromOrcid', () => {
     expect(actual).toStrictEqual(E.right('Daniela Saderi'))
   })
 
+  test.prop([fc.orcid()])('revalidates if the response is stale', async orcid => {
+    const fetch = fetchMock
+      .sandbox()
+      .getOnce(
+        (url, { cache }) => url === `https://pub.orcid.org/v3.0/${orcid}/personal-details` && cache === 'force-cache',
+        {
+          body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
+          headers: { 'X-Local-Cache-Status': 'stale' },
+        },
+      )
+      .getOnce(
+        (url, { cache }) => url === `https://pub.orcid.org/v3.0/${orcid}/personal-details` && cache === 'no-cache',
+        { throws: new Error('Network error') },
+      )
+
+    const actual = await _.getNameFromOrcid(orcid)({
+      clock: SystemClock,
+      fetch,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.right('Daniela Saderi'))
+    expect(fetch.done()).toBeTruthy()
+  })
+
   test.prop([fc.orcid(), fc.integer({ min: 100, max: 599 }).filter(status => status !== Status.OK)])(
     'when the request fails',
     async (orcid, status) => {
