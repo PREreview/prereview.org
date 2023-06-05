@@ -6,7 +6,7 @@ import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
+import { type HeadersOpen, Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
@@ -15,6 +15,7 @@ import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
+import { type PublicUrlEnv, toUrl } from './public-url'
 import { reviewMatch, reviewsMatch } from './routes'
 import { renderDate } from './time'
 import type { User } from './user'
@@ -54,6 +55,12 @@ export const reviews = (currentPage: number) =>
     RM.apSW('user', maybeGetUser),
     chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user)),
     RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainFirstW(() =>
+      pipe(
+        RM.rightReader<PublicUrlEnv, HeadersOpen, never, URL>(toUrl(reviewsMatch.formatter, { page: currentPage })),
+        RM.chain(canonical => RM.header('Link', `<${canonical.href}>; rel="canonical"`)),
+      ),
+    ),
     RM.ichainMiddlewareKW(sendHtml),
     RM.orElseW(error =>
       match(error)

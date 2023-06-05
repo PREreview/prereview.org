@@ -35,6 +35,7 @@ describe('reviews', () => {
       _.reviews(page)({
         getRecentPrereviews,
         getUser: () => M.fromEither(user),
+        publicUrl: new URL('http://example.com'),
       }),
       connection,
     )()
@@ -42,6 +43,7 @@ describe('reviews', () => {
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.OK },
+        { type: 'setHeader', name: 'Link', value: `<http://example.com/reviews?page=${page}>; rel="canonical"` },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: expect.anything() },
       ]),
@@ -55,7 +57,11 @@ describe('reviews', () => {
     fc.either(fc.constant('no-session' as const), fc.user()),
   ])('when the page is not found', async (page, connection, user) => {
     const actual = await runMiddleware(
-      _.reviews(page)({ getRecentPrereviews: () => TE.left('not-found'), getUser: () => M.fromEither(user) }),
+      _.reviews(page)({
+        getRecentPrereviews: () => TE.left('not-found'),
+        getUser: () => M.fromEither(user),
+        publicUrl: new URL('http://example.com'),
+      }),
       connection,
     )()
 
@@ -75,7 +81,11 @@ describe('reviews', () => {
     fc.either(fc.constant('no-session' as const), fc.user()),
   ])('when the recent reviews cannot be loaded', async (page, connection, user) => {
     const actual = await runMiddleware(
-      _.reviews(page)({ getRecentPrereviews: () => TE.left('unavailable'), getUser: () => M.fromEither(user) }),
+      _.reviews(page)({
+        getRecentPrereviews: () => TE.left('unavailable'),
+        getUser: () => M.fromEither(user),
+        publicUrl: new URL('http://example.com'),
+      }),
       connection,
     )()
 
