@@ -54,6 +54,12 @@ type Page = {
   readonly user?: User
 }
 
+export interface TemplatePageEnv {
+  templatePage: (page: Page) => Html
+}
+
+export const templatePage = (page: Page) => R.asks(({ templatePage }: TemplatePageEnv) => templatePage(page))
+
 export function page({
   title,
   type,

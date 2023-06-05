@@ -49,6 +49,7 @@ import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { myDetails } from './my-details'
 import { getNameFromOrcid } from './orcid'
 import type { FathomEnv, PhaseEnv } from './page'
+import { page } from './page'
 import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
@@ -158,6 +159,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ),
             }),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+          templatePage: flip(page)(env),
         })),
       ),
     ),

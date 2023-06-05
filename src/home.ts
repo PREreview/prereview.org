@@ -15,7 +15,7 @@ import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { addCanonicalLinkHeader } from './middleware'
-import { page } from './page'
+import { templatePage } from './page'
 import type { PreprintId } from './preprint-id'
 import { aboutUsMatch, homeMatch, reviewAPreprintMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
@@ -56,7 +56,7 @@ export const home = pipe(
 )
 
 function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: User) {
-  return page({
+  return templatePage({
     title: plainText`PREreview`,
     content: html`
       <main id="main-content">
