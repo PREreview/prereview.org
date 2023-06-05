@@ -118,7 +118,7 @@
     "prettier-plugin-sh": "^0.12.8",
     "purgecss-webpack-plugin": "^5.0.0",
     "remixicon": "^3.3.0",
-    "stylelint": "^15.6.2",
+    "stylelint": "^15.6.3",
     "stylelint-config-logic-order": "^1.0.1",
     "stylelint-config-standard": "^33.0.0",
     "stylelint-use-logical-spec": "^5.0.0",
