@@ -26,6 +26,7 @@ describe('legacyRoutes', () => {
     ['/inst/7204/', 'https://www.authorea.com/inst/7204'],
     ['/inst/15119?articles_format=grid&current_inst_tab=statistics', 'https://www.authorea.com/inst/15119'],
     ['/login', '/log-in'],
+    ['/login?next=/10.1101/2020.03.24.004655', '/log-in'],
     ['/logout', '/log-out'],
     ['/preprints/arxiv-2204.09673', '/preprints/doi-10.48550-arxiv.2204.09673'],
     ['/preprints/arxiv-1312.0906', '/preprints/doi-10.48550-arxiv.1312.0906'],

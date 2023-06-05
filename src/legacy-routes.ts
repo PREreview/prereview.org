@@ -182,7 +182,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(fromMiddlewareK(({ instId }) => movedPermanently(`https://www.authorea.com/inst/${instId}`))),
     ),
     pipe(
-      pipe(P.lit('login'), P.then(P.end)).parser,
+      pipe(P.lit('login'), P.then(query(C.partial({}))), P.then(P.end)).parser,
       P.map(fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
     ),
     pipe(
