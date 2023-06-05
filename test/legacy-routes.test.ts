@@ -23,6 +23,8 @@ describe('legacyRoutes', () => {
     ['/docs/about', '/about'],
     ['/docs/code_of_conduct', '/code-of-conduct'],
     ['/docs/resources', 'https://content.prereview.org/resources/'],
+    ['/inst/7204/', 'https://www.authorea.com/inst/7204'],
+    ['/inst/15119?articles_format=grid&current_inst_tab=statistics', 'https://www.authorea.com/inst/15119'],
     ['/login', '/log-in'],
     ['/logout', '/log-out'],
     ['/preprints/arxiv-2204.09673', '/preprints/doi-10.48550-arxiv.2204.09673'],
@@ -30,6 +32,9 @@ describe('legacyRoutes', () => {
     ['/preprints/arXiv-2106.14108', '/preprints/doi-10.48550-arxiv.2106.14108'],
     ['/reviews', '/reviews?page=1'],
     ['/reviews/new', '/review-a-preprint'],
+    ['/users/61782', 'https://www.authorea.com/users/61782'],
+    ['/users/161073', 'https://www.authorea.com/users/161073'],
+    ['/users/173578?articles_format=list&direction=desc&sort=created_at', 'https://www.authorea.com/users/173578'],
     [
       '/users/153686/articles/200859-preprint-info-doc',
       'https://www.authorea.com/users/153686/articles/200859-preprint-info-doc',

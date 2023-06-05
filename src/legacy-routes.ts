@@ -178,6 +178,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(fromMiddlewareK(() => movedPermanently('https://content.prereview.org/resources/'))),
     ),
     pipe(
+      pipe(P.lit('inst'), P.then(P.str('instId')), P.then(query(C.partial({}))), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(({ instId }) => movedPermanently(`https://www.authorea.com/inst/${instId}`))),
+    ),
+    pipe(
       pipe(P.lit('login'), P.then(P.end)).parser,
       P.map(fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
     ),
@@ -240,6 +244,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
           movedPermanently(`https://www.authorea.com/users/${userId}/articles/${articleId}`),
         ),
       ),
+    ),
+    pipe(
+      pipe(P.lit('users'), P.then(P.str('userId')), P.then(query(C.partial({}))), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(({ userId }) => movedPermanently(`https://www.authorea.com/users/${userId}`))),
     ),
     pipe(
       pipe(
