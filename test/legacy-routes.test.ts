@@ -27,6 +27,7 @@ describe('legacyRoutes', () => {
     ['/logout', '/log-out'],
     ['/preprints/arxiv-2204.09673', '/preprints/doi-10.48550-arxiv.2204.09673'],
     ['/preprints/arxiv-1312.0906', '/preprints/doi-10.48550-arxiv.1312.0906'],
+    ['/preprints/arXiv-2106.14108', '/preprints/doi-10.48550-arxiv.2106.14108'],
     ['/reviews', '/reviews?page=1'],
     ['/reviews/new', '/review-a-preprint'],
     [
