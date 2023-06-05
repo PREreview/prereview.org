@@ -16,6 +16,7 @@ import { runMiddleware } from './middleware'
 describe('legacyRoutes', () => {
   test.each([
     ['/10.1101/2020.08.27.270835', '/preprints/doi-10.1101-2020.08.27.270835'],
+    ['/10.5281/zenodo.3733767', '/preprints/doi-10.5281-zenodo.3733767'],
     ['/blog', 'https://content.prereview.org/'],
     ['/blog?articles_format=grid', 'https://content.prereview.org/'],
     ['/coc', '/code-of-conduct'],

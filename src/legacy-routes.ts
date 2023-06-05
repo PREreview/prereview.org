@@ -106,6 +106,21 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       ),
     ),
     pipe(
+      pipe(P.lit('10.5281'), P.then(P.str('suffix')), P.then(P.end)).parser,
+      P.map(
+        fromMiddlewareK(({ suffix }) =>
+          movedPermanently(
+            format(preprintReviewsMatch.formatter, {
+              id: {
+                type: 'zenodo-africarxiv',
+                value: `10.5281/${suffix}` as Doi<'5281'>,
+              },
+            }),
+          ),
+        ),
+      ),
+    ),
+    pipe(
       pipe(P.lit('about'), P.then(type('personaUuid', UuidC)), P.then(P.end)).parser,
       P.map(({ personaUuid }) => redirectToProfile(personaUuid)),
     ),
