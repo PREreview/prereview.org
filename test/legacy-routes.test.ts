@@ -417,6 +417,7 @@ describe('legacyRoutes', () => {
     ['/communities/eLifeAmbassadors/new'],
     ['/community-settings/6abac91b-1bd6-4178-8c72-38695c2e9680'],
     ['/community-settings/c36edcca-ba95-475d-a851-ad0f277ac99d'],
+    ['/events/434b46a1-0c52-4a09-9802-bddc16873b88'],
     ['/prereviewers'],
     ['/prereviewers?page=1'],
     [
