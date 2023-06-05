@@ -14,9 +14,10 @@ import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
+import { addCanonicalLinkHeader } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
-import { aboutUsMatch, reviewAPreprintMatch, reviewMatch } from './routes'
+import { aboutUsMatch, homeMatch, reviewAPreprintMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
 import type { User } from './user'
 import { maybeGetUser } from './user'
@@ -50,6 +51,7 @@ export const home = pipe(
   RM.apSW('user', maybeGetUser),
   chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainFirstW(() => addCanonicalLinkHeader(homeMatch.formatter, {})),
   RM.ichainMiddlewareK(sendHtml),
 )
 
