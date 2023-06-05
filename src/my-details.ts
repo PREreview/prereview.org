@@ -45,6 +45,11 @@ function createPage(user: User) {
 
         <dl>
           <div>
+            <dt>Name</dt>
+            <dd>${user.name}</dd>
+          </div>
+
+          <div>
             <dt>ORCID iD</dt>
             <dd><a href="https://orcid.org/${user.orcid}" class="orcid">${user.orcid}</a></dd>
           </div>
