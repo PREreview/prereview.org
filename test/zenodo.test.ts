@@ -1616,9 +1616,9 @@ describe('getPrereviewsForProfileFromZenodo', () => {
     },
   )
 
-  test.prop([fc.profileId(), fc.constantFrom('not-found' as const, 'unavailable' as const)])(
+  test.prop([fc.profileId(), fc.preprintTitle(), fc.constantFrom('not-found' as const, 'unavailable' as const)])(
     'when a preprint cannot be loaded',
-    async (profile, error) => {
+    async (profile, preprint, error) => {
       const records: Records = {
         hits: {
           total: 2,
@@ -1730,11 +1730,23 @@ describe('getPrereviewsForProfileFromZenodo', () => {
             status: Status.OK,
           },
         ),
-        getPreprintTitle: () => TE.left(error),
+        getPreprintTitle: id =>
+          match(id.value as unknown)
+            .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
+            .otherwise(() => TE.left(error)),
         logger: () => IO.of(undefined),
       })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(actual).toStrictEqual(
+        E.right([
+          {
+            id: 1061864,
+            reviewers: ['PREreviewer'],
+            published: new Temporal.PlainDate(2022, 7, 4),
+            preprint: preprint,
+          },
+        ]),
+      )
     },
   )
 
