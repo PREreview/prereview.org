@@ -110,9 +110,7 @@ const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
       .exhaustive(),
 })
 
-const endWithAnyQuery = pipe(query(C.struct({})), P.then(P.end))
-
-export const homeMatch = endWithAnyQuery
+export const homeMatch = pipe(query(C.partial({ message: C.literal('logged-out') })), P.then(P.end))
 
 export const aboutUsMatch = pipe(P.lit('about'), P.then(P.end))
 

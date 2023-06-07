@@ -153,7 +153,7 @@ describe('logOut', () => {
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.Found },
-        { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
+        { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, { message: 'logged-out' }) },
         { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
         { type: 'endResponse' },
       ]),
@@ -170,7 +170,7 @@ describe('logOut', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.Found },
-          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
+          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, { message: 'logged-out' }) },
           { type: 'endResponse' },
         ]),
       )

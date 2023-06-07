@@ -45,7 +45,7 @@ export const logInAndRedirect = flow(
 )
 
 export const logOut = pipe(
-  RM.redirect(format(homeMatch.formatter, {})),
+  RM.redirect(format(homeMatch.formatter, { message: 'logged-out' })),
   RM.ichainFirst(() => endSession),
   RM.ichain(() => RM.closeHeaders()),
   RM.ichain(() => RM.end()),

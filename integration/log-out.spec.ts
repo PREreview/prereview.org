@@ -9,6 +9,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can log out', async ({ page }) => {
 
   await logOut.click()
 
-  await expect(page).toHaveURL('/')
+  await expect(page).toHaveURL('/?message=logged-out')
   await expect(logOut).toBeHidden()
 })
