@@ -507,7 +507,7 @@ h2 {
     font-size: var(--step-2);
   }
 
-  @nest error-summary & {
+  @nest :is(error-summary, notification-banner) & {
     font-size: var(--step-1);
   }
 }
@@ -1059,6 +1059,25 @@ error-summary {
   padding-block: var(--space-2xs-xs);
   padding-inline: var(--space-s);
   border: var(--width-divider-wide) solid var(--color-error);
+
+  &:focus {
+    @media screen {
+      outline: var(--color-focus) solid var(--width-divider);
+      outline-offset: 0;
+    }
+  }
+
+  & > :first-child {
+    margin-block-start: 0;
+  }
+}
+
+notification-banner {
+  display: block;
+  margin-block-start: var(--space-s-l);
+  padding-block: var(--space-2xs-xs);
+  padding-inline: var(--space-s);
+  border: var(--width-divider-wide) solid var(--color-success);
 
   &:focus {
     @media screen {

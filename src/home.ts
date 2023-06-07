@@ -45,21 +45,35 @@ const getRecentPrereviews = () =>
     RT.chainTaskK(({ getRecentPrereviews }) => getRecentPrereviews()),
   )
 
-export const home = pipe(
-  fromReaderTask(getRecentPrereviews()),
-  RM.bindTo('recentPrereviews'),
-  RM.apSW('user', maybeGetUser),
-  chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user)),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainFirstW(() => addCanonicalLinkHeader(homeMatch.formatter, {})),
-  RM.ichainMiddlewareK(sendHtml),
-)
+export const home = (message?: 'logged-out') =>
+  pipe(
+    fromReaderTask(getRecentPrereviews()),
+    RM.bindTo('recentPrereviews'),
+    RM.apSW('user', maybeGetUser),
+    chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user, message)),
+    RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainFirstW(() => addCanonicalLinkHeader(homeMatch.formatter, {})),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
-function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: User) {
+function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: User, message?: 'logged-out') {
   return templatePage({
     title: plainText`PREreview`,
     content: html`
       <main id="main-content">
+        ${match(message)
+          .with(
+            'logged-out',
+            () => html`
+              <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                <h2 id="notification-banner-title">Success</h2>
+
+                <p>You have been logged out.</p>
+              </notification-banner>
+            `,
+          )
+          .otherwise(() => '')}
+
         <div class="hero">
           <h1>Open preprint reviews.<br />For&nbsp;<em>all</em> researchers.</h1>
           <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>

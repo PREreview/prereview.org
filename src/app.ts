@@ -136,7 +136,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
   [
     pipe(
       homeMatch.parser,
-      P.map(() => home),
+      P.map(({ message }) => home(message)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,

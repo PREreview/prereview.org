@@ -13,10 +13,11 @@ test.prop([
   fc.connection({ method: fc.requestMethod() }),
   fc.either(fc.constant('no-session' as const), fc.user()),
   fc.html(),
-])('home', async (connection, user, page) => {
+  fc.option(fc.constantFrom('logged-out' as const), { nil: undefined }),
+])('home', async (connection, user, page, message) => {
   const templatePage = jest.fn(_ => page)
   const actual = await runMiddleware(
-    _.home({
+    _.home(message)({
       getRecentPrereviews: () => T.of([]),
       getUser: () => M.fromEither(user),
       publicUrl: new URL('http://example.com'),

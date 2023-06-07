@@ -9,6 +9,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can log out', async ({ page }) => {
 
   await logOut.click()
 
-  await expect(page).toHaveURL('/?message=logged-out')
+  await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
   await expect(logOut).toBeHidden()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 })
