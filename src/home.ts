@@ -72,7 +72,8 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
               </notification-banner>
             `,
           )
-          .otherwise(() => '')}
+          .with(undefined, () => '')
+          .exhaustive()}
 
         <div class="hero">
           <h1>Open preprint reviews.<br />For&nbsp;<em>all</em> researchers.</h1>
