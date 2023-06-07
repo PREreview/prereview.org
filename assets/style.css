@@ -1076,7 +1076,6 @@ notification-banner {
   display: block;
   margin-block-start: var(--space-s-l);
   padding-block: var(--space-2xs-xs);
-  padding-inline: var(--space-s);
   border: var(--width-divider-wide) solid var(--color-success);
 
   &:focus {
@@ -1086,8 +1085,29 @@ notification-banner {
     }
   }
 
+  & > * {
+    padding-inline: var(--space-s);
+    margin-block-start: var(--space-2xs-xs);
+  }
+
   & > :first-child {
     margin-block-start: 0;
+
+    @media screen {
+      @media (forced-colors: none) {
+        padding-block: var(--space-2xs);
+        font-size: var(--step-0);
+        color: var(--color-background);
+        background-color: var(--color-success);
+      }
+    }
+  }
+
+  @media screen {
+    @media (forced-colors: none) {
+      border-block-start-width: 0;
+      padding-block-start: 0;
+    }
   }
 }
 
