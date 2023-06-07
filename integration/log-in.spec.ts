@@ -20,3 +20,13 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   }
   await expect(page).toHaveScreenshot()
 })
+
+test.extend(canLogIn)('can log in from the home page', async ({ page }) => {
+  await page.goto('/log-in')
+  await page.locator('[type=email]').fill('test@example.com')
+  await page.locator('[type=password]').fill('password')
+  await page.keyboard.press('Enter')
+
+  await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+  await expect(page).toHaveScreenshot()
+})

@@ -45,7 +45,7 @@ const getRecentPrereviews = () =>
     RT.chainTaskK(({ getRecentPrereviews }) => getRecentPrereviews()),
   )
 
-export const home = (message?: 'logged-out') =>
+export const home = (message?: 'logged-out' | 'logged-in') =>
   pipe(
     fromReaderTask(getRecentPrereviews()),
     RM.bindTo('recentPrereviews'),
@@ -56,7 +56,11 @@ export const home = (message?: 'logged-out') =>
     RM.ichainMiddlewareK(sendHtml),
   )
 
-function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: User, message?: 'logged-out') {
+function createPage(
+  recentPrereviews: ReadonlyArray<RecentPrereview>,
+  user?: User,
+  message?: 'logged-out' | 'logged-in',
+) {
   return templatePage({
     title: plainText`PREreview`,
     content: html`
@@ -69,6 +73,16 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>, user?: Use
                 <h2 id="notification-banner-title">Success</h2>
 
                 <p>You have been logged out.</p>
+              </notification-banner>
+            `,
+          )
+          .with(
+            'logged-in',
+            () => html`
+              <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                <h2 id="notification-banner-title">Success</h2>
+
+                <p>You have been logged in.</p>
               </notification-banner>
             `,
           )

@@ -357,7 +357,7 @@ describe('authenticate', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.Found },
-          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
+          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, { message: 'logged-in' }) },
           {
             type: 'setCookie',
             name: sessionCookie,

@@ -13,7 +13,7 @@ test.prop([
   fc.connection({ method: fc.requestMethod() }),
   fc.either(fc.constant('no-session' as const), fc.user()),
   fc.html(),
-  fc.option(fc.constantFrom('logged-out' as const), { nil: undefined }),
+  fc.option(fc.constantFrom('logged-out' as const, 'logged-in' as const), { nil: undefined }),
 ])('home', async (connection, user, page, message) => {
   const templatePage = jest.fn(_ => page)
   const actual = await runMiddleware(

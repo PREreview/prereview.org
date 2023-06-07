@@ -100,7 +100,7 @@ function getReferer(state: string) {
     RE.fromEither(E.tryCatch(() => new URL(state), constant('not-a-url'))),
     RE.chain(ifHasSameOrigin),
     RE.match(
-      () => format(homeMatch.formatter, {}),
+      () => format(homeMatch.formatter, { message: 'logged-in' }),
       referer => referer.href,
     ),
   )
