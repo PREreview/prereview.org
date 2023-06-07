@@ -12,6 +12,7 @@ import {
   communitiesMatch,
   fundingMatch,
   homeMatch,
+  logInMatch,
   logOutMatch,
   myDetailsMatch,
   partnersMatch,
@@ -139,6 +140,9 @@ export function page({
                               </li>`
                             : ''}
                           ${user ? html` <li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
+                          ${!user && current === 'home'
+                            ? html` <li><a href="${format(logInMatch.formatter, {})}">Log in</a></li>`
+                            : ''}
                         </ul>
                       </nav>
                     `
