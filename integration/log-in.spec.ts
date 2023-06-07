@@ -21,7 +21,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn)('can log in from the home page', async ({ page }) => {
+test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnabled, page }) => {
   const logIn = page.getByRole('link', { name: 'Log in' })
 
   await page.goto('/')
@@ -33,7 +33,11 @@ test.extend(canLogIn)('can log in from the home page', async ({ page }) => {
   await page.locator('[type=password]').fill('password')
   await page.keyboard.press('Enter')
 
-  await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+  }
   await expect(logIn).toBeHidden()
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()

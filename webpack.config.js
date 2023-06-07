@@ -22,6 +22,7 @@ module.exports = (env, argv) => ({
     'favicon.ico': path.resolve('assets', 'favicon.ico'),
     'favicon.svg': path.resolve('assets', 'favicon.svg'),
     'html-editor': path.resolve('assets', 'html-editor.ts'),
+    'notification-banner': path.resolve('assets', 'notification-banner.ts'),
     'single-use-form': path.resolve('assets', 'single-use-form.ts'),
     'skip-link': path.resolve('assets', 'skip-link.ts'),
     style: path.resolve('assets', 'style.css'),

@@ -294,6 +294,7 @@ function createPage(
       </main>
     `,
     current: 'home',
+    js: message ? ['notification-banner.js'] : [],
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
