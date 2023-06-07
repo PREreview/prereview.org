@@ -11,10 +11,10 @@ import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
-import { addCanonicalLinkHeader } from './middleware'
+import { addCanonicalLinkHeader, seeOther } from './middleware'
 import { templatePage } from './page'
 import type { PreprintId } from './preprint-id'
 import { aboutUsMatch, homeMatch, reviewAPreprintMatch, reviewMatch } from './routes'
@@ -47,13 +47,24 @@ const getRecentPrereviews = () =>
 
 export const home = (message?: 'logged-out' | 'logged-in') =>
   pipe(
-    fromReaderTask(getRecentPrereviews()),
-    RM.bindTo('recentPrereviews'),
-    RM.apSW('user', maybeGetUser),
+    maybeGetUser,
+    RM.filterOrElse(
+      user =>
+        match([user, message])
+          .with([P.not(undefined), P.union(undefined, 'logged-in')], () => true)
+          .with([undefined, P.union(undefined, 'logged-out')], () => true)
+          .with([undefined, P.union('logged-in')], () => false)
+          .with([P.not(undefined), P.union('logged-out')], () => false)
+          .exhaustive(),
+      () => 'redirect' as const,
+    ),
+    RM.bindTo('user'),
+    RM.apSW('recentPrereviews', fromReaderTask(getRecentPrereviews())),
     chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user, message)),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainFirstW(() => addCanonicalLinkHeader(homeMatch.formatter, {})),
-    RM.ichainMiddlewareK(sendHtml),
+    RM.ichainMiddlewareKW(sendHtml),
+    RM.orElseMiddlewareK(() => seeOther(format(homeMatch.formatter, {}))),
   )
 
 function createPage(
