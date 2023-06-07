@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as T from 'fp-ts/Task'
 import { MediaType, Status } from 'hyper-ts'
@@ -8,8 +9,6 @@ import * as _ from '../src/home'
 import { homeMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
-import { format , format } from 'fp-ts-routing'
-
 
 describe('home', () => {
   describe('when the user is logged in', () => {
