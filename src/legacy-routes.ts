@@ -25,6 +25,7 @@ import type { ProfileId } from './profile-id'
 import {
   aboutUsMatch,
   codeOfConductMatch,
+  homeMatch,
   logInMatch,
   logOutMatch,
   preprintReviewsMatch,
@@ -170,6 +171,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(fromMiddlewareK(() => movedPermanently(format(aboutUsMatch.formatter, {})))),
     ),
     pipe(
+      pipe(P.lit('docs'), P.then(P.lit('codeofconduct')), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
+    ),
+    pipe(
       pipe(P.lit('docs'), P.then(P.lit('code_of_conduct')), P.then(P.end)).parser,
       P.map(fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
     ),
@@ -214,6 +219,14 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
         P.then(P.end),
       ).parser,
       P.map(({ preprintUuid }) => redirectToPreprintReviews(preprintUuid)),
+    ),
+    pipe(
+      pipe(P.lit('prereview.org'), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
+    ),
+    pipe(
+      pipe(P.lit('PREreview.org'), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('prereviewers'), P.then(query(C.record(C.string))), P.then(P.end)).parser,
