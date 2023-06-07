@@ -9,6 +9,7 @@ export class NotificationBanner extends HTMLElement {
 
   connectedCallback() {
     forceFocus(this)
+    removeMessageParameter()
   }
 }
 
@@ -18,4 +19,11 @@ declare global {
   interface HTMLElementTagNameMap {
     [NotificationBanner.element]: NotificationBanner
   }
+}
+
+function removeMessageParameter() {
+  const location = new URL(window.location.href)
+  location.searchParams.delete('message')
+
+  window.history.replaceState({}, document.title, location)
 }
