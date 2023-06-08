@@ -8,6 +8,7 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
+import { P, match } from 'ts-pattern'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { NonEmptyStringC } from './string'
 
@@ -27,9 +28,11 @@ const PersonalDetailsD = pipe(
         'given-names': D.struct({
           value: NonEmptyStringC,
         }),
-        'family-name': D.struct({
-          value: NonEmptyStringC,
-        }),
+        'family-name': D.nullable(
+          D.struct({
+            value: NonEmptyStringC,
+          }),
+        ),
       }),
     }),
   ),
@@ -53,6 +56,13 @@ export const getNameFromOrcid = flow(
   RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get name from ORCID')))),
   RTE.bimap(
     () => 'unavailable' as const,
-    personalDetails => `${personalDetails.name['given-names'].value} ${personalDetails.name['family-name'].value}`,
+    personalDetails =>
+      match(personalDetails.name)
+        .with(
+          { 'given-names': { value: P.string }, 'family-name': { value: P.string } },
+          name => `${name['given-names'].value} ${name['family-name'].value}`,
+        )
+        .with({ 'given-names': { value: P.string } }, name => name['given-names'].value)
+        .exhaustive(),
   ),
 )
