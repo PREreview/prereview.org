@@ -5,27 +5,43 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
+import type { Orcid } from 'orcid-id-ts'
 import * as _ from '../src/orcid'
 import * as fc from './fc'
 
 describe('getNameFromOrcid', () => {
   describe('when the request succeeds', () => {
-    test.prop([fc.orcid(), fc.nonEmptyString(), fc.nonEmptyString()])(
-      'with a family name',
-      async (orcid, givenName, familyName) => {
-        const actual = await _.getNameFromOrcid(orcid)({
-          clock: SystemClock,
-          fetch: fetchMock.sandbox().get(`https://pub.orcid.org/v3.0/${orcid}/personal-details`, {
-            body: { name: { 'given-names': { value: givenName }, 'family-name': { value: familyName } } },
-          }),
-          logger: () => IO.of(undefined),
-        })()
-
-        expect(actual).toStrictEqual(E.right(`${givenName} ${familyName}`))
+    test.prop(
+      [
+        fc.orcid(),
+        fc
+          .tuple(fc.nonEmptyString(), fc.nonEmptyString())
+          .map(([givenName, familyName]) => [givenName, familyName, `${givenName.trim()} ${familyName.trim()}`]),
+      ],
+      {
+        examples: [
+          ['0000-0002-1825-0097' as Orcid, ['Josiah', 'Carberry', 'Josiah Carberry']],
+          ['0000-0002-1825-0097' as Orcid, [' Josiah ', ' Carberry ', 'Josiah Carberry']],
+        ],
       },
-    )
+    )('with a family name', async (orcid, [givenName, familyName, expected]) => {
+      const actual = await _.getNameFromOrcid(orcid)({
+        clock: SystemClock,
+        fetch: fetchMock.sandbox().get(`https://pub.orcid.org/v3.0/${orcid}/personal-details`, {
+          body: { name: { 'given-names': { value: givenName }, 'family-name': { value: familyName } } },
+        }),
+        logger: () => IO.of(undefined),
+      })()
 
-    test.prop([fc.orcid(), fc.nonEmptyString()])('without a family name', async (orcid, givenName) => {
+      expect(actual).toStrictEqual(E.right(expected))
+    })
+
+    test.prop([fc.orcid(), fc.nonEmptyString().map(givenName => [givenName, givenName.trim()])], {
+      examples: [
+        ['0000-0002-1825-0097' as Orcid, ['Josiah', 'Josiah']],
+        ['0000-0002-1825-0097' as Orcid, [' Josiah ', 'Josiah']],
+      ],
+    })('without a family name', async (orcid, [givenName, expected]) => {
       const actual = await _.getNameFromOrcid(orcid)({
         clock: SystemClock,
         fetch: fetchMock.sandbox().get(`https://pub.orcid.org/v3.0/${orcid}/personal-details`, {
@@ -34,7 +50,7 @@ describe('getNameFromOrcid', () => {
         logger: () => IO.of(undefined),
       })()
 
-      expect(actual).toStrictEqual(E.right(givenName))
+      expect(actual).toStrictEqual(E.right(expected))
     })
   })
 

@@ -4,6 +4,7 @@ import * as J from 'fp-ts/Json'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
+import * as s from 'fp-ts/string'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
@@ -26,11 +27,11 @@ const PersonalDetailsD = pipe(
     D.struct({
       name: D.struct({
         'given-names': D.struct({
-          value: NonEmptyStringC,
+          value: pipe(NonEmptyStringC, D.map(s.trim)),
         }),
         'family-name': D.nullable(
           D.struct({
-            value: NonEmptyStringC,
+            value: pipe(NonEmptyStringC, D.map(s.trim)),
           }),
         ),
       }),
