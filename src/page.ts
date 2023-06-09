@@ -95,7 +95,7 @@ export function page({
           ? html` <script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
           : ''}
 
-        <link rel="icon" href="${assets['favicon.ico']}" sizes="any" />
+        <link rel="icon" href="${assets['favicon.ico']}" sizes="32x32" />
         <link rel="icon" href="${assets['favicon.svg']}" type="image/svg+xml" />
 
         <body ${rawHtml(type === 'two-up' ? `class="${type}"` : '')}>
