@@ -1,21 +1,21 @@
 import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import type { Reader } from 'fp-ts/Reader'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from '../html'
-import { notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
+import { addCanonicalLinkHeader, notFound, seeOther, serviceUnavailable } from '../middleware'
+import { type FathomEnv, type PhaseEnv, page } from '../page'
 import { type Preprint, getPreprint } from '../preprint'
-import { preprintReviewsMatch, writeReviewStartMatch } from '../routes'
+import type { PublicUrlEnv } from '../public-url'
+import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../routes'
 import { renderDate } from '../time'
-import { type User, getUser } from '../user'
+import { type GetUserEnv, type User, getUser } from '../user'
 import { getForm } from './form'
 
 export const writeReview = flow(
@@ -45,7 +45,17 @@ export const writeReview = flow(
       ),
       RM.orElseW(error =>
         match(error)
-          .with('no-session', () => showStartPage(preprint))
+          .with(
+            'no-session',
+            () =>
+              showStartPage(preprint) as RM.ReaderMiddleware<
+                FathomEnv & GetUserEnv & PhaseEnv & PublicUrlEnv,
+                StatusOpen,
+                ResponseEnded,
+                never,
+                void
+              >,
+          )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
       ),
@@ -59,11 +69,13 @@ export const writeReview = flow(
   ),
 )
 
-const showStartPage = flow(
-  fromReaderK(startPage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showStartPage = (preprint: Preprint, user?: User) =>
+  pipe(
+    RM.rightReader(startPage(preprint, user)),
+    RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainFirstW(() => addCanonicalLinkHeader(writeReviewMatch.formatter, { id: preprint.id })),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
 function startPage(preprint: Preprint, user?: User) {
   return page({
@@ -211,10 +223,3 @@ const fromMiddlewareK =
   ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
   (...a) =>
     RM.fromMiddleware(f(...a))
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
-}
