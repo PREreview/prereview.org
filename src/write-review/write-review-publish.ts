@@ -98,7 +98,7 @@ const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; prep
     RM.ichainW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
     RM.ichain(() => RM.closeHeaders()),
     RM.ichain(() => RM.end()),
-    RM.orElseW(showFailureMessage),
+    RM.orElseW(() => showFailureMessage(user)),
   )
 
 const showPublishForm = flow(
@@ -132,7 +132,7 @@ function renderReview(form: CompletedForm) {
     </p>`
 }
 
-function failureMessage() {
+function failureMessage(user: User) {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
@@ -148,6 +148,7 @@ function failureMessage() {
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
     type: 'streamline',
+    user,
   })
 }
 
