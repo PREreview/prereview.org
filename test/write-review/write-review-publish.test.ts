@@ -355,7 +355,7 @@ describe('writeReviewPublish', () => {
     fc.completedForm(),
     fc.user(),
   ])(
-    'Zenodo is unavailable',
+    'when the PREreview cannot be published',
     async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], response, newReview, user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
