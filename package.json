@@ -85,7 +85,7 @@
     "@web/dev-server-rollup": "^0.5.1",
     "@web/test-runner": "^0.16.1",
     "@web/test-runner-commands": "^0.7.0",
-    "@web/test-runner-playwright": "^0.10.0",
+    "@web/test-runner-playwright": "^0.10.1",
     "babel-loader": "^9.1.2",
     "cdigit": "^3.2.1",
     "cookie-signature": "^1.2.1",
