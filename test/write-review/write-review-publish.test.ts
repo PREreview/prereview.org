@@ -379,7 +379,6 @@ describe('writeReviewPublish', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: expect.anything() },
         ]),

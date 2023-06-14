@@ -6,7 +6,6 @@ import * as R from 'fp-ts/Refinement'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
-import { endSession } from 'hyper-ts-session'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { Orcid } from 'orcid-id-ts'
@@ -120,12 +119,6 @@ const publishPrereview = (newPrereview: NewPrereview) =>
 const showFailureMessage = flow(
   fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
-  RM.ichainFirstW(() =>
-    pipe(
-      endSession(),
-      RM.orElseW(() => RM.right(undefined)),
-    ),
-  ),
   RM.ichainMiddlewareK(sendHtml),
 )
 
