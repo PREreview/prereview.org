@@ -55,7 +55,6 @@ export const writeReviewPublish = flow(
       RM.ichainW(state =>
         match(state)
           .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePublishForm)
-          .with({ method: 'POST', preprint: P.select() }, showFailureMessage)
           .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, showPublishForm)
           .otherwise(flow(({ form }) => form, fromMiddlewareK(redirectToNextForm(preprint.id)))),
       ),
