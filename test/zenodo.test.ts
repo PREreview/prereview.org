@@ -2010,6 +2010,7 @@ describe('createRecordOnZenodo', () => {
       submitted: true,
     }
     const actual = await _.createRecordOnZenodo(newPrereview)({
+      clock: SystemClock,
       fetch: fetchMock
         .sandbox()
         .postOnce(
@@ -2052,6 +2053,7 @@ describe('createRecordOnZenodo', () => {
           body: SubmittedDepositionC.encode(submittedDeposition),
           status: Status.Accepted,
         }),
+      logger: () => IO.of(undefined),
       zenodoApiKey,
     })()
 
@@ -2102,6 +2104,7 @@ describe('createRecordOnZenodo', () => {
       submitted: true,
     }
     const actual = await _.createRecordOnZenodo(newPrereview)({
+      clock: SystemClock,
       fetch: fetchMock
         .sandbox()
         .postOnce(
@@ -2144,6 +2147,7 @@ describe('createRecordOnZenodo', () => {
           body: SubmittedDepositionC.encode(submittedDeposition),
           status: Status.Accepted,
         }),
+      logger: () => IO.of(undefined),
       zenodoApiKey,
     })()
 
@@ -2165,7 +2169,9 @@ describe('createRecordOnZenodo', () => {
     ),
   ])('Zenodo is unavailable', async (newPrereview, zenodoApiKey, response) => {
     const actual = await _.createRecordOnZenodo(newPrereview)({
+      clock: SystemClock,
       fetch: () => response,
+      logger: () => IO.of(undefined),
       zenodoApiKey,
     })()
 

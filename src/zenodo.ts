@@ -153,7 +153,7 @@ export const getPrereviewsFromZenodo = flow(
 
 export const createRecordOnZenodo: (
   newPrereview: NewPrereview,
-) => ReaderTaskEither<ZenodoAuthenticatedEnv, unknown, [Doi, number]> = newPrereview =>
+) => ReaderTaskEither<ZenodoAuthenticatedEnv & L.LoggerEnv, unknown, [Doi, number]> = newPrereview =>
   pipe(
     createDepositMetadata(newPrereview),
     createDeposition,
@@ -165,6 +165,7 @@ export const createRecordOnZenodo: (
       }),
     ),
     RTE.chain(publishDeposition),
+    RTE.orElseFirstW(RTE.fromReaderIOK(() => L.error('Unable to create record on Zenodo'))),
     RTE.map(deposition => [deposition.metadata.doi, deposition.id]),
   )
 
