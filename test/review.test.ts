@@ -1,16 +1,19 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import * as _ from '../src/review'
+import { reviewMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
 describe('review', () => {
   test.prop([
+    fc.origin(),
     fc.integer(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.record({
@@ -28,14 +31,22 @@ describe('review', () => {
       text: fc.html(),
     }),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review can be loaded', async (id, connection, prereview, user) => {
+  ])('when the review can be loaded', async (publicUrl, id, connection, prereview, user) => {
     const getPrereview: Mock<_.GetPrereviewEnv['getPrereview']> = jest.fn(_ => TE.right(prereview))
 
-    const actual = await runMiddleware(_.review(id)({ getPrereview, getUser: () => M.fromEither(user) }), connection)()
+    const actual = await runMiddleware(
+      _.review(id)({ getPrereview, getUser: () => M.fromEither(user), publicUrl }),
+      connection,
+    )()
 
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.OK },
+        {
+          type: 'setHeader',
+          name: 'Link',
+          value: `<${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id })}>; rel="canonical"`,
+        },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: expect.anything() },
       ]),
@@ -44,12 +55,17 @@ describe('review', () => {
   })
 
   test.prop([
+    fc.origin(),
     fc.integer(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review is not found', async (id, connection, user) => {
+  ])('when the review is not found', async (publicUrl, id, connection, user) => {
     const actual = await runMiddleware(
-      _.review(id)({ getPrereview: () => TE.left({ status: Status.NotFound }), getUser: () => M.fromEither(user) }),
+      _.review(id)({
+        getPrereview: () => TE.left({ status: Status.NotFound }),
+        getUser: () => M.fromEither(user),
+        publicUrl,
+      }),
       connection,
     )()
 
@@ -64,13 +80,14 @@ describe('review', () => {
   })
 
   test.prop([
+    fc.origin(),
     fc.integer(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.anything(),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review cannot be loaded', async (id, connection, error, user) => {
+  ])('when the review cannot be loaded', async (publicUrl, id, connection, error, user) => {
     const actual = await runMiddleware(
-      _.review(id)({ getPrereview: () => TE.left(error), getUser: () => M.fromEither(user) }),
+      _.review(id)({ getPrereview: () => TE.left(error), getUser: () => M.fromEither(user), publicUrl }),
       connection,
     )()
 

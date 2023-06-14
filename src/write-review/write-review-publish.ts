@@ -6,7 +6,6 @@ import * as R from 'fp-ts/Refinement'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
-import { endSession } from 'hyper-ts-session'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { Orcid } from 'orcid-id-ts'
@@ -17,7 +16,6 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
-  preprintReviewsMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
@@ -27,7 +25,7 @@ import {
 } from '../routes'
 import { type User, getUser } from '../user'
 import { type CompletedForm, CompletedFormC } from './completed-form'
-import { deleteForm, getForm, redirectToNextForm } from './form'
+import { deleteForm, getForm, redirectToNextForm, saveForm } from './form'
 import { storeInformationForWriteReviewPublishedPage } from './published-review'
 
 export type NewPrereview = {
@@ -56,7 +54,6 @@ export const writeReviewPublish = flow(
       RM.ichainW(state =>
         match(state)
           .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePublishForm)
-          .with({ method: 'POST', preprint: P.select() }, showFailureMessage)
           .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, showPublishForm)
           .otherwise(flow(({ form }) => form, fromMiddlewareK(redirectToNextForm(preprint.id)))),
       ),
@@ -90,13 +87,18 @@ const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; prep
       review: renderReview(form),
       user,
     })),
-    RM.chainReaderTaskEitherKW(publishPrereview),
+    RM.chainReaderTaskEitherKW(
+      flow(
+        publishPrereview,
+        RTE.orElseFirstW(() => saveForm(user.orcid, preprint.id)(form)),
+      ),
+    ),
     RM.ichainFirst(() => RM.status(Status.SeeOther)),
     RM.ichainFirst(() => RM.header('Location', format(writeReviewPublishedMatch.formatter, { id: preprint.id }))),
     RM.ichainW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
     RM.ichain(() => RM.closeHeaders()),
     RM.ichain(() => RM.end()),
-    RM.orElseW(() => showFailureMessage(preprint)),
+    RM.orElseW(() => showFailureMessage(user)),
   )
 
 const showPublishForm = flow(
@@ -115,12 +117,6 @@ const publishPrereview = (newPrereview: NewPrereview) =>
 const showFailureMessage = flow(
   fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
-  RM.ichainFirstW(() =>
-    pipe(
-      endSession(),
-      RM.orElseW(() => RM.right(undefined)),
-    ),
-  ),
   RM.ichainMiddlewareK(sendHtml),
 )
 
@@ -136,22 +132,23 @@ function renderReview(form: CompletedForm) {
     </p>`
 }
 
-function failureMessage(preprint: PreprintTitle) {
+function failureMessage(user: User) {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
       <main id="main-content">
         <h1>Sorry, we’re having problems</h1>
 
-        <p>We’re unable to publish your PREreview now.</p>
+        <p>We were unable to publish your PREreview. We saved your work.</p>
 
-        <p>Please try again later.</p>
+        <p>Please try again later by coming back to this page.</p>
 
-        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="button">Back to preprint</a>
+        <p>If this problem persists, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
     type: 'streamline',
+    user,
   })
 }
 

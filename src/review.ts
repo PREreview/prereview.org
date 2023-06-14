@@ -13,11 +13,11 @@ import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
-import { notFound } from './middleware'
+import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
 import { isPseudonym } from './pseudonym'
-import { preprintReviewsMatch, profileMatch } from './routes'
+import { preprintReviewsMatch, profileMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
 import type { User } from './user'
 import { maybeGetUser } from './user'
@@ -46,23 +46,26 @@ export interface GetPrereviewEnv {
 const getPrereview = (id: number) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereview }: GetPrereviewEnv) => getPrereview(id)))
 
-const sendPage = flow(
-  fromReaderK(createPage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const sendPage = (id: number) =>
+  flow(
+    fromReaderK(createPage),
+    RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainFirstW(() => addCanonicalLinkHeader(reviewMatch.formatter, { id })),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
-export const review = flow(
-  RM.fromReaderTaskEitherK(getPrereview),
-  RM.bindTo('prereview'),
-  RM.apSW('user', maybeGetUser),
-  RM.ichainW(({ prereview, user }) => sendPage(prereview, user)),
-  RM.orElseW(error =>
-    match(error)
-      .with({ status: Status.NotFound }, () => notFound)
-      .otherwise(() => pipe(maybeGetUser, RM.ichainW(showFailureMessage))),
-  ),
-)
+export const review = (id: number) =>
+  pipe(
+    RM.fromReaderTaskEither(getPrereview(id)),
+    RM.bindTo('prereview'),
+    RM.apSW('user', maybeGetUser),
+    RM.ichainW(({ prereview, user }) => sendPage(id)(prereview, user)),
+    RM.orElseW(error =>
+      match(error)
+        .with({ status: Status.NotFound }, () => notFound)
+        .otherwise(() => pipe(maybeGetUser, RM.ichainW(showFailureMessage))),
+    ),
+  )
 
 const showFailureMessage = flow(
   fromReaderK(failureMessage),

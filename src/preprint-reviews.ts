@@ -18,11 +18,11 @@ import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
-import { notFound } from './middleware'
+import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
 import { type Preprint, getPreprint } from './preprint'
 import type { PreprintId } from './preprint-id'
-import { reviewMatch, writeReviewMatch } from './routes'
+import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
 import type { GetUserEnv, User } from './user'
 import { maybeGetUser } from './user'
@@ -63,11 +63,18 @@ export interface GetRapidPrereviewsEnv {
   getRapidPrereviews: (id: PreprintId) => TE.TaskEither<'unavailable', ReadonlyArray<RapidPrereview>>
 }
 
-const sendPage = flow(
-  fromReaderK(createPage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const sendPage = (args: {
+  preprint: Preprint
+  reviews: ReadonlyArray<Prereview>
+  rapidPrereviews: ReadonlyArray<RapidPrereview>
+  user?: User
+}) =>
+  pipe(
+    RM.rightReader(createPage(args)),
+    RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainFirstW(() => addCanonicalLinkHeader(preprintReviewsMatch.formatter, { id: args.preprint.id })),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
 const getPrereviews = (id: PreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }: GetPrereviewsEnv) => getPrereviews(id)))

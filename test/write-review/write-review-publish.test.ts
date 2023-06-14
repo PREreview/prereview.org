@@ -93,6 +93,7 @@ describe('writeReviewPublish', () => {
         user: UserC.encode(user),
         'published-review': { doi: reviewDoi, form: CompletedFormC.encode(newReview), id: reviewId },
       })
+      expect(await formStore.has(formKey(user.orcid, preprintTitle.id))).toBe(false)
     },
   )
 
@@ -152,10 +153,13 @@ describe('writeReviewPublish', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+          },
+          { type: 'endResponse' },
         ]),
       )
     },
@@ -354,7 +358,7 @@ describe('writeReviewPublish', () => {
     fc.completedForm(),
     fc.user(),
   ])(
-    'Zenodo is unavailable',
+    'when the PREreview cannot be published',
     async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], response, newReview, user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
@@ -378,11 +382,11 @@ describe('writeReviewPublish', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: expect.anything() },
         ]),
       )
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toStrictEqual(CompletedFormC.encode(newReview))
     },
   )
 })
