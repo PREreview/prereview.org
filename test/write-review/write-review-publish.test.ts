@@ -93,6 +93,7 @@ describe('writeReviewPublish', () => {
         user: UserC.encode(user),
         'published-review': { doi: reviewDoi, form: CompletedFormC.encode(newReview), id: reviewId },
       })
+      expect(await formStore.has(formKey(user.orcid, preprintTitle.id))).toBe(false)
     },
   )
 
