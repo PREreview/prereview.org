@@ -16,7 +16,6 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
-  preprintReviewsMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
@@ -99,7 +98,7 @@ const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; prep
     RM.ichainW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),
     RM.ichain(() => RM.closeHeaders()),
     RM.ichain(() => RM.end()),
-    RM.orElseW(() => showFailureMessage(preprint)),
+    RM.orElseW(showFailureMessage),
   )
 
 const showPublishForm = flow(
@@ -133,18 +132,18 @@ function renderReview(form: CompletedForm) {
     </p>`
 }
 
-function failureMessage(preprint: PreprintTitle) {
+function failureMessage() {
   return page({
     title: plainText`Sorry, we’re having problems`,
     content: html`
       <main id="main-content">
         <h1>Sorry, we’re having problems</h1>
 
-        <p>We’re unable to publish your PREreview now.</p>
+        <p>We were unable to publish your PREreview. We saved your work.</p>
 
-        <p>Please try again later.</p>
+        <p>Please try again later by coming back to this page.</p>
 
-        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="button">Back to preprint</a>
+        <p>If this problem persists, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
