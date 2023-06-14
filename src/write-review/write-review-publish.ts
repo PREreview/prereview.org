@@ -27,7 +27,7 @@ import {
 } from '../routes'
 import { type User, getUser } from '../user'
 import { type CompletedForm, CompletedFormC } from './completed-form'
-import { deleteForm, getForm, redirectToNextForm } from './form'
+import { deleteForm, getForm, redirectToNextForm, saveForm } from './form'
 import { storeInformationForWriteReviewPublishedPage } from './published-review'
 
 export type NewPrereview = {
@@ -90,7 +90,12 @@ const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; prep
       review: renderReview(form),
       user,
     })),
-    RM.chainReaderTaskEitherKW(publishPrereview),
+    RM.chainReaderTaskEitherKW(
+      flow(
+        publishPrereview,
+        RTE.orElseFirstW(() => saveForm(user.orcid, preprint.id)(form)),
+      ),
+    ),
     RM.ichainFirst(() => RM.status(Status.SeeOther)),
     RM.ichainFirst(() => RM.header('Location', format(writeReviewPublishedMatch.formatter, { id: preprint.id }))),
     RM.ichainW(([doi, id]) => storeInformationForWriteReviewPublishedPage(doi, id, form)),

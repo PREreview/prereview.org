@@ -384,6 +384,7 @@ describe('writeReviewPublish', () => {
           { type: 'setBody', body: expect.anything() },
         ]),
       )
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toStrictEqual(CompletedFormC.encode(newReview))
     },
   )
 })
