@@ -1,7 +1,8 @@
 {
   "extends": ["stylelint-config-standard", "stylelint-config-logic-order"],
-  "plugins": ["stylelint-use-logical-spec"],
+  "plugins": ["@csstools/stylelint-no-at-nest-rule", "stylelint-use-logical-spec"],
   "rules": {
+    "@csstools/stylelint-no-at-nest-rule": true,
     "custom-property-pattern": "^[a-z]{1,}(-[a-z0-9]+|-{1,2}[0-9][a-z0-9]*)*$",
     "import-notation": "url",
     "liberty/use-logical-spec": true,

@@ -345,7 +345,7 @@ body > footer {
     background-repeat: no-repeat;
     background-size: 1em;
 
-    @nest .byline & {
+    .byline & {
       padding-right: calc(0.4ch + 1em + 0.1ch); /* stylelint-disable-line liberty/use-logical-spec */
       padding-left: 0; /* stylelint-disable-line liberty/use-logical-spec */
       background-position: right 0.1ch bottom 40%;
@@ -371,12 +371,12 @@ img {
 }
 
 nav {
-  @nest .contents > & {
+  .contents > & {
     display: flex;
     justify-content: space-between;
   }
 
-  @nest :not(.contents, .header, .navigation) > & {
+  :not(.contents, .header, .navigation) > & {
     margin-block-start: var(--space-m);
   }
 }
@@ -425,22 +425,23 @@ nav {
 }
 
 header {
-  @nest :not(.contents) > & {
+  :not(.contents) > & {
     & :any-link {
       color: inherit;
     }
 
-    & + :not(.visually-hidden), & + .visually-hidden + * {
+    & + :not(.visually-hidden),
+    & + .visually-hidden + * {
       margin-block-start: var(--space-m-l);
     }
   }
 }
 
 article {
-  @nest :not(aside) > & {
+  :not(aside) > & {
     margin-block-start: var(--space-s-l);
 
-    @nest section & {
+    section & {
       margin-block-start: var(--space-xs-s);
     }
   }
@@ -457,7 +458,7 @@ article {
     margin-block-start: 0;
   }
 
-  @nest :is(:--heading, details) + & {
+  :is(:--heading, details) + & {
     margin-block-start: var(--space-2xs-xs);
   }
 }
@@ -466,19 +467,19 @@ article {
   font-weight: 700;
   line-height: 1.2;
 
-  @nest :where(:not(caption, legend)) > & {
+  :where(:not(caption, legend)) > & {
     margin-block-start: var(--space-s-m);
   }
 
-  @nest :--heading + & {
+  :--heading + & {
     margin-block-start: var(--space-2xs-xs);
   }
 
-  @nest :--scroller + & {
+  :--scroller + & {
     margin-block-start: var(--space-m-l);
   }
 
-  @nest section & {
+  section & {
     margin-block-start: var(--space-l-xl);
 
     &:has(+ :--list) {
@@ -491,7 +492,7 @@ article {
 h1 {
   font-size: var(--step-5);
 
-  @nest form & {
+  form & {
     font-size: var(--step-4);
   }
 }
@@ -499,15 +500,15 @@ h1 {
 h2 {
   font-size: var(--step-4);
 
-  @nest :is(aside, form) & {
+  :is(aside, form) & {
     font-size: var(--step-3);
   }
 
-  @nest :is(section, .preview) & {
+  :is(section, .preview) & {
     font-size: var(--step-2);
   }
 
-  @nest :is(error-summary, notification-banner) & {
+  :is(error-summary, notification-banner) & {
     font-size: var(--step-1);
   }
 }
@@ -515,7 +516,7 @@ h2 {
 h3 {
   font-size: var(--step-2);
 
-  @nest .preview & {
+  .preview & {
     font-size: var(--step-1);
   }
 }
@@ -523,7 +524,7 @@ h3 {
 h4 {
   font-size: var(--step-1);
 
-  @nest .preview & {
+  .preview & {
     font-size: var(--step-0);
   }
 }
@@ -531,7 +532,7 @@ h4 {
 h5 {
   font-size: var(--step-0);
 
-  @nest .preview & {
+  .preview & {
     font-size: var(--step--1);
   }
 }
@@ -539,7 +540,7 @@ h5 {
 h6 {
   font-size: var(--step--1);
 
-  @nest .preview & {
+  .preview & {
     font-size: var(--step--2);
   }
 }
@@ -548,7 +549,7 @@ h6 {
   margin-block-start: var(--space-s);
   padding-inline-start: var(--space-m);
 
-  @nest nav > & {
+  nav > & {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
@@ -559,7 +560,7 @@ h6 {
     padding-inline-start: 0;
   }
 
-  @nest fieldset > & {
+  fieldset > & {
     list-style-type: none;
     margin-block-start: 0;
     padding-inline-start: 0;
@@ -569,13 +570,13 @@ h6 {
     }
   }
 
-  @nest details + & {
+  details + & {
     & > :first-child {
       margin-block-start: var(--space-m-l);
     }
   }
 
-  @nest error-summary > & {
+  error-summary > & {
     list-style-type: none;
     margin-block-start: var(--space-3xs-2xs);
     padding-inline-start: 0;
@@ -583,7 +584,7 @@ h6 {
 }
 
 dl {
-  @nest header > & {
+  header > & {
     display: flex;
     flex-wrap: wrap;
     column-gap: var(--space-s-m);
@@ -597,7 +598,7 @@ dl {
     }
   }
 
-  @nest main > & {
+  main > & {
     margin-block-start: var(--space-m);
     max-inline-size: 64ch;
 
@@ -629,7 +630,7 @@ dl {
 dt {
   font-weight: 500;
 
-  @nest header & {
+  header & {
     font-weight: 700;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
@@ -670,7 +671,7 @@ th {
     text-align: start;
   }
 
-  @nest & + & {
+  & + & {
     padding-inline-start: var(--space-2xs-s);
   }
 }
@@ -679,11 +680,11 @@ td {
   text-align: end;
   font-variant-numeric: tabular-nums;
 
-  @nest th + & {
+  th + & {
     padding-inline-start: var(--space-s-m);
   }
 
-  @nest & + & {
+  & + & {
     padding-inline-start: var(--space-2xs-s);
   }
 }
@@ -693,7 +694,7 @@ p {
   margin-block-start: var(--space-xs);
   max-inline-size: 64ch;
 
-  @nest article + & {
+  article + & {
     margin-block-start: var(--space-s-m);
   }
 }
@@ -705,7 +706,7 @@ blockquote {
 details {
   margin-block-start: var(--space-2xs-xs);
 
-  @nest [role='note'] + & {
+  [role='note'] + & {
     margin-block-start: var(--space-xs-s);
   }
 
@@ -783,12 +784,6 @@ label {
   cursor: pointer;
   touch-action: manipulation;
 
-  @nest :not(:--heading) > & {
-    display: block;
-    inline-size: fit-content;
-    margin-block-start: var(--space-m);
-  }
-
   &:not([for]) {
     display: flex;
     flex-wrap: wrap;
@@ -806,17 +801,24 @@ label {
       margin-inline-end: var(--space-2xs-xs);
     }
 
-    @nest li > & + [role='note'] {
+    li > & + [role='note'] {
       margin-inline-start: calc(var(--space-m) + var(--space-2xs-xs));
     }
 
-    @nest fieldset > &, fieldset :not(.conditional) > & {
+    fieldset > &,
+    fieldset :not(.conditional) > & {
       margin-block-start: var(--space-s);
     }
 
-    @nest details + & {
+    details + & {
       margin-block-start: var(--space-m-l);
     }
+  }
+
+  :not(:--heading) > & {
+    display: block;
+    inline-size: fit-content;
+    margin-block-start: var(--space-m);
   }
 }
 
@@ -840,10 +842,6 @@ label {
   padding-inline: var(--space-xs);
   touch-action: manipulation;
   user-select: none;
-
-  @nest :not(.button-group) > & {
-    margin-block-start: var(--space-m-l);
-  }
 
   &:focus {
     user-select: auto;
@@ -872,6 +870,10 @@ label {
     &:hover {
       filter: brightness(1.1);
     }
+  }
+
+  :not(.button-group) > & {
+    margin-block-start: var(--space-m-l);
   }
 
   @media screen {
@@ -906,11 +908,11 @@ label {
   row-gap: var(--space-2xs-xs);
   margin-block-start: var(--space-m-l);
 
-  @nest p + & {
+  p + & {
     margin-block-start: var(--space-xs);
   }
 
-  @nest .preview + & {
+  .preview + & {
     margin-block-start: var(--space-s);
   }
 
@@ -941,12 +943,6 @@ label {
   block-size: var(--space-l);
   touch-action: manipulation;
   user-select: none;
-
-  @nest [role='group'] > & {
-    &:not(:last-child) {
-      margin-inline-end: calc(-1 * var(--width-divider));
-    }
-  }
 
   &:focus-visible {
     position: relative;
@@ -994,6 +990,12 @@ label {
     }
   }
 
+  [role='group'] > & {
+    &:not(:last-child) {
+      margin-inline-end: calc(-1 * var(--width-divider));
+    }
+  }
+
   & svg {
     block-size: 100%;
     fill: currentcolor;
@@ -1013,11 +1015,11 @@ label {
   margin-block-start: var(--space-3xs);
   color: var(--color-error);
 
-  @nest :not(label) + & {
+  :not(label) + & {
     margin-block-start: var(--space-s);
   }
 
-  @nest details + & {
+  details + & {
     margin-block-start: var(--space-m-l);
   }
 }
@@ -1037,7 +1039,7 @@ label {
   margin-block-start: var(--space-4xs-3xs);
   color: var(--color-text-light);
 
-  @nest fieldset > & {
+  fieldset > & {
     margin-block-start: var(--space-xs);
   }
 }
@@ -1112,7 +1114,7 @@ notification-banner {
 }
 
 .error {
-  @nest error-summary + & {
+  error-summary + & {
     margin-block-start: var(--space-s-l);
   }
 
@@ -1171,32 +1173,32 @@ notification-banner {
     }
   }
 
-  @nest :not(label) > &:where(:first-child) {
+  &:read-only {
+    cursor: not-allowed;
+  }
+
+  :not(label) > &:where(:first-child) {
     margin-block-start: var(--space-s-m);
   }
 
-  @nest .error-message + & {
+  .error-message + & {
     margin-block-start: var(--space-3xs);
   }
 
-  @nest label + & {
+  label + & {
     margin-block-start: var(--space-4xs);
   }
 
-  @nest [role='note'] + & {
+  [role='note'] + & {
     margin-block-start: var(--space-3xs-2xs);
   }
 
-  @nest [role='toolbar'] + & {
+  [role='toolbar'] + & {
     margin-block-start: var(--space-2xs);
   }
 
-  @nest details + & {
+  details + & {
     margin-block-start: var(--space-m-l);
-  }
-
-  &:read-only {
-    cursor: not-allowed;
   }
 
   @media screen {
@@ -1222,7 +1224,7 @@ html-editor {
     resize: none;
   }
 
-  @nest details + & {
+  details + & {
     margin-block-start: var(--space-m-l);
   }
 
@@ -1543,7 +1545,7 @@ skip-link {
   margin-block-start: var(--space-m-l);
   padding-inline-start: 0;
 
-  @nest section & {
+  section & {
     margin-block-start: var(--space-xs-s);
   }
 
