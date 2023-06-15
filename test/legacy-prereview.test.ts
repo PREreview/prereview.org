@@ -197,7 +197,7 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
     fc.boolean(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
   ])('when the response has a non-200/404 status code', async (uuid, app, key, url, update, status) => {
-    const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/preprints/${encodeURIComponent(uuid)}`, status)
+    const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/personas/${encodeURIComponent(uuid)}`, status)
 
     const actual = await _.getProfileIdFromLegacyPreviewUuid(uuid)({
       fetch,
