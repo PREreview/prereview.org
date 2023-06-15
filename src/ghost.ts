@@ -10,7 +10,7 @@ import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { sanitizeHtml } from './html'
+import { type Html, sanitizeHtml } from './html'
 
 export interface GhostApiEnv {
   ghostApi: {
@@ -44,8 +44,10 @@ const GhostPageD = pipe(
   ),
 )
 
-export const getPage = flow(
-  RTE.fromReaderK((id: string) => ghostUrl(`pages/${id}`)),
+export const getPage: (
+  id: string,
+) => RTE.ReaderTaskEither<GhostApiEnv & F.FetchEnv, 'not-found' | 'unavailable', Html> = flow(
+  RTE.fromReaderK(id => ghostUrl(`pages/${id}`)),
   RTE.chainW(flow(F.Request('GET'), F.send)),
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),

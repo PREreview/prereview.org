@@ -16,8 +16,8 @@ import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import { type Uuid, isUuid } from 'uuid-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { type PreprintId, parsePreprintDoi } from './preprint-id'
-import type { OrcidProfileId, PseudonymProfileId } from './profile-id'
+import { type IndeterminatePreprintId, type PreprintId, parsePreprintDoi } from './preprint-id'
+import type { OrcidProfileId, ProfileId, PseudonymProfileId } from './profile-id'
 import { PseudonymC, isPseudonym } from './pseudonym'
 import type { NewPrereview } from './write-review'
 
@@ -146,7 +146,13 @@ const LegacyPrereviewProfileUuidD = pipe(
   ),
 )
 
-export const getPreprintIdFromLegacyPreviewUuid = flow(
+export const getPreprintIdFromLegacyPreviewUuid: (
+  uuid: Uuid,
+) => RTE.ReaderTaskEither<
+  LegacyPrereviewApiEnv & F.FetchEnv,
+  'not-found' | 'unavailable',
+  Extract<IndeterminatePreprintId, { value: Doi }>
+> = flow(
   RTE.fromReaderK((uuid: Uuid) => legacyPrereviewUrl(`preprints/${uuid}`)),
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
@@ -162,7 +168,9 @@ export const getPreprintIdFromLegacyPreviewUuid = flow(
   RTE.chainOptionK<'not-found' | 'unavailable'>(() => 'not-found')(flow(get('data.[0].handle'), parsePreprintDoi)),
 )
 
-export const getProfileIdFromLegacyPreviewUuid = flow(
+export const getProfileIdFromLegacyPreviewUuid: (
+  uuid: Uuid,
+) => RTE.ReaderTaskEither<LegacyPrereviewApiEnv & F.FetchEnv, 'not-found' | 'unavailable', ProfileId> = flow(
   RTE.fromReaderK((uuid: Uuid) => legacyPrereviewUrl(`personas/${uuid}`)),
   RTE.chainReaderK(flow(F.Request('GET'), addLegacyPrereviewApiHeaders)),
   RTE.chainW(F.send),
