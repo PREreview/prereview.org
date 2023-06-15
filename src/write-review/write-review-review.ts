@@ -40,7 +40,7 @@ export const writeReviewReview = flow(
           .with({ form: { alreadyWritten: 'yes' } }, showPasteReviewForm)
           .with({ form: { alreadyWritten: 'no' } }, showWriteReviewForm)
           .with(
-            { form: { alreadyWritten: P.optional(P.nullish) } },
+            { form: { alreadyWritten: P.optional(undefined) } },
             fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
           )
           .exhaustive(),

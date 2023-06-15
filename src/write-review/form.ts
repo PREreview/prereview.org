@@ -91,14 +91,14 @@ export function deleteForm(
 export const nextFormMatch = (form: Form) =>
   match(form)
     .with(
-      { alreadyWritten: P.optional(P.nullish), review: P.optional(P.nullish) },
+      { alreadyWritten: P.optional(undefined), review: P.optional(undefined) },
       () => writeReviewAlreadyWrittenMatch,
     )
-    .with({ review: P.optional(P.nullish) }, () => writeReviewReviewMatch)
-    .with({ persona: P.optional(P.nullish) }, () => writeReviewPersonaMatch)
-    .with({ moreAuthors: P.optional(P.nullish) }, () => writeReviewAuthorsMatch)
-    .with({ competingInterests: P.optional(P.nullish) }, () => writeReviewCompetingInterestsMatch)
-    .with({ conduct: P.optional(P.nullish) }, () => writeReviewConductMatch)
+    .with({ review: P.optional(undefined) }, () => writeReviewReviewMatch)
+    .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
+    .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
+    .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
+    .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
     .otherwise(() => writeReviewPublishMatch)
 
 export const redirectToNextForm = (preprint: PreprintId) =>
