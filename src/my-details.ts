@@ -20,17 +20,16 @@ export const myDetails = pipe(
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(error =>
     match(error)
-      .with(
-        'no-session',
-        () =>
-          logInAndRedirect(myDetailsMatch.formatter, {}) as RM.ReaderMiddleware<
-            GetUserEnv & FathomEnv & PhaseEnv & PublicUrlEnv & OAuthEnv,
-            StatusOpen,
-            ResponseEnded,
-            never,
-            void
-          >,
-      )
+      .returnType<
+        RM.ReaderMiddleware<
+          GetUserEnv & FathomEnv & PhaseEnv & PublicUrlEnv & OAuthEnv,
+          StatusOpen,
+          ResponseEnded,
+          never,
+          void
+        >
+      >()
+      .with('no-session', () => logInAndRedirect(myDetailsMatch.formatter, {}))
       .with(P.instanceOf(Error), () => serviceUnavailable)
       .exhaustive(),
   ),

@@ -45,17 +45,16 @@ export const writeReview = flow(
       ),
       RM.orElseW(error =>
         match(error)
-          .with(
-            'no-session',
-            () =>
-              showStartPage(preprint) as RM.ReaderMiddleware<
-                FathomEnv & GetUserEnv & PhaseEnv & PublicUrlEnv,
-                StatusOpen,
-                ResponseEnded,
-                never,
-                void
-              >,
-          )
+          .returnType<
+            RM.ReaderMiddleware<
+              FathomEnv & GetUserEnv & PhaseEnv & PublicUrlEnv,
+              StatusOpen,
+              ResponseEnded,
+              never,
+              void
+            >
+          >()
+          .with('no-session', () => showStartPage(preprint))
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
       ),
