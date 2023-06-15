@@ -268,6 +268,10 @@ describe('authenticate', () => {
     'when a pseudonym cannot be retrieved',
     async (code, [referer], oauth, accessToken, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
+      const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+        status: Status.OK,
+        body: accessToken,
+      })
 
       const actual = await runMiddleware(
         _.authenticate(
@@ -275,10 +279,7 @@ describe('authenticate', () => {
           referer.href,
         )({
           clock: SystemClock,
-          fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-            status: Status.OK,
-            body: accessToken,
-          }),
+          fetch,
           getPseudonym: () => TE.left('unavailable'),
           logger: () => IO.of(undefined),
           oauth,
@@ -300,6 +301,7 @@ describe('authenticate', () => {
           { type: 'setBody', body: expect.anything() },
         ]),
       )
+      expect(fetch.done()).toBeTruthy()
     },
   )
 

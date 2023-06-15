@@ -321,6 +321,7 @@ describe('getPreprintFromPhilsci', () => {
       const actual = await _.getPreprintFromPhilsci(id)({ fetch })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
     },
   )
 })

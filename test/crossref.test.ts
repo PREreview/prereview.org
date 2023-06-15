@@ -2256,6 +2256,7 @@ describe('getPreprintFromCrossref', () => {
     const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([
@@ -2320,6 +2321,7 @@ describe('getPreprintFromCrossref', () => {
     const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
     expect(actual).toStrictEqual(E.left('not-a-preprint'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([fc.crossrefPreprintId(), fc.record({ status: fc.integer(), body: fc.string() })])(
@@ -2332,6 +2334,7 @@ describe('getPreprintFromCrossref', () => {
       const actual = await _.getPreprintFromCrossref(id)({ fetch })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
     },
   )
 })

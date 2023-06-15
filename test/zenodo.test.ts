@@ -128,7 +128,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(
           {
-            url: 'https://zenodo.org/api/records/',
+            url: 'begin:https://zenodo.org/api/records/?',
             query: {
               communities: 'prereview-reviews',
               page,
@@ -384,7 +384,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
         {
-          url: 'https://zenodo.org/api/records/',
+          url: 'begin:https://zenodo.org/api/records/?',
           query: {
             communities: 'prereview-reviews',
             page,
@@ -520,24 +520,26 @@ describe('getRecentPrereviewsFromZenodo', () => {
       },
     }
 
+    const fetch = fetchMock.sandbox().getOnce(
+      {
+        url: 'begin:https://zenodo.org/api/records/?',
+        query: {
+          communities: 'prereview-reviews',
+          page,
+          size: '5',
+          sort: '-publication_date',
+          subtype: 'peerreview',
+        },
+      },
+      {
+        body: RecordsC.encode(records),
+        status: Status.OK,
+      },
+    )
+
     const actual = await _.getRecentPrereviewsFromZenodo(page)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'https://zenodo.org/api/records/',
-          query: {
-            communities: 'prereview-reviews',
-            page,
-            size: '5',
-            sort: '-publication_date',
-            subtype: 'peerreview',
-          },
-        },
-        {
-          body: RecordsC.encode(records),
-          status: Status.OK,
-        },
-      ),
+      fetch,
       getPreprintTitle: id =>
         match(id.value as unknown)
           .with('10.1101/2022.01.13.476201', () => TE.left(error1))
@@ -546,6 +548,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([fc.integer({ min: 1 })])('when the list is empty', async page => {
@@ -553,7 +556,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
         {
-          url: 'https://zenodo.org/api/records/',
+          url: 'begin:https://zenodo.org/api/records/?',
           query: {
             communities: 'prereview-reviews',
             page,
@@ -577,26 +580,29 @@ describe('getRecentPrereviewsFromZenodo', () => {
   test.prop([fc.integer({ min: 1 }), fc.integer({ min: 400, max: 599 })])(
     'when the PREreviews cannot be loaded',
     async (page, status) => {
+      const fetch = fetchMock.sandbox().getOnce(
+        {
+          url: 'begin:https://zenodo.org/api/records/?',
+          query: {
+            communities: 'prereview-reviews',
+            page,
+            size: '5',
+            sort: '-publication_date',
+            subtype: 'peerreview',
+          },
+        },
+        { status },
+      )
+
       const actual = await _.getRecentPrereviewsFromZenodo(page)({
         clock: SystemClock,
-        fetch: fetchMock.sandbox().getOnce(
-          {
-            url: 'https://zenodo.org/api/records/',
-            query: {
-              communities: 'prereview-reviews',
-              page,
-              size: '5',
-              sort: '-publication_date',
-              subtype: 'peerreview',
-            },
-          },
-          { status },
-        ),
+        fetch,
         getPreprintTitle: () => () => Promise.reject('should not be called'),
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
     },
   )
 
@@ -832,36 +838,41 @@ describe('getPrereviewFromZenodo', () => {
           title: 'Title',
         },
       }
+      const fetch = fetchMock
+        .sandbox()
+        .getOnce(`https://zenodo.org/api/records/${id}`, {
+          body: RecordC.encode(record),
+          status: Status.OK,
+        })
+        .getOnce('http://example.com/file', { status: textStatus })
 
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
-        fetch: fetchMock
-          .sandbox()
-          .getOnce(`https://zenodo.org/api/records/${id}`, {
-            body: RecordC.encode(record),
-            status: Status.OK,
-          })
-          .getOnce('http://example.com/file', { status: textStatus }),
+        fetch,
         getPreprint: () => TE.right(preprint),
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left(expect.anything()))
+      expect(fetch.done()).toBeTruthy()
     },
   )
 
   test.prop([fc.integer()])('when the review cannot be loaded', async id => {
+    const fetch = fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+      body: undefined,
+      status: Status.ServiceUnavailable,
+    })
+
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
-        body: undefined,
-        status: Status.ServiceUnavailable,
-      }),
+      fetch,
       getPreprint: () => () => Promise.reject('should not be called'),
       logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left(expect.anything()))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([fc.integer(), fc.preprintDoi(), fc.constantFrom('not-found' as const, 'unavailable' as const)])(
@@ -910,20 +921,23 @@ describe('getPrereviewFromZenodo', () => {
         },
       }
 
+      const fetch = fetchMock
+        .sandbox()
+        .getOnce(`https://zenodo.org/api/records/${id}`, {
+          body: RecordC.encode(record),
+          status: Status.OK,
+        })
+        .getOnce('http://example.com/file', { body: 'Some text' })
+
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
-        fetch: fetchMock
-          .sandbox()
-          .getOnce(`https://zenodo.org/api/records/${id}`, {
-            body: RecordC.encode(record),
-            status: Status.OK,
-          })
-          .getOnce('http://example.com/file', { body: 'Some text' }),
+        fetch,
         getPreprint: () => TE.left(error),
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left(error))
+      expect(fetch.done()).toBeTruthy()
     },
   )
 
@@ -1109,17 +1123,20 @@ describe('getPrereviewFromZenodo', () => {
         },
       }
 
+      const fetch = fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+        body: RecordC.encode(record),
+        status: Status.OK,
+      })
+
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
-        fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
-          body: RecordC.encode(record),
-          status: Status.OK,
-        }),
+        fetch,
         getPreprint: () => () => Promise.reject('should not be called'),
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left(expect.anything()))
+      expect(fetch.done()).toBeTruthy()
     },
   )
 
@@ -1231,17 +1248,20 @@ describe('getPrereviewFromZenodo', () => {
       },
     }
 
+    const fetch = fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+      body: RecordC.encode(record),
+      status: Status.OK,
+    })
+
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
-        body: RecordC.encode(record),
-        status: Status.OK,
-      }),
+      fetch,
       getPreprint: () => TE.right(preprint),
       logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left(expect.anything()))
+    expect(fetch.done()).toBeTruthy()
   })
 })
 
@@ -1347,7 +1367,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
           fetch: fetchMock.sandbox().getOnce(
             {
-              url: 'https://zenodo.org/api/records/',
+              url: 'begin:https://zenodo.org/api/records/?',
               query: {
                 communities: 'prereview-reviews',
                 q: `creators.orcid:${profile.value}`,
@@ -1489,7 +1509,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
           fetch: fetchMock.sandbox().getOnce(
             {
-              url: 'https://zenodo.org/api/records/',
+              url: 'begin:https://zenodo.org/api/records/?',
               query: {
                 communities: 'prereview-reviews',
                 q: `creators.name:"${profile.value}"`,
@@ -1717,7 +1737,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(
           {
-            url: 'https://zenodo.org/api/records/',
+            url: 'begin:https://zenodo.org/api/records/?',
             query: {
               communities: 'prereview-reviews',
               size: '100',
@@ -1757,25 +1777,28 @@ describe('getPrereviewsForProfileFromZenodo', () => {
       max: 599,
     }),
   ])('when the PREreviews cannot be loaded', async (profile, status) => {
+    const fetch = fetchMock.sandbox().getOnce(
+      {
+        url: 'begin:https://zenodo.org/api/records/?',
+        query: {
+          communities: 'prereview-reviews',
+          size: '100',
+          sort: '-publication_date',
+          subtype: 'peerreview',
+        },
+      },
+      { status },
+    )
+
     const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'https://zenodo.org/api/records/',
-          query: {
-            communities: 'prereview-reviews',
-            size: '100',
-            sort: '-publication_date',
-            subtype: 'peerreview',
-          },
-        },
-        { status },
-      ),
+      fetch,
       getPreprintTitle: () => () => Promise.reject('should not be called'),
       logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 })
 
@@ -1827,7 +1850,7 @@ describe('getPrereviewsFromZenodo', () => {
     const actual = await _.getPrereviewsFromZenodo(preprint)({
       fetch: fetchMock.sandbox().getOnce(
         {
-          url: 'https://zenodo.org/api/records/',
+          url: 'begin:https://zenodo.org/api/records/?',
           query: {
             communities: 'prereview-reviews',
             q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
@@ -1945,22 +1968,23 @@ describe('getPrereviewsFromZenodo', () => {
   test.prop([fc.preprintId(), fc.integer({ min: 400, max: 599 })])(
     'when the PREreviews cannot be loaded',
     async (preprint, status) => {
-      const actual = await _.getPrereviewsFromZenodo(preprint)({
-        fetch: fetchMock.sandbox().getOnce(
-          {
-            url: 'https://zenodo.org/api/records/',
-            query: {
-              communities: 'prereview-reviews',
-              q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
-              sort: '-publication_date',
-              subtype: 'peerreview',
-            },
+      const fetch = fetchMock.sandbox().getOnce(
+        {
+          url: 'begin:https://zenodo.org/api/records/?',
+          query: {
+            communities: 'prereview-reviews',
+            q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
+            sort: '-publication_date',
+            subtype: 'peerreview',
           },
-          { status },
-        ),
-      })()
+        },
+        { status },
+      )
+
+      const actual = await _.getPrereviewsFromZenodo(preprint)({ fetch })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
     },
   )
 })

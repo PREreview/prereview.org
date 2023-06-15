@@ -68,6 +68,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
@@ -100,6 +101,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
@@ -173,6 +175,7 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean()])(
@@ -205,6 +208,7 @@ describe('getProfileIdFromLegacyPreviewUuid', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
@@ -278,6 +282,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   describe('when the response has a 404 status code', () => {
@@ -332,6 +337,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
     })
 
     test.prop([
@@ -361,6 +367,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
     })
   })
 
@@ -381,6 +388,7 @@ describe('getPseudonymFromLegacyPrereview', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([fc.orcid(), fc.string(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.error()])(
@@ -603,16 +611,17 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     fc.preprintIdWithDoi(),
     fc.integer({ min: 400, max: 599 }).filter(status => status !== Status.NotFound),
   ])('when the Rapid PREreviews cannot be loaded', async (app, key, url, update, preprintId, status) => {
-    const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
-      fetch: fetchMock
-        .sandbox()
+    const fetch = fetchMock
+      .sandbox()
+      .getOnce(
+        `${url}api/v2/preprints/doi-${encodeURIComponent(
+          preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
+        )}/rapid-reviews`,
+        { status },
+      )
 
-        .getOnce(
-          `${url}api/v2/preprints/doi-${encodeURIComponent(
-            preprintId.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-'),
-          )}/rapid-reviews`,
-          { status },
-        ),
+    const actual = await _.getRapidPreviewsFromLegacyPrereview(preprintId)({
+      fetch,
       legacyPrereviewApi: {
         app,
         key,
@@ -622,6 +631,7 @@ describe('getRapidPreviewsFromLegacyPrereview', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 })
 
@@ -746,6 +756,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
         })()
 
         expect(actual).toStrictEqual(E.left(expect.anything()))
+        expect(fetch.done()).toBeTruthy()
       },
     )
 

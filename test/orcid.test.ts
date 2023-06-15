@@ -82,13 +82,16 @@ describe('getNameFromOrcid', () => {
   test.prop([fc.orcid(), fc.integer({ min: 100, max: 599 }).filter(status => status !== Status.OK)])(
     'when the request fails',
     async (orcid, status) => {
+      const fetch = fetchMock.sandbox().get('*', { status })
+
       const actual = await _.getNameFromOrcid(orcid)({
         clock: SystemClock,
-        fetch: fetchMock.sandbox().get('*', { status }),
+        fetch,
         logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
     },
   )
 

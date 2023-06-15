@@ -46,14 +46,16 @@ describe('trainings', () => {
     fc.fetchResponse(),
     fc.either(fc.constant('no-session' as const), fc.user()),
   ])('when the page cannot be loaded', async (connection, key, response, user) => {
+    const fetch = fetchMock.sandbox().getOnce(
+      {
+        url: 'begin:https://content.prereview.org/ghost/api/content/pages/64639b5007fb34a92c7f8518?',
+        query: { key },
+      },
+      response,
+    )
     const actual = await runMiddleware(
       _.trainings({
-        fetch: fetchMock
-          .sandbox()
-          .getOnce(
-            { url: 'https://content.prereview.org/ghost/api/content/pages/64639b5007fb34a92c7f8518', query: { key } },
-            response,
-          ),
+        fetch,
         ghostApi: { key },
         getUser: () => M.fromEither(user),
       }),
@@ -68,5 +70,6 @@ describe('trainings', () => {
         { type: 'setBody', body: expect.anything() },
       ]),
     )
+    expect(fetch.done()).toBeTruthy()
   })
 })

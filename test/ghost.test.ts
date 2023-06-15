@@ -87,7 +87,7 @@ describe('getPage', () => {
   ])('when the response cannot be decoded', async (id, key, response) => {
     const fetch = fetchMock
       .sandbox()
-      .getOnce({ url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } }, response)
+      .getOnce({ url: `begin:https://content.prereview.org/ghost/api/content/pages/${id}?`, query: { key } }, response)
 
     const actual = await _.getPage(id)({
       fetch,
@@ -95,6 +95,7 @@ describe('getPage', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.stringOf(fc.alphanumeric(), { minLength: 1 })])(
@@ -123,7 +124,7 @@ describe('getPage', () => {
   ])('when the response has a non-200/404 status code', async (id, key, status) => {
     const fetch = fetchMock
       .sandbox()
-      .getOnce({ url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } }, status)
+      .getOnce({ url: `begin:https://content.prereview.org/ghost/api/content/pages/${id}?`, query: { key } }, status)
 
     const actual = await _.getPage(id)({
       fetch,
@@ -131,6 +132,7 @@ describe('getPage', () => {
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([

@@ -888,6 +888,7 @@ describe('getPreprintFromDatacite', () => {
     const actual = await _.getPreprintFromDatacite(id)({ fetch })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
+    expect(fetch.done()).toBeTruthy()
   })
 
   test.prop([fc.arxivPreprintId(), fc.instant(), fc.string()])(
@@ -1065,6 +1066,7 @@ describe('getPreprintFromDatacite', () => {
       const actual = await _.getPreprintFromDatacite(id)({ fetch })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
     },
   )
 })
