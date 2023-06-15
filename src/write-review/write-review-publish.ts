@@ -15,7 +15,9 @@ import { type Html, html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
+import { isPseudonym } from '../pseudonym'
 import {
+  profileMatch,
   writeReviewConductMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
@@ -205,7 +207,15 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
-    return html`<a href="https://orcid.org/${orcid}" class="orcid">${name}</a>`
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
+      >${name}</a
+    >`
+  }
+
+  if (isPseudonym(name)) {
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: name } })}"
+      >${name}</a
+    >`
   }
 
   return name
