@@ -9,7 +9,9 @@ export function transformJatsToHtml(jats: string): Html {
     },
     exclusiveFilter: frame =>
       frame.tag === 'jats:title' &&
-      (frame.text.toLowerCase() === 'abstract' || frame.text.toLowerCase() === 'graphical abstract'),
+      (frame.text.toLowerCase() === 'abstract' ||
+        frame.text.toLowerCase() === 'abstract:' ||
+        frame.text.toLowerCase() === 'graphical abstract'),
     transformTags: {
       '*': (tagName, attribs) => {
         if (attribs['xml:lang']) {

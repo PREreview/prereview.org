@@ -564,6 +564,7 @@ describe('transformJatsToHtml', () => {
       rawHtml('<h4 lang="en">title</h4>'),
     ],
     ["<jats:title> with 'Abstract' title", '<jats:title>Abstract</jats:title>', rawHtml('')],
+    ["<jats:title> with 'Abstract:' title", '<jats:title>Abstract:</jats:title>', rawHtml('')],
     ["<jats:title> with 'Graphical Abstract' title", '<jats:title>Graphical Abstract</jats:title>', rawHtml('')],
     ['<jats:title-group>', '<jats:title-group>title-group</jats:title-group>', rawHtml('title-group')],
     ['<jats:tr>', '<jats:tr>tr</jats:tr>', rawHtml('tr')],
