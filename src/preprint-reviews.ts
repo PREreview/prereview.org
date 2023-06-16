@@ -18,6 +18,7 @@ import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
+import { fixHeadingLevels } from './html'
 import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
 import { type Preprint, getPreprint } from './preprint'
@@ -218,7 +219,7 @@ function createPage({
                 <h3>Abstract</h3>
 
                 <div lang="${preprint.abstract.language}" dir="${getLangDir(preprint.abstract.language)}">
-                  ${preprint.abstract.text}
+                  ${fixHeadingLevels(3, preprint.abstract.text)}
                 </div>
               `
             : ''}
@@ -267,7 +268,10 @@ function showReview(review: Prereview) {
         </header>
 
         <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
-          ${rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5, stripTags: ['a'] }))}
+          ${fixHeadingLevels(
+            3,
+            rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5, stripTags: ['a'] })),
+          )}
         </div>
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">

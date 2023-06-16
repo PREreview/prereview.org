@@ -130,6 +130,25 @@ export function sanitizeHtml(html: string, allowButtons = false): Html {
   return rawHtml(sanitized)
 }
 
+export function fixHeadingLevels(currentLevel: 1 | 2 | 3, input: Html): Html {
+  const levels = input.toString().match(/(?<=<h)([1-6])(?=\s|>)/gi)
+
+  if (!levels) {
+    return input
+  }
+
+  const highestLevel = Math.min(...levels.map(level => parseInt(level, 10)))
+  const offset = currentLevel + 1 - highestLevel
+
+  if (offset === 0) {
+    return input
+  }
+
+  return rawHtml(
+    input.toString().replaceAll(/(?<=<\/?h)([1-6])(?=\s|>)/gi, level => String(parseInt(level, 10) + offset)),
+  )
+}
+
 export function plainText(
   literals: TemplateStringsArray,
   ...placeholders: ReadonlyArray<ReadonlyArray<Html | PlainText> | Html | PlainText | string | number>

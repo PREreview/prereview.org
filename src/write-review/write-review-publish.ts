@@ -12,6 +12,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type Html, html, plainText, sendHtml } from '../html'
+import { fixHeadingLevels } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
@@ -123,9 +124,9 @@ const showFailureMessage = flow(
 )
 
 function renderReview(form: CompletedForm) {
-  return html`${form.review}
+  return html`${fixHeadingLevels(1, form.review)}
 
-    <h3>Competing interests</h3>
+    <h2>Competing interests</h2>
 
     <p>
       ${form.competingInterests === 'yes'
@@ -178,7 +179,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                 ${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}
               </div>
 
-              <div>${renderReview(review)}</div>
+              <div>${fixHeadingLevels(2, renderReview(review))}</div>
             </blockquote>
 
             <div class="button-group" role="group">

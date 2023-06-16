@@ -530,6 +530,44 @@ test.each([
   expect(actual.toString()).toBe(expected)
 })
 
+test.each([
+  ['single heading same level 1', 1 as const, '<h1>Foo</h1>', '<h2>Foo</h2>'],
+  ['single heading same level 2', 2 as const, '<h2>Foo</h2>', '<h3>Foo</h3>'],
+  ['single heading 1 level below', 1 as const, '<h2>Foo</h2>', '<h2>Foo</h2>'],
+  ['single heading 1 level above', 2 as const, '<h1>Foo</h1>', '<h3>Foo</h3>'],
+  ['single heading 2 levels below', 1 as const, '<h3>Foo</h3>', '<h2>Foo</h2>'],
+  ['single heading 2 levels above', 3 as const, '<h1>Foo</h1>', '<h4>Foo</h4>'],
+  ['multiple headings same level 1', 1 as const, '<h1>Foo</h1><h2>Bar</h2>', '<h2>Foo</h2><h3>Bar</h3>'],
+  ['multiple headings same level 2', 2 as const, '<h2>Foo</h2><h3>Bar</h3>', '<h3>Foo</h3><h4>Bar</h4>'],
+  ['multiple headings 1 level below', 1 as const, '<h2>Foo</h2><h3>Bar</h3>', '<h2>Foo</h2><h3>Bar</h3>'],
+  ['multiple headings 1 level above', 2 as const, '<h1>Foo</h1><h2>Bar</h2>', '<h3>Foo</h3><h4>Bar</h4>'],
+  ['multiple headings 2 levels below', 1 as const, '<h3>Foo</h3><h4>Bar</h4>', '<h2>Foo</h2><h3>Bar</h3>'],
+  ['multiple headings 2 levels above', 3 as const, '<h1>Foo</h1><h2>Bar</h2>', '<h4>Foo</h4><h5>Bar</h5>'],
+  [
+    'with attributes',
+    1 as const,
+    '<h1 lang="en" dir="ltr" id="h1" foo>Foo</h1>',
+    '<h2 lang="en" dir="ltr" id="h1" foo>Foo</h2>',
+  ],
+  ['with space', 1 as const, '  \n <h1\n>Foo</h1  > \n  \n', '  \n <h2\n>Foo</h2  > \n  \n'],
+  [
+    'without a heading',
+    1 as const,
+    ' \n<p lang="en" dir="ltr"\nid="p" foo>p</p> \n',
+    ' \n<p lang="en" dir="ltr"\nid="p" foo>p</p> \n',
+  ],
+  [
+    "with things that aren't headings",
+    1 as const,
+    '< h1>Foo</h1>&lt;h1>Bar</h1><hh1>Baz</hh1>',
+    '< h1>Foo</h1>&lt;h1>Bar</h1><hh1>Baz</hh1>',
+  ],
+])('fixHeadingLevels (%s)', (_name, currentLevel, input, expected) => {
+  const actual = _.fixHeadingLevels(currentLevel, _.rawHtml(input))
+
+  expect(actual.toString()).toBe(expected)
+})
+
 test.prop([fc.html().map(html => [html.toString(), html.toString()])], {
   examples: [
     [

@@ -9,6 +9,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from '../html'
+import { fixHeadingLevels } from '../html'
 import { addCanonicalLinkHeader, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { type FathomEnv, type PhaseEnv, page } from '../page'
 import { type Preprint, getPreprint } from '../preprint'
@@ -159,7 +160,7 @@ function startPage(preprint: Preprint, user?: User) {
           ${preprint.abstract
             ? html`
                 <div lang="${preprint.abstract.language}" dir="${getLangDir(preprint.abstract.language)}">
-                  ${preprint.abstract.text}
+                  ${fixHeadingLevels(2, preprint.abstract.text)}
                 </div>
               `
             : ''}

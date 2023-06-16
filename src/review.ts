@@ -13,6 +13,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
+import { fixHeadingLevels } from './html'
 import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
@@ -145,7 +146,7 @@ function createPage(review: Prereview, user?: User) {
         </header>
 
         <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
-          ${review.text}
+          ${fixHeadingLevels(1, review.text)}
         </div>
       </main>
     `,
