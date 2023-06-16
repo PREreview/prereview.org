@@ -70,7 +70,7 @@ test('can find and view a review', async ({ fetch, page }) => {
 
   fetch
     .getOnce('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-    .getOnce('http://example.com/file', {
+    .get('http://example.com/file', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
@@ -427,13 +427,17 @@ test('can skip to the reviews', async ({ fetch, javaScriptEnabled, page }) => {
     },
   }
 
-  fetch.get(
-    {
-      url: 'http://zenodo.test/api/records/',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
-    },
-    { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
-  )
+  fetch
+    .getOnce(
+      {
+        url: 'http://zenodo.test/api/records/',
+        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
+    )
+    .getOnce('http://example.com/file', {
+      body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+    })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page.keyboard.press('Tab')

@@ -1848,21 +1848,24 @@ describe('getPrereviewsFromZenodo', () => {
     }
 
     const actual = await _.getPrereviewsFromZenodo(preprint)({
-      fetch: fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://zenodo.org/api/records/?',
-          query: {
-            communities: 'prereview-reviews',
-            q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
-            sort: '-publication_date',
-            subtype: 'peerreview',
+      fetch: fetchMock
+        .sandbox()
+        .getOnce(
+          {
+            url: 'begin:https://zenodo.org/api/records/?',
+            query: {
+              communities: 'prereview-reviews',
+              q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
+              sort: '-publication_date',
+              subtype: 'peerreview',
+            },
           },
-        },
-        {
-          body: RecordsC.encode(records),
-          status: Status.OK,
-        },
-      ),
+          {
+            body: RecordsC.encode(records),
+            status: Status.OK,
+          },
+        )
+        .getOnce('http://example.com/file', { body: 'Some text' }),
     })()
 
     expect(actual).toStrictEqual(
@@ -1871,7 +1874,7 @@ describe('getPrereviewsFromZenodo', () => {
           authors: [{ name: 'PREreviewer' }],
           id: 1061864,
           language: 'en',
-          text: rawHtml('Description'),
+          text: rawHtml('Some text'),
         },
       ]),
     )
@@ -1949,6 +1952,7 @@ describe('getPrereviewsFromZenodo', () => {
             }).toString()}` && cache === 'no-cache',
         { throws: new Error('Network error') },
       )
+      .getOnce('http://example.com/file', { body: 'Some text' })
 
     const actual = await _.getPrereviewsFromZenodo(preprint)({ fetch })()
 
@@ -1958,7 +1962,7 @@ describe('getPrereviewsFromZenodo', () => {
           authors: [{ name: 'PREreviewer' }],
           id: 1061864,
           language: undefined,
-          text: rawHtml('Description'),
+          text: rawHtml('Some text'),
         },
       ]),
     )
@@ -1984,6 +1988,77 @@ describe('getPrereviewsFromZenodo', () => {
       const actual = await _.getPrereviewsFromZenodo(preprint)({ fetch })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
+
+  test.prop([fc.preprintId(), fc.integer({ min: 400, max: 599 })])(
+    'when the review text cannot be loaded',
+    async (preprint, textStatus) => {
+      const records: Records = {
+        hits: {
+          total: 1,
+          hits: [
+            {
+              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
+              id: 1061864,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'PREreviewer' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1061864' as Doi,
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-05'),
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
+            },
+          ],
+        },
+      }
+
+      const fetch = fetchMock
+        .sandbox()
+        .getOnce(
+          {
+            url: 'begin:https://zenodo.org/api/records/?',
+            query: {
+              communities: 'prereview-reviews',
+              q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
+              sort: '-publication_date',
+              subtype: 'peerreview',
+            },
+          },
+          {
+            body: RecordsC.encode(records),
+            status: Status.OK,
+          },
+        )
+        .getOnce('http://example.com/file', { status: textStatus })
+
+      const actual = await _.getPrereviewsFromZenodo(preprint)({ fetch })()
+
+      expect(actual).toStrictEqual(E.left(expect.anything()))
       expect(fetch.done()).toBeTruthy()
     },
   )

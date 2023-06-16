@@ -36,6 +36,7 @@ import type { RecentPrereview } from './home'
 import { plainText, sanitizeHtml } from './html'
 import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
 import { type IndeterminatePreprintId, PreprintDoiD, type PreprintId, fromPreprintDoi, fromUrl } from './preprint-id'
+import type { Prereview as PreprintPrereview } from './preprint-reviews'
 import type { ProfileId } from './profile-id'
 import type { Prereview } from './review'
 import type { NewPrereview } from './write-review'
@@ -137,18 +138,8 @@ export const getPrereviewsFromZenodo = flow(
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
-  RTE.bimap(
-    () => 'unavailable' as const,
-    flow(
-      records => records.hits.hits,
-      RA.map(record => ({
-        authors: record.metadata.creators,
-        id: record.id,
-        language: pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined),
-        text: sanitizeHtml(record.metadata.description),
-      })),
-    ),
-  ),
+  RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToPreprintPrereview))),
+  RTE.mapLeft(() => 'unavailable' as const),
 )
 
 export const createRecordOnZenodo: (
@@ -234,6 +225,21 @@ function recordToPrereview(
             url: preprint.url,
           })),
         ),
+        text: getReviewText(review.reviewTextUrl),
+      }),
+    ),
+  )
+}
+
+function recordToPreprintPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv, unknown, PreprintPrereview> {
+  return pipe(
+    RTE.of(record),
+    RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
+    RTE.chainW(review =>
+      sequenceS(RTE.ApplyPar)({
+        authors: RTE.right(review.metadata.creators),
+        id: RTE.right(review.id),
+        language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
         text: getReviewText(review.reviewTextUrl),
       }),
     ),
