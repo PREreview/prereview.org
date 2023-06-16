@@ -114,8 +114,8 @@ import {
 import {
   createRecordOnZenodo,
   getPrereviewFromZenodo,
+  getPrereviewsForPreprintFromZenodo,
   getPrereviewsForProfileFromZenodo,
-  getPrereviewsFromZenodo,
   getRecentPrereviewsFromZenodo,
 } from './zenodo'
 
@@ -342,7 +342,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
                 .otherwise(identity),
             ),
           ),
-          getPrereviews: flip(getPrereviewsFromZenodo)(env),
+          getPrereviews: flip(getPrereviewsForPreprintFromZenodo)(env),
           getRapidPrereviews: flip((id: PreprintId) =>
             isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([]),
           )(env),

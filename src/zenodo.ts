@@ -125,7 +125,7 @@ export const getPrereviewsForProfileFromZenodo = flow(
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
-export const getPrereviewsFromZenodo = flow(
+export const getPrereviewsForPreprintFromZenodo = flow(
   (preprint: PreprintId) =>
     new URLSearchParams({
       communities: 'prereview-reviews',

@@ -1802,7 +1802,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
   })
 })
 
-describe('getPrereviewsFromZenodo', () => {
+describe('getPrereviewsForPreprintFromZenodo', () => {
   test.prop([fc.preprintId()])('when the PREreviews can be loaded', async preprint => {
     const records: Records = {
       hits: {
@@ -1847,7 +1847,7 @@ describe('getPrereviewsFromZenodo', () => {
       },
     }
 
-    const actual = await _.getPrereviewsFromZenodo(preprint)({
+    const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
       fetch: fetchMock
         .sandbox()
         .getOnce(
@@ -1954,7 +1954,7 @@ describe('getPrereviewsFromZenodo', () => {
       )
       .getOnce('http://example.com/file', { body: 'Some text' })
 
-    const actual = await _.getPrereviewsFromZenodo(preprint)({ fetch })()
+    const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({ fetch })()
 
     expect(actual).toStrictEqual(
       E.right([
@@ -1985,7 +1985,7 @@ describe('getPrereviewsFromZenodo', () => {
         { status },
       )
 
-      const actual = await _.getPrereviewsFromZenodo(preprint)({ fetch })()
+      const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({ fetch })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
       expect(fetch.done()).toBeTruthy()
@@ -2056,7 +2056,7 @@ describe('getPrereviewsFromZenodo', () => {
         )
         .getOnce('http://example.com/file', { status: textStatus })
 
-      const actual = await _.getPrereviewsFromZenodo(preprint)({ fetch })()
+      const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({ fetch })()
 
       expect(actual).toStrictEqual(E.left(expect.anything()))
       expect(fetch.done()).toBeTruthy()
