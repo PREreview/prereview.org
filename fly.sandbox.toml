@@ -16,7 +16,6 @@ destination = "/app/data"
 [[services]]
 internal_port = 3000
 protocol = "tcp"
-script_checks = []
 
 [[services.http_checks]]
 grace_period = "10s"
