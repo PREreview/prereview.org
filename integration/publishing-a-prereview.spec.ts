@@ -42,18 +42,12 @@ test.extend(canLogIn).extend(willPublishAReview)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    if (javaScriptEnabled) {
-      await page.getByLabel('Write your PREreview').clear()
-      await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
-      await page.keyboard.press('Control+b')
-      await page.keyboard.type('adipiscing elit')
-      await page.keyboard.press('Control+b')
-      await page.keyboard.type('.')
-    } else {
-      await page
-        .getByLabel('Write your PREreview')
-        .fill('Lorem ipsum dolor sit "amet", *consectetur* <b>adipiscing elit</b>.')
-    }
+    await page.getByLabel('Write your PREreview').clear()
+    await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
+    await (javaScriptEnabled ? page.keyboard.press('Control+b') : page.keyboard.type('<b>'))
+    await page.keyboard.type('adipiscing elit')
+    await (javaScriptEnabled ? page.keyboard.press('Control+b') : page.keyboard.type('</b>'))
+    await page.keyboard.type('.')
 
     await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
 
