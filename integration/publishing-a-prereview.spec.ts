@@ -43,6 +43,8 @@ test.extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Write your PREreview').clear()
+    await page.keyboard.type('# Some title')
+    await page.keyboard.press('Enter')
     await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
     await (javaScriptEnabled ? page.keyboard.press('Control+b') : page.keyboard.type('<b>'))
     await page.keyboard.type('adipiscing elit')

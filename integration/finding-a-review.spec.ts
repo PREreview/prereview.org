@@ -71,7 +71,7 @@ test('can find and view a review', async ({ fetch, page }) => {
   fetch
     .getOnce('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
     .get('http://example.com/file', {
-      body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
