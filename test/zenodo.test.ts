@@ -10,6 +10,8 @@ import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import {
+  type EmptyDeposition,
+  EmptyDepositionC,
   type Record,
   RecordC,
   type Records,
@@ -2076,6 +2078,20 @@ describe('createRecordOnZenodo', () => {
     fc.string(),
     fc.doi(),
   ])('as a public persona', async (newPrereview, zenodoApiKey, reviewDoi) => {
+    const emptyDeposition: EmptyDeposition = {
+      id: 1,
+      links: {
+        bucket: new URL('http://example.com/bucket'),
+        self: new URL('http://example.com/self'),
+      },
+      metadata: {
+        prereserve_doi: {
+          doi: reviewDoi,
+        },
+      },
+      state: 'unsubmitted',
+      submitted: false,
+    }
     const unsubmittedDeposition: UnsubmittedDeposition = {
       id: 1,
       links: {
@@ -2109,6 +2125,7 @@ describe('createRecordOnZenodo', () => {
       state: 'done',
       submitted: true,
     }
+
     const actual = await _.createRecordOnZenodo(newPrereview)({
       clock: SystemClock,
       fetch: fetchMock
@@ -2116,6 +2133,16 @@ describe('createRecordOnZenodo', () => {
         .postOnce(
           {
             url: 'https://zenodo.org/api/deposit/depositions',
+            body: {},
+          },
+          {
+            body: EmptyDepositionC.encode(emptyDeposition),
+            status: Status.Created,
+          },
+        )
+        .putOnce(
+          {
+            url: 'http://example.com/self',
             body: {
               metadata: {
                 upload_type: 'publication',
@@ -2136,7 +2163,7 @@ describe('createRecordOnZenodo', () => {
           },
           {
             body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-            status: Status.Created,
+            status: Status.OK,
           },
         )
         .putOnce(
@@ -2171,6 +2198,20 @@ describe('createRecordOnZenodo', () => {
     fc.string(),
     fc.doi(),
   ])('as an pseudonym persona', async (newPrereview, zenodoApiKey, reviewDoi) => {
+    const emptyDeposition: EmptyDeposition = {
+      id: 1,
+      links: {
+        bucket: new URL('http://example.com/bucket'),
+        self: new URL('http://example.com/self'),
+      },
+      metadata: {
+        prereserve_doi: {
+          doi: reviewDoi,
+        },
+      },
+      state: 'unsubmitted',
+      submitted: false,
+    }
     const unsubmittedDeposition: UnsubmittedDeposition = {
       id: 1,
       links: {
@@ -2204,6 +2245,7 @@ describe('createRecordOnZenodo', () => {
       state: 'done',
       submitted: true,
     }
+
     const actual = await _.createRecordOnZenodo(newPrereview)({
       clock: SystemClock,
       fetch: fetchMock
@@ -2211,6 +2253,16 @@ describe('createRecordOnZenodo', () => {
         .postOnce(
           {
             url: 'https://zenodo.org/api/deposit/depositions',
+            body: {},
+          },
+          {
+            body: EmptyDepositionC.encode(emptyDeposition),
+            status: Status.Created,
+          },
+        )
+        .putOnce(
+          {
+            url: 'http://example.com/self',
             body: {
               metadata: {
                 upload_type: 'publication',
@@ -2231,7 +2283,7 @@ describe('createRecordOnZenodo', () => {
           },
           {
             body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-            status: Status.Created,
+            status: Status.OK,
           },
         )
         .putOnce(

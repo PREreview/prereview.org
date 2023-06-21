@@ -16,6 +16,7 @@ import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordsC, SubmittedDepositionC, UnsubmittedDepositionC, type Record as ZenodoRecord } from 'zenodo-ts'
+import { EmptyDepositionC } from 'zenodo-ts'
 import { app } from '../src/app'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
@@ -793,6 +794,23 @@ export const willPublishAReview: Fixtures<
 
     fetch
       .postOnce('http://zenodo.test/api/deposit/depositions', {
+        body: EmptyDepositionC.encode({
+          ...record,
+          links: {
+            bucket: new URL('http://example.com/bucket'),
+            self: new URL('http://example.com/self'),
+          },
+          metadata: {
+            prereserve_doi: {
+              doi: record.metadata.doi,
+            },
+          },
+          state: 'unsubmitted',
+          submitted: false,
+        }),
+        status: Status.Created,
+      })
+      .putOnce('http://example.com/self', {
         body: UnsubmittedDepositionC.encode({
           ...record,
           links: {
@@ -812,7 +830,7 @@ export const willPublishAReview: Fixtures<
           state: 'unsubmitted',
           submitted: false,
         }),
-        status: Status.Created,
+        status: Status.OK,
       })
       .putOnce('http://example.com/bucket/review.html', {
         status: Status.Created,

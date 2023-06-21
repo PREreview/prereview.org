@@ -25,10 +25,11 @@ import {
   type DepositMetadata,
   type Record,
   type ZenodoAuthenticatedEnv,
-  createDeposition,
+  createEmptyDeposition,
   getRecord,
   getRecords,
   publishDeposition,
+  updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
@@ -146,8 +147,8 @@ export const createRecordOnZenodo: (
   newPrereview: NewPrereview,
 ) => ReaderTaskEither<ZenodoAuthenticatedEnv & L.LoggerEnv, unknown, [Doi, number]> = newPrereview =>
   pipe(
-    createDepositMetadata(newPrereview),
-    createDeposition,
+    createEmptyDeposition(),
+    RTE.chain(deposition => updateDeposition(createDepositMetadata(newPrereview), deposition)),
     RTE.chainFirst(
       uploadFile({
         name: 'review.html',
