@@ -2081,6 +2081,7 @@ describe('createRecordOnZenodo', () => {
       links: {
         bucket: new URL('http://example.com/bucket'),
         publish: new URL('http://example.com/publish'),
+        self: new URL('http://example.com/self'),
       },
       metadata: {
         creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
@@ -2175,6 +2176,7 @@ describe('createRecordOnZenodo', () => {
       links: {
         bucket: new URL('http://example.com/bucket'),
         publish: new URL('http://example.com/publish'),
+        self: new URL('http://example.com/self'),
       },
       metadata: {
         creators: [{ name: 'PREreviewer' }],

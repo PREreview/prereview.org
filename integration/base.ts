@@ -798,6 +798,7 @@ export const willPublishAReview: Fixtures<
           links: {
             bucket: new URL('http://example.com/bucket'),
             publish: new URL('http://example.com/publish'),
+            self: new URL('http://example.com/self'),
           },
           metadata: {
             ...record.metadata,
