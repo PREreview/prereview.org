@@ -40,7 +40,7 @@
     "nanohtml": "^1.10.0",
     "orcid-id-ts": "^0.1.2",
     "rtl-detect": "^1.0.4",
-    "sanitize-html": "^2.10.0",
+    "sanitize-html": "^2.11.0",
     "spectacles-ts": "^1.0.7",
     "striptags": "^3.2.0",
     "text-clipper": "^2.2.0",
