@@ -4,6 +4,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import { SystemClock } from 'clock-ts'
 import type { Doi } from 'doi-ts'
 import fetchMock from 'fetch-mock'
+import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import * as TE from 'fp-ts/TaskEither'
@@ -22,6 +23,7 @@ import {
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
 import { plainText, rawHtml } from '../src/html'
+import { reviewMatch } from '../src/routes'
 import type { NewPrereview } from '../src/write-review'
 import * as _ from '../src/zenodo'
 import * as fc from './fc'
@@ -2076,8 +2078,9 @@ describe('createRecordOnZenodo', () => {
       user: fc.user(),
     }),
     fc.string(),
+    fc.origin(),
     fc.doi(),
-  ])('as a public persona', async (newPrereview, zenodoApiKey, reviewDoi) => {
+  ])('as a public persona', async (newPrereview, zenodoApiKey, publicUrl, reviewDoi) => {
     const emptyDeposition: EmptyDeposition = {
       id: 1,
       links: {
@@ -2125,6 +2128,7 @@ describe('createRecordOnZenodo', () => {
       state: 'done',
       submitted: true,
     }
+    const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
 
     const actual = await _.createRecordOnZenodo(newPrereview)({
       clock: SystemClock,
@@ -2150,7 +2154,9 @@ describe('createRecordOnZenodo', () => {
                 title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
                 creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
                 communities: [{ identifier: 'prereview-reviews' }],
-                description: newPrereview.review.toString(),
+                description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
+
+${newPrereview.review.toString()}`,
                 related_identifiers: [
                   {
                     ..._.toExternalIdentifier(newPrereview.preprint.id),
@@ -2181,6 +2187,7 @@ describe('createRecordOnZenodo', () => {
           status: Status.Accepted,
         }),
       logger: () => IO.of(undefined),
+      publicUrl,
       zenodoApiKey,
     })()
 
@@ -2196,8 +2203,9 @@ describe('createRecordOnZenodo', () => {
       user: fc.user(),
     }),
     fc.string(),
+    fc.origin(),
     fc.doi(),
-  ])('as an pseudonym persona', async (newPrereview, zenodoApiKey, reviewDoi) => {
+  ])('as an pseudonym persona', async (newPrereview, zenodoApiKey, publicUrl, reviewDoi) => {
     const emptyDeposition: EmptyDeposition = {
       id: 1,
       links: {
@@ -2245,6 +2253,7 @@ describe('createRecordOnZenodo', () => {
       state: 'done',
       submitted: true,
     }
+    const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
 
     const actual = await _.createRecordOnZenodo(newPrereview)({
       clock: SystemClock,
@@ -2270,7 +2279,9 @@ describe('createRecordOnZenodo', () => {
                 title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
                 creators: [{ name: newPrereview.user.pseudonym }],
                 communities: [{ identifier: 'prereview-reviews' }],
-                description: newPrereview.review.toString(),
+                description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
+
+${newPrereview.review.toString()}`,
                 related_identifiers: [
                   {
                     ..._.toExternalIdentifier(newPrereview.preprint.id),
@@ -2301,6 +2312,7 @@ describe('createRecordOnZenodo', () => {
           status: Status.Accepted,
         }),
       logger: () => IO.of(undefined),
+      publicUrl,
       zenodoApiKey,
     })()
 
@@ -2316,15 +2328,17 @@ describe('createRecordOnZenodo', () => {
       user: fc.user(),
     }),
     fc.string(),
+    fc.origin(),
     fc.oneof(
       fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),
     ),
-  ])('Zenodo is unavailable', async (newPrereview, zenodoApiKey, response) => {
+  ])('Zenodo is unavailable', async (newPrereview, zenodoApiKey, publicUrl, response) => {
     const actual = await _.createRecordOnZenodo(newPrereview)({
       clock: SystemClock,
       fetch: () => response,
       logger: () => IO.of(undefined),
+      publicUrl,
       zenodoApiKey,
     })()
 

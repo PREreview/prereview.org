@@ -6,6 +6,7 @@ import * as A from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { and } from 'fp-ts/Predicate'
+import * as R from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
@@ -23,6 +24,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
   type DepositMetadata,
+  type EmptyDeposition,
   type Record,
   type ZenodoAuthenticatedEnv,
   createEmptyDeposition,
@@ -39,7 +41,9 @@ import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprint
 import { type IndeterminatePreprintId, PreprintDoiD, type PreprintId, fromPreprintDoi, fromUrl } from './preprint-id'
 import type { Prereview as PreprintPrereview } from './preprint-reviews'
 import type { ProfileId } from './profile-id'
+import { type PublicUrlEnv, toUrl } from './public-url'
 import type { Prereview } from './review'
+import { reviewMatch } from './routes'
 import type { NewPrereview } from './write-review'
 
 import PlainDate = Temporal.PlainDate
@@ -145,42 +149,57 @@ export const getPrereviewsForPreprintFromZenodo = flow(
 
 export const createRecordOnZenodo: (
   newPrereview: NewPrereview,
-) => ReaderTaskEither<ZenodoAuthenticatedEnv & L.LoggerEnv, unknown, [Doi, number]> = newPrereview =>
+) => ReaderTaskEither<PublicUrlEnv & ZenodoAuthenticatedEnv & L.LoggerEnv, unknown, [Doi, number]> = newPrereview =>
   pipe(
     createEmptyDeposition(),
-    RTE.chain(deposition => updateDeposition(createDepositMetadata(newPrereview), deposition)),
-    RTE.chainFirst(
+    RTE.bindTo('deposition'),
+    RTE.bindW(
+      'metadata',
+      RTE.fromReaderK(({ deposition }) => createDepositMetadata(deposition, newPrereview)),
+    ),
+    RTE.chainW(({ deposition, metadata }) => updateDeposition(metadata, deposition)),
+    RTE.chainFirstW(
       uploadFile({
         name: 'review.html',
         type: 'text/html',
         content: newPrereview.review.toString(),
       }),
     ),
-    RTE.chain(publishDeposition),
+    RTE.chainW(publishDeposition),
     RTE.orElseFirstW(RTE.fromReaderIOK(() => L.error('Unable to create record on Zenodo'))),
     RTE.map(deposition => [deposition.metadata.doi, deposition.id]),
   )
 
-function createDepositMetadata(newPrereview: NewPrereview): DepositMetadata {
-  return {
-    upload_type: 'publication',
-    publication_type: 'peerreview',
-    title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-    creators: [
-      newPrereview.persona === 'public'
-        ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
-        : { name: newPrereview.user.pseudonym },
-    ],
-    description: newPrereview.review.toString(),
-    communities: [{ identifier: 'prereview-reviews' }],
-    related_identifiers: [
-      {
-        ...toExternalIdentifier(newPrereview.preprint.id),
-        relation: 'reviews',
-        resource_type: 'publication-preprint',
-      },
-    ],
-  }
+function createDepositMetadata(deposition: EmptyDeposition, newPrereview: NewPrereview) {
+  return pipe(
+    toUrl(reviewMatch.formatter, { id: deposition.id }),
+    R.map(
+      url =>
+        ({
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+          title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
+          creators: [
+            newPrereview.persona === 'public'
+              ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
+              : { name: newPrereview.user.pseudonym },
+          ],
+          description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${
+            url.href
+          }">${url.href}</a>.</strong></p>
+
+${newPrereview.review.toString()}`,
+          communities: [{ identifier: 'prereview-reviews' }],
+          related_identifiers: [
+            {
+              ...toExternalIdentifier(newPrereview.preprint.id),
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
+            },
+          ],
+        } satisfies DepositMetadata),
+    ),
+  )
 }
 
 export function toExternalIdentifier(preprint: IndeterminatePreprintId) {
