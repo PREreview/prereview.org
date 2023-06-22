@@ -1,3 +1,4 @@
+import slashes from 'connect-slashes'
 import express from 'express'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/Json'
@@ -641,6 +642,7 @@ export const app = (deps: AppEnv) => {
         },
       }),
     )
+    .use(slashes(false))
     .use(express.urlencoded({ extended: true }))
     .use((req, res, next) => {
       res.set('Cache-Control', 'no-cache, private')
