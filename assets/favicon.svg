@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="71.8 56.6 61.900003 61.9" width="123.8" height="123.8">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135 135" width="135" height="135">
+
   <title xml:lang="en">PREreview</title>
 
   <style>
@@ -11,9 +12,16 @@
       --color-text: var(--color-black-800);
     }
 
-    #logo {
-      fill: var(--color-background);
+    .border {
+      fill: var(--color-text);
+    }
+
+    .line {
       stroke: var(--color-text);
+    }
+
+    .paper {
+      fill: var(--color-background);
     }
 
     .primary {
@@ -30,13 +38,13 @@
     }
   </style>
 
-  <g id="logo" transform="translate(6.4499991)">
-    <path
-      d="M 109.9,114.7 H 74 c -0.9,0 -1.7,-0.8 -1.7,-1.7 v 0 -54.2 c 0,-0.9 0.8,-1.7 1.7,-1.7 v 0 h 44.6 c 0.9,0 1.7,0.8 1.7,1.7 v 0 54.2"
-    />
-    <polyline class="primary" points="105.9,118.5 112.4,114.7 105.9,110.9" />
-    <line x1="83" y1="72" x2="109.9" y2="72" />
-    <line x1="83" y1="86.099998" x2="109.9" y2="86.099998" />
-    <line x1="83" y1="100.3" x2="109.9" y2="100.3" />
-  </g>
+  <rect x="20.5" y="3.5" width="94" height="116" class="paper" />
+  <path
+    d="M107.5 0C113.299 0 118 4.70101 118 10.5V112.5H111V10.5C111 8.567 109.433 7 107.5 7H27.5C25.567 7 24 8.567 24 10.5V112.5C24 114.433 25.567 116 27.5 116H87V123H27.5C21.701 123 17 118.299 17 112.5V10.5C17 4.70101 21.701 0 27.5 0H107.5Z"
+    class="border"
+  />
+  <path d="M41 90.5H94" stroke-width="7" class="line" />
+  <path d="M41 61.5H94" stroke-width="7" class="line" />
+  <path d="M41 32.5H94" stroke-width="7" class="line" />
+  <path d="M102.5 119.5L82.5 134.5V104.5L102.5 119.5Z" class="primary" />
 </svg>

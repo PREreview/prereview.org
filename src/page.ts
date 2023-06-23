@@ -152,7 +152,7 @@ export function page({
               <div class="header">
                 <div class="logo">
                   <a href="${format(homeMatch.formatter, {})}" ${current === 'home' ? html`aria-current="page"` : ''}>
-                    <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
+                    <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
                   </a>
                 </div>
 
@@ -209,7 +209,7 @@ export function page({
             ${type !== 'streamline'
               ? html`
                   <div>
-                    <img src="${assets['prereview.svg']}" width="262" height="63" alt="PREreview" />
+                    <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
                   </div>
 
                   <div>
