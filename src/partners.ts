@@ -66,11 +66,6 @@ function createPage(user?: User) {
             </a>
           </li>
           <li>
-            <a href="https://www.peerref.com/">
-              <img src="${assets['peerref.svg']}" width="2019" height="326" alt="PeerRef" />
-            </a>
-          </li>
-          <li>
             <a href="https://scielo.org/">
               <img src="${assets['scielo.svg']}" width="538" height="562" alt="SciELO" />
             </a>
