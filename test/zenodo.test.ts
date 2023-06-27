@@ -159,12 +159,14 @@ describe('getRecentPrereviewsFromZenodo', () => {
           currentPage: page,
           recentPrereviews: [
             {
+              club: undefined,
               id: 1061864,
               reviewers: ['PREreviewer'],
               published: new Temporal.PlainDate(2022, 7, 4),
               preprint: preprint1,
             },
             {
+              club: undefined,
               id: 1065236,
               reviewers: ['Josiah Carberry'],
               published: new Temporal.PlainDate(2022, 7, 5),
@@ -272,6 +274,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           currentPage: page,
           recentPrereviews: [
             {
+              club: undefined,
               id: 1061864,
               reviewers: ['PREreviewer'],
               published: new Temporal.PlainDate(2022, 7, 5),
@@ -414,6 +417,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
         currentPage: page,
         recentPrereviews: [
           {
+            club: undefined,
             id: 1061864,
             reviewers: ['PREreviewer'],
             published: new Temporal.PlainDate(2022, 7, 4),
@@ -1410,12 +1414,14 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         expect(actual).toStrictEqual(
           E.right([
             {
+              club: undefined,
               id: 1061864,
               reviewers: ['PREreviewer'],
               published: new Temporal.PlainDate(2022, 7, 4),
               preprint: preprint1,
             },
             {
+              club: undefined,
               id: 1065236,
               reviewers: ['Josiah Carberry'],
               published: new Temporal.PlainDate(2022, 7, 5),
@@ -1496,6 +1502,12 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 },
                 metadata: {
                   communities: [{ id: 'prereview-reviews' }],
+                  contributors: [
+                    {
+                      type: 'ResearchGroup',
+                      name: 'ASAPbio Metabolism Crowd',
+                    },
+                  ],
                   creators: [{ name: 'Josiah Carberry' }],
                   description: 'Description',
                   doi: '10.5281/zenodo.1065236' as Doi,
@@ -1552,12 +1564,14 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         expect(actual).toStrictEqual(
           E.right([
             {
+              club: undefined,
               id: 1061864,
               reviewers: ['PREreviewer'],
               published: new Temporal.PlainDate(2022, 7, 4),
               preprint: preprint1,
             },
             {
+              club: 'asapbio-metabolism',
               id: 1065236,
               reviewers: ['Josiah Carberry'],
               published: new Temporal.PlainDate(2022, 7, 5),
@@ -1642,6 +1656,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
       expect(actual).toStrictEqual(
         E.right([
           {
+            club: undefined,
             id: 1061864,
             reviewers: ['PREreviewer'],
             published: new Temporal.PlainDate(2022, 7, 5),
@@ -1777,6 +1792,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
       expect(actual).toStrictEqual(
         E.right([
           {
+            club: undefined,
             id: 1061864,
             reviewers: ['PREreviewer'],
             published: new Temporal.PlainDate(2022, 7, 4),

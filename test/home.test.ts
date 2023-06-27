@@ -17,10 +17,12 @@ describe('home', () => {
       fc.user(),
       fc.html(),
       fc.option(fc.constantFrom('logged-in' as const), { nil: undefined }),
-    ])('when the message is ok', async (connection, user, page, message) => {
+      fc.boolean(),
+    ])('when the message is ok', async (connection, user, page, message, canSeeClubs) => {
       const templatePage = jest.fn(_ => page)
       const actual = await runMiddleware(
         _.home(message)({
+          canSeeClubs,
           getRecentPrereviews: () => T.of([]),
           getUser: () => M.right(user),
           publicUrl: new URL('http://example.com'),
@@ -46,11 +48,12 @@ describe('home', () => {
       )
     })
 
-    test.prop([fc.connection({ method: fc.requestMethod() }), fc.user()])(
+    test.prop([fc.connection({ method: fc.requestMethod() }), fc.user(), fc.boolean()])(
       "when the message is 'logged-out'",
-      async (connection, user) => {
+      async (connection, user, canSeeClubs) => {
         const actual = await runMiddleware(
           _.home('logged-out')({
+            canSeeClubs,
             getRecentPrereviews: () => () => Promise.reject('should not be called'),
             getUser: () => M.right(user),
             publicUrl: new URL('http://example.com'),
@@ -77,10 +80,12 @@ describe('home', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.html(),
       fc.option(fc.constantFrom('logged-out' as const), { nil: undefined }),
-    ])('when the message is ok', async (connection, page, message) => {
+      fc.boolean(),
+    ])('when the message is ok', async (connection, page, message, canSeeClubs) => {
       const templatePage = jest.fn(_ => page)
       const actual = await runMiddleware(
         _.home(message)({
+          canSeeClubs,
           getRecentPrereviews: () => T.of([]),
           getUser: () => M.left('no-session'),
           publicUrl: new URL('http://example.com'),
@@ -106,26 +111,30 @@ describe('home', () => {
       )
     })
 
-    test.prop([fc.connection({ method: fc.requestMethod() })])("when the message is 'logged-in'", async connection => {
-      const actual = await runMiddleware(
-        _.home('logged-in')({
-          getRecentPrereviews: () => () => Promise.reject('should not be called'),
-          getUser: () => M.left('no-session'),
-          publicUrl: new URL('http://example.com'),
-          templatePage: () => {
-            throw 'should not be called'
-          },
-        }),
-        connection,
-      )()
+    test.prop([fc.connection({ method: fc.requestMethod() }), fc.boolean()])(
+      "when the message is 'logged-in'",
+      async (connection, canSeeClubs) => {
+        const actual = await runMiddleware(
+          _.home('logged-in')({
+            canSeeClubs,
+            getRecentPrereviews: () => () => Promise.reject('should not be called'),
+            getUser: () => M.left('no-session'),
+            publicUrl: new URL('http://example.com'),
+            templatePage: () => {
+              throw 'should not be called'
+            },
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
-          { type: 'endResponse' },
-        ]),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
   })
 })

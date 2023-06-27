@@ -282,6 +282,7 @@ function recordToRecentPrereview(
     RTE.bindW('preprintId', getReviewedPreprintId),
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
+        club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         id: RTE.right(review.id),
         reviewers: RTE.right(pipe(review.metadata.creators, RNEA.map(get('name')))),
         published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
