@@ -422,10 +422,11 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       clubMatch.parser,
-      P.map(() => club),
+      P.map(({ id }) => club(id)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
+          getPrereviews: () => TE.left('unavailable' as const),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
