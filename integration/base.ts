@@ -18,6 +18,7 @@ import { URL } from 'url'
 import { RecordsC, SubmittedDepositionC, UnsubmittedDepositionC, type Record as ZenodoRecord } from 'zenodo-ts'
 import { EmptyDepositionC } from 'zenodo-ts'
 import { app } from '../src/app'
+import type { CanSeeClubsEnv } from '../src/feature-flags'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
 import Logger = L.Logger
@@ -26,6 +27,7 @@ import LogEntry = L.LogEntry
 export { expect } from '@playwright/test'
 
 type AppFixtures = {
+  canSeeClubs: CanSeeClubsEnv['canSeeClubs']
   fetch: FetchMockSandbox
   logger: Logger
   port: number
@@ -42,6 +44,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     }
 
     await use(`http://localhost:${address.port}`)
+  },
+  canSeeClubs: async ({}, use) => {
+    await use(false)
   },
   fetch: async ({}, use) => {
     const fetch = fetchMock.sandbox()
@@ -648,10 +653,10 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
-  server: async ({ fetch, logger, port, updatesLegacyPrereview }, use) => {
+  server: async ({ canSeeClubs, fetch, logger, port, updatesLegacyPrereview }, use) => {
     const server = app({
       allowSiteCrawlers: true,
-      canSeeClubs: false,
+      canSeeClubs,
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),
@@ -731,6 +736,16 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
     await expect(page).toHaveTitle(/PREreview/)
 
     await use(page)
+  },
+}
+
+export const canSeeClubs: Fixtures<
+  Pick<AppFixtures, 'canSeeClubs'>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canSeeClubs'>
+> = {
+  canSeeClubs: async ({}, use) => {
+    await use(true)
   },
 }
 

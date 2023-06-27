@@ -238,6 +238,7 @@ function recordToPrereview(
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right<F.FetchEnv & GetPreprintEnv>(review.metadata.creators as never),
+        club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         doi: RTE.right(review.metadata.doi),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
         license: RTE.right(review.license),
@@ -305,6 +306,15 @@ function isInCommunity(record: Record) {
 function isPeerReview(record: Record) {
   return record.metadata.resource_type.type === 'publication' && record.metadata.resource_type.subtype === 'peerreview'
 }
+
+const getReviewClub = flow(
+  (record: Record) => record.metadata.contributors ?? [],
+  RA.findFirstMap(contributor =>
+    match(contributor)
+      .with({ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }, () => O.some('asapbio-metabolism' as const))
+      .otherwise(() => O.none),
+  ),
+)
 
 const getReviewUrl = flow(
   (record: Record) => record.files,
