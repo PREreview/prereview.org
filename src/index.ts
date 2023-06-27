@@ -39,7 +39,7 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
 const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS ?? false,
-  canSeeClubs: false,
+  canSeeClubs: env.CAN_SEE_CLUBS ?? false,
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: 'data/cache',
