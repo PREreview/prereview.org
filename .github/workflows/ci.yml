@@ -6,6 +6,9 @@ on:
       - 'main'
   pull_request:
 
+permissions:
+  contents: read
+
 env:
   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
