@@ -44,6 +44,8 @@ const SlugC = C.make(
   },
 )
 
+const ClubC = C.literal('asapbio-metabolism')
+
 const PseudonymSlugC = pipe(SlugC, C.imap(capitalCase, identity), C.compose(PseudonymC))
 
 const PseudonymProfileIdC = pipe(
@@ -147,6 +149,8 @@ export const orcidErrorMatch = pipe(
 )
 
 export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
+
+export const clubMatch = pipe(P.lit('clubs'), P.then(type('id', ClubC)), P.then(P.end))
 
 export const profileMatch = pipe(P.lit('profiles'), P.then(type('profile', ProfileIdC)), P.then(P.end))
 

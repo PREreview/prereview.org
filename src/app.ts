@@ -26,6 +26,7 @@ import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
+import { club } from './club'
 import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
@@ -65,6 +66,7 @@ import { reviewAPreprint } from './review-a-preprint'
 import { reviews } from './reviews'
 import {
   aboutUsMatch,
+  clubMatch,
   codeOfConductMatch,
   communitiesMatch,
   findAPreprintMatch,
@@ -414,6 +416,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ),
             ),
           }),
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+        })),
+      ),
+    ),
+    pipe(
+      clubMatch.parser,
+      P.map(() => club),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
