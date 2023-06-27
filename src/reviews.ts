@@ -1,6 +1,7 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
+import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
@@ -11,6 +12,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
+import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
@@ -26,6 +28,7 @@ type RecentPrereviews = {
   readonly currentPage: number
   readonly totalPages: number
   readonly recentPrereviews: RNEA.ReadonlyNonEmptyArray<{
+    readonly club?: 'asapbio-metabolism'
     readonly id: number
     readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
     readonly published: PlainDate
@@ -88,80 +91,98 @@ function failureMessage(user?: User) {
 }
 
 function createPage({ currentPage, totalPages, recentPrereviews }: RecentPrereviews, user?: User) {
-  return page({
-    title: plainText`Recent PREreviews (page ${currentPage})`,
-    content: html`
-      <main id="main-content">
-        <h1>Recent PREreviews</h1>
+  return pipe(
+    canSeeClubs,
+    R.chainW(canSeeClubs =>
+      page({
+        title: plainText`Recent PREreviews (page ${currentPage})`,
+        content: html`
+          <main id="main-content">
+            <h1>Recent PREreviews</h1>
 
-        ${pipe(
-          recentPrereviews,
-          RA.matchW(
-            () => '',
-            prereviews => html`
-              <ol class="cards">
-                ${prereviews.map(
-                  prereview => html`
-                    <li>
-                      <article>
-                        <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                          ${formatList('en')(prereview.reviewers)} reviewed
-                          <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
-                            >${prereview.preprint.title}</cite
-                          >
-                        </a>
+            ${pipe(
+              recentPrereviews,
+              RA.matchW(
+                () => '',
+                prereviews => html`
+                  <ol class="cards">
+                    ${prereviews.map(
+                      prereview => html`
+                        <li>
+                          <article>
+                            <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                              ${formatList('en')(prereview.reviewers)}
+                              ${canSeeClubs && prereview.club
+                                ? html`of the
+                                  ${match(prereview.club)
+                                    .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
+                                    .exhaustive()}`
+                                : ''}
+                              reviewed
+                              <cite
+                                dir="${getLangDir(prereview.preprint.language)}"
+                                lang="${prereview.preprint.language}"
+                                >${prereview.preprint.title}</cite
+                              >
+                            </a>
 
-                        <dl>
-                          <dt>Review published</dt>
-                          <dd>${renderDate(prereview.published)}</dd>
-                          <dt>Preprint server</dt>
-                          <dd>
-                            ${match(prereview.preprint.id.type)
-                              .with('africarxiv', () => 'AfricArXiv Preprints')
-                              .with('arxiv', () => 'arXiv')
-                              .with('biorxiv', () => 'bioRxiv')
-                              .with('chemrxiv', () => 'ChemRxiv')
-                              .with('eartharxiv', () => 'EarthArXiv')
-                              .with('ecoevorxiv', () => 'EcoEvoRxiv')
-                              .with('edarxiv', () => 'EdArXiv')
-                              .with('engrxiv', () => 'engrXiv')
-                              .with('medrxiv', () => 'medRxiv')
-                              .with('metaarxiv', () => 'MetaArXiv')
-                              .with('osf', () => 'OSF Preprints')
-                              .with('philsci', () => 'PhilSci-Archive')
-                              .with('preprints.org', () => 'Preprints.org')
-                              .with('psyarxiv', () => 'PsyArXiv')
-                              .with('research-square', () => 'Research Square')
-                              .with('scielo', () => 'SciELO Preprints')
-                              .with('science-open', () => 'ScienceOpen Preprints')
-                              .with('socarxiv', () => 'SocArXiv')
-                              .with('zenodo', () => 'Zenodo')
-                              .exhaustive()}
-                          </dd>
-                        </dl>
-                      </article>
-                    </li>
-                  `,
-                )}
-              </ol>
+                            <dl>
+                              <dt>Review published</dt>
+                              <dd>${renderDate(prereview.published)}</dd>
+                              <dt>Preprint server</dt>
+                              <dd>
+                                ${match(prereview.preprint.id.type)
+                                  .with('africarxiv', () => 'AfricArXiv Preprints')
+                                  .with('arxiv', () => 'arXiv')
+                                  .with('biorxiv', () => 'bioRxiv')
+                                  .with('chemrxiv', () => 'ChemRxiv')
+                                  .with('eartharxiv', () => 'EarthArXiv')
+                                  .with('ecoevorxiv', () => 'EcoEvoRxiv')
+                                  .with('edarxiv', () => 'EdArXiv')
+                                  .with('engrxiv', () => 'engrXiv')
+                                  .with('medrxiv', () => 'medRxiv')
+                                  .with('metaarxiv', () => 'MetaArXiv')
+                                  .with('osf', () => 'OSF Preprints')
+                                  .with('philsci', () => 'PhilSci-Archive')
+                                  .with('preprints.org', () => 'Preprints.org')
+                                  .with('psyarxiv', () => 'PsyArXiv')
+                                  .with('research-square', () => 'Research Square')
+                                  .with('scielo', () => 'SciELO Preprints')
+                                  .with('science-open', () => 'ScienceOpen Preprints')
+                                  .with('socarxiv', () => 'SocArXiv')
+                                  .with('zenodo', () => 'Zenodo')
+                                  .exhaustive()}
+                              </dd>
+                            </dl>
+                          </article>
+                        </li>
+                      `,
+                    )}
+                  </ol>
 
-              <nav class="pager">
-                ${currentPage > 1
-                  ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage - 1 })}" rel="prev">Newer</a>`
-                  : ''}
-                ${currentPage < totalPages
-                  ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage + 1 })}" rel="next">Older</a>`
-                  : ''}
-              </nav>
-            `,
-          ),
-        )}
-      </main>
-    `,
-    current: 'reviews',
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
+                  <nav class="pager">
+                    ${currentPage > 1
+                      ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage - 1 })}" rel="prev"
+                          >Newer</a
+                        >`
+                      : ''}
+                    ${currentPage < totalPages
+                      ? html`<a href="${format(reviewsMatch.formatter, { page: currentPage + 1 })}" rel="next"
+                          >Older</a
+                        >`
+                      : ''}
+                  </nav>
+                `,
+              ),
+            )}
+          </main>
+        `,
+        current: 'reviews',
+        skipLinks: [[html`Skip to main content`, '#main-content']],
+        user,
+      }),
+    ),
+  )
 }
 
 function formatList(
