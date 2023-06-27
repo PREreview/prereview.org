@@ -158,8 +158,8 @@ test.extend(canSeeClubs)("can find and view a review that's part of a club", asy
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page
-    .getByRole('article', { name: 'PREreview by Jingfang Hao et al.' })
-    .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al.' })
+    .getByRole('article', { name: 'PREreview by Jingfang Hao et al. of the ASAPbio Metabolism Crowd' })
+    .getByRole('link', { name: 'Read the PREreview by Jingfang Hao et al. of the ASAPbio Metabolism Crowd' })
     .click()
 
   await expect(page.getByRole('main')).toContainText('of the ASAPbio Metabolism Crowd')

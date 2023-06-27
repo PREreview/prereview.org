@@ -265,6 +265,7 @@ function recordToPreprintPrereview(record: Record): RTE.ReaderTaskEither<F.Fetch
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
         authors: RTE.right(review.metadata.creators),
+        club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         id: RTE.right(review.id),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
         text: getReviewText(review.reviewTextUrl),

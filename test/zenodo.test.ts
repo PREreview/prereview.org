@@ -1820,7 +1820,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
 })
 
 describe('getPrereviewsForPreprintFromZenodo', () => {
-  test.prop([fc.preprintId()])('when the PREreviews can be loaded', async preprint => {
+  test.prop([fc.preprintId(), fc.boolean()])('when the PREreviews can be loaded', async (preprint, isInClub) => {
     const records: Records = {
       hits: {
         total: 1,
@@ -1845,6 +1845,14 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
             },
             metadata: {
               communities: [{ id: 'prereview-reviews' }],
+              contributors: isInClub
+                ? [
+                    {
+                      type: 'ResearchGroup',
+                      name: 'ASAPbio Metabolism Crowd',
+                    },
+                  ]
+                : undefined,
               creators: [{ name: 'PREreviewer' }],
               description: 'Description',
               doi: '10.5281/zenodo.1061864' as Doi,
@@ -1889,6 +1897,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
       E.right([
         {
           authors: [{ name: 'PREreviewer' }],
+          club: isInClub ? 'asapbio-metabolism' : undefined,
           id: 1061864,
           language: 'en',
           text: rawHtml('Some text'),
@@ -1977,6 +1986,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
       E.right([
         {
           authors: [{ name: 'PREreviewer' }],
+          club: undefined,
           id: 1061864,
           language: undefined,
           text: rawHtml('Some text'),
