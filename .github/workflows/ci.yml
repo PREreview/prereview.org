@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
 env:
   PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
