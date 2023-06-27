@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
+import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
@@ -12,6 +13,7 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
+import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { fixHeadingLevels } from './html'
 import { addCanonicalLinkHeader, notFound } from './middleware'
@@ -27,6 +29,7 @@ import PlainDate = Temporal.PlainDate
 
 export type Prereview = {
   authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+  club?: 'asapbio-metabolism'
   doi: Doi
   language?: LanguageCode
   license: 'CC-BY-4.0'
@@ -92,67 +95,78 @@ function failureMessage(user?: User) {
 }
 
 function createPage(review: Prereview, user?: User) {
-  return page({
-    title: plainText`PREreview of “${review.preprint.title}”`,
-    content: html`
-      <nav>
-        <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
-          >See other reviews</a
-        >
-        <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
-      </nav>
-
-      <main id="prereview">
-        <header>
-          <h1>
-            PREreview of
-            <cite lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
-              >${review.preprint.title}</cite
+  return pipe(
+    canSeeClubs,
+    R.chainW(canSeeClubs =>
+      page({
+        title: plainText`PREreview of “${review.preprint.title}”`,
+        content: html`
+          <nav>
+            <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
+              >See other reviews</a
             >
-          </h1>
+            <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
+          </nav>
 
-          <div class="byline">
-            <span class="visually-hidden">Authored</span> by
-            ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
-          </div>
+          <main id="prereview">
+            <header>
+              <h1>
+                PREreview of
+                <cite lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
+                  >${review.preprint.title}</cite
+                >
+              </h1>
 
-          <dl>
-            <div>
-              <dt>Published</dt>
-              <dd>${renderDate(review.published)}</dd>
-            </div>
-            <div>
-              <dt>DOI</dt>
-              <dd class="doi" translate="no">${review.doi}</dd>
-            </div>
-            <div>
-              <dt>License</dt>
-              <dd>
-                ${match(review.license)
-                  .with(
-                    'CC-BY-4.0',
-                    () => html`
-                      <a href="https://creativecommons.org/licenses/by/4.0/">
-                        <dfn>
-                          <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
-                        </dfn>
-                      </a>
-                    `,
-                  )
-                  .exhaustive()}
-              </dd>
-            </div>
-          </dl>
-        </header>
+              <div class="byline">
+                <span class="visually-hidden">Authored</span> by
+                ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
+                ${canSeeClubs && review.club
+                  ? html`of the
+                    ${match(review.club)
+                      .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
+                      .exhaustive()}`
+                  : ''}
+              </div>
 
-        <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
-          ${fixHeadingLevels(1, review.text)}
-        </div>
-      </main>
-    `,
-    skipLinks: [[html`Skip to PREreview`, '#prereview']],
-    user,
-  })
+              <dl>
+                <div>
+                  <dt>Published</dt>
+                  <dd>${renderDate(review.published)}</dd>
+                </div>
+                <div>
+                  <dt>DOI</dt>
+                  <dd class="doi" translate="no">${review.doi}</dd>
+                </div>
+                <div>
+                  <dt>License</dt>
+                  <dd>
+                    ${match(review.license)
+                      .with(
+                        'CC-BY-4.0',
+                        () => html`
+                          <a href="https://creativecommons.org/licenses/by/4.0/">
+                            <dfn>
+                              <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
+                            </dfn>
+                          </a>
+                        `,
+                      )
+                      .exhaustive()}
+                  </dd>
+                </div>
+              </dl>
+            </header>
+
+            <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
+              ${fixHeadingLevels(1, review.text)}
+            </div>
+          </main>
+        `,
+        skipLinks: [[html`Skip to PREreview`, '#prereview']],
+        user,
+      }),
+    ),
+  )
 }
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {

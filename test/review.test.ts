@@ -31,11 +31,12 @@ describe('review', () => {
       text: fc.html(),
     }),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review can be loaded', async (publicUrl, id, connection, prereview, user) => {
+    fc.boolean(),
+  ])('when the review can be loaded', async (publicUrl, id, connection, prereview, user, canSeeClubs) => {
     const getPrereview: Mock<_.GetPrereviewEnv['getPrereview']> = jest.fn(_ => TE.right(prereview))
 
     const actual = await runMiddleware(
-      _.review(id)({ getPrereview, getUser: () => M.fromEither(user), publicUrl }),
+      _.review(id)({ canSeeClubs, getPrereview, getUser: () => M.fromEither(user), publicUrl }),
       connection,
     )()
 
@@ -59,9 +60,11 @@ describe('review', () => {
     fc.integer(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review is not found', async (publicUrl, id, connection, user) => {
+    fc.boolean(),
+  ])('when the review is not found', async (publicUrl, id, connection, user, canSeeClubs) => {
     const actual = await runMiddleware(
       _.review(id)({
+        canSeeClubs,
         getPrereview: () => TE.left({ status: Status.NotFound }),
         getUser: () => M.fromEither(user),
         publicUrl,
@@ -85,9 +88,10 @@ describe('review', () => {
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.anything(),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review cannot be loaded', async (publicUrl, id, connection, error, user) => {
+    fc.boolean(),
+  ])('when the review cannot be loaded', async (publicUrl, id, connection, error, user, canSeeClubs) => {
     const actual = await runMiddleware(
-      _.review(id)({ getPrereview: () => TE.left(error), getUser: () => M.fromEither(user), publicUrl }),
+      _.review(id)({ canSeeClubs, getPrereview: () => TE.left(error), getUser: () => M.fromEither(user), publicUrl }),
       connection,
     )()
 

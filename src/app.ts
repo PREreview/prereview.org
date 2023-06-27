@@ -30,6 +30,7 @@ import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
+import type { CanSeeClubsEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
@@ -120,7 +121,8 @@ import {
   getRecentPrereviewsFromZenodo,
 } from './zenodo'
 
-export type AppEnv = FathomEnv &
+export type AppEnv = CanSeeClubsEnv &
+  FathomEnv &
   FormStoreEnv &
   GhostApiEnv &
   LegacyPrereviewApiEnv &
