@@ -1,10 +1,59 @@
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import { RecordsC } from 'zenodo-ts'
+import { RecordC, RecordsC } from 'zenodo-ts'
 import { canSeeClubs, expect, test } from './base'
 
 test.extend(canSeeClubs)('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
+  fetch
+    .getOnce('http://zenodo.test/api/records/7820084', {
+      body: RecordC.encode({
+        conceptdoi: '10.5281/zenodo.7820083' as Doi,
+        conceptrecid: 7820083,
+        files: [
+          {
+            key: 'review.html',
+            links: {
+              self: new URL('http://example.com/file'),
+            },
+            size: 2538,
+            type: 'html',
+          },
+        ],
+        id: 7820084,
+        links: {
+          latest: new URL('https://zenodo.org/api/records/7820084'),
+          latest_html: new URL('https://zenodo.org/record/7820084'),
+        },
+        metadata: {
+          communities: [{ id: 'prereview-reviews' }],
+          contributors: [{ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }],
+          creators: [{ name: 'Jaeyoung Oh', orcid: '0009-0008-9257-4728' as Orcid }],
+          description:
+            "<p>The main question that this preprint seeks to answer is whether or not Nirmatrelvir plus ritonavir, used as a treatment for non-hospitalized vaccinated patients, was effective at preventing long COVID symptoms. Overall, the paper found that NMV-r was indeed associated with a reduction in symptoms of long COVID. The findings of this paper are novel, as there has been research conducted on NMV-r's effect on COVID symptoms, but this is the first time its effect on long COVID has been investigated. The results are likely to lead to future research, as the findings are novel and relevant to helping solve a large issue in long COVID. I would say that sufficient detail is provided to allow reproduction of the study. Where the data was taken from and how it was analyzed is described in great detail. I do not have the expertise needed to determine if the methods and statistics are appropriate for the analysis, so I am unsure but they seem logical and is an area that other reviewers could check. The principal conclusions are supported by the data and analysis. The manuscript does discuss limitations. It highlights that there could be significant biases in the data due to differences between the groups receiving and not receiving treatment. The authors claim that they used propensity matching to control for these limitations in the data, but admit that there could still be residual confounding. In addition, the authors also point out that the findings could change depending on the definition of long COVID used. The authors say that their definitions of long COVID may have lacked precision and been too inclusive. The authors say that a more accurate result could be obtained from data from original placebo-controlled trials. The authors have not discussed ethical concerns.  The manuscript does not include new data. It gets its data from the TriNetX Analytics Network. The authors say that more can be found about this database online. I would recommend this manuscript to others due to its novel findings and its potential contributions to finding effective treatments for long COVID. I highly recommend this manuscript for peer review.</p><p>My only concerns with this manuscript would be that the data does not come from placebo-controlled trials and only from electronic health records. However, the authors have already addressed this concern. </p><p>I do not have any competing interests.</p>\n\n    Competing interests\n\n    <p>\n      The author declares that they have no competing interests.\n    </p>",
+          doi: '10.5281/zenodo.7820084' as Doi,
+          license: { id: 'CC-BY-4.0' },
+          publication_date: new Date('2023-04-12'),
+          related_identifiers: [
+            {
+              identifier: '10.1101/2022.01.13.476201',
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
+              scheme: 'doi',
+            },
+          ],
+          resource_type: { subtype: 'peerreview', type: 'publication' },
+          title:
+            'PREreview of "Incidence of Symptoms Associated with Post-Acute Sequelae of SARS-CoV-2 infection in Non-Hospitalized Vaccinated Patients Receiving Nirmatrelvir-Ritonavir"',
+        },
+      }),
+    })
+    .getOnce('http://example.com/file', {
+      body: '<p>... that this preprint seeks to answer is whether or not Nirmatrelvir plus ritonavir, used ...</p>',
+    })
+
+  await page.goto('/reviews/7820084')
+
   fetch.get(
     {
       name: 'club-prereviews',
@@ -106,7 +155,7 @@ test.extend(canSeeClubs)('can find and view a club', async ({ fetch, javaScriptE
     },
   )
 
-  await page.goto('/clubs/asapbio-metabolism')
+  await page.getByRole('link', { name: 'ASAPbio Metabolism Crowd' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd’s PREreviews')
   await expect(page).toHaveScreenshot()
