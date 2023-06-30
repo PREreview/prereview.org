@@ -158,6 +158,7 @@ test.extend(canSeeClubs)('can find and view a club', async ({ fetch, javaScriptE
   await page.getByRole('link', { name: 'ASAPbio Metabolism Crowd' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd’s PREreviews')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')
