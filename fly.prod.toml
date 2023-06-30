@@ -23,7 +23,7 @@ hard_limit = 30
 soft_limit = 20
 
 [[services.http_checks]]
-grace_period = "10s"
+grace_period = "15s"
 interval = "5s"
 method = "get"
 path = "/health"

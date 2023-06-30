@@ -19,7 +19,7 @@ internal_port = 3000
 protocol = "tcp"
 
 [[services.http_checks]]
-grace_period = "10s"
+grace_period = "15s"
 interval = "5s"
 method = "get"
 path = "/health"
