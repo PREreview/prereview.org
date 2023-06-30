@@ -248,3 +248,25 @@ test.extend(canSeeClubs)('might not load the PREreviews in time', async ({ fetch
   }
   await expect(page).toHaveScreenshot()
 })
+
+test.extend(canSeeClubs)('the list might be empty', async ({ fetch, page }) => {
+  fetch.get(
+    {
+      name: 'club-prereviews',
+      url: 'http://zenodo.test/api/records/',
+      query: {
+        communities: 'prereview-reviews',
+        q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+        size: '100',
+        sort: '-publication_date',
+        subtype: 'peerreview',
+      },
+    },
+    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  )
+
+  await page.goto('/clubs/asapbio-metabolism')
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd’s PREreviews')
+  await expect(page).toHaveScreenshot()
+})

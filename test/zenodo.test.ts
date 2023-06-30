@@ -1980,6 +1980,32 @@ describe('getPrereviewsForClubFromZenodo', () => {
     },
   )
 
+  test('when there are no Prereviews', async () => {
+    const actual = await _.getPrereviewsForClubFromZenodo('asapbio-metabolism')({
+      fetch: fetchMock.sandbox().getOnce(
+        {
+          url: 'begin:https://zenodo.org/api/records/?',
+          query: {
+            communities: 'prereview-reviews',
+            q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+            size: '100',
+            sort: '-publication_date',
+            subtype: 'peerreview',
+          },
+        },
+        {
+          body: RecordsC.encode({ hits: { hits: [], total: 0 } }),
+          status: Status.OK,
+        },
+      ),
+      getPreprintTitle: () => () => Promise.reject('should not be called'),
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.right([]))
+  })
+
   test.prop([fc.preprintTitle()])('revalidates if the PREreviews are stale', async preprint => {
     const records: Records = {
       hits: {
