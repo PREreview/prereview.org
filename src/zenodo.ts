@@ -145,7 +145,9 @@ export const getPrereviewsForClubFromZenodo = flow(
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
-  RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToRecentPrereview))),
+  RTE.chainReaderTaskKW(
+    flow(records => records.hits.hits, RT.traverseArray(recordToRecentPrereview), RT.map(RA.rights)),
+  ),
   RTE.chainOptionKW(() => undefined)(RNEA.fromReadonlyArray),
   RTE.mapLeft(() => 'unavailable' as const),
 )

@@ -2236,7 +2236,17 @@ describe('getPrereviewsForClubFromZenodo', () => {
         logger: () => IO.of(undefined),
       })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(actual).toStrictEqual(
+        E.right([
+          {
+            club: undefined,
+            id: 1061864,
+            reviewers: ['PREreviewer'],
+            published: new Temporal.PlainDate(2022, 7, 4),
+            preprint: preprint,
+          },
+        ]),
+      )
     },
   )
 })
