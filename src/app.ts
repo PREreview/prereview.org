@@ -118,6 +118,7 @@ import {
 import {
   createRecordOnZenodo,
   getPrereviewFromZenodo,
+  getPrereviewsForClubFromZenodo,
   getPrereviewsForPreprintFromZenodo,
   getPrereviewsForProfileFromZenodo,
   getRecentPrereviewsFromZenodo,
@@ -426,7 +427,17 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPrereviews: () => TE.left('unavailable' as const),
+          getPrereviews: flip(getPrereviewsForClubFromZenodo)({
+            ...env,
+            getPreprintTitle: flow(
+              flip(getPreprintTitle)(env),
+              TE.mapLeft(error =>
+                match(error)
+                  .with('not-a-preprint', () => 'not-found' as const)
+                  .otherwise(identity),
+              ),
+            ),
+          }),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),

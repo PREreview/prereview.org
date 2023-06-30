@@ -130,6 +130,23 @@ export const getPrereviewsForProfileFromZenodo = flow(
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
+export const getPrereviewsForClubFromZenodo = flow(
+  (club: 'asapbio-metabolism') =>
+    new URLSearchParams({
+      communities: 'prereview-reviews',
+      q: `contributors.name:"${match(club)
+        .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
+        .exhaustive()}"`,
+      size: '100',
+      sort: '-publication_date',
+      subtype: 'peerreview',
+    }),
+  getRecords,
+  RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToRecentPrereview))),
+  RTE.chainOptionKW(() => undefined)(RNEA.fromReadonlyArray),
+  RTE.mapLeft(() => 'unavailable' as const),
+)
+
 export const getPrereviewsForPreprintFromZenodo = flow(
   (preprint: PreprintId) =>
     new URLSearchParams({

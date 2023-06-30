@@ -1835,6 +1835,310 @@ describe('getPrereviewsForProfileFromZenodo', () => {
   })
 })
 
+describe('getPrereviewsForClubFromZenodo', () => {
+  test.prop([fc.preprintTitle(), fc.preprintTitle()])(
+    'when the PREreviews can be loaded',
+    async (preprint1, preprint2) => {
+      const records: Records = {
+        hits: {
+          total: 2,
+          hits: [
+            {
+              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
+              id: 1061864,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'PREreviewer' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1061864' as Doi,
+                language: 'eng',
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-04'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
+            },
+            {
+              conceptdoi: '10.5072/zenodo.1065235' as Doi,
+              conceptrecid: 1065235,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
+              id: 1065236,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'Josiah Carberry' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1065236' as Doi,
+                language: 'eng',
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-05'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
+            },
+          ],
+        },
+      }
+
+      const actual = await _.getPrereviewsForClubFromZenodo('asapbio-metabolism')({
+        fetch: fetchMock.sandbox().getOnce(
+          {
+            url: 'begin:https://zenodo.org/api/records/?',
+            query: {
+              communities: 'prereview-reviews',
+              q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+              size: '100',
+              sort: '-publication_date',
+              subtype: 'peerreview',
+            },
+          },
+          {
+            body: RecordsC.encode(records),
+            status: Status.OK,
+          },
+        ),
+        getPreprintTitle: id =>
+          match(id.value as unknown)
+            .with('10.1101/2022.01.13.476201', () => TE.right(preprint1))
+            .with('10.1101/2022.02.14.480364', () => TE.right(preprint2))
+            .otherwise(() => TE.left('not-found')),
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          {
+            club: undefined,
+            id: 1061864,
+            reviewers: ['PREreviewer'],
+            published: new Temporal.PlainDate(2022, 7, 4),
+            preprint: preprint1,
+          },
+          {
+            club: undefined,
+            id: 1065236,
+            reviewers: ['Josiah Carberry'],
+            published: new Temporal.PlainDate(2022, 7, 5),
+            preprint: preprint2,
+          },
+        ]),
+      )
+    },
+  )
+
+  test.prop([
+    fc.integer({
+      min: 400,
+      max: 599,
+    }),
+  ])('when the PREreviews cannot be loaded', async status => {
+    const fetch = fetchMock.sandbox().getOnce(
+      {
+        url: 'begin:https://zenodo.org/api/records/?',
+        query: {
+          communities: 'prereview-reviews',
+          q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+          size: '100',
+          sort: '-publication_date',
+          subtype: 'peerreview',
+        },
+      },
+      { status },
+    )
+
+    const actual = await _.getPrereviewsForClubFromZenodo('asapbio-metabolism')({
+      clock: SystemClock,
+      fetch,
+      getPreprintTitle: () => () => Promise.reject('should not be called'),
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
+  })
+
+  test.prop([fc.preprintTitle(), fc.constantFrom('not-found' as const, 'unavailable' as const)])(
+    'when a preprint cannot be loaded',
+    async (preprint, error) => {
+      const records: Records = {
+        hits: {
+          total: 2,
+          hits: [
+            {
+              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
+              id: 1061864,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'PREreviewer' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1061864' as Doi,
+                language: 'eng',
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-04'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: '10.1101/2022.01.13.476201' as Doi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
+            },
+            {
+              conceptdoi: '10.5072/zenodo.1065235' as Doi,
+              conceptrecid: 1065235,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
+                },
+              ],
+              id: 1065236,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
+              },
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                creators: [{ name: 'Josiah Carberry' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1065236' as Doi,
+                language: 'eng',
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-05'),
+                related_identifiers: [
+                  {
+                    scheme: 'doi',
+                    identifier: '10.1101/2022.02.14.480364' as Doi,
+                    relation: 'reviews',
+                    resource_type: 'publication-preprint',
+                  },
+                ],
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
+            },
+          ],
+        },
+      }
+
+      const actual = await _.getPrereviewsForClubFromZenodo('asapbio-metabolism')({
+        fetch: fetchMock.sandbox().getOnce(
+          {
+            url: 'begin:https://zenodo.org/api/records/?',
+            query: {
+              communities: 'prereview-reviews',
+              q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+              size: '100',
+              sort: '-publication_date',
+              subtype: 'peerreview',
+            },
+          },
+          {
+            body: RecordsC.encode(records),
+            status: Status.OK,
+          },
+        ),
+        getPreprintTitle: id =>
+          match(id.value as unknown)
+            .with('10.1101/2022.01.13.476201', () => TE.right(preprint))
+            .with('10.1101/2022.02.14.480364', () => TE.left(error))
+            .otherwise(() => TE.left('not-found')),
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
+
 describe('getPrereviewsForPreprintFromZenodo', () => {
   test.prop([fc.preprintId(), fc.boolean()])('when the PREreviews can be loaded', async (preprint, isInClub) => {
     const records: Records = {
