@@ -219,6 +219,11 @@ export function page({
                     >
                   </div>
 
+                  <div>
+                    Come join the conversation!
+                    <a href="https://bit.ly/PREreview-Slack" class="forward">Join our Slack Community</a>
+                  </div>
+
                   <ul aria-label="Support links">
                     <li><a href="https://donorbox.org/prereview">Donate</a></li>
                     <li>
