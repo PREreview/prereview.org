@@ -18,7 +18,7 @@ import type { GetUserEnv, User } from './user'
 
 export const myDetails = pipe(
   getUser,
-  chainReaderKW(user => createPage(user, O.none as O.None)),
+  chainReaderKW(user => createPage(user, O.none)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(error =>
@@ -38,7 +38,7 @@ export const myDetails = pipe(
   ),
 )
 
-function createPage(user: User, careerStage: O.None) {
+function createPage(user: User, careerStage: O.Option<'early' | 'mid' | 'late'>) {
   return pipe(
     canEditProfile,
     R.chainW(canEditProfile =>
@@ -69,6 +69,9 @@ function createPage(user: User, careerStage: O.None) {
                     <dt>Career stage</dt>
                     <dd>
                       ${match(careerStage)
+                        .with({ value: 'early' }, () => 'Early')
+                        .with({ value: 'mid' }, () => 'Mid')
+                        .with({ value: 'late' }, () => 'Late')
                         .when(O.isNone, () => 'Unknown')
                         .exhaustive()}
                     </dd>
