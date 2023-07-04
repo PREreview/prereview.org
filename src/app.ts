@@ -397,6 +397,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
             ),
           }),*/
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+          getCareerStage: () => TE.left('not-found'),
         })),
       ),
     ),

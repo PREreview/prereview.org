@@ -1,10 +1,13 @@
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
 import * as R from 'fp-ts/Reader'
-import { pipe } from 'fp-ts/function'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import type * as TE from 'fp-ts/TaskEither'
+import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { canEditProfile } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
@@ -16,10 +19,28 @@ import { myDetailsMatch } from './routes'
 import { getUser } from './user'
 import type { GetUserEnv, User } from './user'
 
+export interface GetCareerStageEnv {
+  getCareerStage: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', 'early' | 'mid' | 'late'>
+}
+
+export const getCareerStage = (orcid: Orcid) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }: GetCareerStageEnv) => getCareerStage(orcid)))
+
 export const myDetails = pipe(
   getUser,
   RM.bindTo('user'),
-  RM.apS('careerStage', RM.of(O.none)),
+  RM.bindW(
+    'careerStage',
+    flow(
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => getCareerStage(orcid)),
+      RM.map(O.some),
+      RM.orElseW(error =>
+        match(error)
+          .with('not-found', () => RM.of(O.none))
+          .otherwise(RM.left),
+      ),
+    ),
+  ),
   chainReaderKW(({ user, careerStage }) => createPage(user, careerStage)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
@@ -35,6 +56,7 @@ export const myDetails = pipe(
         >
       >()
       .with('no-session', () => logInAndRedirect(myDetailsMatch.formatter, {}))
+      .with('unavailable', () => serviceUnavailable)
       .with(P.instanceOf(Error), () => serviceUnavailable)
       .exhaustive(),
   ),
