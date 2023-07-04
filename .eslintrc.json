@@ -1,6 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "no-comments"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -20,7 +20,8 @@
         "@typescript-eslint/no-unsafe-assignment": "off",
         "@typescript-eslint/no-unsafe-member-access": "off",
         "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
-        "@typescript-eslint/restrict-template-expressions": "off"
+        "@typescript-eslint/restrict-template-expressions": "off",
+        "no-comments/disallowComments": "off"
       }
     },
     {
@@ -67,6 +68,7 @@
     ],
     "import/no-named-as-default": "off",
     "import/no-named-as-default-member": "off",
+    "no-comments/disallowComments": ["error", { "allow": ["eslint", "https://", "Do", "Unfortunately", "Refs"] }],
     "quotes": ["error", "single", { "avoidEscape": true }]
   },
   "settings": {

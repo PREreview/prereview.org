@@ -387,18 +387,6 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          /*getName: flip(getNameFromOrcid)(env),
-          getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
-            ...env,
-            getPreprintTitle: flow(
-              flip(getPreprintTitle)(env),
-              TE.mapLeft(error =>
-                match(error)
-                  .with('not-a-preprint', () => 'not-found' as const)
-                  .otherwise(identity),
-              ),
-            ),
-          }),*/
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
           getCareerStage: orcid =>
             pipe(
