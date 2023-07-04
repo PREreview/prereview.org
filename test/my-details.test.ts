@@ -21,12 +21,14 @@ describe('myDetails', () => {
     fc.origin(),
     fc.connection({ method: fc.requestMethod() }),
     fc.user(),
-  ])('when the user is logged in', async (oauth, publicUrl, connection, user) => {
+    fc.boolean(),
+  ])('when the user is logged in', async (oauth, publicUrl, connection, user, canEditProfile) => {
     const actual = await runMiddleware(
       _.myDetails({
         getUser: () => M.right(user),
         oauth,
         publicUrl,
+        canEditProfile,
       }),
       connection,
     )()
@@ -50,12 +52,14 @@ describe('myDetails', () => {
     }),
     fc.origin(),
     fc.connection({ method: fc.requestMethod() }),
-  ])('when the user is not logged in', async (oauth, publicUrl, connection) => {
+    fc.boolean(),
+  ])('when the user is not logged in', async (oauth, publicUrl, connection, canEditProfile) => {
     const actual = await runMiddleware(
       _.myDetails({
         getUser: () => M.left('no-session'),
         oauth,
         publicUrl,
+        canEditProfile,
       }),
       connection,
     )()
@@ -93,12 +97,14 @@ describe('myDetails', () => {
     fc.origin(),
     fc.connection({ method: fc.requestMethod() }),
     fc.error(),
-  ])("when the user can't be loaded", async (oauth, publicUrl, connection, error) => {
+    fc.boolean(),
+  ])("when the user can't be loaded", async (oauth, publicUrl, connection, error, canEditProfile) => {
     const actual = await runMiddleware(
       _.myDetails({
         getUser: () => M.left(error),
         oauth,
         publicUrl,
+        canEditProfile,
       }),
       connection,
     )()

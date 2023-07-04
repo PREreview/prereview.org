@@ -1,9 +1,11 @@
 import type { Reader } from 'fp-ts/Reader'
+import * as R from 'fp-ts/Reader'
 import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
+import { canEditProfile } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
@@ -36,34 +38,46 @@ export const myDetails = pipe(
 )
 
 function createPage(user: User) {
-  return page({
-    title: plainText`My details`,
-    content: html`
-      <main id="main-content">
-        <h1>My details</h1>
+  return pipe(
+    canEditProfile,
+    R.chainW(canEditProfile =>
+      page({
+        title: plainText`My details`,
+        content: html`
+          <main id="main-content">
+            <h1>My details</h1>
 
-        <dl>
-          <div>
-            <dt>Name</dt>
-            <dd>${user.name}</dd>
-          </div>
+            <dl>
+              <div>
+                <dt>Name</dt>
+                <dd>${user.name}</dd>
+              </div>
 
-          <div>
-            <dt>ORCID iD</dt>
-            <dd><a href="https://orcid.org/${user.orcid}" class="orcid">${user.orcid}</a></dd>
-          </div>
+              <div>
+                <dt>ORCID iD</dt>
+                <dd><a href="https://orcid.org/${user.orcid}" class="orcid">${user.orcid}</a></dd>
+              </div>
 
-          <div>
-            <dt>PREreview pseudonym</dt>
-            <dd>${user.pseudonym}</dd>
-          </div>
-        </dl>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    current: 'my-details',
-    user,
-  })
+              <div>
+                <dt>PREreview pseudonym</dt>
+                <dd>${user.pseudonym}</dd>
+              </div>
+
+              ${canEditProfile
+                ? html`<div>
+                    <dt>Career stage</dt>
+                    <dd>Unknown</dd>
+                  </div>`
+                : ''}
+            </dl>
+          </main>
+        `,
+        skipLinks: [[html`Skip to main content`, '#main-content']],
+        current: 'my-details',
+        user,
+      }),
+    ),
+  )
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
