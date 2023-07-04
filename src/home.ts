@@ -224,58 +224,6 @@ function createPage(
               ),
             )}
 
-            <section aria-labelledby="partners-title">
-              <h2 id="partners-title">Partners</h2>
-
-              <ol class="logos">
-                <li>
-                  <a href="https://www.orfg.org/">
-                    <img
-                      src="${assets['ofrg.svg']}"
-                      width="268"
-                      height="201"
-                      loading="lazy"
-                      alt="Open Research Funders Group"
-                    />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.healthra.org/">
-                    <img
-                      src="${assets['healthra.svg']}"
-                      width="564"
-                      height="224"
-                      loading="lazy"
-                      alt="Health Research Alliance"
-                    />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.ohsu.edu/">
-                    <img
-                      src="${assets['ohsu.svg']}"
-                      width="174"
-                      height="298"
-                      loading="lazy"
-                      alt="Oregon Health &amp; Science University"
-                    />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.jmir.org/announcements/296">
-                    <img
-                      src="${assets['jmir.svg']}"
-                      width="275"
-                      height="43"
-                      loading="lazy"
-                      alt="JMIR Publications"
-                      class="wide"
-                    />
-                  </a>
-                </li>
-              </ol>
-            </section>
-
             <section aria-labelledby="funders-title">
               <h2 id="funders-title">Funders</h2>
 
