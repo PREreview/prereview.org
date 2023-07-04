@@ -1,6 +1,7 @@
 import slashes from 'connect-slashes'
 import express from 'express'
 import * as P from 'fp-ts-routing'
+import * as E from 'fp-ts/Either'
 import type { Json } from 'fp-ts/Json'
 import { concatAll } from 'fp-ts/Monoid'
 import type { Option } from 'fp-ts/Option'
@@ -21,6 +22,7 @@ import { type SessionEnv, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
+import type Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
@@ -137,6 +139,7 @@ export type AppEnv = CanEditProfileEnv &
   SessionEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean
+    careerStageStore: Keyv<string>
   }
 
 export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
@@ -397,7 +400,18 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
             ),
           }),*/
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
-          getCareerStage: () => TE.left('not-found'),
+          getCareerStage: orcid =>
+            pipe(
+              TE.tryCatch(
+                () => env.careerStageStore.get(orcid),
+                () => 'unavailable' as const,
+              ),
+              TE.chainEitherKW(value =>
+                match(value)
+                  .with(p.union('early', 'mid', 'late'), E.right)
+                  .otherwise(() => E.left('not-found' as const)),
+              ),
+            ),
         })),
       ),
     ),

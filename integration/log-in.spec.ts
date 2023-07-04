@@ -21,13 +21,20 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)('can set my career stage', async ({ page }) => {
-  await page.getByRole('link', { name: 'My details' }).click()
+test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(
+  'can set my career stage',
+  async ({ page, careerStageStore }) => {
+    await page.getByRole('link', { name: 'My details' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Career stage')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-})
+    await expect(page.getByRole('main')).toContainText('Unknown')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await careerStageStore.set('0000-0002-1825-0097', 'early')
+    await page.reload()
+    await expect(page.getByRole('main')).toContainText('Early')
+  },
+)
 
 test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnabled, page }, testInfo) => {
   const logIn = page.getByRole('link', { name: 'Log in' })

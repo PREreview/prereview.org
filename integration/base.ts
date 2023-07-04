@@ -34,6 +34,7 @@ type AppFixtures = {
   port: number
   server: Server
   updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
+  careerStageStore: Keyv<string>
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -51,6 +52,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   canEditProfile: async ({}, use) => {
     await use(false)
+  },
+  careerStageStore: async ({}, use) => {
+    await use(new Keyv())
   },
   fetch: async ({}, use) => {
     const fetch = fetchMock.sandbox()
@@ -658,7 +662,10 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
-  server: async ({ canSeeClubs, canEditProfile, fetch, logger, port, updatesLegacyPrereview }, use) => {
+  server: async (
+    { canSeeClubs, canEditProfile, fetch, logger, port, updatesLegacyPrereview, careerStageStore },
+    use,
+  ) => {
     const server = app({
       allowSiteCrawlers: true,
       canSeeClubs,
@@ -666,6 +673,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),
+      careerStageStore,
       ghostApi: {
         key: 'key',
       },
