@@ -18,7 +18,9 @@ import type { GetUserEnv, User } from './user'
 
 export const myDetails = pipe(
   getUser,
-  chainReaderKW(user => createPage(user, O.none)),
+  RM.bindTo('user'),
+  RM.apS('careerStage', RM.of(O.none)),
+  chainReaderKW(({ user, careerStage }) => createPage(user, careerStage)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(error =>
