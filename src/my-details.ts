@@ -1,3 +1,4 @@
+import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
 import * as R from 'fp-ts/Reader'
 import { pipe } from 'fp-ts/function'
@@ -17,7 +18,7 @@ import type { GetUserEnv, User } from './user'
 
 export const myDetails = pipe(
   getUser,
-  chainReaderKW(createPage),
+  chainReaderKW(user => createPage(user, O.none as O.None)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(error =>
@@ -37,7 +38,7 @@ export const myDetails = pipe(
   ),
 )
 
-function createPage(user: User) {
+function createPage(user: User, careerStage: O.None) {
   return pipe(
     canEditProfile,
     R.chainW(canEditProfile =>
@@ -66,7 +67,11 @@ function createPage(user: User) {
               ${canEditProfile
                 ? html`<div>
                     <dt>Career stage</dt>
-                    <dd>Unknown</dd>
+                    <dd>
+                      ${match(careerStage)
+                        .when(O.isNone, () => 'Unknown')
+                        .exhaustive()}
+                    </dd>
                   </div>`
                 : ''}
             </dl>
