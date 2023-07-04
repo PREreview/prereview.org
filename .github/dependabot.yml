@@ -18,4 +18,5 @@ updates:
       interval: 'daily'
     groups:
       typescript-eslint:
-        patterns: '@typescript-eslint/*'
+        patterns:
+          - '@typescript-eslint/*'
