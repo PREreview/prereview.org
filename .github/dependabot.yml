@@ -20,6 +20,9 @@ updates:
       babel:
         patterns:
           - '@babel/*'
+      tiptap:
+        patterns:
+          - '@tiptap/*'
       typescript-eslint:
         patterns:
           - '@typescript-eslint/*'
