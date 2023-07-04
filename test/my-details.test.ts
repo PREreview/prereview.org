@@ -11,38 +11,77 @@ import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
 describe('myDetails', () => {
-  test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
-    fc.origin(),
-    fc.connection({ method: fc.requestMethod() }),
-    fc.user(),
-    fc.boolean(),
-    fc.either(fc.constant('not-found' as const), fc.constantFrom('early' as const, 'mid' as const, 'late' as const)),
-  ])('when the user is logged in', async (oauth, publicUrl, connection, user, canEditProfile, careerStage) => {
-    const actual = await runMiddleware(
-      _.myDetails({
-        getUser: () => M.right(user),
-        oauth,
-        publicUrl,
-        canEditProfile,
-        getCareerStage: () => TE.fromEither(careerStage),
+  describe('when the user is logged in', () => {
+    test.prop([
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
       }),
-      connection,
-    )()
+      fc.origin(),
+      fc.connection({ method: fc.requestMethod() }),
+      fc.user(),
+      fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.constantFrom('early' as const, 'mid' as const, 'late' as const)),
+    ])(
+      'when the career stage can be loaded',
+      async (oauth, publicUrl, connection, user, canEditProfile, careerStage) => {
+        const actual = await runMiddleware(
+          _.myDetails({
+            getUser: () => M.right(user),
+            oauth,
+            publicUrl,
+            canEditProfile,
+            getCareerStage: () => TE.fromEither(careerStage),
+          }),
+          connection,
+        )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.OK },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.OK },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
     )
+
+    test.prop([
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc.origin(),
+      fc.connection({ method: fc.requestMethod() }),
+      fc.user(),
+      fc.boolean(),
+    ])('when the career stage cannot be loaded', async (oauth, publicUrl, connection, user, canEditProfile) => {
+      const actual = await runMiddleware(
+        _.myDetails({
+          getUser: () => M.right(user),
+          oauth,
+          publicUrl,
+          canEditProfile,
+          getCareerStage: () => TE.left('unavailable'),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
   })
 
   test.prop([
