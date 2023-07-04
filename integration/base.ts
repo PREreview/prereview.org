@@ -658,6 +658,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     const server = app({
       allowSiteCrawlers: true,
       canSeeClubs,
+      canEditProfile: false,
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),

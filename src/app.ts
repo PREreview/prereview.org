@@ -31,7 +31,7 @@ import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
-import type { CanSeeClubsEnv } from './feature-flags'
+import type { CanEditProfileEnv, CanSeeClubsEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
@@ -124,7 +124,8 @@ import {
   getRecentPrereviewsFromZenodo,
 } from './zenodo'
 
-export type AppEnv = CanSeeClubsEnv &
+export type AppEnv = CanEditProfileEnv &
+  CanSeeClubsEnv &
   FathomEnv &
   FormStoreEnv &
   GhostApiEnv &
@@ -383,7 +384,6 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          canEditProfile: false,
           /*getName: flip(getNameFromOrcid)(env),
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
             ...env,
