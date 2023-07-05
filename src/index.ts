@@ -38,9 +38,9 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
 
 const server = app({
   ...loggerEnv,
-  allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS ?? false,
-  canSeeClubs: env.CAN_SEE_CLUBS ?? false,
-  canEditProfile: env.CAN_EDIT_PROFILE ?? false,
+  allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
+  canSeeClubs: env.CAN_SEE_CLUBS,
+  canEditProfile: env.CAN_EDIT_PROFILE,
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: 'data/cache',
@@ -57,7 +57,7 @@ const server = app({
     app: env.LEGACY_PREREVIEW_API_APP,
     key: env.LEGACY_PREREVIEW_API_KEY,
     url: env.LEGACY_PREREVIEW_URL,
-    update: env.LEGACY_PREREVIEW_UPDATE ?? false,
+    update: env.LEGACY_PREREVIEW_UPDATE,
   },
   oauth: {
     authorizeUrl: new URL('https://orcid.org/oauth/authorize'),

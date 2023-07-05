@@ -26,12 +26,36 @@ const UrlD = pipe(
 
 const HtmlD = pipe(D.string, D.map(rawHtml))
 
+const UndefinedD: D.Decoder<unknown, undefined> = {
+  decode: (val) => {
+    return val === undefined
+      ? D.success(undefined)
+      : D.failure(val, 'undefined');
+  },
+};
+
 const EnvD = pipe(
   D.struct({
+    ALLOW_SITE_CRAWLERS: withDefault(pipe(
+      D.literal('true', 'false'),
+      D.map(value => value === 'true'),
+    ), false),
+    CAN_EDIT_PROFILE: withDefault(pipe(
+      D.literal('true', 'false'),
+      D.map(value => value === 'true'),
+    ), false),
+    CAN_SEE_CLUBS: withDefault(pipe(
+      D.literal('true', 'false'),
+      D.map(value => value === 'true'),
+    ), false),
     GHOST_API_KEY: D.string,
     LEGACY_PREREVIEW_API_APP: D.string,
     LEGACY_PREREVIEW_API_KEY: D.string,
     LEGACY_PREREVIEW_URL: UrlD,
+    LEGACY_PREREVIEW_UPDATE: withDefault(pipe(
+      D.literal('true', 'false'),
+      D.map(value => value === 'true'),
+    ), false),
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
     PUBLIC_URL: UrlD,
@@ -41,23 +65,7 @@ const EnvD = pipe(
   }),
   D.intersect(
     D.partial({
-      ALLOW_SITE_CRAWLERS: pipe(
-        D.literal('true', 'false'),
-        D.map(value => value === 'true'),
-      ),
-      CAN_EDIT_PROFILE: pipe(
-        D.literal('true', 'false'),
-        D.map(value => value === 'true'),
-      ),
-      CAN_SEE_CLUBS: pipe(
-        D.literal('true', 'false'),
-        D.map(value => value === 'true'),
-      ),
       FATHOM_SITE_ID: D.string,
-      LEGACY_PREREVIEW_UPDATE: pipe(
-        D.literal('true', 'false'),
-        D.map(value => value === 'true'),
-      ),
       LOG_FORMAT: D.literal('json'),
       PHASE_TAG: D.string,
       PHASE_TEXT: HtmlD,
@@ -65,3 +73,17 @@ const EnvD = pipe(
     }),
   ),
 )
+
+// https://github.com/gcanti/io-ts/issues/8#issuecomment-875703401
+function withDefault<T extends D.Decoder<unknown, unknown>>(
+  decoder: T,
+  defaultValue: D.TypeOf<T>
+): D.Decoder<D.InputOf<T>, D.TypeOf<T>> {
+  return D.union(
+    decoder,
+    pipe(
+      UndefinedD,
+      D.map(() => defaultValue)
+    )
+  );
+}
