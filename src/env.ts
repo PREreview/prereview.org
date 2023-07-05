@@ -14,6 +14,11 @@ export function decodeEnv(process: NodeJS.Process) {
   )
 }
 
+const BooleanD = pipe(
+  D.literal('true', 'false'),
+  D.map(value => value === 'true'),
+)
+
 const UrlD = pipe(
   D.string,
   D.parse(s =>
@@ -32,38 +37,14 @@ const UndefinedD: D.Decoder<unknown, undefined> = {
 
 const EnvD = pipe(
   D.struct({
-    ALLOW_SITE_CRAWLERS: withDefault(
-      pipe(
-        D.literal('true', 'false'),
-        D.map(value => value === 'true'),
-      ),
-      false,
-    ),
-    CAN_EDIT_PROFILE: withDefault(
-      pipe(
-        D.literal('true', 'false'),
-        D.map(value => value === 'true'),
-      ),
-      false,
-    ),
-    CAN_SEE_CLUBS: withDefault(
-      pipe(
-        D.literal('true', 'false'),
-        D.map(value => value === 'true'),
-      ),
-      false,
-    ),
+    ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
+    CAN_EDIT_PROFILE: withDefault(BooleanD, false),
+    CAN_SEE_CLUBS: withDefault(BooleanD, false),
     GHOST_API_KEY: D.string,
     LEGACY_PREREVIEW_API_APP: D.string,
     LEGACY_PREREVIEW_API_KEY: D.string,
     LEGACY_PREREVIEW_URL: UrlD,
-    LEGACY_PREREVIEW_UPDATE: withDefault(
-      pipe(
-        D.literal('true', 'false'),
-        D.map(value => value === 'true'),
-      ),
-      false,
-    ),
+    LEGACY_PREREVIEW_UPDATE: withDefault(BooleanD, false),
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
     PUBLIC_URL: UrlD,
