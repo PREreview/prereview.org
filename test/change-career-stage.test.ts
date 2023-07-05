@@ -106,6 +106,38 @@ describe('changeCareerStage', () => {
         ]),
       )
     })
+
+    test.prop([
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc.origin(),
+      fc.connection({ method: fc.requestMethod() }),
+      fc.error(),
+    ])("when the user can't be loaded", async (oauth, publicUrl, connection, error) => {
+      const actual = await runMiddleware(
+        _.changeCareerStage({
+          canEditProfile: true,
+          getUser: () => M.left(error),
+          oauth,
+          publicUrl,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
   })
 
   test.prop([
@@ -118,7 +150,7 @@ describe('changeCareerStage', () => {
     }),
     fc.origin(),
     fc.connection(),
-    fc.either(fc.constant('no-session' as const), fc.user()),
+    fc.either(fc.oneof(fc.error(), fc.constant('no-session' as const)), fc.user()),
   ])("when profiles can't be edited", async (oauth, publicUrl, connection, user) => {
     const actual = await runMiddleware(
       _.changeCareerStage({ canEditProfile: false, getUser: () => M.fromEither(user), publicUrl, oauth }),

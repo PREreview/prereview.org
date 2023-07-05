@@ -2,16 +2,18 @@ import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
 import * as b from 'fp-ts/boolean'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { canEditProfile } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
 import { getMethod, notFound, serviceUnavailable } from './middleware'
-import { page } from './page'
+import { type FathomEnv, type PhaseEnv, page } from './page'
+import type { PublicUrlEnv } from './public-url'
 import { changeCareerStageMatch, myDetailsMatch } from './routes'
-import { type User, getUser } from './user'
+import { type GetUserEnv, type User, getUser } from './user'
 
 export const changeCareerStage = pipe(
   RM.rightReader(canEditProfile),
@@ -32,7 +34,21 @@ const showChangeCareerStage = pipe(
       .with('POST', () => serviceUnavailable)
       .otherwise(() => showChangeCareerStageForm(state.user)),
   ),
-  RM.orElseW(() => logInAndRedirect(myDetailsMatch.formatter, {})),
+  RM.orElse(error =>
+    match(error)
+      .returnType<
+        RM.ReaderMiddleware<
+          FathomEnv & GetUserEnv & OAuthEnv & PhaseEnv & PublicUrlEnv,
+          StatusOpen,
+          ResponseEnded,
+          never,
+          void
+        >
+      >()
+      .with('no-session', () => logInAndRedirect(myDetailsMatch.formatter, {}))
+      .with(P.instanceOf(Error), () => serviceUnavailable)
+      .exhaustive(),
+  ),
 )
 
 const showChangeCareerStageForm = flow(
