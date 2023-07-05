@@ -150,6 +150,8 @@ export const orcidErrorMatch = pipe(
 
 export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
 
+export const changeCareerStageMatch = pipe(P.lit('my-details'), P.then(P.lit('change-career-stage')), P.then(P.end))
+
 export const clubMatch = pipe(P.lit('clubs'), P.then(type('id', ClubC)), P.then(P.end))
 
 export const profileMatch = pipe(P.lit('profiles'), P.then(type('profile', ProfileIdC)), P.then(P.end))

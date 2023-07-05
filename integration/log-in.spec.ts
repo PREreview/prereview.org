@@ -33,7 +33,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(
     await page.getByRole('link', { name: 'Change career stage' }).click()
 
     await careerStageStore.set('0000-0002-1825-0097', 'early')
-    await page.reload()
+
+    await page.getByRole('link', { name: 'My details' }).click()
+
     await expect(page.getByRole('main')).toContainText('Early')
   },
 )

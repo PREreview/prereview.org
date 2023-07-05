@@ -51,6 +51,7 @@ import {
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview'
 import { legacyRoutes } from './legacy-routes'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
+import { serviceUnavailable } from './middleware'
 import { myDetails } from './my-details'
 import { getNameFromOrcid } from './orcid'
 import type { FathomEnv, PhaseEnv } from './page'
@@ -68,6 +69,7 @@ import { reviewAPreprint } from './review-a-preprint'
 import { reviews } from './reviews'
 import {
   aboutUsMatch,
+  changeCareerStageMatch,
   clubMatch,
   codeOfConductMatch,
   communitiesMatch,
@@ -400,6 +402,16 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
                   .otherwise(() => E.left('not-found' as const)),
               ),
             ),
+        })),
+      ),
+    ),
+    pipe(
+      changeCareerStageMatch.parser,
+      P.map(() => serviceUnavailable),
+      P.map(
+        R.local((env: AppEnv) => ({
+          ...env,
+          getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
     ),

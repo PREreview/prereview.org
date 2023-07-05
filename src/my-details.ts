@@ -1,3 +1,4 @@
+import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
 import * as R from 'fp-ts/Reader'
@@ -15,7 +16,7 @@ import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
-import { myDetailsMatch } from './routes'
+import { changeCareerStageMatch, myDetailsMatch } from './routes'
 import { getUser } from './user'
 import type { GetUserEnv, User } from './user'
 
@@ -100,7 +101,9 @@ function createPage(user: User, careerStage: O.Option<'early' | 'mid' | 'late'>)
                         .exhaustive()}
                     </dd>
                     <dd>
-                      <a href="#">Change <span class="visually-hidden">career stage</span></a>
+                      <a href="${format(changeCareerStageMatch.formatter, {})}"
+                        >Change <span class="visually-hidden">career stage</span></a
+                      >
                     </dd>
                   </div>`
                 : ''}
