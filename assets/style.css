@@ -630,6 +630,10 @@ dl {
 
     & dt {
       min-inline-size: 20ch;
+
+      & + dd {
+        flex-grow: 1;
+      }
     }
   }
 }
