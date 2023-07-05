@@ -99,6 +99,9 @@ function createPage(user: User, careerStage: O.Option<'early' | 'mid' | 'late'>)
                         .when(O.isNone, () => 'Unknown')
                         .exhaustive()}
                     </dd>
+                    <dd>
+                      <a href="#">Change <span class="visually-hidden">career stage</span></a>
+                    </dd>
                   </div>`
                 : ''}
             </dl>
