@@ -75,6 +75,13 @@ function createFormPage(user: User) {
                   <span>Late</span>
                 </label>
               </li>
+              <li>
+                <span>or</span>
+                <label>
+                  <input name="careerStage" type="radio" value="skip" />
+                  <span>Prefer not to say</span>
+                </label>
+              </li>
             </ol>
           </fieldset>
 

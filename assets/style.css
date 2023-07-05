@@ -568,6 +568,12 @@ h6 {
 
     & > li {
       margin-block-start: var(--space-s);
+
+      & > span {
+        display: inline-block;
+        min-inline-size: var(--space-m);
+        text-align: center;
+      }
     }
   }
 
