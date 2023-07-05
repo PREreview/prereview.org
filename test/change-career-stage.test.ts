@@ -19,7 +19,7 @@ describe('changeCareerStage', () => {
       tokenUrl: fc.url(),
     }),
     fc.origin(),
-    fc.connection(),
+    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.user(),
   ])('when profiles can be edited and there is a logged in user', async (oauth, publicUrl, connection, user) => {
     const actual = await runMiddleware(
@@ -29,13 +29,42 @@ describe('changeCareerStage', () => {
 
     expect(actual).toStrictEqual(
       E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setStatus', status: Status.OK },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: expect.anything() },
       ]),
     )
   })
+
+  test.prop([
+    fc.record({
+      authorizeUrl: fc.url(),
+      clientId: fc.string(),
+      clientSecret: fc.string(),
+      redirectUri: fc.url(),
+      tokenUrl: fc.url(),
+    }),
+    fc.origin(),
+    fc.connection({ method: fc.constant('POST') }),
+    fc.user(),
+  ])(
+    'when profiles can be edited and there is a logged in user and the form has been submitted',
+    async (oauth, publicUrl, connection, user) => {
+      const actual = await runMiddleware(
+        _.changeCareerStage({ canEditProfile: true, getUser: () => M.fromEither(E.right(user)), publicUrl, oauth }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 
   test.prop([
     fc.record({
