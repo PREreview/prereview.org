@@ -258,7 +258,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       ).parser,
       P.map(
         fromMiddlewareK(({ userId, articleId }) =>
-          movedPermanently(`https://www.authorea.com/users/${userId}/articles/${articleId}`),
+          movedPermanently(encodeURI(`https://www.authorea.com/users/${userId}/articles/${articleId}`)),
         ),
       ),
     ),
@@ -277,7 +277,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       ).parser,
       P.map(
         fromMiddlewareK(({ userId, articleId }) =>
-          movedPermanently(`https://www.authorea.com/users/${userId}/articles/${articleId}`),
+          movedPermanently(encodeURI(`https://www.authorea.com/users/${userId}/articles/${articleId}`)),
         ),
       ),
     ),

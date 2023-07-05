@@ -48,12 +48,20 @@ describe('legacyRoutes', () => {
       'https://www.authorea.com/users/153686/articles/201763-where-can-you-find-preprints',
     ],
     [
+      '/users/174325/articles/208401-基于网络参数的生物标记可以自动找到棘波',
+      'https://www.authorea.com/users/174325/articles/208401-%E5%9F%BA%E4%BA%8E%E7%BD%91%E7%BB%9C%E5%8F%82%E6%95%B0%E7%9A%84%E7%94%9F%E7%89%A9%E6%A0%87%E8%AE%B0%E5%8F%AF%E4%BB%A5%E8%87%AA%E5%8A%A8%E6%89%BE%E5%88%B0%E6%A3%98%E6%B3%A2',
+    ],
+    [
       '/users/153686/articles/200859-preprint-info-doc/_show_article',
       'https://www.authorea.com/users/153686/articles/200859-preprint-info-doc',
     ],
     [
       '/users/153686/articles/201763-where-can-you-find-preprints/_show_article',
       'https://www.authorea.com/users/153686/articles/201763-where-can-you-find-preprints',
+    ],
+    [
+      '/users/174325/articles/208401-基于网络参数的生物标记可以自动找到棘波/_show_article',
+      'https://www.authorea.com/users/174325/articles/208401-%E5%9F%BA%E4%BA%8E%E7%BD%91%E7%BB%9C%E5%8F%82%E6%95%B0%E7%9A%84%E7%94%9F%E7%89%A9%E6%A0%87%E8%AE%B0%E5%8F%AF%E4%BB%A5%E8%87%AA%E5%8A%A8%E6%89%BE%E5%88%B0%E6%A3%98%E6%B3%A2',
     ],
   ])('redirects %s', async (path, expected) => {
     const actual = await runMiddleware(
