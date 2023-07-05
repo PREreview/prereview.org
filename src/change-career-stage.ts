@@ -1,7 +1,8 @@
 import { format } from 'fp-ts-routing'
+import type { Reader } from 'fp-ts/Reader'
 import * as b from 'fp-ts/boolean'
-import { pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
+import { flow, pipe } from 'fp-ts/function'
+import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { match } from 'ts-pattern'
 import { canEditProfile } from './feature-flags'
@@ -34,12 +35,11 @@ const showChangeCareerStage = pipe(
   RM.orElseW(() => logInAndRedirect(myDetailsMatch.formatter, {})),
 )
 
-const showChangeCareerStageForm = (user: User) =>
-  pipe(
-    RM.rightReader(createFormPage(user)),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareK(sendHtml),
-  )
+const showChangeCareerStageForm = flow(
+  fromReaderK(createFormPage),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareK(sendHtml),
+)
 
 function createFormPage(user: User) {
   return page({
@@ -92,4 +92,11 @@ function createFormPage(user: User) {
     skipLinks: [[html`Skip to form`, '#form']],
     user,
   })
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
+  f: (...a: A) => Reader<R, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return (...a) => RM.rightReader(f(...a))
 }
