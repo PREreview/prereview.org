@@ -28,6 +28,7 @@ import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
+import { changeCareerStage } from './change-career-stage'
 import { club } from './club'
 import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
@@ -51,7 +52,6 @@ import {
 import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview'
 import { legacyRoutes } from './legacy-routes'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
-import { serviceUnavailable } from './middleware'
 import { myDetails } from './my-details'
 import { getNameFromOrcid } from './orcid'
 import type { FathomEnv, PhaseEnv } from './page'
@@ -407,7 +407,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
     ),
     pipe(
       changeCareerStageMatch.parser,
-      P.map(() => serviceUnavailable),
+      P.map(() => changeCareerStage),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
