@@ -40,7 +40,7 @@ const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS ?? false,
   canSeeClubs: env.CAN_SEE_CLUBS ?? false,
-  canEditProfile: false,
+  canEditProfile: env.CAN_EDIT_PROFILE ?? false,
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: 'data/cache',

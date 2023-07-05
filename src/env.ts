@@ -45,6 +45,10 @@ const EnvD = pipe(
         D.literal('true', 'false'),
         D.map(value => value === 'true'),
       ),
+      CAN_EDIT_PROFILE: pipe(
+        D.literal('true', 'false'),
+        D.map(value => value === 'true'),
+      ),
       CAN_SEE_CLUBS: pipe(
         D.literal('true', 'false'),
         D.map(value => value === 'true'),
