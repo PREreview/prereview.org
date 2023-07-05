@@ -1,3 +1,4 @@
+import { format } from 'fp-ts-routing'
 import * as b from 'fp-ts/boolean'
 import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
@@ -8,7 +9,7 @@ import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
 import { getMethod, notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
-import { myDetailsMatch } from './routes'
+import { changeCareerStageMatch, myDetailsMatch } from './routes'
 import { type User, getUser } from './user'
 
 export const changeCareerStage = pipe(
@@ -42,8 +43,46 @@ const showChangeCareerStageForm = (user: User) =>
 
 function createFormPage(user: User) {
   return page({
-    title: plainText`Change career stage`,
-    content: html` <p>Form</p> `,
+    title: plainText`What career stage are you at?`,
+    content: html`
+      <nav>
+        <a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>
+      </nav>
+
+      <main id="form">
+        <form method="post" action="${format(changeCareerStageMatch.formatter, {})}" novalidate>
+          <fieldset role="group">
+            <legend>
+              <h1>What career stage are you at?</h1>
+            </legend>
+
+            <ol>
+              <li>
+                <label>
+                  <input name="careerStage" type="radio" value="early" />
+                  <span>Early</span>
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input name="careerStage" type="radio" value="mid" />
+                  <span>Mid</span>
+                </label>
+              </li>
+              <li>
+                <label>
+                  <input name="careerStage" type="radio" value="late" />
+                  <span>Late</span>
+                </label>
+              </li>
+            </ol>
+          </fieldset>
+
+          <button>Save and continue</button>
+        </form>
+      </main>
+    `,
+    skipLinks: [[html`Skip to form`, '#form']],
     user,
   })
 }

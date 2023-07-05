@@ -31,12 +31,36 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Change career stage' }).click()
+    await page.getByLabel('Early').check()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await careerStageStore.set('0000-0002-1825-0097', 'early')
 
     await page.getByRole('link', { name: 'My details' }).click()
 
     await expect(page.getByRole('main')).toContainText('Early')
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(
+  'can skip to the form',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/my-details/change-career-stage')
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
   },
 )
 
