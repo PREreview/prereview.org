@@ -51,7 +51,7 @@ describe('changeCareerStage', () => {
     'when profiles can be edited and there is a logged in user and the form has been submitted',
     async (oauth, publicUrl, connection, user) => {
       const actual = await runMiddleware(
-        _.changeCareerStage({ canEditProfile: true, getUser: () => M.fromEither(E.right(user)), publicUrl, oauth }),
+        _.changeCareerStage({ canEditProfile: true, getUser: () => M.right(user), publicUrl, oauth }),
         connection,
       )()
 
@@ -80,7 +80,7 @@ describe('changeCareerStage', () => {
     const actual = await runMiddleware(
       _.changeCareerStage({
         canEditProfile: true,
-        getUser: () => M.fromEither(E.left('no-session')),
+        getUser: () => M.left('no-session'),
         publicUrl,
         oauth,
       }),
