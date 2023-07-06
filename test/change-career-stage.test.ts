@@ -24,10 +24,7 @@ describe('changeCareerStage', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.user(),
-      fc.either(
-        fc.constantFrom('not-found' as const, 'unavailable' as const),
-        fc.constantFrom('early' as const, 'mid' as const, 'late' as const),
-      ),
+      fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.careerStage()),
     ])('when there is a logged in user', async (oauth, publicUrl, connection, user, careerStage) => {
       const actual = await runMiddleware(
         _.changeCareerStage({
@@ -60,7 +57,7 @@ describe('changeCareerStage', () => {
         tokenUrl: fc.url(),
       }),
       fc.origin(),
-      fc.constantFrom('early', 'mid', 'late').chain(careerStage =>
+      fc.careerStage().chain(careerStage =>
         fc.tuple(
           fc.constant(careerStage),
           fc.connection({
@@ -106,7 +103,7 @@ describe('changeCareerStage', () => {
       }),
       fc.origin(),
       fc.connection({
-        body: fc.record({ careerStage: fc.constantFrom('early', 'mid', 'late', 'skip') }),
+        body: fc.record({ careerStage: fc.oneof(fc.careerStage(), fc.constant('skip')) }),
         method: fc.constant('POST'),
       }),
       fc.user(),

@@ -23,6 +23,7 @@ import {
 } from 'node-mocks-http'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
+import type { CareerStage } from '../src/career-stage'
 import type { CrossrefPreprintId } from '../src/crossref'
 import type { DatacitePreprintId } from '../src/datacite'
 import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
@@ -504,6 +505,8 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     })
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcid)
+
+export const careerStage = (): fc.Arbitrary<CareerStage> => fc.constantFrom('early', 'mid', 'late')
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
   fc

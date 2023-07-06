@@ -10,6 +10,7 @@ import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
+import type { CareerStage } from './career-stage'
 import { canEditProfile } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
@@ -21,7 +22,7 @@ import { getUser } from './user'
 import type { GetUserEnv, User } from './user'
 
 interface GetCareerStageEnv {
-  getCareerStage: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', 'early' | 'mid' | 'late'>
+  getCareerStage: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', CareerStage>
 }
 
 const getCareerStage = (orcid: Orcid) =>
@@ -63,7 +64,7 @@ export const myDetails = pipe(
   ),
 )
 
-function createPage(user: User, careerStage: O.Option<'early' | 'mid' | 'late'>) {
+function createPage(user: User, careerStage: O.Option<CareerStage>) {
   return pipe(
     canEditProfile,
     R.chainW(canEditProfile =>

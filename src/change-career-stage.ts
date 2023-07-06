@@ -11,6 +11,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
+import type { CareerStage } from './career-stage'
 import { canEditProfile } from './feature-flags'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
@@ -22,8 +23,8 @@ import { type GetUserEnv, type User, getUser } from './user'
 
 export interface EditCareerStageEnv {
   deleteCareerStage: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
-  getCareerStage: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', 'early' | 'mid' | 'late'>
-  saveCareerStage: (orcid: Orcid, careerStage: 'early' | 'mid' | 'late') => TE.TaskEither<'unavailable', void>
+  getCareerStage: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', CareerStage>
+  saveCareerStage: (orcid: Orcid, careerStage: CareerStage) => TE.TaskEither<'unavailable', void>
 }
 
 const deleteCareerStage = (orcid: Orcid) =>
@@ -32,7 +33,7 @@ const deleteCareerStage = (orcid: Orcid) =>
 const getCareerStage = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }: EditCareerStageEnv) => getCareerStage(orcid)))
 
-const saveCareerStage = (orcid: Orcid, careerStage: 'early' | 'mid' | 'late') =>
+const saveCareerStage = (orcid: Orcid, careerStage: CareerStage) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ saveCareerStage }: EditCareerStageEnv) => saveCareerStage(orcid, careerStage)),
   )
@@ -116,7 +117,7 @@ const handleChangeCareerStageForm = (user: User) =>
     RM.orElseW(() => showChangeCareerStageErrorForm(user)),
   )
 
-function createFormPage(user: User, careerStage: O.Option<'early' | 'mid' | 'late'>, error = false) {
+function createFormPage(user: User, careerStage: O.Option<CareerStage>, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}What career stage are you at?`,
     content: html`

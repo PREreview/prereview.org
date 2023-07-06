@@ -24,7 +24,7 @@ describe('myDetails', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.boolean(),
-      fc.either(fc.constant('not-found' as const), fc.constantFrom('early' as const, 'mid' as const, 'late' as const)),
+      fc.either(fc.constant('not-found' as const), fc.careerStage()),
     ])(
       'when the career stage can be loaded',
       async (oauth, publicUrl, connection, user, canEditProfile, careerStage) => {
