@@ -1,17 +1,14 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import type * as TE from 'fp-ts/TaskEither'
 import * as b from 'fp-ts/boolean'
 import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import type { CareerStage } from './career-stage'
+import { type CareerStage, deleteCareerStage, getCareerStage, saveCareerStage } from './career-stage'
 import { canEditProfile } from './feature-flags'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
@@ -20,23 +17,6 @@ import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { changeCareerStageMatch, myDetailsMatch } from './routes'
 import { type GetUserEnv, type User, getUser } from './user'
-
-export interface EditCareerStageEnv {
-  deleteCareerStage: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
-  getCareerStage: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', CareerStage>
-  saveCareerStage: (orcid: Orcid, careerStage: CareerStage) => TE.TaskEither<'unavailable', void>
-}
-
-const deleteCareerStage = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ deleteCareerStage }: EditCareerStageEnv) => deleteCareerStage(orcid)))
-
-const getCareerStage = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }: EditCareerStageEnv) => getCareerStage(orcid)))
-
-const saveCareerStage = (orcid: Orcid, careerStage: CareerStage) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ saveCareerStage }: EditCareerStageEnv) => saveCareerStage(orcid, careerStage)),
-  )
 
 export const changeCareerStage = pipe(
   RM.rightReader(canEditProfile),

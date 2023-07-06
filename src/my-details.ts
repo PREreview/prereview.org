@@ -2,15 +2,12 @@ import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
 import * as R from 'fp-ts/Reader'
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import type { CareerStage } from './career-stage'
+import { type CareerStage, getCareerStage } from './career-stage'
 import { canEditProfile } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
@@ -20,13 +17,6 @@ import type { PublicUrlEnv } from './public-url'
 import { changeCareerStageMatch, myDetailsMatch } from './routes'
 import { getUser } from './user'
 import type { GetUserEnv, User } from './user'
-
-interface GetCareerStageEnv {
-  getCareerStage: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', CareerStage>
-}
-
-const getCareerStage = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }: GetCareerStageEnv) => getCareerStage(orcid)))
 
 export const myDetails = pipe(
   getUser,

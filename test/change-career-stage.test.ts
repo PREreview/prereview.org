@@ -6,6 +6,7 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
+import type { EditCareerStageEnv } from '../src/career-stage'
 import * as _ from '../src/change-career-stage'
 import { myDetailsMatch } from '../src/routes'
 import * as fc from './fc'
@@ -68,7 +69,7 @@ describe('changeCareerStage', () => {
       ),
       fc.user(),
     ])('when the form has been submitted', async (oauth, publicUrl, [careerStage, connection], user) => {
-      const saveCareerStage: Mock<_.EditCareerStageEnv['saveCareerStage']> = jest.fn(_ => TE.right(undefined))
+      const saveCareerStage: Mock<EditCareerStageEnv['saveCareerStage']> = jest.fn(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeCareerStage({
@@ -149,7 +150,7 @@ describe('changeCareerStage', () => {
       }),
       fc.user(),
     ])('when the form has been skipped', async (oauth, publicUrl, connection, user) => {
-      const deleteCareerStage: Mock<_.EditCareerStageEnv['deleteCareerStage']> = jest.fn(_ => TE.right(undefined))
+      const deleteCareerStage: Mock<EditCareerStageEnv['deleteCareerStage']> = jest.fn(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeCareerStage({
