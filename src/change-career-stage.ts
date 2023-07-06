@@ -89,7 +89,7 @@ const handleChangeCareerStageForm = (user: User) =>
             FathomEnv & GetUserEnv & PhaseEnv & SaveCareerStageEnv,
             StatusOpen,
             ResponseEnded,
-            'unavailable',
+            never,
             void
           >
         >()
@@ -97,6 +97,7 @@ const handleChangeCareerStageForm = (user: User) =>
           pipe(
             RM.fromReaderTaskEither(saveCareerStage(user.orcid, careerStage)),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
+            RM.orElseW(() => serviceUnavailable),
           ),
         )
         .with('skip', () => serviceUnavailable)

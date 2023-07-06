@@ -89,6 +89,45 @@ describe('changeCareerStage', () => {
       }),
       fc.origin(),
       fc.connection({
+        body: fc.record({ careerStage: fc.constantFrom('early', 'mid', 'late') }),
+        method: fc.constant('POST'),
+      }),
+      fc.user(),
+    ])(
+      'when the form has been submitted but the career stage cannot be saved',
+      async (oauth, publicUrl, connection, user) => {
+        const actual = await runMiddleware(
+          _.changeCareerStage({
+            canEditProfile: true,
+            getUser: () => M.right(user),
+            publicUrl,
+            oauth,
+            saveCareerStage: () => TE.left('unavailable'),
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
+
+    test.prop([
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc.origin(),
+      fc.connection({
         body: fc.constant({ careerStage: 'skip' }),
         method: fc.constant('POST'),
       }),
