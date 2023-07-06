@@ -18,7 +18,7 @@ import type { PublicUrlEnv } from './public-url'
 import { changeCareerStageMatch, myDetailsMatch } from './routes'
 import { type GetUserEnv, type User, getUser } from './user'
 
-export interface SaveCareerStageEnv {
+interface SaveCareerStageEnv {
   saveCareerStage: (orcid: Orcid, careerStage: 'early' | 'mid' | 'late') => TE.TaskEither<'unavailable', void>
 }
 

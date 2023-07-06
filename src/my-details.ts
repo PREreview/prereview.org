@@ -20,11 +20,11 @@ import { changeCareerStageMatch, myDetailsMatch } from './routes'
 import { getUser } from './user'
 import type { GetUserEnv, User } from './user'
 
-export interface GetCareerStageEnv {
+interface GetCareerStageEnv {
   getCareerStage: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', 'early' | 'mid' | 'late'>
 }
 
-export const getCareerStage = (orcid: Orcid) =>
+const getCareerStage = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }: GetCareerStageEnv) => getCareerStage(orcid)))
 
 export const myDetails = pipe(
