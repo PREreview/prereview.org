@@ -46,9 +46,42 @@ describe('changeCareerStage', () => {
         tokenUrl: fc.url(),
       }),
       fc.origin(),
-      fc.connection({ method: fc.constant('POST') }),
+      fc.connection({
+        body: fc.record({ careerStage: fc.constantFrom('early', 'mid', 'late', 'skip') }),
+        method: fc.constant('POST'),
+      }),
       fc.user(),
     ])('when the form has been submitted', async (oauth, publicUrl, connection, user) => {
+      const actual = await runMiddleware(
+        _.changeCareerStage({ canEditProfile: true, getUser: () => M.right(user), publicUrl, oauth }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc.origin(),
+      fc.connection({
+        body: fc.record({ careerStage: fc.lorem() }, { withDeletedKeys: true }),
+        method: fc.constant('POST'),
+      }),
+      fc.user(),
+    ])('when the form has been submitted without setting career stage', async (oauth, publicUrl, connection, user) => {
       const actual = await runMiddleware(
         _.changeCareerStage({ canEditProfile: true, getUser: () => M.right(user), publicUrl, oauth }),
         connection,

@@ -5,6 +5,7 @@ import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { canEditProfile } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
@@ -31,7 +32,7 @@ const showChangeCareerStage = pipe(
   RM.apSW('method', RM.fromMiddleware(getMethod)),
   RM.ichainW(state =>
     match(state.method)
-      .with('POST', () => serviceUnavailable)
+      .with('POST', () => handleChangeCareerStageForm)
       .otherwise(() => showChangeCareerStageForm(state.user)),
   ),
   RM.orElse(error =>
@@ -55,6 +56,14 @@ const showChangeCareerStageForm = flow(
   fromReaderK(createFormPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
+)
+
+const ChangeCareerStageFormD = pipe(D.struct({ careerStage: D.literal('early', 'mid', 'late', 'skip') }))
+
+const handleChangeCareerStageForm = pipe(
+  RM.decodeBody(body => ChangeCareerStageFormD.decode(body)),
+  RM.ichainW(() => serviceUnavailable),
+  RM.orElse(() => serviceUnavailable),
 )
 
 function createFormPage(user: User) {
