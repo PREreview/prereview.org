@@ -1,10 +1,11 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
+import type { Mock } from 'jest-mock'
 import * as _ from '../src/change-career-stage'
 import { myDetailsMatch } from '../src/routes'
 import * as fc from './fc'
@@ -54,12 +55,19 @@ describe('changeCareerStage', () => {
         tokenUrl: fc.url(),
       }),
       fc.origin(),
-      fc.connection({
-        body: fc.record({ careerStage: fc.constantFrom('early', 'mid', 'late') }),
-        method: fc.constant('POST'),
-      }),
+      fc.constantFrom('early', 'mid', 'late').chain(careerStage =>
+        fc.tuple(
+          fc.constant(careerStage),
+          fc.connection({
+            body: fc.constant({ careerStage }),
+            method: fc.constant('POST'),
+          }),
+        ),
+      ),
       fc.user(),
-    ])('when the form has been submitted', async (oauth, publicUrl, connection, user) => {
+    ])('when the form has been submitted', async (oauth, publicUrl, [careerStage, connection], user) => {
+      const saveCareerStage: Mock<_.EditCareerStageEnv['saveCareerStage']> = jest.fn(_ => TE.right(undefined))
+
       const actual = await runMiddleware(
         _.changeCareerStage({
           canEditProfile: true,
@@ -67,7 +75,7 @@ describe('changeCareerStage', () => {
           publicUrl,
           oauth,
           deleteCareerStage: () => () => Promise.reject('should-not-be-called'),
-          saveCareerStage: () => TE.right(undefined),
+          saveCareerStage,
         }),
         connection,
       )()
@@ -79,6 +87,7 @@ describe('changeCareerStage', () => {
           { type: 'endResponse' },
         ]),
       )
+      expect(saveCareerStage).toHaveBeenCalledWith(user.orcid, careerStage)
     })
 
     test.prop([
@@ -136,13 +145,15 @@ describe('changeCareerStage', () => {
       }),
       fc.user(),
     ])('when the form has been skipped', async (oauth, publicUrl, connection, user) => {
+      const deleteCareerStage: Mock<_.EditCareerStageEnv['deleteCareerStage']> = jest.fn(_ => TE.right(undefined))
+
       const actual = await runMiddleware(
         _.changeCareerStage({
           canEditProfile: true,
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteCareerStage: () => TE.right(undefined),
+          deleteCareerStage,
           saveCareerStage: () => () => Promise.reject('should-not-be-called'),
         }),
         connection,
@@ -155,6 +166,7 @@ describe('changeCareerStage', () => {
           { type: 'endResponse' },
         ]),
       )
+      expect(deleteCareerStage).toHaveBeenCalledWith(user.orcid)
     })
 
     test.prop([
