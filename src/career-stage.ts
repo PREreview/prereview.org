@@ -1,5 +1,6 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
+import * as C from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
 
 export type CareerStage = 'early' | 'mid' | 'late'
@@ -12,6 +13,8 @@ export interface EditCareerStageEnv extends GetCareerStageEnv {
   deleteCareerStage: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
   saveCareerStage: (orcid: Orcid, careerStage: CareerStage) => TE.TaskEither<'unavailable', void>
 }
+
+export const CareerStageC: C.Codec<unknown, string, CareerStage> = C.literal('early', 'mid', 'late')
 
 export const getCareerStage = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }: GetCareerStageEnv) => getCareerStage(orcid)))

@@ -28,6 +28,7 @@ import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
+import { CareerStageC } from './career-stage'
 import { changeCareerStage } from './change-career-stage'
 import { club } from './club'
 import { codeOfConduct } from './code-of-conduct'
@@ -396,10 +397,11 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
                 () => env.careerStageStore.get(orcid),
                 () => 'unavailable' as const,
               ),
-              TE.chainEitherKW(value =>
-                match(value)
-                  .with(p.union('early', 'mid', 'late'), E.right)
-                  .otherwise(() => E.left('not-found' as const)),
+              TE.chainEitherKW(
+                flow(
+                  CareerStageC.decode,
+                  E.mapLeft(() => 'not-found' as const),
+                ),
               ),
             ),
         })),
@@ -426,16 +428,17 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
                 () => env.careerStageStore.get(orcid),
                 () => 'unavailable' as const,
               ),
-              TE.chainEitherKW(value =>
-                match(value)
-                  .with(p.union('early', 'mid', 'late'), E.right)
-                  .otherwise(() => E.left('not-found' as const)),
+              TE.chainEitherKW(
+                flow(
+                  CareerStageC.decode,
+                  E.mapLeft(() => 'not-found' as const),
+                ),
               ),
             ),
           saveCareerStage: (orcid, careerStage) =>
             pipe(
               TE.tryCatch(
-                () => env.careerStageStore.set(orcid, careerStage),
+                () => env.careerStageStore.set(orcid, CareerStageC.encode(careerStage)),
                 () => 'unavailable' as const,
               ),
               TE.map(constVoid),
