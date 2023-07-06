@@ -9,7 +9,7 @@ import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as TE from 'fp-ts/TaskEither'
-import { type Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
+import { type Lazy, constVoid, constant, flip, flow, pipe } from 'fp-ts/function'
 import { identity } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -412,6 +412,14 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+          saveCareerStage: (orcid, careerStage) =>
+            pipe(
+              TE.tryCatch(
+                () => env.careerStageStore.set(orcid, careerStage),
+                () => 'unavailable' as const,
+              ),
+              TE.map(constVoid),
+            ),
         })),
       ),
     ),

@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as _ from '../src/change-career-stage'
@@ -24,7 +25,13 @@ describe('changeCareerStage', () => {
       fc.user(),
     ])('when there is a logged in user', async (oauth, publicUrl, connection, user) => {
       const actual = await runMiddleware(
-        _.changeCareerStage({ canEditProfile: true, getUser: () => M.fromEither(E.right(user)), publicUrl, oauth }),
+        _.changeCareerStage({
+          canEditProfile: true,
+          getUser: () => M.fromEither(E.right(user)),
+          publicUrl,
+          oauth,
+          saveCareerStage: () => () => Promise.reject('should-not-be-called'),
+        }),
         connection,
       )()
 
@@ -47,13 +54,54 @@ describe('changeCareerStage', () => {
       }),
       fc.origin(),
       fc.connection({
-        body: fc.record({ careerStage: fc.constantFrom('early', 'mid', 'late', 'skip') }),
+        body: fc.record({ careerStage: fc.constantFrom('early', 'mid', 'late') }),
         method: fc.constant('POST'),
       }),
       fc.user(),
     ])('when the form has been submitted', async (oauth, publicUrl, connection, user) => {
       const actual = await runMiddleware(
-        _.changeCareerStage({ canEditProfile: true, getUser: () => M.right(user), publicUrl, oauth }),
+        _.changeCareerStage({
+          canEditProfile: true,
+          getUser: () => M.right(user),
+          publicUrl,
+          oauth,
+          saveCareerStage: () => TE.right(undefined),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.record({
+        authorizeUrl: fc.url(),
+        clientId: fc.string(),
+        clientSecret: fc.string(),
+        redirectUri: fc.url(),
+        tokenUrl: fc.url(),
+      }),
+      fc.origin(),
+      fc.connection({
+        body: fc.constant({ careerStage: 'skip' }),
+        method: fc.constant('POST'),
+      }),
+      fc.user(),
+    ])('when the form has been skipped', async (oauth, publicUrl, connection, user) => {
+      const actual = await runMiddleware(
+        _.changeCareerStage({
+          canEditProfile: true,
+          getUser: () => M.right(user),
+          publicUrl,
+          oauth,
+          saveCareerStage: () => () => Promise.reject('should-not-be-called'),
+        }),
         connection,
       )()
 
@@ -83,7 +131,13 @@ describe('changeCareerStage', () => {
       fc.user(),
     ])('when the form has been submitted without setting career stage', async (oauth, publicUrl, connection, user) => {
       const actual = await runMiddleware(
-        _.changeCareerStage({ canEditProfile: true, getUser: () => M.right(user), publicUrl, oauth }),
+        _.changeCareerStage({
+          canEditProfile: true,
+          getUser: () => M.right(user),
+          publicUrl,
+          oauth,
+          saveCareerStage: () => () => Promise.reject('should-not-be-called'),
+        }),
         connection,
       )()
 
@@ -113,6 +167,7 @@ describe('changeCareerStage', () => {
           getUser: () => M.left('no-session'),
           publicUrl,
           oauth,
+          saveCareerStage: () => () => Promise.reject('should-not-be-called'),
         }),
         connection,
       )()
@@ -157,6 +212,7 @@ describe('changeCareerStage', () => {
           getUser: () => M.left(error),
           oauth,
           publicUrl,
+          saveCareerStage: () => () => Promise.reject('should-not-be-called'),
         }),
         connection,
       )()
@@ -185,7 +241,13 @@ describe('changeCareerStage', () => {
     fc.either(fc.oneof(fc.error(), fc.constant('no-session' as const)), fc.user()),
   ])("when profiles can't be edited", async (oauth, publicUrl, connection, user) => {
     const actual = await runMiddleware(
-      _.changeCareerStage({ canEditProfile: false, getUser: () => M.fromEither(user), publicUrl, oauth }),
+      _.changeCareerStage({
+        canEditProfile: false,
+        getUser: () => M.fromEither(user),
+        publicUrl,
+        oauth,
+        saveCareerStage: () => () => Promise.reject('should-not-be-called'),
+      }),
       connection,
     )()
 

@@ -1,19 +1,31 @@
 import { format } from 'fp-ts-routing'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import type * as TE from 'fp-ts/TaskEither'
 import * as b from 'fp-ts/boolean'
 import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { canEditProfile } from './feature-flags'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
-import { getMethod, notFound, serviceUnavailable } from './middleware'
+import { getMethod, notFound, seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { changeCareerStageMatch, myDetailsMatch } from './routes'
 import { type GetUserEnv, type User, getUser } from './user'
+
+export interface SaveCareerStageEnv {
+  saveCareerStage: (orcid: Orcid, careerStage: 'early' | 'mid' | 'late') => TE.TaskEither<'unavailable', void>
+}
+
+const saveCareerStage = (orcid: Orcid, careerStage: 'early' | 'mid' | 'late') =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ saveCareerStage }: SaveCareerStageEnv) => saveCareerStage(orcid, careerStage)),
+  )
 
 export const changeCareerStage = pipe(
   RM.rightReader(canEditProfile),
@@ -34,7 +46,7 @@ const showChangeCareerStage = pipe(
       .with('POST', () => handleChangeCareerStageForm(state.user))
       .otherwise(() => showChangeCareerStageForm(state.user)),
   ),
-  RM.orElse(error =>
+  RM.orElseW(error =>
     match(error)
       .returnType<
         RM.ReaderMiddleware<
@@ -70,7 +82,26 @@ const ChangeCareerStageFormD = pipe(D.struct({ careerStage: D.literal('early', '
 const handleChangeCareerStageForm = (user: User) =>
   pipe(
     RM.decodeBody(body => ChangeCareerStageFormD.decode(body)),
-    RM.ichainW(() => serviceUnavailable),
+    RM.ichainW(({ careerStage }) =>
+      match(careerStage)
+        .returnType<
+          RM.ReaderMiddleware<
+            FathomEnv & GetUserEnv & PhaseEnv & SaveCareerStageEnv,
+            StatusOpen,
+            ResponseEnded,
+            'unavailable',
+            void
+          >
+        >()
+        .with(P.union('early', 'mid', 'late'), careerStage =>
+          pipe(
+            RM.fromReaderTaskEither(saveCareerStage(user.orcid, careerStage)),
+            RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
+          ),
+        )
+        .with('skip', () => serviceUnavailable)
+        .exhaustive(),
+    ),
     RM.orElseW(() => showChangeCareerStageErrorForm(user)),
   )
 

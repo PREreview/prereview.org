@@ -21,30 +21,23 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(
-  'can set my career stage',
-  async ({ page, careerStageStore }) => {
-    await page.getByRole('link', { name: 'My details' }).click()
+test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)('can set my career stage', async ({ page }) => {
+  await page.getByRole('link', { name: 'My details' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Unknown')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await expect(page.getByRole('main')).toContainText('Unknown')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Change career stage' }).click()
-    await page.getByLabel('Early').check()
+  await page.getByRole('link', { name: 'Change career stage' }).click()
+  await page.getByLabel('Early').check()
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await careerStageStore.set('0000-0002-1825-0097', 'early')
-
-    await page.getByRole('link', { name: 'My details' }).click()
-
-    await expect(page.getByRole('main')).toContainText('Early')
-  },
-)
+  await expect(page.getByRole('main')).toContainText('Early')
+})
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(
   'can skip to the form',
