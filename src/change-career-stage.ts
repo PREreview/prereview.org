@@ -1,14 +1,13 @@
 import { format } from 'fp-ts-routing'
-import type { Reader } from 'fp-ts/Reader'
 import * as b from 'fp-ts/boolean'
-import { flow, pipe } from 'fp-ts/function'
+import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { canEditProfile } from './feature-flags'
-import { html, plainText, sendHtml } from './html'
+import { html, plainText, rawHtml, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
 import { getMethod, notFound, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
@@ -52,17 +51,19 @@ const showChangeCareerStage = pipe(
   ),
 )
 
-const showChangeCareerStageForm = flow(
-  fromReaderK(createFormPage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showChangeCareerStageForm = (user: User) =>
+  pipe(
+    RM.rightReader(createFormPage(user)),
+    RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
-const showChangeCareerStageErrorForm = flow(
-  fromReaderK(createFormPage),
-  RM.ichainFirst(() => RM.status(Status.BadRequest)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showChangeCareerStageErrorForm = (user: User) =>
+  pipe(
+    RM.rightReader(createFormPage(user, true)),
+    RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
 
 const ChangeCareerStageFormD = pipe(D.struct({ careerStage: D.literal('early', 'mid', 'late', 'skip') }))
 
@@ -73,9 +74,9 @@ const handleChangeCareerStageForm = (user: User) =>
     RM.orElseW(() => showChangeCareerStageErrorForm(user)),
   )
 
-function createFormPage(user: User) {
+function createFormPage(user: User, error = false) {
   return page({
-    title: plainText`What career stage are you at?`,
+    title: plainText`${error ? 'Error: ' : ''}What career stage are you at?`,
     content: html`
       <nav>
         <a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>
@@ -83,52 +84,73 @@ function createFormPage(user: User) {
 
       <main id="form">
         <form method="post" action="${format(changeCareerStageMatch.formatter, {})}" novalidate>
-          <fieldset role="group">
-            <legend>
-              <h1>What career stage are you at?</h1>
-            </legend>
+          ${error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">There is a problem</h2>
+                  <ul>
+                    <li>
+                      <a href="#career-stage-early"> Select which career stage you are at </a>
+                    </li>
+                  </ul>
+                </error-summary>
+              `
+            : ''}
 
-            <ol>
-              <li>
-                <label>
-                  <input name="careerStage" type="radio" value="early" />
-                  <span>Early</span>
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input name="careerStage" type="radio" value="mid" />
-                  <span>Mid</span>
-                </label>
-              </li>
-              <li>
-                <label>
-                  <input name="careerStage" type="radio" value="late" />
-                  <span>Late</span>
-                </label>
-              </li>
-              <li>
-                <span>or</span>
-                <label>
-                  <input name="careerStage" type="radio" value="skip" />
-                  <span>Prefer not to say</span>
-                </label>
-              </li>
-            </ol>
-          </fieldset>
+          <div ${error ? rawHtml('class="error"') : ''}>
+            <fieldset
+              role="group"
+              ${error ? rawHtml('aria-invalid="true" aria-errormessage="career-stage-error"') : ''}
+            >
+              <legend>
+                <h1>What career stage are you at?</h1>
+              </legend>
+
+              ${error
+                ? html`
+                    <div class="error-message" id="career-stage-error">
+                      <span class="visually-hidden">Error:</span>
+                      Select which career stage you are at
+                    </div>
+                  `
+                : ''}
+
+              <ol>
+                <li>
+                  <label>
+                    <input name="careerStage" type="radio" value="early" id="career-stage-early" />
+                    <span>Early</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input name="careerStage" type="radio" value="mid" />
+                    <span>Mid</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input name="careerStage" type="radio" value="late" />
+                    <span>Late</span>
+                  </label>
+                </li>
+                <li>
+                  <span>or</span>
+                  <label>
+                    <input name="careerStage" type="radio" value="skip" />
+                    <span>Prefer not to say</span>
+                  </label>
+                </li>
+              </ol>
+            </fieldset>
+          </div>
 
           <button>Save and continue</button>
         </form>
       </main>
     `,
+    js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

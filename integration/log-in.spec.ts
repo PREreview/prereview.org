@@ -91,3 +91,30 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
 
   await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 })
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(
+  'have to say what your career stage is',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/my-details/change-career-stage')
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByRole('group', { name: 'What career stage are you at?' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Select which career stage you are at' }).click()
+
+    await expect(page.getByLabel('Early')).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
