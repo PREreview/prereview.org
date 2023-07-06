@@ -420,6 +420,18 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ),
               TE.map(constVoid),
             ),
+          getCareerStage: orcid =>
+            pipe(
+              TE.tryCatch(
+                () => env.careerStageStore.get(orcid),
+                () => 'unavailable' as const,
+              ),
+              TE.chainEitherKW(value =>
+                match(value)
+                  .with(p.union('early', 'mid', 'late'), E.right)
+                  .otherwise(() => E.left('not-found' as const)),
+              ),
+            ),
           saveCareerStage: (orcid, careerStage) =>
             pipe(
               TE.tryCatch(

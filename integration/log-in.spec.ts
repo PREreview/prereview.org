@@ -37,6 +37,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)('can set my car
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText('Career stage Early')
+
+  await page.getByRole('link', { name: 'Change career stage' }).click()
+
+  await expect(page.getByLabel('Early')).toBeChecked()
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(

@@ -1,4 +1,6 @@
 import { format } from 'fp-ts-routing'
+import * as O from 'fp-ts/Option'
+import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import * as b from 'fp-ts/boolean'
@@ -20,11 +22,15 @@ import { type GetUserEnv, type User, getUser } from './user'
 
 export interface EditCareerStageEnv {
   deleteCareerStage: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
+  getCareerStage: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', 'early' | 'mid' | 'late'>
   saveCareerStage: (orcid: Orcid, careerStage: 'early' | 'mid' | 'late') => TE.TaskEither<'unavailable', void>
 }
 
 const deleteCareerStage = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ deleteCareerStage }: EditCareerStageEnv) => deleteCareerStage(orcid)))
+
+const getCareerStage = (orcid: Orcid) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }: EditCareerStageEnv) => getCareerStage(orcid)))
 
 const saveCareerStage = (orcid: Orcid, careerStage: 'early' | 'mid' | 'late') =>
   RTE.asksReaderTaskEither(
@@ -69,14 +75,17 @@ const showChangeCareerStage = pipe(
 
 const showChangeCareerStageForm = (user: User) =>
   pipe(
-    RM.rightReader(createFormPage(user)),
+    RM.fromReaderTaskEither(getCareerStage(user.orcid)),
+    RM.map(O.some),
+    RM.orElseW(() => RM.of(O.none)),
+    chainReaderKW(careerStage => createFormPage(user, careerStage)),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
 const showChangeCareerStageErrorForm = (user: User) =>
   pipe(
-    RM.rightReader(createFormPage(user, true)),
+    RM.rightReader(createFormPage(user, O.none, true)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -107,7 +116,7 @@ const handleChangeCareerStageForm = (user: User) =>
     RM.orElseW(() => showChangeCareerStageErrorForm(user)),
   )
 
-function createFormPage(user: User, error = false) {
+function createFormPage(user: User, careerStage: O.Option<'early' | 'mid' | 'late'>, error = false) {
   return page({
     title: plainText`${error ? 'Error: ' : ''}What career stage are you at?`,
     content: html`
@@ -151,19 +160,41 @@ function createFormPage(user: User, error = false) {
               <ol>
                 <li>
                   <label>
-                    <input name="careerStage" type="radio" value="early" id="career-stage-early" />
+                    <input
+                      name="careerStage"
+                      type="radio"
+                      value="early"
+                      id="career-stage-early"
+                      ${match(careerStage)
+                        .with({ value: 'early' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
                     <span>Early</span>
                   </label>
                 </li>
                 <li>
                   <label>
-                    <input name="careerStage" type="radio" value="mid" />
+                    <input
+                      name="careerStage"
+                      type="radio"
+                      value="mid"
+                      ${match(careerStage)
+                        .with({ value: 'mid' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
                     <span>Mid</span>
                   </label>
                 </li>
                 <li>
                   <label>
-                    <input name="careerStage" type="radio" value="late" />
+                    <input
+                      name="careerStage"
+                      type="radio"
+                      value="late"
+                      ${match(careerStage)
+                        .with({ value: 'late' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
                     <span>Late</span>
                   </label>
                 </li>
@@ -186,4 +217,18 @@ function createFormPage(user: User, error = false) {
     skipLinks: [[html`Skip to form`, '#form']],
     user,
   })
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
+  f: (...a: A) => Reader<R, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return (...a) => RM.rightReader(f(...a))
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function chainReaderKW<R2, A, B>(
+  f: (a: A) => Reader<R2, B>,
+): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
+  return RM.chainW(fromReaderK(f))
 }
