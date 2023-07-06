@@ -32,7 +32,7 @@ const showChangeCareerStage = pipe(
   RM.apSW('method', RM.fromMiddleware(getMethod)),
   RM.ichainW(state =>
     match(state.method)
-      .with('POST', () => handleChangeCareerStageForm)
+      .with('POST', () => handleChangeCareerStageForm(state.user))
       .otherwise(() => showChangeCareerStageForm(state.user)),
   ),
   RM.orElse(error =>
@@ -58,13 +58,20 @@ const showChangeCareerStageForm = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
+const showChangeCareerStageErrorForm = flow(
+  fromReaderK(createFormPage),
+  RM.ichainFirst(() => RM.status(Status.BadRequest)),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
 const ChangeCareerStageFormD = pipe(D.struct({ careerStage: D.literal('early', 'mid', 'late', 'skip') }))
 
-const handleChangeCareerStageForm = pipe(
-  RM.decodeBody(body => ChangeCareerStageFormD.decode(body)),
-  RM.ichainW(() => serviceUnavailable),
-  RM.orElse(() => serviceUnavailable),
-)
+const handleChangeCareerStageForm = (user: User) =>
+  pipe(
+    RM.decodeBody(body => ChangeCareerStageFormD.decode(body)),
+    RM.ichainW(() => serviceUnavailable),
+    RM.orElseW(() => showChangeCareerStageErrorForm(user)),
+  )
 
 function createFormPage(user: User) {
   return page({
