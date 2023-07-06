@@ -18,13 +18,17 @@ import type { PublicUrlEnv } from './public-url'
 import { changeCareerStageMatch, myDetailsMatch } from './routes'
 import { type GetUserEnv, type User, getUser } from './user'
 
-interface SaveCareerStageEnv {
+interface EditCareerStageEnv {
+  deleteCareerStage: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
   saveCareerStage: (orcid: Orcid, careerStage: 'early' | 'mid' | 'late') => TE.TaskEither<'unavailable', void>
 }
 
+const deleteCareerStage = (orcid: Orcid) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ deleteCareerStage }: EditCareerStageEnv) => deleteCareerStage(orcid)))
+
 const saveCareerStage = (orcid: Orcid, careerStage: 'early' | 'mid' | 'late') =>
   RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ saveCareerStage }: SaveCareerStageEnv) => saveCareerStage(orcid, careerStage)),
+    RTE.fromTaskEitherK(({ saveCareerStage }: EditCareerStageEnv) => saveCareerStage(orcid, careerStage)),
   )
 
 export const changeCareerStage = pipe(
@@ -84,15 +88,6 @@ const handleChangeCareerStageForm = (user: User) =>
     RM.decodeBody(body => ChangeCareerStageFormD.decode(body)),
     RM.ichainW(({ careerStage }) =>
       match(careerStage)
-        .returnType<
-          RM.ReaderMiddleware<
-            FathomEnv & GetUserEnv & PhaseEnv & SaveCareerStageEnv,
-            StatusOpen,
-            ResponseEnded,
-            never,
-            void
-          >
-        >()
         .with(P.union('early', 'mid', 'late'), careerStage =>
           pipe(
             RM.fromReaderTaskEither(saveCareerStage(user.orcid, careerStage)),
@@ -100,7 +95,13 @@ const handleChangeCareerStageForm = (user: User) =>
             RM.orElseW(() => serviceUnavailable),
           ),
         )
-        .with('skip', () => serviceUnavailable)
+        .with('skip', () =>
+          pipe(
+            RM.fromReaderTaskEither(deleteCareerStage(user.orcid)),
+            RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
+            RM.orElseW(() => serviceUnavailable),
+          ),
+        )
         .exhaustive(),
     ),
     RM.orElseW(() => showChangeCareerStageErrorForm(user)),

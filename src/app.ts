@@ -412,6 +412,14 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
+          deleteCareerStage: orcid =>
+            pipe(
+              TE.tryCatch(
+                () => env.careerStageStore.delete(orcid),
+                () => 'unavailable' as const,
+              ),
+              TE.map(constVoid),
+            ),
           saveCareerStage: (orcid, careerStage) =>
             pipe(
               TE.tryCatch(
