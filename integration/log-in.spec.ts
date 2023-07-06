@@ -24,7 +24,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
 test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)('can set my career stage', async ({ page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Unknown')
+  await expect(page.getByRole('main')).toContainText('Career stage Unknown')
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
@@ -36,7 +36,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)('can set my car
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Early')
+  await expect(page.getByRole('main')).toContainText('Career stage Early')
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(
