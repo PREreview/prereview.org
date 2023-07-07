@@ -15,6 +15,7 @@ import * as _ from '../src/review-a-preprint'
 import { writeReviewMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('reviewAPreprint', () => {
   test.prop([
@@ -23,7 +24,7 @@ describe('reviewAPreprint', () => {
   ])('with a GET request', async (connection, user) => {
     const actual = await runMiddleware(
       _.reviewAPreprint({
-        doesPreprintExist: () => () => Promise.reject('should not be called'),
+        doesPreprintExist: shouldNotBeCalled,
         getUser: () => M.fromEither(user),
       }),
       connection,
@@ -103,7 +104,7 @@ describe('reviewAPreprint', () => {
       const actual = await runMiddleware(
         _.reviewAPreprint({
           doesPreprintExist,
-          getUser: () => () => () => Promise.reject('should not be called'),
+          getUser: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -195,7 +196,7 @@ describe('reviewAPreprint', () => {
     ])('with a non-preprint DOI', async (connection, user) => {
       const actual = await runMiddleware(
         _.reviewAPreprint({
-          doesPreprintExist: () => () => Promise.reject('should not be called'),
+          doesPreprintExist: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,

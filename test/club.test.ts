@@ -8,6 +8,7 @@ import type { Mock } from 'jest-mock'
 import * as _ from '../src/club'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('club', () => {
   describe('when clubs can be seen', () => {
@@ -75,7 +76,7 @@ describe('club', () => {
     const actual = await runMiddleware(
       _.club('asapbio-metabolism')({
         canSeeClubs: false,
-        getPrereviews: () => () => Promise.reject('should not be called'),
+        getPrereviews: shouldNotBeCalled,
         getUser: () => M.fromEither(user),
       }),
       connection,

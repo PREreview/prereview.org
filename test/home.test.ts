@@ -9,6 +9,7 @@ import * as _ from '../src/home'
 import { homeMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('home', () => {
   describe('when the user is logged in', () => {
@@ -54,12 +55,10 @@ describe('home', () => {
         const actual = await runMiddleware(
           _.home('logged-out')({
             canSeeClubs,
-            getRecentPrereviews: () => () => Promise.reject('should not be called'),
+            getRecentPrereviews: shouldNotBeCalled,
             getUser: () => M.right(user),
             publicUrl: new URL('http://example.com'),
-            templatePage: () => {
-              throw 'should not be called'
-            },
+            templatePage: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -117,12 +116,10 @@ describe('home', () => {
         const actual = await runMiddleware(
           _.home('logged-in')({
             canSeeClubs,
-            getRecentPrereviews: () => () => Promise.reject('should not be called'),
+            getRecentPrereviews: shouldNotBeCalled,
             getUser: () => M.left('no-session'),
             publicUrl: new URL('http://example.com'),
-            templatePage: () => {
-              throw 'should not be called'
-            },
+            templatePage: shouldNotBeCalled,
           }),
           connection,
         )()

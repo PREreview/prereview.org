@@ -15,6 +15,7 @@ import { fromPreprintDoi } from '../src/preprint-id'
 import { preprintReviewsMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('parseLookupPreprint', () => {
   test.prop([
@@ -109,7 +110,7 @@ describe('find-a-preprint', () => {
   ])('findAPreprint', async (connection, user) => {
     const actual = await runMiddleware(
       _.findAPreprint({
-        doesPreprintExist: () => () => Promise.reject('should not be called'),
+        doesPreprintExist: shouldNotBeCalled,
         getUser: () => M.fromEither(user),
       }),
       connection,
@@ -189,7 +190,7 @@ describe('find-a-preprint', () => {
       const actual = await runMiddleware(
         _.findAPreprint({
           doesPreprintExist,
-          getUser: () => () => () => Promise.reject('should not be called'),
+          getUser: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -281,7 +282,7 @@ describe('find-a-preprint', () => {
     ])('with a non-preprint DOI', async (connection, user) => {
       const actual = await runMiddleware(
         _.findAPreprint({
-          doesPreprintExist: () => () => Promise.reject('should not be called'),
+          doesPreprintExist: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,

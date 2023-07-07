@@ -11,6 +11,7 @@ import * as _ from '../src/preprint-reviews'
 import { preprintReviewsMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('preprintReviews', () => {
   test.prop([
@@ -112,8 +113,8 @@ describe('preprintReviews', () => {
       _.preprintReviews(preprintId)({
         canSeeClubs,
         getPreprint: () => TE.left('not-found'),
-        getPrereviews: () => () => Promise.reject('should not be called'),
-        getRapidPrereviews: () => () => Promise.reject('should not be called'),
+        getPrereviews: shouldNotBeCalled,
+        getRapidPrereviews: shouldNotBeCalled,
         getUser: () => M.fromEither(user),
         publicUrl,
       }),
@@ -141,8 +142,8 @@ describe('preprintReviews', () => {
       _.preprintReviews(preprintId)({
         canSeeClubs,
         getPreprint: () => TE.left('unavailable'),
-        getPrereviews: () => () => Promise.reject('should not be called'),
-        getRapidPrereviews: () => () => Promise.reject('should not be called'),
+        getPrereviews: shouldNotBeCalled,
+        getRapidPrereviews: shouldNotBeCalled,
         getUser: () => M.fromEither(user),
         publicUrl,
       }),

@@ -12,6 +12,7 @@ import * as _ from '../src/legacy-routes'
 import { preprintReviewsMatch, profileMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('legacyRoutes', () => {
   test.each([
@@ -66,9 +67,9 @@ describe('legacyRoutes', () => {
   ])('redirects %s', async (path, expected) => {
     const actual = await runMiddleware(
       _.legacyRoutes({
-        getPreprintIdFromUuid: () => () => Promise.reject('should not be called'),
-        getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
-        getUser: () => () => () => Promise.reject('should not be called'),
+        getPreprintIdFromUuid: shouldNotBeCalled,
+        getProfileIdFromUuid: shouldNotBeCalled,
+        getUser: shouldNotBeCalled,
       }),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
@@ -94,7 +95,7 @@ describe('legacyRoutes', () => {
 
       const actual = await runMiddleware(
         _.legacyRoutes({
-          getPreprintIdFromUuid: () => () => Promise.reject('should not be called'),
+          getPreprintIdFromUuid: shouldNotBeCalled,
           getProfileIdFromUuid,
           getUser: () => M.fromEither(user),
         }),
@@ -121,7 +122,7 @@ describe('legacyRoutes', () => {
     ])('when the profile ID is not found', async (connection, user) => {
       const actual = await runMiddleware(
         _.legacyRoutes({
-          getPreprintIdFromUuid: () => () => Promise.reject('should not be called'),
+          getPreprintIdFromUuid: shouldNotBeCalled,
           getProfileIdFromUuid: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
         }),
@@ -144,7 +145,7 @@ describe('legacyRoutes', () => {
     ])('when the profile ID is unavailable', async (connection, user) => {
       const actual = await runMiddleware(
         _.legacyRoutes({
-          getPreprintIdFromUuid: () => () => Promise.reject('should not be called'),
+          getPreprintIdFromUuid: shouldNotBeCalled,
           getProfileIdFromUuid: () => TE.left('unavailable'),
           getUser: () => M.fromEither(user),
         }),
@@ -175,7 +176,7 @@ describe('legacyRoutes', () => {
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid,
-          getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+          getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -202,7 +203,7 @@ describe('legacyRoutes', () => {
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('not-found'),
-          getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+          getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -225,7 +226,7 @@ describe('legacyRoutes', () => {
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('unavailable'),
-          getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+          getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -262,7 +263,7 @@ describe('legacyRoutes', () => {
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid,
-          getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+          getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -291,7 +292,7 @@ describe('legacyRoutes', () => {
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('not-found'),
-          getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+          getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -316,7 +317,7 @@ describe('legacyRoutes', () => {
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('unavailable'),
-          getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+          getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -346,7 +347,7 @@ describe('legacyRoutes', () => {
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid,
-          getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+          getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -373,7 +374,7 @@ describe('legacyRoutes', () => {
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('not-found'),
-          getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+          getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -396,7 +397,7 @@ describe('legacyRoutes', () => {
       const actual = await runMiddleware(
         _.legacyRoutes({
           getPreprintIdFromUuid: () => TE.left('unavailable'),
-          getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+          getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -439,8 +440,8 @@ describe('legacyRoutes', () => {
   ])('removed page for %s', async path => {
     const actual = await runMiddleware(
       _.legacyRoutes({
-        getPreprintIdFromUuid: () => () => Promise.reject('should not be called'),
-        getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+        getPreprintIdFromUuid: shouldNotBeCalled,
+        getProfileIdFromUuid: shouldNotBeCalled,
         getUser: () => M.left('no-session'),
       }),
       new ExpressConnection(createRequest({ path }), createResponse()),
@@ -465,8 +466,8 @@ describe('legacyRoutes', () => {
   ])('removed page for %s', async path => {
     const actual = await runMiddleware(
       _.legacyRoutes({
-        getPreprintIdFromUuid: () => () => Promise.reject('should not be called'),
-        getProfileIdFromUuid: () => () => Promise.reject('should not be called'),
+        getPreprintIdFromUuid: shouldNotBeCalled,
+        getProfileIdFromUuid: shouldNotBeCalled,
         getUser: () => M.left('no-session'),
       }),
       new ExpressConnection(createRequest({ path }), createResponse()),

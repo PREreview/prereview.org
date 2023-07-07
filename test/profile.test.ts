@@ -8,6 +8,7 @@ import type { Mock } from 'jest-mock'
 import * as _ from '../src/profile'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('profile', () => {
   describe('with an ORCID iD', () => {
@@ -131,7 +132,7 @@ describe('profile', () => {
 
       const actual = await runMiddleware(
         _.profile(profile)({
-          getName: () => () => Promise.reject('should not be called'),
+          getName: shouldNotBeCalled,
           getPrereviews,
           getUser: () => M.fromEither(user),
         }),

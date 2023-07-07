@@ -6,6 +6,7 @@ import { Status } from 'hyper-ts'
 import { rawHtml } from '../src/html'
 import * as _ from '../src/legacy-prereview'
 import * as fc from './fc'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('getPreprintDoiFromLegacyPreviewUuid', () => {
   test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.preprintDoi()])(
@@ -797,7 +798,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
         review: rawHtml('<p>hello</p>'),
         user,
       })(reviewDoi)({
-        fetch: () => Promise.reject('should not be called'),
+        fetch: shouldNotBeCalled,
         legacyPrereviewApi: { app, key, url, update: false },
       })()
 

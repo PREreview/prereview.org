@@ -11,6 +11,7 @@ import * as _ from '../src/change-career-stage'
 import { myDetailsMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('changeCareerStage', () => {
   describe('when profiles can be edited', () => {
@@ -33,9 +34,9 @@ describe('changeCareerStage', () => {
           getUser: () => M.fromEither(E.right(user)),
           publicUrl,
           oauth,
-          deleteCareerStage: () => () => Promise.reject('should-not-be-called'),
+          deleteCareerStage: shouldNotBeCalled,
           getCareerStage: () => TE.fromEither(careerStage),
-          saveCareerStage: () => () => Promise.reject('should-not-be-called'),
+          saveCareerStage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -77,8 +78,8 @@ describe('changeCareerStage', () => {
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteCareerStage: () => () => Promise.reject('should-not-be-called'),
-          getCareerStage: () => () => Promise.reject('should-not-be-called'),
+          deleteCareerStage: shouldNotBeCalled,
+          getCareerStage: shouldNotBeCalled,
           saveCareerStage,
         }),
         connection,
@@ -118,7 +119,7 @@ describe('changeCareerStage', () => {
             publicUrl,
             oauth,
             deleteCareerStage: () => TE.left('unavailable'),
-            getCareerStage: () => () => Promise.reject('should-not-be-called'),
+            getCareerStage: shouldNotBeCalled,
             saveCareerStage: () => TE.left('unavailable'),
           }),
           connection,
@@ -159,8 +160,8 @@ describe('changeCareerStage', () => {
           publicUrl,
           oauth,
           deleteCareerStage,
-          getCareerStage: () => () => Promise.reject('should-not-be-called'),
-          saveCareerStage: () => () => Promise.reject('should-not-be-called'),
+          getCareerStage: shouldNotBeCalled,
+          saveCareerStage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -196,9 +197,9 @@ describe('changeCareerStage', () => {
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteCareerStage: () => () => Promise.reject('should-not-be-called'),
-          getCareerStage: () => () => Promise.reject('should-not-be-called'),
-          saveCareerStage: () => () => Promise.reject('should-not-be-called'),
+          deleteCareerStage: shouldNotBeCalled,
+          getCareerStage: shouldNotBeCalled,
+          saveCareerStage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -229,9 +230,9 @@ describe('changeCareerStage', () => {
           getUser: () => M.left('no-session'),
           publicUrl,
           oauth,
-          deleteCareerStage: () => () => Promise.reject('should-not-be-called'),
-          getCareerStage: () => () => Promise.reject('should-not-be-called'),
-          saveCareerStage: () => () => Promise.reject('should-not-be-called'),
+          deleteCareerStage: shouldNotBeCalled,
+          getCareerStage: shouldNotBeCalled,
+          saveCareerStage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -276,9 +277,9 @@ describe('changeCareerStage', () => {
           getUser: () => M.left(error),
           oauth,
           publicUrl,
-          deleteCareerStage: () => () => Promise.reject('should-not-be-called'),
-          getCareerStage: () => () => Promise.reject('should-not-be-called'),
-          saveCareerStage: () => () => Promise.reject('should-not-be-called'),
+          deleteCareerStage: shouldNotBeCalled,
+          getCareerStage: shouldNotBeCalled,
+          saveCareerStage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -312,9 +313,9 @@ describe('changeCareerStage', () => {
         getUser: () => M.fromEither(user),
         publicUrl,
         oauth,
-        deleteCareerStage: () => () => Promise.reject('should-not-be-called'),
-        getCareerStage: () => () => Promise.reject('should-not-be-called'),
-        saveCareerStage: () => () => Promise.reject('should-not-be-called'),
+        deleteCareerStage: shouldNotBeCalled,
+        getCareerStage: shouldNotBeCalled,
+        saveCareerStage: shouldNotBeCalled,
       }),
       connection,
     )()

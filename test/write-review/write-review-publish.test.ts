@@ -15,6 +15,7 @@ import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
 import { formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
 
 describe('writeReviewPublish', () => {
@@ -234,7 +235,7 @@ describe('writeReviewPublish', () => {
     await sessionStore.set(sessionId, { user: UserC.encode(user) })
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.left('unavailable' as const)
-    const publishPrereview = () => () => Promise.reject('should not be called')
+    const publishPrereview = shouldNotBeCalled
 
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({
@@ -278,7 +279,7 @@ describe('writeReviewPublish', () => {
     await sessionStore.set(sessionId, { user: UserC.encode(user) })
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.left('not-found' as const)
-    const publishPrereview = () => () => Promise.reject('should not be called')
+    const publishPrereview = shouldNotBeCalled
 
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({

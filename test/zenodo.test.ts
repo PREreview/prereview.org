@@ -27,6 +27,7 @@ import { reviewMatch } from '../src/routes'
 import type { NewPrereview } from '../src/write-review'
 import * as _ from '../src/zenodo'
 import * as fc from './fc'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 import PlainDate = Temporal.PlainDate
 
@@ -578,7 +579,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
           status: Status.OK,
         },
       ),
-      getPreprintTitle: () => () => Promise.reject('should not be called'),
+      getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
@@ -605,7 +606,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
       const actual = await _.getRecentPrereviewsFromZenodo(page)({
         clock: SystemClock,
         fetch,
-        getPreprintTitle: () => () => Promise.reject('should not be called'),
+        getPreprintTitle: shouldNotBeCalled,
         logger: () => IO.of(undefined),
       })()
 
@@ -617,8 +618,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
   test.prop([fc.integer({ max: 0 })])('when the page number is impossible', async page => {
     const actual = await _.getRecentPrereviewsFromZenodo(page)({
       clock: SystemClock,
-      fetch: fetchMock.sandbox(),
-      getPreprintTitle: () => () => Promise.reject('should not be called'),
+      fetch: shouldNotBeCalled,
+      getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
@@ -808,7 +809,7 @@ describe('getPrereviewFromZenodo', () => {
         body: undefined,
         status: Status.NotFound,
       }),
-      getPreprint: () => () => Promise.reject('should not be called'),
+      getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
@@ -888,7 +889,7 @@ describe('getPrereviewFromZenodo', () => {
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
       fetch,
-      getPreprint: () => () => Promise.reject('should not be called'),
+      getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
@@ -1011,7 +1012,7 @@ describe('getPrereviewFromZenodo', () => {
         body: RecordC.encode(record),
         status: Status.OK,
       }),
-      getPreprint: () => () => Promise.reject('should not be called'),
+      getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
@@ -1091,7 +1092,7 @@ describe('getPrereviewFromZenodo', () => {
         body: RecordC.encode(record),
         status: Status.OK,
       }),
-      getPreprint: () => () => Promise.reject('should not be called'),
+      getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
@@ -1152,7 +1153,7 @@ describe('getPrereviewFromZenodo', () => {
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
         fetch,
-        getPreprint: () => () => Promise.reject('should not be called'),
+        getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
       })()
 
@@ -1213,7 +1214,7 @@ describe('getPrereviewFromZenodo', () => {
           body: RecordC.encode(record),
           status: Status.OK,
         }),
-        getPreprint: () => () => Promise.reject('should not be called'),
+        getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
       })()
 
@@ -1826,7 +1827,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
     const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
       clock: SystemClock,
       fetch,
-      getPreprintTitle: () => () => Promise.reject('should not be called'),
+      getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
@@ -1998,7 +1999,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           status: Status.OK,
         },
       ),
-      getPreprintTitle: () => () => Promise.reject('should not be called'),
+      getPreprintTitle: shouldNotBeCalled,
       clock: SystemClock,
       logger: () => IO.of(undefined),
     })()
@@ -2131,7 +2132,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
     const actual = await _.getPrereviewsForClubFromZenodo('asapbio-metabolism')({
       clock: SystemClock,
       fetch,
-      getPreprintTitle: () => () => Promise.reject('should not be called'),
+      getPreprintTitle: shouldNotBeCalled,
       logger: () => IO.of(undefined),
     })()
 
