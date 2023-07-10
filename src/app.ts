@@ -40,7 +40,7 @@ import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
 import { handleError } from './http-error'
-import { type CareerStageStoreEnv, getCareerStage } from './keyv'
+import { type CareerStageStoreEnv, deleteCareerStage, getCareerStage } from './keyv'
 import {
   type LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
@@ -401,14 +401,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         R.local((env: AppEnv) => ({
           ...env,
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
-          deleteCareerStage: orcid =>
-            pipe(
-              TE.tryCatch(
-                () => env.careerStageStore.delete(orcid),
-                () => 'unavailable' as const,
-              ),
-              TE.map(constVoid),
-            ),
+          deleteCareerStage: flip(deleteCareerStage)(env),
           getCareerStage: flip(getCareerStage)(env),
           saveCareerStage: (orcid, careerStage) =>
             pipe(

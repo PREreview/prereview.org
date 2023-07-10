@@ -1,7 +1,7 @@
 import * as E from 'fp-ts/Either'
 import type * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { flow } from 'fp-ts/function'
+import { constVoid, flow } from 'fp-ts/function'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
@@ -9,6 +9,15 @@ import { type CareerStage, CareerStageC } from './career-stage'
 export type CareerStageStoreEnv = {
   careerStageStore: Keyv<string>
 }
+
+export const deleteCareerStage = (orcid: Orcid): RTE.ReaderTaskEither<CareerStageStoreEnv, 'unavailable', void> =>
+  flow(
+    TE.tryCatchK(
+      env => env.careerStageStore.delete(orcid),
+      () => 'unavailable' as const,
+    ),
+    TE.map(constVoid),
+  )
 
 export const getCareerStage = (
   orcid: Orcid,

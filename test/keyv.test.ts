@@ -5,6 +5,46 @@ import Keyv from 'keyv'
 import * as _ from '../src/keyv'
 import * as fc from './fc'
 
+describe('deleteCareerStage', () => {
+  test.prop([fc.orcid(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
+    const store = new Keyv()
+    await store.set(orcid, careerStage)
+
+    const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])(
+    'when the key contains something other than career stage',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.delete = () => Promise.reject(error)
+
+    const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
 describe('getCareerStage', () => {
   test.prop([fc.orcid(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
     const store = new Keyv()
