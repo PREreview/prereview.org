@@ -87,3 +87,49 @@ describe('getCareerStage', () => {
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
 })
+
+describe('saveCareerStage', () => {
+  test.prop([fc.orcid(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
+    const store = new Keyv()
+    await store.set(orcid, careerStage)
+
+    const actual = await _.saveCareerStage(orcid, careerStage)({ careerStageStore: store })()
+
+    expect(actual).toStrictEqual(E.right(careerStage))
+    expect(await store.get(orcid)).toStrictEqual(careerStage)
+  })
+
+  test.prop([fc.orcid(), fc.anything(), fc.careerStage()])(
+    'when the key already contains something other than career stage',
+    async (orcid, value, careerStage) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveCareerStage(orcid, careerStage)({ careerStageStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(careerStage)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.careerStage()])('when the key is not set', async (orcid, careerStage) => {
+    const store = new Keyv()
+
+    const actual = await _.saveCareerStage(orcid, careerStage)({ careerStageStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(careerStage)
+  })
+
+  test.prop([fc.orcid(), fc.careerStage(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, careerStage, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveCareerStage(orcid, careerStage)({ careerStageStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})

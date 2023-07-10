@@ -8,7 +8,7 @@ import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as TE from 'fp-ts/TaskEither'
-import { type Lazy, constVoid, constant, flip, flow, pipe } from 'fp-ts/function'
+import { type Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import { identity } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -26,7 +26,6 @@ import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
-import { CareerStageC } from './career-stage'
 import { changeCareerStage } from './change-career-stage'
 import { club } from './club'
 import { codeOfConduct } from './code-of-conduct'
@@ -40,7 +39,7 @@ import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
 import { handleError } from './http-error'
-import { type CareerStageStoreEnv, deleteCareerStage, getCareerStage } from './keyv'
+import { type CareerStageStoreEnv, deleteCareerStage, getCareerStage, saveCareerStage } from './keyv'
 import {
   type LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
@@ -403,14 +402,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
           deleteCareerStage: flip(deleteCareerStage)(env),
           getCareerStage: flip(getCareerStage)(env),
-          saveCareerStage: (orcid, careerStage) =>
-            pipe(
-              TE.tryCatch(
-                () => env.careerStageStore.set(orcid, CareerStageC.encode(careerStage)),
-                () => 'unavailable' as const,
-              ),
-              TE.map(constVoid),
-            ),
+          saveCareerStage: (orcid, careerStage) => saveCareerStage(orcid, careerStage)(env),
         })),
       ),
     ),

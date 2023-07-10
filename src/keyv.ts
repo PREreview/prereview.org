@@ -34,3 +34,15 @@ export const getCareerStage = (
       ),
     ),
   )
+
+export const saveCareerStage = (
+  orcid: Orcid,
+  careerStage: CareerStage,
+): RTE.ReaderTaskEither<CareerStageStoreEnv, 'unavailable', void> =>
+  flow(
+    TE.tryCatchK(
+      env => env.careerStageStore.set(orcid, CareerStageC.encode(careerStage)),
+      () => 'unavailable' as const,
+    ),
+    TE.map(constVoid),
+  )
