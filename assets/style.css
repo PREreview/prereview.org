@@ -1581,6 +1581,53 @@ skip-link {
         margin-block-start: var(--space-xs);
       }
     }
+
+    & :any-link {
+      &::after {
+        position: absolute;
+        inset: 0;
+        content: '';
+        border: var(--width-divider) solid var(--color-divider-light);
+        border-radius: var(--radius-divider);
+
+        @media screen {
+          @media (forced-colors: active) {
+            border-color: CanvasText;
+          }
+        }
+      }
+
+      &:hover::after {
+        border-color: var(--color-divider);
+
+        @media screen {
+          @media (forced-colors: active) {
+            border-color: CanvasText;
+          }
+        }
+      }
+
+      &:focus-visible {
+        outline-width: 0;
+
+        &::after {
+          @media screen {
+            border-color: var(--color-divider);
+            outline: var(--color-focus) solid var(--width-divider);
+
+            @media (forced-colors: active) {
+              border-color: CanvasText;
+              outline-color: Highlight;
+            }
+          }
+        }
+      }
+
+      &:not(.more) {
+        text-decoration: none;
+        color: inherit;
+      }
+    }
   }
 
   & h2 {
@@ -1609,53 +1656,6 @@ skip-link {
     clip-path: inset(50%);
     block-size: 1px;
     inline-size: 1px;
-  }
-
-  & a {
-    &::after {
-      position: absolute;
-      inset: 0;
-      content: '';
-      border: var(--width-divider) solid var(--color-divider-light);
-      border-radius: var(--radius-divider);
-
-      @media screen {
-        @media (forced-colors: active) {
-          border-color: CanvasText;
-        }
-      }
-    }
-
-    &:hover::after {
-      border-color: var(--color-divider);
-
-      @media screen {
-        @media (forced-colors: active) {
-          border-color: CanvasText;
-        }
-      }
-    }
-
-    &:focus-visible {
-      outline-width: 0;
-
-      &::after {
-        @media screen {
-          border-color: var(--color-divider);
-          outline: var(--color-focus) solid var(--width-divider);
-
-          @media (forced-colors: active) {
-            border-color: CanvasText;
-            outline-color: Highlight;
-          }
-        }
-      }
-    }
-
-    &:not(.more) {
-      text-decoration: none;
-      color: inherit;
-    }
   }
 
   &[aria-labelledby][tabindex] {
