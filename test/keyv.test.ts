@@ -95,7 +95,7 @@ describe('saveCareerStage', () => {
 
     const actual = await _.saveCareerStage(orcid, careerStage)({ careerStageStore: store })()
 
-    expect(actual).toStrictEqual(E.right(careerStage))
+    expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(careerStage)
   })
 
