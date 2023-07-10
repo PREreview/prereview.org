@@ -21,7 +21,6 @@ import { type SessionEnv, getSession } from 'hyper-ts-session'
 import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
-import type Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
@@ -41,7 +40,7 @@ import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
 import { handleError } from './http-error'
-import { getCareerStage } from './keyv'
+import { type CareerStageStoreEnv, getCareerStage } from './keyv'
 import {
   type LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
@@ -131,6 +130,7 @@ import {
 
 export type AppEnv = CanEditProfileEnv &
   CanSeeClubsEnv &
+  CareerStageStoreEnv &
   FathomEnv &
   FormStoreEnv &
   GhostApiEnv &
@@ -142,7 +142,6 @@ export type AppEnv = CanEditProfileEnv &
   SessionEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean
-    careerStageStore: Keyv<string>
   }
 
 export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
