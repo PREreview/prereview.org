@@ -13,6 +13,7 @@ describe('deleteCareerStage', () => {
     const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
 
     expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
   })
 
   test.prop([fc.orcid(), fc.anything()])(
@@ -24,6 +25,7 @@ describe('deleteCareerStage', () => {
       const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
 
       expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.has(orcid)).toBeFalsy()
     },
   )
 
@@ -33,6 +35,7 @@ describe('deleteCareerStage', () => {
     const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
 
     expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
   })
 
   test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
