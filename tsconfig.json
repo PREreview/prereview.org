@@ -2,6 +2,7 @@
   "extends": "@tsconfig/node18/tsconfig.json",
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "es2023"],
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "types": ["mocha"]
   },
