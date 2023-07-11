@@ -19,7 +19,7 @@ import * as assets from './manifest.json'
 import { addCanonicalLinkHeader, seeOther } from './middleware'
 import { templatePage } from './page'
 import type { PreprintId } from './preprint-id'
-import { aboutUsMatch, homeMatch, reviewAPreprintMatch, reviewMatch } from './routes'
+import { aboutUsMatch, homeMatch, reviewAPreprintMatch, reviewMatch, reviewsMatch } from './routes'
 import { renderDate } from './time'
 import type { User } from './user'
 import { maybeGetUser } from './user'
@@ -219,6 +219,10 @@ function createPage(
                         `,
                       )}
                     </ol>
+
+                    <nav>
+                      <a href="${format(reviewsMatch.formatter, { page: 1 })}" class="forward">See all reviews</a>
+                    </nav>
                   </section>
                 `,
               ),

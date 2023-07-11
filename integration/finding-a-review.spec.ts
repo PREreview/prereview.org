@@ -388,7 +388,7 @@ test('can view an older review', async ({ fetch, page }) => {
     })
 
   await page.goto('/')
-  await page.getByRole('link', { name: 'Reviews' }).click()
+  await page.getByRole('link', { name: 'See all reviews' }).click()
 
   await expect(page).toHaveTitle('Recent PREreviews (page 1)')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent PREreviews')
@@ -477,7 +477,7 @@ test.extend(canSeeClubs)("can view an older review that's part of a club", async
     })
 
   await page.goto('/')
-  await page.getByRole('link', { name: 'Reviews' }).click()
+  await page.getByRole('link', { name: 'See all reviews' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent PREreviews')
   await page.mouse.move(0, 0)

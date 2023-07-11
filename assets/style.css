@@ -377,7 +377,13 @@ nav {
     justify-content: space-between;
   }
 
-  :not(.contents, .header, .navigation) > & {
+  section > & {
+    display: flex;
+    justify-content: flex-end;
+    margin-block-start: var(--space-2xs);
+  }
+
+  :not(.contents, .header, .navigation, section) > & {
     margin-block-start: var(--space-m);
   }
 }
