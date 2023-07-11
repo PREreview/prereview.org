@@ -137,12 +137,12 @@ export interface ZenodoPreprintId {
 
 export interface BiorxivOrMedrxivPreprintId {
   readonly type: 'biorxiv-medrxiv'
-  readonly value: BiorxivPreprintId['value'] | MedrxivPreprintId['value']
+  readonly value: Doi<'1101'>
 }
 
 export interface ZenodoOrAfricarxivPreprintId {
   readonly type: 'zenodo-africarxiv'
-  readonly value: AfricarxivZenodoPreprintId['value'] | ZenodoPreprintId['value']
+  readonly value: Doi<'5281'>
 }
 
 export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { value: Doi }>['value']> = hasRegistrant(
