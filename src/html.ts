@@ -13,10 +13,12 @@ import stripTags from 'striptags'
 
 export interface Html {
   readonly Html: unique symbol
+  toString(): string
 }
 
 export interface PlainText {
   readonly PlainText: unique symbol
+  toString(): string
 }
 
 export function html(
