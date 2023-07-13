@@ -2,7 +2,9 @@ import * as C from 'fp-ts/Console'
 import * as E from 'fp-ts/Either'
 import * as IOE from 'fp-ts/IOEither'
 import { flow, pipe } from 'fp-ts/function'
+import { split } from 'fp-ts/string'
 import * as D from 'io-ts/Decoder'
+import { isOrcid } from 'orcid-id-ts'
 import { rawHtml } from './html'
 
 export function decodeEnv(process: NodeJS.Process) {
@@ -18,6 +20,8 @@ const BooleanD = pipe(
   D.literal('true', 'false'),
   D.map(value => value === 'true'),
 )
+
+const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
 
 const UrlD = pipe(
   D.string,
@@ -40,6 +44,7 @@ const EnvD = pipe(
     ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
     CAN_EDIT_PROFILE: withDefault(BooleanD, false),
     CAN_SEE_CLUBS: withDefault(BooleanD, false),
+    CAN_RAPID_REVIEW: withDefault(pipe(D.string, D.map(split(',')), D.compose(D.array(OrcidD))), []),
     GHOST_API_KEY: D.string,
     LEGACY_PREREVIEW_API_APP: D.string,
     LEGACY_PREREVIEW_API_KEY: D.string,
