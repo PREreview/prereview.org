@@ -41,6 +41,7 @@ const server = app({
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   canSeeClubs: env.CAN_SEE_CLUBS,
   canEditProfile: env.CAN_EDIT_PROFILE,
+  canRapidReview: () => false,
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: 'data/cache',

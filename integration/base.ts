@@ -18,7 +18,7 @@ import { URL } from 'url'
 import { RecordsC, SubmittedDepositionC, UnsubmittedDepositionC, type Record as ZenodoRecord } from 'zenodo-ts'
 import { EmptyDepositionC } from 'zenodo-ts'
 import { app } from '../src/app'
-import type { CanEditProfileEnv, CanSeeClubsEnv } from '../src/feature-flags'
+import type { CanEditProfileEnv, CanRapidReviewEnv, CanSeeClubsEnv } from '../src/feature-flags'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
 import Logger = L.Logger
@@ -29,6 +29,7 @@ export { expect } from '@playwright/test'
 type AppFixtures = {
   canSeeClubs: CanSeeClubsEnv['canSeeClubs']
   canEditProfile: CanEditProfileEnv['canEditProfile']
+  canRapidReview: CanRapidReviewEnv['canRapidReview']
   fetch: FetchMockSandbox
   logger: Logger
   port: number
@@ -52,6 +53,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   canEditProfile: async ({}, use) => {
     await use(false)
+  },
+  canRapidReview: async ({}, use) => {
+    await use(() => false)
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
@@ -663,13 +667,14 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(8000 + workerInfo.workerIndex)
   },
   server: async (
-    { canSeeClubs, canEditProfile, fetch, logger, port, updatesLegacyPrereview, careerStageStore },
+    { canSeeClubs, canEditProfile, canRapidReview, fetch, logger, port, updatesLegacyPrereview, careerStageStore },
     use,
   ) => {
     const server = app({
       allowSiteCrawlers: true,
       canSeeClubs,
       canEditProfile,
+      canRapidReview,
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),
@@ -770,6 +775,16 @@ export const canEditProfile: Fixtures<
 > = {
   canEditProfile: async ({}, use) => {
     await use(true)
+  },
+}
+
+export const canRapidReview: Fixtures<
+  Pick<AppFixtures, 'canRapidReview'>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canRapidReview'>
+> = {
+  canRapidReview: async ({}, use) => {
+    await use(() => true)
   },
 }
 

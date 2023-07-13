@@ -1,136 +1,7 @@
 import { Status } from 'hyper-ts'
 import { URL } from 'url'
 import { RecordsC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, canRapidReview, expect, test, updatesLegacyPrereview, willPublishAReview } from './base'
-
-test.extend(canLogIn).extend(willPublishAReview)(
-  'can publish a PREreview',
-  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
-    await page.goto('/')
-    await page.getByRole('link', { name: 'Review a preprint' }).click()
-    await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('button', { name: 'Continue' }).click()
-
-    await expect(page.getByRole('main')).toContainText('We will ask you to log in')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('button', { name: 'Start now' }).click()
-
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
-    await page.keyboard.press('Enter')
-
-    await page.getByLabel('No').check()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-
-    if (javaScriptEnabled) {
-      await expect(page.getByLabel('Write your PREreview')).toHaveText(/^Write a short summary of/)
-    } else {
-      await expect(page.getByLabel('Write your PREreview')).toHaveValue(/^Write a short summary of/)
-    }
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByLabel('Write your PREreview').clear()
-    await page.keyboard.type('# Some title')
-    await page.keyboard.press('Enter')
-    await page.keyboard.type('Lorem ipsum dolor sit "amet", *consectetur* ')
-    await (javaScriptEnabled ? page.keyboard.press('Control+b') : page.keyboard.type('<b>'))
-    await page.keyboard.type('adipiscing elit')
-    await (javaScriptEnabled ? page.keyboard.press('Control+b') : page.keyboard.type('</b>'))
-    await page.keyboard.type('.')
-
-    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-
-    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
-
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    await page.getByLabel('Josiah Carberry').check()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    await page.getByLabel('No, I reviewed it alone').check()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    await page.getByLabel('No').check()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    await page.getByLabel('I’m following the Code of Conduct').check()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
-
-    await expect(preview).toContainText('Josiah Carberry')
-    if (javaScriptEnabled) {
-      await expect(preview).toContainText('Lorem ipsum dolor sit “amet”, consectetur adipiscing elit.')
-    } else {
-      await expect(preview).toContainText('Lorem ipsum dolor sit "amet", consectetur adipiscing elit.')
-    }
-    await expect(preview).toContainText('The author declares that they have no competing interests.')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('button', { name: 'Publish PREreview' }).click()
-
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-  },
-)
-
-test.extend(canRapidReview).extend(canLogIn)('can publish a question-based PREreview', async ({ page }) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Review a preprint' }).click()
-  await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await expect(page.getByRole('main')).toContainText('We will ask you to log in')
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-  await page.keyboard.press('Enter')
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-
-  await page.waitForLoadState()
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
-
-  await page.getByLabel('Answer questions').check()
-
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.getByRole('button', { name: 'Continue' }).click()
-})
+import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview, willPublishAReview } from './base'
 
 test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ fetch, page }) => {
   fetch.get(
@@ -322,33 +193,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Enter')
-
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('main')).toBeFocused()
-    }
-    await expect(page).toHaveScreenshot()
-  },
-)
-
-test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
-  'can skip to the forms when answering questions',
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
-
-    await page.waitForLoadState()
-    await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Enter')
-    await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
@@ -1469,38 +1313,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Select yes if you have already written your PREreview' }).click()
 
     await expect(page.getByLabel('No')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-  },
-)
-
-test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
-  'have to say what type of review you want to do',
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
-    await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByRole('group', { name: 'How would you like to write your PREreview?' })).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    )
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('link', { name: 'Select how you would like to write your PREreview' }).click()
-
-    await expect(page.getByLabel('Answer questions')).toBeFocused()
-
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },

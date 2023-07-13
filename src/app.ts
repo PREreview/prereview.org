@@ -32,7 +32,7 @@ import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
-import type { CanEditProfileEnv, CanSeeClubsEnv } from './feature-flags'
+import type { CanEditProfileEnv, CanRapidReviewEnv, CanSeeClubsEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
@@ -99,6 +99,7 @@ import {
   writeReviewPublishMatch,
   writeReviewPublishedMatch,
   writeReviewReviewMatch,
+  writeReviewReviewTypeMatch,
   writeReviewStartMatch,
 } from './routes'
 import { trainings } from './trainings'
@@ -118,6 +119,7 @@ import {
   writeReviewReview,
   writeReviewStart,
 } from './write-review'
+import { writeReviewReviewType } from './write-review'
 import {
   createRecordOnZenodo,
   getPrereviewFromZenodo,
@@ -128,6 +130,7 @@ import {
 } from './zenodo'
 
 export type AppEnv = CanEditProfileEnv &
+  CanRapidReviewEnv &
   CanSeeClubsEnv &
   CareerStageStoreEnv &
   FathomEnv &
@@ -462,6 +465,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewAlreadyWrittenMatch.parser,
           P.map(({ id }) => writeReviewAlreadyWritten(id)),
+        ),
+        pipe(
+          writeReviewReviewTypeMatch.parser,
+          P.map(({ id }) => writeReviewReviewType(id)),
         ),
         pipe(
           writeReviewReviewMatch.parser,
