@@ -20,13 +20,18 @@ describe('writeReviewReviewType', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.tuple(fc.cookieName(), fc.uuid(), fc.string()).chain(([sessionCookie, sessionId, secret]) =>
-        fc.connection({
-          body: fc.record({ reviewType: fc.constantFrom('questions', 'freeform') }),
-          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
-        }),
-      ),
+      fc
+        .tuple(fc.constantFrom('questions', 'freeform'), fc.cookieName(), fc.uuid(), fc.string())
+        .chain(([reviewType, sessionCookie, sessionId, secret]) =>
+          fc.tuple(
+            fc.constant(reviewType),
+            fc.connection({
+              body: fc.constant({ reviewType }),
+              headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+              method: fc.constant('POST'),
+            }),
+          ),
+        ),
       fc.user(),
       fc.record(
         {
@@ -49,7 +54,7 @@ describe('writeReviewReviewType', () => {
           ],
         },
       ),
-    ])('when the form is completed', async (preprintId, preprintTitle, connection, user, newReview) => {
+    ])('when the form is completed', async (preprintId, preprintTitle, [reviewType, connection], user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
       const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
@@ -63,6 +68,7 @@ describe('writeReviewReviewType', () => {
         connection,
       )()
 
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ reviewType })
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.SeeOther },
@@ -80,13 +86,18 @@ describe('writeReviewReviewType', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.tuple(fc.cookieName(), fc.uuid(), fc.string()).chain(([sessionCookie, sessionId, secret]) =>
-        fc.connection({
-          body: fc.record({ reviewType: fc.constantFrom('questions', 'freeform') }),
-          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
-        }),
-      ),
+      fc
+        .tuple(fc.constantFrom('questions', 'freeform'), fc.cookieName(), fc.uuid(), fc.string())
+        .chain(([reviewType, sessionCookie, sessionId, secret]) =>
+          fc.tuple(
+            fc.constant(reviewType),
+            fc.connection({
+              body: fc.constant({ reviewType }),
+              headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+              method: fc.constant('POST'),
+            }),
+          ),
+        ),
       fc.user(),
       fc.record(
         {
@@ -100,7 +111,7 @@ describe('writeReviewReviewType', () => {
         },
         { withDeletedKeys: true },
       ),
-    ])('when the form is incomplete', async (preprintId, preprintTitle, connection, user, newReview) => {
+    ])('when the form is incomplete', async (preprintId, preprintTitle, [reviewType, connection], user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
@@ -115,6 +126,7 @@ describe('writeReviewReviewType', () => {
         connection,
       )()
 
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ reviewType })
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.SeeOther },

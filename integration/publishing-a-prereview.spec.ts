@@ -910,6 +910,25 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
 })
 
+test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
+  'can go back through the form when answering questions',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
+    await page.getByLabel('Answer questions').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('Answer questions')).toBeChecked()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)(
   'see existing values when going back a step',
   async ({ javaScriptEnabled, page }) => {
@@ -975,6 +994,29 @@ test.extend(canLogIn).extend(areLoggedIn)(
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       )
     }
+  },
+)
+
+test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
+  'see existing values when answering questions and going back a step',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
+    await page.getByLabel('Answer questions').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await page.waitForLoadState()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
+
+    await expect(page.getByLabel('Answer questions')).toBeChecked()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('No')).toBeChecked()
   },
 )
 

@@ -21,7 +21,7 @@ import {
   writeReviewReviewTypeMatch,
 } from '../routes'
 import { type User, getUser } from '../user'
-import { createForm, getForm } from './form'
+import { type Form, createForm, getForm, saveForm, updateForm } from './form'
 
 export const writeReviewReviewType = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -69,8 +69,8 @@ export const writeReviewReviewType = flow(
 )
 
 const showReviewTypeForm = flow(
-  fromReaderK(({ preprint, user }: { preprint: PreprintTitle; user: User }) =>
-    reviewTypeForm(preprint, { reviewType: E.right(undefined) }, user),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+    reviewTypeForm(preprint, { reviewType: E.right(form.reviewType) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -83,7 +83,7 @@ const showReviewTypeErrorForm = (preprint: PreprintTitle, user: User) =>
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleReviewTypeForm = ({ preprint, user }: { preprint: PreprintTitle; user: User }) =>
+const handleReviewTypeForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.decodeBody(body => E.right({ reviewType: pipe(ReviewTypeFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
@@ -93,9 +93,15 @@ const handleReviewTypeForm = ({ preprint, user }: { preprint: PreprintTitle; use
         E.mapLeft(() => fields),
       ),
     ),
-
+    RM.map(updateForm(form)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainMiddlewareK(() => seeOther(format(writeReviewReviewMatch.formatter, { id: preprint.id }))),
-    RM.orElseW(error => match(error).with({ reviewType: P.any }, showReviewTypeErrorForm(preprint, user)).exhaustive()),
+    RM.orElseW(error =>
+      match(error)
+        .with('form-unavailable', () => serviceUnavailable)
+        .with({ reviewType: P.any }, showReviewTypeErrorForm(preprint, user))
+        .exhaustive(),
+    ),
   )
 
 const ReviewTypeFieldD = pipe(
