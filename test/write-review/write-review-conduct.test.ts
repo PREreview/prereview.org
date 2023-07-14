@@ -35,6 +35,7 @@ describe('writeReviewConduct', () => {
         competingInterests: fc.constantFrom('yes', 'no'),
         competingInterestsDetails: fc.lorem(),
         conduct: fc.constant('yes'),
+        introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
         moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
         persona: fc.constantFrom('public', 'pseudonym'),
         review: fc.nonEmptyString(),
@@ -44,6 +45,7 @@ describe('writeReviewConduct', () => {
         requiredKeys: [
           'competingInterests',
           'competingInterestsDetails',
+          'introductionMatches',
           'moreAuthors',
           'persona',
           'review',

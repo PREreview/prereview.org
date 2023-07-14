@@ -56,6 +56,7 @@ describe('writeReviewIntroductionMatches', () => {
             'competingInterests',
             'competingInterestsDetails',
             'conduct',
+            'introductionMatches',
             'moreAuthors',
             'persona',
             'review',

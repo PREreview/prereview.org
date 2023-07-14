@@ -13,7 +13,12 @@ import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import { writeReviewMatch, writeReviewPersonaMatch, writeReviewReviewMatch } from '../routes'
+import {
+  writeReviewIntroductionMatchesMatch,
+  writeReviewMatch,
+  writeReviewPersonaMatch,
+  writeReviewReviewMatch,
+} from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -51,15 +56,15 @@ export const writeReviewPersona = flow(
 
 const showPersonaForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    personaForm(preprint, { persona: E.right(form.persona) }, user),
+    personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showPersonaErrorForm = (preprint: PreprintTitle, user: User) =>
+const showPersonaErrorForm = (preprint: PreprintTitle, user: User, originalForm: Form) =>
   flow(
-    fromReaderK((form: PersonaForm) => personaForm(preprint, form, user)),
+    fromReaderK((form: PersonaForm) => personaForm(preprint, form, originalForm.reviewType, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -80,7 +85,7 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ persona: P.any }, showPersonaErrorForm(preprint, user))
+        .with({ persona: P.any }, showPersonaErrorForm(preprint, user, form))
         .exhaustive(),
     ),
   )
@@ -96,14 +101,26 @@ type PersonaForm = {
   readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>
 }
 
-function personaForm(preprint: PreprintTitle, form: PersonaForm, user: User) {
+function personaForm(
+  preprint: PreprintTitle,
+  form: PersonaForm,
+  reviewType: 'freeform' | 'questions' | undefined,
+  user: User,
+) {
   const error = hasAnError(form)
 
   return page({
     title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a
+          href="${format(
+            (reviewType === 'questions' ? writeReviewIntroductionMatchesMatch : writeReviewReviewMatch).formatter,
+            { id: preprint.id },
+          )}"
+          class="back"
+          >Back</a
+        >
       </nav>
 
       <main id="form">

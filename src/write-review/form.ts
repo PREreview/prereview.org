@@ -23,6 +23,7 @@ import {
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
+  writeReviewIntroductionMatchesMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
   writeReviewReviewMatch,
@@ -108,7 +109,11 @@ export const nextFormMatch = (form: Form, user: User) =>
           { canRapidReview: true, alreadyWritten: 'no', reviewType: P.optional(undefined) },
           () => writeReviewReviewTypeMatch,
         )
-        .with({ review: P.optional(undefined) }, () => writeReviewReviewMatch)
+        .with(
+          { reviewType: 'questions', introductionMatches: P.optional(undefined) },
+          () => writeReviewIntroductionMatchesMatch,
+        )
+        .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
         .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
         .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
         .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
