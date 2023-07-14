@@ -9,7 +9,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import type { GetPreprintTitleEnv } from '../../src/preprint'
-import { writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewReviewMatch } from '../../src/routes'
+import { writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import { formKey } from '../../src/write-review/form'
 import * as _ from '../../src/write-review/index'
 import * as fc from '../fc'
@@ -40,6 +40,7 @@ describe('writeReviewReviewType', () => {
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
+          introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
           moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.nonEmptyString(),
@@ -77,7 +78,7 @@ describe('writeReviewReviewType', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
+            value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
           },
           { type: 'endResponse' },
         ]),
@@ -107,6 +108,7 @@ describe('writeReviewReviewType', () => {
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
+          introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
           moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.nonEmptyString(),
@@ -135,7 +137,7 @@ describe('writeReviewReviewType', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewReviewMatch.formatter, { id: preprintTitle.id }),
+            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
           },
           { type: 'endResponse' },
         ]),

@@ -14,14 +14,10 @@ import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import {
-  writeReviewAlreadyWrittenMatch,
-  writeReviewMatch,
-  writeReviewReviewMatch,
-  writeReviewReviewTypeMatch,
-} from '../routes'
+import { writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, createForm, getForm, saveForm, updateForm } from './form'
+import { redirectToNextForm } from './form'
 
 export const writeReviewReviewType = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -104,7 +100,7 @@ const handleReviewTypeForm = ({ form, preprint, user }: { form: Form; preprint: 
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainMiddlewareK(() => seeOther(format(writeReviewReviewMatch.formatter, { id: preprint.id }))),
+    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
