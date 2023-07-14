@@ -33,12 +33,91 @@ describe('writeReviewPublish', () => {
         fc.constant(secret),
       ),
     ),
-    fc.completedForm(),
+    fc.completedQuestionsForm(),
     fc.user(),
     fc.doi(),
     fc.integer(),
   ])(
-    'when the form is complete',
+    'when the form is complete with a questions-based review',
+    async (
+      preprintId,
+      preprintTitle,
+      [connection, sessionCookie, sessionId, secret],
+      newReview,
+      user,
+      reviewDoi,
+      reviewId,
+    ) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), CompletedFormC.encode(newReview))
+      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
+        TE.right([reviewDoi, reviewId]),
+      )
+
+      const actual = await runMiddleware(
+        _.writeReviewPublish(preprintId)({
+          canRapidReview: shouldNotBeCalled,
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+          publishPrereview,
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
+        connection,
+      )()
+      const session = await sessionStore.get(sessionId)
+
+      expect(publishPrereview).toHaveBeenCalledWith({
+        conduct: 'yes',
+        persona: newReview.persona,
+        preprint: preprintTitle,
+        review: expect.stringContaining('<dl>'),
+        user,
+      })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(writeReviewPublishedMatch.formatter, { id: preprintTitle.id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
+      expect(session).toStrictEqual({
+        user: UserC.encode(user),
+        'published-review': { doi: reviewDoi, form: CompletedFormC.encode(newReview), id: reviewId },
+      })
+      expect(await formStore.has(formKey(user.orcid, preprintTitle.id))).toBe(false)
+    },
+  )
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
+      fc.tuple(
+        fc.connection({
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+          method: fc.constant('POST'),
+        }),
+        fc.constant(sessionCookie),
+        fc.constant(sessionId),
+        fc.constant(secret),
+      ),
+    ),
+    fc.completedFreeformForm(),
+    fc.user(),
+    fc.doi(),
+    fc.integer(),
+  ])(
+    'when the form is complete with a freeform review',
     async (
       preprintId,
       preprintTitle,
@@ -121,6 +200,7 @@ describe('writeReviewPublish', () => {
             competingInterests: fc.constantFrom('yes', 'no'),
             competingInterestsDetails: fc.lorem(),
             conduct: fc.constant('yes'),
+            introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
             moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.lorem(),

@@ -4,7 +4,30 @@ import * as fc from '../fc'
 
 export * from '../fc'
 
-export const completedForm = (): fc.Arbitrary<CompletedForm> =>
+export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { reviewType: 'questions' }>> =>
+  fc
+    .tuple(
+      fc.record({
+        alreadyWritten: fc.constant('no' as const),
+        conduct: fc.constant('yes' as const),
+        introductionMatches: fc.constantFrom('yes' as const, 'partly' as const, 'no' as const, 'skip' as const),
+        moreAuthors: fc.constantFrom('yes' as const, 'yes-private' as const, 'no' as const),
+        persona: fc.constantFrom('public' as const, 'pseudonym' as const),
+        reviewType: fc.constant('questions' as const),
+      }),
+      fc.oneof(
+        fc.record({
+          competingInterests: fc.constant('yes' as const),
+          competingInterestsDetails: fc.nonEmptyString(),
+        }),
+        fc.record({
+          competingInterests: fc.constant('no' as const),
+        }),
+      ),
+    )
+    .map(parts => merge(...parts))
+
+export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { reviewType: 'freeform' }>> =>
   fc
     .tuple(
       fc.record({
@@ -26,3 +49,6 @@ export const completedForm = (): fc.Arbitrary<CompletedForm> =>
       ),
     )
     .map(parts => merge(...parts))
+
+export const completedForm = (): fc.Arbitrary<CompletedForm> =>
+  fc.oneof(completedFreeformForm(), completedQuestionsForm())

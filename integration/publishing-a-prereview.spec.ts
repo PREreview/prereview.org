@@ -108,36 +108,66 @@ test.extend(canLogIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(canRapidReview).extend(canLogIn)('can publish a question-based PREreview', async ({ page }) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Review a preprint' }).click()
-  await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await expect(page.getByRole('main')).toContainText('We will ask you to log in')
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-  await page.keyboard.press('Enter')
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
+test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
+  'can publish a question-based PREreview',
+  async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('link', { name: 'Review a preprint' }).click()
+    await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(page.getByRole('main')).toContainText('We will ask you to log in')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.locator('[type=email]').fill('test@example.com')
+    await page.locator('[type=password]').fill('password')
+    await page.keyboard.press('Enter')
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  await page.getByLabel('Answer questions').check()
+    await page.getByLabel('Answer questions').check()
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  await page.waitForLoadState()
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
+    await page.waitForLoadState()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
 
-  await page.getByLabel('Partly').check()
+    await page.getByLabel('Partly').check()
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-})
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
+
+    await expect(preview).toContainText('Josiah Carberry')
+    await expect(preview).toContainText(
+      'Does the introduction explain the objective and match the rest of the preprint? Partly',
+    )
+    await expect(preview).toContainText('The author declares that they have no competing interests.')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+  },
+)
 
 test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ fetch, page }) => {
   fetch.get(

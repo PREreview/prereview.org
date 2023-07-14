@@ -135,7 +135,25 @@ const showFailureMessage = flow(
 )
 
 function renderReview(form: CompletedForm) {
-  return html`${fixHeadingLevels(1, form.review)}
+  return html`${match(form)
+      .with(
+        { reviewType: 'questions' },
+        form => html` <dl>
+          <div>
+            <dt>Does the introduction explain the objective and match the rest of the preprint?</dt>
+            <dd>
+              ${match(form.introductionMatches)
+                .with('yes', () => 'Yes')
+                .with('partly', () => 'Partly')
+                .with('no', () => 'No')
+                .with('skip', () => 'I don’t know')
+                .exhaustive()}
+            </dd>
+          </div>
+        </dl>`,
+      )
+      .with({ reviewType: 'freeform' }, form => fixHeadingLevels(1, form.review))
+      .exhaustive()}
 
     <h2>Competing interests</h2>
 
@@ -194,7 +212,9 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
             </blockquote>
 
             <div class="button-group" role="group">
-              <a href="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}">Change PREreview</a>
+              ${review.reviewType === 'freeform'
+                ? html`<a href="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}">Change PREreview</a>`
+                : ''}
               <a href="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}">Change name</a>
             </div>
 

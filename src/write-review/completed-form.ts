@@ -10,8 +10,6 @@ export const CompletedFormC = pipe(
     conduct: C.literal('yes'),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     persona: C.literal('public', 'pseudonym'),
-    review: RawHtmlC,
-    reviewType: C.literal('freeform'),
   }),
   C.intersect(
     C.sum('competingInterests')({
@@ -21,6 +19,18 @@ export const CompletedFormC = pipe(
       }),
       no: C.struct({
         competingInterests: C.literal('no'),
+      }),
+    }),
+  ),
+  C.intersect(
+    C.sum('reviewType')({
+      questions: C.struct({
+        reviewType: C.literal('questions'),
+        introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),
+      }),
+      freeform: C.struct({
+        reviewType: C.literal('freeform'),
+        review: RawHtmlC,
       }),
     }),
   ),
