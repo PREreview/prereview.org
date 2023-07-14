@@ -125,6 +125,7 @@ export const redirectToNextForm = (preprint: PreprintId) =>
 
 const FormC = C.partial({
   alreadyWritten: C.literal('yes', 'no'),
+  introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),
   review: RawHtmlC,
   reviewType: C.literal('questions', 'freeform'),
   persona: C.literal('public', 'pseudonym'),

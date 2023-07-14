@@ -22,7 +22,7 @@ import {
   writeReviewReviewTypeMatch,
 } from '../routes'
 import { type User, getUser } from '../user'
-import { type Form, getForm, redirectToNextForm } from './form'
+import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
 export const writeReviewIntroductionMatches = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -80,8 +80,8 @@ export const writeReviewIntroductionMatches = flow(
 )
 
 const showIntroductionMatchesForm = flow(
-  fromReaderK(({ preprint, user }: { preprint: PreprintTitle; user: User }) =>
-    introductionMatchesForm(preprint, { introductionMatches: E.right(undefined) }, user),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+    introductionMatchesForm(preprint, { introductionMatches: E.right(form.introductionMatches) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -106,9 +106,14 @@ const handleIntroductionMatchesForm = ({ form, preprint, user }: { form: Form; p
         E.mapLeft(() => fields),
       ),
     ),
-    RM.ichainW(() => redirectToNextForm(preprint.id)(form, user)),
+    RM.map(updateForm(form)),
+    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
+    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
-      match(error).with({ introductionMatches: P.any }, showIntroductionMatchesErrorForm(preprint, user)).exhaustive(),
+      match(error)
+        .with('form-unavailable', () => serviceUnavailable)
+        .with({ introductionMatches: P.any }, showIntroductionMatchesErrorForm(preprint, user))
+        .exhaustive(),
     ),
   )
 

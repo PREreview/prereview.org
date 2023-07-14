@@ -28,11 +28,14 @@ describe('writeReviewIntroductionMatches', () => {
       fc
         .tuple(fc.constantFrom('yes', 'partly', 'no', 'skip'), fc.cookieName(), fc.uuid(), fc.string())
         .chain(([introductionMatches, sessionCookie, sessionId, secret]) =>
-          fc.connection({
-            body: fc.constant({ introductionMatches }),
-            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-            method: fc.constant('POST'),
-          }),
+          fc.tuple(
+            fc.constant(introductionMatches),
+            fc.connection({
+              body: fc.constant({ introductionMatches }),
+              headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+              method: fc.constant('POST'),
+            }),
+          ),
         ),
       fc.user(),
       fc.record(
@@ -41,6 +44,7 @@ describe('writeReviewIntroductionMatches', () => {
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
+          introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
           moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.nonEmptyString(),
@@ -59,33 +63,37 @@ describe('writeReviewIntroductionMatches', () => {
           ],
         },
       ),
-    ])('when the form is completed', async (preprintId, preprintTitle, connection, user, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
-      const actual = await runMiddleware(
-        _.writeReviewIntroductionMatches(preprintId)({
-          canRapidReview: () => true,
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.of(user),
-        }),
-        connection,
-      )()
+    ])(
+      'when the form is completed',
+      async (preprintId, preprintTitle, [introductionMatches, connection], user, newReview) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+        const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+        const actual = await runMiddleware(
+          _.writeReviewIntroductionMatches(preprintId)({
+            canRapidReview: () => true,
+            formStore,
+            getPreprintTitle,
+            getUser: () => M.of(user),
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
-    })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ introductionMatches })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+        expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
+      },
+    )
 
     test.prop([
       fc.indeterminatePreprintId(),
@@ -93,11 +101,14 @@ describe('writeReviewIntroductionMatches', () => {
       fc
         .tuple(fc.constantFrom('yes', 'partly', 'no', 'skip'), fc.cookieName(), fc.uuid(), fc.string())
         .chain(([introductionMatches, sessionCookie, sessionId, secret]) =>
-          fc.connection({
-            body: fc.constant({ introductionMatches }),
-            headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-            method: fc.constant('POST'),
-          }),
+          fc.tuple(
+            fc.constant(introductionMatches),
+            fc.connection({
+              body: fc.constant({ introductionMatches }),
+              headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+              method: fc.constant('POST'),
+            }),
+          ),
         ),
       fc.user(),
       fc.record(
@@ -106,6 +117,7 @@ describe('writeReviewIntroductionMatches', () => {
           competingInterests: fc.constantFrom('yes', 'no'),
           competingInterestsDetails: fc.lorem(),
           conduct: fc.constant('yes'),
+          introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
           moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.nonEmptyString(),
@@ -113,33 +125,37 @@ describe('writeReviewIntroductionMatches', () => {
         },
         { requiredKeys: ['alreadyWritten', 'reviewType'] },
       ),
-    ])('when the form is incomplete', async (preprintId, preprintTitle, connection, user, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle = () => TE.right(preprintTitle)
+    ])(
+      'when the form is incomplete',
+      async (preprintId, preprintTitle, [introductionMatches, connection], user, newReview) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+        const getPreprintTitle = () => TE.right(preprintTitle)
 
-      const actual = await runMiddleware(
-        _.writeReviewIntroductionMatches(preprintId)({
-          canRapidReview: () => true,
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.of(user),
-        }),
-        connection,
-      )()
+        const actual = await runMiddleware(
+          _.writeReviewIntroductionMatches(preprintId)({
+            canRapidReview: () => true,
+            formStore,
+            getPreprintTitle,
+            getUser: () => M.of(user),
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ introductionMatches })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
 
     test.prop([
       fc.indeterminatePreprintId(),

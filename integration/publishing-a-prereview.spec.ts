@@ -1039,6 +1039,13 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
+    await page.getByLabel('Partly').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.waitForLoadState()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
+
+    await expect(page.getByLabel('Partly')).toBeChecked()
 
     await page.getByRole('link', { name: 'Back' }).click()
 
