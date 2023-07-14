@@ -1,14 +1,19 @@
 import { format } from 'fp-ts-routing'
+import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
+import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { type CanRapidReviewEnv, canRapidReview } from '../feature-flags'
-import { html, plainText, sendHtml } from '../html'
+import { canRapidReview } from '../feature-flags'
+import { type MissingE, missingE } from '../form'
+import { hasAnError } from '../form'
+import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { type FathomEnv, type PhaseEnv, page } from '../page'
+import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   writeReviewAlreadyWrittenMatch,
@@ -17,7 +22,7 @@ import {
   writeReviewReviewTypeMatch,
 } from '../routes'
 import { type User, getUser } from '../user'
-import { getForm, redirectToNextForm } from './form'
+import { type Form, getForm, redirectToNextForm } from './form'
 
 export const writeReviewIntroductionMatches = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -42,9 +47,6 @@ export const writeReviewIntroductionMatches = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
-          .returnType<
-            RM.ReaderMiddleware<CanRapidReviewEnv & FathomEnv & PhaseEnv, StatusOpen, ResponseEnded, never, void>
-          >()
           .with(
             { form: { alreadyWritten: P.optional('yes') } },
             fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
@@ -53,7 +55,7 @@ export const writeReviewIntroductionMatches = flow(
             { form: { reviewType: P.optional('freeform') } },
             fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
           )
-          .with({ method: 'POST' }, ({ form, user }) => redirectToNextForm(preprint.id)(form, user))
+          .with({ method: 'POST' }, handleIntroductionMatchesForm)
           .otherwise(showIntroductionMatchesForm),
       ),
       RM.orElseW(error =>
@@ -78,14 +80,56 @@ export const writeReviewIntroductionMatches = flow(
 )
 
 const showIntroductionMatchesForm = flow(
-  fromReaderK(({ preprint, user }: { preprint: PreprintTitle; user: User }) => introductionMatchesForm(preprint, user)),
+  fromReaderK(({ preprint, user }: { preprint: PreprintTitle; user: User }) =>
+    introductionMatchesForm(preprint, { introductionMatches: E.right(undefined) }, user),
+  ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function introductionMatchesForm(preprint: PreprintTitle, user: User) {
+const showIntroductionMatchesErrorForm = (preprint: PreprintTitle, user: User) =>
+  flow(
+    fromReaderK((form: IntroductionMatchesForm) => introductionMatchesForm(preprint, form, user)),
+    RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
+
+const handleIntroductionMatchesForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+  pipe(
+    RM.decodeBody(body =>
+      E.right({ introductionMatches: pipe(IntroductionMatchesFieldD.decode(body), E.mapLeft(missingE)) }),
+    ),
+    RM.chainEitherK(fields =>
+      pipe(
+        E.Do,
+        E.apS('introductionMatches', fields.introductionMatches),
+        E.mapLeft(() => fields),
+      ),
+    ),
+    RM.ichainW(() => redirectToNextForm(preprint.id)(form, user)),
+    RM.orElseW(error =>
+      match(error).with({ introductionMatches: P.any }, showIntroductionMatchesErrorForm(preprint, user)).exhaustive(),
+    ),
+  )
+
+const IntroductionMatchesFieldD = pipe(
+  D.struct({
+    introductionMatches: D.literal('yes', 'partly', 'no', 'skip'),
+  }),
+  D.map(get('introductionMatches')),
+)
+
+type IntroductionMatchesForm = {
+  readonly introductionMatches: E.Either<MissingE, 'yes' | 'partly' | 'no' | 'skip' | undefined>
+}
+
+function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatchesForm, user: User) {
+  const error = hasAnError(form)
+
   return page({
-    title: plainText`Does the introduction explain the objective and match the rest of the preprint?
+    title: plainText`${
+      error ? 'Error: ' : ''
+    }Does the introduction explain the objective and match the rest of the preprint?
  – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
@@ -98,69 +142,136 @@ function introductionMatchesForm(preprint: PreprintTitle, user: User) {
           action="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}"
           novalidate
         >
-          <fieldset role="group">
-            <legend>
-              <h1>Does the introduction explain the objective and match the rest of the preprint?</h1>
-            </legend>
+          ${error
+            ? html`
+                <error-summary aria-labelledby="error-summary-title" role="alert">
+                  <h2 id="error-summary-title">There is a problem</h2>
+                  <ul>
+                    ${E.isLeft(form.introductionMatches)
+                      ? html`
+                          <li>
+                            <a href="#introduction-matches-yes">
+                              ${match(form.introductionMatches.left)
+                                .with(
+                                  { _tag: 'MissingE' },
+                                  () =>
+                                    'Select if the introduction explains the objective and matches the rest of the preprint',
+                                )
+                                .exhaustive()}
+                            </a>
+                          </li>
+                        `
+                      : ''}
+                  </ul>
+                </error-summary>
+              `
+            : ''}
 
-            <ol>
-              <li>
-                <label>
-                  <input
-                    name="introduction-matches"
-                    type="radio"
-                    value="yes"
-                    aria-describedby="introduction-matches-tip-yes"
-                  />
-                  <span>Yes</span>
-                </label>
-                <p id="introduction-matches-tip-yes" role="note">
-                  The aim is clearly explained, and it matches up with what follows.
-                </p>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="introduction-matches"
-                    type="radio"
-                    value="partly"
-                    aria-describedby="introduction-matches-tip-partly"
-                  />
-                  <span>Partly</span>
-                </label>
-                <p id="introduction-matches-tip-partly" role="note">
-                  The introduction either doesn’t adequately explain the aim of the research, or the rest of the
-                  preprint doesn’t match up with the introduction.
-                </p>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="introduction-matches"
-                    type="radio"
-                    value="no"
-                    aria-describedby="introduction-matches-tip-no"
-                  />
-                  <span>No</span>
-                </label>
-                <p id="introduction-matches-tip-no" role="note">
-                  The introduction doesn’t explain the aim of the research or match up with what follows.
-                </p>
-              </li>
-              <li>
-                <span>or</span>
-                <label>
-                  <input name="introduction-matches" type="radio" value="skip" />
-                  <span>I don’t know</span>
-                </label>
-              </li>
-            </ol>
-          </fieldset>
+          <div ${rawHtml(E.isLeft(form.introductionMatches) ? 'class="error"' : '')}>
+            <fieldset
+              role="group"
+              ${rawHtml(
+                E.isLeft(form.introductionMatches)
+                  ? 'aria-invalid="true" aria-errormessage="introduction-matches-error"'
+                  : '',
+              )}
+            >
+              <legend>
+                <h1>Does the introduction explain the objective and match the rest of the preprint?</h1>
+              </legend>
+
+              ${E.isLeft(form.introductionMatches)
+                ? html`
+                    <div class="error-message" id="introduction-matches-error">
+                      <span class="visually-hidden">Error:</span>
+                      ${match(form.introductionMatches.left)
+                        .with(
+                          { _tag: 'MissingE' },
+                          () =>
+                            'Select if the introduction explains the objective and matches the rest of the preprint',
+                        )
+                        .exhaustive()}
+                    </div>
+                  `
+                : ''}
+
+              <ol>
+                <li>
+                  <label>
+                    <input
+                      name="introductionMatches"
+                      id="introduction-matches-yes"
+                      type="radio"
+                      value="yes"
+                      aria-describedby="introduction-matches-tip-yes"
+                      ${match(form.introductionMatches)
+                        .with({ right: 'yes' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>Yes</span>
+                  </label>
+                  <p id="introduction-matches-tip-yes" role="note">
+                    The aim is clearly explained, and it matches up with what follows.
+                  </p>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="introductionMatches"
+                      type="radio"
+                      value="partly"
+                      aria-describedby="introduction-matches-tip-partly"
+                      ${match(form.introductionMatches)
+                        .with({ right: 'partly' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>Partly</span>
+                  </label>
+                  <p id="introduction-matches-tip-partly" role="note">
+                    The introduction either doesn’t adequately explain the aim of the research, or the rest of the
+                    preprint doesn’t match up with the introduction.
+                  </p>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="introductionMatches"
+                      type="radio"
+                      value="no"
+                      aria-describedby="introduction-matches-tip-no"
+                      ${match(form.introductionMatches)
+                        .with({ right: 'no' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>No</span>
+                  </label>
+                  <p id="introduction-matches-tip-no" role="note">
+                    The introduction doesn’t explain the aim of the research or match up with what follows.
+                  </p>
+                </li>
+                <li>
+                  <span>or</span>
+                  <label>
+                    <input
+                      name="introductionMatches"
+                      type="radio"
+                      value="skip"
+                      ${match(form.introductionMatches)
+                        .with({ right: 'skip' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>I don’t know</span>
+                  </label>
+                </li>
+              </ol>
+            </fieldset>
+          </div>
 
           <button>Save and continue</button>
         </form>
       </main>
     `,
+    js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
     user,

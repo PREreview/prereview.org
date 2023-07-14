@@ -1667,6 +1667,46 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
+test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the introduction matches the rest of the preprint',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('Answer questions').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Does the introduction explain the objective and match the rest of the preprint?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', {
+        name: 'Select if the introduction explains the objective and matches the rest of the preprint',
+      })
+      .click()
+
+    await expect(page.getByLabel('Yes')).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()

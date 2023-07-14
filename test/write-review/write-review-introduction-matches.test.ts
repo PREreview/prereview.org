@@ -287,13 +287,9 @@ describe('writeReviewIntroductionMatches', () => {
 
         expect(actual).toStrictEqual(
           E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-            },
-            { type: 'endResponse' },
+            { type: 'setStatus', status: Status.BadRequest },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
           ]),
         )
       },
