@@ -11,6 +11,7 @@ export const CompletedFormC = pipe(
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     persona: C.literal('public', 'pseudonym'),
     review: RawHtmlC,
+    reviewType: C.literal('freeform'),
   }),
   C.intersect(
     C.sum('competingInterests')({

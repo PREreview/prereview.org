@@ -6,7 +6,7 @@ import * as R from 'fp-ts/Reader'
 import type { Reader } from 'fp-ts/Reader'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
 import type { StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -123,18 +123,21 @@ export const redirectToNextForm = (preprint: PreprintId) =>
     RM.ichainMiddlewareK(flow(match => format(match.formatter, { id: preprint }), seeOther)),
   )
 
-const FormC = C.partial({
-  alreadyWritten: C.literal('yes', 'no'),
-  introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),
-  review: RawHtmlC,
-  reviewType: C.literal('questions', 'freeform'),
-  persona: C.literal('public', 'pseudonym'),
-  moreAuthors: C.literal('yes', 'yes-private', 'no'),
-  moreAuthorsApproved: C.literal('yes'),
-  competingInterests: C.literal('yes', 'no'),
-  competingInterestsDetails: NonEmptyStringC,
-  conduct: C.literal('yes'),
-})
+const FormC = pipe(
+  C.partial({
+    alreadyWritten: C.literal('yes', 'no'),
+    introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),
+    review: RawHtmlC,
+    reviewType: C.literal('questions', 'freeform'),
+    persona: C.literal('public', 'pseudonym'),
+    moreAuthors: C.literal('yes', 'yes-private', 'no'),
+    moreAuthorsApproved: C.literal('yes'),
+    competingInterests: C.literal('yes', 'no'),
+    competingInterestsDetails: NonEmptyStringC,
+    conduct: C.literal('yes'),
+  }),
+  C.imap(form => (form.review ? { reviewType: 'freeform' as const, ...form } : form), identity),
+)
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(

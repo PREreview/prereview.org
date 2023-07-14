@@ -13,6 +13,7 @@ export const completedForm = (): fc.Arbitrary<CompletedForm> =>
         moreAuthors: fc.constantFrom('yes' as const, 'yes-private' as const, 'no' as const),
         persona: fc.constantFrom('public' as const, 'pseudonym' as const),
         review: fc.html(),
+        reviewType: fc.constant('freeform' as const),
       }),
       fc.oneof(
         fc.record({
