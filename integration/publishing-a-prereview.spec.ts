@@ -127,6 +127,16 @@ test.extend(canRapidReview).extend(canLogIn)('can publish a question-based PREre
   await expect(page).toHaveScreenshot()
 
   await page.getByRole('button', { name: 'Continue' }).click()
+
+  await page.waitForLoadState()
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
+
+  await page.getByLabel('Partly').check()
+
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 })
 
 test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ fetch, page }) => {
@@ -352,6 +362,27 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByLabel('Answer questions').check()
     await page.getByRole('button', { name: 'Continue' }).click()
+
+    await page.waitForLoadState()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
+
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+    await page.waitForLoadState()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Partly').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
   },
 )
 
@@ -1006,6 +1037,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('Answer questions').check()
     await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
 
     await page.getByRole('link', { name: 'Back' }).click()
 
