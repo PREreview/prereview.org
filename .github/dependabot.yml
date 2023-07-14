@@ -26,3 +26,7 @@ updates:
       typescript-eslint:
         patterns:
           - '@typescript-eslint/*'
+      web-test-runner:
+        patterns:
+          - '@web/test-runner'
+          - '@web/test-runner-*'
