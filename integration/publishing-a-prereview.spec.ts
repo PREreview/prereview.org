@@ -121,9 +121,6 @@ test.extend(canRapidReview).extend(canLogIn)('can publish a question-based PREre
   await page.getByLabel('No').check()
   await page.getByRole('button', { name: 'Continue' }).click()
 
-  await page.waitForLoadState()
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
-
   await page.getByLabel('Answer questions').check()
 
   await page.mouse.move(0, 0)
@@ -337,8 +334,6 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
 
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
@@ -354,6 +349,9 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('main')).toBeFocused()
     }
     await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Answer questions').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
   },
 )
 
@@ -917,8 +915,6 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
     await page.getByLabel('Answer questions').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
@@ -926,6 +922,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.goBack()
 
     await expect(page.getByLabel('Answer questions')).toBeChecked()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('No')).toBeChecked()
   },
 )
 
@@ -1004,13 +1004,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
     await page.getByLabel('Answer questions').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
+    await page.getByRole('link', { name: 'Back' }).click()
 
     await expect(page.getByLabel('Answer questions')).toBeChecked()
 
@@ -1523,8 +1520,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/review-type')
+
     await page.getByRole('button', { name: 'Continue' }).click()
 
     if (javaScriptEnabled) {

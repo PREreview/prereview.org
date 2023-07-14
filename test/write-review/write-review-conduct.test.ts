@@ -14,6 +14,7 @@ import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('writeReviewConduct', () => {
   test.prop([
@@ -27,6 +28,7 @@ describe('writeReviewConduct', () => {
       }),
     ),
     fc.user(),
+    fc.boolean(),
     fc.record(
       {
         alreadyWritten: fc.constantFrom('yes', 'no'),
@@ -36,18 +38,27 @@ describe('writeReviewConduct', () => {
         moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
         persona: fc.constantFrom('public', 'pseudonym'),
         review: fc.nonEmptyString(),
+        reviewType: fc.constantFrom('questions', 'freeform'),
       },
       {
-        requiredKeys: ['competingInterests', 'competingInterestsDetails', 'moreAuthors', 'persona', 'review'],
+        requiredKeys: [
+          'competingInterests',
+          'competingInterestsDetails',
+          'moreAuthors',
+          'persona',
+          'review',
+          'reviewType',
+        ],
       },
     ),
-  ])('when the form is completed', async (preprintId, preprintTitle, connection, user, newReview) => {
+  ])('when the form is completed', async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
     const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
     const actual = await runMiddleware(
       _.writeReviewConduct(preprintId)({
+        canRapidReview: () => canRapidReview,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -81,6 +92,7 @@ describe('writeReviewConduct', () => {
       }),
     ),
     fc.user(),
+    fc.boolean(),
     fc.oneof(
       fc
         .record(
@@ -92,19 +104,21 @@ describe('writeReviewConduct', () => {
             moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
+            reviewType: fc.constantFrom('questions', 'freeform'),
           },
           { withDeletedKeys: true },
         )
         .filter(newReview => Object.keys(newReview).length < 5),
       fc.constant({}),
     ),
-  ])('when the form is incomplete', async (preprintId, preprintTitle, connection, user, newReview) => {
+  ])('when the form is incomplete', async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
       _.writeReviewConduct(preprintId)({
+        canRapidReview: () => canRapidReview,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -143,6 +157,7 @@ describe('writeReviewConduct', () => {
 
     const actual = await runMiddleware(
       _.writeReviewConduct(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -179,6 +194,7 @@ describe('writeReviewConduct', () => {
 
     const actual = await runMiddleware(
       _.writeReviewConduct(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -212,6 +228,7 @@ describe('writeReviewConduct', () => {
 
     const actual = await runMiddleware(
       _.writeReviewConduct(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -239,6 +256,7 @@ describe('writeReviewConduct', () => {
 
     const actual = await runMiddleware(
       _.writeReviewConduct(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.left('no-session'),
@@ -289,6 +307,7 @@ describe('writeReviewConduct', () => {
 
     const actual = await runMiddleware(
       _.writeReviewConduct(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),

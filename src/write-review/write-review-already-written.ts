@@ -8,6 +8,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
+import { canRapidReview } from '../feature-flags'
 import { type MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
@@ -18,6 +19,7 @@ import {
   writeReviewAlreadyWrittenMatch,
   writeReviewMatch,
   writeReviewReviewMatch,
+  writeReviewReviewTypeMatch,
 } from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, createForm, getForm, saveForm, updateForm } from './form'
@@ -34,6 +36,10 @@ export const writeReviewAlreadyWritten = flow(
           RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
           RM.orElse(() => RM.of(createForm())),
         ),
+      ),
+      RM.bindW(
+        'canRapidReview',
+        fromReaderK(({ user }) => canRapidReview(user)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
@@ -73,7 +79,17 @@ const showAlreadyWrittenErrorForm = (preprint: PreprintTitle, user: User) =>
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleAlreadyWrittenForm = ({
+  canRapidReview,
+  form,
+  preprint,
+  user,
+}: {
+  canRapidReview: boolean
+  form: Form
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
     RM.decodeBody(body => E.right({ alreadyWritten: pipe(AlreadyWrittenFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
@@ -85,7 +101,15 @@ const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; prepri
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainMiddlewareK(() => seeOther(format(writeReviewReviewMatch.formatter, { id: preprint.id }))),
+    RM.ichainMiddlewareK(form =>
+      seeOther(
+        format(
+          (canRapidReview && form.alreadyWritten === 'no' ? writeReviewReviewTypeMatch : writeReviewReviewMatch)
+            .formatter,
+          { id: preprint.id },
+        ),
+      ),
+    ),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)

@@ -14,6 +14,7 @@ import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('writeReviewReview', () => {
   test.prop([
@@ -32,6 +33,7 @@ describe('writeReviewReview', () => {
         ),
       ),
     fc.user(),
+    fc.boolean(),
     fc.record(
       {
         alreadyWritten: fc.constantFrom('yes', 'no'),
@@ -41,6 +43,7 @@ describe('writeReviewReview', () => {
         moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
         persona: fc.constantFrom('public', 'pseudonym'),
         review: fc.nonEmptyString(),
+        reviewType: fc.constantFrom('questions', 'freeform'),
       },
       {
         requiredKeys: [
@@ -50,36 +53,41 @@ describe('writeReviewReview', () => {
           'conduct',
           'moreAuthors',
           'persona',
+          'reviewType',
         ],
       },
     ),
-  ])('when the form is completed', async (preprintId, preprintTitle, [review, connection], user, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-    const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
-    const actual = await runMiddleware(
-      _.writeReviewReview(preprintId)({
-        formStore,
-        getPreprintTitle,
-        getUser: () => M.of(user),
-      }),
-      connection,
-    )()
+  ])(
+    'when the form is completed',
+    async (preprintId, preprintTitle, [review, connection], user, canRapidReview, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      const actual = await runMiddleware(
+        _.writeReviewReview(preprintId)({
+          canRapidReview: () => canRapidReview,
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+        }),
+        connection,
+      )()
 
-    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ review })
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-    expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
-  })
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ review })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
+    },
+  )
 
   test.prop([
     fc.indeterminatePreprintId(),
@@ -97,6 +105,7 @@ describe('writeReviewReview', () => {
         ),
       ),
     fc.user(),
+    fc.boolean(),
     fc.record(
       {
         alreadyWritten: fc.constantFrom('yes', 'no'),
@@ -109,33 +118,37 @@ describe('writeReviewReview', () => {
       },
       { requiredKeys: ['alreadyWritten'] },
     ),
-  ])('when the form is incomplete', async (preprintId, preprintTitle, [review, connection], user, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-    const getPreprintTitle = () => TE.right(preprintTitle)
+  ])(
+    'when the form is incomplete',
+    async (preprintId, preprintTitle, [review, connection], user, canRapidReview, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+      const getPreprintTitle = () => TE.right(preprintTitle)
 
-    const actual = await runMiddleware(
-      _.writeReviewReview(preprintId)({
-        formStore,
-        getPreprintTitle,
-        getUser: () => M.of(user),
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.writeReviewReview(preprintId)({
+          canRapidReview: () => canRapidReview,
+          formStore,
+          getPreprintTitle,
+          getUser: () => M.of(user),
+        }),
+        connection,
+      )()
 
-    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ review })
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ review })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
 
   test.prop([
     fc.indeterminatePreprintId(),
@@ -154,6 +167,7 @@ describe('writeReviewReview', () => {
 
     const actual = await runMiddleware(
       _.writeReviewReview(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -189,6 +203,7 @@ describe('writeReviewReview', () => {
     const getPreprintTitle = () => TE.left('unavailable' as const)
     const actual = await runMiddleware(
       _.writeReviewReview(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -221,6 +236,7 @@ describe('writeReviewReview', () => {
     const getPreprintTitle = () => TE.left('not-found' as const)
     const actual = await runMiddleware(
       _.writeReviewReview(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -248,6 +264,7 @@ describe('writeReviewReview', () => {
 
     const actual = await runMiddleware(
       _.writeReviewReview(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.left('no-session'),
@@ -279,6 +296,7 @@ describe('writeReviewReview', () => {
       }),
     ),
     fc.user(),
+    fc.boolean(),
     fc.record(
       {
         alreadyWritten: fc.constantFrom('yes', 'no'),
@@ -291,13 +309,14 @@ describe('writeReviewReview', () => {
       },
       { requiredKeys: ['alreadyWritten'] },
     ),
-  ])('without a review', async (preprintId, preprintTitle, connection, user, newReview) => {
+  ])('without a review', async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
       _.writeReviewReview(preprintId)({
+        canRapidReview: () => canRapidReview,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -325,6 +344,7 @@ describe('writeReviewReview', () => {
       }),
     ),
     fc.user(),
+    fc.boolean(),
     fc.record(
       {
         competingInterests: fc.constantFrom('yes', 'no'),
@@ -337,13 +357,14 @@ describe('writeReviewReview', () => {
     ),
   ])(
     'without saying if you have already written the PREreview',
-    async (preprintId, preprintTitle, connection, user, newReview) => {
+    async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
+          canRapidReview: () => canRapidReview,
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),

@@ -102,12 +102,13 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.bindTo('form'),
-    RM.ichainMiddlewareKW(state =>
+    RM.ichainW(state =>
       match(state)
-        .with({ form: { moreAuthors: 'yes' } }, () =>
-          seeOther(format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })),
+        .with(
+          { form: { moreAuthors: 'yes' } },
+          fromMiddlewareK(() => seeOther(format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }))),
         )
-        .otherwise(flow(({ form }) => form, redirectToNextForm(preprint.id))),
+        .otherwise(({ form }) => redirectToNextForm(preprint.id)(form, user)),
     ),
     RM.orElseW(error =>
       match(error)

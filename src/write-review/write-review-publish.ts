@@ -5,16 +5,18 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as R from 'fp-ts/Refinement'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import type { SessionEnv } from 'hyper-ts-session'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
+import type { CanRapidReviewEnv } from '../feature-flags'
 import { type Html, html, plainText, sendHtml } from '../html'
 import { fixHeadingLevels } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
+import { type FathomEnv, type PhaseEnv, page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { isPseudonym } from '../pseudonym'
 import {
@@ -26,9 +28,9 @@ import {
   writeReviewPublishedMatch,
   writeReviewReviewMatch,
 } from '../routes'
-import { type User, getUser } from '../user'
+import { type GetUserEnv, type User, getUser } from '../user'
 import { type CompletedForm, CompletedFormC } from './completed-form'
-import { deleteForm, getForm, redirectToNextForm, saveForm } from './form'
+import { type FormStoreEnv, deleteForm, getForm, redirectToNextForm, saveForm } from './form'
 import { storeInformationForWriteReviewPublishedPage } from './published-review'
 
 export type NewPrereview = {
@@ -56,9 +58,18 @@ export const writeReviewPublish = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
+          .returnType<
+            RM.ReaderMiddleware<
+              CanRapidReviewEnv & FathomEnv & FormStoreEnv & GetUserEnv & PhaseEnv & PublishPrereviewEnv & SessionEnv,
+              StatusOpen,
+              ResponseEnded,
+              never,
+              void
+            >
+          >()
           .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePublishForm)
           .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, showPublishForm)
-          .otherwise(flow(({ form }) => form, fromMiddlewareK(redirectToNextForm(preprint.id)))),
+          .otherwise(({ form, user }) => redirectToNextForm(preprint.id)(form, user)),
       ),
       RM.orElseW(error =>
         match(error)

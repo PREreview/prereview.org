@@ -76,7 +76,7 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
+    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)

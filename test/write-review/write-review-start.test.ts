@@ -14,6 +14,7 @@ import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('writeReviewStart', () => {
   describe('when there is a session', () => {
@@ -43,35 +44,41 @@ describe('writeReviewStart', () => {
           moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.lorem(),
+          reviewType: fc.constantFrom('questions', 'freeform'),
         },
         { withDeletedKeys: true },
       ),
       fc.user(),
-    ])('there is a form', async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+      fc.boolean(),
+    ])(
+      'there is a form',
+      async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, canRapidReview) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+        const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
-      const actual = await runMiddleware(
-        _.writeReviewStart(preprintId)({
-          formStore,
-          getPreprintTitle,
-          getUser: () => M.of(user),
-          oauth,
-          publicUrl,
-        }),
-        connection,
-      )()
+        const actual = await runMiddleware(
+          _.writeReviewStart(preprintId)({
+            canRapidReview: () => canRapidReview,
+            formStore,
+            getPreprintTitle,
+            getUser: () => M.of(user),
+            oauth,
+            publicUrl,
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.OK },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.OK },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+        expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
+      },
+    )
 
     test.prop([
       fc.record({
@@ -97,6 +104,7 @@ describe('writeReviewStart', () => {
 
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
+          canRapidReview: shouldNotBeCalled,
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),
@@ -141,6 +149,7 @@ describe('writeReviewStart', () => {
 
     const actual = await runMiddleware(
       _.writeReviewStart(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.left('no-session'),
@@ -192,6 +201,7 @@ describe('writeReviewStart', () => {
 
     const actual = await runMiddleware(
       _.writeReviewStart(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.left('no-session'),
@@ -236,6 +246,7 @@ describe('writeReviewStart', () => {
 
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
+          canRapidReview: shouldNotBeCalled,
           formStore,
           getPreprintTitle,
           getUser: () => M.fromEither(user),

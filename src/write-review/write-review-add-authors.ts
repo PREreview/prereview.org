@@ -1,16 +1,17 @@
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
+import type { CanRapidReviewEnv } from '../feature-flags'
 import { html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
+import { type FathomEnv, type PhaseEnv, page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
-import { type User, getUser } from '../user'
+import { type GetUserEnv, type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm } from './form'
 
 export const writeReviewAddAuthors = flow(
@@ -26,7 +27,16 @@ export const writeReviewAddAuthors = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
-          .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, fromMiddlewareK(handleCannotAddAuthorsForm))
+          .returnType<
+            RM.ReaderMiddleware<
+              CanRapidReviewEnv & FathomEnv & GetUserEnv & PhaseEnv,
+              StatusOpen,
+              ResponseEnded,
+              never,
+              void
+            >
+          >()
+          .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleCannotAddAuthorsForm)
           .with({ form: { moreAuthors: 'yes' } }, showCannotAddAuthorsForm)
           .otherwise(() => notFound),
       ),
@@ -56,8 +66,8 @@ const showCannotAddAuthorsForm = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const handleCannotAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
-  redirectToNextForm(preprint.id)(form)
+const handleCannotAddAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+  redirectToNextForm(preprint.id)(form, user)
 
 function cannotAddAuthorsForm(preprint: PreprintTitle, user: User) {
   return page({

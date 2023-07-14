@@ -47,7 +47,16 @@ export const writeReviewReviewType = flow(
         ),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.ichainW(state => match(state).with({ method: 'POST' }, handleReviewTypeForm).otherwise(showReviewTypeForm)),
+      RM.ichainW(state =>
+        match(state)
+          .with({ method: 'POST', form: { alreadyWritten: 'no' } }, handleReviewTypeForm)
+          .with({ form: { alreadyWritten: 'no' } }, showReviewTypeForm)
+          .with(
+            { form: { alreadyWritten: P.optional('yes') } },
+            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
+          )
+          .exhaustive(),
+      ),
       RM.orElseW(error =>
         match(error)
           .with('not-found', () => notFound)

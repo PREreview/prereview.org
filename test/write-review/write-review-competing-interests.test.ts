@@ -14,6 +14,7 @@ import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('writeReviewCompetingInterests', () => {
   test.prop([
@@ -45,6 +46,7 @@ describe('writeReviewCompetingInterests', () => {
         ),
       ),
     fc.user(),
+    fc.boolean(),
     fc.record({
       alreadyWritten: fc.constantFrom('yes', 'no'),
       competingInterests: fc.constantFrom('yes', 'no'),
@@ -53,16 +55,18 @@ describe('writeReviewCompetingInterests', () => {
       moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
       persona: fc.constantFrom('public', 'pseudonym'),
       review: fc.lorem(),
+      reviewType: fc.constantFrom('questions', 'freeform'),
     }),
   ])(
     'when the form is completed',
-    async (preprintId, preprintTitle, [competingInterests, connection], user, newReview) => {
+    async (preprintId, preprintTitle, [competingInterests, connection], user, canRapidReview, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
       const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
 
       const actual = await runMiddleware(
         _.writeReviewCompetingInterests(preprintId)({
+          canRapidReview: () => canRapidReview,
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),
@@ -115,6 +119,7 @@ describe('writeReviewCompetingInterests', () => {
         ),
       ),
     fc.user(),
+    fc.boolean(),
     fc.oneof(
       fc
         .record(
@@ -124,6 +129,7 @@ describe('writeReviewCompetingInterests', () => {
             moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.nonEmptyString(),
+            reviewType: fc.constantFrom('questions', 'freeform'),
           },
           { withDeletedKeys: true },
         )
@@ -132,13 +138,14 @@ describe('writeReviewCompetingInterests', () => {
     ),
   ])(
     'when the form is incomplete',
-    async (preprintId, preprintTitle, [competingInterests, connection], user, newReview) => {
+    async (preprintId, preprintTitle, [competingInterests, connection], user, canRapidReview, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
         _.writeReviewCompetingInterests(preprintId)({
+          canRapidReview: () => canRapidReview,
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),
@@ -186,6 +193,7 @@ describe('writeReviewCompetingInterests', () => {
 
     const actual = await runMiddleware(
       _.writeReviewCompetingInterests(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -225,6 +233,7 @@ describe('writeReviewCompetingInterests', () => {
 
     const actual = await runMiddleware(
       _.writeReviewCompetingInterests(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -261,6 +270,7 @@ describe('writeReviewCompetingInterests', () => {
 
     const actual = await runMiddleware(
       _.writeReviewCompetingInterests(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -294,6 +304,7 @@ describe('writeReviewCompetingInterests', () => {
 
     const actual = await runMiddleware(
       _.writeReviewCompetingInterests(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.left('no-session'),
@@ -350,6 +361,7 @@ describe('writeReviewCompetingInterests', () => {
 
     const actual = await runMiddleware(
       _.writeReviewCompetingInterests(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),

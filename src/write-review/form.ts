@@ -2,14 +2,19 @@ import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import type { JsonRecord } from 'fp-ts/Json'
+import * as R from 'fp-ts/Reader'
+import type { Reader } from 'fp-ts/Reader'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { flow } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
+import type { StatusOpen } from 'hyper-ts'
+import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
+import { canRapidReview } from '../feature-flags'
 import { RawHtmlC } from '../html'
 import { seeOther } from '../middleware'
 import type { PreprintId } from '../preprint-id'
@@ -21,8 +26,10 @@ import {
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
   writeReviewReviewMatch,
+  writeReviewReviewTypeMatch,
 } from '../routes'
 import { NonEmptyStringC } from '../string'
+import type { User } from '../user'
 
 export type Form = C.TypeOf<typeof FormC>
 
@@ -88,21 +95,33 @@ export function deleteForm(
   )
 }
 
-export const nextFormMatch = (form: Form) =>
-  match(form)
-    .with(
-      { alreadyWritten: P.optional(undefined), review: P.optional(undefined) },
-      () => writeReviewAlreadyWrittenMatch,
-    )
-    .with({ review: P.optional(undefined) }, () => writeReviewReviewMatch)
-    .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
-    .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
-    .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
-    .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
-    .otherwise(() => writeReviewPublishMatch)
+export const nextFormMatch = (form: Form, user: User) =>
+  pipe(
+    canRapidReview(user),
+    R.map(canRapidReview =>
+      match({ ...form, canRapidReview })
+        .with(
+          { alreadyWritten: P.optional(undefined), review: P.optional(undefined) },
+          () => writeReviewAlreadyWrittenMatch,
+        )
+        .with(
+          { canRapidReview: true, alreadyWritten: 'no', reviewType: P.optional(undefined) },
+          () => writeReviewReviewTypeMatch,
+        )
+        .with({ review: P.optional(undefined) }, () => writeReviewReviewMatch)
+        .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
+        .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
+        .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
+        .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
+        .otherwise(() => writeReviewPublishMatch),
+    ),
+  )
 
 export const redirectToNextForm = (preprint: PreprintId) =>
-  flow(nextFormMatch, match => format(match.formatter, { id: preprint }), seeOther)
+  flow(
+    fromReaderK(nextFormMatch),
+    RM.ichainMiddlewareK(flow(match => format(match.formatter, { id: preprint }), seeOther)),
+  )
 
 const FormC = C.partial({
   alreadyWritten: C.literal('yes', 'no'),
@@ -115,3 +134,10 @@ const FormC = C.partial({
   competingInterestsDetails: NonEmptyStringC,
   conduct: C.literal('yes'),
 })
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/85
+function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
+  f: (...a: A) => Reader<R, B>,
+): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return (...a) => RM.rightReader(f(...a))
+}

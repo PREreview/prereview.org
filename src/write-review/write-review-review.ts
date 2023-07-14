@@ -9,12 +9,18 @@ import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
 import { P, match } from 'ts-pattern'
 import TurndownService from 'turndown'
+import { canRapidReview } from '../feature-flags'
 import { type InvalidE, type MissingE, hasAnError, invalidE, missingE } from '../form'
 import { type Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import { writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewReviewMatch } from '../routes'
+import {
+  writeReviewAlreadyWrittenMatch,
+  writeReviewMatch,
+  writeReviewReviewMatch,
+  writeReviewReviewTypeMatch,
+} from '../routes'
 import { NonEmptyStringC } from '../string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
@@ -31,6 +37,10 @@ export const writeReviewReview = flow(
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
+      ),
+      RM.bindW(
+        'canRapidReview',
+        fromReaderK(({ user }) => canRapidReview(user)),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
@@ -66,8 +76,18 @@ export const writeReviewReview = flow(
 )
 
 const showWriteReviewForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    writeReviewForm(preprint, { review: E.right(form.review) }, user),
+  fromReaderK(
+    ({
+      canRapidReview,
+      form,
+      preprint,
+      user,
+    }: {
+      canRapidReview: boolean
+      form: Form
+      preprint: PreprintTitle
+      user: User
+    }) => writeReviewForm(preprint, { review: E.right(form.review) }, user, canRapidReview),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -75,7 +95,7 @@ const showWriteReviewForm = flow(
 
 const showWriteReviewErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form, user)),
+    fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form, user, true)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -115,7 +135,7 @@ const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
+    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -138,7 +158,7 @@ const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
+    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -162,14 +182,20 @@ type PasteReviewForm = {
   readonly review: E.Either<MissingE, Html | undefined>
 }
 
-function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm, user: User) {
+function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm, user: User, canRapidReview: boolean) {
   const error = hasAnError(form)
 
   return page({
     title: plainText`${error ? 'Error: ' : ''}Write your PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a
+          href="${format((canRapidReview ? writeReviewReviewTypeMatch : writeReviewAlreadyWrittenMatch).formatter, {
+            id: preprint.id,
+          })}"
+          class="back"
+          >Back</a
+        >
       </nav>
 
       <main id="form">

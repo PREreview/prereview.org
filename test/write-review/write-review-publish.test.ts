@@ -59,6 +59,7 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
+          canRapidReview: shouldNotBeCalled,
           formStore,
           getPreprintTitle,
           getUser: () => M.of(user),
@@ -123,6 +124,7 @@ describe('writeReviewPublish', () => {
             moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
             persona: fc.constantFrom('public', 'pseudonym'),
             review: fc.lorem(),
+            reviewType: fc.constantFrom('questions', 'freeform'),
           },
           { withDeletedKeys: true },
         )
@@ -130,9 +132,17 @@ describe('writeReviewPublish', () => {
       fc.constant({}),
     ),
     fc.user(),
+    fc.boolean(),
   ])(
     'when the form is incomplete',
-    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newPrereview, user) => {
+    async (
+      preprintId,
+      preprintTitle,
+      [connection, sessionCookie, sessionId, secret],
+      newPrereview,
+      user,
+      canRapidReview,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
@@ -141,6 +151,7 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
+          canRapidReview: () => canRapidReview,
           getPreprintTitle,
           getUser: () => M.of(user),
           formStore,
@@ -191,6 +202,7 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
+          canRapidReview: shouldNotBeCalled,
           getPreprintTitle,
           getUser: () => M.of(user),
           formStore,
@@ -239,6 +251,7 @@ describe('writeReviewPublish', () => {
 
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -283,6 +296,7 @@ describe('writeReviewPublish', () => {
 
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle,
         getUser: () => M.of(user),
@@ -317,6 +331,7 @@ describe('writeReviewPublish', () => {
 
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({
+        canRapidReview: shouldNotBeCalled,
         getPreprintTitle,
         getUser: () => M.left('no-session'),
         formStore,
@@ -369,6 +384,7 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
+          canRapidReview: shouldNotBeCalled,
           getPreprintTitle,
           getUser: () => M.of(user),
           formStore,

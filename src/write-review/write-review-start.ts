@@ -1,5 +1,6 @@
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
+import * as R from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -62,31 +63,36 @@ const showCarryOnPage = flow(
 )
 
 function carryOnPage(preprint: PreprintTitle, form: Form, user: User) {
-  return page({
-    title: plainText`Write a PREreview`,
-    content: html`
-      <nav>
-        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
-      </nav>
+  return pipe(
+    nextFormMatch(form, user),
+    R.chainW(nextFormMatch =>
+      page({
+        title: plainText`Write a PREreview`,
+        content: html`
+          <nav>
+            <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+          </nav>
 
-      <main id="main-content">
-        <h1>Write a PREreview</h1>
+          <main id="main-content">
+            <h1>Write a PREreview</h1>
 
-        <p>
-          As you’ve already started a PREreview of
-          <cite lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</cite>, we’ll take
-          you to the next step so you can carry&nbsp;on.
-        </p>
+            <p>
+              As you’ve already started a PREreview of
+              <cite lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</cite>, we’ll
+              take you to the next step so you can carry&nbsp;on.
+            </p>
 
-        <a href="${format(nextFormMatch(form).formatter, { id: preprint.id })}" role="button" draggable="false"
-          >Continue</a
-        >
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    type: 'streamline',
-    user,
-  })
+            <a href="${format(nextFormMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
+              >Continue</a
+            >
+          </main>
+        `,
+        skipLinks: [[html`Skip to main content`, '#main-content']],
+        type: 'streamline',
+        user,
+      }),
+    ),
+  )
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/83
