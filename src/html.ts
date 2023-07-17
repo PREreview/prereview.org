@@ -35,6 +35,9 @@ export function rawHtml(html: string): Html {
 export function sanitizeHtml(html: string, allowButtons = false): Html {
   const sanitized = sanitize(html, {
     allowedTags: [
+      'dd',
+      'dl',
+      'dt',
       'h1',
       'h2',
       'h3',
