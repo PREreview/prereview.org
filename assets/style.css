@@ -1653,6 +1653,7 @@ skip-link {
     font-size: var(--step--1);
     color: var(--color-text-light);
     margin-block-start: var(--space-2xs);
+    max-inline-size: 100%;
   }
 
   & dt {
