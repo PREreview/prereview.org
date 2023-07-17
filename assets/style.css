@@ -1435,34 +1435,6 @@ html-editor {
   }
 }
 
-.summary-list {
-  margin-block-start: var(--space-m);
-  list-style-type: none;
-  padding-inline-start: 0;
-
-  & > * {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    align-items: baseline;
-    column-gap: var(--space-s-m);
-    border-block-end: var(--width-divider-narrow) solid var(--color-divider);
-    padding-block: var(--space-3xs-2xs);
-
-    & > :not(a) {
-      flex-grow: 1;
-    }
-
-    @media (width >= 40em) {
-      flex-wrap: nowrap;
-    }
-  }
-
-  & + * {
-    margin-block-start: var(--space-l);
-  }
-}
-
 .panel {
   display: flex;
   flex-direction: column;
