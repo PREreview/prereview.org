@@ -597,12 +597,16 @@ h6 {
 }
 
 dl {
+  margin-block-start: var(--space-m);
+  max-inline-size: 64ch;
+
   header > & {
     display: flex;
     flex-wrap: wrap;
     column-gap: var(--space-s-m);
     row-gap: var(--space-3xs);
     margin-block-start: var(--space-3xs-2xs);
+    max-inline-size: 100%;
     font-size: var(--step--2);
 
     & > div {
@@ -612,9 +616,6 @@ dl {
   }
 
   main > & {
-    margin-block-start: var(--space-m);
-    max-inline-size: 64ch;
-
     & > div {
       display: flex;
       flex-wrap: wrap;
