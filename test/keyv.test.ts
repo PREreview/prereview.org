@@ -80,7 +80,7 @@ describe('getCareerStage', () => {
 
   test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
-    store.get = () => Promise.reject(error)
+    store.get = (): Promise<never> => Promise.reject(error)
 
     const actual = await _.getCareerStage(orcid)({ careerStageStore: store })()
 
