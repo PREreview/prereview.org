@@ -614,35 +614,6 @@ dl {
       column-gap: var(--space-3xs-2xs);
     }
   }
-
-  main > & {
-    & > div {
-      display: flex;
-      flex-wrap: wrap;
-      column-gap: var(--space-xs-m);
-      row-gap: var(--space-4xs);
-      margin-block-start: var(--space-2xs);
-
-      & + div {
-        border-block-start: var(--width-divider-narrow) solid var(--color-divider-light);
-        padding-block-start: var(--space-2xs);
-      }
-
-      @media screen {
-        @media (width < 30em) {
-          flex-direction: column;
-        }
-      }
-    }
-
-    & dt {
-      min-inline-size: 20ch;
-
-      & + dd {
-        flex-grow: 1;
-      }
-    }
-  }
 }
 
 dt {
@@ -658,6 +629,35 @@ dt {
 math {
   &[display='block'] {
     margin-block: var(--space-2xs);
+  }
+}
+
+.summary-list {
+  & > div {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--space-xs-m);
+    row-gap: var(--space-4xs);
+    margin-block-start: var(--space-2xs);
+
+    & + div {
+      border-block-start: var(--width-divider-narrow) solid var(--color-divider-light);
+      padding-block-start: var(--space-2xs);
+    }
+
+    @media screen {
+      @media (width < 30em) {
+        flex-direction: column;
+      }
+    }
+  }
+
+  & dt {
+    min-inline-size: 20ch;
+
+    & + dd {
+      flex-grow: 1;
+    }
   }
 }
 

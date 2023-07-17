@@ -64,7 +64,7 @@ function createPage(user: User, careerStage: O.Option<CareerStage>) {
           <main id="main-content">
             <h1>My details</h1>
 
-            <dl>
+            <dl class="summary-list">
               <div>
                 <dt>Name</dt>
                 <dd>${user.name}</dd>
