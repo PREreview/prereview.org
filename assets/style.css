@@ -816,7 +816,7 @@ cite {
   quotes: inherit;
   font-style: normal;
 
-  :not(dd) > &:only-child {
+  :not(dd) > & {
     &::before {
       content: open-quote;
     }
