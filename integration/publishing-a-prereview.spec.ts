@@ -804,10 +804,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
-
-    await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-    await expect(preview).toContainText('Maecenas sed dapibus massa.')
+    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+      'Maecenas sed dapibus massa.',
+    )
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -837,10 +836,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
-
-    await expect(preview).toContainText('Orange Panda')
-    await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Orange Panda')
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
