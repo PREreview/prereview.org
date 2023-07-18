@@ -600,6 +600,10 @@ dl {
   margin-block-start: var(--space-m);
   max-inline-size: 64ch;
 
+  .summary-card & {
+    max-inline-size: 100%;
+  }
+
   header > & {
     display: flex;
     flex-wrap: wrap;
@@ -632,13 +636,63 @@ math {
   }
 }
 
+.summary-card {
+  border: var(--width-divider-narrow) solid var(--color-divider);
+  margin-block-start: var(--space-m);
+
+  & > * {
+    padding-block: var(--space-2xs);
+    padding-inline: var(--space-xs);
+    margin-block-start: 0;
+
+    & > :first-child {
+      margin-block-start: 0;
+    }
+  }
+
+  & > :first-child {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: var(--space-xs-m);
+    background-color: var(--color-background-alt);
+    row-gap: var(--space-4xs);
+    border-block-end: var(--width-divider-narrow) solid var(--color-background-alt);
+
+    & h2 {
+      font-size: var(--step-1);
+      line-height: inherit;
+    }
+  }
+
+  & > :--scroller {
+    &:focus-visible {
+      outline-offset: 0;
+    }
+
+    @media screen {
+      max-block-size: 75vb;
+      overflow-y: auto;
+      scrollbar-gutter: stable;
+
+      @media (height >= 50em) {
+        max-block-size: 50vb;
+      }
+    }
+  }
+}
+
 .summary-list {
   & > div {
     display: flex;
     flex-wrap: wrap;
     column-gap: var(--space-xs-m);
     row-gap: var(--space-4xs);
-    margin-block-start: var(--space-2xs);
+
+    &:not(:first-child) {
+      margin-block-start: var(--space-2xs);
+    }
 
     & + div {
       border-block-start: var(--width-divider-narrow) solid var(--color-divider-light);
@@ -654,9 +708,11 @@ math {
 
   & dt {
     min-inline-size: 20ch;
+    max-inline-size: 50%;
 
     & + dd {
       flex-grow: 1;
+      flex-basis: min-content;
     }
   }
 }
@@ -760,12 +816,14 @@ cite {
   quotes: inherit;
   font-style: normal;
 
-  &::before {
-    content: open-quote;
-  }
+  :not(dd) > &:only-child {
+    &::before {
+      content: open-quote;
+    }
 
-  &::after {
-    content: close-quote;
+    &::after {
+      content: close-quote;
+    }
   }
 }
 
@@ -928,10 +986,6 @@ label {
 
   p + & {
     margin-block-start: var(--space-xs);
-  }
-
-  .preview + & {
-    margin-block-start: var(--space-s);
   }
 
   & :any-link:not(.button) {

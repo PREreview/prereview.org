@@ -195,27 +195,104 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
       <main id="form">
         <single-use-form>
           <form method="post" action="${format(writeReviewPublishMatch.formatter, { id: preprint.id })}" novalidate>
-            <h1 id="preview-label">Check your PREreview</h1>
+            <h1>Check your PREreview</h1>
 
-            <blockquote class="preview" tabindex="0" aria-labelledby="preview-label">
-              <h2>
-                PREreview of
-                <cite lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</cite>
-              </h2>
-
-              <div class="byline">
-                <span class="visually-hidden">Authored</span> by
-                ${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}
+            <div class="summary-card">
+              <div>
+                <h2>Preprint details</h2>
               </div>
 
-              <div>${fixHeadingLevels(2, renderReview(review))}</div>
-            </blockquote>
+              <dl class="summary-list">
+                <div>
+                  <dt>Title</dt>
+                  <dd>
+                    <cite lang="${preprint.language}" dir="${getLangDir(preprint.language)}">${preprint.title}</cite>
+                  </dd>
+                </div>
+                <div>
+                  <dt>Preprint server</dt>
+                  <dd>
+                    ${match(preprint.id.type)
+                      .with('africarxiv', () => 'AfricArXiv Preprints')
+                      .with('arxiv', () => 'arXiv')
+                      .with('biorxiv', () => 'bioRxiv')
+                      .with('chemrxiv', () => 'ChemRxiv')
+                      .with('eartharxiv', () => 'EarthArXiv')
+                      .with('ecoevorxiv', () => 'EcoEvoRxiv')
+                      .with('edarxiv', () => 'EdArXiv')
+                      .with('engrxiv', () => 'engrXiv')
+                      .with('medrxiv', () => 'medRxiv')
+                      .with('metaarxiv', () => 'MetaArXiv')
+                      .with('osf', () => 'OSF Preprints')
+                      .with('philsci', () => 'PhilSci-Archive')
+                      .with('preprints.org', () => 'Preprints.org')
+                      .with('psyarxiv', () => 'PsyArXiv')
+                      .with('research-square', () => 'Research Square')
+                      .with('scielo', () => 'SciELO Preprints')
+                      .with('science-open', () => 'ScienceOpen Preprints')
+                      .with('socarxiv', () => 'SocArXiv')
+                      .with('zenodo', () => 'Zenodo')
+                      .exhaustive()}
+                  </dd>
+                </div>
+              </dl>
+            </div>
 
-            <div class="button-group" role="group">
-              ${review.reviewType === 'freeform'
-                ? html`<a href="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}">Change PREreview</a>`
-                : ''}
-              <a href="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}">Change name</a>
+            <div class="summary-card">
+              <div>
+                <h2>Your details</h2>
+              </div>
+
+              <dl class="summary-list">
+                <div>
+                  <dt>Published name</dt>
+                  <dd>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</dd>
+                  <dd>
+                    <a href="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}"
+                      >Change <span class="visually-hidden">name</span></a
+                    >
+                  </dd>
+                </div>
+
+                <div>
+                  <dt>Competing interests</dt>
+                  <dd>${review.competingInterests === 'yes' ? review.competingInterestsDetails : 'None'}</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="summary-card">
+              <div>
+                <h2 id="review-label">Your review</h2>
+
+                ${review.reviewType === 'freeform'
+                  ? html`
+                      <a href="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}"
+                        >Change <span class="visually-hidden">PREreview</span></a
+                      >
+                    `
+                  : ''}
+              </div>
+
+              <div aria-labelledby="review-label" role="region" tabindex="0">
+                ${review.reviewType === 'freeform'
+                  ? fixHeadingLevels(2, review.review)
+                  : html`
+                      <dl class="summary-list">
+                        <div>
+                          <dt>Does the introduction explain the objective and match the rest of the preprint?</dt>
+                          <dd>
+                            ${match(review.introductionMatches)
+                              .with('yes', () => 'Yes')
+                              .with('partly', () => 'Partly')
+                              .with('no', () => 'No')
+                              .with('skip', () => 'I don’t know')
+                              .exhaustive()}
+                          </dd>
+                        </div>
+                      </dl>
+                    `}
+              </div>
             </div>
 
             <h2>Now publish your PREreview</h2>

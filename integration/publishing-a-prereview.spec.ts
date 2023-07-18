@@ -87,15 +87,17 @@ test.extend(canLogIn).extend(willPublishAReview)(
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
-
-    await expect(preview).toContainText('Josiah Carberry')
+    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
     if (javaScriptEnabled) {
-      await expect(preview).toContainText('Lorem ipsum dolor sit “amet”, consectetur adipiscing elit.')
+      await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+        'Lorem ipsum dolor sit “amet”, consectetur adipiscing elit.',
+      )
     } else {
-      await expect(preview).toContainText('Lorem ipsum dolor sit "amet", consectetur adipiscing elit.')
+      await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+        'Lorem ipsum dolor sit "amet", consectetur adipiscing elit.',
+      )
     }
-    await expect(preview).toContainText('The author declares that they have no competing interests.')
+    await expect(page.getByRole('main')).toContainText('Competing interests None')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -149,13 +151,11 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
-
-    await expect(preview).toContainText('Josiah Carberry')
-    await expect(preview).toContainText(
+    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Does the introduction explain the objective and match the rest of the preprint? Partly',
     )
-    await expect(preview).toContainText('The author declares that they have no competing interests.')
+    await expect(page.getByRole('main')).toContainText('Competing interests None')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -731,7 +731,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
 
@@ -764,7 +764,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
 
@@ -804,9 +804,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
-      'Maecenas sed dapibus massa.',
-    )
+    await expect(page.getByRole('main')).toContainText('Competing interests Maecenas sed dapibus massa.')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -836,7 +834,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Orange Panda')
+    await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
@@ -862,7 +860,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change the review after previewin
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
 
@@ -874,7 +872,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change the review after previewin
     .fill('Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
     'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
   )
 })
@@ -896,14 +894,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can change the name after previewing'
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Josiah Carberry')
+  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
   await page.getByRole('link', { name: 'Change name' }).click()
 
   await page.getByLabel('Orange Panda').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Orange Panda')
+  await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ javaScriptEnabled, page }) => {
