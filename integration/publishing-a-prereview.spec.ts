@@ -904,6 +904,75 @@ test.extend(canLogIn).extend(areLoggedIn)('can change the name after previewing'
   await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
 })
 
+test.extend(canLogIn).extend(areLoggedIn)('can change the competing interests after previewing', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.waitForLoadState()
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, I reviewed it alone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Competing interests None')
+
+  await page.getByRole('link', { name: 'Change competing interests' }).click()
+
+  await page.getByLabel('Yes').check()
+  await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Competing interests Maecenas sed dapibus massa.')
+})
+
+test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
+  'can change your answers when answering questions after previewing',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('Answer questions').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('Partly').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    const review = page.getByRole('region', { name: 'Your review' })
+
+    await expect(review).toContainText(
+      'Does the introduction explain the objective and match the rest of the preprint? Partly',
+    )
+
+    await page
+      .getByRole('link', {
+        name: 'Change if the introduction explains the objective and matches the rest of the preprint',
+      })
+      .click()
+
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText(
+      'Does the introduction explain the objective and match the rest of the preprint? I don’t know',
+    )
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()

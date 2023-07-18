@@ -21,7 +21,9 @@ import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { isPseudonym } from '../pseudonym'
 import {
   profileMatch,
+  writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
+  writeReviewIntroductionMatchesMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
@@ -257,6 +259,11 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                 <div>
                   <dt>Competing interests</dt>
                   <dd>${review.competingInterests === 'yes' ? review.competingInterestsDetails : 'None'}</dd>
+                  <dd>
+                    <a href="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}"
+                      >Change <span class="visually-hidden">competing interests</span></a
+                    >
+                  </dd>
                 </div>
               </dl>
             </div>
@@ -288,6 +295,14 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               .with('no', () => 'No')
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
+                          </dd>
+                          <dd>
+                            <a href="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}"
+                              >Change
+                              <span class="visually-hidden"
+                                >if the introduction explains the objective and matches the rest of the preprint</span
+                              ></a
+                            >
                           </dd>
                         </div>
                       </dl>
