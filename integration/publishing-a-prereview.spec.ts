@@ -131,10 +131,6 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
-
     await page.getByLabel('Partly').check()
 
     await page.mouse.move(0, 0)
@@ -389,10 +385,6 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByLabel('Answer questions').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
-
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
 
@@ -1776,8 +1768,6 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('Answer questions').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
