@@ -25,6 +25,7 @@ import {
   writeReviewConductMatch,
   writeReviewIntroductionMatchesMatch,
   writeReviewMatch,
+  writeReviewMethodsAppropriateMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
   writeReviewPublishedMatch,
@@ -148,6 +149,19 @@ function renderReview(form: CompletedForm) {
                 .with('yes', () => 'Yes')
                 .with('partly', () => 'Partly')
                 .with('no', () => 'No')
+                .with('skip', () => 'I don’t know')
+                .exhaustive()}
+            </dd>
+          </div>
+          <div>
+            <dt>Are the methods appropriate?</dt>
+            <dd>
+              ${match(form.methodsAppropriate)
+                .with('inappropriate', () => 'Inappropriate')
+                .with('somewhat-inappropriate', () => 'Somewhat inappropriate')
+                .with('adequate', () => 'Adequate')
+                .with('mostly-appropriate', () => 'Mostly appropriate')
+                .with('highly-appropriate', () => 'Highly appropriate')
                 .with('skip', () => 'I don’t know')
                 .exhaustive()}
             </dd>
@@ -302,6 +316,24 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               <span class="visually-hidden"
                                 >if the introduction explains the objective and matches the rest of the preprint</span
                               ></a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Are the methods appropriate?</dt>
+                          <dd>
+                            ${match(review.methodsAppropriate)
+                              .with('inappropriate', () => 'Inappropriate')
+                              .with('somewhat-inappropriate', () => 'Somewhat inappropriate')
+                              .with('adequate', () => 'Adequate')
+                              .with('mostly-appropriate', () => 'Mostly appropriate')
+                              .with('highly-appropriate', () => 'Highly appropriate')
+                              .with('skip', () => 'I don’t know')
+                              .exhaustive()}
+                          </dd>
+                          <dd>
+                            <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}"
+                              >Change <span class="visually-hidden">if the methods are appropriate</span></a
                             >
                           </dd>
                         </div>

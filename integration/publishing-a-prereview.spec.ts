@@ -137,7 +137,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Adequate').check()
 
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
@@ -150,6 +155,9 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Does the introduction explain the objective and match the rest of the preprint? Partly',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Are the methods appropriate? Adequate',
     )
     await expect(page.getByRole('main')).toContainText('Competing interests None')
     await page.mouse.move(0, 0)
@@ -935,6 +943,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('Partly').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Adequate').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
@@ -949,6 +959,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(review).toContainText(
       'Does the introduction explain the objective and match the rest of the preprint? Partly',
     )
+    await expect(review).toContainText('Are the methods appropriate? Adequate')
 
     await page
       .getByRole('link', {
@@ -962,6 +973,30 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('main')).toContainText(
       'Does the introduction explain the objective and match the rest of the preprint? I don’t know',
     )
+
+    await page
+      .getByRole('link', {
+        name: 'Change if the introduction explains the objective and matches the rest of the preprint',
+      })
+      .click()
+
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText(
+      'Does the introduction explain the objective and match the rest of the preprint? I don’t know',
+    )
+
+    await page
+      .getByRole('link', {
+        name: 'Change if the methods are appropriate',
+      })
+      .click()
+
+    await page.getByLabel('Mostly appropriate').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText('Are the methods appropriate? Mostly appropriate')
   },
 )
 
@@ -1032,7 +1067,13 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('Partly').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Adequate').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('Adequate')).toBeChecked()
 
     await page.goBack()
 
@@ -1127,6 +1168,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('Partly').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Adequate').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Adequate')).toBeChecked()
 
     await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1791,6 +1838,46 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the methods are appropriate',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('Answer questions').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Are the methods appropriate?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', {
+        name: 'Select if the methods are appropriate',
+      })
+      .click()
+
+    await expect(page.getByLabel('Inappropriate')).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()

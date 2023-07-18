@@ -24,6 +24,7 @@ import {
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
   writeReviewIntroductionMatchesMatch,
+  writeReviewMethodsAppropriateMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
   writeReviewReviewMatch,
@@ -113,6 +114,10 @@ export const nextFormMatch = (form: Form, user: User) =>
           { reviewType: 'questions', introductionMatches: P.optional(undefined) },
           () => writeReviewIntroductionMatchesMatch,
         )
+        .with(
+          { reviewType: 'questions', methodsAppropriate: P.optional(undefined) },
+          () => writeReviewMethodsAppropriateMatch,
+        )
         .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
         .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
         .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
@@ -135,6 +140,14 @@ const FormC = pipe(
     review: RawHtmlC,
     reviewType: C.literal('questions', 'freeform'),
     persona: C.literal('public', 'pseudonym'),
+    methodsAppropriate: C.literal(
+      'inappropriate',
+      'somewhat-inappropriate',
+      'adequate',
+      'mostly-appropriate',
+      'highly-appropriate',
+      'skip',
+    ),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     moreAuthorsApproved: C.literal('yes'),
     competingInterests: C.literal('yes', 'no'),

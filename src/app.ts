@@ -96,6 +96,7 @@ import {
   writeReviewConductMatch,
   writeReviewIntroductionMatchesMatch,
   writeReviewMatch,
+  writeReviewMethodsAppropriateMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
   writeReviewPublishedMatch,
@@ -120,7 +121,7 @@ import {
   writeReviewReview,
   writeReviewStart,
 } from './write-review'
-import { writeReviewIntroductionMatches, writeReviewReviewType } from './write-review'
+import { writeReviewIntroductionMatches, writeReviewMethodsAppropriate, writeReviewReviewType } from './write-review'
 import {
   createRecordOnZenodo,
   getPrereviewFromZenodo,
@@ -478,6 +479,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewIntroductionMatchesMatch.parser,
           P.map(({ id }) => writeReviewIntroductionMatches(id)),
+        ),
+        pipe(
+          writeReviewMethodsAppropriateMatch.parser,
+          P.map(({ id }) => writeReviewMethodsAppropriate(id)),
         ),
         pipe(
           writeReviewPersonaMatch.parser,

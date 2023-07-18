@@ -27,6 +27,14 @@ export const CompletedFormC = pipe(
       questions: C.struct({
         reviewType: C.literal('questions'),
         introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),
+        methodsAppropriate: C.literal(
+          'inappropriate',
+          'somewhat-inappropriate',
+          'adequate',
+          'mostly-appropriate',
+          'highly-appropriate',
+          'skip',
+        ),
       }),
       freeform: C.struct({
         reviewType: C.literal('freeform'),

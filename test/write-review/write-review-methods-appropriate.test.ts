@@ -20,18 +20,30 @@ import { formKey } from '../../src/write-review/form'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 
-describe('writeReviewIntroductionMatches', () => {
+describe('writeReviewMethodsAppropriate', () => {
   describe('when reviews can be rapid', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .tuple(fc.constantFrom('yes', 'partly', 'no', 'skip'), fc.cookieName(), fc.uuid(), fc.string())
-        .chain(([introductionMatches, sessionCookie, sessionId, secret]) =>
+        .tuple(
+          fc.constantFrom(
+            'inappropriate',
+            'somewhat-inappropriate',
+            'adequate',
+            'mostly-appropriate',
+            'highly-appropriate',
+            'skip',
+          ),
+          fc.cookieName(),
+          fc.uuid(),
+          fc.string(),
+        )
+        .chain(([methodsAppropriate, sessionCookie, sessionId, secret]) =>
           fc.tuple(
-            fc.constant(introductionMatches),
+            fc.constant(methodsAppropriate),
             fc.connection({
-              body: fc.constant({ introductionMatches }),
+              body: fc.constant({ methodsAppropriate }),
               headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
               method: fc.constant('POST'),
             }),
@@ -65,7 +77,6 @@ describe('writeReviewIntroductionMatches', () => {
             'competingInterestsDetails',
             'conduct',
             'introductionMatches',
-            'methodsAppropriate',
             'moreAuthors',
             'persona',
             'review',
@@ -75,12 +86,12 @@ describe('writeReviewIntroductionMatches', () => {
       ),
     ])(
       'when the form is completed',
-      async (preprintId, preprintTitle, [introductionMatches, connection], user, newReview) => {
+      async (preprintId, preprintTitle, [methodsAppropriate, connection], user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
         const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
         const actual = await runMiddleware(
-          _.writeReviewIntroductionMatches(preprintId)({
+          _.writeReviewMethodsAppropriate(preprintId)({
             canRapidReview: () => true,
             formStore,
             getPreprintTitle,
@@ -89,7 +100,7 @@ describe('writeReviewIntroductionMatches', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ introductionMatches })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ methodsAppropriate })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -109,12 +120,24 @@ describe('writeReviewIntroductionMatches', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .tuple(fc.constantFrom('yes', 'partly', 'no', 'skip'), fc.cookieName(), fc.uuid(), fc.string())
-        .chain(([introductionMatches, sessionCookie, sessionId, secret]) =>
+        .tuple(
+          fc.constantFrom(
+            'inappropriate',
+            'somewhat-inappropriate',
+            'adequate',
+            'mostly-appropriate',
+            'highly-appropriate',
+            'skip',
+          ),
+          fc.cookieName(),
+          fc.uuid(),
+          fc.string(),
+        )
+        .chain(([methodsAppropriate, sessionCookie, sessionId, secret]) =>
           fc.tuple(
-            fc.constant(introductionMatches),
+            fc.constant(methodsAppropriate),
             fc.connection({
-              body: fc.constant({ introductionMatches }),
+              body: fc.constant({ methodsAppropriate }),
               headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
               method: fc.constant('POST'),
             }),
@@ -145,13 +168,13 @@ describe('writeReviewIntroductionMatches', () => {
       ),
     ])(
       'when the form is incomplete',
-      async (preprintId, preprintTitle, [introductionMatches, connection], user, newReview) => {
+      async (preprintId, preprintTitle, [methodsAppropriate, connection], user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
         const getPreprintTitle = () => TE.right(preprintTitle)
 
         const actual = await runMiddleware(
-          _.writeReviewIntroductionMatches(preprintId)({
+          _.writeReviewMethodsAppropriate(preprintId)({
             canRapidReview: () => true,
             formStore,
             getPreprintTitle,
@@ -160,7 +183,7 @@ describe('writeReviewIntroductionMatches', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ introductionMatches })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ methodsAppropriate })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -180,7 +203,16 @@ describe('writeReviewIntroductionMatches', () => {
       fc.preprintTitle(),
       fc.tuple(fc.cookieName(), fc.uuid(), fc.string()).chain(([sessionCookie, sessionId, secret]) =>
         fc.connection({
-          body: fc.record({ introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip') }),
+          body: fc.record({
+            methodsAppropriate: fc.constantFrom(
+              'inappropriate',
+              'somewhat-inappropriate',
+              'adequate',
+              'mostly-appropriate',
+              'highly-appropriate',
+              'skip',
+            ),
+          }),
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
@@ -191,7 +223,7 @@ describe('writeReviewIntroductionMatches', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewIntroductionMatches(preprintId)({
+        _.writeReviewMethodsAppropriate(preprintId)({
           canRapidReview: () => true,
           formStore,
           getPreprintTitle,
@@ -217,7 +249,16 @@ describe('writeReviewIntroductionMatches', () => {
       fc.indeterminatePreprintId(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
-          body: fc.record({ introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip') }),
+          body: fc.record({
+            methodsAppropriate: fc.constantFrom(
+              'inappropriate',
+              'somewhat-inappropriate',
+              'adequate',
+              'mostly-appropriate',
+              'highly-appropriate',
+              'skip',
+            ),
+          }),
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
@@ -227,7 +268,7 @@ describe('writeReviewIntroductionMatches', () => {
       const formStore = new Keyv()
       const getPreprintTitle = () => TE.left('unavailable' as const)
       const actual = await runMiddleware(
-        _.writeReviewIntroductionMatches(preprintId)({
+        _.writeReviewMethodsAppropriate(preprintId)({
           canRapidReview: () => true,
           formStore,
           getPreprintTitle,
@@ -250,7 +291,16 @@ describe('writeReviewIntroductionMatches', () => {
       fc.indeterminatePreprintId(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
-          body: fc.record({ introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip') }),
+          body: fc.record({
+            methodsAppropriate: fc.constantFrom(
+              'inappropriate',
+              'somewhat-inappropriate',
+              'adequate',
+              'mostly-appropriate',
+              'highly-appropriate',
+              'skip',
+            ),
+          }),
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
@@ -260,7 +310,7 @@ describe('writeReviewIntroductionMatches', () => {
       const formStore = new Keyv()
       const getPreprintTitle = () => TE.left('not-found' as const)
       const actual = await runMiddleware(
-        _.writeReviewIntroductionMatches(preprintId)({
+        _.writeReviewMethodsAppropriate(preprintId)({
           canRapidReview: () => true,
           formStore,
           getPreprintTitle,
@@ -284,7 +334,7 @@ describe('writeReviewIntroductionMatches', () => {
       fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
-          body: fc.record({ introductionMatches: fc.lorem() }, { withDeletedKeys: true }),
+          body: fc.record({ methodsAppropriate: fc.lorem() }, { withDeletedKeys: true }),
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
@@ -303,14 +353,14 @@ describe('writeReviewIntroductionMatches', () => {
         { requiredKeys: ['alreadyWritten', 'reviewType'] },
       ),
     ])(
-      'without saying if the introduction matches the rest of the preprint',
+      'without saying if the methods are appropriate',
       async (preprintId, preprintTitle, connection, user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
         const getPreprintTitle = () => TE.right(preprintTitle)
 
         const actual = await runMiddleware(
-          _.writeReviewIntroductionMatches(preprintId)({
+          _.writeReviewMethodsAppropriate(preprintId)({
             canRapidReview: () => true,
             formStore,
             getPreprintTitle,
@@ -334,7 +384,7 @@ describe('writeReviewIntroductionMatches', () => {
       fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
-          body: fc.record({ introductionMatches: fc.lorem() }, { withDeletedKeys: true }),
+          body: fc.record({ methodsAppropriate: fc.lorem() }, { withDeletedKeys: true }),
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
@@ -360,7 +410,7 @@ describe('writeReviewIntroductionMatches', () => {
         const getPreprintTitle = () => TE.right(preprintTitle)
 
         const actual = await runMiddleware(
-          _.writeReviewIntroductionMatches(preprintId)({
+          _.writeReviewMethodsAppropriate(preprintId)({
             canRapidReview: () => true,
             formStore,
             getPreprintTitle,
@@ -388,7 +438,7 @@ describe('writeReviewIntroductionMatches', () => {
       fc.preprintTitle(),
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
-          body: fc.record({ introductionMatches: fc.lorem() }, { withDeletedKeys: true }),
+          body: fc.record({ methodsAppropriate: fc.lorem() }, { withDeletedKeys: true }),
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
         }),
@@ -414,7 +464,7 @@ describe('writeReviewIntroductionMatches', () => {
         const getPreprintTitle = () => TE.right(preprintTitle)
 
         const actual = await runMiddleware(
-          _.writeReviewIntroductionMatches(preprintId)({
+          _.writeReviewMethodsAppropriate(preprintId)({
             canRapidReview: () => true,
             formStore,
             getPreprintTitle,
@@ -445,7 +495,7 @@ describe('writeReviewIntroductionMatches', () => {
       const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
-        _.writeReviewIntroductionMatches(preprintId)({
+        _.writeReviewMethodsAppropriate(preprintId)({
           canRapidReview: () => canRapidReview,
           formStore,
           getPreprintTitle,
@@ -496,7 +546,7 @@ describe('writeReviewIntroductionMatches', () => {
     const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
-      _.writeReviewIntroductionMatches(preprintId)({
+      _.writeReviewMethodsAppropriate(preprintId)({
         canRapidReview: () => false,
         formStore,
         getPreprintTitle,
