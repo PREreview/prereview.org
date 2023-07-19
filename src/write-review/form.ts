@@ -103,11 +103,11 @@ export const nextFormMatch = (form: Form, user: User) =>
     R.map(canRapidReview =>
       match({ ...form, canRapidReview })
         .with(
-          { alreadyWritten: P.optional(undefined), review: P.optional(undefined) },
+          { canRapidReview: false, alreadyWritten: P.optional(undefined), review: P.optional(undefined) },
           () => writeReviewAlreadyWrittenMatch,
         )
         .with(
-          { canRapidReview: true, alreadyWritten: 'no', reviewType: P.optional(undefined) },
+          { canRapidReview: true, alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
           () => writeReviewReviewTypeMatch,
         )
         .with(

@@ -9,7 +9,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import type { GetPreprintTitleEnv } from '../../src/preprint'
-import { writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
+import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import { formKey } from '../../src/write-review/form'
 import * as _ from '../../src/write-review/index'
 import * as fc from '../fc'
@@ -55,7 +55,6 @@ describe('writeReviewReviewType', () => {
         },
         {
           requiredKeys: [
-            'alreadyWritten',
             'competingInterests',
             'competingInterestsDetails',
             'conduct',
@@ -131,7 +130,7 @@ describe('writeReviewReviewType', () => {
           persona: fc.constantFrom('public', 'pseudonym'),
           review: fc.nonEmptyString(),
         },
-        { requiredKeys: ['alreadyWritten'] },
+        { withDeletedKeys: true },
       ),
     ])('when the form is incomplete', async (preprintId, preprintTitle, [reviewType, connection], user, newReview) => {
       const formStore = new Keyv()
@@ -193,7 +192,7 @@ describe('writeReviewReviewType', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewAlreadyWrittenMatch.formatter, { id: preprintTitle.id }),
+            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
           },
           { type: 'endResponse' },
         ]),
@@ -286,7 +285,7 @@ describe('writeReviewReviewType', () => {
           moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
           persona: fc.constantFrom('public', 'pseudonym'),
         },
-        { requiredKeys: ['alreadyWritten'] },
+        { withDeletedKeys: true },
       ),
     ])(
       'without saying how you would like to write your PREreview',
@@ -310,59 +309,6 @@ describe('writeReviewReviewType', () => {
             { type: 'setStatus', status: Status.BadRequest },
             { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
             { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
-
-    test.prop([
-      fc.indeterminatePreprintId(),
-      fc.preprintTitle(),
-      fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-        fc.connection({
-          body: fc.record({ reviewType: fc.lorem() }, { withDeletedKeys: true }),
-          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
-        }),
-      ),
-      fc.user(),
-      fc.record(
-        {
-          alreadyWritten: fc.constant('yes'),
-          competingInterests: fc.constantFrom('yes', 'no'),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-          persona: fc.constantFrom('public', 'pseudonym'),
-        },
-        { withDeletedKeys: true },
-      ),
-    ])(
-      "when you haven't said you haven't already written your PREreview",
-      async (preprintId, preprintTitle, connection, user, newReview) => {
-        const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-        const getPreprintTitle = () => TE.right(preprintTitle)
-
-        const actual = await runMiddleware(
-          _.writeReviewReviewType(preprintId)({
-            canRapidReview: () => true,
-            formStore,
-            getPreprintTitle,
-            getUser: () => M.of(user),
-          }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: format(writeReviewAlreadyWrittenMatch.formatter, { id: preprintTitle.id }),
-            },
-            { type: 'endResponse' },
           ]),
         )
       },

@@ -14,7 +14,7 @@ import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import { writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
+import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, createForm, getForm, saveForm, updateForm } from './form'
 import { redirectToNextForm } from './form'
@@ -43,16 +43,7 @@ export const writeReviewReviewType = flow(
         ),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.ichainW(state =>
-        match(state)
-          .with({ method: 'POST', form: { alreadyWritten: 'no' } }, handleReviewTypeForm)
-          .with({ form: { alreadyWritten: 'no' } }, showReviewTypeForm)
-          .with(
-            { form: { alreadyWritten: P.optional('yes') } },
-            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
-          )
-          .exhaustive(),
-      ),
+      RM.ichainW(state => match(state).with({ method: 'POST' }, handleReviewTypeForm).otherwise(showReviewTypeForm)),
       RM.orElseW(error =>
         match(error)
           .with('not-found', () => notFound)
@@ -98,7 +89,18 @@ const handleReviewTypeForm = ({ form, preprint, user }: { form: Form; preprint: 
         E.mapLeft(() => fields),
       ),
     ),
-    RM.map(updateForm(form)),
+    RM.map(
+      flow(
+        fields =>
+          match(fields.reviewType)
+            .returnType<Form>()
+            .with('questions', reviewType => ({ alreadyWritten: 'no', reviewType }))
+            .with('freeform', reviewType => ({ alreadyWritten: 'no', reviewType }))
+            .with('already-written', () => ({ alreadyWritten: 'yes', reviewType: undefined }))
+            .exhaustive(),
+        updateForm(form),
+      ),
+    ),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
@@ -111,13 +113,13 @@ const handleReviewTypeForm = ({ form, preprint, user }: { form: Form; preprint: 
 
 const ReviewTypeFieldD = pipe(
   D.struct({
-    reviewType: D.literal('questions', 'freeform'),
+    reviewType: D.literal('questions', 'freeform', 'already-written'),
   }),
   D.map(get('reviewType')),
 )
 
 type ReviewTypeForm = {
-  readonly reviewType: E.Either<MissingE, 'questions' | 'freeform' | undefined>
+  readonly reviewType: E.Either<MissingE, 'questions' | 'freeform' | 'already-written' | undefined>
 }
 
 function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: User) {
@@ -129,7 +131,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
     }”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="form">
@@ -206,6 +208,20 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                         .otherwise(() => '')}
                     />
                     <span>Write a freeform review</span>
+                  </label>
+                </li>
+                <li>
+                  <span>or</span>
+                  <label>
+                    <input
+                      name="reviewType"
+                      type="radio"
+                      value="freeform"
+                      ${match(form.reviewType)
+                        .with({ right: 'already-written' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>I’ve already written the review</span>
                   </label>
                 </li>
               </ol>

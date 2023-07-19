@@ -43,7 +43,13 @@ export const writeReviewAlreadyWritten = flow(
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
-        match(state).with({ method: 'POST' }, handleAlreadyWrittenForm).otherwise(showAlreadyWrittenForm),
+        match(state)
+          .with(
+            { canRapidReview: true },
+            fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
+          )
+          .with({ method: 'POST' }, handleAlreadyWrittenForm)
+          .otherwise(showAlreadyWrittenForm),
       ),
       RM.orElseW(error =>
         match(error)
@@ -79,17 +85,7 @@ const showAlreadyWrittenErrorForm = (preprint: PreprintTitle, user: User) =>
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleAlreadyWrittenForm = ({
-  canRapidReview,
-  form,
-  preprint,
-  user,
-}: {
-  canRapidReview: boolean
-  form: Form
-  preprint: PreprintTitle
-  user: User
-}) =>
+const handleAlreadyWrittenForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.decodeBody(body => E.right({ alreadyWritten: pipe(AlreadyWrittenFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
@@ -101,15 +97,7 @@ const handleAlreadyWrittenForm = ({
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainMiddlewareK(form =>
-      seeOther(
-        format(
-          (canRapidReview && form.alreadyWritten === 'no' ? writeReviewReviewTypeMatch : writeReviewReviewMatch)
-            .formatter,
-          { id: preprint.id },
-        ),
-      ),
-    ),
+    RM.ichainMiddlewareK(() => seeOther(format(writeReviewReviewMatch.formatter, { id: preprint.id }))),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
