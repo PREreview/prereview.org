@@ -28,6 +28,7 @@ import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
 import { club } from './club'
+import { notificationHandler } from './coar-notify'
 import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
@@ -535,6 +536,9 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
                 isLegacyCompatiblePrereview(newPrereview)
                   ? flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))
                   : () => RTE.right(undefined),
+              ),
+              RTE.chainFirstTaskEitherKW(([doi, id]) =>
+                notificationHandler({ id, doi, preprintId: newPrereview.preprint.id }),
               ),
             ),
           )(env),
