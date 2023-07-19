@@ -160,16 +160,11 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
           <div ${rawHtml(E.isLeft(form.reviewType) ? 'class="error"' : '')}>
             <fieldset
               role="group"
-              aria-describedby="review-type-tip"
               ${rawHtml(E.isLeft(form.reviewType) ? 'aria-invalid="true" aria-errormessage="review-type-error"' : '')}
             >
               <legend>
                 <h1>How would you like to write your PREreview?</h1>
               </legend>
-
-              <p id="review-type-tip" role="note">
-                We can ask you questions about the preprint, or you can write your own.
-              </p>
 
               ${E.isLeft(form.reviewType)
                 ? html`
@@ -190,12 +185,16 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                       id="review-type-questions"
                       type="radio"
                       value="questions"
+                      aria-describedby="review-type-tip-questions"
                       ${match(form.reviewType)
                         .with({ right: 'questions' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>Answer questions</span>
+                    <span>Guided review</span>
                   </label>
+                  <p id="review-type-tip-questions" role="note">
+                    We’ll ask questions about the preprint to create a structured review.
+                  </p>
                 </li>
                 <li>
                   <label>
@@ -203,12 +202,16 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                       name="reviewType"
                       type="radio"
                       value="freeform"
+                      aria-describedby="review-type-tip-freeform"
                       ${match(form.reviewType)
                         .with({ right: 'freeform' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>Write a freeform review</span>
+                    <span>Open review</span>
                   </label>
+                  <p id="review-type-tip-freeform" role="note">
+                    We’ll offer a basic template, but you can review it your way.
+                  </p>
                 </li>
                 <li>
                   <span>or</span>
