@@ -573,7 +573,7 @@ h6 {
     padding-inline-start: 0;
 
     & > li {
-      margin-block-start: var(--space-s);
+      margin-block-start: var(--space-xs);
 
       & > span {
         display: inline-block;
@@ -882,7 +882,15 @@ label {
     }
 
     fieldset > &,
-    fieldset :not(.conditional) > & {
+    fieldset :not(.conditional, .error) > & {
+      margin-block-start: var(--space-xs);
+
+      &:first-child {
+        margin-block-start: var(--space-s);
+      }
+    }
+
+    .error-message + & {
       margin-block-start: var(--space-s);
     }
 
