@@ -707,12 +707,14 @@ math {
   }
 
   & dt {
-    min-inline-size: 20ch;
-    max-inline-size: 50%;
+    @media (width >= 30em) {
+      min-inline-size: 20ch;
+      max-inline-size: 50%;
 
-    & + dd {
-      flex-grow: 1;
-      flex-basis: min-content;
+      & + dd {
+        flex-grow: 1;
+        flex-basis: min-content;
+      }
     }
   }
 }
