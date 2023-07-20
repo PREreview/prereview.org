@@ -196,23 +196,16 @@ describe('writeReviewPublish', () => {
       fc
         .record(
           {
-            alreadyWritten: fc.constantFrom('yes', 'no'),
-            competingInterests: fc.constantFrom('yes', 'no'),
+            alreadyWritten: fc.alreadyWritten(),
+            competingInterests: fc.competingInterests(),
             competingInterestsDetails: fc.lorem(),
-            conduct: fc.constant('yes'),
-            introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
-            methodsAppropriate: fc.constantFrom(
-              'inappropriate',
-              'somewhat-inappropriate',
-              'adequate',
-              'mostly-appropriate',
-              'highly-appropriate',
-              'skip',
-            ),
-            moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-            persona: fc.constantFrom('public', 'pseudonym'),
+            conduct: fc.conduct(),
+            introductionMatches: fc.introductionMatches(),
+            methodsAppropriate: fc.methodsAppropriate(),
+            moreAuthors: fc.moreAuthors(),
+            persona: fc.persona(),
             review: fc.lorem(),
-            reviewType: fc.constantFrom('questions', 'freeform'),
+            reviewType: fc.reviewType(),
           },
           { withDeletedKeys: true },
         )

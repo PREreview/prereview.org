@@ -12,9 +12,9 @@ import type { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewMatch, writeReviewReviewMatch } from '../../src/routes'
 import { formKey } from '../../src/write-review/form'
 import * as _ from '../../src/write-review/index'
-import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
+import * as fc from './fc'
 
 describe('writeReviewAlreadyWritten', () => {
   test.prop([
@@ -35,12 +35,12 @@ describe('writeReviewAlreadyWritten', () => {
     fc.user(),
     fc.record(
       {
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
+        alreadyWritten: fc.alreadyWritten(),
+        competingInterests: fc.competingInterests(),
         competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
+        conduct: fc.conduct(),
+        moreAuthors: fc.moreAuthors(),
+        persona: fc.persona(),
         review: fc.nonEmptyString(),
       },
       {
@@ -101,12 +101,12 @@ describe('writeReviewAlreadyWritten', () => {
     fc.user(),
     fc.record(
       {
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
+        alreadyWritten: fc.alreadyWritten(),
+        competingInterests: fc.competingInterests(),
         competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
+        conduct: fc.conduct(),
+        moreAuthors: fc.moreAuthors(),
+        persona: fc.persona(),
         review: fc.nonEmptyString(),
       },
       { withDeletedKeys: true },
@@ -191,7 +191,7 @@ describe('writeReviewAlreadyWritten', () => {
     fc.indeterminatePreprintId(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
-        body: fc.record({ alreadyWritten: fc.constantFrom('yes', 'no') }),
+        body: fc.record({ alreadyWritten: fc.alreadyWritten() }),
         headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
         method: fc.constant('POST'),
       }),
@@ -224,7 +224,7 @@ describe('writeReviewAlreadyWritten', () => {
     fc.indeterminatePreprintId(),
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
-        body: fc.record({ alreadyWritten: fc.constantFrom('yes', 'no') }),
+        body: fc.record({ alreadyWritten: fc.alreadyWritten() }),
         headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
         method: fc.constant('POST'),
       }),
@@ -256,7 +256,7 @@ describe('writeReviewAlreadyWritten', () => {
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
-    fc.connection({ body: fc.record({ alreadyWritten: fc.constantFrom('yes', 'no') }), method: fc.constant('POST') }),
+    fc.connection({ body: fc.record({ alreadyWritten: fc.alreadyWritten() }), method: fc.constant('POST') }),
   ])("when there isn't a session", async (preprintId, preprintTitle, connection) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.right(preprintTitle)
@@ -298,11 +298,11 @@ describe('writeReviewAlreadyWritten', () => {
     fc.boolean(),
     fc.record(
       {
-        competingInterests: fc.constantFrom('yes', 'no'),
+        competingInterests: fc.competingInterests(),
         competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
+        conduct: fc.conduct(),
+        moreAuthors: fc.moreAuthors(),
+        persona: fc.persona(),
       },
       { withDeletedKeys: true },
     ),

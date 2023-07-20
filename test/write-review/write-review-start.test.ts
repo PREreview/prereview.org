@@ -12,9 +12,9 @@ import type { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
-import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
+import * as fc from './fc'
 
 describe('writeReviewStart', () => {
   describe('when there is a session', () => {
@@ -37,14 +37,14 @@ describe('writeReviewStart', () => {
       ),
       fc.record(
         {
-          alreadyWritten: fc.constantFrom('yes', 'no'),
-          competingInterests: fc.constantFrom('yes', 'no'),
+          alreadyWritten: fc.alreadyWritten(),
+          competingInterests: fc.competingInterests(),
           competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-          persona: fc.constantFrom('public', 'pseudonym'),
+          conduct: fc.conduct(),
+          moreAuthors: fc.moreAuthors(),
+          persona: fc.persona(),
           review: fc.lorem(),
-          reviewType: fc.constantFrom('questions', 'freeform'),
+          reviewType: fc.reviewType(),
         },
         { withDeletedKeys: true },
       ),

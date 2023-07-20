@@ -12,8 +12,8 @@ import type { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
-import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
+import * as fc from './fc'
 
 describe('writeReviewMethodsAppropriate', () => {
   describe('when reviews can be rapid', () => {
@@ -21,19 +21,7 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .tuple(
-          fc.constantFrom(
-            'inappropriate',
-            'somewhat-inappropriate',
-            'adequate',
-            'mostly-appropriate',
-            'highly-appropriate',
-            'skip',
-          ),
-          fc.cookieName(),
-          fc.uuid(),
-          fc.string(),
-        )
+        .tuple(fc.methodsAppropriate(), fc.cookieName(), fc.uuid(), fc.string())
         .chain(([methodsAppropriate, sessionCookie, sessionId, secret]) =>
           fc.tuple(
             fc.constant(methodsAppropriate),
@@ -48,28 +36,14 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.record(
         {
           alreadyWritten: fc.constantFrom('no'),
-          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterests: fc.competingInterests(),
           competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
-          methodsAppropriate: fc.constantFrom(
-            'inappropriate',
-            'somewhat-inappropriate',
-            'adequate',
-            'mostly-appropriate',
-            'highly-appropriate',
-            'skip',
-          ),
-          resultsSupported: fc.constantFrom(
-            'not-supported',
-            'partially-supported',
-            'neutral',
-            'well-supported',
-            'strongly-supported',
-            'skip',
-          ),
-          moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-          persona: fc.constantFrom('public', 'pseudonym'),
+          conduct: fc.conduct(),
+          introductionMatches: fc.introductionMatches(),
+          methodsAppropriate: fc.methodsAppropriate(),
+          resultsSupported: fc.resultsSupported(),
+          moreAuthors: fc.moreAuthors(),
+          persona: fc.persona(),
           review: fc.nonEmptyString(),
           reviewType: fc.constant('questions'),
         },
@@ -124,19 +98,7 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .tuple(
-          fc.constantFrom(
-            'inappropriate',
-            'somewhat-inappropriate',
-            'adequate',
-            'mostly-appropriate',
-            'highly-appropriate',
-            'skip',
-          ),
-          fc.cookieName(),
-          fc.uuid(),
-          fc.string(),
-        )
+        .tuple(fc.methodsAppropriate(), fc.cookieName(), fc.uuid(), fc.string())
         .chain(([methodsAppropriate, sessionCookie, sessionId, secret]) =>
           fc.tuple(
             fc.constant(methodsAppropriate),
@@ -151,20 +113,13 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.record(
         {
           alreadyWritten: fc.constantFrom('no'),
-          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterests: fc.competingInterests(),
           competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
-          methodsAppropriate: fc.constantFrom(
-            'inappropriate',
-            'somewhat-inappropriate',
-            'adequate',
-            'mostly-appropriate',
-            'highly-appropriate',
-            'skip',
-          ),
-          moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-          persona: fc.constantFrom('public', 'pseudonym'),
+          conduct: fc.conduct(),
+          introductionMatches: fc.introductionMatches(),
+          methodsAppropriate: fc.methodsAppropriate(),
+          moreAuthors: fc.moreAuthors(),
+          persona: fc.persona(),
           review: fc.nonEmptyString(),
           reviewType: fc.constant('questions'),
         },
@@ -208,14 +163,7 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.tuple(fc.cookieName(), fc.uuid(), fc.string()).chain(([sessionCookie, sessionId, secret]) =>
         fc.connection({
           body: fc.record({
-            methodsAppropriate: fc.constantFrom(
-              'inappropriate',
-              'somewhat-inappropriate',
-              'adequate',
-              'mostly-appropriate',
-              'highly-appropriate',
-              'skip',
-            ),
+            methodsAppropriate: fc.methodsAppropriate(),
           }),
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
@@ -254,14 +202,7 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           body: fc.record({
-            methodsAppropriate: fc.constantFrom(
-              'inappropriate',
-              'somewhat-inappropriate',
-              'adequate',
-              'mostly-appropriate',
-              'highly-appropriate',
-              'skip',
-            ),
+            methodsAppropriate: fc.methodsAppropriate(),
           }),
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
@@ -296,14 +237,7 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
         fc.connection({
           body: fc.record({
-            methodsAppropriate: fc.constantFrom(
-              'inappropriate',
-              'somewhat-inappropriate',
-              'adequate',
-              'mostly-appropriate',
-              'highly-appropriate',
-              'skip',
-            ),
+            methodsAppropriate: fc.methodsAppropriate(),
           }),
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
           method: fc.constant('POST'),
@@ -347,11 +281,11 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.record(
         {
           alreadyWritten: fc.constant('no'),
-          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterests: fc.competingInterests(),
           competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-          persona: fc.constantFrom('public', 'pseudonym'),
+          conduct: fc.conduct(),
+          moreAuthors: fc.moreAuthors(),
+          persona: fc.persona(),
           reviewType: fc.constant('questions'),
         },
         { requiredKeys: ['alreadyWritten', 'reviewType'] },
@@ -397,11 +331,11 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.record(
         {
           alreadyWritten: fc.constant('no'),
-          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterests: fc.competingInterests(),
           competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-          persona: fc.constantFrom('public', 'pseudonym'),
+          conduct: fc.conduct(),
+          moreAuthors: fc.moreAuthors(),
+          persona: fc.persona(),
           reviewType: fc.constant('freeform'),
         },
         { requiredKeys: ['alreadyWritten'] },
@@ -451,12 +385,12 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.record(
         {
           alreadyWritten: fc.constant('yes'),
-          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterests: fc.competingInterests(),
           competingInterestsDetails: fc.lorem(),
-          conduct: fc.constant('yes'),
-          moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-          persona: fc.constantFrom('public', 'pseudonym'),
-          reviewType: fc.constantFrom('questions', 'freeform'),
+          conduct: fc.conduct(),
+          moreAuthors: fc.moreAuthors(),
+          persona: fc.persona(),
+          reviewType: fc.reviewType(),
         },
         { withDeletedKeys: true },
       ),
@@ -533,14 +467,14 @@ describe('writeReviewMethodsAppropriate', () => {
     fc.user(),
     fc.record(
       {
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
+        alreadyWritten: fc.alreadyWritten(),
+        competingInterests: fc.competingInterests(),
         competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
+        conduct: fc.conduct(),
+        moreAuthors: fc.moreAuthors(),
+        persona: fc.persona(),
         review: fc.nonEmptyString(),
-        reviewType: fc.constantFrom('questions', 'freeform'),
+        reviewType: fc.reviewType(),
       },
       { withDeletedKeys: true },
     ),

@@ -12,9 +12,9 @@ import type { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
-import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
+import * as fc from './fc'
 
 describe('writeReviewCompetingInterests', () => {
   test.prop([
@@ -48,31 +48,17 @@ describe('writeReviewCompetingInterests', () => {
     fc.user(),
     fc.boolean(),
     fc.record({
-      alreadyWritten: fc.constantFrom('yes', 'no'),
-      competingInterests: fc.constantFrom('yes', 'no'),
+      alreadyWritten: fc.alreadyWritten(),
+      competingInterests: fc.competingInterests(),
       competingInterestsDetails: fc.lorem(),
-      conduct: fc.constant('yes'),
-      introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
-      methodsAppropriate: fc.constantFrom(
-        'inappropriate',
-        'somewhat-inappropriate',
-        'adequate',
-        'mostly-appropriate',
-        'highly-appropriate',
-        'skip',
-      ),
-      resultsSupported: fc.constantFrom(
-        'not-supported',
-        'partially-supported',
-        'neutral',
-        'well-supported',
-        'strongly-supported',
-        'skip',
-      ),
-      moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-      persona: fc.constantFrom('public', 'pseudonym'),
+      conduct: fc.conduct(),
+      introductionMatches: fc.introductionMatches(),
+      methodsAppropriate: fc.methodsAppropriate(),
+      resultsSupported: fc.resultsSupported(),
+      moreAuthors: fc.moreAuthors(),
+      persona: fc.persona(),
       review: fc.lorem(),
-      reviewType: fc.constantFrom('questions', 'freeform'),
+      reviewType: fc.reviewType(),
     }),
   ])(
     'when the form is completed',
@@ -141,12 +127,12 @@ describe('writeReviewCompetingInterests', () => {
       fc
         .record(
           {
-            alreadyWritten: fc.constantFrom('yes', 'no'),
-            conduct: fc.constant('yes'),
-            moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-            persona: fc.constantFrom('public', 'pseudonym'),
+            alreadyWritten: fc.alreadyWritten(),
+            conduct: fc.conduct(),
+            moreAuthors: fc.moreAuthors(),
+            persona: fc.persona(),
             review: fc.nonEmptyString(),
-            reviewType: fc.constantFrom('questions', 'freeform'),
+            reviewType: fc.reviewType(),
           },
           { withDeletedKeys: true },
         )
@@ -236,7 +222,7 @@ describe('writeReviewCompetingInterests', () => {
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({
-          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterests: fc.competingInterests(),
           competingInterestsDetails: fc.lorem(),
         }),
         headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -273,7 +259,7 @@ describe('writeReviewCompetingInterests', () => {
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.connection({
         body: fc.record({
-          competingInterests: fc.constantFrom('yes', 'no'),
+          competingInterests: fc.competingInterests(),
           competingInterestsDetails: fc.lorem(),
         }),
         headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
@@ -310,7 +296,7 @@ describe('writeReviewCompetingInterests', () => {
     fc.preprintTitle(),
     fc.connection({
       body: fc.record({
-        competingInterests: fc.constantFrom('yes', 'no'),
+        competingInterests: fc.competingInterests(),
         competingInterestsDetails: fc.lorem(),
       }),
       method: fc.constant('POST'),
@@ -361,12 +347,12 @@ describe('writeReviewCompetingInterests', () => {
     fc.user(),
     fc.record(
       {
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
+        alreadyWritten: fc.alreadyWritten(),
+        competingInterests: fc.competingInterests(),
         competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
+        conduct: fc.conduct(),
+        moreAuthors: fc.moreAuthors(),
+        persona: fc.persona(),
         review: fc.nonEmptyString(),
       },
       { withDeletedKeys: true },

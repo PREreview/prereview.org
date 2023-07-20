@@ -12,9 +12,9 @@ import type { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
-import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
+import * as fc from './fc'
 
 describe('writeReviewConduct', () => {
   test.prop([
@@ -31,31 +31,17 @@ describe('writeReviewConduct', () => {
     fc.boolean(),
     fc.record(
       {
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
+        alreadyWritten: fc.alreadyWritten(),
+        competingInterests: fc.competingInterests(),
         competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        introductionMatches: fc.constantFrom('yes', 'partly', 'no', 'skip'),
-        methodsAppropriate: fc.constantFrom(
-          'inappropriate',
-          'somewhat-inappropriate',
-          'adequate',
-          'mostly-appropriate',
-          'highly-appropriate',
-          'skip',
-        ),
-        resultsSupported: fc.constantFrom(
-          'not-supported',
-          'partially-supported',
-          'neutral',
-          'well-supported',
-          'strongly-supported',
-          'skip',
-        ),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
+        conduct: fc.conduct(),
+        introductionMatches: fc.introductionMatches(),
+        methodsAppropriate: fc.methodsAppropriate(),
+        resultsSupported: fc.resultsSupported(),
+        moreAuthors: fc.moreAuthors(),
+        persona: fc.persona(),
         review: fc.nonEmptyString(),
-        reviewType: fc.constantFrom('questions', 'freeform'),
+        reviewType: fc.reviewType(),
       },
       {
         requiredKeys: [
@@ -117,14 +103,14 @@ describe('writeReviewConduct', () => {
       fc
         .record(
           {
-            alreadyWritten: fc.constantFrom('yes', 'no'),
-            competingInterests: fc.constantFrom('yes', 'no'),
+            alreadyWritten: fc.alreadyWritten(),
+            competingInterests: fc.competingInterests(),
             competingInterestsDetails: fc.lorem(),
-            conduct: fc.constant('yes'),
-            moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-            persona: fc.constantFrom('public', 'pseudonym'),
+            conduct: fc.conduct(),
+            moreAuthors: fc.moreAuthors(),
+            persona: fc.persona(),
             review: fc.nonEmptyString(),
-            reviewType: fc.constantFrom('questions', 'freeform'),
+            reviewType: fc.reviewType(),
           },
           { withDeletedKeys: true },
         )
@@ -310,12 +296,12 @@ describe('writeReviewConduct', () => {
     fc.user(),
     fc.record(
       {
-        alreadyWritten: fc.constantFrom('yes', 'no'),
-        competingInterests: fc.constantFrom('yes', 'no'),
+        alreadyWritten: fc.alreadyWritten(),
+        competingInterests: fc.competingInterests(),
         competingInterestsDetails: fc.lorem(),
-        conduct: fc.constant('yes'),
-        moreAuthors: fc.constantFrom('yes', 'yes-private', 'no'),
-        persona: fc.constantFrom('public', 'pseudonym'),
+        conduct: fc.conduct(),
+        moreAuthors: fc.moreAuthors(),
+        persona: fc.persona(),
         review: fc.nonEmptyString(),
       },
       { withDeletedKeys: true },
