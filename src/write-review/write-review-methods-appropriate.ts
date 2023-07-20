@@ -16,7 +16,6 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
-  writeReviewAlreadyWrittenMatch,
   writeReviewIntroductionMatchesMatch,
   writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
@@ -49,11 +48,7 @@ export const writeReviewMethodsAppropriate = flow(
       RM.ichainW(state =>
         match(state)
           .with(
-            { form: { alreadyWritten: P.optional('yes') } },
-            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
-          )
-          .with(
-            { form: { reviewType: P.optional('freeform') } },
+            { form: P.union({ alreadyWritten: P.optional('yes') }, { reviewType: P.optional('freeform') }) },
             fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
           )
           .with({ method: 'POST' }, handleMethodsAppropriateForm)

@@ -9,12 +9,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import type { GetPreprintTitleEnv } from '../../src/preprint'
-import {
-  writeReviewAlreadyWrittenMatch,
-  writeReviewMatch,
-  writeReviewPublishMatch,
-  writeReviewReviewTypeMatch,
-} from '../../src/routes'
+import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
 import * as fc from '../fc'
@@ -479,7 +474,7 @@ describe('writeReviewMethodsAppropriate', () => {
             {
               type: 'setHeader',
               name: 'Location',
-              value: format(writeReviewAlreadyWrittenMatch.formatter, { id: preprintTitle.id }),
+              value: format(writeReviewReviewTypeMatch.formatter, { id: preprintTitle.id }),
             },
             { type: 'endResponse' },
           ]),

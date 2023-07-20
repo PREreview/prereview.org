@@ -15,12 +15,7 @@ import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import {
-  writeReviewAlreadyWrittenMatch,
-  writeReviewIntroductionMatchesMatch,
-  writeReviewMatch,
-  writeReviewReviewTypeMatch,
-} from '../routes'
+import { writeReviewIntroductionMatchesMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -48,11 +43,7 @@ export const writeReviewIntroductionMatches = flow(
       RM.ichainW(state =>
         match(state)
           .with(
-            { form: { alreadyWritten: P.optional('yes') } },
-            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
-          )
-          .with(
-            { form: { reviewType: P.optional('freeform') } },
+            { form: P.union({ alreadyWritten: P.optional('yes') }, { reviewType: P.optional('freeform') }) },
             fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
           )
           .with({ method: 'POST' }, handleIntroductionMatchesForm)
