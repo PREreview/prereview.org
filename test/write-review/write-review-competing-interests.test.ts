@@ -117,13 +117,12 @@ describe('writeReviewCompetingInterests', () => {
     async (preprintId, preprintTitle, [competingInterests, connection], user, canRapidReview, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
         _.writeReviewCompetingInterests(preprintId)({
           canRapidReview: () => canRapidReview,
           formStore,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
         }),
         connection,
@@ -147,14 +146,11 @@ describe('writeReviewCompetingInterests', () => {
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user()])(
     'when there is no form',
     async (preprintId, preprintTitle, connection, user) => {
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
-
       const actual = await runMiddleware(
         _.writeReviewCompetingInterests(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          formStore,
-          getPreprintTitle,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
         }),
         connection,
@@ -177,14 +173,11 @@ describe('writeReviewCompetingInterests', () => {
   test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user()])(
     'when the preprint cannot be loaded',
     async (preprintId, connection, user) => {
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.left('unavailable' as const)
-
       const actual = await runMiddleware(
         _.writeReviewCompetingInterests(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          formStore,
-          getPreprintTitle,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
         }),
         connection,
@@ -204,14 +197,11 @@ describe('writeReviewCompetingInterests', () => {
   test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user()])(
     'when the preprint cannot be found',
     async (preprintId, connection, user) => {
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.left('not-found' as const)
-
       const actual = await runMiddleware(
         _.writeReviewCompetingInterests(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          formStore,
-          getPreprintTitle,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
         }),
         connection,
@@ -231,14 +221,11 @@ describe('writeReviewCompetingInterests', () => {
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection()])(
     "when there isn't a session",
     async (preprintId, preprintTitle, connection) => {
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
-
       const actual = await runMiddleware(
         _.writeReviewCompetingInterests(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          formStore,
-          getPreprintTitle,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
         }),
         connection,
@@ -287,13 +274,12 @@ describe('writeReviewCompetingInterests', () => {
   ])('without declaring any competing interests', async (preprintId, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-    const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
       _.writeReviewCompetingInterests(preprintId)({
         canRapidReview: shouldNotBeCalled,
         formStore,
-        getPreprintTitle,
+        getPreprintTitle: () => TE.right(preprintTitle),
         getUser: () => M.of(user),
       }),
       connection,

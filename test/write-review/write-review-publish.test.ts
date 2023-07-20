@@ -222,12 +222,11 @@ describe('writeReviewPublish', () => {
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newPrereview)
-      const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
           canRapidReview: () => canRapidReview,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           formStore,
           publishPrereview: shouldNotBeCalled,
@@ -271,15 +270,13 @@ describe('writeReviewPublish', () => {
     async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
-          formStore,
+          formStore: new Keyv(),
           publishPrereview: shouldNotBeCalled,
           secret,
           sessionCookie,
@@ -318,17 +315,14 @@ describe('writeReviewPublish', () => {
   ])('when the preprint cannot be loaded', async (preprintId, [connection, sessionCookie, sessionId, secret], user) => {
     const sessionStore = new Keyv()
     await sessionStore.set(sessionId, { user: UserC.encode(user) })
-    const formStore = new Keyv()
-    const getPreprintTitle = () => TE.left('unavailable' as const)
-    const publishPrereview = shouldNotBeCalled
 
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({
         canRapidReview: shouldNotBeCalled,
-        formStore,
-        getPreprintTitle,
+        formStore: new Keyv(),
+        getPreprintTitle: () => TE.left('unavailable'),
         getUser: () => M.of(user),
-        publishPrereview,
+        publishPrereview: shouldNotBeCalled,
         secret,
         sessionCookie,
         sessionStore,
@@ -362,17 +356,14 @@ describe('writeReviewPublish', () => {
   ])('when the preprint cannot be found', async (preprintId, [connection, sessionCookie, sessionId, secret], user) => {
     const sessionStore = new Keyv()
     await sessionStore.set(sessionId, { user: UserC.encode(user) })
-    const formStore = new Keyv()
-    const getPreprintTitle = () => TE.left('not-found' as const)
-    const publishPrereview = shouldNotBeCalled
 
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({
         canRapidReview: shouldNotBeCalled,
-        formStore,
-        getPreprintTitle,
+        formStore: new Keyv(),
+        getPreprintTitle: () => TE.left('not-found'),
         getUser: () => M.of(user),
-        publishPrereview,
+        publishPrereview: shouldNotBeCalled,
         secret,
         sessionCookie,
         sessionStore,
@@ -393,20 +384,16 @@ describe('writeReviewPublish', () => {
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.cookieName(), fc.string()])(
     "when there isn't a session",
     async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
-      const sessionStore = new Keyv()
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
-
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
-          formStore,
+          formStore: new Keyv(),
           publishPrereview: shouldNotBeCalled,
           secret,
           sessionCookie,
-          sessionStore,
+          sessionStore: new Keyv(),
         }),
         connection,
       )()
@@ -449,12 +436,11 @@ describe('writeReviewPublish', () => {
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), CompletedFormC.encode(newReview))
-      const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           formStore,
           publishPrereview: () => TE.left(response),

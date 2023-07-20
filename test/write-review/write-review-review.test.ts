@@ -113,13 +113,12 @@ describe('writeReviewReview', () => {
     async (preprintId, preprintTitle, [review, connection], user, canRapidReview, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
           canRapidReview: () => canRapidReview,
           formStore,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
         }),
         connection,
@@ -143,14 +142,11 @@ describe('writeReviewReview', () => {
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user()])(
     'when there is no form',
     async (preprintId, preprintTitle, connection, user) => {
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
-
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          formStore,
-          getPreprintTitle,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
         }),
         connection,
@@ -173,13 +169,11 @@ describe('writeReviewReview', () => {
   test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user()])(
     'when the preprint cannot be loaded',
     async (preprintId, connection, user) => {
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.left('unavailable' as const)
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          formStore,
-          getPreprintTitle,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
         }),
         connection,
@@ -199,13 +193,11 @@ describe('writeReviewReview', () => {
   test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user()])(
     'when the preprint cannot be found',
     async (preprintId, connection, user) => {
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.left('not-found' as const)
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          formStore,
-          getPreprintTitle,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
         }),
         connection,
@@ -225,14 +217,11 @@ describe('writeReviewReview', () => {
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection()])(
     "when there isn't a session",
     async (preprintId, preprintTitle, connection) => {
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
-
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          formStore,
-          getPreprintTitle,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
         }),
         connection,
@@ -276,13 +265,12 @@ describe('writeReviewReview', () => {
   ])('without a review', async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-    const getPreprintTitle = () => TE.right(preprintTitle)
 
     const actual = await runMiddleware(
       _.writeReviewReview(preprintId)({
         canRapidReview: () => canRapidReview,
         formStore,
-        getPreprintTitle,
+        getPreprintTitle: () => TE.right(preprintTitle),
         getUser: () => M.of(user),
       }),
       connection,
@@ -318,13 +306,12 @@ describe('writeReviewReview', () => {
     async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
           canRapidReview: () => canRapidReview,
           formStore,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
         }),
         connection,

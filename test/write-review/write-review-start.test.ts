@@ -84,14 +84,11 @@ describe('writeReviewStart', () => {
       fc.connection(),
       fc.user(),
     ])("there isn't a form", async (oauth, publicUrl, preprintId, preprintTitle, connection, user) => {
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
-
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          formStore,
-          getPreprintTitle,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           oauth,
           publicUrl,
@@ -126,14 +123,11 @@ describe('writeReviewStart', () => {
     fc.preprintTitle(),
     fc.connection(),
   ])("when there isn't a session", async (oauth, publicUrl, preprintId, preprintTitle, connection) => {
-    const formStore = new Keyv()
-    const getPreprintTitle = () => TE.right(preprintTitle)
-
     const actual = await runMiddleware(
       _.writeReviewStart(preprintId)({
         canRapidReview: shouldNotBeCalled,
-        formStore,
-        getPreprintTitle,
+        formStore: new Keyv(),
+        getPreprintTitle: () => TE.right(preprintTitle),
         getUser: () => M.left('no-session'),
         oauth,
         publicUrl,
@@ -175,14 +169,11 @@ describe('writeReviewStart', () => {
     fc.indeterminatePreprintId(),
     fc.connection(),
   ])('when the preprint cannot be loaded', async (oauth, publicUrl, preprintId, connection) => {
-    const formStore = new Keyv()
-    const getPreprintTitle = () => TE.left('unavailable' as const)
-
     const actual = await runMiddleware(
       _.writeReviewStart(preprintId)({
         canRapidReview: shouldNotBeCalled,
-        formStore,
-        getPreprintTitle,
+        formStore: new Keyv(),
+        getPreprintTitle: () => TE.left('unavailable'),
         getUser: () => M.left('no-session'),
         oauth,
         publicUrl,
@@ -217,14 +208,11 @@ describe('writeReviewStart', () => {
   ])(
     'when the preprint is not found',
     async (oauth, publicUrl, preprintId, connection, sessionCookie, secret, user) => {
-      const formStore = new Keyv()
-      const getPreprintTitle = () => TE.left('not-found' as const)
-
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
           canRapidReview: shouldNotBeCalled,
-          formStore,
-          getPreprintTitle,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
           oauth,
           publicUrl,

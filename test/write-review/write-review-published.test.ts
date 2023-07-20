@@ -90,11 +90,10 @@ describe('writeReviewPublished', () => {
     async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
-      const getPreprintTitle = () => TE.right(preprintTitle)
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           publicUrl: new URL('http://example.com'),
           secret,
@@ -140,11 +139,10 @@ describe('writeReviewPublished', () => {
         user: UserC.encode(user),
         'published-review': PublishedReviewC.encode(publishedReview),
       })
-      const getPreprintTitle = () => TE.left('unavailable' as const)
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
-          getPreprintTitle,
+          getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
           publicUrl: new URL('http://example.com'),
           secret,
@@ -187,11 +185,10 @@ describe('writeReviewPublished', () => {
         user: UserC.encode(user),
         'published-review': PublishedReviewC.encode(publishedReview),
       })
-      const getPreprintTitle = () => TE.left('not-found' as const)
 
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
-          getPreprintTitle,
+          getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
           publicUrl: new URL('http://example.com'),
           secret,
@@ -215,17 +212,14 @@ describe('writeReviewPublished', () => {
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.cookieName(), fc.string()])(
     "when there isn't a session",
     async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
-      const sessionStore = new Keyv()
-      const getPreprintTitle = () => TE.right(preprintTitle)
-
       const actual = await runMiddleware(
         _.writeReviewPublished(preprintId)({
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
           publicUrl: new URL('http://example.com'),
           secret,
           sessionCookie,
-          sessionStore,
+          sessionStore: new Keyv(),
         }),
         connection,
       )()
