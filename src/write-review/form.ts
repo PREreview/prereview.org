@@ -27,6 +27,7 @@ import {
   writeReviewMethodsAppropriateMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
+  writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
   writeReviewReviewTypeMatch,
 } from '../routes'
@@ -118,6 +119,10 @@ export const nextFormMatch = (form: Form, user: User) =>
           { reviewType: 'questions', methodsAppropriate: P.optional(undefined) },
           () => writeReviewMethodsAppropriateMatch,
         )
+        .with(
+          { reviewType: 'questions', resultsSupported: P.optional(undefined) },
+          () => writeReviewResultsSupportedMatch,
+        )
         .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
         .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
         .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
@@ -146,6 +151,14 @@ const FormC = pipe(
       'adequate',
       'mostly-appropriate',
       'highly-appropriate',
+      'skip',
+    ),
+    resultsSupported: C.literal(
+      'not-supported',
+      'partially-supported',
+      'neutral',
+      'well-supported',
+      'strongly-supported',
       'skip',
     ),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),

@@ -29,6 +29,7 @@ import {
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
   writeReviewPublishedMatch,
+  writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
 } from '../routes'
 import { type GetUserEnv, type User, getUser } from '../user'
@@ -162,6 +163,19 @@ function renderReview(form: CompletedForm) {
                 .with('adequate', () => 'Adequate')
                 .with('mostly-appropriate', () => 'Mostly appropriate')
                 .with('highly-appropriate', () => 'Highly appropriate')
+                .with('skip', () => 'I don’t know')
+                .exhaustive()}
+            </dd>
+          </div>
+          <div>
+            <dt>Are the results presented supported by the data?</dt>
+            <dd>
+              ${match(form.resultsSupported)
+                .with('not-supported', () => 'Not supported')
+                .with('partially-supported', () => 'Partially supported')
+                .with('neutral', () => 'Neither supported nor not supported')
+                .with('well-supported', () => 'Well supported')
+                .with('strongly-supported', () => 'Strongly supported')
                 .with('skip', () => 'I don’t know')
                 .exhaustive()}
             </dd>
@@ -334,6 +348,25 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           <dd>
                             <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}"
                               >Change <span class="visually-hidden">if the methods are appropriate</span></a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Are the results presented supported by the data?</dt>
+                          <dd>
+                            ${match(review.resultsSupported)
+                              .with('not-supported', () => 'Not supported')
+                              .with('partially-supported', () => 'Partially supported')
+                              .with('neutral', () => 'Neither supported nor not supported')
+                              .with('well-supported', () => 'Well supported')
+                              .with('strongly-supported', () => 'Strongly supported')
+                              .with('skip', () => 'I don’t know')
+                              .exhaustive()}
+                          </dd>
+                          <dd>
+                            <a href="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}"
+                              >Change
+                              <span class="visually-hidden">if the results presented are supported by the data</span></a
                             >
                           </dd>
                         </div>

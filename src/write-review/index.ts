@@ -10,6 +10,7 @@ export { writeReviewMethodsAppropriate } from './write-review-methods-appropriat
 export { writeReviewPersona } from './write-review-persona'
 export { NewPrereview, PublishPrereviewEnv, writeReviewPublish } from './write-review-publish'
 export { writeReviewPublished } from './write-review-published'
+export { writeReviewResultsSupported } from './write-review-results-supported'
 export { writeReviewReview } from './write-review-review'
 export { writeReviewReviewType } from './write-review-review-type'
 export { writeReviewStart } from './write-review-start'

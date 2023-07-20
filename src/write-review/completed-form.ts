@@ -35,6 +35,14 @@ export const CompletedFormC = pipe(
           'highly-appropriate',
           'skip',
         ),
+        resultsSupported: C.literal(
+          'not-supported',
+          'partially-supported',
+          'neutral',
+          'well-supported',
+          'strongly-supported',
+          'skip',
+        ),
       }),
       freeform: C.struct({
         reviewType: C.literal('freeform'),
