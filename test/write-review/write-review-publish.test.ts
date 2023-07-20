@@ -185,7 +185,6 @@ describe('writeReviewPublish', () => {
       fc.tuple(
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
         }),
         fc.constant(sessionCookie),
         fc.constant(sessionId),
@@ -265,7 +264,6 @@ describe('writeReviewPublish', () => {
       fc.tuple(
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
         }),
         fc.constant(sessionCookie),
         fc.constant(sessionId),
@@ -315,7 +313,6 @@ describe('writeReviewPublish', () => {
       fc.tuple(
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
         }),
         fc.constant(sessionCookie),
         fc.constant(sessionId),
@@ -360,7 +357,6 @@ describe('writeReviewPublish', () => {
       fc.tuple(
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
         }),
         fc.constant(sessionCookie),
         fc.constant(sessionId),
@@ -399,43 +395,40 @@ describe('writeReviewPublish', () => {
     )
   })
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection({ method: fc.constant('POST') }),
-    fc.cookieName(),
-    fc.string(),
-  ])("when there isn't a session", async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
-    const sessionStore = new Keyv()
-    const formStore = new Keyv()
-    const getPreprintTitle = () => TE.right(preprintTitle)
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.cookieName(), fc.string()])(
+    "when there isn't a session",
+    async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
+      const sessionStore = new Keyv()
+      const formStore = new Keyv()
+      const getPreprintTitle = () => TE.right(preprintTitle)
 
-    const actual = await runMiddleware(
-      _.writeReviewPublish(preprintId)({
-        canRapidReview: shouldNotBeCalled,
-        getPreprintTitle,
-        getUser: () => M.left('no-session'),
-        formStore,
-        publishPrereview: () => TE.left(''),
-        secret,
-        sessionCookie,
-        sessionStore,
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.writeReviewPublish(preprintId)({
+          canRapidReview: shouldNotBeCalled,
+          getPreprintTitle,
+          getUser: () => M.left('no-session'),
+          formStore,
+          publishPrereview: () => TE.left(''),
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
 
   test.prop([
     fc.indeterminatePreprintId(),

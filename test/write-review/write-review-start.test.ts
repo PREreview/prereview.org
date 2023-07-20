@@ -1,6 +1,5 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import cookieSignature from 'cookie-signature'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
@@ -29,12 +28,7 @@ describe('writeReviewStart', () => {
       fc.origin(),
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-        fc.connection({
-          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.requestMethod().filter(method => method !== 'POST'),
-        }),
-      ),
+      fc.connection(),
       fc.record(
         {
           alreadyWritten: fc.alreadyWritten(),
@@ -91,12 +85,7 @@ describe('writeReviewStart', () => {
       fc.origin(),
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
-        fc.connection({
-          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.requestMethod().filter(method => method !== 'POST'),
-        }),
-      ),
+      fc.connection(),
       fc.user(),
     ])("there isn't a form", async (oauth, publicUrl, preprintId, preprintTitle, connection, user) => {
       const formStore = new Keyv()
@@ -139,10 +128,7 @@ describe('writeReviewStart', () => {
     fc.origin(),
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
-    fc.connection({
-      headers: fc.constant({}),
-      method: fc.requestMethod().filter(method => method !== 'POST'),
-    }),
+    fc.connection(),
   ])("when there isn't a session", async (oauth, publicUrl, preprintId, preprintTitle, connection) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.right(preprintTitle)
@@ -191,10 +177,7 @@ describe('writeReviewStart', () => {
     }),
     fc.origin(),
     fc.indeterminatePreprintId(),
-    fc.connection({
-      headers: fc.constant({}),
-      method: fc.requestMethod().filter(method => method !== 'POST'),
-    }),
+    fc.connection(),
   ])('when the preprint cannot be loaded', async (oauth, publicUrl, preprintId, connection) => {
     const formStore = new Keyv()
     const getPreprintTitle = () => TE.left('unavailable' as const)
@@ -231,10 +214,7 @@ describe('writeReviewStart', () => {
     }),
     fc.origin(),
     fc.indeterminatePreprintId(),
-    fc.connection({
-      headers: fc.constant({}),
-      method: fc.requestMethod().filter(method => method !== 'POST'),
-    }),
+    fc.connection(),
     fc.cookieName(),
     fc.string(),
     fc.either(fc.constant('no-session' as const), fc.user()),

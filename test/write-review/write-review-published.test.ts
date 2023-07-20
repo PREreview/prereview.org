@@ -23,14 +23,10 @@ describe('writeReviewPublished', () => {
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
-          headers: fc.constant({
-            Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}`,
-          }),
-          method: fc.constant('POST'),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
         }),
         fc.constant(sessionCookie),
         fc.constant(sessionId),
-
         fc.constant(secret),
       ),
     ),
@@ -86,7 +82,6 @@ describe('writeReviewPublished', () => {
       fc.tuple(
         fc.connection({
           headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
-          method: fc.constant('POST'),
         }),
         fc.constant(sessionCookie),
         fc.constant(sessionId),
@@ -132,14 +127,10 @@ describe('writeReviewPublished', () => {
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
-          headers: fc.constant({
-            Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}`,
-          }),
-          method: fc.constant('POST'),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
         }),
         fc.constant(sessionCookie),
         fc.constant(sessionId),
-
         fc.constant(secret),
       ),
     ),
@@ -183,14 +174,10 @@ describe('writeReviewPublished', () => {
     fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
       fc.tuple(
         fc.connection({
-          headers: fc.constant({
-            Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}`,
-          }),
-          method: fc.constant('POST'),
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
         }),
         fc.constant(sessionCookie),
         fc.constant(sessionId),
-
         fc.constant(secret),
       ),
     ),
@@ -229,38 +216,35 @@ describe('writeReviewPublished', () => {
     },
   )
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection({ method: fc.constant('POST') }),
-    fc.cookieName(),
-    fc.string(),
-  ])("when there isn't a session", async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
-    const sessionStore = new Keyv()
-    const getPreprintTitle = () => TE.right(preprintTitle)
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.cookieName(), fc.string()])(
+    "when there isn't a session",
+    async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
+      const sessionStore = new Keyv()
+      const getPreprintTitle = () => TE.right(preprintTitle)
 
-    const actual = await runMiddleware(
-      _.writeReviewPublished(preprintId)({
-        getPreprintTitle,
-        getUser: () => M.left('no-session'),
-        publicUrl: new URL('http://example.com'),
-        secret,
-        sessionCookie,
-        sessionStore,
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.writeReviewPublished(preprintId)({
+          getPreprintTitle,
+          getUser: () => M.left('no-session'),
+          publicUrl: new URL('http://example.com'),
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
 })
