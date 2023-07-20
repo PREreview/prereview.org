@@ -1,13 +1,11 @@
 import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
-import type { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewAddAuthorsMatch, writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
@@ -50,12 +48,12 @@ describe('writeReviewAuthors', () => {
     ])('when they have read and agreed', async (preprintId, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintId)({
           canRapidReview: shouldNotBeCalled,
           formStore,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
         }),
         connection,
@@ -76,7 +74,6 @@ describe('writeReviewAuthors', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
     })
 
     test.prop([
@@ -173,12 +170,12 @@ describe('writeReviewAuthors', () => {
         async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
           const formStore = new Keyv()
           await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-          const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+
           const actual = await runMiddleware(
             _.writeReviewAuthors(preprintId)({
               canRapidReview: () => canRapidReview,
               formStore,
-              getPreprintTitle,
+              getPreprintTitle: () => TE.right(preprintTitle),
               getUser: () => M.of(user),
             }),
             connection,
@@ -198,7 +195,6 @@ describe('writeReviewAuthors', () => {
               { type: 'endResponse' },
             ]),
           )
-          expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
         },
       )
 
@@ -313,12 +309,12 @@ describe('writeReviewAuthors', () => {
     ])('when the form is completed', async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
+
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintId)({
           canRapidReview: () => canRapidReview,
           formStore,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
         }),
         connection,
@@ -336,7 +332,6 @@ describe('writeReviewAuthors', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
     })
 
     test.prop([

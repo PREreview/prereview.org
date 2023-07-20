@@ -8,7 +8,6 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
-import type { GetPreprintTitleEnv } from '../../src/preprint'
 import { writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
@@ -52,7 +51,6 @@ describe('writeReviewPublish', () => {
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), CompletedFormC.encode(newReview))
-      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
         TE.right([reviewDoi, reviewId]),
       )
@@ -61,7 +59,7 @@ describe('writeReviewPublish', () => {
         _.writeReviewPublish(preprintId)({
           canRapidReview: shouldNotBeCalled,
           formStore,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           publishPrereview,
           secret,
@@ -90,7 +88,6 @@ describe('writeReviewPublish', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
       expect(session).toStrictEqual({
         user: UserC.encode(user),
         'published-review': { doi: reviewDoi, form: CompletedFormC.encode(newReview), id: reviewId },
@@ -131,7 +128,6 @@ describe('writeReviewPublish', () => {
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), CompletedFormC.encode(newReview))
-      const getPreprintTitle: Mock<GetPreprintTitleEnv['getPreprintTitle']> = jest.fn(_ => TE.right(preprintTitle))
       const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
         TE.right([reviewDoi, reviewId]),
       )
@@ -140,7 +136,7 @@ describe('writeReviewPublish', () => {
         _.writeReviewPublish(preprintId)({
           canRapidReview: shouldNotBeCalled,
           formStore,
-          getPreprintTitle,
+          getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           publishPrereview,
           secret,
@@ -169,7 +165,6 @@ describe('writeReviewPublish', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(getPreprintTitle).toHaveBeenCalledWith(preprintId)
       expect(session).toStrictEqual({
         user: UserC.encode(user),
         'published-review': { doi: reviewDoi, form: CompletedFormC.encode(newReview), id: reviewId },

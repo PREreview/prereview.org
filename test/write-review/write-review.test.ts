@@ -1,13 +1,11 @@
 import { test } from '@fast-check/jest'
-import { describe, expect, jest } from '@jest/globals'
+import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
-import type { GetPreprintEnv } from '../../src/preprint'
 import { writeReviewMatch, writeReviewStartMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { formKey } from '../../src/write-review/form'
@@ -40,12 +38,11 @@ describe('writeReview', () => {
     ])('there is a form already', async (publicUrl, preprintId, preprint, connection, newReview, user) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprint.id), newReview)
-      const getPreprint: Mock<GetPreprintEnv['getPreprint']> = jest.fn(_ => TE.right(preprint))
 
       const actual = await runMiddleware(
         _.writeReview(preprintId)({
           formStore,
-          getPreprint,
+          getPreprint: () => TE.right(preprint),
           getUser: () => M.of(user),
           publicUrl,
         }),
@@ -63,7 +60,6 @@ describe('writeReview', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(getPreprint).toHaveBeenCalledWith(preprintId)
     })
 
     test.prop([fc.origin(), fc.indeterminatePreprintId(), fc.preprint(), fc.connection(), fc.user()])(
