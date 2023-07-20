@@ -407,6 +407,23 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByLabel('Partly').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+    await page.waitForLoadState()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Adequate').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
   },
 )
 
