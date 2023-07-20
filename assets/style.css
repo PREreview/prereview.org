@@ -482,7 +482,7 @@ article {
     margin-block-start: var(--space-2xs-xs);
   }
 
-  :--scroller + & {
+  :where(.summary-card, :--scroller) + & {
     margin-block-start: var(--space-m-l);
   }
 
