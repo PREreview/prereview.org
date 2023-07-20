@@ -149,6 +149,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('region', { name: 'Your review' }).scrollIntoViewIfNeeded()
 
     await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
