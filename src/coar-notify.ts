@@ -2,6 +2,7 @@ import type { Doi } from 'doi-ts'
 import { toUrl } from 'doi-ts'
 import * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
+import { v4 as uuidv4 } from 'uuid'
 import type { PreprintId } from './preprint-id'
 
 const BASE_URL = 'https://sandbox.prereview.org'
@@ -51,8 +52,8 @@ export type NotifyContext = {
 }
 
 export type Notification = {
-  '@id': string
   '@context': Array<string> | string
+  id: string
   actor: NotifyActor
   origin: NotifyInbox
   type: NotifyType
@@ -83,10 +84,15 @@ const TARGET: NotifyInbox = {
   type: SERVICE_TYPE,
 }
 
+function generateNotificationId(): string {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
+  return `urn:uuid:${uuidv4()}`
+}
+
 function composeNotification(review: Review): Notification {
   return {
-    '@id': `${REVIEWS_URL}/${review.id}`,
     '@context': NOTIFY_STATIC_CONTEXT,
+    id: generateNotificationId(),
     actor: SERVICE,
     origin: SERVICE_INBOX,
     type: AnnouceReviewType,
