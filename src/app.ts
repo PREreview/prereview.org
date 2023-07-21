@@ -290,17 +290,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          doesPreprintExist: flow(
-            flip(getPreprintTitle)(env),
-            TE.map(() => true),
-            TE.orElseW(error =>
-              match(error)
-                .with('not-found', () => TE.right(false))
-                .with('not-a-preprint', TE.left)
-                .with('unavailable', TE.left)
-                .exhaustive(),
-            ),
-          ),
+          doesPreprintExist: flip(doesPreprintExist)(env),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
@@ -311,17 +301,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          doesPreprintExist: flow(
-            flip(getPreprintTitle)(env),
-            TE.map(() => true),
-            TE.orElseW(error =>
-              match(error)
-                .with('not-found', () => TE.right(false))
-                .with('not-a-preprint', TE.left)
-                .with('unavailable', TE.left)
-                .exhaustive(),
-            ),
-          ),
+          doesPreprintExist: flip(doesPreprintExist)(env),
           getUser: () => pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))(env),
         })),
       ),
@@ -575,6 +555,18 @@ const getPreprintTitle = flow(
     language: preprint.title.language,
     title: preprint.title.text,
   })),
+)
+
+const doesPreprintExist = flow(
+  getPreprintTitle,
+  RTE.map(() => true),
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.right(false))
+      .with('not-a-preprint', RTE.left)
+      .with('unavailable', RTE.left)
+      .exhaustive(),
+  ),
 )
 
 const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
