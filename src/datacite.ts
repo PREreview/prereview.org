@@ -183,7 +183,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
         ({
           type: 'africarxiv',
           value: work.doi,
-        } satisfies AfricarxivFigsharePreprintId),
+        }) satisfies AfricarxivFigsharePreprintId,
     ),
   ),
   pipe(
@@ -212,7 +212,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
         ({
           type: 'africarxiv',
           value: work.doi,
-        } satisfies AfricarxivZenodoPreprintId),
+        }) satisfies AfricarxivZenodoPreprintId,
     ),
   ),
   pipe(
@@ -225,7 +225,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
         ({
           type: 'arxiv',
           value: work.doi,
-        } satisfies ArxivPreprintId),
+        }) satisfies ArxivPreprintId,
     ),
   ),
   pipe(
@@ -238,7 +238,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
         ({
           type: 'zenodo',
           value: work.doi,
-        } satisfies ZenodoPreprintId),
+        }) satisfies ZenodoPreprintId,
     ),
   ),
 )

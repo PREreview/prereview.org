@@ -29,7 +29,7 @@ const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 const OrcidProfileIdC = pipe(
   OrcidC,
   C.imap(
-    orcid => ({ type: 'orcid', value: orcid } satisfies OrcidProfileId),
+    orcid => ({ type: 'orcid', value: orcid }) satisfies OrcidProfileId,
     profile => profile.value,
   ),
 )
@@ -51,7 +51,7 @@ const PseudonymSlugC = pipe(SlugC, C.imap(capitalCase, identity), C.compose(Pseu
 const PseudonymProfileIdC = pipe(
   PseudonymSlugC,
   C.imap(
-    pseudonym => ({ type: 'pseudonym', value: pseudonym } satisfies PseudonymProfileId),
+    pseudonym => ({ type: 'pseudonym', value: pseudonym }) satisfies PseudonymProfileId,
     profile => profile.value,
   ),
 )
@@ -246,4 +246,4 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-const singleton = <K extends string, V>(k: K, v: V): { [_ in K]: V } => ({ [k as any]: v } as any)
+const singleton = <K extends string, V>(k: K, v: V): { [_ in K]: V } => ({ [k as any]: v }) as any

@@ -212,7 +212,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'africarxiv',
           value: work.DOI,
-        } satisfies AfricarxivOsfPreprintId),
+        }) satisfies AfricarxivOsfPreprintId,
     ),
   ),
   pipe(
@@ -226,7 +226,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'biorxiv',
           value: work.DOI,
-        } satisfies BiorxivPreprintId),
+        }) satisfies BiorxivPreprintId,
     ),
   ),
   pipe(
@@ -239,7 +239,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'chemrxiv',
           value: work.DOI,
-        } satisfies ChemrxivPreprintId),
+        }) satisfies ChemrxivPreprintId,
     ),
   ),
   pipe(
@@ -252,7 +252,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'eartharxiv',
           value: work.DOI,
-        } satisfies EartharxivPreprintId),
+        }) satisfies EartharxivPreprintId,
     ),
   ),
   pipe(
@@ -265,7 +265,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'ecoevorxiv',
           value: work.DOI,
-        } satisfies EcoevorxivPreprintId),
+        }) satisfies EcoevorxivPreprintId,
     ),
   ),
   pipe(
@@ -279,7 +279,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'edarxiv',
           value: work.DOI,
-        } satisfies EdarxivPreprintId),
+        }) satisfies EdarxivPreprintId,
     ),
   ),
   pipe(
@@ -292,7 +292,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'engrxiv',
           value: work.DOI,
-        } satisfies EngrxivPreprintId),
+        }) satisfies EngrxivPreprintId,
     ),
   ),
   pipe(
@@ -306,7 +306,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'medrxiv',
           value: work.DOI,
-        } satisfies MedrxivPreprintId),
+        }) satisfies MedrxivPreprintId,
     ),
   ),
   pipe(
@@ -320,7 +320,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'metaarxiv',
           value: work.DOI,
-        } satisfies MetaarxivPreprintId),
+        }) satisfies MetaarxivPreprintId,
     ),
   ),
   pipe(
@@ -334,7 +334,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'osf',
           value: work.DOI,
-        } satisfies OsfPreprintId),
+        }) satisfies OsfPreprintId,
     ),
   ),
   pipe(
@@ -347,7 +347,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'preprints.org',
           value: work.DOI,
-        } satisfies PreprintsorgPreprintId),
+        }) satisfies PreprintsorgPreprintId,
     ),
   ),
   pipe(
@@ -361,7 +361,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'psyarxiv',
           value: work.DOI,
-        } satisfies PsyarxivPreprintId),
+        }) satisfies PsyarxivPreprintId,
     ),
   ),
   pipe(
@@ -375,7 +375,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'research-square',
           value: work.DOI,
-        } satisfies ResearchSquarePreprintId),
+        }) satisfies ResearchSquarePreprintId,
     ),
   ),
   pipe(
@@ -388,7 +388,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'scielo',
           value: work.DOI,
-        } satisfies ScieloPreprintId),
+        }) satisfies ScieloPreprintId,
     ),
   ),
   pipe(
@@ -401,7 +401,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'science-open',
           value: work.DOI,
-        } satisfies ScienceOpenPreprintId),
+        }) satisfies ScienceOpenPreprintId,
     ),
   ),
   pipe(
@@ -415,7 +415,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'socarxiv',
           value: work.DOI,
-        } satisfies SocarxivPreprintId),
+        }) satisfies SocarxivPreprintId,
     ),
   ),
 )

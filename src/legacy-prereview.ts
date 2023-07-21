@@ -191,7 +191,7 @@ export const getProfileIdFromLegacyPreviewUuid: (
             ({
               type: 'orcid',
               value: orcid,
-            } satisfies OrcidProfileId),
+            }) satisfies OrcidProfileId,
         )
         .with(
           { isAnonymous: true, name: P.select() },
@@ -199,7 +199,7 @@ export const getProfileIdFromLegacyPreviewUuid: (
             ({
               type: 'pseudonym',
               value: pseudonym,
-            } satisfies PseudonymProfileId),
+            }) satisfies PseudonymProfileId,
         )
         .exhaustive(),
   ),

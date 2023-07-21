@@ -142,7 +142,7 @@ function eprintToPreprint(eprint: D.TypeOf<typeof EprintD>): E.Either<D.DecodeEr
         })),
       ),
     ),
-    E.let('id', () => ({ type: 'philsci', value: eprint.eprintid } satisfies PhilsciPreprintId)),
+    E.let('id', () => ({ type: 'philsci', value: eprint.eprintid }) satisfies PhilsciPreprintId),
     E.let('posted', () => eprint.date ?? eprint.datestamp),
     E.let('abstract', () =>
       eprint.abstract
