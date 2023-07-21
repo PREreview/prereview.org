@@ -54,24 +54,10 @@ describe('writeReviewAddAuthors', () => {
     fc.connection({ method: fc.constant('POST') }),
     fc.user(),
     fc.boolean(),
-    fc
-      .record(
-        {
-          alreadyWritten: fc.alreadyWritten(),
-          competingInterests: fc.competingInterests(),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.conduct(),
-          moreAuthors: fc.constant('yes'),
-          persona: fc.persona(),
-          review: fc.nonEmptyString(),
-          reviewType: fc.reviewType(),
-        },
-        { requiredKeys: ['moreAuthors'] },
-      )
-      .filter(newReview => Object.keys(newReview).length < 4),
+    fc.incompleteForm({ moreAuthors: fc.constant('yes') }),
   ])('when the form is incomplete', async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
     const actual = await runMiddleware(
       _.writeReviewAddAuthors(preprintId)({
@@ -128,21 +114,10 @@ describe('writeReviewAddAuthors', () => {
     fc.preprintTitle(),
     fc.connection(),
     fc.user(),
-    fc.record(
-      {
-        alreadyWritten: fc.alreadyWritten(),
-        competingInterests: fc.competingInterests(),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.conduct(),
-        moreAuthors: fc.constantFrom('yes-private', 'no'),
-        persona: fc.persona(),
-        review: fc.nonEmptyString(),
-      },
-      { requiredKeys: ['moreAuthors'] },
-    ),
+    fc.form({ moreAuthors: fc.constantFrom('yes-private', 'no') }),
   ])('when there are no more authors', async (preprintId, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
     const actual = await runMiddleware(
       _.writeReviewAddAuthors(preprintId)({

@@ -186,26 +186,7 @@ describe('writeReviewPublish', () => {
         fc.constant(secret),
       ),
     ),
-    fc.oneof(
-      fc
-        .record(
-          {
-            alreadyWritten: fc.alreadyWritten(),
-            competingInterests: fc.competingInterests(),
-            competingInterestsDetails: fc.lorem(),
-            conduct: fc.conduct(),
-            introductionMatches: fc.introductionMatches(),
-            methodsAppropriate: fc.methodsAppropriate(),
-            moreAuthors: fc.moreAuthors(),
-            persona: fc.persona(),
-            review: fc.lorem(),
-            reviewType: fc.reviewType(),
-          },
-          { withDeletedKeys: true },
-        )
-        .filter(newReview => Object.keys(newReview).length < 5),
-      fc.constant({}),
-    ),
+    fc.incompleteForm(),
     fc.user(),
     fc.boolean(),
   ])(
@@ -221,7 +202,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newPrereview)
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newPrereview))
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({

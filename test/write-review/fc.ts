@@ -36,6 +36,73 @@ export const competingInterests = (): fc.Arbitrary<Required<Form>['competingInte
 
 export const reviewType = (): fc.Arbitrary<Required<Form>['reviewType']> => fc.constantFrom('freeform', 'questions')
 
+export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten: 'no'; reviewType: 'questions' }> =>
+  fc
+    .tuple(
+      fc.partialRecord(
+        {
+          alreadyWritten: fc.constant('no' as const),
+          introductionMatches: introductionMatches(),
+          reviewType: fc.constant('questions' as const),
+          persona: persona(),
+          methodsAppropriate: methodsAppropriate(),
+          resultsSupported: resultsSupported(),
+          moreAuthors: moreAuthors(),
+          competingInterests: competingInterests(),
+          conduct: conduct(),
+        },
+        { requiredKeys: ['alreadyWritten', 'reviewType'] },
+      ),
+      fc.oneof(
+        fc.record(
+          {
+            moreAuthorsApproved: moreAuthorsApproved(),
+            competingInterestsDetails: fc.nonEmptyString(),
+            review: fc.html(),
+          },
+          { withDeletedKeys: true },
+        ),
+        fc.constant({}),
+      ),
+    )
+    .map(parts => merge(...parts))
+
+export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'freeform' }> =>
+  fc
+    .tuple(
+      fc.partialRecord(
+        {
+          alreadyWritten: alreadyWritten(),
+          review: fc.html(),
+          persona: persona(),
+          moreAuthors: moreAuthors(),
+          competingInterests: competingInterests(),
+          conduct: conduct(),
+        },
+        { requiredKeys: ['alreadyWritten'] },
+      ),
+      fc.oneof(
+        fc.record(
+          {
+            moreAuthorsApproved: moreAuthorsApproved(),
+            competingInterestsDetails: fc.nonEmptyString(),
+            introductionMatches: introductionMatches(),
+            methodsAppropriate: methodsAppropriate(),
+            resultsSupported: resultsSupported(),
+            reviewType: fc.constant('freeform' as const),
+          },
+          { withDeletedKeys: true },
+        ),
+        fc.constant({}),
+      ),
+    )
+    .map(parts => merge(...parts))
+
+export const incompleteForm = (model: { [K in keyof Form]: fc.Arbitrary<Form[K]> } = {}): fc.Arbitrary<Form> =>
+  fc
+    .tuple(fc.oneof(incompleteQuestionsForm(), incompleteFreeformForm(), unknownFormType()), fc.record(model))
+    .map(parts => merge(...parts))
+
 export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { reviewType: 'questions' }>> =>
   fc
     .tuple(
@@ -92,3 +159,29 @@ export const completedForm = (
   fc
     .tuple(fc.oneof(completedFreeformForm(), completedQuestionsForm()), fc.record(model as never))
     .map(parts => merge(...parts))
+
+export const unknownFormType = () =>
+  fc.oneof(
+    fc.record({
+      review: fc.html(),
+      persona: persona(),
+      moreAuthors: moreAuthors(),
+      competingInterests: competingInterests(),
+      conduct: conduct(),
+      introductionMatches: introductionMatches(),
+      methodsAppropriate: methodsAppropriate(),
+      resultsSupported: resultsSupported(),
+    }),
+    fc.constant({}),
+  ) satisfies fc.Arbitrary<Form>
+
+export const questionsForm = (): fc.Arbitrary<Form> => fc.oneof(completedQuestionsForm(), incompleteQuestionsForm())
+
+export const freeformForm = (): fc.Arbitrary<Form> => fc.oneof(completedFreeformForm(), incompleteFreeformForm())
+
+export const form = (
+  model: {
+    [K in keyof Partial<Form>]: fc.Arbitrary<Form[K]>
+  } = {},
+): fc.Arbitrary<Form> =>
+  fc.tuple(fc.oneof(completedForm(), incompleteForm()), fc.record(model as never)).map(parts => merge(...parts))

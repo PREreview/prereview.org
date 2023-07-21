@@ -8,59 +8,41 @@ import * as M from 'hyper-ts/lib/Middleware'
 import Keyv from 'keyv'
 import { writeReviewMatch, writeReviewStartMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
-import { formKey } from '../../src/write-review/form'
+import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
 import * as fc from './fc'
 
 describe('writeReview', () => {
   describe('when there is a session', () => {
-    test.prop([
-      fc.origin(),
-      fc.indeterminatePreprintId(),
-      fc.preprint(),
-      fc.connection(),
-      fc.oneof(
-        fc.record(
-          {
-            alreadyWritten: fc.alreadyWritten(),
-            competingInterests: fc.competingInterests(),
-            competingInterestsDetails: fc.lorem(),
-            conduct: fc.conduct(),
-            moreAuthors: fc.moreAuthors(),
-            persona: fc.persona(),
-            review: fc.lorem(),
-          },
-          { withDeletedKeys: true },
-        ),
-        fc.constant({}),
-      ),
-      fc.user(),
-    ])('there is a form already', async (publicUrl, preprintId, preprint, connection, newReview, user) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprint.id), newReview)
+    test.prop([fc.origin(), fc.indeterminatePreprintId(), fc.preprint(), fc.connection(), fc.form(), fc.user()])(
+      'there is a form already',
+      async (publicUrl, preprintId, preprint, connection, newReview, user) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
-      const actual = await runMiddleware(
-        _.writeReview(preprintId)({
-          formStore,
-          getPreprint: () => TE.right(preprint),
-          getUser: () => M.of(user),
-          publicUrl,
-        }),
-        connection,
-      )()
+        const actual = await runMiddleware(
+          _.writeReview(preprintId)({
+            formStore,
+            getPreprint: () => TE.right(preprint),
+            getUser: () => M.of(user),
+            publicUrl,
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: format(writeReviewStartMatch.formatter, { id: preprint.id }),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: format(writeReviewStartMatch.formatter, { id: preprint.id }),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
 
     test.prop([fc.origin(), fc.indeterminatePreprintId(), fc.preprint(), fc.connection(), fc.user()])(
       "there isn't a form",

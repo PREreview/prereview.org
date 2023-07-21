@@ -101,6 +101,25 @@ export const alphanumeric = (): fc.Arbitrary<string> =>
     { num: 10, build: v => String.fromCharCode(v + 0x30) },
   )
 
+export const partialRecord = <T, TConstraints extends { requiredKeys: (keyof T)[] } | undefined>(
+  recordModel: { [K in keyof T]: fc.Arbitrary<T[K]> },
+  constraints?: TConstraints,
+): fc.Arbitrary<
+  fc.RecordValue<{ [K in keyof T]: T[K] }, TConstraints extends undefined ? { withDeletedKeys: true } : TConstraints>
+> =>
+  fc
+    .constantFrom(
+      ...Object.getOwnPropertyNames(recordModel).filter(
+        property => !(constraints?.requiredKeys.includes(property as keyof T) ?? false),
+      ),
+    )
+    .chain(omit =>
+      fc.record(
+        { ...recordModel, [omit]: fc.constant(undefined) },
+        (constraints as never) ?? { withDeletedKeys: true },
+      ),
+    )
+
 export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))

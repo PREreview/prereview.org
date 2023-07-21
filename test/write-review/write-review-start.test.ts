@@ -8,7 +8,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import Keyv from 'keyv'
 import { writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
-import { formKey } from '../../src/write-review/form'
+import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
@@ -27,26 +27,14 @@ describe('writeReviewStart', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc.connection(),
-      fc.record(
-        {
-          alreadyWritten: fc.alreadyWritten(),
-          competingInterests: fc.competingInterests(),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.conduct(),
-          moreAuthors: fc.moreAuthors(),
-          persona: fc.persona(),
-          review: fc.lorem(),
-          reviewType: fc.reviewType(),
-        },
-        { withDeletedKeys: true },
-      ),
+      fc.form(),
       fc.user(),
       fc.boolean(),
     ])(
       'there is a form',
       async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, canRapidReview) => {
         const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const actual = await runMiddleware(
           _.writeReviewStart(preprintId)({

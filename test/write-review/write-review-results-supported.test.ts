@@ -70,27 +70,12 @@ describe('writeReviewResultsSupported', () => {
           ),
         ),
       fc.user(),
-      fc.record(
-        {
-          alreadyWritten: fc.constantFrom('no'),
-          competingInterests: fc.competingInterests(),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.conduct(),
-          introductionMatches: fc.introductionMatches(),
-          methodsAppropriate: fc.methodsAppropriate(),
-          resultsSupported: fc.resultsSupported(),
-          moreAuthors: fc.moreAuthors(),
-          persona: fc.persona(),
-          review: fc.nonEmptyString(),
-          reviewType: fc.constant('questions'),
-        },
-        { requiredKeys: ['alreadyWritten', 'reviewType'] },
-      ),
+      fc.incompleteQuestionsForm(),
     ])(
       'when the form is incomplete',
       async (preprintId, preprintTitle, [resultsSupported, connection], user, newReview) => {
         const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const actual = await runMiddleware(
           _.writeReviewResultsSupported(preprintId)({
@@ -200,23 +185,12 @@ describe('writeReviewResultsSupported', () => {
         method: fc.constant('POST'),
       }),
       fc.user(),
-      fc.record(
-        {
-          alreadyWritten: fc.constant('no'),
-          competingInterests: fc.competingInterests(),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.conduct(),
-          moreAuthors: fc.moreAuthors(),
-          persona: fc.persona(),
-          reviewType: fc.constant('questions'),
-        },
-        { requiredKeys: ['alreadyWritten', 'reviewType'] },
-      ),
+      fc.questionsForm(),
     ])(
       'without saying if the results are supported by the data',
       async (preprintId, preprintTitle, connection, user, newReview) => {
         const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const actual = await runMiddleware(
           _.writeReviewResultsSupported(preprintId)({
@@ -243,70 +217,12 @@ describe('writeReviewResultsSupported', () => {
       fc.preprintTitle(),
       fc.connection(),
       fc.user(),
-      fc.record(
-        {
-          alreadyWritten: fc.constant('no'),
-          competingInterests: fc.competingInterests(),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.conduct(),
-          moreAuthors: fc.moreAuthors(),
-          persona: fc.persona(),
-          reviewType: fc.constant('freeform'),
-        },
-        { requiredKeys: ['alreadyWritten'] },
-      ),
+      fc.oneof(fc.freeformForm(), fc.constant({})),
     ])(
       "when you haven't said you want to answer questions",
       async (preprintId, preprintTitle, connection, user, newReview) => {
         const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
-
-        const actual = await runMiddleware(
-          _.writeReviewResultsSupported(preprintId)({
-            canRapidReview: () => true,
-            formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
-            getUser: () => M.of(user),
-          }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: format(writeReviewReviewTypeMatch.formatter, { id: preprintTitle.id }),
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
-
-    test.prop([
-      fc.indeterminatePreprintId(),
-      fc.preprintTitle(),
-      fc.connection(),
-      fc.user(),
-      fc.record(
-        {
-          alreadyWritten: fc.constant('yes'),
-          competingInterests: fc.competingInterests(),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.conduct(),
-          moreAuthors: fc.moreAuthors(),
-          persona: fc.persona(),
-          reviewType: fc.reviewType(),
-        },
-        { withDeletedKeys: true },
-      ),
-    ])(
-      "when you haven't said you haven't already written your PREreview",
-      async (preprintId, preprintTitle, connection, user, newReview) => {
-        const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const actual = await runMiddleware(
           _.writeReviewResultsSupported(preprintId)({
@@ -362,45 +278,30 @@ describe('writeReviewResultsSupported', () => {
     },
   )
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection(),
-    fc.user(),
-    fc.record(
-      {
-        alreadyWritten: fc.alreadyWritten(),
-        competingInterests: fc.competingInterests(),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.conduct(),
-        moreAuthors: fc.moreAuthors(),
-        persona: fc.persona(),
-        review: fc.nonEmptyString(),
-        reviewType: fc.reviewType(),
-      },
-      { withDeletedKeys: true },
-    ),
-  ])("when reviews can't be rapid", async (preprintId, preprintTitle, connection, user, newReview) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user(), fc.form()])(
+    "when reviews can't be rapid",
+    async (preprintId, preprintTitle, connection, user, newReview) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await runMiddleware(
-      _.writeReviewResultsSupported(preprintId)({
-        canRapidReview: () => false,
-        formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
-        getUser: () => M.of(user),
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.writeReviewResultsSupported(preprintId)({
+          canRapidReview: () => false,
+          formStore,
+          getPreprintTitle: () => TE.right(preprintTitle),
+          getUser: () => M.of(user),
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.NotFound },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.NotFound },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 })

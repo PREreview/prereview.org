@@ -23,31 +23,10 @@ describe('writeReviewAuthors', () => {
         method: fc.constant('POST'),
       }),
       fc.user(),
-      fc.record(
-        {
-          alreadyWritten: fc.alreadyWritten(),
-          competingInterests: fc.competingInterests(),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.conduct(),
-          moreAuthors: fc.moreAuthors(),
-          moreAuthorsApproved: fc.moreAuthorsApproved(),
-          persona: fc.persona(),
-          review: fc.nonEmptyString(),
-        },
-        {
-          requiredKeys: [
-            'competingInterests',
-            'competingInterestsDetails',
-            'conduct',
-            'moreAuthors',
-            'persona',
-            'review',
-          ],
-        },
-      ),
+      fc.form(),
     ])('when they have read and agreed', async (preprintId, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintId)({
@@ -87,22 +66,10 @@ describe('writeReviewAuthors', () => {
         method: fc.constant('POST'),
       }),
       fc.user(),
-      fc.record(
-        {
-          alreadyWritten: fc.alreadyWritten(),
-          competingInterests: fc.competingInterests(),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.conduct(),
-          moreAuthors: fc.moreAuthors(),
-          moreAuthorsApproved: fc.moreAuthorsApproved(),
-          persona: fc.persona(),
-          review: fc.nonEmptyString(),
-        },
-        { withDeletedKeys: true },
-      ),
+      fc.form(),
     ])("when they haven't read and agreed", async (preprintId, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
       const actual = await runMiddleware(
         _.writeReviewAuthors(preprintId)({
@@ -182,29 +149,12 @@ describe('writeReviewAuthors', () => {
         }),
         fc.user(),
         fc.boolean(),
-        fc.oneof(
-          fc
-            .record(
-              {
-                alreadyWritten: fc.alreadyWritten(),
-                competingInterests: fc.competingInterests(),
-                competingInterestsDetails: fc.lorem(),
-                conduct: fc.conduct(),
-                moreAuthors: fc.moreAuthors(),
-                moreAuthorsApproved: fc.moreAuthorsApproved(),
-                persona: fc.persona(),
-                review: fc.nonEmptyString(),
-              },
-              { withDeletedKeys: true },
-            )
-            .filter(newReview => Object.keys(newReview).length < 5),
-          fc.constant({}),
-        ),
+        fc.incompleteForm(),
       ])(
         'when the form is incomplete',
         async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
           const formStore = new Keyv()
-          await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+          await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
           const actual = await runMiddleware(
             _.writeReviewAuthors(preprintId)({
@@ -289,29 +239,12 @@ describe('writeReviewAuthors', () => {
       }),
       fc.user(),
       fc.boolean(),
-      fc.oneof(
-        fc
-          .record(
-            {
-              alreadyWritten: fc.alreadyWritten(),
-              competingInterests: fc.competingInterests(),
-              competingInterestsDetails: fc.lorem(),
-              conduct: fc.conduct(),
-              moreAuthors: fc.moreAuthors(),
-              moreAuthorsApproved: fc.moreAuthorsApproved(),
-              persona: fc.persona(),
-              review: fc.nonEmptyString(),
-            },
-            { withDeletedKeys: true },
-          )
-          .filter(newReview => Object.keys(newReview).length < 5),
-        fc.constant({}),
-      ),
+      fc.incompleteForm(),
     ])(
       'when the form is incomplete',
       async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
         const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const actual = await runMiddleware(
           _.writeReviewAuthors(preprintId)({
@@ -452,22 +385,10 @@ describe('writeReviewAuthors', () => {
       method: fc.constant('POST'),
     }),
     fc.user(),
-    fc.record(
-      {
-        alreadyWritten: fc.alreadyWritten(),
-        competingInterests: fc.competingInterests(),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.conduct(),
-        moreAuthors: fc.moreAuthors(),
-        moreAuthrosAgreed: fc.constant('yes'),
-        persona: fc.persona(),
-        review: fc.nonEmptyString(),
-      },
-      { withDeletedKeys: true },
-    ),
+    fc.form(),
   ])('without a moreAuthors', async (preprintId, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
     const actual = await runMiddleware(
       _.writeReviewAuthors(preprintId)({

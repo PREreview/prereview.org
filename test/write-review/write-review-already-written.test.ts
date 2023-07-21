@@ -67,23 +67,12 @@ describe('writeReviewAlreadyWritten', () => {
         ),
       ),
     fc.user(),
-    fc.record(
-      {
-        alreadyWritten: fc.alreadyWritten(),
-        competingInterests: fc.competingInterests(),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.conduct(),
-        moreAuthors: fc.moreAuthors(),
-        persona: fc.persona(),
-        review: fc.nonEmptyString(),
-      },
-      { withDeletedKeys: true },
-    ),
+    fc.incompleteForm(),
   ])(
     'when the form is incomplete',
     async (preprintId, preprintTitle, [alreadyWritten, connection], user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
       const actual = await runMiddleware(
         _.writeReviewAlreadyWritten(preprintId)({
@@ -233,21 +222,12 @@ describe('writeReviewAlreadyWritten', () => {
     }),
     fc.user(),
     fc.boolean(),
-    fc.record(
-      {
-        competingInterests: fc.competingInterests(),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.conduct(),
-        moreAuthors: fc.moreAuthors(),
-        persona: fc.persona(),
-      },
-      { withDeletedKeys: true },
-    ),
+    fc.form(),
   ])(
     'without saying if you have already written the PREreview',
     async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
       const actual = await runMiddleware(
         _.writeReviewAlreadyWritten(preprintId)({
