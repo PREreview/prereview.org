@@ -8,7 +8,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import Keyv from 'keyv'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
-import { formKey } from '../../src/write-review/form'
+import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
 import * as fc from './fc'
 
@@ -26,41 +26,12 @@ describe('writeReviewIntroductionMatches', () => {
           ),
         ),
       fc.user(),
-      fc.record(
-        {
-          alreadyWritten: fc.constantFrom('no'),
-          competingInterests: fc.competingInterests(),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.conduct(),
-          introductionMatches: fc.introductionMatches(),
-          methodsAppropriate: fc.methodsAppropriate(),
-          resultsSupported: fc.resultsSupported(),
-          moreAuthors: fc.moreAuthors(),
-          persona: fc.persona(),
-          review: fc.nonEmptyString(),
-          reviewType: fc.constant('questions'),
-        },
-        {
-          requiredKeys: [
-            'alreadyWritten',
-            'competingInterests',
-            'competingInterestsDetails',
-            'conduct',
-            'introductionMatches',
-            'methodsAppropriate',
-            'resultsSupported',
-            'moreAuthors',
-            'persona',
-            'review',
-            'reviewType',
-          ],
-        },
-      ),
+      fc.completedQuestionsForm(),
     ])(
       'when the form is completed',
       async (preprintId, preprintTitle, [introductionMatches, connection], user, newReview) => {
         const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const actual = await runMiddleware(
           _.writeReviewIntroductionMatches(preprintId)({

@@ -6,8 +6,9 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import Keyv from 'keyv'
+import merge from 'ts-deepmerge'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
-import { formKey } from '../../src/write-review/form'
+import { FormC, formKey } from '../../src/write-review/form'
 import * as _ from '../../src/write-review/index'
 import { runMiddleware } from '../middleware'
 import * as fc from './fc'
@@ -26,37 +27,10 @@ describe('writeReviewReviewType', () => {
           ),
         ),
       fc.user(),
-      fc.record(
-        {
-          alreadyWritten: fc.constantFrom('no'),
-          reviewType: fc.reviewType(),
-          competingInterests: fc.competingInterests(),
-          competingInterestsDetails: fc.lorem(),
-          conduct: fc.conduct(),
-          introductionMatches: fc.introductionMatches(),
-          methodsAppropriate: fc.methodsAppropriate(),
-          resultsSupported: fc.resultsSupported(),
-          moreAuthors: fc.moreAuthors(),
-          persona: fc.persona(),
-          review: fc.nonEmptyString(),
-        },
-        {
-          requiredKeys: [
-            'competingInterests',
-            'competingInterestsDetails',
-            'conduct',
-            'introductionMatches',
-            'methodsAppropriate',
-            'moreAuthors',
-            'resultsSupported',
-            'persona',
-            'review',
-          ],
-        },
-      ),
+      fc.tuple(fc.completedFreeformForm(), fc.completedQuestionsForm()).map(parts => merge(...parts)),
     ])('when the form is completed', async (preprintId, preprintTitle, [reviewType, connection], user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
       const actual = await runMiddleware(
         _.writeReviewReviewType(preprintId)({

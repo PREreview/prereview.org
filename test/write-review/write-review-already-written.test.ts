@@ -7,7 +7,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import Keyv from 'keyv'
 import { writeReviewMatch, writeReviewReviewMatch } from '../../src/routes'
-import { formKey } from '../../src/write-review/form'
+import { FormC, formKey } from '../../src/write-review/form'
 import * as _ from '../../src/write-review/index'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
@@ -26,30 +26,10 @@ describe('writeReviewAlreadyWritten', () => {
         ),
       ),
     fc.user(),
-    fc.record(
-      {
-        alreadyWritten: fc.alreadyWritten(),
-        competingInterests: fc.competingInterests(),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.conduct(),
-        moreAuthors: fc.moreAuthors(),
-        persona: fc.persona(),
-        review: fc.nonEmptyString(),
-      },
-      {
-        requiredKeys: [
-          'competingInterests',
-          'competingInterestsDetails',
-          'conduct',
-          'moreAuthors',
-          'persona',
-          'review',
-        ],
-      },
-    ),
+    fc.completedForm(),
   ])('when the form is completed', async (preprintId, preprintTitle, [alreadyWritten, connection], user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
     const actual = await runMiddleware(
       _.writeReviewAlreadyWritten(preprintId)({

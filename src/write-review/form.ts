@@ -138,7 +138,7 @@ export const redirectToNextForm = (preprint: PreprintId) =>
     RM.ichainMiddlewareK(flow(match => format(match.formatter, { id: preprint }), seeOther)),
   )
 
-const FormC = pipe(
+export const FormC = pipe(
   C.partial({
     alreadyWritten: C.literal('yes', 'no'),
     introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),

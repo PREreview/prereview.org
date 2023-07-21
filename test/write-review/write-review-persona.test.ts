@@ -8,7 +8,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import Keyv from 'keyv'
 import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
-import { formKey } from '../../src/write-review/form'
+import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
@@ -24,39 +24,12 @@ describe('writeReviewPersona', () => {
       ),
     fc.user(),
     fc.boolean(),
-    fc.record(
-      {
-        alreadyWritten: fc.alreadyWritten(),
-        competingInterests: fc.competingInterests(),
-        competingInterestsDetails: fc.lorem(),
-        conduct: fc.conduct(),
-        introductionMatches: fc.introductionMatches(),
-        methodsAppropriate: fc.methodsAppropriate(),
-        resultsSupported: fc.resultsSupported(),
-        moreAuthors: fc.moreAuthors(),
-        persona: fc.persona(),
-        review: fc.nonEmptyString(),
-        reviewType: fc.reviewType(),
-      },
-      {
-        requiredKeys: [
-          'competingInterests',
-          'competingInterestsDetails',
-          'conduct',
-          'introductionMatches',
-          'methodsAppropriate',
-          'resultsSupported',
-          'moreAuthors',
-          'review',
-          'reviewType',
-        ],
-      },
-    ),
+    fc.completedForm(),
   ])(
     'when the form is completed',
     async (preprintId, preprintTitle, [persona, connection], user, canRapidReview, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), newReview)
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
       const actual = await runMiddleware(
         _.writeReviewPersona(preprintId)({
