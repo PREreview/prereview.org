@@ -71,6 +71,9 @@ export const writeReviewPublish = flow(
               void
             >
           >()
+          .with({ form: { alreadyWritten: P.optional(undefined) } }, ({ form, user }) =>
+            redirectToNextForm(preprint.id)(form, user),
+          )
           .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePublishForm)
           .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, showPublishForm)
           .otherwise(({ form, user }) => redirectToNextForm(preprint.id)(form, user)),
