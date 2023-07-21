@@ -45,6 +45,10 @@ export const writeReviewReview = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
+          .with(
+            { form: { alreadyWritten: 'no', reviewType: 'questions' } },
+            fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
+          )
           .with({ method: 'POST', form: { alreadyWritten: 'yes' } }, handlePasteReviewForm)
           .with({ method: 'POST', form: { alreadyWritten: 'no' } }, handleWriteReviewForm)
           .with({ form: { alreadyWritten: 'yes' } }, showPasteReviewForm)
