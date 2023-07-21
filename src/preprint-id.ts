@@ -179,27 +179,27 @@ export function fromPreprintDoi(
   doi: Extract<IndeterminatePreprintId, { value: Doi }>['value'],
 ): Extract<IndeterminatePreprintId, { value: Doi }> {
   return match(doi)
-    .when(hasRegistrant('1101'), doi => ({ type: 'biorxiv-medrxiv', value: doi } satisfies BiorxivOrMedrxivPreprintId))
-    .when(hasRegistrant('1590'), doi => ({ type: 'scielo', value: doi } satisfies ScieloPreprintId))
+    .when(hasRegistrant('1101'), doi => ({ type: 'biorxiv-medrxiv', value: doi }) satisfies BiorxivOrMedrxivPreprintId)
+    .when(hasRegistrant('1590'), doi => ({ type: 'scielo', value: doi }) satisfies ScieloPreprintId)
     .when(
       hasRegistrant('5281'),
-      doi => ({ type: 'zenodo-africarxiv', value: doi } satisfies ZenodoOrAfricarxivPreprintId),
+      doi => ({ type: 'zenodo-africarxiv', value: doi }) satisfies ZenodoOrAfricarxivPreprintId,
     )
-    .when(hasRegistrant('6084'), doi => ({ type: 'africarxiv', value: doi } satisfies AfricarxivFigsharePreprintId))
-    .when(hasRegistrant('14293'), doi => ({ type: 'science-open', value: doi } satisfies ScienceOpenPreprintId))
-    .when(hasRegistrant('21203'), doi => ({ type: 'research-square', value: doi } satisfies ResearchSquarePreprintId))
-    .when(hasRegistrant('26434'), doi => ({ type: 'chemrxiv', value: doi } satisfies ChemrxivPreprintId))
-    .when(hasRegistrant('20944'), doi => ({ type: 'preprints.org', value: doi } satisfies PreprintsorgPreprintId))
-    .when(hasRegistrant('31219'), doi => ({ type: 'osf', value: doi } satisfies OsfPreprintId))
-    .when(hasRegistrant('31222'), doi => ({ type: 'metaarxiv', value: doi } satisfies MetaarxivPreprintId))
-    .when(hasRegistrant('31223'), doi => ({ type: 'eartharxiv', value: doi } satisfies EartharxivPreprintId))
-    .when(hasRegistrant('31224'), doi => ({ type: 'engrxiv', value: doi } satisfies EngrxivPreprintId))
-    .when(hasRegistrant('31234'), doi => ({ type: 'psyarxiv', value: doi } satisfies PsyarxivPreprintId))
-    .when(hasRegistrant('31235'), doi => ({ type: 'socarxiv', value: doi } satisfies SocarxivPreprintId))
-    .when(hasRegistrant('31730'), doi => ({ type: 'africarxiv', value: doi } satisfies AfricarxivOsfPreprintId))
-    .when(hasRegistrant('32942'), doi => ({ type: 'ecoevorxiv', value: doi } satisfies EcoevorxivPreprintId))
-    .when(hasRegistrant('35542'), doi => ({ type: 'edarxiv', value: doi } satisfies EdarxivPreprintId))
-    .when(hasRegistrant('48550'), doi => ({ type: 'arxiv', value: doi } satisfies ArxivPreprintId))
+    .when(hasRegistrant('6084'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivFigsharePreprintId)
+    .when(hasRegistrant('14293'), doi => ({ type: 'science-open', value: doi }) satisfies ScienceOpenPreprintId)
+    .when(hasRegistrant('21203'), doi => ({ type: 'research-square', value: doi }) satisfies ResearchSquarePreprintId)
+    .when(hasRegistrant('26434'), doi => ({ type: 'chemrxiv', value: doi }) satisfies ChemrxivPreprintId)
+    .when(hasRegistrant('20944'), doi => ({ type: 'preprints.org', value: doi }) satisfies PreprintsorgPreprintId)
+    .when(hasRegistrant('31219'), doi => ({ type: 'osf', value: doi }) satisfies OsfPreprintId)
+    .when(hasRegistrant('31222'), doi => ({ type: 'metaarxiv', value: doi }) satisfies MetaarxivPreprintId)
+    .when(hasRegistrant('31223'), doi => ({ type: 'eartharxiv', value: doi }) satisfies EartharxivPreprintId)
+    .when(hasRegistrant('31224'), doi => ({ type: 'engrxiv', value: doi }) satisfies EngrxivPreprintId)
+    .when(hasRegistrant('31234'), doi => ({ type: 'psyarxiv', value: doi }) satisfies PsyarxivPreprintId)
+    .when(hasRegistrant('31235'), doi => ({ type: 'socarxiv', value: doi }) satisfies SocarxivPreprintId)
+    .when(hasRegistrant('31730'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivOsfPreprintId)
+    .when(hasRegistrant('32942'), doi => ({ type: 'ecoevorxiv', value: doi }) satisfies EcoevorxivPreprintId)
+    .when(hasRegistrant('35542'), doi => ({ type: 'edarxiv', value: doi }) satisfies EdarxivPreprintId)
+    .when(hasRegistrant('48550'), doi => ({ type: 'arxiv', value: doi }) satisfies ArxivPreprintId)
     .exhaustive()
 }
 
@@ -237,7 +237,7 @@ const extractFromBiorxivMedrxivPath = (type: 'biorxiv' | 'medrxiv') =>
     O.fromNullableK(s => s.match(/(?:^|\/)(?:content|lookup)\/.+\/([0-9.]+)(?:v[1-9][0-9]*)?(?:[./].*)?$/i)?.[1]),
     O.map(suffix => `10.1101/${suffix}`),
     O.filter(pipe(isDoi, compose(hasRegistrant('1101')))),
-    O.map(doi => ({ type, value: doi } satisfies BiorxivPreprintId | MedrxivPreprintId)),
+    O.map(doi => ({ type, value: doi }) satisfies BiorxivPreprintId | MedrxivPreprintId),
   )
 
 const extractFromEdarxivPath = flow(
@@ -258,7 +258,7 @@ const extractFromFigsharePath = (type: 'africarxiv') =>
     O.fromNullableK(s => s.match(/^articles\/(?:.+?\/){2}([1-9][0-9]*)(?:$|\/)/i)?.[1]),
     O.map(id => `10.6084/m9.figshare.${id}.v1`),
     O.filter(pipe(isDoi, compose(hasRegistrant('6084')))),
-    O.map(doi => ({ type, value: doi } satisfies AfricarxivFigsharePreprintId)),
+    O.map(doi => ({ type, value: doi }) satisfies AfricarxivFigsharePreprintId),
   )
 
 const extractFromOsfPath = flow(
@@ -280,7 +280,7 @@ const extractFromPhilsciPath = flow(
   decodeURIComponent,
   O.fromNullableK(s => s.match(/^(?:id\/eprint\/|cgi\/export\/)?([1-9][0-9]*)(?:\/|$)/)?.[1]),
   O.chainEitherK(flow(id => parseInt(id, 10), D.number.decode)),
-  O.map(id => ({ type: 'philsci', value: id } satisfies PhilsciPreprintId)),
+  O.map(id => ({ type: 'philsci', value: id }) satisfies PhilsciPreprintId),
 )
 
 const extractFromPreprintsorgPath = flow(

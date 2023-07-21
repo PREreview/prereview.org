@@ -74,7 +74,7 @@ export function page({
 
   return R.asks(
     ({ fathomId, phase }) => html`
-      <!DOCTYPE html>
+      <!doctype html>
       <html lang="en" dir="ltr">
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

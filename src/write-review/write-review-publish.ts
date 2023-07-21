@@ -145,45 +145,46 @@ function renderReview(form: CompletedForm) {
   return html`${match(form)
       .with(
         { reviewType: 'questions' },
-        form => html` <dl>
-          <div>
-            <dt>Does the introduction explain the objective and match the rest of the preprint?</dt>
-            <dd>
-              ${match(form.introductionMatches)
-                .with('yes', () => 'Yes')
-                .with('partly', () => 'Partly')
-                .with('no', () => 'No')
-                .with('skip', () => 'I don’t know')
-                .exhaustive()}
-            </dd>
-          </div>
-          <div>
-            <dt>Are the methods appropriate?</dt>
-            <dd>
-              ${match(form.methodsAppropriate)
-                .with('inappropriate', () => 'Inappropriate')
-                .with('somewhat-inappropriate', () => 'Somewhat inappropriate')
-                .with('adequate', () => 'Adequate')
-                .with('mostly-appropriate', () => 'Mostly appropriate')
-                .with('highly-appropriate', () => 'Highly appropriate')
-                .with('skip', () => 'I don’t know')
-                .exhaustive()}
-            </dd>
-          </div>
-          <div>
-            <dt>Are the results presented supported by the data?</dt>
-            <dd>
-              ${match(form.resultsSupported)
-                .with('not-supported', () => 'Not supported')
-                .with('partially-supported', () => 'Partially supported')
-                .with('neutral', () => 'Neither supported nor not supported')
-                .with('well-supported', () => 'Well supported')
-                .with('strongly-supported', () => 'Strongly supported')
-                .with('skip', () => 'I don’t know')
-                .exhaustive()}
-            </dd>
-          </div>
-        </dl>`,
+        form =>
+          html` <dl>
+            <div>
+              <dt>Does the introduction explain the objective and match the rest of the preprint?</dt>
+              <dd>
+                ${match(form.introductionMatches)
+                  .with('yes', () => 'Yes')
+                  .with('partly', () => 'Partly')
+                  .with('no', () => 'No')
+                  .with('skip', () => 'I don’t know')
+                  .exhaustive()}
+              </dd>
+            </div>
+            <div>
+              <dt>Are the methods appropriate?</dt>
+              <dd>
+                ${match(form.methodsAppropriate)
+                  .with('inappropriate', () => 'Inappropriate')
+                  .with('somewhat-inappropriate', () => 'Somewhat inappropriate')
+                  .with('adequate', () => 'Adequate')
+                  .with('mostly-appropriate', () => 'Mostly appropriate')
+                  .with('highly-appropriate', () => 'Highly appropriate')
+                  .with('skip', () => 'I don’t know')
+                  .exhaustive()}
+              </dd>
+            </div>
+            <div>
+              <dt>Are the results presented supported by the data?</dt>
+              <dd>
+                ${match(form.resultsSupported)
+                  .with('not-supported', () => 'Not supported')
+                  .with('partially-supported', () => 'Partially supported')
+                  .with('neutral', () => 'Neither supported nor not supported')
+                  .with('well-supported', () => 'Well supported')
+                  .with('strongly-supported', () => 'Strongly supported')
+                  .with('skip', () => 'I don’t know')
+                  .exhaustive()}
+              </dd>
+            </div>
+          </dl>`,
       )
       .with({ reviewType: 'freeform' }, form => fixHeadingLevels(1, form.review))
       .exhaustive()}

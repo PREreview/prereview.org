@@ -224,7 +224,7 @@ ${newPrereview.review.toString()}`,
               scheme: 'url',
             },
           ],
-        } satisfies DepositMetadata),
+        }) satisfies DepositMetadata,
     ),
   )
 }
