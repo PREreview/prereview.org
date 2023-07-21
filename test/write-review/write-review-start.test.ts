@@ -16,13 +16,7 @@ import * as fc from './fc'
 describe('writeReviewStart', () => {
   describe('when there is a session', () => {
     test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
+      fc.oauth(),
       fc.origin(),
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
@@ -58,26 +52,45 @@ describe('writeReviewStart', () => {
       },
     )
 
-    test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
-      fc.origin(),
-      fc.indeterminatePreprintId(),
-      fc.preprintTitle(),
-      fc.connection(),
-      fc.user(),
-    ])("there isn't a form", async (oauth, publicUrl, preprintId, preprintTitle, connection, user) => {
+    test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user()])(
+      "there isn't a form",
+      async (oauth, publicUrl, preprintId, preprintTitle, connection, user) => {
+        const actual = await runMiddleware(
+          _.writeReviewStart(preprintId)({
+            canRapidReview: shouldNotBeCalled,
+            formStore: new Keyv(),
+            getPreprintTitle: () => TE.right(preprintTitle),
+            getUser: () => M.of(user),
+            oauth,
+            publicUrl,
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: format(writeReviewAlreadyWrittenMatch.formatter, { id: preprintTitle.id }),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
+  })
+
+  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection()])(
+    "when there isn't a session",
+    async (oauth, publicUrl, preprintId, preprintTitle, connection) => {
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
           canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
+          getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
         }),
@@ -86,107 +99,55 @@ describe('writeReviewStart', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setStatus', status: Status.Found },
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewAlreadyWrittenMatch.formatter, { id: preprintTitle.id }),
+            value: new URL(
+              `?${new URLSearchParams({
+                client_id: oauth.clientId,
+                response_type: 'code',
+                redirect_uri: oauth.redirectUri.href,
+                scope: '/authenticate',
+                state: new URL(format(writeReviewStartMatch.formatter, { id: preprintTitle.id }), publicUrl).href,
+              }).toString()}`,
+              oauth.authorizeUrl,
+            ).href,
           },
           { type: 'endResponse' },
         ]),
       )
-    })
-  })
+    },
+  )
+
+  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.connection()])(
+    'when the preprint cannot be loaded',
+    async (oauth, publicUrl, preprintId, connection) => {
+      const actual = await runMiddleware(
+        _.writeReviewStart(preprintId)({
+          canRapidReview: shouldNotBeCalled,
+          formStore: new Keyv(),
+          getPreprintTitle: () => TE.left('unavailable'),
+          getUser: () => M.left('no-session'),
+          oauth,
+          publicUrl,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 
   test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
-    fc.origin(),
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection(),
-  ])("when there isn't a session", async (oauth, publicUrl, preprintId, preprintTitle, connection) => {
-    const actual = await runMiddleware(
-      _.writeReviewStart(preprintId)({
-        canRapidReview: shouldNotBeCalled,
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
-        getUser: () => M.left('no-session'),
-        oauth,
-        publicUrl,
-      }),
-      connection,
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.Found },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: new URL(
-            `?${new URLSearchParams({
-              client_id: oauth.clientId,
-              response_type: 'code',
-              redirect_uri: oauth.redirectUri.href,
-              scope: '/authenticate',
-              state: new URL(format(writeReviewStartMatch.formatter, { id: preprintTitle.id }), publicUrl).href,
-            }).toString()}`,
-            oauth.authorizeUrl,
-          ).href,
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
-
-  test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
-    fc.origin(),
-    fc.indeterminatePreprintId(),
-    fc.connection(),
-  ])('when the preprint cannot be loaded', async (oauth, publicUrl, preprintId, connection) => {
-    const actual = await runMiddleware(
-      _.writeReviewStart(preprintId)({
-        canRapidReview: shouldNotBeCalled,
-        formStore: new Keyv(),
-        getPreprintTitle: () => TE.left('unavailable'),
-        getUser: () => M.left('no-session'),
-        oauth,
-        publicUrl,
-      }),
-      connection,
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
-
-  test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
+    fc.oauth(),
     fc.origin(),
     fc.indeterminatePreprintId(),
     fc.connection(),

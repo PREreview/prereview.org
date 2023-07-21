@@ -18,13 +18,7 @@ import { runMiddleware } from './middleware'
 
 describe('logIn', () => {
   test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
+    fc.oauth(),
     fc
       .webUrl()
       .chain(referer => fc.tuple(fc.connection({ headers: fc.constant({ Referer: referer }) }), fc.constant(referer))),
@@ -53,16 +47,7 @@ describe('logIn', () => {
     )
   })
 
-  test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
-    fc.connection(),
-  ])("when there isn't a Referer header", async (oauth, connection) => {
+  test.prop([fc.oauth(), fc.connection()])("when there isn't a Referer header", async (oauth, connection) => {
     const actual = await runMiddleware(_.logIn({ oauth }), connection)()
 
     expect(actual).toStrictEqual(
@@ -88,47 +73,39 @@ describe('logIn', () => {
   })
 })
 
-test.prop([
-  fc.record({
-    authorizeUrl: fc.url(),
-    clientId: fc.string(),
-    clientSecret: fc.string(),
-    redirectUri: fc.url(),
-    tokenUrl: fc.url(),
-  }),
-  fc.preprintId(),
-  fc.origin(),
-  fc.connection(),
-])('logInAndRedirect', async (oauth, preprintId, publicUrl, connection) => {
-  const actual = await runMiddleware(
-    _.logInAndRedirect(writeReviewMatch.formatter, { id: preprintId })({
-      oauth,
-      publicUrl,
-    }),
-    connection,
-  )()
+test.prop([fc.oauth(), fc.preprintId(), fc.origin(), fc.connection()])(
+  'logInAndRedirect',
+  async (oauth, preprintId, publicUrl, connection) => {
+    const actual = await runMiddleware(
+      _.logInAndRedirect(writeReviewMatch.formatter, { id: preprintId })({
+        oauth,
+        publicUrl,
+      }),
+      connection,
+    )()
 
-  expect(actual).toStrictEqual(
-    E.right([
-      { type: 'setStatus', status: Status.Found },
-      {
-        type: 'setHeader',
-        name: 'Location',
-        value: new URL(
-          `?${new URLSearchParams({
-            client_id: oauth.clientId,
-            response_type: 'code',
-            redirect_uri: oauth.redirectUri.href,
-            scope: '/authenticate',
-            state: new URL(format(writeReviewMatch.formatter, { id: preprintId }), publicUrl).toString(),
-          }).toString()}`,
-          oauth.authorizeUrl,
-        ).href,
-      },
-      { type: 'endResponse' },
-    ]),
-  )
-})
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.Found },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: new URL(
+            `?${new URLSearchParams({
+              client_id: oauth.clientId,
+              response_type: 'code',
+              redirect_uri: oauth.redirectUri.href,
+              scope: '/authenticate',
+              state: new URL(format(writeReviewMatch.formatter, { id: preprintId }), publicUrl).toString(),
+            }).toString()}`,
+            oauth.authorizeUrl,
+          ).href,
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+  },
+)
 
 describe('logOut', () => {
   test.prop([
@@ -182,13 +159,7 @@ describe('authenticate', () => {
   test.prop([
     fc.string(),
     fc.url().chain(url => fc.tuple(fc.constant(url))),
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
+    fc.oauth(),
     fc.record({
       access_token: fc.string(),
       token_type: fc.string(),
@@ -248,13 +219,7 @@ describe('authenticate', () => {
   test.prop([
     fc.string(),
     fc.url().chain(url => fc.tuple(fc.constant(url))),
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
+    fc.oauth(),
     fc.record({
       access_token: fc.string(),
       token_type: fc.string(),
@@ -309,13 +274,7 @@ describe('authenticate', () => {
     fc.string(),
     fc.url(),
     fc.oneof(fc.webUrl(), fc.string()),
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
+    fc.oauth(),
     fc.record({
       access_token: fc.string(),
       token_type: fc.string(),

@@ -16,13 +16,7 @@ import { shouldNotBeCalled } from './should-not-be-called'
 describe('changeCareerStage', () => {
   describe('when profiles can be edited', () => {
     test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
+      fc.oauth(),
       fc.origin(),
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.user(),
@@ -51,13 +45,7 @@ describe('changeCareerStage', () => {
     })
 
     test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
+      fc.oauth(),
       fc.origin(),
       fc.careerStage().chain(careerStage =>
         fc.tuple(
@@ -96,13 +84,7 @@ describe('changeCareerStage', () => {
     })
 
     test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
+      fc.oauth(),
       fc.origin(),
       fc.connection({
         body: fc.record({ careerStage: fc.oneof(fc.careerStage(), fc.constant('skip')) }),
@@ -137,13 +119,7 @@ describe('changeCareerStage', () => {
     )
 
     test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
+      fc.oauth(),
       fc.origin(),
       fc.connection({
         body: fc.constant({ careerStage: 'skip' }),
@@ -177,13 +153,7 @@ describe('changeCareerStage', () => {
     })
 
     test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
+      fc.oauth(),
       fc.origin(),
       fc.connection({
         body: fc.record({ careerStage: fc.lorem() }, { withDeletedKeys: true }),
@@ -213,96 +183,75 @@ describe('changeCareerStage', () => {
       )
     })
 
-    test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
-      fc.origin(),
-      fc.connection(),
-    ])('when the user is not logged in', async (oauth, publicUrl, connection) => {
-      const actual = await runMiddleware(
-        _.changeCareerStage({
-          canEditProfile: true,
-          getUser: () => M.left('no-session'),
-          publicUrl,
-          oauth,
-          deleteCareerStage: shouldNotBeCalled,
-          getCareerStage: shouldNotBeCalled,
-          saveCareerStage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+    test.prop([fc.oauth(), fc.origin(), fc.connection()])(
+      'when the user is not logged in',
+      async (oauth, publicUrl, connection) => {
+        const actual = await runMiddleware(
+          _.changeCareerStage({
+            canEditProfile: true,
+            getUser: () => M.left('no-session'),
+            publicUrl,
+            oauth,
+            deleteCareerStage: shouldNotBeCalled,
+            getCareerStage: shouldNotBeCalled,
+            saveCareerStage: shouldNotBeCalled,
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Found },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                client_id: oauth.clientId,
-                response_type: 'code',
-                redirect_uri: oauth.redirectUri.href,
-                scope: '/authenticate',
-                state: new URL(format(myDetailsMatch.formatter, {}), publicUrl).toString(),
-              }).toString()}`,
-              oauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.Found },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: new URL(
+                `?${new URLSearchParams({
+                  client_id: oauth.clientId,
+                  response_type: 'code',
+                  redirect_uri: oauth.redirectUri.href,
+                  scope: '/authenticate',
+                  state: new URL(format(myDetailsMatch.formatter, {}), publicUrl).toString(),
+                }).toString()}`,
+                oauth.authorizeUrl,
+              ).href,
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
 
-    test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
-      fc.error(),
-    ])("when the user can't be loaded", async (oauth, publicUrl, connection, error) => {
-      const actual = await runMiddleware(
-        _.changeCareerStage({
-          canEditProfile: true,
-          getUser: () => M.left(error),
-          oauth,
-          publicUrl,
-          deleteCareerStage: shouldNotBeCalled,
-          getCareerStage: shouldNotBeCalled,
-          saveCareerStage: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+    test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error()])(
+      "when the user can't be loaded",
+      async (oauth, publicUrl, connection, error) => {
+        const actual = await runMiddleware(
+          _.changeCareerStage({
+            canEditProfile: true,
+            getUser: () => M.left(error),
+            oauth,
+            publicUrl,
+            deleteCareerStage: shouldNotBeCalled,
+            getCareerStage: shouldNotBeCalled,
+            saveCareerStage: shouldNotBeCalled,
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
   })
 
   test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
+    fc.oauth(),
     fc.origin(),
     fc.connection(),
     fc.either(fc.oneof(fc.error(), fc.constant('no-session' as const)), fc.user()),

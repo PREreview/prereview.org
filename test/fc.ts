@@ -12,6 +12,7 @@ import type { Json, JsonRecord } from 'fp-ts/Json'
 import type { NonEmptyArray } from 'fp-ts/NonEmptyArray'
 import type { Refinement } from 'fp-ts/Refinement'
 import type * as H from 'hyper-ts'
+import type { OAuthEnv } from 'hyper-ts-oauth'
 import { ExpressConnection } from 'hyper-ts/lib/express'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
 import {
@@ -129,6 +130,15 @@ export const cookieName = (): fc.Arbitrary<string> => fc.lorem({ maxCount: 1 })
 export const html = (): fc.Arbitrary<Html> => fc.lorem().map(text => toHtml`<p>${text}</p>`)
 
 export const sanitisedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeHtml)
+
+export const oauth = (): fc.Arbitrary<OAuthEnv['oauth']> =>
+  fc.record({
+    authorizeUrl: url(),
+    clientId: fc.string(),
+    clientSecret: fc.string(),
+    redirectUri: url(),
+    tokenUrl: url(),
+  })
 
 export const doiRegistrant = (): fc.Arbitrary<string> =>
   fc

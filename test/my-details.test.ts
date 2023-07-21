@@ -14,13 +14,7 @@ import { shouldNotBeCalled } from './should-not-be-called'
 describe('myDetails', () => {
   describe('when the user is logged in', () => {
     test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
+      fc.oauth(),
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
@@ -50,26 +44,79 @@ describe('myDetails', () => {
       },
     )
 
-    test.prop([
-      fc.record({
-        authorizeUrl: fc.url(),
-        clientId: fc.string(),
-        clientSecret: fc.string(),
-        redirectUri: fc.url(),
-        tokenUrl: fc.url(),
-      }),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
-      fc.user(),
-      fc.boolean(),
-    ])('when the career stage cannot be loaded', async (oauth, publicUrl, connection, user, canEditProfile) => {
+    test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.user(), fc.boolean()])(
+      'when the career stage cannot be loaded',
+      async (oauth, publicUrl, connection, user, canEditProfile) => {
+        const actual = await runMiddleware(
+          _.myDetails({
+            getUser: () => M.right(user),
+            oauth,
+            publicUrl,
+            canEditProfile,
+            getCareerStage: () => TE.left('unavailable'),
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
+  })
+
+  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.boolean()])(
+    'when the user is not logged in',
+    async (oauth, publicUrl, connection, canEditProfile) => {
       const actual = await runMiddleware(
         _.myDetails({
-          getUser: () => M.right(user),
+          getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
           canEditProfile,
-          getCareerStage: () => TE.left('unavailable'),
+          getCareerStage: shouldNotBeCalled,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: new URL(
+              `?${new URLSearchParams({
+                client_id: oauth.clientId,
+                response_type: 'code',
+                redirect_uri: oauth.redirectUri.href,
+                scope: '/authenticate',
+                state: new URL(format(myDetailsMatch.formatter, {}), publicUrl).toString(),
+              }).toString()}`,
+              oauth.authorizeUrl,
+            ).href,
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
+
+  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error(), fc.boolean()])(
+    "when the user can't be loaded",
+    async (oauth, publicUrl, connection, error, canEditProfile) => {
+      const actual = await runMiddleware(
+        _.myDetails({
+          getUser: () => M.left(error),
+          oauth,
+          publicUrl,
+          canEditProfile,
+          getCareerStage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -82,85 +129,6 @@ describe('myDetails', () => {
           { type: 'setBody', body: expect.anything() },
         ]),
       )
-    })
-  })
-
-  test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
-    fc.origin(),
-    fc.connection({ method: fc.requestMethod() }),
-    fc.boolean(),
-  ])('when the user is not logged in', async (oauth, publicUrl, connection, canEditProfile) => {
-    const actual = await runMiddleware(
-      _.myDetails({
-        getUser: () => M.left('no-session'),
-        oauth,
-        publicUrl,
-        canEditProfile,
-        getCareerStage: shouldNotBeCalled,
-      }),
-      connection,
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.Found },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: new URL(
-            `?${new URLSearchParams({
-              client_id: oauth.clientId,
-              response_type: 'code',
-              redirect_uri: oauth.redirectUri.href,
-              scope: '/authenticate',
-              state: new URL(format(myDetailsMatch.formatter, {}), publicUrl).toString(),
-            }).toString()}`,
-            oauth.authorizeUrl,
-          ).href,
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
-
-  test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
-    fc.origin(),
-    fc.connection({ method: fc.requestMethod() }),
-    fc.error(),
-    fc.boolean(),
-  ])("when the user can't be loaded", async (oauth, publicUrl, connection, error, canEditProfile) => {
-    const actual = await runMiddleware(
-      _.myDetails({
-        getUser: () => M.left(error),
-        oauth,
-        publicUrl,
-        canEditProfile,
-        getCareerStage: shouldNotBeCalled,
-      }),
-      connection,
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+    },
+  )
 })
