@@ -68,7 +68,7 @@
     "@tiptap/extension-superscript": "^2.0.4",
     "@tiptap/extension-typography": "^2.0.4",
     "@tiptap/starter-kit": "^2.0.4",
-    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
+    "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@tsconfig/node18": "^18.2.0",
     "@types/cacache": "^15.0.1",
     "@types/connect-slashes": "^0.0.33",
