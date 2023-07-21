@@ -12,7 +12,7 @@ import { writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
-import { formKey } from '../../src/write-review/form'
+import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
@@ -50,7 +50,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), CompletedFormC.encode(newReview))
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
       const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
         TE.right([reviewDoi, reviewId]),
       )
@@ -127,7 +127,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), CompletedFormC.encode(newReview))
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
       const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
         TE.right([reviewDoi, reviewId]),
       )
@@ -435,7 +435,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), CompletedFormC.encode(newReview))
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
@@ -458,7 +458,7 @@ describe('writeReviewPublish', () => {
           { type: 'setBody', body: expect.anything() },
         ]),
       )
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toStrictEqual(CompletedFormC.encode(newReview))
+      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toStrictEqual(FormC.encode(newReview))
     },
   )
 })
