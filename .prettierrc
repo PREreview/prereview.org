@@ -5,6 +5,5 @@
   "printWidth": 120,
   "semi": false,
   "singleQuote": true,
-  "trailingComma": "all",
   "plugins": ["@prettier/plugin-xml", "@trivago/prettier-plugin-sort-imports", "prettier-plugin-sh"]
 }
