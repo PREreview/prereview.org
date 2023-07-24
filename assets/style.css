@@ -711,6 +711,10 @@ math {
       min-inline-size: 20ch;
       max-inline-size: 50%;
 
+      :--scroller & {
+        flex-basis: 45%;
+      }
+
       & + dd {
         flex-grow: 1;
         flex-basis: min-content;
