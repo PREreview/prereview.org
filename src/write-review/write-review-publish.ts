@@ -23,6 +23,7 @@ import {
   profileMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
+  writeReviewDataPresentationMatch,
   writeReviewIntroductionMatchesMatch,
   writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
@@ -180,6 +181,19 @@ function renderReview(form: CompletedForm) {
                   .with('neutral', () => 'Neither supported nor not supported')
                   .with('well-supported', () => 'Well supported')
                   .with('strongly-supported', () => 'Strongly supported')
+                  .with('skip', () => 'I don’t know')
+                  .exhaustive()}
+              </dd>
+            </div>
+            <div>
+              <dt>Are the data presentations, including visualizations, appropriate and clear?</dt>
+              <dd>
+                ${match(form.dataPresentation)
+                  .with('inappropriate-unclear', () => 'Inappropriate and unclear')
+                  .with('somewhat-inappropriate-unclear', () => 'Somewhat inappropriate or unclear')
+                  .with('neutral', () => 'Neither adequate nor inadequate')
+                  .with('mostly-appropriate-clear', () => 'Mostly appropriate and clear')
+                  .with('highly-appropriate-clear', () => 'Highly appropriate and clear')
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
@@ -371,6 +385,27 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                             <a href="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}"
                               >Change
                               <span class="visually-hidden">if the results presented are supported by the data</span></a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Are the data presentations, including visualizations, appropriate and clear?</dt>
+                          <dd>
+                            ${match(review.dataPresentation)
+                              .with('inappropriate-unclear', () => 'Inappropriate and unclear')
+                              .with('somewhat-inappropriate-unclear', () => 'Somewhat inappropriate or unclear')
+                              .with('neutral', () => 'Neither adequate nor inadequate')
+                              .with('mostly-appropriate-clear', () => 'Mostly appropriate and clear')
+                              .with('highly-appropriate-clear', () => 'Highly appropriate and clear')
+                              .with('skip', () => 'I don’t know')
+                              .exhaustive()}
+                          </dd>
+                          <dd>
+                            <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}"
+                              >Change
+                              <span class="visually-hidden"
+                                >if the data presentations are appropriate and clear</span
+                              ></a
                             >
                           </dd>
                         </div>

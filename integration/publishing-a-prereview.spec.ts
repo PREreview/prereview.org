@@ -147,6 +147,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither adequate nor inadequate').check()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
@@ -166,6 +172,9 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Are the results presented supported by the data? Neither supported nor not supported',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Are the data presentations, including visualizations, appropriate and clear? Neither adequate nor inadequate',
     )
     await expect(page.getByRole('main')).toContainText('Competing interests None')
     await page.mouse.move(0, 0)
@@ -449,6 +458,23 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Neither supported nor not supported').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+    await page.waitForLoadState()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Neither adequate nor inadequate').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
   },
 )
@@ -985,6 +1011,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither supported nor not supported').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither adequate nor inadequate').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
@@ -1002,6 +1030,9 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(review).toContainText('Are the methods appropriate? Adequate')
     await expect(review).toContainText(
       'Are the results presented supported by the data? Neither supported nor not supported',
+    )
+    await expect(review).toContainText(
+      'Are the data presentations, including visualizations, appropriate and clear? Neither adequate nor inadequate',
     )
 
     await page
@@ -1047,6 +1078,15 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(review).toContainText('Are the results presented supported by the data? Well supported')
+
+    await page.getByRole('link', { name: 'Change if the data presentations are appropriate and clear' }).click()
+
+    await page.getByLabel('Mostly appropriate and clear').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText(
+      'Are the data presentations, including visualizations, appropriate and clear? Mostly appropriate and clear',
+    )
   },
 )
 
@@ -1119,7 +1159,13 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither supported nor not supported').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither adequate nor inadequate').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('Neither adequate nor inadequate')).toBeChecked()
 
     await page.goBack()
 
@@ -1220,6 +1266,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither supported nor not supported').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither adequate nor inadequate').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Neither adequate nor inadequate')).toBeChecked()
 
     await page.getByRole('link', { name: 'Back' }).click()
 
@@ -1961,6 +2013,46 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('Not supported', { exact: true })).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the data presentations are appropriate and clear',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Guided review').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', { name: 'Are the data presentations, including visualizations, appropriate and clear?' }),
+    ).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', {
+        name: 'Select if the data presentations are appropriate and clear',
+      })
+      .click()
+
+    await expect(page.getByLabel('Inappropriate and unclear')).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()

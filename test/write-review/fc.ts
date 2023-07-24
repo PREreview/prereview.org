@@ -25,6 +25,16 @@ export const methodsAppropriate = (): fc.Arbitrary<Required<Form>['methodsApprop
 export const resultsSupported = (): fc.Arbitrary<Required<Form>['resultsSupported']> =>
   fc.constantFrom('not-supported', 'partially-supported', 'neutral', 'well-supported', 'strongly-supported', 'skip')
 
+export const dataPresentation = (): fc.Arbitrary<Required<Form>['dataPresentation']> =>
+  fc.constantFrom(
+    'inappropriate-unclear',
+    'somewhat-inappropriate-unclear',
+    'neutral',
+    'mostly-appropriate-clear',
+    'highly-appropriate-clear',
+    'skip',
+  )
+
 export const moreAuthors = (): fc.Arbitrary<Required<Form>['moreAuthors']> =>
   fc.constantFrom('yes', 'yes-private', 'no')
 
@@ -47,6 +57,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
           persona: persona(),
           methodsAppropriate: methodsAppropriate(),
           resultsSupported: resultsSupported(),
+          dataPresentation: dataPresentation(),
           moreAuthors: moreAuthors(),
           competingInterests: competingInterests(),
           conduct: conduct(),
@@ -89,6 +100,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             introductionMatches: introductionMatches(),
             methodsAppropriate: methodsAppropriate(),
             resultsSupported: resultsSupported(),
+            dataPresentation: dataPresentation(),
             reviewType: fc.constant('freeform' as const),
           },
           { withDeletedKeys: true },
@@ -112,6 +124,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         introductionMatches: introductionMatches(),
         methodsAppropriate: methodsAppropriate(),
         resultsSupported: resultsSupported(),
+        dataPresentation: dataPresentation(),
         moreAuthors: moreAuthors(),
         persona: persona(),
         reviewType: fc.constant('questions' as const),
@@ -171,6 +184,7 @@ export const unknownFormType = () =>
       introductionMatches: introductionMatches(),
       methodsAppropriate: methodsAppropriate(),
       resultsSupported: resultsSupported(),
+      dataPresentation: dataPresentation(),
     }),
     fc.constant({}),
   ) satisfies fc.Arbitrary<Form>
