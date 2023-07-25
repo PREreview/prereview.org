@@ -107,6 +107,7 @@ import {
   writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
   writeReviewReviewTypeMatch,
+  writeReviewShouldReadMatch,
   writeReviewStartMatch,
 } from './routes'
 import { trainings } from './trainings'
@@ -132,6 +133,7 @@ import {
   writeReviewResultsSupported,
   writeReviewReview,
   writeReviewReviewType,
+  writeReviewShouldRead,
   writeReviewStart,
 } from './write-review'
 import {
@@ -495,6 +497,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewLanguageEditingMatch.parser,
           P.map(({ id }) => writeReviewLanguageEditing(id)),
+        ),
+        pipe(
+          writeReviewShouldReadMatch.parser,
+          P.map(({ id }) => writeReviewShouldRead(id)),
         ),
         pipe(
           writeReviewPersonaMatch.parser,

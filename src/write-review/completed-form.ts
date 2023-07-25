@@ -61,6 +61,7 @@ export const CompletedFormC = pipe(
         ),
         novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
         languageEditing: C.literal('yes', 'no'),
+        shouldRead: C.literal('no', 'yes-but', 'yes'),
       }),
       freeform: C.struct({
         reviewType: C.literal('freeform'),

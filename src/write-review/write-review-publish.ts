@@ -35,6 +35,7 @@ import {
   writeReviewPublishedMatch,
   writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
+  writeReviewShouldReadMatch,
 } from '../routes'
 import { type GetUserEnv, type User, getUser } from '../user'
 import { type CompletedForm, CompletedFormC } from './completed-form'
@@ -236,6 +237,16 @@ function renderReview(form: CompletedForm) {
                 ${match(form.languageEditing)
                   .with('no', () => 'No')
                   .with('yes', () => 'Yes')
+                  .exhaustive()}
+              </dd>
+            </div>
+            <div>
+              <dt>Should others read this preprint?</dt>
+              <dd>
+                ${match(form.shouldRead)
+                  .with('no', () => 'No, it’s of low quality or is majorly flawed')
+                  .with('yes-but', () => 'Yes, but it needs to be improved')
+                  .with('yes', () => 'Yes, it’s of high quality')
                   .exhaustive()}
               </dd>
             </div>
@@ -503,6 +514,21 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           <dd>
                             <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}"
                               >Change <span class="visually-hidden">if it would benefit from language editing</span></a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Should others read this preprint?</dt>
+                          <dd>
+                            ${match(review.shouldRead)
+                              .with('no', () => 'No, it’s of low quality or is majorly flawed')
+                              .with('yes-but', () => 'Yes, but it needs to be improved')
+                              .with('yes', () => 'Yes, it’s of high quality')
+                              .exhaustive()}
+                          </dd>
+                          <dd>
+                            <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}"
+                              >Change <span class="visually-hidden">if others should read this preprint</span></a
                             >
                           </dd>
                         </div>
