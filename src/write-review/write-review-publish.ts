@@ -26,6 +26,7 @@ import {
   writeReviewDataPresentationMatch,
   writeReviewFindingsNextStepsMatch,
   writeReviewIntroductionMatchesMatch,
+  writeReviewLanguageEditingMatch,
   writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
   writeReviewNovelMatch,
@@ -226,6 +227,15 @@ function renderReview(form: CompletedForm) {
                   .with('substantial', () => 'Substantial novelty')
                   .with('highly', () => 'Highly novel')
                   .with('skip', () => 'I don’t know')
+                  .exhaustive()}
+              </dd>
+            </div>
+            <div>
+              <dt>Would it benefit from language editing?</dt>
+              <dd>
+                ${match(form.languageEditing)
+                  .with('no', () => 'No')
+                  .with('yes', () => 'Yes')
                   .exhaustive()}
               </dd>
             </div>
@@ -479,6 +489,20 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           <dd>
                             <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}"
                               >Change <span class="visually-hidden">if the findings are novel</span></a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Would it benefit from language editing?</dt>
+                          <dd>
+                            ${match(review.languageEditing)
+                              .with('no', () => 'No')
+                              .with('yes', () => 'Yes')
+                              .exhaustive()}
+                          </dd>
+                          <dd>
+                            <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}"
+                              >Change <span class="visually-hidden">if it would benefit from language editing</span></a
                             >
                           </dd>
                         </div>

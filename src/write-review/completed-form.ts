@@ -60,6 +60,7 @@ export const CompletedFormC = pipe(
           'skip',
         ),
         novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
+        languageEditing: C.literal('yes', 'no'),
       }),
       freeform: C.struct({
         reviewType: C.literal('freeform'),

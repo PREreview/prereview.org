@@ -8,7 +8,9 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { canRapidReview } from '../feature-flags'
+import { type MissingE, missingE } from '../form'
+import { hasAnError } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -16,13 +18,13 @@ import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   writeReviewLanguageEditingMatch,
   writeReviewMatch,
-  writeReviewPersonaMatch,
-  writeReviewReviewMatch,
+  writeReviewNovelMatch,
+  writeReviewReviewTypeMatch,
 } from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
-export const writeReviewPersona = flow(
+export const writeReviewLanguageEditing = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
@@ -32,8 +34,26 @@ export const writeReviewPersona = flow(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
+      RM.bindW(
+        'canRapidReview',
+        flow(
+          fromReaderK(({ user }) => canRapidReview(user)),
+          RM.filterOrElse(
+            canRapidReview => canRapidReview,
+            () => 'not-found' as const,
+          ),
+        ),
+      ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.ichainW(state => match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(showPersonaForm)),
+      RM.ichainW(state =>
+        match(state)
+          .with(
+            { form: P.union({ alreadyWritten: P.optional('yes') }, { reviewType: P.optional('freeform') }) },
+            fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
+          )
+          .with({ method: 'POST' }, handleLanguageEditingForm)
+          .otherwise(showLanguageEditingForm),
+      ),
       RM.orElseW(error =>
         match(error)
           .with(
@@ -41,6 +61,7 @@ export const writeReviewPersona = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
+          .with('not-found', () => notFound)
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
       ),
@@ -54,28 +75,28 @@ export const writeReviewPersona = flow(
   ),
 )
 
-const showPersonaForm = flow(
+const showLanguageEditingForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, user),
+    languageEditingForm(preprint, { languageEditing: E.right(form.languageEditing) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showPersonaErrorForm = (preprint: PreprintTitle, user: User, originalForm: Form) =>
+const showLanguageEditingErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    fromReaderK((form: PersonaForm) => personaForm(preprint, form, originalForm.reviewType, user)),
+    fromReaderK((form: LanguageEditingForm) => languageEditingForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleLanguageEditingForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body => E.right({ persona: pipe(PersonaFieldD.decode(body), E.mapLeft(missingE)) })),
+    RM.decodeBody(body => E.right({ languageEditing: pipe(LanguageEditingFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
       pipe(
         E.Do,
-        E.apS('persona', fields.persona),
+        E.apS('languageEditing', fields.languageEditing),
         E.mapLeft(() => fields),
       ),
     ),
@@ -85,59 +106,54 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ persona: P.any }, showPersonaErrorForm(preprint, user, form))
+        .with({ languageEditing: P.any }, showLanguageEditingErrorForm(preprint, user))
         .exhaustive(),
     ),
   )
 
-const PersonaFieldD = pipe(
+const LanguageEditingFieldD = pipe(
   D.struct({
-    persona: D.literal('public', 'pseudonym'),
+    languageEditing: D.literal('no', 'yes'),
   }),
-  D.map(get('persona')),
+  D.map(get('languageEditing')),
 )
 
-type PersonaForm = {
-  readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>
+type LanguageEditingForm = {
+  readonly languageEditing: E.Either<MissingE, 'no' | 'yes' | undefined>
 }
 
-function personaForm(
-  preprint: PreprintTitle,
-  form: PersonaForm,
-  reviewType: 'freeform' | 'questions' | undefined,
-  user: User,
-) {
+function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm, user: User) {
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of “${preprint.title}”`,
+    title: plainText`${error ? 'Error: ' : ''}Would it benefit from language editing? – PREreview of “${
+      preprint.title
+    }”`,
     content: html`
       <nav>
-        <a
-          href="${format(
-            (reviewType === 'questions' ? writeReviewLanguageEditingMatch : writeReviewReviewMatch).formatter,
-            {
-              id: preprint.id,
-            },
-          )}"
-          class="back"
-          >Back</a
-        >
+        <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}" novalidate>
+        <form
+          method="post"
+          action="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}"
+          novalidate
+        >
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
                   <h2 id="error-summary-title">There is a problem</h2>
                   <ul>
-                    ${E.isLeft(form.persona)
+                    ${E.isLeft(form.languageEditing)
                       ? html`
                           <li>
-                            <a href="#persona-public">
-                              ${match(form.persona.left)
-                                .with({ _tag: 'MissingE' }, () => 'Select the name that you would like to use')
+                            <a href="#language-editing-yes">
+                              ${match(form.languageEditing.left)
+                                .with(
+                                  { _tag: 'MissingE' },
+                                  () => 'Select yes if it would benefit from language editing',
+                                )
                                 .exhaustive()}
                             </a>
                           </li>
@@ -148,44 +164,23 @@ function personaForm(
               `
             : ''}
 
-          <div ${rawHtml(E.isLeft(form.persona) ? 'class="error"' : '')}>
+          <div ${rawHtml(E.isLeft(form.languageEditing) ? 'class="error"' : '')}>
             <fieldset
               role="group"
-              aria-describedby="persona-tip"
-              ${rawHtml(E.isLeft(form.persona) ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}
+              ${rawHtml(
+                E.isLeft(form.languageEditing) ? 'aria-invalid="true" aria-errormessage="language-editing-error"' : '',
+              )}
             >
               <legend>
-                <h1>What name would you like to use?</h1>
+                <h1>Would it benefit from language editing?</h1>
               </legend>
 
-              <p id="persona-tip" role="note">
-                You can choose between the name on your ORCID&nbsp;profile or your PREreview&nbsp;pseudonym.
-              </p>
-
-              <details>
-                <summary><span>What is a PREreview&nbsp;pseudonym?</span></summary>
-
-                <div>
-                  <p>
-                    A <dfn>PREreview&nbsp;pseudonym</dfn> is an alternate name you can use instead of your
-                    real&nbsp;name. It is unique and combines a random color and animal. Your pseudonym is
-                    ‘${rawHtml(user.pseudonym.replace(' ', '&nbsp;'))}.’
-                  </p>
-
-                  <p>
-                    Using your pseudonym, you can contribute to open preprint review without fearing retribution or
-                    judgment that may occur when using your real name. However, using a pseudonym retains an element of
-                    accountability.
-                  </p>
-                </div>
-              </details>
-
-              ${E.isLeft(form.persona)
+              ${E.isLeft(form.languageEditing)
                 ? html`
-                    <div class="error-message" id="persona-error">
+                    <div class="error-message" id="language-editing-error">
                       <span class="visually-hidden">Error:</span>
-                      ${match(form.persona.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select the name that you would like to use')
+                      ${match(form.languageEditing.left)
+                        .with({ _tag: 'MissingE' }, () => 'Select yes if it would benefit from language editing')
                         .exhaustive()}
                     </div>
                   `
@@ -195,34 +190,36 @@ function personaForm(
                 <li>
                   <label>
                     <input
-                      name="persona"
-                      id="persona-public"
+                      name="languageEditing"
+                      id="language-editing-yes"
                       type="radio"
-                      value="public"
-                      aria-describedby="persona-tip-public"
-                      ${match(form.persona)
-                        .with({ right: 'public' }, () => 'checked')
+                      value="yes"
+                      aria-describedby="language-editing-tip-yes"
+                      ${match(form.languageEditing)
+                        .with({ right: 'yes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${user.name}</span>
+                    <span>Yes</span>
                   </label>
-                  <p id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID&nbsp;iD.</p>
+                  <p id="language-editing-tip-yes" role="note">
+                    Grammatical errors, awkward phrasing, or unclear expressions may hinder comprehension.
+                  </p>
                 </li>
                 <li>
                   <label>
                     <input
-                      name="persona"
+                      name="languageEditing"
                       type="radio"
-                      value="pseudonym"
-                      aria-describedby="persona-tip-pseudonym"
-                      ${match(form.persona)
-                        .with({ right: 'pseudonym' }, () => 'checked')
+                      value="no"
+                      aria-describedby="language-editing-tip-no"
+                      ${match(form.languageEditing)
+                        .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${user.pseudonym}</span>
+                    <span>No</span>
                   </label>
-                  <p id="persona-tip-pseudonym" role="note">
-                    We’ll only link your PREreview to others that also use your pseudonym.
+                  <p id="language-editing-tip-no" role="note">
+                    There may be minor language issues, but they do not impact clarity or understanding.
                   </p>
                 </li>
               </ol>

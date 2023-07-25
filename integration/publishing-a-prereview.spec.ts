@@ -165,6 +165,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
@@ -190,6 +196,9 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Would it benefit from language editing? No',
     )
     await expect(page.getByRole('main')).toContainText('Competing interests None')
     await page.mouse.move(0, 0)
@@ -523,6 +532,22 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Some novelty').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
   },
 )
@@ -1065,6 +1090,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Some novelty').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
@@ -1090,6 +1117,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately',
     )
     await expect(review).toContainText('Are the findings novel? Some novelty')
+    await expect(review).toContainText('Would it benefit from language editing? No')
 
     await page
       .getByRole('link', {
@@ -1159,6 +1187,13 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(review).toContainText('Are the findings novel? Substantial novelty')
+
+    await page.getByRole('link', { name: 'Change if it would benefit from language editing' }).click()
+
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText('Would it benefit from language editing? Yes')
   },
 )
 
@@ -1237,7 +1272,13 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Some novelty').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('No')).toBeChecked()
 
     await page.goBack()
 
@@ -1356,6 +1397,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Some novelty').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('No')).toBeChecked()
 
     await page.getByRole('link', { name: 'Back' }).click()
 
@@ -2239,6 +2286,49 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('Not at all')).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
+  'have to say if would benefit from language editing',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Guided review').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByRole('group', { name: 'Would it benefit from language editing?' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Select yes if it would benefit from language editing' }).click()
+
+    await expect(page.getByLabel('Yes')).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()

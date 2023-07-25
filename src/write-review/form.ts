@@ -26,6 +26,7 @@ import {
   writeReviewDataPresentationMatch,
   writeReviewFindingsNextStepsMatch,
   writeReviewIntroductionMatchesMatch,
+  writeReviewLanguageEditingMatch,
   writeReviewMethodsAppropriateMatch,
   writeReviewNovelMatch,
   writeReviewPersonaMatch,
@@ -135,6 +136,10 @@ export const nextFormMatch = (form: Form, user: User) =>
           () => writeReviewFindingsNextStepsMatch,
         )
         .with({ reviewType: 'questions', novel: P.optional(undefined) }, () => writeReviewNovelMatch)
+        .with(
+          { reviewType: 'questions', languageEditing: P.optional(undefined) },
+          () => writeReviewLanguageEditingMatch,
+        )
         .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
         .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
         .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
@@ -190,6 +195,7 @@ export const FormC = pipe(
       'skip',
     ),
     novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
+    languageEditing: C.literal('yes', 'no'),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     moreAuthorsApproved: C.literal('yes'),
     competingInterests: C.literal('yes', 'no'),

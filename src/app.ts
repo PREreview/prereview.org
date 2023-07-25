@@ -97,6 +97,7 @@ import {
   writeReviewDataPresentationMatch,
   writeReviewFindingsNextStepsMatch,
   writeReviewIntroductionMatchesMatch,
+  writeReviewLanguageEditingMatch,
   writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
   writeReviewNovelMatch,
@@ -122,6 +123,7 @@ import {
   writeReviewDataPresentation,
   writeReviewFindingsNextSteps,
   writeReviewIntroductionMatches,
+  writeReviewLanguageEditing,
   writeReviewMethodsAppropriate,
   writeReviewNovel,
   writeReviewPersona,
@@ -489,6 +491,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
         pipe(
           writeReviewNovelMatch.parser,
           P.map(({ id }) => writeReviewNovel(id)),
+        ),
+        pipe(
+          writeReviewLanguageEditingMatch.parser,
+          P.map(({ id }) => writeReviewLanguageEditing(id)),
         ),
         pipe(
           writeReviewPersonaMatch.parser,
