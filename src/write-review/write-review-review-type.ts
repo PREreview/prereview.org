@@ -219,7 +219,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                     <input
                       name="reviewType"
                       type="radio"
-                      value="freeform"
+                      value="already-written"
                       ${match(form.reviewType)
                         .with({ right: 'already-written' }, () => 'checked')
                         .otherwise(() => '')}
