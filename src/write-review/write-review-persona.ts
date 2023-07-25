@@ -13,12 +13,7 @@ import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import {
-  writeReviewFindingsNextStepsMatch,
-  writeReviewMatch,
-  writeReviewPersonaMatch,
-  writeReviewReviewMatch,
-} from '../routes'
+import { writeReviewMatch, writeReviewNovelMatch, writeReviewPersonaMatch, writeReviewReviewMatch } from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -114,10 +109,9 @@ function personaForm(
     content: html`
       <nav>
         <a
-          href="${format(
-            (reviewType === 'questions' ? writeReviewFindingsNextStepsMatch : writeReviewReviewMatch).formatter,
-            { id: preprint.id },
-          )}"
+          href="${format((reviewType === 'questions' ? writeReviewNovelMatch : writeReviewReviewMatch).formatter, {
+            id: preprint.id,
+          })}"
           class="back"
           >Back</a
         >

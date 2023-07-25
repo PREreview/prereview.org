@@ -159,6 +159,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Some novelty').check()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
@@ -501,6 +507,22 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Adequately', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Some novelty').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
   },
 )
@@ -1041,6 +1063,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Some novelty').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No, I reviewed it alone').check()
@@ -1065,6 +1089,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(review).toContainText(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately',
     )
+    await expect(review).toContainText('Are the findings novel? Some novelty')
 
     await page
       .getByRole('link', {
@@ -1127,6 +1152,13 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(review).toContainText(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Clearly and insightfully',
     )
+
+    await page.getByRole('link', { name: 'Change if the findings are novel' }).click()
+
+    await page.getByLabel('Substantial novelty').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText('Are the findings novel? Substantial novelty')
   },
 )
 
@@ -1203,7 +1235,13 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Some novelty').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
+
+    await page.goBack()
+
+    await expect(page.getByLabel('Some novelty')).toBeChecked()
 
     await page.goBack()
 
@@ -1316,6 +1354,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Some novelty').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Some novelty')).toBeChecked()
 
     await page.getByRole('link', { name: 'Back' }).click()
 
@@ -2149,6 +2193,52 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       .click()
 
     await expect(page.getByLabel('Inadequately')).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the findings are novel',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Guided review').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Are the findings novel?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', {
+        name: 'Select if the findings are novel',
+      })
+      .click()
+
+    await expect(page.getByLabel('Not at all')).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()

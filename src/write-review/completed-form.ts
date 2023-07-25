@@ -59,6 +59,7 @@ export const CompletedFormC = pipe(
           'exceptionally',
           'skip',
         ),
+        novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
       }),
       freeform: C.struct({
         reviewType: C.literal('freeform'),

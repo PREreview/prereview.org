@@ -38,6 +38,9 @@ export const dataPresentation = (): fc.Arbitrary<Required<Form>['dataPresentatio
 export const findingsNextSteps = (): fc.Arbitrary<Required<Form>['findingsNextSteps']> =>
   fc.constantFrom('inadequately', 'insufficiently', 'adequately', 'clearly-insightfully', 'exceptionally', 'skip')
 
+export const novel = (): fc.Arbitrary<Required<Form>['novel']> =>
+  fc.constantFrom('no', 'limited', 'some', 'substantial', 'highly', 'skip')
+
 export const moreAuthors = (): fc.Arbitrary<Required<Form>['moreAuthors']> =>
   fc.constantFrom('yes', 'yes-private', 'no')
 
@@ -62,6 +65,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
           resultsSupported: resultsSupported(),
           dataPresentation: dataPresentation(),
           findingsNextSteps: findingsNextSteps(),
+          novel: novel(),
           moreAuthors: moreAuthors(),
           competingInterests: competingInterests(),
           conduct: conduct(),
@@ -106,6 +110,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             resultsSupported: resultsSupported(),
             dataPresentation: dataPresentation(),
             findingsNextSteps: findingsNextSteps(),
+            novel: novel(),
             reviewType: fc.constant('freeform' as const),
           },
           { withDeletedKeys: true },
@@ -131,6 +136,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         resultsSupported: resultsSupported(),
         dataPresentation: dataPresentation(),
         findingsNextSteps: findingsNextSteps(),
+        novel: novel(),
         moreAuthors: moreAuthors(),
         persona: persona(),
         reviewType: fc.constant('questions' as const),
@@ -192,6 +198,7 @@ export const unknownFormType = () =>
       resultsSupported: resultsSupported(),
       dataPresentation: dataPresentation(),
       findingsNextSteps: findingsNextSteps(),
+      novel: novel(),
     }),
     fc.constant({}),
   ) satisfies fc.Arbitrary<Form>

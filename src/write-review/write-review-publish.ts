@@ -28,6 +28,7 @@ import {
   writeReviewIntroductionMatchesMatch,
   writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
+  writeReviewNovelMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
   writeReviewPublishedMatch,
@@ -211,6 +212,19 @@ function renderReview(form: CompletedForm) {
                   .with('adequately', () => 'Adequately')
                   .with('clearly-insightfully', () => 'Clearly and insightfully')
                   .with('exceptionally', () => 'Exceptionally')
+                  .with('skip', () => 'I don’t know')
+                  .exhaustive()}
+              </dd>
+            </div>
+            <div>
+              <dt>Are the findings novel?</dt>
+              <dd>
+                ${match(form.novel)
+                  .with('no', () => 'Not at all')
+                  .with('limited', () => 'Limited novelty')
+                  .with('some', () => 'Some novelty')
+                  .with('substantial', () => 'Substantial novelty')
+                  .with('highly', () => 'Highly novel')
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
@@ -447,6 +461,24 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               <span class="visually-hidden"
                                 >how well the authors discuss their findings and next steps</span
                               ></a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Are the findings novel?</dt>
+                          <dd>
+                            ${match(review.novel)
+                              .with('no', () => 'Not at all')
+                              .with('limited', () => 'Limited novelty')
+                              .with('some', () => 'Some novelty')
+                              .with('substantial', () => 'Substantial novelty')
+                              .with('highly', () => 'Highly novel')
+                              .with('skip', () => 'I don’t know')
+                              .exhaustive()}
+                          </dd>
+                          <dd>
+                            <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}"
+                              >Change <span class="visually-hidden">if the findings are novel</span></a
                             >
                           </dd>
                         </div>
