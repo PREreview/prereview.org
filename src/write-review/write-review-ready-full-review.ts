@@ -8,21 +8,23 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { canRapidReview } from '../feature-flags'
+import { type MissingE, missingE } from '../form'
+import { hasAnError } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
   writeReviewMatch,
-  writeReviewPersonaMatch,
   writeReviewReadyFullReviewMatch,
-  writeReviewReviewMatch,
+  writeReviewReviewTypeMatch,
+  writeReviewShouldReadMatch,
 } from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
-export const writeReviewPersona = flow(
+export const writeReviewReadyFullReview = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(
@@ -32,8 +34,26 @@ export const writeReviewPersona = flow(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
+      RM.bindW(
+        'canRapidReview',
+        flow(
+          fromReaderK(({ user }) => canRapidReview(user)),
+          RM.filterOrElse(
+            canRapidReview => canRapidReview,
+            () => 'not-found' as const,
+          ),
+        ),
+      ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.ichainW(state => match(state).with({ method: 'POST' }, handlePersonaForm).otherwise(showPersonaForm)),
+      RM.ichainW(state =>
+        match(state)
+          .with(
+            { form: P.union({ alreadyWritten: P.optional('yes') }, { reviewType: P.optional('freeform') }) },
+            fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
+          )
+          .with({ method: 'POST' }, handleReadyFullReviewForm)
+          .otherwise(showReadyFullReviewForm),
+      ),
       RM.orElseW(error =>
         match(error)
           .with(
@@ -41,6 +61,7 @@ export const writeReviewPersona = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
+          .with('not-found', () => notFound)
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
       ),
@@ -54,28 +75,28 @@ export const writeReviewPersona = flow(
   ),
 )
 
-const showPersonaForm = flow(
+const showReadyFullReviewForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, user),
+    readyFullReviewForm(preprint, { readyFullReview: E.right(form.readyFullReview) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showPersonaErrorForm = (preprint: PreprintTitle, user: User, originalForm: Form) =>
+const showReadyFullReviewErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    fromReaderK((form: PersonaForm) => personaForm(preprint, form, originalForm.reviewType, user)),
+    fromReaderK((form: ReadyFullReviewForm) => readyFullReviewForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handleReadyFullReviewForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body => E.right({ persona: pipe(PersonaFieldD.decode(body), E.mapLeft(missingE)) })),
+    RM.decodeBody(body => E.right({ readyFullReview: pipe(ReadyFullReviewFieldD.decode(body), E.mapLeft(missingE)) })),
     RM.chainEitherK(fields =>
       pipe(
         E.Do,
-        E.apS('persona', fields.persona),
+        E.apS('readyFullReview', fields.readyFullReview),
         E.mapLeft(() => fields),
       ),
     ),
@@ -85,59 +106,54 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ persona: P.any }, showPersonaErrorForm(preprint, user, form))
+        .with({ readyFullReview: P.any }, showReadyFullReviewErrorForm(preprint, user))
         .exhaustive(),
     ),
   )
 
-const PersonaFieldD = pipe(
+const ReadyFullReviewFieldD = pipe(
   D.struct({
-    persona: D.literal('public', 'pseudonym'),
+    readyFullReview: D.literal('no', 'yes-changes', 'yes'),
   }),
-  D.map(get('persona')),
+  D.map(get('readyFullReview')),
 )
 
-type PersonaForm = {
-  readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>
+type ReadyFullReviewForm = {
+  readonly readyFullReview: E.Either<MissingE, 'no' | 'yes-changes' | 'yes' | undefined>
 }
 
-function personaForm(
-  preprint: PreprintTitle,
-  form: PersonaForm,
-  reviewType: 'freeform' | 'questions' | undefined,
-  user: User,
-) {
+function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm, user: User) {
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}What name would you like to use? – PREreview of “${preprint.title}”`,
+    title: plainText`${error ? 'Error: ' : ''}Is it ready for a full and detailed review? – PREreview of “${
+      preprint.title
+    }”`,
     content: html`
       <nav>
-        <a
-          href="${format(
-            (reviewType === 'questions' ? writeReviewReadyFullReviewMatch : writeReviewReviewMatch).formatter,
-            {
-              id: preprint.id,
-            },
-          )}"
-          class="back"
-          >Back</a
-        >
+        <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}" novalidate>
+        <form
+          method="post"
+          action="${format(writeReviewReadyFullReviewMatch.formatter, { id: preprint.id })}"
+          novalidate
+        >
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">
                   <h2 id="error-summary-title">There is a problem</h2>
                   <ul>
-                    ${E.isLeft(form.persona)
+                    ${E.isLeft(form.readyFullReview)
                       ? html`
                           <li>
-                            <a href="#persona-public">
-                              ${match(form.persona.left)
-                                .with({ _tag: 'MissingE' }, () => 'Select the name that you would like to use')
+                            <a href="#ready-full-review-no">
+                              ${match(form.readyFullReview.left)
+                                .with(
+                                  { _tag: 'MissingE' },
+                                  () => 'Select yes if it is ready for a full and detailed review',
+                                )
                                 .exhaustive()}
                             </a>
                           </li>
@@ -148,44 +164,23 @@ function personaForm(
               `
             : ''}
 
-          <div ${rawHtml(E.isLeft(form.persona) ? 'class="error"' : '')}>
+          <div ${rawHtml(E.isLeft(form.readyFullReview) ? 'class="error"' : '')}>
             <fieldset
               role="group"
-              aria-describedby="persona-tip"
-              ${rawHtml(E.isLeft(form.persona) ? 'aria-invalid="true" aria-errormessage="persona-error"' : '')}
+              ${rawHtml(
+                E.isLeft(form.readyFullReview) ? 'aria-invalid="true" aria-errormessage="ready-full-review-error"' : '',
+              )}
             >
               <legend>
-                <h1>What name would you like to use?</h1>
+                <h1>Is it ready for a full and detailed review?</h1>
               </legend>
 
-              <p id="persona-tip" role="note">
-                You can choose between the name on your ORCID&nbsp;profile or your PREreview&nbsp;pseudonym.
-              </p>
-
-              <details>
-                <summary><span>What is a PREreview&nbsp;pseudonym?</span></summary>
-
-                <div>
-                  <p>
-                    A <dfn>PREreview&nbsp;pseudonym</dfn> is an alternate name you can use instead of your
-                    real&nbsp;name. It is unique and combines a random color and animal. Your pseudonym is
-                    ‘${rawHtml(user.pseudonym.replace(' ', '&nbsp;'))}.’
-                  </p>
-
-                  <p>
-                    Using your pseudonym, you can contribute to open preprint review without fearing retribution or
-                    judgment that may occur when using your real name. However, using a pseudonym retains an element of
-                    accountability.
-                  </p>
-                </div>
-              </details>
-
-              ${E.isLeft(form.persona)
+              ${E.isLeft(form.readyFullReview)
                 ? html`
-                    <div class="error-message" id="persona-error">
+                    <div class="error-message" id="ready-full-review-error">
                       <span class="visually-hidden">Error:</span>
-                      ${match(form.persona.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select the name that you would like to use')
+                      ${match(form.readyFullReview.left)
+                        .with({ _tag: 'MissingE' }, () => 'Select yes if it is ready for a full and detailed review')
                         .exhaustive()}
                     </div>
                   `
@@ -195,35 +190,42 @@ function personaForm(
                 <li>
                   <label>
                     <input
-                      name="persona"
-                      id="persona-public"
+                      name="readyFullReview"
+                      id="ready-full-review-no"
                       type="radio"
-                      value="public"
-                      aria-describedby="persona-tip-public"
-                      ${match(form.persona)
-                        .with({ right: 'public' }, () => 'checked')
+                      value="no"
+                      ${match(form.readyFullReview)
+                        .with({ right: 'no' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${user.name}</span>
+                    <span>No, it needs a major revision</span>
                   </label>
-                  <p id="persona-tip-public" role="note">We’ll link your PREreview to your ORCID&nbsp;iD.</p>
                 </li>
                 <li>
                   <label>
                     <input
-                      name="persona"
+                      name="readyFullReview"
                       type="radio"
-                      value="pseudonym"
-                      aria-describedby="persona-tip-pseudonym"
-                      ${match(form.persona)
-                        .with({ right: 'pseudonym' }, () => 'checked')
+                      value="yes-changes"
+                      ${match(form.readyFullReview)
+                        .with({ right: 'yes-changes' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>${user.pseudonym}</span>
+                    <span>Yes, after minor changes</span>
                   </label>
-                  <p id="persona-tip-pseudonym" role="note">
-                    We’ll only link your PREreview to others that also use your pseudonym.
-                  </p>
+                </li>
+                <li>
+                  <label>
+                    <input
+                      name="readyFullReview"
+                      type="radio"
+                      value="yes"
+                      ${match(form.readyFullReview)
+                        .with({ right: 'yes' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>Yes, as it is</span>
+                  </label>
                 </li>
               </ol>
             </fieldset>

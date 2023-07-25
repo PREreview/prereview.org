@@ -45,6 +45,9 @@ export const languageEditing = (): fc.Arbitrary<Required<Form>['languageEditing'
 
 export const shouldRead = (): fc.Arbitrary<Required<Form>['shouldRead']> => fc.constantFrom('yes', 'yes-but', 'no')
 
+export const readyFullReview = (): fc.Arbitrary<Required<Form>['readyFullReview']> =>
+  fc.constantFrom('yes', 'yes-changes', 'no')
+
 export const moreAuthors = (): fc.Arbitrary<Required<Form>['moreAuthors']> =>
   fc.constantFrom('yes', 'yes-private', 'no')
 
@@ -72,6 +75,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
           novel: novel(),
           languageEditing: languageEditing(),
           shouldRead: shouldRead(),
+          readyFullReview: readyFullReview(),
           moreAuthors: moreAuthors(),
           competingInterests: competingInterests(),
           conduct: conduct(),
@@ -119,6 +123,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             novel: novel(),
             languageEditing: languageEditing(),
             shouldRead: shouldRead(),
+            readyFullReview: readyFullReview(),
             reviewType: fc.constant('freeform' as const),
           },
           { withDeletedKeys: true },
@@ -147,6 +152,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         novel: novel(),
         languageEditing: languageEditing(),
         shouldRead: shouldRead(),
+        readyFullReview: readyFullReview(),
         moreAuthors: moreAuthors(),
         persona: persona(),
         reviewType: fc.constant('questions' as const),
@@ -211,6 +217,7 @@ export const unknownFormType = () =>
       novel: novel(),
       languageEditing: languageEditing(),
       shouldRead: shouldRead(),
+      readyFullReview: readyFullReview(),
     }),
     fc.constant({}),
   ) satisfies fc.Arbitrary<Form>

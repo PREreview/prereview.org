@@ -224,6 +224,12 @@ export const writeReviewLanguageEditingMatch = pipe(
 
 export const writeReviewShouldReadMatch = pipe(writeReviewBaseMatch, P.then(P.lit('should-read')), P.then(P.end))
 
+export const writeReviewReadyFullReviewMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('ready-full-review')),
+  P.then(P.end),
+)
+
 export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, P.then(P.lit('choose-name')), P.then(P.end))
 
 export const writeReviewAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('more-authors')), P.then(P.end))

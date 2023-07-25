@@ -33,6 +33,7 @@ import {
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
   writeReviewPublishedMatch,
+  writeReviewReadyFullReviewMatch,
   writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
@@ -247,6 +248,16 @@ function renderReview(form: CompletedForm) {
                   .with('no', () => 'No, it’s of low quality or is majorly flawed')
                   .with('yes-but', () => 'Yes, but it needs to be improved')
                   .with('yes', () => 'Yes, it’s of high quality')
+                  .exhaustive()}
+              </dd>
+            </div>
+            <div>
+              <dt>Is it ready for a full and detailed review?</dt>
+              <dd>
+                ${match(form.readyFullReview)
+                  .with('no', () => 'No, it needs a major revision')
+                  .with('yes-changes', () => 'Yes, after minor changes')
+                  .with('yes', () => 'Yes, as it is')
                   .exhaustive()}
               </dd>
             </div>
@@ -529,6 +540,22 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           <dd>
                             <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}"
                               >Change <span class="visually-hidden">if others should read this preprint</span></a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>Is it ready for a full and detailed review?</dt>
+                          <dd>
+                            ${match(review.readyFullReview)
+                              .with('no', () => 'No, it needs a major revision')
+                              .with('yes-changes', () => 'Yes, after minor changes')
+                              .with('yes', () => 'Yes, as it is')
+                              .exhaustive()}
+                          </dd>
+                          <dd>
+                            <a href="${format(writeReviewReadyFullReviewMatch.formatter, { id: preprint.id })}"
+                              >Change
+                              <span class="visually-hidden">if it is ready for a full and detailed review</span></a
                             >
                           </dd>
                         </div>
