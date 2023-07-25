@@ -711,7 +711,7 @@ math {
       min-inline-size: 20ch;
       max-inline-size: 50%;
 
-      :--scroller & {
+      [role='region'] & {
         flex-basis: 45%;
       }
 

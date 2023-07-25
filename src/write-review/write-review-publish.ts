@@ -14,7 +14,7 @@ import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import type { CanRapidReviewEnv } from '../feature-flags'
 import { type Html, html, plainText, sendHtml } from '../html'
-import { fixHeadingLevels } from '../html'
+import { fixHeadingLevels, rawHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { type FathomEnv, type PhaseEnv, page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
@@ -390,7 +390,11 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                   : ''}
               </div>
 
-              <div aria-labelledby="review-label" role="region" tabindex="0">
+              <div
+                aria-labelledby="review-label"
+                role="region"
+                ${review.reviewType === 'freeform' ? rawHtml('tabindex="0"') : ''}
+              >
                 ${review.reviewType === 'freeform'
                   ? fixHeadingLevels(2, review.review)
                   : html`
