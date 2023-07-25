@@ -35,6 +35,9 @@ export const dataPresentation = (): fc.Arbitrary<Required<Form>['dataPresentatio
     'skip',
   )
 
+export const findingsNextSteps = (): fc.Arbitrary<Required<Form>['findingsNextSteps']> =>
+  fc.constantFrom('inadequately', 'insufficiently', 'adequately', 'clearly-insightfully', 'exceptionally', 'skip')
+
 export const moreAuthors = (): fc.Arbitrary<Required<Form>['moreAuthors']> =>
   fc.constantFrom('yes', 'yes-private', 'no')
 
@@ -58,6 +61,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
           methodsAppropriate: methodsAppropriate(),
           resultsSupported: resultsSupported(),
           dataPresentation: dataPresentation(),
+          findingsNextSteps: findingsNextSteps(),
           moreAuthors: moreAuthors(),
           competingInterests: competingInterests(),
           conduct: conduct(),
@@ -101,6 +105,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             methodsAppropriate: methodsAppropriate(),
             resultsSupported: resultsSupported(),
             dataPresentation: dataPresentation(),
+            findingsNextSteps: findingsNextSteps(),
             reviewType: fc.constant('freeform' as const),
           },
           { withDeletedKeys: true },
@@ -125,6 +130,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         methodsAppropriate: methodsAppropriate(),
         resultsSupported: resultsSupported(),
         dataPresentation: dataPresentation(),
+        findingsNextSteps: findingsNextSteps(),
         moreAuthors: moreAuthors(),
         persona: persona(),
         reviewType: fc.constant('questions' as const),
@@ -185,6 +191,7 @@ export const unknownFormType = () =>
       methodsAppropriate: methodsAppropriate(),
       resultsSupported: resultsSupported(),
       dataPresentation: dataPresentation(),
+      findingsNextSteps: findingsNextSteps(),
     }),
     fc.constant({}),
   ) satisfies fc.Arbitrary<Form>

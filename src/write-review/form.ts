@@ -24,6 +24,7 @@ import {
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
   writeReviewDataPresentationMatch,
+  writeReviewFindingsNextStepsMatch,
   writeReviewIntroductionMatchesMatch,
   writeReviewMethodsAppropriateMatch,
   writeReviewPersonaMatch,
@@ -128,6 +129,10 @@ export const nextFormMatch = (form: Form, user: User) =>
           { reviewType: 'questions', dataPresentation: P.optional(undefined) },
           () => writeReviewDataPresentationMatch,
         )
+        .with(
+          { reviewType: 'questions', findingsNextSteps: P.optional(undefined) },
+          () => writeReviewFindingsNextStepsMatch,
+        )
         .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
         .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
         .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
@@ -172,6 +177,14 @@ export const FormC = pipe(
       'neutral',
       'mostly-appropriate-clear',
       'highly-appropriate-clear',
+      'skip',
+    ),
+    findingsNextSteps: C.literal(
+      'inadequately',
+      'insufficiently',
+      'adequately',
+      'clearly-insightfully',
+      'exceptionally',
       'skip',
     ),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),

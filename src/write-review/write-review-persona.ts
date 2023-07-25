@@ -14,7 +14,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
-  writeReviewDataPresentationMatch,
+  writeReviewFindingsNextStepsMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
   writeReviewReviewMatch,
@@ -115,7 +115,7 @@ function personaForm(
       <nav>
         <a
           href="${format(
-            (reviewType === 'questions' ? writeReviewDataPresentationMatch : writeReviewReviewMatch).formatter,
+            (reviewType === 'questions' ? writeReviewFindingsNextStepsMatch : writeReviewReviewMatch).formatter,
             { id: preprint.id },
           )}"
           class="back"

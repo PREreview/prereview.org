@@ -51,6 +51,14 @@ export const CompletedFormC = pipe(
           'highly-appropriate-clear',
           'skip',
         ),
+        findingsNextSteps: C.literal(
+          'inadequately',
+          'insufficiently',
+          'adequately',
+          'clearly-insightfully',
+          'exceptionally',
+          'skip',
+        ),
       }),
       freeform: C.struct({
         reviewType: C.literal('freeform'),

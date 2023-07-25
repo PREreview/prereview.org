@@ -208,6 +208,12 @@ export const writeReviewDataPresentationMatch = pipe(
   P.then(P.end),
 )
 
+export const writeReviewFindingsNextStepsMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('findings-next-steps')),
+  P.then(P.end),
+)
+
 export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, P.then(P.lit('choose-name')), P.then(P.end))
 
 export const writeReviewAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('more-authors')), P.then(P.end))

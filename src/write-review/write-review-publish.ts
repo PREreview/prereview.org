@@ -24,6 +24,7 @@ import {
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
   writeReviewDataPresentationMatch,
+  writeReviewFindingsNextStepsMatch,
   writeReviewIntroductionMatchesMatch,
   writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
@@ -194,6 +195,22 @@ function renderReview(form: CompletedForm) {
                   .with('neutral', () => 'Neither adequate nor inadequate')
                   .with('mostly-appropriate-clear', () => 'Mostly appropriate and clear')
                   .with('highly-appropriate-clear', () => 'Highly appropriate and clear')
+                  .with('skip', () => 'I don’t know')
+                  .exhaustive()}
+              </dd>
+            </div>
+            <div>
+              <dt>
+                How well do the authors discuss, explain, and interpret their findings and potential next steps for the
+                research?
+              </dt>
+              <dd>
+                ${match(form.findingsNextSteps)
+                  .with('inadequately', () => 'Inadequately')
+                  .with('insufficiently', () => 'Insufficiently')
+                  .with('adequately', () => 'Adequately')
+                  .with('clearly-insightfully', () => 'Clearly and insightfully')
+                  .with('exceptionally', () => 'Exceptionally')
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
@@ -405,6 +422,30 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               >Change
                               <span class="visually-hidden"
                                 >if the data presentations are appropriate and clear</span
+                              ></a
+                            >
+                          </dd>
+                        </div>
+                        <div>
+                          <dt>
+                            How well do the authors discuss, explain, and interpret their findings and potential next
+                            steps for the research?
+                          </dt>
+                          <dd>
+                            ${match(review.findingsNextSteps)
+                              .with('inadequately', () => 'Inadequately')
+                              .with('insufficiently', () => 'Insufficiently')
+                              .with('adequately', () => 'Adequately')
+                              .with('clearly-insightfully', () => 'Clearly and insightfully')
+                              .with('exceptionally', () => 'Exceptionally')
+                              .with('skip', () => 'I don’t know')
+                              .exhaustive()}
+                          </dd>
+                          <dd>
+                            <a href="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}"
+                              >Change
+                              <span class="visually-hidden"
+                                >how well the authors discuss their findings and next steps</span
                               ></a
                             >
                           </dd>
