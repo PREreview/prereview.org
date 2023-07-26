@@ -24,9 +24,26 @@ import {
 import { NonEmptyStringC } from '../string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
+import { type Step, writeReviewStepMiddleware } from './write-review-step-middleware'
 
 const turndown = new TurndownService({ bulletListMarker: '-', emDelimiter: '*', headingStyle: 'atx' })
 turndown.keep(['sub', 'sup'])
+
+const thisStep: Step<WriteReviewForm | PasteReviewForm> = {
+  decoderThing(body: unknown): Either<WriteReviewForm | PasteReviewForm, Form> {
+    return undefined
+  },
+  formToStepForm: (form: Form) => ({ review: E.right(form.review) }),
+  notFeaturedFlaggedByRapidReview: true,
+  questionIsAnswerable: (form: Form) => form.reviewType === 'freeform',
+  renderStepFormPage: (preprint: PreprintTitle, stepForm: WriteReviewForm | PasteReviewForm, user: User) =>
+    match(stepForm)
+      .with({ type: 'write' }, writeStepForm => writeReviewForm(preprint, writeStepForm, user))
+      .with({ type: 'paste' }, pasteStepForm => pasteReviewForm(preprint, pasteStepForm, user))
+      .exhaustive(),
+}
+
+const test = writeReviewStepMiddleware(thisStep)
 
 export const writeReviewReview = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
@@ -179,10 +196,12 @@ const ReviewFieldD = pipe(
 )
 
 type WriteReviewForm = {
+  type: 'write'
   readonly review: E.Either<MissingE | InvalidE, Html | undefined>
 }
 
 type PasteReviewForm = {
+  type: 'paste'
   readonly review: E.Either<MissingE, Html | undefined>
 }
 
