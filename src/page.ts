@@ -226,6 +226,7 @@ export function page({
 
                   <ul aria-label="Support links">
                     <li><a href="https://donorbox.org/prereview">Donate</a></li>
+                    <li><a href="https://content.prereview.org/people/">People</a></li>
                     <li>
                       <a
                         href="${format(fundingMatch.formatter, {})}"
@@ -239,6 +240,9 @@ export function page({
                         ${current === 'code-of-conduct' ? html`aria-current="page"` : ''}
                         >Code of Conduct</a
                       >
+                    </li>
+                    <li>
+                      <a href="https://content.prereview.org/edi/">EDI Statement</a>
                     </li>
                     <li>
                       <a
