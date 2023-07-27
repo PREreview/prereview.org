@@ -15,6 +15,7 @@ describe('club', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.clubId(),
       fc.array(
         fc.record({
           id: fc.integer(),
@@ -23,11 +24,11 @@ describe('club', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when the data can be loaded', async (connection, user, prereviews) => {
+    ])('when the data can be loaded', async (connection, user, clubId, prereviews) => {
       const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.right(prereviews))
 
       const actual = await runMiddleware(
-        _.club('asapbio-metabolism')({
+        _.club(clubId)({
           canSeeClubs: true,
           getPrereviews,
           getUser: () => M.fromEither(user),
@@ -42,15 +43,16 @@ describe('club', () => {
           { type: 'setBody', body: expect.anything() },
         ]),
       )
-      expect(getPrereviews).toHaveBeenCalledWith('asapbio-metabolism')
+      expect(getPrereviews).toHaveBeenCalledWith(clubId)
     })
 
     test.prop([
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the PREreviews are unavailable', async (connection, user) => {
+      fc.clubId(),
+    ])('when the PREreviews are unavailable', async (connection, user, clubId) => {
       const actual = await runMiddleware(
-        _.club('asapbio-metabolism')({
+        _.club(clubId)({
           canSeeClubs: true,
           getPrereviews: () => TE.left('unavailable'),
           getUser: () => M.fromEither(user),
@@ -72,9 +74,10 @@ describe('club', () => {
   test.prop([
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])("when clubs can't be seen", async (connection, user) => {
+    fc.clubId(),
+  ])("when clubs can't be seen", async (connection, user, clubId) => {
     const actual = await runMiddleware(
-      _.club('asapbio-metabolism')({
+      _.club(clubId)({
         canSeeClubs: false,
         getPrereviews: shouldNotBeCalled,
         getUser: () => M.fromEither(user),

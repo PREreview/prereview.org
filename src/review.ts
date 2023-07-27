@@ -13,6 +13,7 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
+import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { fixHeadingLevels } from './html'
@@ -29,7 +30,7 @@ import PlainDate = Temporal.PlainDate
 
 export type Prereview = {
   authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
-  club?: 'asapbio-metabolism'
+  club?: ClubId
   doi: Doi
   language?: LanguageCode
   license: 'CC-BY-4.0'

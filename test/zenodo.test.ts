@@ -628,7 +628,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
 })
 
 describe('getPrereviewFromZenodo', () => {
-  test.prop([fc.integer(), fc.preprint(), fc.boolean()])(
+  test.prop([fc.integer(), fc.preprint(), fc.option(fc.clubId(), { nil: undefined })])(
     'when the PREreview can be loaded',
     async (id, preprint, isInClub) => {
       const record: Record = {

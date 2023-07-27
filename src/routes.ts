@@ -7,6 +7,7 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
+import type { ClubId } from './club-id'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './preprint-id'
 import type { OrcidProfileId, PseudonymProfileId } from './profile-id'
 import { PseudonymC } from './pseudonym'
@@ -44,7 +45,7 @@ const SlugC = C.make(
   },
 )
 
-const ClubC = C.literal('asapbio-metabolism')
+const ClubC: C.Codec<unknown, string, ClubId> = C.literal('asapbio-metabolism')
 
 const PseudonymSlugC = pipe(SlugC, C.imap(capitalCase, identity), C.compose(PseudonymC))
 

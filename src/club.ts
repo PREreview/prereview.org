@@ -12,6 +12,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
+import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound, serviceUnavailable } from './middleware'
@@ -33,8 +34,6 @@ export type Prereviews = ReadonlyArray<{
     readonly title: Html
   }
 }>
-
-type ClubId = 'asapbio-metabolism'
 
 type Club = {
   readonly name: string

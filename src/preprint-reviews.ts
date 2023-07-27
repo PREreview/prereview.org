@@ -18,6 +18,7 @@ import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
+import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { fixHeadingLevels } from './html'
@@ -32,7 +33,7 @@ import { maybeGetUser } from './user'
 
 export type Prereview = {
   authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
-  club?: 'asapbio-metabolism'
+  club?: ClubId
   id: number
   language?: LanguageCode
   text: Html

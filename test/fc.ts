@@ -25,6 +25,7 @@ import {
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
 import type { CareerStage } from '../src/career-stage'
+import type { ClubId } from '../src/club-id'
 import type { CrossrefPreprintId } from '../src/crossref'
 import type { DatacitePreprintId } from '../src/datacite'
 import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
@@ -536,6 +537,8 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .filter(isOrcid)
 
 export const careerStage = (): fc.Arbitrary<CareerStage> => fc.constantFrom('early', 'mid', 'late')
+
+export const clubId = (): fc.Arbitrary<ClubId> => fc.constant('asapbio-metabolism')
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
   fc
