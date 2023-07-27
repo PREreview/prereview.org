@@ -38,6 +38,7 @@ type ClubId = 'asapbio-metabolism'
 
 type Club = {
   readonly name: string
+  readonly description: Html
 }
 
 export interface GetPrereviewsEnv {
@@ -53,7 +54,15 @@ const getPrereviews = (id: ClubId) =>
 const getClubDetails = (id: ClubId) =>
   match(id)
     .returnType<Club>()
-    .with('asapbio-metabolism', () => ({ name: 'ASAPbio Metabolism Crowd' }))
+    .with('asapbio-metabolism', () => ({
+      name: 'ASAPbio Metabolism Crowd',
+      description: html`
+        <p>
+          The ASAPbio Metabolism Crowd reviews preprints about the regulation of metabolic homeostasis and
+          pathophysiology of metabolic diseases, from cell biology to integrative physiology.
+        </p>
+      `,
+    }))
     .exhaustive()
 
 export const club = (id: ClubId) =>
@@ -90,6 +99,7 @@ function createPage({ club, prereviews, user }: { club: Club; prereviews: Prerev
       <main id="main-content">
         <h1>${club.name}’s PREreviews</h1>
 
+        ${club.description}
         ${pipe(
           prereviews,
           RA.match(
