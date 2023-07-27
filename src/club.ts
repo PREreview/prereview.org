@@ -40,6 +40,7 @@ type Club = {
   readonly name: string
   readonly description: Html
   readonly leads: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid: Orcid }>
+  readonly joinLink: URL
 }
 
 export interface GetPrereviewsEnv {
@@ -67,6 +68,9 @@ const getClubDetails = (id: ClubId) =>
         { name: 'Pablo Ranea-Robles', orcid: '0000-0001-6478-3815' as Orcid },
         { name: 'Jonathon Coates', orcid: '0000-0001-9039-9219' as Orcid },
       ],
+      joinLink: new URL(
+        'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
+      ),
     }))
     .exhaustive()
 
@@ -123,6 +127,8 @@ function createPage({ club, prereviews, user }: { club: Club; prereviews: Prerev
             )}
           </dd>
         </dl>
+
+        <a href="${club.joinLink.href}" class="button">Join the club</a>
 
         ${pipe(
           prereviews,
