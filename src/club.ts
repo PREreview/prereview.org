@@ -36,6 +36,10 @@ export type Prereviews = ReadonlyArray<{
 
 type ClubId = 'asapbio-metabolism'
 
+type Club = {
+  readonly name: string
+}
+
 export interface GetPrereviewsEnv {
   getPrereviews: (id: ClubId) => TE.TaskEither<'unavailable', Prereviews>
 }
@@ -62,10 +66,10 @@ const showClubPage = (id: ClubId) =>
     RM.fromReaderTaskEither(getPrereviews(id)),
     RM.bindTo('prereviews'),
     RM.apSW(
-      'name',
+      'club',
       RM.of(
         match(id)
-          .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
+          .with('asapbio-metabolism', () => ({ name: 'ASAPbio Metabolism Crowd' }))
           .exhaustive(),
       ),
     ),
@@ -80,19 +84,19 @@ const showClubPage = (id: ClubId) =>
     ),
   )
 
-function createPage({ name, prereviews, user }: { name: string; prereviews: Prereviews; user?: User }) {
+function createPage({ club, prereviews, user }: { club: Club; prereviews: Prereviews; user?: User }) {
   return page({
-    title: plainText`${name}’s PREreviews`,
+    title: plainText`${club.name}’s PREreviews`,
     content: html`
       <main id="main-content">
-        <h1>${name}’s PREreviews</h1>
+        <h1>${club.name}’s PREreviews</h1>
 
         ${pipe(
           prereviews,
           RA.match(
             () => html`
               <div class="inset">
-                <p>The ${name} hasn’t published a PREreview yet.</p>
+                <p>The ${club.name} hasn’t published a PREreview yet.</p>
 
                 <p>When they do, it’ll appear here.</p>
               </div>
