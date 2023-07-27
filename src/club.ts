@@ -34,17 +34,19 @@ export type Prereviews = ReadonlyArray<{
   }
 }>
 
+type ClubId = 'asapbio-metabolism'
+
 export interface GetPrereviewsEnv {
-  getPrereviews: (id: 'asapbio-metabolism') => TE.TaskEither<'unavailable', Prereviews>
+  getPrereviews: (id: ClubId) => TE.TaskEither<'unavailable', Prereviews>
 }
 
-const getPrereviews = (id: 'asapbio-metabolism') =>
+const getPrereviews = (id: ClubId) =>
   pipe(
     RTE.ask<GetPrereviewsEnv>(),
     RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews(id)),
   )
 
-export const club = (id: 'asapbio-metabolism') =>
+export const club = (id: ClubId) =>
   pipe(
     RM.rightReader(canSeeClubs),
     RM.ichainW(
@@ -55,7 +57,7 @@ export const club = (id: 'asapbio-metabolism') =>
     ),
   )
 
-const showClubPage = (id: 'asapbio-metabolism') =>
+const showClubPage = (id: ClubId) =>
   pipe(
     RM.fromReaderTaskEither(getPrereviews(id)),
     RM.bindTo('prereviews'),
