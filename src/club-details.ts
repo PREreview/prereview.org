@@ -1,5 +1,7 @@
 import type * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
+import { flow } from 'fp-ts/function'
 import type { Orcid } from 'orcid-id-ts'
+import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import type { ClubId } from './club-id'
 import { type Html, html } from './html'
@@ -31,3 +33,5 @@ export const getClubDetails = (id: ClubId) =>
       ),
     }))
     .exhaustive()
+
+export const getClubName = flow(getClubDetails, get('name'))

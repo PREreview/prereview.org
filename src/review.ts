@@ -13,6 +13,7 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
+import { getClubName } from './club-details'
 import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
@@ -124,9 +125,7 @@ function createPage(review: Prereview, user?: User) {
                 ${canSeeClubs && review.club
                   ? html`of the
                       <a href="${format(clubProfileMatch.formatter, { id: review.club })}"
-                        >${match(review.club)
-                          .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                          .exhaustive()}</a
+                        >${getClubName(review.club)}</a
                       >`
                   : ''}
               </div>

@@ -18,6 +18,7 @@ import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
+import { getClubName } from './club-details'
 import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
@@ -268,23 +269,13 @@ function showReview(review: Prereview, canSeeClubs: boolean) {
         <header>
           <h3 class="visually-hidden" id="prereview-${review.id}-title">
             PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
-            ${canSeeClubs && review.club
-              ? html`of the
-                ${match(review.club)
-                  .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                  .exhaustive()}`
-              : ''}
+            ${canSeeClubs && review.club ? html`of the ${getClubName(review.club)}` : ''}
           </h3>
 
           <div class="byline">
             <span class="visually-hidden">Authored</span> by
             ${pipe(review.authors, RNEA.map(get('name')), formatList('en'))}
-            ${canSeeClubs && review.club
-              ? html`of the
-                ${match(review.club)
-                  .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                  .exhaustive()}`
-              : ''}
+            ${canSeeClubs && review.club ? html`of the ${getClubName(review.club)}` : ''}
           </div>
         </header>
 
@@ -299,12 +290,7 @@ function showReview(review: Prereview, canSeeClubs: boolean) {
           Read
           <span class="visually-hidden">
             the PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
-            ${canSeeClubs && review.club
-              ? html`of the
-                ${match(review.club)
-                  .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                  .exhaustive()}`
-              : ''}
+            ${canSeeClubs && review.club ? html`of the ${getClubName(review.club)}` : ''}
           </span>
         </a>
       </article>

@@ -34,6 +34,7 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
+import { getClubName } from './club-details'
 import type { ClubId } from './club-id'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import type { RecentPrereview } from './home'
@@ -135,9 +136,7 @@ export const getPrereviewsForClubFromZenodo = flow(
   (club: ClubId) =>
     new URLSearchParams({
       communities: 'prereview-reviews',
-      q: `contributors.name:"${match(club)
-        .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-        .exhaustive()}"`,
+      q: `contributors.name:"${getClubName(club)}"`,
       size: '100',
       sort: '-publication_date',
       subtype: 'peerreview',
@@ -336,7 +335,7 @@ const getReviewClub = flow(
   RA.findFirstMap(contributor =>
     match(contributor)
       .returnType<O.Option<ClubId>>()
-      .with({ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }, () => O.some('asapbio-metabolism'))
+      .with({ type: 'ResearchGroup', name: getClubName('asapbio-metabolism') }, () => O.some('asapbio-metabolism'))
       .otherwise(() => O.none),
   ),
 )
