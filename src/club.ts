@@ -10,6 +10,7 @@ import { flow, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
+import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import type { ClubId } from './club-id'
@@ -18,7 +19,7 @@ import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
-import { reviewMatch } from './routes'
+import { profileMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
 import { type User, maybeGetUser } from './user'
 
@@ -38,6 +39,7 @@ export type Prereviews = ReadonlyArray<{
 type Club = {
   readonly name: string
   readonly description: Html
+  readonly leads: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid: Orcid }>
 }
 
 export interface GetPrereviewsEnv {
@@ -61,6 +63,10 @@ const getClubDetails = (id: ClubId) =>
           pathophysiology of metabolic diseases, from cell biology to integrative physiology.
         </p>
       `,
+      leads: [
+        { name: 'Pablo Ranea-Robles', orcid: '0000-0001-6478-3815' as Orcid },
+        { name: 'Jonathon Coates', orcid: '0000-0001-9039-9219' as Orcid },
+      ],
     }))
     .exhaustive()
 
@@ -99,6 +105,25 @@ function createPage({ club, prereviews, user }: { club: Club; prereviews: Prerev
         <h1>${club.name}’s PREreviews</h1>
 
         ${club.description}
+
+        <dl>
+          <dt>Club leads</dt>
+          <dd>
+            ${pipe(
+              club.leads,
+              RNEA.map(
+                lead =>
+                  html`<a
+                    href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: lead.orcid } })}"
+                    class="orcid"
+                    >${lead.name}</a
+                  >`,
+              ),
+              formatList('en'),
+            )}
+          </dd>
+        </dl>
+
         ${pipe(
           prereviews,
           RA.match(
