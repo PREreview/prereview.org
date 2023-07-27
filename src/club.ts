@@ -50,6 +50,12 @@ const getPrereviews = (id: ClubId) =>
     RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews(id)),
   )
 
+const getClubDetails = (id: ClubId) =>
+  match(id)
+    .returnType<Club>()
+    .with('asapbio-metabolism', () => ({ name: 'ASAPbio Metabolism Crowd' }))
+    .exhaustive()
+
 export const club = (id: ClubId) =>
   pipe(
     RM.rightReader(canSeeClubs),
@@ -65,14 +71,7 @@ const showClubPage = (id: ClubId) =>
   pipe(
     RM.fromReaderTaskEither(getPrereviews(id)),
     RM.bindTo('prereviews'),
-    RM.apSW(
-      'club',
-      RM.of(
-        match(id)
-          .with('asapbio-metabolism', () => ({ name: 'ASAPbio Metabolism Crowd' }))
-          .exhaustive(),
-      ),
-    ),
+    RM.apSW('club', RM.of(getClubDetails(id))),
     RM.apSW('user', maybeGetUser),
     chainReaderKW(createPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
