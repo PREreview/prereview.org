@@ -10,9 +10,9 @@ import { flow, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
-import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
+import { type Club, getClubDetails } from './club-details'
 import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
@@ -36,13 +36,6 @@ export type Prereviews = ReadonlyArray<{
   }
 }>
 
-type Club = {
-  readonly name: string
-  readonly description: Html
-  readonly leads: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid: Orcid }>
-  readonly joinLink: URL
-}
-
 export interface GetPrereviewsEnv {
   getPrereviews: (id: ClubId) => TE.TaskEither<'unavailable', Prereviews>
 }
@@ -52,27 +45,6 @@ const getPrereviews = (id: ClubId) =>
     RTE.ask<GetPrereviewsEnv>(),
     RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews(id)),
   )
-
-const getClubDetails = (id: ClubId) =>
-  match(id)
-    .returnType<Club>()
-    .with('asapbio-metabolism', () => ({
-      name: 'ASAPbio Metabolism Crowd',
-      description: html`
-        <p>
-          The ASAPbio Metabolism Crowd reviews preprints about the regulation of metabolic homeostasis and
-          pathophysiology of metabolic diseases, from cell biology to integrative physiology.
-        </p>
-      `,
-      leads: [
-        { name: 'Pablo Ranea-Robles', orcid: '0000-0001-6478-3815' as Orcid },
-        { name: 'Jonathon Coates', orcid: '0000-0001-9039-9219' as Orcid },
-      ],
-      joinLink: new URL(
-        'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
-      ),
-    }))
-    .exhaustive()
 
 export const clubProfile = (id: ClubId) =>
   pipe(
