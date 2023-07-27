@@ -5,12 +5,12 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
-import * as _ from '../src/club'
+import * as _ from '../src/club-profile'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 import { shouldNotBeCalled } from './should-not-be-called'
 
-describe('club', () => {
+describe('clubProfile', () => {
   describe('when clubs can be seen', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
@@ -28,7 +28,7 @@ describe('club', () => {
       const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.right(prereviews))
 
       const actual = await runMiddleware(
-        _.club(clubId)({
+        _.clubProfile(clubId)({
           canSeeClubs: true,
           getPrereviews,
           getUser: () => M.fromEither(user),
@@ -52,7 +52,7 @@ describe('club', () => {
       fc.clubId(),
     ])('when the PREreviews are unavailable', async (connection, user, clubId) => {
       const actual = await runMiddleware(
-        _.club(clubId)({
+        _.clubProfile(clubId)({
           canSeeClubs: true,
           getPrereviews: () => TE.left('unavailable'),
           getUser: () => M.fromEither(user),
@@ -77,7 +77,7 @@ describe('club', () => {
     fc.clubId(),
   ])("when clubs can't be seen", async (connection, user, clubId) => {
     const actual = await runMiddleware(
-      _.club(clubId)({
+      _.clubProfile(clubId)({
         canSeeClubs: false,
         getPrereviews: shouldNotBeCalled,
         getUser: () => M.fromEither(user),

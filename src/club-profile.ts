@@ -74,7 +74,7 @@ const getClubDetails = (id: ClubId) =>
     }))
     .exhaustive()
 
-export const club = (id: ClubId) =>
+export const clubProfile = (id: ClubId) =>
   pipe(
     RM.rightReader(canSeeClubs),
     RM.ichainW(
@@ -103,10 +103,10 @@ const showClubPage = (id: ClubId) =>
 
 function createPage({ club, prereviews, user }: { club: Club; prereviews: Prereviews; user?: User }) {
   return page({
-    title: plainText`${club.name}’s PREreviews`,
+    title: plainText`${club.name}`,
     content: html`
       <main id="main-content">
-        <h1>${club.name}’s PREreviews</h1>
+        <h1>${club.name}</h1>
 
         ${club.description}
 
@@ -129,6 +129,8 @@ function createPage({ club, prereviews, user }: { club: Club; prereviews: Prerev
         </dl>
 
         <a href="${club.joinLink.href}" class="button">Join the club</a>
+
+        <h2>PREreviews</h2>
 
         ${pipe(
           prereviews,

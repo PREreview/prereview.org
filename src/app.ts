@@ -27,7 +27,7 @@ import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
-import { club } from './club'
+import { clubProfile } from './club-profile'
 import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
@@ -69,7 +69,7 @@ import { reviews } from './reviews'
 import {
   aboutUsMatch,
   changeCareerStageMatch,
-  clubMatch,
+  clubProfileMatch,
   codeOfConductMatch,
   communitiesMatch,
   findAPreprintMatch,
@@ -430,8 +430,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       ),
     ),
     pipe(
-      clubMatch.parser,
-      P.map(({ id }) => club(id)),
+      clubProfileMatch.parser,
+      P.map(({ id }) => clubProfile(id)),
       P.map(
         R.local((env: AppEnv) => ({
           ...env,

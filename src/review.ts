@@ -21,7 +21,7 @@ import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
 import { isPseudonym } from './pseudonym'
-import { clubMatch, preprintReviewsMatch, profileMatch, reviewMatch } from './routes'
+import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
 import type { User } from './user'
 import { maybeGetUser } from './user'
@@ -123,7 +123,7 @@ function createPage(review: Prereview, user?: User) {
                 ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
                 ${canSeeClubs && review.club
                   ? html`of the
-                      <a href="${format(clubMatch.formatter, { id: review.club })}"
+                      <a href="${format(clubProfileMatch.formatter, { id: review.club })}"
                         >${match(review.club)
                           .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
                           .exhaustive()}</a
