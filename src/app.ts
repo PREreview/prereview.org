@@ -163,13 +163,15 @@ export type AppEnv = CanEditProfileEnv &
     allowSiteCrawlers: boolean
   }
 
-const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
+type RouterEnv = AppEnv & GetUserEnv
+
+const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       homeMatch.parser,
       P.map(({ message }) => home(message)),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getRecentPrereviews: () =>
             pipe(
@@ -190,7 +192,7 @@ const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, Resp
       reviewsMatch.parser,
       P.map(({ page }) => reviews(page)),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)({
             ...env,
@@ -235,7 +237,7 @@ const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, Resp
       findAPreprintMatch.parser,
       P.map(() => findAPreprint),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           doesPreprintExist: flip(doesPreprintExist)(env),
         })),
@@ -245,7 +247,7 @@ const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, Resp
       reviewAPreprintMatch.parser,
       P.map(() => reviewAPreprint),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           doesPreprintExist: flip(doesPreprintExist)(env),
         })),
@@ -277,7 +279,7 @@ const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, Resp
       preprintReviewsMatch.parser,
       P.map(({ id }) => preprintReviews(id)),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getPreprint: flip(getPreprint)(env),
           getPrereviews: flip(getPrereviewsForPreprintFromZenodo)(env),
@@ -291,7 +293,7 @@ const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, Resp
       reviewMatch.parser,
       P.map(({ id }) => review(id)),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getPrereview: flip(getPrereviewFromZenodo)({
             ...env,
@@ -304,7 +306,7 @@ const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, Resp
       myDetailsMatch.parser,
       P.map(() => myDetails),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getCareerStage: flip(getCareerStage)(env),
         })),
@@ -314,7 +316,7 @@ const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, Resp
       changeCareerStageMatch.parser,
       P.map(() => changeCareerStage),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           deleteCareerStage: flip(deleteCareerStage)(env),
           getCareerStage: flip(getCareerStage)(env),
@@ -326,7 +328,7 @@ const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, Resp
       profileMatch.parser,
       P.map(({ profile: profileId }) => profile(profileId)),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getName: flip(getNameFromOrcid)(env),
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
@@ -340,7 +342,7 @@ const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, Resp
       clubProfileMatch.parser,
       P.map(({ id }) => clubProfile(id)),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getPrereviews: flip(getPrereviewsForClubFromZenodo)({
             ...env,
@@ -438,7 +440,7 @@ const router: P.Parser<RM.ReaderMiddleware<AppEnv & GetUserEnv, StatusOpen, Resp
       ],
       concatAll(P.getParserMonoid()),
       P.map(
-        R.local((env: AppEnv & GetUserEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getPreprint: flip(getPreprint)(env),
           getPreprintTitle: flip(getPreprintTitle)(env),
@@ -508,7 +510,7 @@ const appMiddleware = pipe(
   RM.orElseW(() =>
     pipe(
       legacyRoutes,
-      R.local((env: AppEnv & GetUserEnv) => ({
+      R.local((env: RouterEnv) => ({
         ...env,
         getPreprintIdFromUuid: flip(getPreprintIdFromLegacyPreviewUuid)(env),
         getProfileIdFromUuid: flip(getProfileIdFromLegacyPreviewUuid)(env),
@@ -516,10 +518,12 @@ const appMiddleware = pipe(
     ),
   ),
   RM.orElseW(handleError),
-  R.local((env: AppEnv) => ({
-    ...env,
-    getUser: () => getUser(env),
-  })),
+  R.local(
+    (env: AppEnv): RouterEnv => ({
+      ...env,
+      getUser: () => getUser(env),
+    }),
+  ),
 )
 
 export const app = (deps: AppEnv) => {
