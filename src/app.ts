@@ -56,7 +56,7 @@ import type { FathomEnv, PhaseEnv } from './page'
 import { page } from './page'
 import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
-import type { GetPreprintEnv, GetPreprintTitleEnv } from './preprint'
+import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv } from './preprint'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintJournalClubs } from './preprint-journal-clubs'
 import { preprintReviews } from './preprint-reviews'
@@ -164,7 +164,7 @@ export type AppEnv = CanEditProfileEnv &
     allowSiteCrawlers: boolean
   }
 
-type RouterEnv = AppEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv
+type RouterEnv = AppEnv & DoesPreprintExistEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -231,22 +231,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       findAPreprintMatch.parser,
       P.map(() => findAPreprint),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          doesPreprintExist: flip(doesPreprintExist)(env),
-        })),
-      ),
     ),
     pipe(
       reviewAPreprintMatch.parser,
       P.map(() => reviewAPreprint),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          doesPreprintExist: flip(doesPreprintExist)(env),
-        })),
-      ),
     ),
     pipe(
       logInMatch.parser,
@@ -498,6 +486,7 @@ const appMiddleware: RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, neve
   R.local(
     (env: AppEnv): RouterEnv => ({
       ...env,
+      doesPreprintExist: flip(doesPreprintExist)(env),
       getUser: () => getUser(env),
       getPreprint: flip(getPreprint)(env),
       getPreprintTitle: flip(getPreprintTitle)(env),
