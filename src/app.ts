@@ -52,7 +52,7 @@ import { legacyRoutes } from './legacy-routes'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { myDetails } from './my-details'
 import { getNameFromOrcid } from './orcid'
-import type { FathomEnv, PhaseEnv } from './page'
+import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page'
 import { page } from './page'
 import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
@@ -164,7 +164,7 @@ export type AppEnv = CanEditProfileEnv &
     allowSiteCrawlers: boolean
   }
 
-type RouterEnv = AppEnv & DoesPreprintExistEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv
+type RouterEnv = AppEnv & DoesPreprintExistEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv & TemplatePageEnv
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -182,7 +182,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                 ({ recentPrereviews }) => recentPrereviews,
               ),
             )(env),
-          templatePage: flip(page)(env),
         })),
       ),
     ),
@@ -490,6 +489,7 @@ const appMiddleware: RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, neve
       getUser: () => getUser(env),
       getPreprint: flip(getPreprint)(env),
       getPreprintTitle: flip(getPreprintTitle)(env),
+      templatePage: flip(page)(env),
     }),
   ),
   R.local(collapseRequests()),
