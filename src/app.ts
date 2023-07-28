@@ -337,93 +337,84 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       ),
     ),
     pipe(
-      [
-        pipe(
-          writeReviewMatch.parser,
-          P.map(({ id }) => writeReview(id)),
-        ),
-        pipe(
-          writeReviewStartMatch.parser,
-          P.map(({ id }) => writeReviewStart(id)),
-        ),
-        pipe(
-          writeReviewAlreadyWrittenMatch.parser,
-          P.map(({ id }) => writeReviewAlreadyWritten(id)),
-        ),
-        pipe(
-          writeReviewReviewTypeMatch.parser,
-          P.map(({ id }) => writeReviewReviewType(id)),
-        ),
-        pipe(
-          writeReviewReviewMatch.parser,
-          P.map(({ id }) => writeReviewReview(id)),
-        ),
-        pipe(
-          writeReviewIntroductionMatchesMatch.parser,
-          P.map(({ id }) => writeReviewIntroductionMatches(id)),
-        ),
-        pipe(
-          writeReviewMethodsAppropriateMatch.parser,
-          P.map(({ id }) => writeReviewMethodsAppropriate(id)),
-        ),
-        pipe(
-          writeReviewResultsSupportedMatch.parser,
-          P.map(({ id }) => writeReviewResultsSupported(id)),
-        ),
-        pipe(
-          writeReviewDataPresentationMatch.parser,
-          P.map(({ id }) => writeReviewDataPresentation(id)),
-        ),
-        pipe(
-          writeReviewFindingsNextStepsMatch.parser,
-          P.map(({ id }) => writeReviewFindingsNextSteps(id)),
-        ),
-        pipe(
-          writeReviewNovelMatch.parser,
-          P.map(({ id }) => writeReviewNovel(id)),
-        ),
-        pipe(
-          writeReviewLanguageEditingMatch.parser,
-          P.map(({ id }) => writeReviewLanguageEditing(id)),
-        ),
-        pipe(
-          writeReviewShouldReadMatch.parser,
-          P.map(({ id }) => writeReviewShouldRead(id)),
-        ),
-        pipe(
-          writeReviewReadyFullReviewMatch.parser,
-          P.map(({ id }) => writeReviewReadyFullReview(id)),
-        ),
-        pipe(
-          writeReviewPersonaMatch.parser,
-          P.map(({ id }) => writeReviewPersona(id)),
-        ),
-        pipe(
-          writeReviewAuthorsMatch.parser,
-          P.map(({ id }) => writeReviewAuthors(id)),
-        ),
-        pipe(
-          writeReviewAddAuthorsMatch.parser,
-          P.map(({ id }) => writeReviewAddAuthors(id)),
-        ),
-        pipe(
-          writeReviewCompetingInterestsMatch.parser,
-          P.map(({ id }) => writeReviewCompetingInterests(id)),
-        ),
-        pipe(
-          writeReviewConductMatch.parser,
-          P.map(({ id }) => writeReviewConduct(id)),
-        ),
-        pipe(
-          writeReviewPublishMatch.parser,
-          P.map(({ id }) => writeReviewPublish(id)),
-        ),
-        pipe(
-          writeReviewPublishedMatch.parser,
-          P.map(({ id }) => writeReviewPublished(id)),
-        ),
-      ],
-      concatAll(P.getParserMonoid()),
+      writeReviewMatch.parser,
+      P.map(({ id }) => writeReview(id)),
+    ),
+    pipe(
+      writeReviewStartMatch.parser,
+      P.map(({ id }) => writeReviewStart(id)),
+    ),
+    pipe(
+      writeReviewAlreadyWrittenMatch.parser,
+      P.map(({ id }) => writeReviewAlreadyWritten(id)),
+    ),
+    pipe(
+      writeReviewReviewTypeMatch.parser,
+      P.map(({ id }) => writeReviewReviewType(id)),
+    ),
+    pipe(
+      writeReviewReviewMatch.parser,
+      P.map(({ id }) => writeReviewReview(id)),
+    ),
+    pipe(
+      writeReviewIntroductionMatchesMatch.parser,
+      P.map(({ id }) => writeReviewIntroductionMatches(id)),
+    ),
+    pipe(
+      writeReviewMethodsAppropriateMatch.parser,
+      P.map(({ id }) => writeReviewMethodsAppropriate(id)),
+    ),
+    pipe(
+      writeReviewResultsSupportedMatch.parser,
+      P.map(({ id }) => writeReviewResultsSupported(id)),
+    ),
+    pipe(
+      writeReviewDataPresentationMatch.parser,
+      P.map(({ id }) => writeReviewDataPresentation(id)),
+    ),
+    pipe(
+      writeReviewFindingsNextStepsMatch.parser,
+      P.map(({ id }) => writeReviewFindingsNextSteps(id)),
+    ),
+    pipe(
+      writeReviewNovelMatch.parser,
+      P.map(({ id }) => writeReviewNovel(id)),
+    ),
+    pipe(
+      writeReviewLanguageEditingMatch.parser,
+      P.map(({ id }) => writeReviewLanguageEditing(id)),
+    ),
+    pipe(
+      writeReviewShouldReadMatch.parser,
+      P.map(({ id }) => writeReviewShouldRead(id)),
+    ),
+    pipe(
+      writeReviewReadyFullReviewMatch.parser,
+      P.map(({ id }) => writeReviewReadyFullReview(id)),
+    ),
+    pipe(
+      writeReviewPersonaMatch.parser,
+      P.map(({ id }) => writeReviewPersona(id)),
+    ),
+    pipe(
+      writeReviewAuthorsMatch.parser,
+      P.map(({ id }) => writeReviewAuthors(id)),
+    ),
+    pipe(
+      writeReviewAddAuthorsMatch.parser,
+      P.map(({ id }) => writeReviewAddAuthors(id)),
+    ),
+    pipe(
+      writeReviewCompetingInterestsMatch.parser,
+      P.map(({ id }) => writeReviewCompetingInterests(id)),
+    ),
+    pipe(
+      writeReviewConductMatch.parser,
+      P.map(({ id }) => writeReviewConduct(id)),
+    ),
+    pipe(
+      writeReviewPublishMatch.parser,
+      P.map(({ id }) => writeReviewPublish(id)),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
@@ -439,6 +430,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           )(env),
         })),
       ),
+    ),
+    pipe(
+      writeReviewPublishedMatch.parser,
+      P.map(({ id }) => writeReviewPublished(id)),
     ),
   ],
   concatAll(P.getParserMonoid()),
