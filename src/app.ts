@@ -7,7 +7,6 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import { identity } from 'fp-ts/function'
 import helmet from 'helmet'
@@ -332,14 +331,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPreprint: flow(
-            flip(getPreprint)(env),
-            TE.mapLeft(error =>
-              match(error)
-                .with('not-a-preprint', () => 'not-found' as const)
-                .otherwise(identity),
-            ),
-          ),
+          getPreprint: flip(getPreprint)(env),
           getPrereviews: flip(getPrereviewsForPreprintFromZenodo)(env),
           getRapidPrereviews: flip((id: PreprintId) =>
             isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([]),
@@ -356,14 +348,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getPrereview: flip(getPrereviewFromZenodo)({
             ...env,
-            getPreprint: flow(
-              flip(getPreprint)(env),
-              TE.mapLeft(error =>
-                match(error)
-                  .with('not-a-preprint', () => 'not-found' as const)
-                  .otherwise(identity),
-              ),
-            ),
+            getPreprint: flip(getPreprint)(env),
           }),
           getUser: () => getUser(env),
         })),
@@ -513,14 +498,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPreprint: flow(
-            flip(getPreprint)(env),
-            TE.mapLeft(error =>
-              match(error)
-                .with('not-a-preprint', () => 'not-found' as const)
-                .otherwise(identity),
-            ),
-          ),
+          getPreprint: flip(getPreprint)(env),
           getPreprintTitle: flip(getPreprintTitle)(env),
           publishPrereview: flip((newPrereview: NewPrereview) =>
             pipe(
@@ -541,31 +519,34 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
   P.map(flow(R.local(collapseRequests()), R.local(logFetch))),
 )
 
-const getPreprint = (id: IndeterminatePreprintId) =>
+const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
     .with({ type: 'philsci' }, getPreprintFromPhilsci)
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
     .exhaustive()
 
-const getPreprintTitle = flow(
-  getPreprint,
-  RTE.local(useStaleCache()),
-  RTE.bimap(
-    error =>
-      match(error)
-        .with('not-a-preprint', () => 'not-found' as const)
-        .otherwise(identity),
-    preprint => ({
-      id: preprint.id,
-      language: preprint.title.language,
-      title: preprint.title.text,
-    }),
+const getPreprint = flow(
+  getPreprintFromSource,
+  RTE.mapLeft(error =>
+    match(error)
+      .with('not-a-preprint', () => 'not-found' as const)
+      .otherwise(identity),
   ),
 )
 
-const doesPreprintExist = flow(
+const getPreprintTitle = flow(
   getPreprint,
+  RTE.local(useStaleCache()),
+  RTE.map(preprint => ({
+    id: preprint.id,
+    language: preprint.title.language,
+    title: preprint.title.text,
+  })),
+)
+
+const doesPreprintExist = flow(
+  getPreprintFromSource,
   RTE.local(useStaleCache()),
   RTE.map(() => true),
   RTE.orElseW(error =>
