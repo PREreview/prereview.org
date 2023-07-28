@@ -163,7 +163,7 @@ export type AppEnv = CanEditProfileEnv &
     allowSiteCrawlers: boolean
   }
 
-export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
+const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       homeMatch.parser,
