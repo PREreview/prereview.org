@@ -512,6 +512,21 @@ test.each([
     '<math><semantics><mrow><msub><mi>g</mi><mi>J</mi></msub></mrow><annotation encoding="application/x-tex">g_J</annotation></semantics></math>',
   ],
   [
+    'with math with a comment at the end',
+    '$x = 1 % comment$',
+    '<math><semantics><mrow><mi>x</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">x = 1 % comment</annotation></semantics></math>',
+  ],
+  [
+    'with math containing an emoji',
+    '$✌$',
+    '<math><semantics><mrow><mtext>✌</mtext></mrow><annotation encoding="application/x-tex">✌</annotation></semantics></math>',
+  ],
+  [
+    'with math containing extended Latin',
+    '$š$',
+    '<math><semantics><mrow><mover accent="true"><mi>s</mi><mo>ˇ</mo></mover></mrow><annotation encoding="application/x-tex">š</annotation></semantics></math>',
+  ],
+  [
     'with multiple inline math',
     '$a$$b$$c$',
     '<math><semantics><mrow><mi>a</mi></mrow><annotation encoding="application/x-tex">a</annotation></semantics></math><math><semantics><mrow><mi>b</mi></mrow><annotation encoding="application/x-tex">b</annotation></semantics></math><math><semantics><mrow><mi>c</mi></mrow><annotation encoding="application/x-tex">c</annotation></semantics></math>',
