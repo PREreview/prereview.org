@@ -56,6 +56,7 @@ import type { FathomEnv, PhaseEnv } from './page'
 import { page } from './page'
 import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
+import type { GetPreprintEnv, GetPreprintTitleEnv } from './preprint'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintJournalClubs } from './preprint-journal-clubs'
 import { preprintReviews } from './preprint-reviews'
@@ -163,7 +164,7 @@ export type AppEnv = CanEditProfileEnv &
     allowSiteCrawlers: boolean
   }
 
-type RouterEnv = AppEnv & GetUserEnv
+type RouterEnv = AppEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -180,10 +181,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                 () => RA.empty,
                 ({ recentPrereviews }) => recentPrereviews,
               ),
-            )({
-              ...env,
-              getPreprintTitle: flip(getPreprintTitle)(env),
-            }),
+            )(env),
           templatePage: flip(page)(env),
         })),
       ),
@@ -194,10 +192,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)({
-            ...env,
-            getPreprintTitle: flip(getPreprintTitle)(env),
-          }),
+          getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)(env),
         })),
       ),
     ),
@@ -281,7 +276,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getPreprint: flip(getPreprint)(env),
           getPrereviews: flip(getPrereviewsForPreprintFromZenodo)(env),
           getRapidPrereviews: flip((id: PreprintId) =>
             isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([]),
@@ -295,10 +289,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getPrereview: flip(getPrereviewFromZenodo)({
-            ...env,
-            getPreprint: flip(getPreprint)(env),
-          }),
+          getPrereview: flip(getPrereviewFromZenodo)(env),
         })),
       ),
     ),
@@ -331,10 +322,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getName: flip(getNameFromOrcid)(env),
-          getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
-            ...env,
-            getPreprintTitle: flip(getPreprintTitle)(env),
-          }),
+          getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
         })),
       ),
     ),
@@ -344,10 +332,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getPrereviews: flip(getPrereviewsForClubFromZenodo)({
-            ...env,
-            getPreprintTitle: flip(getPreprintTitle)(env),
-          }),
+          getPrereviews: flip(getPrereviewsForClubFromZenodo)(env),
         })),
       ),
     ),
@@ -442,8 +427,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getPreprint: flip(getPreprint)(env),
-          getPreprintTitle: flip(getPreprintTitle)(env),
           publishPrereview: flip((newPrereview: NewPrereview) =>
             pipe(
               createRecordOnZenodo(newPrereview),
@@ -459,7 +442,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
   ],
   concatAll(P.getParserMonoid()),
-  P.map(flow(R.local(collapseRequests()), R.local(logFetch))),
 )
 
 const getPreprintFromSource = (id: IndeterminatePreprintId) =>
@@ -505,7 +487,7 @@ const getUser = pipe(getSession(), chainOptionKW(() => 'no-session' as const)(ge
 
 const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
 
-const appMiddleware = pipe(
+const appMiddleware: RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void> = pipe(
   routerMiddleware,
   RM.orElseW(() =>
     pipe(
@@ -522,8 +504,12 @@ const appMiddleware = pipe(
     (env: AppEnv): RouterEnv => ({
       ...env,
       getUser: () => getUser(env),
+      getPreprint: flip(getPreprint)(env),
+      getPreprintTitle: flip(getPreprintTitle)(env),
     }),
   ),
+  R.local(collapseRequests()),
+  R.local(logFetch),
 )
 
 export const app = (deps: AppEnv) => {
