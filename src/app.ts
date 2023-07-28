@@ -181,14 +181,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
               ),
             )({
               ...env,
-              getPreprintTitle: flow(
-                flip(getPreprintTitle)(env),
-                TE.mapLeft(error =>
-                  match(error)
-                    .with('not-a-preprint', () => 'not-found' as const)
-                    .otherwise(identity),
-                ),
-              ),
+              getPreprintTitle: flip(getPreprintTitle)(env),
             }),
           getUser: () => getUser(env),
           templatePage: flip(page)(env),
@@ -203,14 +196,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)({
             ...env,
-            getPreprintTitle: flow(
-              flip(getPreprintTitle)(env),
-              TE.mapLeft(error =>
-                match(error)
-                  .with('not-a-preprint', () => 'not-found' as const)
-                  .otherwise(identity),
-              ),
-            ),
+            getPreprintTitle: flip(getPreprintTitle)(env),
           }),
           getUser: () => getUser(env),
         })),
@@ -416,14 +402,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           getName: flip(getNameFromOrcid)(env),
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
             ...env,
-            getPreprintTitle: flow(
-              flip(getPreprintTitle)(env),
-              TE.mapLeft(error =>
-                match(error)
-                  .with('not-a-preprint', () => 'not-found' as const)
-                  .otherwise(identity),
-              ),
-            ),
+            getPreprintTitle: flip(getPreprintTitle)(env),
           }),
           getUser: () => getUser(env),
         })),
@@ -437,14 +416,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
           ...env,
           getPrereviews: flip(getPrereviewsForClubFromZenodo)({
             ...env,
-            getPreprintTitle: flow(
-              flip(getPreprintTitle)(env),
-              TE.mapLeft(error =>
-                match(error)
-                  .with('not-a-preprint', () => 'not-found' as const)
-                  .otherwise(identity),
-              ),
-            ),
+            getPreprintTitle: flip(getPreprintTitle)(env),
           }),
           getUser: () => getUser(env),
         })),
@@ -549,14 +521,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
                 .otherwise(identity),
             ),
           ),
-          getPreprintTitle: flow(
-            flip(getPreprintTitle)(env),
-            TE.mapLeft(error =>
-              match(error)
-                .with('not-a-preprint', () => 'not-found' as const)
-                .otherwise(identity),
-            ),
-          ),
+          getPreprintTitle: flip(getPreprintTitle)(env),
           publishPrereview: flip((newPrereview: NewPrereview) =>
             pipe(
               createRecordOnZenodo(newPrereview),
@@ -586,15 +551,22 @@ const getPreprint = (id: IndeterminatePreprintId) =>
 const getPreprintTitle = flow(
   getPreprint,
   RTE.local(useStaleCache()),
-  RTE.map(preprint => ({
-    id: preprint.id,
-    language: preprint.title.language,
-    title: preprint.title.text,
-  })),
+  RTE.bimap(
+    error =>
+      match(error)
+        .with('not-a-preprint', () => 'not-found' as const)
+        .otherwise(identity),
+    preprint => ({
+      id: preprint.id,
+      language: preprint.title.language,
+      title: preprint.title.text,
+    }),
+  ),
 )
 
 const doesPreprintExist = flow(
-  getPreprintTitle,
+  getPreprint,
+  RTE.local(useStaleCache()),
   RTE.map(() => true),
   RTE.orElseW(error =>
     match(error)
