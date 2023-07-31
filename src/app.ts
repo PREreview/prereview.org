@@ -264,9 +264,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getPrereviews: flip(getPrereviewsForPreprintFromZenodo)(env),
-          getRapidPrereviews: flip((id: PreprintId) =>
-            isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([]),
-          )(env),
+          getRapidPrereviews: flip(getRapidPrereviews)(env),
         })),
       ),
     ),
@@ -405,16 +403,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          publishPrereview: flip((newPrereview: NewPrereview) =>
-            pipe(
-              createRecordOnZenodo(newPrereview),
-              RTE.chainFirstW(
-                isLegacyCompatiblePrereview(newPrereview)
-                  ? flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))
-                  : () => RTE.right(undefined),
-              ),
-            ),
-          )(env),
+          publishPrereview: flip(publishPrereview)(env),
         })),
       ),
     ),
@@ -425,6 +414,19 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
   ],
   concatAll(P.getParserMonoid()),
 )
+
+const getRapidPrereviews = (id: PreprintId) =>
+  isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
+
+const publishPrereview = (newPrereview: NewPrereview) =>
+  pipe(
+    createRecordOnZenodo(newPrereview),
+    RTE.chainFirstW(
+      isLegacyCompatiblePrereview(newPrereview)
+        ? flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))
+        : () => RTE.right(undefined),
+    ),
+  )
 
 const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
