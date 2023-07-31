@@ -539,7 +539,7 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
 export const careerStage = (): fc.Arbitrary<CareerStage> => fc.constantFrom('early', 'mid', 'late')
 
 export const clubId = (): fc.Arbitrary<ClubId> =>
-  fc.constantFrom('asapbio-meta-research', 'asapbio-metabolism', 'asapbio-neurobiology')
+  fc.constantFrom('asapbio-cancer-biology', 'asapbio-meta-research', 'asapbio-metabolism', 'asapbio-neurobiology')
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
   fc

@@ -16,6 +16,19 @@ export type Club = {
 export const getClubDetails = (id: ClubId) =>
   match(id)
     .returnType<Club>()
+    .with('asapbio-cancer-biology', () => ({
+      name: 'ASAPbio Cancer Biology Crowd',
+      description: html`
+        <p>
+          The ASAPbio Cancer Biology Crowd reviews preprints of biochemical, molecular and cellular studies concerning
+          cancer.
+        </p>
+      `,
+      leads: [{ name: 'Garima Jain', orcid: '0000-0002-8079-9611' as Orcid }],
+      joinLink: new URL(
+        'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
+      ),
+    }))
     .with('asapbio-meta-research', () => ({
       name: 'ASAPbio Meta-Research Crowd',
       description: html`

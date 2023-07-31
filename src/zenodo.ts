@@ -335,6 +335,9 @@ const getReviewClub = flow(
   RA.findFirstMap(contributor =>
     match(contributor)
       .returnType<O.Option<ClubId>>()
+      .with({ type: 'ResearchGroup', name: getClubName('asapbio-cancer-biology') }, () =>
+        O.some('asapbio-cancer-biology'),
+      )
       .with({ type: 'ResearchGroup', name: getClubName('asapbio-meta-research') }, () =>
         O.some('asapbio-meta-research'),
       )
