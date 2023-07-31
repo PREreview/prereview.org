@@ -33,7 +33,7 @@ export const getClubDetails = (id: ClubId) =>
       name: 'ASAPbio Meta-Research Crowd',
       description: html`
         <p>
-          The ASAPbio Meta-research Crowd reviews preprints about the practices, policies and infrastructure of open
+          The ASAPbio Meta-Research Crowd reviews preprints about the practices, policies and infrastructure of open
           science and scholarship.
         </p>
       `,
