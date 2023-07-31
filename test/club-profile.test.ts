@@ -5,6 +5,7 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
+import { getClubName } from '../src/club-details'
 import * as _ from '../src/club-profile'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -49,7 +50,7 @@ describe('clubProfile', () => {
       expect(getPrereviews).toHaveBeenCalledWith(clubId)
       expect(templatePage).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: 'ASAPbio Metabolism Crowd',
+          title: getClubName(clubId),
           user: E.getOrElseW(() => undefined)(user),
         }),
       )
