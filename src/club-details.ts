@@ -24,7 +24,10 @@ export const getClubDetails = (id: ClubId) =>
           cancer.
         </p>
       `,
-      leads: [{ name: 'Garima Jain', orcid: '0000-0002-8079-9611' as Orcid }],
+      leads: [
+        { name: 'Arpita Ghosh', orcid: '0009-0003-2106-3270' as Orcid },
+        { name: 'Garima Jain', orcid: '0000-0002-8079-9611' as Orcid },
+      ],
       joinLink: new URL(
         'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
       ),
