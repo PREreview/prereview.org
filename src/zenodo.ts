@@ -339,6 +339,7 @@ const getReviewClub = flow(
         O.some('asapbio-meta-research'),
       )
       .with({ type: 'ResearchGroup', name: getClubName('asapbio-metabolism') }, () => O.some('asapbio-metabolism'))
+      .with({ type: 'ResearchGroup', name: getClubName('asapbio-neurobiology') }, () => O.some('asapbio-neurobiology'))
       .otherwise(() => O.none),
   ),
 )

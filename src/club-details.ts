@@ -48,6 +48,20 @@ export const getClubDetails = (id: ClubId) =>
         'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
       ),
     }))
+    .with('asapbio-neurobiology', () => ({
+      name: 'ASAPbio Neurobiology Crowd',
+      description: html`
+        <p>The ASAPbio Neurobiology Crowd reviews preprints that focus on neurodevelopment and neurodegeneration.</p>
+      `,
+      leads: [
+        { name: 'Bhargy Sharma', orcid: '0000-0003-2713-8563' as Orcid },
+        { name: 'Anna Oliveras', orcid: '0000-0002-5880-5245' as Orcid },
+        { name: 'Ryan John Cubero', orcid: '0000-0003-0002-1867' as Orcid },
+      ],
+      joinLink: new URL(
+        'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
+      ),
+    }))
     .exhaustive()
 
 export const getClubName = flow(getClubDetails, get('name'))
