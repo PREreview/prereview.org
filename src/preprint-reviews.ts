@@ -27,7 +27,8 @@ import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
 import { type Preprint, getPreprint } from './preprint'
 import type { PreprintId } from './preprint-id'
-import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from './routes'
+import { isPseudonym } from './pseudonym'
+import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
 import type { GetUserEnv, User } from './user'
 import { maybeGetUser } from './user'
@@ -399,7 +400,15 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
-    return html`<a href="https://orcid.org/${orcid}" class="orcid">${name}</a>`
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
+      >${name}</a
+    >`
+  }
+
+  if (isPseudonym(name)) {
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: name } })}"
+      >${name}</a
+    >`
   }
 
   return name
