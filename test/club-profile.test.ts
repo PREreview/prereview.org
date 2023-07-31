@@ -16,6 +16,7 @@ describe('clubProfile', () => {
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.clubId(),
+      fc.html(),
       fc.array(
         fc.record({
           id: fc.integer(),
@@ -24,14 +25,16 @@ describe('clubProfile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-    ])('when the data can be loaded', async (connection, user, clubId, prereviews) => {
+    ])('when the data can be loaded', async (connection, user, clubId, page, prereviews) => {
       const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.right(prereviews))
+      const templatePage = jest.fn(_ => page)
 
       const actual = await runMiddleware(
         _.clubProfile(clubId)({
           canSeeClubs: true,
           getPrereviews,
           getUser: () => M.fromEither(user),
+          templatePage,
         }),
         connection,
       )()
@@ -40,10 +43,16 @@ describe('clubProfile', () => {
         E.right([
           { type: 'setStatus', status: Status.OK },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
       expect(getPrereviews).toHaveBeenCalledWith(clubId)
+      expect(templatePage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          title: 'ASAPbio Metabolism Crowd',
+          user: E.getOrElseW(() => undefined)(user),
+        }),
+      )
     })
 
     test.prop([
@@ -56,6 +65,7 @@ describe('clubProfile', () => {
           canSeeClubs: true,
           getPrereviews: () => TE.left('unavailable'),
           getUser: () => M.fromEither(user),
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -81,6 +91,7 @@ describe('clubProfile', () => {
         canSeeClubs: false,
         getPrereviews: shouldNotBeCalled,
         getUser: () => M.fromEither(user),
+        templatePage: shouldNotBeCalled,
       }),
       connection,
     )()

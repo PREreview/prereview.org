@@ -17,7 +17,7 @@ import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound, serviceUnavailable } from './middleware'
-import { page } from './page'
+import { templatePage } from './page'
 import type { PreprintId } from './preprint-id'
 import { profileMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
@@ -74,7 +74,7 @@ const showClubPage = (id: ClubId) =>
   )
 
 function createPage({ club, prereviews, user }: { club: Club; prereviews: Prereviews; user?: User }) {
-  return page({
+  return templatePage({
     title: plainText`${club.name}`,
     content: html`
       <main id="main-content">
