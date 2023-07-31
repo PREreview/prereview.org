@@ -11,6 +11,7 @@ import { ExpressConnection } from 'hyper-ts/lib/express'
 import type { Mock } from 'jest-mock'
 import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/find-a-preprint'
+import type { DoesPreprintExistEnv } from '../src/preprint'
 import { fromPreprintDoi } from '../src/preprint-id'
 import { preprintReviewsMatch } from '../src/routes'
 import * as fc from './fc'
@@ -185,7 +186,7 @@ describe('find-a-preprint', () => {
       },
     )('with a preprint DOI', async ([doi, connection]) => {
       const id = fromPreprintDoi(doi)
-      const doesPreprintExist: Mock<_.DoesPreprintExistEnv['doesPreprintExist']> = jest.fn(_ => TE.of(true))
+      const doesPreprintExist: Mock<DoesPreprintExistEnv['doesPreprintExist']> = jest.fn(_ => TE.of(true))
 
       const actual = await runMiddleware(
         _.findAPreprint({

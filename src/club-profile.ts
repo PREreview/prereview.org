@@ -12,12 +12,14 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
+import { type Club, getClubDetails } from './club-details'
+import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound, serviceUnavailable } from './middleware'
-import { page } from './page'
+import { templatePage } from './page'
 import type { PreprintId } from './preprint-id'
-import { reviewMatch } from './routes'
+import { profileMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
 import { type User, maybeGetUser } from './user'
 
@@ -35,16 +37,16 @@ export type Prereviews = ReadonlyArray<{
 }>
 
 export interface GetPrereviewsEnv {
-  getPrereviews: (id: 'asapbio-metabolism') => TE.TaskEither<'unavailable', Prereviews>
+  getPrereviews: (id: ClubId) => TE.TaskEither<'unavailable', Prereviews>
 }
 
-const getPrereviews = (id: 'asapbio-metabolism') =>
+const getPrereviews = (id: ClubId) =>
   pipe(
     RTE.ask<GetPrereviewsEnv>(),
     RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews(id)),
   )
 
-export const club = (id: 'asapbio-metabolism') =>
+export const clubProfile = (id: ClubId) =>
   pipe(
     RM.rightReader(canSeeClubs),
     RM.ichainW(
@@ -55,18 +57,11 @@ export const club = (id: 'asapbio-metabolism') =>
     ),
   )
 
-const showClubPage = (id: 'asapbio-metabolism') =>
+const showClubPage = (id: ClubId) =>
   pipe(
     RM.fromReaderTaskEither(getPrereviews(id)),
     RM.bindTo('prereviews'),
-    RM.apSW(
-      'name',
-      RM.of(
-        match(id)
-          .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-          .exhaustive(),
-      ),
-    ),
+    RM.apSW('club', RM.of(getClubDetails(id))),
     RM.apSW('user', maybeGetUser),
     chainReaderKW(createPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
@@ -78,19 +73,43 @@ const showClubPage = (id: 'asapbio-metabolism') =>
     ),
   )
 
-function createPage({ name, prereviews, user }: { name: string; prereviews: Prereviews; user?: User }) {
-  return page({
-    title: plainText`${name}’s PREreviews`,
+function createPage({ club, prereviews, user }: { club: Club; prereviews: Prereviews; user?: User }) {
+  return templatePage({
+    title: plainText`${club.name}`,
     content: html`
       <main id="main-content">
-        <h1>${name}’s PREreviews</h1>
+        <h1>${club.name}</h1>
+
+        ${club.description}
+
+        <dl>
+          <dt>Club leads</dt>
+          <dd>
+            ${pipe(
+              club.leads,
+              RNEA.map(
+                lead =>
+                  html`<a
+                    href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: lead.orcid } })}"
+                    class="orcid"
+                    >${lead.name}</a
+                  >`,
+              ),
+              formatList('en'),
+            )}
+          </dd>
+        </dl>
+
+        <a href="${club.joinLink.href}" class="button">Join the club</a>
+
+        <h2>PREreviews</h2>
 
         ${pipe(
           prereviews,
           RA.match(
             () => html`
               <div class="inset">
-                <p>The ${name} hasn’t published a PREreview yet.</p>
+                <p>The ${club.name} hasn’t published a PREreview yet.</p>
 
                 <p>When they do, it’ll appear here.</p>
               </div>
@@ -102,7 +121,12 @@ function createPage({ name, prereviews, user }: { name: string; prereviews: Prer
                     <li>
                       <article>
                         <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                          ${formatList('en')(prereview.reviewers)} reviewed
+                          ${pipe(
+                            prereview.reviewers,
+                            RNEA.map(name => html`<b>${name}</b>`),
+                            formatList('en'),
+                          )}
+                          reviewed
                           <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
                             >${prereview.preprint.title}</cite
                           >
@@ -157,7 +181,7 @@ function formatList(
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`<b>${item}</b>`.toString()),
+    RNEA.map(item => html`${item}`.toString()),
     list => formatter.format(list),
     rawHtml,
   )

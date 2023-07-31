@@ -7,6 +7,7 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
+import { ClubIdC } from './club-id'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './preprint-id'
 import type { OrcidProfileId, PseudonymProfileId } from './profile-id'
 import { PseudonymC } from './pseudonym'
@@ -43,8 +44,6 @@ const SlugC = C.make(
     encode: string => string.toLowerCase().replaceAll(' ', '-'),
   },
 )
-
-const ClubC = C.literal('asapbio-metabolism')
 
 const PseudonymSlugC = pipe(SlugC, C.imap(capitalCase, identity), C.compose(PseudonymC))
 
@@ -152,7 +151,7 @@ export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
 
 export const changeCareerStageMatch = pipe(P.lit('my-details'), P.then(P.lit('change-career-stage')), P.then(P.end))
 
-export const clubMatch = pipe(P.lit('clubs'), P.then(type('id', ClubC)), P.then(P.end))
+export const clubProfileMatch = pipe(P.lit('clubs'), P.then(type('id', ClubIdC)), P.then(P.end))
 
 export const profileMatch = pipe(P.lit('profiles'), P.then(type('profile', ProfileIdC)), P.then(P.end))
 

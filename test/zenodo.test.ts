@@ -22,6 +22,7 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
+import { getClubName } from '../src/club-details'
 import { plainText, rawHtml } from '../src/html'
 import { reviewMatch } from '../src/routes'
 import type { NewPrereview } from '../src/write-review'
@@ -628,9 +629,9 @@ describe('getRecentPrereviewsFromZenodo', () => {
 })
 
 describe('getPrereviewFromZenodo', () => {
-  test.prop([fc.integer(), fc.preprint(), fc.boolean()])(
+  test.prop([fc.integer(), fc.preprint(), fc.option(fc.clubId(), { nil: undefined })])(
     'when the PREreview can be loaded',
-    async (id, preprint, isInClub) => {
+    async (id, preprint, club) => {
       const record: Record = {
         conceptdoi: '10.5072/zenodo.1061863' as Doi,
         conceptrecid: 1061863,
@@ -651,11 +652,11 @@ describe('getPrereviewFromZenodo', () => {
         },
         metadata: {
           communities: [{ id: 'prereview-reviews' }],
-          contributors: isInClub
+          contributors: club
             ? [
                 {
                   type: 'ResearchGroup',
-                  name: 'ASAPbio Metabolism Crowd',
+                  name: getClubName(club),
                 },
               ]
             : undefined,
@@ -703,7 +704,7 @@ describe('getPrereviewFromZenodo', () => {
       expect(actual).toStrictEqual(
         E.right({
           authors: [{ name: 'PREreviewer' }],
-          club: isInClub ? 'asapbio-metabolism' : undefined,
+          club,
           doi: '10.5281/zenodo.1061864' as Doi,
           language: 'en',
           license: 'CC-BY-4.0',
@@ -1433,9 +1434,9 @@ describe('getPrereviewsForProfileFromZenodo', () => {
       },
     )
 
-    test.prop([fc.pseudonymProfileId(), fc.preprintTitle(), fc.preprintTitle()])(
+    test.prop([fc.pseudonymProfileId(), fc.preprintTitle(), fc.preprintTitle(), fc.clubId()])(
       'with a pseudonym',
-      async (profile, preprint1, preprint2) => {
+      async (profile, preprint1, preprint2, club) => {
         const records: Records = {
           hits: {
             total: 2,
@@ -1506,7 +1507,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   contributors: [
                     {
                       type: 'ResearchGroup',
-                      name: 'ASAPbio Metabolism Crowd',
+                      name: getClubName(club),
                     },
                   ],
                   creators: [{ name: 'Josiah Carberry' }],
@@ -1572,7 +1573,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               preprint: preprint1,
             },
             {
-              club: 'asapbio-metabolism',
+              club,
               id: 1065236,
               reviewers: ['Josiah Carberry'],
               published: new Temporal.PlainDate(2022, 7, 5),
@@ -1837,9 +1838,9 @@ describe('getPrereviewsForProfileFromZenodo', () => {
 })
 
 describe('getPrereviewsForClubFromZenodo', () => {
-  test.prop([fc.preprintTitle(), fc.preprintTitle()])(
+  test.prop([fc.clubId(), fc.preprintTitle(), fc.preprintTitle()])(
     'when the PREreviews can be loaded',
-    async (preprint1, preprint2) => {
+    async (club, preprint1, preprint2) => {
       const records: Records = {
         hits: {
           total: 2,
@@ -1934,13 +1935,13 @@ describe('getPrereviewsForClubFromZenodo', () => {
         },
       }
 
-      const actual = await _.getPrereviewsForClubFromZenodo('asapbio-metabolism')({
+      const actual = await _.getPrereviewsForClubFromZenodo(club)({
         fetch: fetchMock.sandbox().getOnce(
           {
             url: 'begin:https://zenodo.org/api/records/?',
             query: {
               communities: 'prereview-reviews',
-              q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+              q: `contributors.name:"${getClubName(club)}"`,
               size: '100',
               sort: '-publication_date',
               subtype: 'peerreview',
@@ -1981,14 +1982,14 @@ describe('getPrereviewsForClubFromZenodo', () => {
     },
   )
 
-  test('when there are no Prereviews', async () => {
-    const actual = await _.getPrereviewsForClubFromZenodo('asapbio-metabolism')({
+  test.prop([fc.clubId()])('when there are no Prereviews', async club => {
+    const actual = await _.getPrereviewsForClubFromZenodo(club)({
       fetch: fetchMock.sandbox().getOnce(
         {
           url: 'begin:https://zenodo.org/api/records/?',
           query: {
             communities: 'prereview-reviews',
-            q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+            q: `contributors.name:"${getClubName(club)}"`,
             size: '100',
             sort: '-publication_date',
             subtype: 'peerreview',
@@ -2007,7 +2008,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
     expect(actual).toStrictEqual(E.right([]))
   })
 
-  test.prop([fc.preprintTitle()])('revalidates if the PREreviews are stale', async preprint => {
+  test.prop([fc.clubId(), fc.preprintTitle()])('revalidates if the PREreviews are stale', async (club, preprint) => {
     const records: Records = {
       hits: {
         total: 1,
@@ -2065,7 +2066,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           url ===
             `https://zenodo.org/api/records/?${new URLSearchParams({
               communities: 'prereview-reviews',
-              q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+              q: `contributors.name:"${getClubName(club)}"`,
               size: '100',
               sort: '-publication_date',
               subtype: 'peerreview',
@@ -2080,7 +2081,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           url ===
             `https://zenodo.org/api/records/?${new URLSearchParams({
               communities: 'prereview-reviews',
-              q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+              q: `contributors.name:"${getClubName(club)}"`,
               size: '100',
               sort: '-publication_date',
               subtype: 'peerreview',
@@ -2088,7 +2089,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         { throws: new Error('Network error') },
       )
 
-    const actual = await _.getPrereviewsForClubFromZenodo('asapbio-metabolism')({
+    const actual = await _.getPrereviewsForClubFromZenodo(club)({
       clock: SystemClock,
       fetch,
       getPreprintTitle: () => TE.right(preprint),
@@ -2110,17 +2111,18 @@ describe('getPrereviewsForClubFromZenodo', () => {
   })
 
   test.prop([
+    fc.clubId(),
     fc.integer({
       min: 400,
       max: 599,
     }),
-  ])('when the PREreviews cannot be loaded', async status => {
+  ])('when the PREreviews cannot be loaded', async (club, status) => {
     const fetch = fetchMock.sandbox().getOnce(
       {
         url: 'begin:https://zenodo.org/api/records/?',
         query: {
           communities: 'prereview-reviews',
-          q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+          q: `contributors.name:"${getClubName(club)}"`,
           size: '100',
           sort: '-publication_date',
           subtype: 'peerreview',
@@ -2129,7 +2131,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
       { status },
     )
 
-    const actual = await _.getPrereviewsForClubFromZenodo('asapbio-metabolism')({
+    const actual = await _.getPrereviewsForClubFromZenodo(club)({
       clock: SystemClock,
       fetch,
       getPreprintTitle: shouldNotBeCalled,
@@ -2140,9 +2142,9 @@ describe('getPrereviewsForClubFromZenodo', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.preprintTitle(), fc.constantFrom('not-found' as const, 'unavailable' as const)])(
+  test.prop([fc.clubId(), fc.preprintTitle(), fc.constantFrom('not-found' as const, 'unavailable' as const)])(
     'when a preprint cannot be loaded',
-    async (preprint, error) => {
+    async (club, preprint, error) => {
       const records: Records = {
         hits: {
           total: 2,
@@ -2237,13 +2239,13 @@ describe('getPrereviewsForClubFromZenodo', () => {
         },
       }
 
-      const actual = await _.getPrereviewsForClubFromZenodo('asapbio-metabolism')({
+      const actual = await _.getPrereviewsForClubFromZenodo(club)({
         fetch: fetchMock.sandbox().getOnce(
           {
             url: 'begin:https://zenodo.org/api/records/?',
             query: {
               communities: 'prereview-reviews',
-              q: 'contributors.name:"ASAPbio Metabolism Crowd"',
+              q: `contributors.name:"${getClubName(club)}"`,
               size: '100',
               sort: '-publication_date',
               subtype: 'peerreview',
@@ -2279,91 +2281,94 @@ describe('getPrereviewsForClubFromZenodo', () => {
 })
 
 describe('getPrereviewsForPreprintFromZenodo', () => {
-  test.prop([fc.preprintId(), fc.boolean()])('when the PREreviews can be loaded', async (preprint, isInClub) => {
-    const records: Records = {
-      hits: {
-        total: 1,
-        hits: [
-          {
-            conceptdoi: '10.5072/zenodo.1061863' as Doi,
-            conceptrecid: 1061863,
-            files: [
-              {
-                links: {
-                  self: new URL('http://example.com/file'),
+  test.prop([fc.preprintId(), fc.option(fc.clubId(), { nil: undefined })])(
+    'when the PREreviews can be loaded',
+    async (preprint, club) => {
+      const records: Records = {
+        hits: {
+          total: 1,
+          hits: [
+            {
+              conceptdoi: '10.5072/zenodo.1061863' as Doi,
+              conceptrecid: 1061863,
+              files: [
+                {
+                  links: {
+                    self: new URL('http://example.com/file'),
+                  },
+                  key: 'review.html',
+                  type: 'html',
+                  size: 58,
                 },
-                key: 'review.html',
-                type: 'html',
-                size: 58,
+              ],
+              id: 1061864,
+              links: {
+                latest: new URL('http://example.com/latest'),
+                latest_html: new URL('http://example.com/latest_html'),
               },
-            ],
-            id: 1061864,
-            links: {
-              latest: new URL('http://example.com/latest'),
-              latest_html: new URL('http://example.com/latest_html'),
+              metadata: {
+                communities: [{ id: 'prereview-reviews' }],
+                contributors: club
+                  ? [
+                      {
+                        type: 'ResearchGroup',
+                        name: getClubName(club),
+                      },
+                    ]
+                  : undefined,
+                creators: [{ name: 'PREreviewer' }],
+                description: 'Description',
+                doi: '10.5281/zenodo.1061864' as Doi,
+                language: 'eng',
+                license: {
+                  id: 'CC-BY-4.0',
+                },
+                publication_date: new Date('2022-07-05'),
+                resource_type: {
+                  type: 'publication',
+                  subtype: 'peerreview',
+                },
+                title: 'Title',
+              },
             },
-            metadata: {
-              communities: [{ id: 'prereview-reviews' }],
-              contributors: isInClub
-                ? [
-                    {
-                      type: 'ResearchGroup',
-                      name: 'ASAPbio Metabolism Crowd',
-                    },
-                  ]
-                : undefined,
-              creators: [{ name: 'PREreviewer' }],
-              description: 'Description',
-              doi: '10.5281/zenodo.1061864' as Doi,
-              language: 'eng',
-              license: {
-                id: 'CC-BY-4.0',
-              },
-              publication_date: new Date('2022-07-05'),
-              resource_type: {
-                type: 'publication',
+          ],
+        },
+      }
+
+      const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
+        fetch: fetchMock
+          .sandbox()
+          .getOnce(
+            {
+              url: 'begin:https://zenodo.org/api/records/?',
+              query: {
+                communities: 'prereview-reviews',
+                q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
+                sort: '-publication_date',
                 subtype: 'peerreview',
               },
-              title: 'Title',
             },
-          },
-        ],
-      },
-    }
-
-    const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
-      fetch: fetchMock
-        .sandbox()
-        .getOnce(
-          {
-            url: 'begin:https://zenodo.org/api/records/?',
-            query: {
-              communities: 'prereview-reviews',
-              q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
-              sort: '-publication_date',
-              subtype: 'peerreview',
+            {
+              body: RecordsC.encode(records),
+              status: Status.OK,
             },
-          },
-          {
-            body: RecordsC.encode(records),
-            status: Status.OK,
-          },
-        )
-        .getOnce('http://example.com/file', { body: 'Some text' }),
-    })()
+          )
+          .getOnce('http://example.com/file', { body: 'Some text' }),
+      })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        {
-          authors: [{ name: 'PREreviewer' }],
-          club: isInClub ? 'asapbio-metabolism' : undefined,
-          id: 1061864,
-          language: 'en',
-          text: rawHtml('Some text'),
-        },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          {
+            authors: [{ name: 'PREreviewer' }],
+            club,
+            id: 1061864,
+            language: 'en',
+            text: rawHtml('Some text'),
+          },
+        ]),
+      )
+    },
+  )
 
   test.prop([fc.preprintId()])('revalidates if the PREreviews are stale', async preprint => {
     const records: Records = {

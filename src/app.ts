@@ -7,7 +7,6 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
 import { identity } from 'fp-ts/function'
 import helmet from 'helmet'
@@ -27,7 +26,7 @@ import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
-import { club } from './club'
+import { clubProfile } from './club-profile'
 import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
@@ -53,10 +52,11 @@ import { legacyRoutes } from './legacy-routes'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { myDetails } from './my-details'
 import { getNameFromOrcid } from './orcid'
-import type { FathomEnv, PhaseEnv } from './page'
+import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page'
 import { page } from './page'
 import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
+import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv } from './preprint'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import { preprintJournalClubs } from './preprint-journal-clubs'
 import { preprintReviews } from './preprint-reviews'
@@ -69,7 +69,7 @@ import { reviews } from './reviews'
 import {
   aboutUsMatch,
   changeCareerStageMatch,
-  clubMatch,
+  clubProfileMatch,
   codeOfConductMatch,
   communitiesMatch,
   findAPreprintMatch,
@@ -112,7 +112,7 @@ import {
   writeReviewStartMatch,
 } from './routes'
 import { trainings } from './trainings'
-import { getUserFromSession } from './user'
+import { type GetUserEnv, getUserFromSession } from './user'
 import {
   type FormStoreEnv,
   type NewPrereview,
@@ -164,13 +164,15 @@ export type AppEnv = CanEditProfileEnv &
     allowSiteCrawlers: boolean
   }
 
-export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
+type RouterEnv = AppEnv & DoesPreprintExistEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv & TemplatePageEnv
+
+const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       homeMatch.parser,
       P.map(({ message }) => home(message)),
       P.map(
-        R.local((env: AppEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getRecentPrereviews: () =>
             pipe(
@@ -179,19 +181,7 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
                 () => RA.empty,
                 ({ recentPrereviews }) => recentPrereviews,
               ),
-            )({
-              ...env,
-              getPreprintTitle: flow(
-                flip(getPreprintTitle)(env),
-                TE.mapLeft(error =>
-                  match(error)
-                    .with('not-a-preprint', () => 'not-found' as const)
-                    .otherwise(identity),
-                ),
-              ),
-            }),
-          getUser: () => getUser(env),
-          templatePage: flip(page)(env),
+            )(env),
         })),
       ),
     ),
@@ -199,124 +189,51 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       reviewsMatch.parser,
       P.map(({ page }) => reviews(page)),
       P.map(
-        R.local((env: AppEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
-          getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)({
-            ...env,
-            getPreprintTitle: flow(
-              flip(getPreprintTitle)(env),
-              TE.mapLeft(error =>
-                match(error)
-                  .with('not-a-preprint', () => 'not-found' as const)
-                  .otherwise(identity),
-              ),
-            ),
-          }),
-          getUser: () => getUser(env),
+          getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)(env),
         })),
       ),
     ),
     pipe(
       aboutUsMatch.parser,
       P.map(() => aboutUs),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          getUser: () => getUser(env),
-        })),
-      ),
     ),
     pipe(
       codeOfConductMatch.parser,
       P.map(() => codeOfConduct),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          getUser: () => getUser(env),
-        })),
-      ),
     ),
     pipe(
       communitiesMatch.parser,
       P.map(() => communities),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          getUser: () => getUser(env),
-        })),
-      ),
     ),
     pipe(
       fundingMatch.parser,
       P.map(() => funding),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          getUser: () => getUser(env),
-        })),
-      ),
     ),
     pipe(
       trainingsMatch.parser,
       P.map(() => trainings),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          getUser: () => getUser(env),
-        })),
-      ),
     ),
     pipe(
       partnersMatch.parser,
       P.map(() => partners),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          getUser: () => getUser(env),
-        })),
-      ),
     ),
     pipe(
       preprintJournalClubsMatch.parser,
       P.map(() => preprintJournalClubs),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          getUser: () => getUser(env),
-        })),
-      ),
     ),
     pipe(
       privacyPolicyMatch.parser,
       P.map(() => privacyPolicy),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          getUser: () => getUser(env),
-        })),
-      ),
     ),
     pipe(
       findAPreprintMatch.parser,
       P.map(() => findAPreprint),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          doesPreprintExist: flip(doesPreprintExist)(env),
-          getUser: () => getUser(env),
-        })),
-      ),
     ),
     pipe(
       reviewAPreprintMatch.parser,
       P.map(() => reviewAPreprint),
-      P.map(
-        R.local((env: AppEnv) => ({
-          ...env,
-          doesPreprintExist: flip(doesPreprintExist)(env),
-          getUser: () => getUser(env),
-        })),
-      ),
     ),
     pipe(
       logInMatch.parser,
@@ -344,21 +261,10 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       preprintReviewsMatch.parser,
       P.map(({ id }) => preprintReviews(id)),
       P.map(
-        R.local((env: AppEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
-          getPreprint: flow(
-            flip(getPreprint)(env),
-            TE.mapLeft(error =>
-              match(error)
-                .with('not-a-preprint', () => 'not-found' as const)
-                .otherwise(identity),
-            ),
-          ),
           getPrereviews: flip(getPrereviewsForPreprintFromZenodo)(env),
-          getRapidPrereviews: flip((id: PreprintId) =>
-            isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([]),
-          )(env),
-          getUser: () => getUser(env),
+          getRapidPrereviews: flip(getRapidPrereviews)(env),
         })),
       ),
     ),
@@ -366,20 +272,9 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       reviewMatch.parser,
       P.map(({ id }) => review(id)),
       P.map(
-        R.local((env: AppEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
-          getPrereview: flip(getPrereviewFromZenodo)({
-            ...env,
-            getPreprint: flow(
-              flip(getPreprint)(env),
-              TE.mapLeft(error =>
-                match(error)
-                  .with('not-a-preprint', () => 'not-found' as const)
-                  .otherwise(identity),
-              ),
-            ),
-          }),
-          getUser: () => getUser(env),
+          getPrereview: flip(getPrereviewFromZenodo)(env),
         })),
       ),
     ),
@@ -387,9 +282,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       myDetailsMatch.parser,
       P.map(() => myDetails),
       P.map(
-        R.local((env: AppEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
-          getUser: () => getUser(env),
           getCareerStage: flip(getCareerStage)(env),
         })),
       ),
@@ -398,9 +292,8 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       changeCareerStageMatch.parser,
       P.map(() => changeCareerStage),
       P.map(
-        R.local((env: AppEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
-          getUser: () => getUser(env),
           deleteCareerStage: flip(deleteCareerStage)(env),
           getCareerStage: flip(getCareerStage)(env),
           saveCareerStage: (orcid, careerStage) => saveCareerStage(orcid, careerStage)(env),
@@ -411,177 +304,145 @@ export const router: P.Parser<RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEn
       profileMatch.parser,
       P.map(({ profile: profileId }) => profile(profileId)),
       P.map(
-        R.local((env: AppEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getName: flip(getNameFromOrcid)(env),
-          getPrereviews: flip(getPrereviewsForProfileFromZenodo)({
-            ...env,
-            getPreprintTitle: flow(
-              flip(getPreprintTitle)(env),
-              TE.mapLeft(error =>
-                match(error)
-                  .with('not-a-preprint', () => 'not-found' as const)
-                  .otherwise(identity),
-              ),
-            ),
-          }),
-          getUser: () => getUser(env),
+          getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
         })),
       ),
     ),
     pipe(
-      clubMatch.parser,
-      P.map(({ id }) => club(id)),
+      clubProfileMatch.parser,
+      P.map(({ id }) => clubProfile(id)),
       P.map(
-        R.local((env: AppEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
-          getPrereviews: flip(getPrereviewsForClubFromZenodo)({
-            ...env,
-            getPreprintTitle: flow(
-              flip(getPreprintTitle)(env),
-              TE.mapLeft(error =>
-                match(error)
-                  .with('not-a-preprint', () => 'not-found' as const)
-                  .otherwise(identity),
-              ),
-            ),
-          }),
-          getUser: () => getUser(env),
+          getPrereviews: flip(getPrereviewsForClubFromZenodo)(env),
         })),
       ),
     ),
     pipe(
-      [
-        pipe(
-          writeReviewMatch.parser,
-          P.map(({ id }) => writeReview(id)),
-        ),
-        pipe(
-          writeReviewStartMatch.parser,
-          P.map(({ id }) => writeReviewStart(id)),
-        ),
-        pipe(
-          writeReviewAlreadyWrittenMatch.parser,
-          P.map(({ id }) => writeReviewAlreadyWritten(id)),
-        ),
-        pipe(
-          writeReviewReviewTypeMatch.parser,
-          P.map(({ id }) => writeReviewReviewType(id)),
-        ),
-        pipe(
-          writeReviewReviewMatch.parser,
-          P.map(({ id }) => writeReviewReview(id)),
-        ),
-        pipe(
-          writeReviewIntroductionMatchesMatch.parser,
-          P.map(({ id }) => writeReviewIntroductionMatches(id)),
-        ),
-        pipe(
-          writeReviewMethodsAppropriateMatch.parser,
-          P.map(({ id }) => writeReviewMethodsAppropriate(id)),
-        ),
-        pipe(
-          writeReviewResultsSupportedMatch.parser,
-          P.map(({ id }) => writeReviewResultsSupported(id)),
-        ),
-        pipe(
-          writeReviewDataPresentationMatch.parser,
-          P.map(({ id }) => writeReviewDataPresentation(id)),
-        ),
-        pipe(
-          writeReviewFindingsNextStepsMatch.parser,
-          P.map(({ id }) => writeReviewFindingsNextSteps(id)),
-        ),
-        pipe(
-          writeReviewNovelMatch.parser,
-          P.map(({ id }) => writeReviewNovel(id)),
-        ),
-        pipe(
-          writeReviewLanguageEditingMatch.parser,
-          P.map(({ id }) => writeReviewLanguageEditing(id)),
-        ),
-        pipe(
-          writeReviewShouldReadMatch.parser,
-          P.map(({ id }) => writeReviewShouldRead(id)),
-        ),
-        pipe(
-          writeReviewReadyFullReviewMatch.parser,
-          P.map(({ id }) => writeReviewReadyFullReview(id)),
-        ),
-        pipe(
-          writeReviewPersonaMatch.parser,
-          P.map(({ id }) => writeReviewPersona(id)),
-        ),
-        pipe(
-          writeReviewAuthorsMatch.parser,
-          P.map(({ id }) => writeReviewAuthors(id)),
-        ),
-        pipe(
-          writeReviewAddAuthorsMatch.parser,
-          P.map(({ id }) => writeReviewAddAuthors(id)),
-        ),
-        pipe(
-          writeReviewCompetingInterestsMatch.parser,
-          P.map(({ id }) => writeReviewCompetingInterests(id)),
-        ),
-        pipe(
-          writeReviewConductMatch.parser,
-          P.map(({ id }) => writeReviewConduct(id)),
-        ),
-        pipe(
-          writeReviewPublishMatch.parser,
-          P.map(({ id }) => writeReviewPublish(id)),
-        ),
-        pipe(
-          writeReviewPublishedMatch.parser,
-          P.map(({ id }) => writeReviewPublished(id)),
-        ),
-      ],
-      concatAll(P.getParserMonoid()),
+      writeReviewMatch.parser,
+      P.map(({ id }) => writeReview(id)),
+    ),
+    pipe(
+      writeReviewStartMatch.parser,
+      P.map(({ id }) => writeReviewStart(id)),
+    ),
+    pipe(
+      writeReviewAlreadyWrittenMatch.parser,
+      P.map(({ id }) => writeReviewAlreadyWritten(id)),
+    ),
+    pipe(
+      writeReviewReviewTypeMatch.parser,
+      P.map(({ id }) => writeReviewReviewType(id)),
+    ),
+    pipe(
+      writeReviewReviewMatch.parser,
+      P.map(({ id }) => writeReviewReview(id)),
+    ),
+    pipe(
+      writeReviewIntroductionMatchesMatch.parser,
+      P.map(({ id }) => writeReviewIntroductionMatches(id)),
+    ),
+    pipe(
+      writeReviewMethodsAppropriateMatch.parser,
+      P.map(({ id }) => writeReviewMethodsAppropriate(id)),
+    ),
+    pipe(
+      writeReviewResultsSupportedMatch.parser,
+      P.map(({ id }) => writeReviewResultsSupported(id)),
+    ),
+    pipe(
+      writeReviewDataPresentationMatch.parser,
+      P.map(({ id }) => writeReviewDataPresentation(id)),
+    ),
+    pipe(
+      writeReviewFindingsNextStepsMatch.parser,
+      P.map(({ id }) => writeReviewFindingsNextSteps(id)),
+    ),
+    pipe(
+      writeReviewNovelMatch.parser,
+      P.map(({ id }) => writeReviewNovel(id)),
+    ),
+    pipe(
+      writeReviewLanguageEditingMatch.parser,
+      P.map(({ id }) => writeReviewLanguageEditing(id)),
+    ),
+    pipe(
+      writeReviewShouldReadMatch.parser,
+      P.map(({ id }) => writeReviewShouldRead(id)),
+    ),
+    pipe(
+      writeReviewReadyFullReviewMatch.parser,
+      P.map(({ id }) => writeReviewReadyFullReview(id)),
+    ),
+    pipe(
+      writeReviewPersonaMatch.parser,
+      P.map(({ id }) => writeReviewPersona(id)),
+    ),
+    pipe(
+      writeReviewAuthorsMatch.parser,
+      P.map(({ id }) => writeReviewAuthors(id)),
+    ),
+    pipe(
+      writeReviewAddAuthorsMatch.parser,
+      P.map(({ id }) => writeReviewAddAuthors(id)),
+    ),
+    pipe(
+      writeReviewCompetingInterestsMatch.parser,
+      P.map(({ id }) => writeReviewCompetingInterests(id)),
+    ),
+    pipe(
+      writeReviewConductMatch.parser,
+      P.map(({ id }) => writeReviewConduct(id)),
+    ),
+    pipe(
+      writeReviewPublishMatch.parser,
+      P.map(({ id }) => writeReviewPublish(id)),
       P.map(
-        R.local((env: AppEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
-          getPreprint: flow(
-            flip(getPreprint)(env),
-            TE.mapLeft(error =>
-              match(error)
-                .with('not-a-preprint', () => 'not-found' as const)
-                .otherwise(identity),
-            ),
-          ),
-          getPreprintTitle: flow(
-            flip(getPreprintTitle)(env),
-            TE.mapLeft(error =>
-              match(error)
-                .with('not-a-preprint', () => 'not-found' as const)
-                .otherwise(identity),
-            ),
-          ),
-          publishPrereview: flip((newPrereview: NewPrereview) =>
-            pipe(
-              createRecordOnZenodo(newPrereview),
-              RTE.chainFirstW(
-                isLegacyCompatiblePrereview(newPrereview)
-                  ? flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))
-                  : () => RTE.right(undefined),
-              ),
-            ),
-          )(env),
-          getUser: () => getUser(env),
+          publishPrereview: flip(publishPrereview)(env),
         })),
       ),
+    ),
+    pipe(
+      writeReviewPublishedMatch.parser,
+      P.map(({ id }) => writeReviewPublished(id)),
     ),
   ],
   concatAll(P.getParserMonoid()),
-  P.map(flow(R.local(collapseRequests()), R.local(logFetch))),
 )
 
-const getPreprint = (id: IndeterminatePreprintId) =>
+const getRapidPrereviews = (id: PreprintId) =>
+  isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
+
+const publishPrereview = (newPrereview: NewPrereview) =>
+  pipe(
+    createRecordOnZenodo(newPrereview),
+    RTE.chainFirstW(
+      isLegacyCompatiblePrereview(newPrereview)
+        ? flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))
+        : () => RTE.right(undefined),
+    ),
+  )
+
+const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
     .with({ type: 'philsci' }, getPreprintFromPhilsci)
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)
     .exhaustive()
+
+const getPreprint = flow(
+  getPreprintFromSource,
+  RTE.mapLeft(error =>
+    match(error)
+      .with('not-a-preprint', () => 'not-found' as const)
+      .otherwise(identity),
+  ),
+)
 
 const getPreprintTitle = flow(
   getPreprint,
@@ -594,7 +455,8 @@ const getPreprintTitle = flow(
 )
 
 const doesPreprintExist = flow(
-  getPreprintTitle,
+  getPreprintFromSource,
+  RTE.local(useStaleCache()),
   RTE.map(() => true),
   RTE.orElseW(error =>
     match(error)
@@ -609,28 +471,31 @@ const getUser = pipe(getSession(), chainOptionKW(() => 'no-session' as const)(ge
 
 const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
 
-const appMiddleware = pipe(
+const appMiddleware: RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void> = pipe(
   routerMiddleware,
   RM.orElseW(() =>
     pipe(
       legacyRoutes,
-      R.local((env: AppEnv) => ({
+      R.local((env: RouterEnv) => ({
         ...env,
         getPreprintIdFromUuid: flip(getPreprintIdFromLegacyPreviewUuid)(env),
         getProfileIdFromUuid: flip(getProfileIdFromLegacyPreviewUuid)(env),
-        getUser: () => getUser(env),
       })),
     ),
   ),
-  RM.orElseW(
-    flow(
-      handleError,
-      R.local((env: AppEnv) => ({
-        ...env,
-        getUser: () => getUser(env),
-      })),
-    ),
+  RM.orElseW(handleError),
+  R.local(
+    (env: AppEnv): RouterEnv => ({
+      ...env,
+      doesPreprintExist: flip(doesPreprintExist)(env),
+      getUser: () => getUser(env),
+      getPreprint: flip(getPreprint)(env),
+      getPreprintTitle: flip(getPreprintTitle)(env),
+      templatePage: flip(page)(env),
+    }),
   ),
+  R.local(collapseRequests()),
+  R.local(logFetch),
 )
 
 export const app = (deps: AppEnv) => {

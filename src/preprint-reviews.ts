@@ -18,6 +18,8 @@ import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
+import { getClubName } from './club-details'
+import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { fixHeadingLevels } from './html'
@@ -25,14 +27,15 @@ import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
 import { type Preprint, getPreprint } from './preprint'
 import type { PreprintId } from './preprint-id'
-import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from './routes'
+import { isPseudonym } from './pseudonym'
+import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
 import type { GetUserEnv, User } from './user'
 import { maybeGetUser } from './user'
 
 export type Prereview = {
   authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
-  club?: 'asapbio-metabolism'
+  club?: ClubId
   id: number
   language?: LanguageCode
   text: Html
@@ -267,23 +270,13 @@ function showReview(review: Prereview, canSeeClubs: boolean) {
         <header>
           <h3 class="visually-hidden" id="prereview-${review.id}-title">
             PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
-            ${canSeeClubs && review.club
-              ? html`of the
-                ${match(review.club)
-                  .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                  .exhaustive()}`
-              : ''}
+            ${canSeeClubs && review.club ? html`of the ${getClubName(review.club)}` : ''}
           </h3>
 
           <div class="byline">
             <span class="visually-hidden">Authored</span> by
             ${pipe(review.authors, RNEA.map(get('name')), formatList('en'))}
-            ${canSeeClubs && review.club
-              ? html`of the
-                ${match(review.club)
-                  .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                  .exhaustive()}`
-              : ''}
+            ${canSeeClubs && review.club ? html`of the ${getClubName(review.club)}` : ''}
           </div>
         </header>
 
@@ -298,12 +291,7 @@ function showReview(review: Prereview, canSeeClubs: boolean) {
           Read
           <span class="visually-hidden">
             the PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
-            ${canSeeClubs && review.club
-              ? html`of the
-                ${match(review.club)
-                  .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                  .exhaustive()}`
-              : ''}
+            ${canSeeClubs && review.club ? html`of the ${getClubName(review.club)}` : ''}
           </span>
         </a>
       </article>
@@ -412,7 +400,15 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
-    return html`<a href="https://orcid.org/${orcid}" class="orcid">${name}</a>`
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
+      >${name}</a
+    >`
+  }
+
+  if (isPseudonym(name)) {
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: name } })}"
+      >${name}</a
+    >`
   }
 
   return name

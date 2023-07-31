@@ -12,6 +12,8 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
+import { getClubName } from './club-details'
+import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { addCanonicalLinkHeader, notFound } from './middleware'
@@ -28,7 +30,7 @@ type RecentPrereviews = {
   readonly currentPage: number
   readonly totalPages: number
   readonly recentPrereviews: RNEA.ReadonlyNonEmptyArray<{
-    readonly club?: 'asapbio-metabolism'
+    readonly club?: ClubId
     readonly id: number
     readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
     readonly published: PlainDate
@@ -112,12 +114,7 @@ function createPage({ currentPage, totalPages, recentPrereviews }: RecentPrerevi
                           <article>
                             <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
                               ${formatList('en')(prereview.reviewers)}
-                              ${canSeeClubs && prereview.club
-                                ? html`of the
-                                  ${match(prereview.club)
-                                    .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                                    .exhaustive()}`
-                                : ''}
+                              ${canSeeClubs && prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''}
                               reviewed
                               <cite
                                 dir="${getLangDir(prereview.preprint.language)}"

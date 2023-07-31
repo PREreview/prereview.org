@@ -157,7 +157,7 @@ test.extend(canSeeClubs)('can find and view a club', async ({ fetch, javaScriptE
 
   await page.getByRole('link', { name: 'ASAPbio Metabolism Crowd' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd’s PREreviews')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd')
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
@@ -317,6 +317,6 @@ test.extend(canSeeClubs)('the list might be empty', async ({ fetch, page }) => {
 
   await page.goto('/clubs/asapbio-metabolism')
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd’s PREreviews')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd')
   await expect(page).toHaveScreenshot()
 })

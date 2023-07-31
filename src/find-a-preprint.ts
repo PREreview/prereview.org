@@ -3,8 +3,6 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import type * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -14,14 +12,11 @@ import { type InvalidE, getInput, invalidE } from './form'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
+import { doesPreprintExist } from './preprint'
 import { type IndeterminatePreprintId, type PhilsciPreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
 import { findAPreprintMatch, preprintReviewsMatch, reviewAPreprintMatch } from './routes'
 import type { User } from './user'
 import { maybeGetUser } from './user'
-
-export interface DoesPreprintExistEnv {
-  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'not-a-preprint' | 'unavailable', boolean>
-}
 
 export const findAPreprint = pipe(
   RM.fromMiddleware(getMethod),
@@ -31,12 +26,6 @@ export const findAPreprint = pipe(
       .otherwise(() => showFindAPreprintPage),
   ),
 )
-
-const doesPreprintExist = (id: IndeterminatePreprintId) =>
-  pipe(
-    RTE.ask<DoesPreprintExistEnv>(),
-    RTE.chainTaskEitherK(({ doesPreprintExist }) => doesPreprintExist(id)),
-  )
 
 const showFindAPreprintPage = pipe(
   maybeGetUser,

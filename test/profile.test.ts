@@ -25,12 +25,14 @@ describe('profile', () => {
         }),
       ),
       fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the data can be loaded', async (connection, profile, name, prereviews, user) => {
+      fc.boolean(),
+    ])('when the data can be loaded', async (connection, profile, name, prereviews, user, canSeeClubs) => {
       const getName: Mock<_.GetNameEnv['getName']> = jest.fn(_ => TE.of(name))
       const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.of(prereviews))
 
       const actual = await runMiddleware(
         _.profile(profile)({
+          canSeeClubs,
           getName,
           getPrereviews,
           getUser: () => M.fromEither(user),
@@ -61,9 +63,11 @@ describe('profile', () => {
         }),
       ),
       fc.either(fc.constant('no-session' as const), fc.user()),
-    ])("when the name can't be found", async (connection, profile, prereviews, user) => {
+      fc.boolean(),
+    ])("when the name can't be found", async (connection, profile, prereviews, user, canSeeClubs) => {
       const actual = await runMiddleware(
         _.profile(profile)({
+          canSeeClubs,
           getName: () => TE.left('not-found'),
           getPrereviews: () => TE.of(prereviews),
           getUser: () => M.fromEither(user),
@@ -93,9 +97,11 @@ describe('profile', () => {
         }),
       ),
       fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the name is unavailable', async (connection, profile, prereviews, user) => {
+      fc.boolean(),
+    ])('when the name is unavailable', async (connection, profile, prereviews, user, canSeeClubs) => {
       const actual = await runMiddleware(
         _.profile(profile)({
+          canSeeClubs,
           getName: () => TE.left('unavailable'),
           getPrereviews: () => TE.of(prereviews),
           getUser: () => M.fromEither(user),
@@ -127,11 +133,13 @@ describe('profile', () => {
         }),
       ),
       fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the data can be loaded', async (connection, profile, prereviews, user) => {
+      fc.boolean(),
+    ])('when the data can be loaded', async (connection, profile, prereviews, user, canSeeClubs) => {
       const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.of(prereviews))
 
       const actual = await runMiddleware(
         _.profile(profile)({
+          canSeeClubs,
           getName: shouldNotBeCalled,
           getPrereviews,
           getUser: () => M.fromEither(user),
@@ -155,9 +163,11 @@ describe('profile', () => {
     fc.profileId(),
     fc.string(),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])("when the PREreviews can't be loaded", async (connection, profile, name, user) => {
+    fc.boolean(),
+  ])("when the PREreviews can't be loaded", async (connection, profile, name, user, canSeeClubs) => {
     const actual = await runMiddleware(
       _.profile(profile)({
+        canSeeClubs,
         getName: () => TE.of(name),
         getPrereviews: () => TE.left('unavailable'),
         getUser: () => M.fromEither(user),

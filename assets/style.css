@@ -333,8 +333,10 @@ body > footer {
   &:any-link {
     color: inherit;
 
-    &:not(:hover) {
-      text-decoration-line: none;
+    :not(.byline) > & {
+      &:not(:hover) {
+        text-decoration-line: none;
+      }
     }
   }
 
@@ -1494,12 +1496,7 @@ html-editor {
   font-style: italic;
 
   & :any-link {
-    text-decoration-line: inherit;
     color: inherit;
-
-    &:hover {
-      text-decoration-line: underline;
-    }
   }
 }
 

@@ -31,6 +31,10 @@ export type PreprintTitle = {
   title: Html
 }
 
+export interface DoesPreprintExistEnv {
+  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'not-a-preprint' | 'unavailable', boolean>
+}
+
 export interface GetPreprintEnv {
   getPreprint: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
 }
@@ -38,6 +42,9 @@ export interface GetPreprintEnv {
 export interface GetPreprintTitleEnv {
   getPreprintTitle: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', PreprintTitle>
 }
+
+export const doesPreprintExist = (id: IndeterminatePreprintId) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ doesPreprintExist }: DoesPreprintExistEnv) => doesPreprintExist(id)))
 
 export const getPreprint = (id: IndeterminatePreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(id)))

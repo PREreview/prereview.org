@@ -13,6 +13,8 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
+import { getClubName } from './club-details'
+import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
@@ -28,7 +30,7 @@ import PlainDate = Temporal.PlainDate
 
 export type RecentPrereview = {
   readonly id: number
-  readonly club?: 'asapbio-metabolism'
+  readonly club?: ClubId
   readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
   readonly published: PlainDate
   readonly preprint: {
@@ -173,10 +175,7 @@ function createPage(
                               <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
                                 ${formatList('en')(prereview.reviewers)}
                                 ${canSeeClubs && prereview.club
-                                  ? html`of the
-                                    ${match(prereview.club)
-                                      .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                                      .exhaustive()}`
+                                  ? html`of the <b>${getClubName(prereview.club)}</b>`
                                   : ''}
                                 reviewed
                                 <cite

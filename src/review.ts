@@ -13,6 +13,8 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
+import { getClubName } from './club-details'
+import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { fixHeadingLevels } from './html'
@@ -20,7 +22,7 @@ import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
 import { isPseudonym } from './pseudonym'
-import { clubMatch, preprintReviewsMatch, profileMatch, reviewMatch } from './routes'
+import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
 import type { User } from './user'
 import { maybeGetUser } from './user'
@@ -29,7 +31,7 @@ import PlainDate = Temporal.PlainDate
 
 export type Prereview = {
   authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
-  club?: 'asapbio-metabolism'
+  club?: ClubId
   doi: Doi
   language?: LanguageCode
   license: 'CC-BY-4.0'
@@ -122,10 +124,8 @@ function createPage(review: Prereview, user?: User) {
                 ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
                 ${canSeeClubs && review.club
                   ? html`of the
-                      <a href="${format(clubMatch.formatter, { id: review.club })}"
-                        >${match(review.club)
-                          .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                          .exhaustive()}</a
+                      <a href="${format(clubProfileMatch.formatter, { id: review.club })}"
+                        >${getClubName(review.club)}</a
                       >`
                   : ''}
               </div>

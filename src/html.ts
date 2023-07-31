@@ -197,7 +197,7 @@ function texToMathml(input: string) {
     try {
       return sanitizeHtml(
         katex
-          .renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml' })
+          .renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml', strict: false })
           .replace(/^<span class="katex">([\s\S]*)<\/span>$/, '$1'),
       ).toString()
     } catch {
