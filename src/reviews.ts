@@ -114,7 +114,7 @@ function createPage({ currentPage, totalPages, recentPrereviews }: RecentPrerevi
                           <article>
                             <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
                               ${formatList('en')(prereview.reviewers)}
-                              ${canSeeClubs && prereview.club ? html`of the ${getClubName(prereview.club)}` : ''}
+                              ${canSeeClubs && prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''}
                               reviewed
                               <cite
                                 dir="${getLangDir(prereview.preprint.language)}"
