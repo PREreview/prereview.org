@@ -16,6 +16,22 @@ export type Club = {
 export const getClubDetails = (id: ClubId) =>
   match(id)
     .returnType<Club>()
+    .with('asapbio-meta-research', () => ({
+      name: 'ASAPbio Meta-Research Crowd',
+      description: html`
+        <p>
+          The ASAPbio Meta-research Crowd reviews preprints about the practices, policies and infrastructure of open
+          science and scholarship.
+        </p>
+      `,
+      leads: [
+        { name: 'Stephen Gabrielson', orcid: '0000-0001-9420-4466' as Orcid },
+        { name: 'Jessica Polka', orcid: '0000-0001-6610-9293' as Orcid },
+      ],
+      joinLink: new URL(
+        'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
+      ),
+    }))
     .with('asapbio-metabolism', () => ({
       name: 'ASAPbio Metabolism Crowd',
       description: html`
