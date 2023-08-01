@@ -16,8 +16,7 @@ import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
 import { type User, getUser } from '../user'
-import { type Form, createForm, getForm, saveForm, updateForm } from './form'
-import { redirectToNextForm } from './form'
+import { type Form, createForm, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
 export const writeReviewReviewType = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),

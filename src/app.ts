@@ -7,8 +7,7 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import { type Lazy, constant, flip, flow, pipe } from 'fp-ts/function'
-import { identity } from 'fp-ts/function'
+import { type Lazy, constant, flip, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -42,18 +41,18 @@ import { type CareerStageStoreEnv, deleteCareerStage, getCareerStage, saveCareer
 import {
   type LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
+  getPreprintIdFromLegacyPreviewUuid,
+  getProfileIdFromLegacyPreviewUuid,
   getPseudonymFromLegacyPrereview,
   getRapidPreviewsFromLegacyPrereview,
   isLegacyCompatiblePreprint,
   isLegacyCompatiblePrereview,
 } from './legacy-prereview'
-import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview'
 import { legacyRoutes } from './legacy-routes'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { myDetails } from './my-details'
 import { getNameFromOrcid } from './orcid'
-import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page'
-import { page } from './page'
+import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page } from './page'
 import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
 import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv } from './preprint'

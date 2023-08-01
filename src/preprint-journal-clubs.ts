@@ -6,8 +6,7 @@ import { getPage } from './ghost'
 import { type Html, html, plainText, sendHtml } from './html'
 import { serviceUnavailable } from './middleware'
 import { page } from './page'
-import type { User } from './user'
-import { maybeGetUser } from './user'
+import { type User, maybeGetUser } from './user'
 
 export const preprintJournalClubs = pipe(
   RM.fromReaderTaskEither(getPage('6154aa157741400e8722bb10')),

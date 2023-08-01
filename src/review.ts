@@ -16,16 +16,14 @@ import { match } from 'ts-pattern'
 import { getClubName } from './club-details'
 import type { ClubId } from './club-id'
 import { canSeeClubs } from './feature-flags'
-import { type Html, html, plainText, rawHtml, sendHtml } from './html'
-import { fixHeadingLevels } from './html'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from './html'
 import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
 import { isPseudonym } from './pseudonym'
 import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
-import type { User } from './user'
-import { maybeGetUser } from './user'
+import { type User, maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 

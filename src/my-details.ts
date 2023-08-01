@@ -15,8 +15,7 @@ import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { changeCareerStageMatch, myDetailsMatch } from './routes'
-import { getUser } from './user'
-import type { GetUserEnv, User } from './user'
+import { type GetUserEnv, type User, getUser } from './user'
 
 export const myDetails = pipe(
   getUser,

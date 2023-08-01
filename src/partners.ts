@@ -6,8 +6,7 @@ import { html, plainText, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { serviceUnavailable } from './middleware'
 import { page } from './page'
-import type { User } from './user'
-import { maybeGetUser } from './user'
+import { type User, maybeGetUser } from './user'
 
 export const partners = pipe(
   maybeGetUser,

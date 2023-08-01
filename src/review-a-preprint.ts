@@ -15,8 +15,7 @@ import { page } from './page'
 import { doesPreprintExist } from './preprint'
 import { type IndeterminatePreprintId, type PhilsciPreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
 import { homeMatch, reviewAPreprintMatch, writeReviewMatch } from './routes'
-import type { User } from './user'
-import { maybeGetUser } from './user'
+import { type User, maybeGetUser } from './user'
 
 export const reviewAPreprint = pipe(
   RM.fromMiddleware(getMethod),

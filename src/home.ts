@@ -23,8 +23,7 @@ import { templatePage } from './page'
 import type { PreprintId } from './preprint-id'
 import { aboutUsMatch, homeMatch, reviewAPreprintMatch, reviewMatch, reviewsMatch } from './routes'
 import { renderDate } from './time'
-import type { User } from './user'
-import { maybeGetUser } from './user'
+import { type User, maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
