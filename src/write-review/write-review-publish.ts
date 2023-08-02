@@ -1,8 +1,8 @@
 import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
+import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import * as R from 'fp-ts/Refinement'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
@@ -39,7 +39,7 @@ import {
 } from '../routes'
 import { type GetUserEnv, type User, getUser } from '../user'
 import { type CompletedForm, CompletedFormC } from './completed-form'
-import { type FormStoreEnv, deleteForm, getForm, redirectToNextForm, saveForm } from './form'
+import { type Form, type FormStoreEnv, deleteForm, getForm, redirectToNextForm, saveForm } from './form'
 import { storeInformationForWriteReviewPublishedPage } from './published-review'
 
 export type NewPrereview = {
@@ -61,9 +61,10 @@ export const writeReviewPublish = flow(
       RM.right({ preprint }),
       RM.apSW('user', getUser),
       RM.bindW(
-        'form',
+        'originalForm',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
+      RM.bind('form', ({ originalForm }) => RM.right(CompletedFormC.decode(originalForm))),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
@@ -76,12 +77,20 @@ export const writeReviewPublish = flow(
               void
             >
           >()
-          .with({ form: { alreadyWritten: P.optional(undefined) } }, ({ form, user }) =>
-            redirectToNextForm(preprint.id)(form, user),
+          .with(
+            P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
+            ({ originalForm, user }) => redirectToNextForm(preprint.id)(originalForm, user),
           )
-          .with({ method: 'POST', form: P.when(R.fromEitherK(CompletedFormC.decode)) }, handlePublishForm)
-          .with({ form: P.when(R.fromEitherK(CompletedFormC.decode)) }, showPublishForm)
-          .otherwise(({ form, user }) => redirectToNextForm(preprint.id)(form, user)),
+          .with({ method: 'POST', form: P.when(E.isRight) }, ({ form, ...state }) =>
+            handlePublishForm({ ...state, form: form.right }),
+          )
+          .with({ form: P.when(E.isRight) }, ({ form, ...state }) =>
+            showPublishForm({
+              ...state,
+              form: form.right,
+            }),
+          )
+          .exhaustive(),
       ),
       RM.orElseW(error =>
         match(error)
@@ -103,7 +112,17 @@ export const writeReviewPublish = flow(
   ),
 )
 
-const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; preprint: PreprintTitle; user: User }) =>
+const handlePublishForm = ({
+  form,
+  originalForm,
+  preprint,
+  user,
+}: {
+  form: CompletedForm
+  originalForm: Form
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
     RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.id)),
     RM.map(() => ({
@@ -116,7 +135,7 @@ const handlePublishForm = ({ form, preprint, user }: { form: CompletedForm; prep
     RM.chainReaderTaskEitherKW(
       flow(
         publishPrereview,
-        RTE.orElseFirstW(() => saveForm(user.orcid, preprint.id)(form)),
+        RTE.orElseFirstW(() => saveForm(user.orcid, preprint.id)(originalForm)),
       ),
     ),
     RM.ichainFirst(() => RM.status(Status.SeeOther)),
