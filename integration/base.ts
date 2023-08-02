@@ -13,6 +13,7 @@ import type { Server } from 'http'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
+import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import {
@@ -37,6 +38,7 @@ type AppFixtures = {
   canRapidReview: CanRapidReviewEnv['canRapidReview']
   fetch: FetchMockSandbox
   logger: Logger
+  oauthServer: OAuth2Server
   port: number
   server: Server
   updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
@@ -668,11 +670,35 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await fs.writeFile(testInfo.outputPath('server.log'), logs.map(L.ShowLogEntry.show).join('\n'))
   },
+  oauthServer: async ({}, use) => {
+    const server = new OAuth2Server()
+    server.service.on('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
+      if (!url.searchParams.get('state')) {
+        url.searchParams.set('state', '')
+      }
+    })
+
+    await server.start()
+
+    await use(server)
+
+    await server.stop()
+  },
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
   server: async (
-    { canSeeClubs, canEditProfile, canRapidReview, fetch, logger, port, updatesLegacyPrereview, careerStageStore },
+    {
+      canSeeClubs,
+      canEditProfile,
+      canRapidReview,
+      fetch,
+      logger,
+      oauthServer,
+      port,
+      updatesLegacyPrereview,
+      careerStageStore,
+    },
     use,
   ) => {
     const server = app({
@@ -695,7 +721,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
       logger,
       oauth: {
-        authorizeUrl: new URL('https://oauth.mocklab.io/oauth/authorize'),
+        authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
         clientId: 'client-id',
         clientSecret: 'client-secret',
         redirectUri: new URL(`http://localhost:${port}/orcid`),
@@ -753,9 +779,6 @@ export const canLogIn: Fixtures<
 export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, Pick<PlaywrightTestArgs, 'page'>> = {
   page: async ({ page }, use) => {
     await page.goto('/log-in')
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
-    await page.keyboard.press('Enter')
 
     await expect(page).toHaveTitle(/PREreview/)
 

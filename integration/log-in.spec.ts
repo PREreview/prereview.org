@@ -69,9 +69,6 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
   await expect(logIn).toBeInViewport()
 
   await logIn.click()
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-  await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()

@@ -1,5 +1,5 @@
 import { Status } from 'hyper-ts'
-import { URL } from 'url'
+import type { MutableRedirectUri } from 'oauth2-mock-server'
 import { RecordsC } from 'zenodo-ts'
 import { areLoggedIn, canLogIn, canRapidReview, expect, test, updatesLegacyPrereview, willPublishAReview } from './base'
 
@@ -20,10 +20,6 @@ test.extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Start now' }).click()
-
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
-    await page.keyboard.press('Enter')
 
     await page.getByLabel('No').check()
 
@@ -119,9 +115,6 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
-    await page.keyboard.press('Enter')
 
     await page.getByLabel('Guided review').check()
 
@@ -245,10 +238,6 @@ test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ 
   await expect(page).toHaveScreenshot()
 
   await page.getByRole('button', { name: 'Start now' }).click()
-
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-  await page.keyboard.press('Enter')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Have you already written your PREreview?')
 })
@@ -1606,10 +1595,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
-    await page.keyboard.press('Enter')
-
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -1819,15 +1804,13 @@ test('when is URL is not supported', async ({ javaScriptEnabled, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScriptEnabled, page }) => {
+test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScriptEnabled, oauthServer, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  oauthServer.service.once('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
+    url.searchParams.delete('code')
+    url.searchParams.set('error', 'access_denied')
+  })
   await page.getByRole('button', { name: 'Start now' }).click()
-
-  const [redirectUri, state] = await Promise.all([
-    page.locator('[name=redirectUri]').inputValue(),
-    page.locator('[name=state]').inputValue(),
-  ])
-  await page.goto(`${new URL(redirectUri).pathname}?error=access_denied&state=${state}`)
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t log you in')
   await page.mouse.move(0, 0)
@@ -1848,13 +1831,8 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
 
 test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-
   fetch.postOnce('http://orcid.test/token', { status: Status.ServiceUnavailable })
-  await page.keyboard.press('Enter')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await page.mouse.move(0, 0)
@@ -1875,11 +1853,6 @@ test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page
 
 test('might not authenticate with ORCID in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-
   fetch.postOnce(
     'http://orcid.test/token',
     new Promise(() =>
@@ -1897,7 +1870,7 @@ test('might not authenticate with ORCID in time', async ({ fetch, javaScriptEnab
       ),
     ),
   )
-  await page.keyboard.press('Enter')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await page.mouse.move(0, 0)
@@ -1959,11 +1932,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-
   fetch.get(
     {
       url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
@@ -1979,7 +1947,7 @@ test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, jav
     ),
     { overwriteRoutes: true },
   )
-  await page.keyboard.press('Enter')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await page.mouse.move(0, 0)
