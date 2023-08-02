@@ -118,7 +118,7 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: (keyof T)[
     )
     .chain(omit =>
       fc.record(
-        { ...recordModel, [omit]: fc.constant(undefined) },
+        Object.fromEntries(Object.entries(recordModel).filter(([key]) => key !== omit)) as never,
         (constraints as never) ?? { withDeletedKeys: true },
       ),
     )
