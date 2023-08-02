@@ -62,6 +62,7 @@ import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/profi
 import type { Pseudonym } from '../src/pseudonym'
 import { type NonEmptyString, isNonEmptyString } from '../src/string'
 import type { User } from '../src/user'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 if (process.env.FAST_CHECK_NUM_RUNS) {
   fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env.FAST_CHECK_NUM_RUNS, 10) })
@@ -596,17 +597,27 @@ const headerName = () =>
   )
 
 export const headers = () =>
-  fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init => new Headers(init))
+  fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init =>
+    Object.defineProperties(new Headers(init), {
+      [fc.toStringMethod]: { value: () => fc.stringify(init) },
+    }),
+  )
 
 export const fetchResponse = ({ status }: { status?: fc.Arbitrary<number> } = {}): fc.Arbitrary<F.Response> =>
-  fc.record({
-    headers: headers(),
-    status: status ?? fc.integer(),
-    statusText: fc.string(),
-    url: fc.string(),
-    clone: fc.func(fc.constant(undefined)) as unknown as fc.Arbitrary<F.Response['clone']>,
-    text: fc.func(fc.string().map(text => Promise.resolve(text))),
-  })
+  fc
+    .record({
+      headers: headers(),
+      status: status ?? fc.integer(),
+      statusText: fc.string(),
+      url: fc.string(),
+      text: fc.string(),
+    })
+    .map(args =>
+      Object.defineProperties(
+        { ...args, clone: shouldNotBeCalled, text: () => Promise.resolve(args.text) },
+        { [fc.toStringMethod]: { value: () => fc.stringify(args) } },
+      ),
+    )
 
 export const request = ({
   body,
