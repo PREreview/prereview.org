@@ -8,6 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
+import merge from 'ts-deepmerge'
 import { writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
@@ -408,7 +409,7 @@ describe('writeReviewPublish', () => {
       ),
     ),
     fc.oneof(fc.fetchResponse({ status: fc.integer({ min: 400 }) }), fc.error()),
-    fc.completedForm(),
+    fc.tuple(fc.incompleteForm(), fc.completedForm()).map(parts => merge(...parts)),
     fc.user(),
   ])(
     'when the PREreview cannot be published',
