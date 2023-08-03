@@ -40,7 +40,7 @@ const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   canSeeClubs: env.CAN_SEE_CLUBS,
-  canEditProfile: env.CAN_EDIT_PROFILE,
+  canEditProfile: true,
   canRapidReview: user => env.CAN_RAPID_REVIEW.includes(user.orcid) === true,
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({

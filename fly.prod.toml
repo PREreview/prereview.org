@@ -2,7 +2,6 @@ app = "prereview"
 
 [env]
 ALLOW_SITE_CRAWLERS = "true"
-CAN_EDIT_PROFILE = "true"
 CAN_SEE_CLUBS = "true"
 FATHOM_SITE_ID = "FEAJEBBA"
 LEGACY_PREREVIEW_UPDATE = "true"
