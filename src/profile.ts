@@ -1,7 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
-import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
@@ -15,7 +14,6 @@ import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from './club-details'
 import type { ClubId } from './club-id'
-import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
@@ -110,86 +108,78 @@ function createPage({
   prereviews: Prereviews
   user?: User
 }) {
-  return pipe(
-    canSeeClubs,
-    R.chainW(canSeeClubs =>
-      page({
-        title: plainText`${name}’s PREreviews`,
-        content: html`
-          <main id="main-content">
-            <h1>${name}’s PREreviews</h1>
+  return page({
+    title: plainText`${name}’s PREreviews`,
+    content: html`
+      <main id="main-content">
+        <h1>${name}’s PREreviews</h1>
 
-            ${orcid ? html`<a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a> ` : ''}
-            ${pipe(
-              prereviews,
-              RA.match(
-                () => html`
-                  <div class="inset">
-                    <p>${name} hasn’t published a PREreview yet.</p>
+        ${orcid ? html`<a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a> ` : ''}
+        ${pipe(
+          prereviews,
+          RA.match(
+            () => html`
+              <div class="inset">
+                <p>${name} hasn’t published a PREreview yet.</p>
 
-                    <p>When they do, it’ll appear here.</p>
-                  </div>
-                `,
-                prereviews => html`
-                  <ol class="cards">
-                    ${prereviews.map(
-                      prereview => html`
-                        <li>
-                          <article>
-                            <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                              ${formatList('en')(prereview.reviewers)}
-                              ${canSeeClubs && prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''}
-                              reviewed
-                              <cite
-                                dir="${getLangDir(prereview.preprint.language)}"
-                                lang="${prereview.preprint.language}"
-                                >${prereview.preprint.title}</cite
-                              >
-                            </a>
+                <p>When they do, it’ll appear here.</p>
+              </div>
+            `,
+            prereviews => html`
+              <ol class="cards">
+                ${prereviews.map(
+                  prereview => html`
+                    <li>
+                      <article>
+                        <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                          ${formatList('en')(prereview.reviewers)}
+                          ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
+                          <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
+                            >${prereview.preprint.title}</cite
+                          >
+                        </a>
 
-                            <dl>
-                              <dt>Review published</dt>
-                              <dd>${renderDate(prereview.published)}</dd>
-                              <dt>Preprint server</dt>
-                              <dd>
-                                ${match(prereview.preprint.id.type)
-                                  .with('africarxiv', () => 'AfricArXiv Preprints')
-                                  .with('arxiv', () => 'arXiv')
-                                  .with('biorxiv', () => 'bioRxiv')
-                                  .with('chemrxiv', () => 'ChemRxiv')
-                                  .with('eartharxiv', () => 'EarthArXiv')
-                                  .with('ecoevorxiv', () => 'EcoEvoRxiv')
-                                  .with('edarxiv', () => 'EdArXiv')
-                                  .with('engrxiv', () => 'engrXiv')
-                                  .with('medrxiv', () => 'medRxiv')
-                                  .with('metaarxiv', () => 'MetaArXiv')
-                                  .with('osf', () => 'OSF Preprints')
-                                  .with('philsci', () => 'PhilSci-Archive')
-                                  .with('preprints.org', () => 'Preprints.org')
-                                  .with('psyarxiv', () => 'PsyArXiv')
-                                  .with('research-square', () => 'Research Square')
-                                  .with('scielo', () => 'SciELO Preprints')
-                                  .with('science-open', () => 'ScienceOpen Preprints')
-                                  .with('socarxiv', () => 'SocArXiv')
-                                  .with('zenodo', () => 'Zenodo')
-                                  .exhaustive()}
-                              </dd>
-                            </dl>
-                          </article>
-                        </li>
-                      `,
-                    )}
-                  </ol>
-                `,
-              ),
-            )}
-          </main>
-        `,
-        skipLinks: [[html`Skip to main content`, '#main-content']],
-        user,
-      }),
-    ),
-  )
+                        <dl>
+                          <dt>Review published</dt>
+                          <dd>${renderDate(prereview.published)}</dd>
+                          <dt>Preprint server</dt>
+                          <dd>
+                            ${match(prereview.preprint.id.type)
+                              .with('africarxiv', () => 'AfricArXiv Preprints')
+                              .with('arxiv', () => 'arXiv')
+                              .with('biorxiv', () => 'bioRxiv')
+                              .with('chemrxiv', () => 'ChemRxiv')
+                              .with('eartharxiv', () => 'EarthArXiv')
+                              .with('ecoevorxiv', () => 'EcoEvoRxiv')
+                              .with('edarxiv', () => 'EdArXiv')
+                              .with('engrxiv', () => 'engrXiv')
+                              .with('medrxiv', () => 'medRxiv')
+                              .with('metaarxiv', () => 'MetaArXiv')
+                              .with('osf', () => 'OSF Preprints')
+                              .with('philsci', () => 'PhilSci-Archive')
+                              .with('preprints.org', () => 'Preprints.org')
+                              .with('psyarxiv', () => 'PsyArXiv')
+                              .with('research-square', () => 'Research Square')
+                              .with('scielo', () => 'SciELO Preprints')
+                              .with('science-open', () => 'ScienceOpen Preprints')
+                              .with('socarxiv', () => 'SocArXiv')
+                              .with('zenodo', () => 'Zenodo')
+                              .exhaustive()}
+                          </dd>
+                        </dl>
+                      </article>
+                    </li>
+                  `,
+                )}
+              </ol>
+            `,
+          ),
+        )}
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
+  })
 }
 
 function formatList(

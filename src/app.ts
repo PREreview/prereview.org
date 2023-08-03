@@ -171,7 +171,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canSeeClubs: true,
           getRecentPrereviews: () =>
             pipe(
               getRecentPrereviewsFromZenodo(1),
@@ -189,7 +188,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canSeeClubs: true,
           getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)(env),
         })),
       ),
@@ -262,7 +260,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canSeeClubs: true,
           getPrereviews: flip(getPrereviewsForPreprintFromZenodo)(env),
           getRapidPrereviews: flip(getRapidPrereviews)(env),
         })),
@@ -274,7 +271,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canSeeClubs: true,
           getPrereview: flip(getPrereviewFromZenodo)(env),
         })),
       ),
@@ -307,7 +303,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canSeeClubs: true,
           getName: flip(getNameFromOrcid)(env),
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
         })),
@@ -319,7 +314,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canSeeClubs: true,
           getPrereviews: flip(getPrereviewsForClubFromZenodo)(env),
         })),
       ),

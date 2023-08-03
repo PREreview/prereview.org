@@ -5,7 +5,6 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
-import * as b from 'fp-ts/boolean'
 import { flow, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -14,9 +13,8 @@ import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Club, getClubDetails } from './club-details'
 import type { ClubId } from './club-id'
-import { canSeeClubs } from './feature-flags'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
-import { notFound, serviceUnavailable } from './middleware'
+import { serviceUnavailable } from './middleware'
 import { templatePage } from './page'
 import type { PreprintId } from './preprint-id'
 import { profileMatch, reviewMatch } from './routes'
@@ -47,17 +45,6 @@ const getPrereviews = (id: ClubId) =>
   )
 
 export const clubProfile = (id: ClubId) =>
-  pipe(
-    RM.rightReader(canSeeClubs),
-    RM.ichainW(
-      b.match(
-        () => notFound,
-        () => showClubPage(id),
-      ),
-    ),
-  )
-
-const showClubPage = (id: ClubId) =>
   pipe(
     RM.fromReaderTaskEither(getPrereviews(id)),
     RM.bindTo('prereviews'),

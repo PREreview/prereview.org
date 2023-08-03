@@ -26,15 +26,13 @@ describe('reviews', () => {
       ),
     }),
     fc.either(fc.constant('no-session' as const), fc.user()),
-    fc.boolean(),
-  ])('when the recent reviews can be loaded', async (page, connection, recentPrereviews, user, canSeeClubs) => {
+  ])('when the recent reviews can be loaded', async (page, connection, recentPrereviews, user) => {
     const getRecentPrereviews: Mock<_.GetRecentPrereviewsEnv['getRecentPrereviews']> = jest.fn(_ =>
       TE.right(recentPrereviews),
     )
 
     const actual = await runMiddleware(
       _.reviews(page)({
-        canSeeClubs,
         getRecentPrereviews,
         getUser: () => M.fromEither(user),
         publicUrl: new URL('http://example.com'),
@@ -57,11 +55,9 @@ describe('reviews', () => {
     fc.integer(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.either(fc.constant('no-session' as const), fc.user()),
-    fc.boolean(),
-  ])('when the page is not found', async (page, connection, user, canSeeClubs) => {
+  ])('when the page is not found', async (page, connection, user) => {
     const actual = await runMiddleware(
       _.reviews(page)({
-        canSeeClubs,
         getRecentPrereviews: () => TE.left('not-found'),
         getUser: () => M.fromEither(user),
         publicUrl: new URL('http://example.com'),
@@ -83,11 +79,9 @@ describe('reviews', () => {
     fc.integer(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.either(fc.constant('no-session' as const), fc.user()),
-    fc.boolean(),
-  ])('when the recent reviews cannot be loaded', async (page, connection, user, canSeeClubs) => {
+  ])('when the recent reviews cannot be loaded', async (page, connection, user) => {
     const actual = await runMiddleware(
       _.reviews(page)({
-        canSeeClubs,
         getRecentPrereviews: () => TE.left('unavailable'),
         getUser: () => M.fromEither(user),
         publicUrl: new URL('http://example.com'),
