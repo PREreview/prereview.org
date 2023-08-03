@@ -8,6 +8,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import Keyv from 'keyv'
 import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
+import { CompletedFormC } from '../../src/write-review/completed-form'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
 import * as fc from './fc'
@@ -31,7 +32,7 @@ describe('writeReviewIntroductionMatches', () => {
       'when the form is completed',
       async (preprintId, preprintTitle, [introductionMatches, connection], user, newReview) => {
         const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
         const actual = await runMiddleware(
           _.writeReviewIntroductionMatches(preprintId)({

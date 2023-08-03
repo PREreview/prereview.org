@@ -51,7 +51,7 @@ describe('writeReviewPublish', () => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
       const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
         TE.right([reviewDoi, reviewId]),
       )
@@ -168,7 +168,7 @@ describe('writeReviewPublish', () => {
       )
       expect(session).toStrictEqual({
         user: UserC.encode(user),
-        'published-review': { doi: reviewDoi, form: CompletedFormC.encode(newReview), id: reviewId },
+        'published-review': { doi: reviewDoi, form: FormC.encode(CompletedFormC.encode(newReview)), id: reviewId },
       })
       expect(await formStore.has(formKey(user.orcid, preprintTitle.id))).toBe(false)
     },
@@ -409,7 +409,7 @@ describe('writeReviewPublish', () => {
       ),
     ),
     fc.oneof(fc.fetchResponse({ status: fc.integer({ min: 400 }) }), fc.error()),
-    fc.tuple(fc.incompleteForm(), fc.completedForm()).map(parts => merge(...parts)),
+    fc.tuple(fc.incompleteForm(), fc.completedForm().map(CompletedFormC.encode)).map(parts => merge(...parts)),
     fc.user(),
   ])(
     'when the PREreview cannot be published',

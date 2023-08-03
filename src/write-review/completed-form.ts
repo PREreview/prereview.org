@@ -1,5 +1,6 @@
 import { pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
+import * as E from 'io-ts/Encoder'
 import { RawHtmlC } from '../html'
 import { NonEmptyStringC } from '../string'
 
@@ -26,6 +27,7 @@ export const CompletedFormC = pipe(
     C.sum('reviewType')({
       questions: C.struct({
         reviewType: C.literal('questions'),
+        alreadyWritten: C.literal('no'),
         introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),
         methodsAppropriate: C.literal(
           'inappropriate',
@@ -66,7 +68,8 @@ export const CompletedFormC = pipe(
       }),
       freeform: C.struct({
         reviewType: C.literal('freeform'),
-        review: RawHtmlC,
+        alreadyWritten: C.literal('no', 'yes'),
+        review: C.make(RawHtmlC, E.id()),
       }),
     }),
   ),

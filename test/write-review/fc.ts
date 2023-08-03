@@ -1,5 +1,5 @@
 import merge from 'ts-deepmerge'
-import type { CompletedForm } from '../../src/write-review/completed-form'
+import { type CompletedForm, CompletedFormC } from '../../src/write-review/completed-form'
 import type { Form } from '../../src/write-review/form'
 import * as fc from '../fc'
 
@@ -199,7 +199,7 @@ export const completedForm = (
 ): fc.Arbitrary<CompletedForm> =>
   fc
     .tuple(fc.oneof(completedFreeformForm(), completedQuestionsForm()), fc.record(model as never))
-    .map(parts => merge(...parts))
+    .map(parts => merge(...(parts as never)))
 
 export const unknownFormType = () =>
   fc.oneof(
@@ -222,13 +222,17 @@ export const unknownFormType = () =>
     fc.constant({}),
   ) satisfies fc.Arbitrary<Form>
 
-export const questionsForm = (): fc.Arbitrary<Form> => fc.oneof(completedQuestionsForm(), incompleteQuestionsForm())
+export const questionsForm = (): fc.Arbitrary<Form> =>
+  fc.oneof(completedQuestionsForm().map(CompletedFormC.encode), incompleteQuestionsForm())
 
-export const freeformForm = (): fc.Arbitrary<Form> => fc.oneof(completedFreeformForm(), incompleteFreeformForm())
+export const freeformForm = (): fc.Arbitrary<Form> =>
+  fc.oneof(completedFreeformForm().map(CompletedFormC.encode), incompleteFreeformForm())
 
 export const form = (
   model: {
     [K in keyof Partial<Form>]: fc.Arbitrary<Form[K]>
   } = {},
 ): fc.Arbitrary<Form> =>
-  fc.tuple(fc.oneof(completedForm(), incompleteForm()), fc.record(model as never)).map(parts => merge(...parts))
+  fc
+    .tuple(fc.oneof(completedForm().map(CompletedFormC.encode), incompleteForm()), fc.record(model as never))
+    .map(parts => merge(...parts))

@@ -7,6 +7,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import Keyv from 'keyv'
 import { writeReviewMatch, writeReviewReviewMatch } from '../../src/routes'
+import { CompletedFormC } from '../../src/write-review/completed-form'
 import { FormC, formKey } from '../../src/write-review/form'
 import * as _ from '../../src/write-review/index'
 import { runMiddleware } from '../middleware'
@@ -29,7 +30,7 @@ describe('writeReviewAlreadyWritten', () => {
     fc.completedForm(),
   ])('when the form is completed', async (preprintId, preprintTitle, [alreadyWritten, connection], user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
     const actual = await runMiddleware(
       _.writeReviewAlreadyWritten(preprintId)({
