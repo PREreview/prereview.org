@@ -1,14 +1,12 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import * as R from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, getCareerStage } from './career-stage'
-import { canEditProfile } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
@@ -54,58 +52,51 @@ export const myDetails = pipe(
 )
 
 function createPage(user: User, careerStage: O.Option<CareerStage>) {
-  return pipe(
-    canEditProfile,
-    R.chainW(canEditProfile =>
-      page({
-        title: plainText`My details`,
-        content: html`
-          <main id="main-content">
-            <h1>My details</h1>
+  return page({
+    title: plainText`My details`,
+    content: html`
+      <main id="main-content">
+        <h1>My details</h1>
 
-            <dl class="summary-list">
-              <div>
-                <dt>Name</dt>
-                <dd>${user.name}</dd>
-              </div>
+        <dl class="summary-list">
+          <div>
+            <dt>Name</dt>
+            <dd>${user.name}</dd>
+          </div>
 
-              <div>
-                <dt>ORCID iD</dt>
-                <dd><a href="https://orcid.org/${user.orcid}" class="orcid">${user.orcid}</a></dd>
-              </div>
+          <div>
+            <dt>ORCID iD</dt>
+            <dd><a href="https://orcid.org/${user.orcid}" class="orcid">${user.orcid}</a></dd>
+          </div>
 
-              <div>
-                <dt>PREreview pseudonym</dt>
-                <dd>${user.pseudonym}</dd>
-              </div>
+          <div>
+            <dt>PREreview pseudonym</dt>
+            <dd>${user.pseudonym}</dd>
+          </div>
 
-              ${canEditProfile
-                ? html`<div>
-                    <dt>Career stage</dt>
-                    <dd>
-                      ${match(careerStage)
-                        .with({ value: 'early' }, () => 'Early')
-                        .with({ value: 'mid' }, () => 'Mid')
-                        .with({ value: 'late' }, () => 'Late')
-                        .when(O.isNone, () => 'Unknown')
-                        .exhaustive()}
-                    </dd>
-                    <dd>
-                      <a href="${format(changeCareerStageMatch.formatter, {})}"
-                        >Change <span class="visually-hidden">career stage</span></a
-                      >
-                    </dd>
-                  </div>`
-                : ''}
-            </dl>
-          </main>
-        `,
-        skipLinks: [[html`Skip to main content`, '#main-content']],
-        current: 'my-details',
-        user,
-      }),
-    ),
-  )
+          <div>
+            <dt>Career stage</dt>
+            <dd>
+              ${match(careerStage)
+                .with({ value: 'early' }, () => 'Early')
+                .with({ value: 'mid' }, () => 'Mid')
+                .with({ value: 'late' }, () => 'Late')
+                .when(O.isNone, () => 'Unknown')
+                .exhaustive()}
+            </dd>
+            <dd>
+              <a href="${format(changeCareerStageMatch.formatter, {})}"
+                >Change <span class="visually-hidden">career stage</span></a
+              >
+            </dd>
+          </div>
+        </dl>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    current: 'my-details',
+    user,
+  })
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85

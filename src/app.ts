@@ -282,7 +282,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canEditProfile: true,
           getCareerStage: flip(getCareerStage)(env),
         })),
       ),
@@ -293,7 +292,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          canEditProfile: true,
           deleteCareerStage: flip(deleteCareerStage)(env),
           getCareerStage: flip(getCareerStage)(env),
           saveCareerStage: (orcid, careerStage) => saveCareerStage(orcid, careerStage)(env),

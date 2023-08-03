@@ -1,7 +1,6 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import * as b from 'fp-ts/boolean'
 import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -9,26 +8,15 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, deleteCareerStage, getCareerStage, saveCareerStage } from './career-stage'
-import { canEditProfile } from './feature-flags'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
-import { getMethod, notFound, seeOther, serviceUnavailable } from './middleware'
+import { getMethod, seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { changeCareerStageMatch, myDetailsMatch } from './routes'
 import { type GetUserEnv, type User, getUser } from './user'
 
 export const changeCareerStage = pipe(
-  RM.rightReader(canEditProfile),
-  RM.ichainW(
-    b.match(
-      () => notFound,
-      () => showChangeCareerStage,
-    ),
-  ),
-)
-
-const showChangeCareerStage = pipe(
   getUser,
   RM.bindTo('user'),
   RM.apSW('method', RM.fromMiddleware(getMethod)),

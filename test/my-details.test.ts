@@ -18,41 +18,35 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
-      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
-    ])(
-      'when the career stage can be loaded',
-      async (oauth, publicUrl, connection, user, canEditProfile, careerStage) => {
-        const actual = await runMiddleware(
-          _.myDetails({
-            getUser: () => M.right(user),
-            oauth,
-            publicUrl,
-            canEditProfile,
-            getCareerStage: () => TE.fromEither(careerStage),
-          }),
-          connection,
-        )()
+    ])('when the career stage can be loaded', async (oauth, publicUrl, connection, user, careerStage) => {
+      const actual = await runMiddleware(
+        _.myDetails({
+          getUser: () => M.right(user),
+          oauth,
+          publicUrl,
+          getCareerStage: () => TE.fromEither(careerStage),
+        }),
+        connection,
+      )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.OK },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.OK },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
 
-    test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.user(), fc.boolean()])(
+    test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.user()])(
       'when the career stage cannot be loaded',
-      async (oauth, publicUrl, connection, user, canEditProfile) => {
+      async (oauth, publicUrl, connection, user) => {
         const actual = await runMiddleware(
           _.myDetails({
             getUser: () => M.right(user),
             oauth,
             publicUrl,
-            canEditProfile,
             getCareerStage: () => TE.left('unavailable'),
           }),
           connection,
@@ -70,15 +64,14 @@ describe('myDetails', () => {
     )
   })
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.boolean()])(
+  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() })])(
     'when the user is not logged in',
-    async (oauth, publicUrl, connection, canEditProfile) => {
+    async (oauth, publicUrl, connection) => {
       const actual = await runMiddleware(
         _.myDetails({
           getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
-          canEditProfile,
           getCareerStage: shouldNotBeCalled,
         }),
         connection,
@@ -107,15 +100,14 @@ describe('myDetails', () => {
     },
   )
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error(), fc.boolean()])(
+  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error()])(
     "when the user can't be loaded",
-    async (oauth, publicUrl, connection, error, canEditProfile) => {
+    async (oauth, publicUrl, connection, error) => {
       const actual = await runMiddleware(
         _.myDetails({
           getUser: () => M.left(error),
           oauth,
           publicUrl,
-          canEditProfile,
           getCareerStage: shouldNotBeCalled,
         }),
         connection,
