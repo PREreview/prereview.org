@@ -211,7 +211,10 @@ export const FormC = pipe(
     competingInterestsDetails: NonEmptyStringC,
     conduct: C.literal('yes'),
   }),
-  C.imap(form => (form.review ? { reviewType: 'freeform' as const, ...form } : form), identity),
+  C.imap(
+    form => (form.review || form.alreadyWritten === 'yes' ? { reviewType: 'freeform' as const, ...form } : form),
+    identity,
+  ),
 )
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
