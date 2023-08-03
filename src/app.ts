@@ -30,7 +30,7 @@ import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
-import type { CanRapidReviewEnv, CanSeeClubsEnv } from './feature-flags'
+import type { CanRapidReviewEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
@@ -147,7 +147,6 @@ import {
 } from './zenodo'
 
 export type AppEnv = CanRapidReviewEnv &
-  CanSeeClubsEnv &
   CareerStageStoreEnv &
   FathomEnv &
   FormStoreEnv &
@@ -172,6 +171,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canSeeClubs: true,
           getRecentPrereviews: () =>
             pipe(
               getRecentPrereviewsFromZenodo(1),
@@ -189,6 +189,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canSeeClubs: true,
           getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)(env),
         })),
       ),
@@ -261,6 +262,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canSeeClubs: true,
           getPrereviews: flip(getPrereviewsForPreprintFromZenodo)(env),
           getRapidPrereviews: flip(getRapidPrereviews)(env),
         })),
@@ -272,6 +274,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canSeeClubs: true,
           getPrereview: flip(getPrereviewFromZenodo)(env),
         })),
       ),
@@ -304,6 +307,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canSeeClubs: true,
           getName: flip(getNameFromOrcid)(env),
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
         })),
@@ -315,6 +319,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canSeeClubs: true,
           getPrereviews: flip(getPrereviewsForClubFromZenodo)(env),
         })),
       ),

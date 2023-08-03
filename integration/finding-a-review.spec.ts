@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
-import { canSeeClubs, expect, test } from './base'
+import { expect, test } from './base'
 
 test('can find and view a review', async ({ fetch, page }) => {
   const record: Record = {
@@ -175,7 +175,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canSeeClubs)("can find and view a review that's part of a club", async ({ fetch, page }) => {
+test("can find and view a review that's part of a club", async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
     conceptrecid: 1061863,
@@ -335,7 +335,7 @@ test('can view a recent review', async ({ fetch, page }) => {
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
 })
 
-test.extend(canSeeClubs)("can view a recent review that's part of a club", async ({ fetch, page }) => {
+test("can view a recent review that's part of a club", async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
     conceptrecid: 1061863,
@@ -503,7 +503,7 @@ test('can view an older review', async ({ fetch, page }) => {
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
 })
 
-test.extend(canSeeClubs)("can view an older review that's part of a club", async ({ fetch, page }) => {
+test("can view an older review that's part of a club", async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
     conceptrecid: 1061863,

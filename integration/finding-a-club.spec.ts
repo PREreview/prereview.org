@@ -2,9 +2,9 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC } from 'zenodo-ts'
-import { canSeeClubs, expect, test } from './base'
+import { expect, test } from './base'
 
-test.extend(canSeeClubs)('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
+test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
   fetch
     .getOnce('http://zenodo.test/api/records/7820084', {
       body: RecordC.encode({
@@ -174,7 +174,7 @@ test.extend(canSeeClubs)('can find and view a club', async ({ fetch, javaScriptE
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canSeeClubs)('might not load the PREreviews in time', async ({ fetch, javaScriptEnabled, page }) => {
+test('might not load the PREreviews in time', async ({ fetch, javaScriptEnabled, page }) => {
   fetch.get(
     {
       name: 'club-prereviews',
@@ -299,7 +299,7 @@ test.extend(canSeeClubs)('might not load the PREreviews in time', async ({ fetch
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canSeeClubs)('the list might be empty', async ({ fetch, page }) => {
+test('the list might be empty', async ({ fetch, page }) => {
   fetch.get(
     {
       name: 'club-prereviews',

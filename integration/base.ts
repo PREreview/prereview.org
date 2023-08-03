@@ -24,7 +24,7 @@ import {
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { app } from '../src/app'
-import type { CanRapidReviewEnv, CanSeeClubsEnv } from '../src/feature-flags'
+import type { CanRapidReviewEnv } from '../src/feature-flags'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
 import Logger = L.Logger
@@ -33,7 +33,6 @@ import LogEntry = L.LogEntry
 export { expect } from '@playwright/test'
 
 type AppFixtures = {
-  canSeeClubs: CanSeeClubsEnv['canSeeClubs']
   canRapidReview: CanRapidReviewEnv['canRapidReview']
   fetch: FetchMockSandbox
   logger: Logger
@@ -53,9 +52,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     }
 
     await use(`http://localhost:${address.port}`)
-  },
-  canSeeClubs: async ({}, use) => {
-    await use(false)
   },
   canRapidReview: async ({}, use) => {
     await use(() => false)
@@ -684,12 +680,11 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(8000 + workerInfo.workerIndex)
   },
   server: async (
-    { canSeeClubs, canRapidReview, fetch, logger, oauthServer, port, updatesLegacyPrereview, careerStageStore },
+    { canRapidReview, fetch, logger, oauthServer, port, updatesLegacyPrereview, careerStageStore },
     use,
   ) => {
     const server = app({
       allowSiteCrawlers: true,
-      canSeeClubs,
       canRapidReview,
       clock: SystemClock,
       fetch,
@@ -768,16 +763,6 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
     await expect(page).toHaveTitle(/PREreview/)
 
     await use(page)
-  },
-}
-
-export const canSeeClubs: Fixtures<
-  Pick<AppFixtures, 'canSeeClubs'>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canSeeClubs'>
-> = {
-  canSeeClubs: async ({}, use) => {
-    await use(true)
   },
 }
 
