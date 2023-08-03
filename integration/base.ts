@@ -24,7 +24,7 @@ import {
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { app } from '../src/app'
-import type { CanEditProfileEnv, CanRapidReviewEnv, CanSeeClubsEnv } from '../src/feature-flags'
+import type { CanRapidReviewEnv, CanSeeClubsEnv } from '../src/feature-flags'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
 import Logger = L.Logger
@@ -34,7 +34,6 @@ export { expect } from '@playwright/test'
 
 type AppFixtures = {
   canSeeClubs: CanSeeClubsEnv['canSeeClubs']
-  canEditProfile: CanEditProfileEnv['canEditProfile']
   canRapidReview: CanRapidReviewEnv['canRapidReview']
   fetch: FetchMockSandbox
   logger: Logger
@@ -56,9 +55,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(`http://localhost:${address.port}`)
   },
   canSeeClubs: async ({}, use) => {
-    await use(false)
-  },
-  canEditProfile: async ({}, use) => {
     await use(false)
   },
   canRapidReview: async ({}, use) => {
@@ -688,23 +684,12 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(8000 + workerInfo.workerIndex)
   },
   server: async (
-    {
-      canSeeClubs,
-      canEditProfile,
-      canRapidReview,
-      fetch,
-      logger,
-      oauthServer,
-      port,
-      updatesLegacyPrereview,
-      careerStageStore,
-    },
+    { canSeeClubs, canRapidReview, fetch, logger, oauthServer, port, updatesLegacyPrereview, careerStageStore },
     use,
   ) => {
     const server = app({
       allowSiteCrawlers: true,
       canSeeClubs,
-      canEditProfile,
       canRapidReview,
       clock: SystemClock,
       fetch,
@@ -792,16 +777,6 @@ export const canSeeClubs: Fixtures<
   Pick<AppFixtures, 'canSeeClubs'>
 > = {
   canSeeClubs: async ({}, use) => {
-    await use(true)
-  },
-}
-
-export const canEditProfile: Fixtures<
-  Pick<AppFixtures, 'canEditProfile'>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canEditProfile'>
-> = {
-  canEditProfile: async ({}, use) => {
     await use(true)
   },
 }

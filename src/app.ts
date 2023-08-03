@@ -30,7 +30,7 @@ import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
-import type { CanEditProfileEnv, CanRapidReviewEnv, CanSeeClubsEnv } from './feature-flags'
+import type { CanRapidReviewEnv, CanSeeClubsEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
@@ -146,8 +146,7 @@ import {
   getRecentPrereviewsFromZenodo,
 } from './zenodo'
 
-export type AppEnv = CanEditProfileEnv &
-  CanRapidReviewEnv &
+export type AppEnv = CanRapidReviewEnv &
   CanSeeClubsEnv &
   CareerStageStoreEnv &
   FathomEnv &
@@ -283,6 +282,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canEditProfile: true,
           getCareerStage: flip(getCareerStage)(env),
         })),
       ),
@@ -293,6 +293,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canEditProfile: true,
           deleteCareerStage: flip(deleteCareerStage)(env),
           getCareerStage: flip(getCareerStage)(env),
           saveCareerStage: (orcid, careerStage) => saveCareerStage(orcid, careerStage)(env),

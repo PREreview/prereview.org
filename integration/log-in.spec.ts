@@ -1,4 +1,4 @@
-import { areLoggedIn, canEditProfile, canLogIn, expect, test } from './base'
+import { areLoggedIn, canLogIn, expect, test } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
@@ -21,7 +21,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)('can set my career stage', async ({ page }) => {
+test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
 
   await expect(page.getByRole('main')).toContainText('Career stage Unknown')
@@ -43,23 +43,20 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)('can set my car
   await expect(page.getByLabel('Early')).toBeChecked()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(
-  'can skip to the form',
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/my-details/change-career-stage')
-    await page.keyboard.press('Tab')
+test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/my-details/change-career-stage')
+  await page.keyboard.press('Tab')
 
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await expect(page).toHaveScreenshot()
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
 
-    await page.keyboard.press('Enter')
+  await page.keyboard.press('Enter')
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('main')).toBeFocused()
-    }
-    await expect(page).toHaveScreenshot()
-  },
-)
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
 
 test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnabled, page }, testInfo) => {
   const logIn = page.getByRole('link', { name: 'Log in' })
@@ -86,7 +83,7 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
   await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canEditProfile)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to say what your career stage is',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/my-details/change-career-stage')
