@@ -220,6 +220,9 @@ function renderReview(form: CompletedForm) {
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
+              ${form.dataPresentation !== 'skip' && form.dataPresentationDetails
+                ? html`<dd>${form.dataPresentationDetails}</dd>`
+                : ''}
             </div>
             <div>
               <dt>
@@ -488,6 +491,9 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
                           </dd>
+                          ${review.dataPresentation !== 'skip' && review.dataPresentationDetails
+                            ? html`<dd>${review.dataPresentationDetails}</dd>`
+                            : ''}
                           <dd>
                             <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}"
                               >Change
