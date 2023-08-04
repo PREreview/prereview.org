@@ -140,11 +140,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither adequate nor inadequate').check()
+    await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
+    await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
 
@@ -197,7 +198,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'Are the results presented supported by the data? Neither supported nor not supported',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Are the data presentations, including visualizations, appropriate and clear? Neither adequate nor inadequate',
+      'Are the data presentations, including visualizations, appropriate and clear? Neither adequate nor inadequate Lorem ipsum dolor sit amet.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately',
@@ -505,7 +506,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Neither adequate nor inadequate').check()
+    await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
@@ -1123,7 +1124,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither supported nor not supported').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither adequate nor inadequate').check()
+    await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1212,11 +1213,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Change if the data presentations are appropriate and clear' }).click()
 
-    await page.getByLabel('Mostly appropriate and clear').check()
+    await page.getByLabel('Mostly appropriate and clear', { exact: true }).check()
+    await page.getByLabel('Why are they mostly appropriate and clear?').fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(review).toContainText(
-      'Are the data presentations, including visualizations, appropriate and clear? Mostly appropriate and clear',
+      'Are the data presentations, including visualizations, appropriate and clear? Mostly appropriate and clear Lorem ipsum dolor sit amet.',
     )
 
     await page.getByRole('link', { name: 'Change how well the authors discuss their findings and next steps' }).click()
@@ -1327,7 +1329,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither supported nor not supported').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither adequate nor inadequate').check()
+    await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
+    await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1363,7 +1366,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.goBack()
 
-    await expect(page.getByLabel('Neither adequate nor inadequate')).toBeChecked()
+    await expect(page.getByLabel('Neither adequate nor inadequate', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('Why are they neither adequate nor inadequate?')).toHaveText(
+      'Lorem ipsum dolor sit amet.',
+    )
 
     await page.goBack()
 
@@ -1464,7 +1470,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither supported nor not supported').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither adequate nor inadequate').check()
+    await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
+    await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1499,7 +1506,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Neither adequate nor inadequate')).toBeChecked()
+    await expect(page.getByLabel('Neither adequate nor inadequate', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('Why are they neither adequate nor inadequate?')).toHaveText(
+      'Lorem ipsum dolor sit amet.',
+    )
 
     await page.getByRole('link', { name: 'Back' }).click()
 
@@ -2259,7 +2269,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       })
       .click()
 
-    await expect(page.getByLabel('Inappropriate and unclear')).toBeFocused()
+    await expect(page.getByLabel('Inappropriate and unclear', { exact: true })).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
