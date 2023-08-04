@@ -193,6 +193,13 @@ export const FormC = pipe(
       'highly-appropriate-clear',
       'skip',
     ),
+    dataPresentationDetails: C.partial({
+      'inappropriate-unclear': NonEmptyStringC,
+      'somewhat-inappropriate-unclear': NonEmptyStringC,
+      neutral: NonEmptyStringC,
+      'mostly-appropriate-clear': NonEmptyStringC,
+      'highly-appropriate-clear': NonEmptyStringC,
+    }),
     findingsNextSteps: C.literal(
       'inadequately',
       'insufficiently',

@@ -35,6 +35,21 @@ export const dataPresentation = (): fc.Arbitrary<Required<Form>['dataPresentatio
     'skip',
   )
 
+export const dataPresentationDetails = (): fc.Arbitrary<Required<Form>['dataPresentationDetails']> =>
+  fc.oneof(
+    fc.record(
+      {
+        'inappropriate-unclear': fc.nonEmptyString(),
+        'somewhat-inappropriate-unclear': fc.nonEmptyString(),
+        neutral: fc.nonEmptyString(),
+        'mostly-appropriate-clear': fc.nonEmptyString(),
+        'highly-appropriate-clear': fc.nonEmptyString(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.constant({}),
+  )
+
 export const findingsNextSteps = (): fc.Arbitrary<Required<Form>['findingsNextSteps']> =>
   fc.constantFrom('inadequately', 'insufficiently', 'adequately', 'clearly-insightfully', 'exceptionally', 'skip')
 
@@ -85,6 +100,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
       fc.oneof(
         fc.record(
           {
+            dataPresentationDetails: dataPresentationDetails(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
             review: fc.html(),
@@ -119,6 +135,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             methodsAppropriate: methodsAppropriate(),
             resultsSupported: resultsSupported(),
             dataPresentation: dataPresentation(),
+            dataPresentationDetails: dataPresentationDetails(),
             findingsNextSteps: findingsNextSteps(),
             novel: novel(),
             languageEditing: languageEditing(),
@@ -166,8 +183,18 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           competingInterests: fc.constant('no' as const),
         }),
       ),
+      fc.oneof(
+        fc.record(
+          {
+            dataPresentation: dataPresentation().filter(value => value !== 'skip'),
+            dataPresentationDetails: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['dataPresentation'] },
+        ),
+        fc.record({ dataPresentation: fc.constant('skip' as const) }),
+      ),
     )
-    .map(parts => merge(...parts))
+    .map(parts => merge(...(parts as never)))
 
 export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { reviewType: 'freeform' }>> =>
   fc
