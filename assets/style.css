@@ -705,6 +705,16 @@ math {
       @media (width < 30em) {
         flex-direction: column;
       }
+
+      @media (width >= 30em) {
+        [role='region'] & {
+          display: grid;
+          grid-template-rows: auto auto;
+          grid-template-columns: 45% 1fr auto;
+          grid-auto-flow: dense;
+          row-gap: 0;
+        }
+      }
     }
   }
 
@@ -714,12 +724,20 @@ math {
       max-inline-size: 50%;
 
       [role='region'] & {
-        flex-basis: 45%;
+        min-inline-size: unset;
+        max-inline-size: unset;
+        grid-row: 1 / -1;
       }
 
       & + dd {
         flex-grow: 1;
         flex-basis: min-content;
+
+        [role='region'] & {
+          + dd:not(:last-child) {
+            grid-column: 2/-1;
+          }
+        }
       }
     }
   }
