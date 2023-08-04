@@ -3,6 +3,7 @@ import * as C from 'io-ts/Codec'
 import * as E from 'io-ts/Encoder'
 import { RawHtmlC } from '../html'
 import { NonEmptyStringC } from '../string'
+import type { Form } from './form'
 
 export type CompletedForm = C.TypeOf<typeof CompletedFormC>
 
@@ -73,4 +74,4 @@ export const CompletedFormC = pipe(
       }),
     }),
   ),
-)
+) satisfies C.Codec<Form, Form, any> // eslint-disable-line @typescript-eslint/no-explicit-any
