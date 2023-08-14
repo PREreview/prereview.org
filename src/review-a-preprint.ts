@@ -359,9 +359,9 @@ function createUnsupportedDoiPage(user?: User) {
         <h1>Sorry, we don’t support this DOI</h1>
 
         <p>
-          We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen,
-          SocArXiv and Zenodo.
+          We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv,
+          engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO,
+          ScienceOpen, SocArXiv and Zenodo.
         </p>
 
         <p>
@@ -385,9 +385,9 @@ function createUnsupportedUrlPage(user?: User) {
         <h1>Sorry, we don’t support this URL</h1>
 
         <p>
-          We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen,
-          SocArXiv and Zenodo.
+          We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv,
+          engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO,
+          ScienceOpen, SocArXiv and Zenodo.
         </p>
 
         <p>
@@ -413,9 +413,9 @@ function createNotAPreprintPage(user?: User) {
         <h1>Sorry, we only support preprints</h1>
 
         <p>
-          We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen,
-          SocArXiv and Zenodo.
+          We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv,
+          engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO,
+          ScienceOpen, SocArXiv and Zenodo.
         </p>
 
         <p>If this is a preprint, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
