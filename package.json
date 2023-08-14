@@ -13,7 +13,7 @@
     "capital-case": "^1.0.4",
     "clock-ts": "^0.1.2",
     "connect-slashes": "^1.4.0",
-    "crossref-ts": "^0.1.4",
+    "crossref-ts": "^0.1.5",
     "datacite-ts": "^0.1.4",
     "doi-ts": "^0.1.7",
     "express": "^4.18.2",
