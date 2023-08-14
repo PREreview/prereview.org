@@ -216,6 +216,7 @@ export function fromUrl(url: URL): O.Option<IndeterminatePreprintId> {
     .with([P.union('doi.org', 'dx.doi.org'), P.select()], extractFromDoiPath)
     .with(['africarxiv.figshare.com', P.select()], extractFromFigsharePath('africarxiv'))
     .with(['arxiv.org', P.select()], extractFromArxivPath)
+    .with(['authorea.com', P.select()], extractFromAuthoreaPath)
     .with(['biorxiv.org', P.select()], extractFromBiorxivMedrxivPath('biorxiv'))
     .with(['edarxiv.org', P.select()], extractFromEdarxivPath)
     .with(['engrxiv.org', P.select()], extractFromEngrxivPath)
@@ -237,6 +238,13 @@ const extractFromArxivPath = flow(
   decodeURIComponent,
   O.fromNullableK(s => s.match(/\/((?:[a-z]+-[a-z]{2}\/)?[0-9.]+)(?:v[1-9][0-9]*)?(?:\..*)?$/i)?.[1]),
   O.chain(flow(suffix => `10.48550/arXiv.${suffix}`, parsePreprintDoi)),
+)
+
+const extractFromAuthoreaPath = flow(
+  decodeURIComponent,
+  O.fromNullableK(s => s.match(/^doi\/full\/(.+?)$/i)?.[1]),
+  O.filter(pipe(isDoi, compose(hasRegistrant('22541')))),
+  O.map(doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId),
 )
 
 const extractFromBiorxivMedrxivPath = (type: 'biorxiv' | 'medrxiv') =>

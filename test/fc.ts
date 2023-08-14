@@ -164,6 +164,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
   fc.oneof(
     africarxivPreprintUrl(),
     arxivPreprintUrl(),
+    authoreaPreprintUrl(),
     biorxivPreprintUrl(),
     edarxivPreprintUrl(),
     engrxivPreprintUrl(),
@@ -252,6 +253,9 @@ export const authoreaPreprintId = (): fc.Arbitrary<AuthoreaPreprintId> =>
     type: fc.constant('authorea'),
     value: doi(fc.constant('22541')),
   })
+
+export const authoreaPreprintUrl = (): fc.Arbitrary<[URL, AuthoreaPreprintId]> =>
+  authoreaPreprintId().map(id => [new URL(`https://www.authorea.com/doi/full/${encodeURIComponent(id.value)}`), id])
 
 export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
   fc.record({

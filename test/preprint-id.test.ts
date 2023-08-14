@@ -100,6 +100,45 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'arxiv', value: doi }))
   })
 
+  test.prop([fc.authoreaPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+    examples: [
+      [
+        [
+          new URL('https://www.authorea.com/doi/full/10.22541/au.151130001.16288476'),
+          '10.22541/au.151130001.16288476' as Doi<'22541'>,
+        ],
+      ],
+      [
+        [
+          new URL('http://www.authorea.com/doi/full/10.22541/au.151130001.16288476'), // http
+          '10.22541/au.151130001.16288476' as Doi<'22541'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://authorea.com/doi/full/10.22541/au.151130001.16288476'), // no www.
+          '10.22541/au.151130001.16288476' as Doi<'22541'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://www.authorea.com/doi/full/10.22541/au.169193526.65755206/v1'), // with version
+          '10.22541/au.169193526.65755206/v1' as Doi<'22541'>,
+        ],
+      ],
+      [
+        [
+          new URL(
+            'https://www.authorea.com/doi/full/10.22541/au.151130001.16288476?commit=4a4c4a232ca939a62df5cf78fafdb35642322241',
+          ), // with a commit
+          '10.22541/au.151130001.16288476' as Doi<'22541'>,
+        ],
+      ],
+    ],
+  })('with an authorea.com URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'authorea', value: doi }))
+  })
+
   test.prop([fc.biorxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [
