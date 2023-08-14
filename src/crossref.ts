@@ -18,6 +18,7 @@ import { transformJatsToHtml } from './jats'
 import type { Preprint } from './preprint'
 import type {
   AfricarxivOsfPreprintId,
+  AuthoreaPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
   EartharxivPreprintId,
@@ -39,6 +40,7 @@ import PlainDate = Temporal.PlainDate
 
 export type CrossrefPreprintId =
   | AfricarxivOsfPreprintId
+  | AuthoreaPreprintId
   | BiorxivPreprintId
   | ChemrxivPreprintId
   | EartharxivPreprintId
@@ -61,6 +63,7 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']>
   '14293',
   '20944',
   '21203',
+  '22541',
   '26434',
   '31219',
   '31222',
@@ -134,6 +137,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
           E.fromOptionK(() => 'unknown language' as const)(({ text }) =>
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
+              .with({ type: 'authorea', text: P.select() }, detectLanguage)
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'chemrxiv' }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
@@ -170,6 +174,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
           E.fromOptionK(() => 'unknown language')(({ text }) =>
             match({ type: preprint.id.type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
+              .with({ type: 'authorea', text: P.select() }, detectLanguage)
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'chemrxiv' }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
@@ -214,6 +219,13 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
           value: work.DOI,
         }) satisfies AfricarxivOsfPreprintId,
     ),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('22541'), 'DOI'),
+      publisher: D.literal('Authorea, Inc.'),
+    }),
+    D.map(work => ({ type: 'authorea', value: work.DOI }) satisfies AuthoreaPreprintId),
   ),
   pipe(
     D.fromStruct({

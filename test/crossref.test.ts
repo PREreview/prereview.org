@@ -105,6 +105,108 @@ describe('getPreprintFromCrossref', () => {
       )
     })
 
+    test.prop([fc.authoreaPreprintId(), fc.plainDate()])('from Authorea', async (id, posted) => {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
+        body: {
+          status: 'ok',
+          'message-type': 'work',
+          'message-version': '1.0.0',
+          message: {
+            institution: [{ name: 'Authorea, Inc.' }],
+            indexed: { 'date-parts': [[2023, 8, 9]], 'date-time': '2023-08-09T04:31:50Z', timestamp: 1691555510982 },
+            posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+            'group-title': 'Preprints',
+            'reference-count': 0,
+            publisher: 'Authorea, Inc.',
+            'content-domain': { domain: [], 'crossmark-restriction': false },
+            'short-container-title': [],
+            accepted: { 'date-parts': [[2023, 8, 8]] },
+            abstract:
+              '<jats:p id="p1">Some properties of the Dawson Integral are presented first in the\ncurrent work, followed by the introduction of the Dawson Integral\nTransform. Iteration identities and relationships, similar to the\nParseval Goldstein type, are established involving various well-known\nintegral transforms, such as the Laplace Transform, the L 2 -Transform,\nand the Dawson Integral for the new integral transform. Furthermore,\nimproper integrals of well-known functions, including the Dawson\nIntegral, Exponential Integral, and the Macdonald Function, are\nevaluated using the results obtained.</jats:p>',
+            DOI: id.value,
+            type: 'posted-content',
+            created: { 'date-parts': [[2023, 8, 8]], 'date-time': '2023-08-08T07:04:16Z', timestamp: 1691478256000 },
+            source: 'Crossref',
+            'is-referenced-by-count': 0,
+            title: ['The Dawson Transform and its Applications'],
+            prefix: '10.22541',
+            author: [
+              {
+                ORCID: 'http://orcid.org/0000-0002-2160-6138',
+                'authenticated-orcid': true,
+                given: 'Osman',
+                family: 'Yurekli',
+                sequence: 'first',
+                affiliation: [{ name: 'Ithaca College' }],
+              },
+              {
+                given: 'Durmuş',
+                family: 'ALBAYRAK',
+                sequence: 'additional',
+                affiliation: [{ name: 'Marmara University' }],
+              },
+              {
+                given: 'Fatih',
+                family: 'AYLIKCI',
+                sequence: 'additional',
+                affiliation: [{ name: 'Yıldız Technical University' }],
+              },
+              {
+                given: 'Neşe',
+                family: 'Dernek',
+                sequence: 'additional',
+                affiliation: [{ name: 'Marmara University' }],
+              },
+            ],
+            member: '9829',
+            'container-title': [],
+            'original-title': [],
+            deposited: { 'date-parts': [[2023, 8, 8]], 'date-time': '2023-08-08T07:04:16Z', timestamp: 1691478256000 },
+            score: 1,
+            resource: {
+              primary: {
+                URL: 'https://www.authorea.com/users/650382/articles/658890-the-dawson-transform-and-its-applications?commit=01d29945f3c355adc7d8a88d50b80a32f9ec078e',
+              },
+            },
+            subtitle: [],
+            'short-title': [],
+            issued: { 'date-parts': [[2023, 8, 8]] },
+            'references-count': 0,
+            URL: 'http://dx.doi.org/10.22541/au.169147825.53935627/v1',
+            relation: {},
+            published: { 'date-parts': [[2023, 8, 8]] },
+            subtype: 'preprint',
+          },
+        },
+      })
+
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          abstract: {
+            language: 'en',
+            text: expect.stringContaining('<p>Some properties of the Dawson Integral are presented first'),
+          },
+          authors: [
+            { name: 'Osman Yurekli', orcid: '0000-0002-2160-6138' },
+            { name: 'Durmuş ALBAYRAK', orcid: undefined },
+            { name: 'Fatih AYLIKCI', orcid: undefined },
+            { name: 'Neşe Dernek', orcid: undefined },
+          ],
+          id,
+          posted,
+          title: {
+            language: 'en',
+            text: rawHtml('The Dawson Transform and its Applications'),
+          },
+          url: new URL(
+            'https://www.authorea.com/users/650382/articles/658890-the-dawson-transform-and-its-applications?commit=01d29945f3c355adc7d8a88d50b80a32f9ec078e',
+          ),
+        }),
+      )
+    })
+
     test.prop([fc.oneof(fc.biorxivPreprintId(), fc.medrxivPreprintId()), fc.sanitisedHtml(), fc.plainDate()])(
       'from bioRxiv/medRxiv',
       async (id, title, posted) => {

@@ -516,6 +516,7 @@ export const indeterminatePreprintId = (): fc.Arbitrary<IndeterminatePreprintId>
 export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(
     africarxivOsfPreprintId(),
+    authoreaPreprintId(),
     biorxivPreprintId(),
     chemrxivPreprintId(),
     eartharxivPreprintId(),
