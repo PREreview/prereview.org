@@ -10,7 +10,7 @@ import { flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
-import { P, match } from 'ts-pattern'
+import { P, isMatching, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { sanitizeHtml } from './html'
@@ -94,7 +94,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
   return pipe(
     E.Do,
     E.filterOrElse(
-      () => work.type === 'posted-content' && work.subtype === 'preprint',
+      () => isAPreprint(work),
       () => 'not a preprint',
     ),
     E.apS(
@@ -204,6 +204,8 @@ function toHttps(url: URL): URL {
 
   return httpsUrl
 }
+
+const isAPreprint: (work: Work) => boolean = isMatching({ type: 'posted-content', subtype: 'preprint' })
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
   pipe(
