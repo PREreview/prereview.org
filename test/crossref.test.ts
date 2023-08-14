@@ -2264,6 +2264,15 @@ describe('getPreprintFromCrossref', () => {
     fc.record(
       {
         author: fc.array(fc.record({ name: fc.string() })),
+        created: fc.record({
+          'date-parts': fc.tuple(
+            fc.oneof(
+              fc.year().map(year => [year]),
+              fc.plainYearMonth().map(time => [time.year, time.month]),
+              fc.plainDate().map(time => [time.year, time.month, time.day]),
+            ),
+          ),
+        }),
         DOI: fc.crossrefPreprintDoi(),
         institution: fc.array(fc.record({ name: fc.string() })),
         license: fc.array(
@@ -2300,17 +2309,7 @@ describe('getPreprintFromCrossref', () => {
         type: fc.string(),
       },
       {
-        requiredKeys: [
-          'author',
-          'DOI',
-          'institution',
-          'license',
-          'published',
-          'publisher',
-          'resource',
-          'title',
-          'type',
-        ],
+        requiredKeys: ['author', 'created', 'DOI', 'institution', 'license', 'publisher', 'resource', 'title', 'type'],
       },
     ),
   ])('when the DOI is not for a preprint', async (id, work) => {
