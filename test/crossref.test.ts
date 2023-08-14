@@ -2067,7 +2067,7 @@ describe('getPreprintFromCrossref', () => {
             created: { 'date-parts': [[2022, 10, 4]], 'date-time': '2022-10-04T09:00:12Z', timestamp: 1664874012000 },
             source: 'Crossref',
             'is-referenced-by-count': 0,
-            title: ['Notas para una aproximacin al punk espaol y sus contextos'],
+            title: ['Notas para una aproximación al punk español y sus contextos'],
             prefix: '10.14293',
             author: [
               {
@@ -2133,7 +2133,7 @@ describe('getPreprintFromCrossref', () => {
           posted,
           title: {
             language: 'es',
-            text: rawHtml('Notas para una aproximacin al punk espaol y sus contextos'),
+            text: rawHtml('Notas para una aproximación al punk español y sus contextos'),
           },
           url: new URL('https://scienceopen.com/hosted-document?doi=10.14293/S2199-1006.1.SOR-.PPL3VEC.v2'),
         }),
