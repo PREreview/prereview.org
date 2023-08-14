@@ -193,7 +193,12 @@ function toHttps(url: URL): URL {
   return httpsUrl
 }
 
-const isAPreprint: (work: Work) => boolean = isMatching({ type: 'posted-content', subtype: 'preprint' })
+const isAPreprint: (work: Work) => boolean = isMatching(
+  P.union(
+    { type: 'posted-content', subtype: 'preprint' },
+    { description: 'Authorea status: Preprint', DOI: P.when(hasRegistrant('22541')), type: 'dataset' },
+  ),
+)
 
 const findPublishedDate = (work: Work) =>
   pipe(
