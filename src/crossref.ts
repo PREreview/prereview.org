@@ -113,7 +113,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
       ),
     ),
     E.apSW('id', PreprintIdD.decode(work)),
-    E.apSW('posted', pipe(work.published, E.fromNullable('no published date'))),
+    E.apSW('posted', pipe(work, E.fromOptionK(() => 'no published date')(findPublishedDate))),
     E.bindW('abstract', ({ id: { type } }) =>
       pipe(
         work.abstract,
@@ -194,6 +194,8 @@ function toHttps(url: URL): URL {
 }
 
 const isAPreprint: (work: Work) => boolean = isMatching({ type: 'posted-content', subtype: 'preprint' })
+
+const findPublishedDate = O.fromNullableK((work: Work) => work.published)
 
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
   pipe(
