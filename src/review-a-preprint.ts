@@ -287,6 +287,7 @@ function createUnknownPreprintWithDoiPage(preprint: Extract<IndeterminatePreprin
           ${match(preprint.type)
             .with('africarxiv', () => 'an AfricArXiv')
             .with('arxiv', () => 'an arXiv')
+            .with('authorea', () => 'an Authorea')
             .with('biorxiv', () => 'a bioRxiv')
             .with('biorxiv-medrxiv', () => 'a bioRxiv or medRxiv')
             .with('chemrxiv', () => 'a ChemRxiv')

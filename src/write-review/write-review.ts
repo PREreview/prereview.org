@@ -113,6 +113,7 @@ function startPage(preprint: Preprint, user?: User) {
                   ${match(preprint.id.type)
                     .with('africarxiv', () => 'AfricArXiv Preprints')
                     .with('arxiv', () => 'arXiv')
+                    .with('authorea', () => 'Authorea')
                     .with('biorxiv', () => 'bioRxiv')
                     .with('chemrxiv', () => 'ChemRxiv')
                     .with('eartharxiv', () => 'EarthArXiv')
