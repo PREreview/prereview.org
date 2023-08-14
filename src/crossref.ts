@@ -1,4 +1,3 @@
-import { Temporal } from '@js-temporal/polyfill'
 import { type Work, getWork } from 'crossref-ts'
 import { type Doi, hasRegistrant } from 'doi-ts'
 import * as E from 'fp-ts/Either'
@@ -35,8 +34,6 @@ import type {
   ScienceOpenPreprintId,
   SocarxivPreprintId,
 } from './preprint-id'
-
-import PlainDate = Temporal.PlainDate
 
 export type CrossrefPreprintId =
   | AfricarxivOsfPreprintId
@@ -116,16 +113,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
       ),
     ),
     E.apSW('id', PreprintIdD.decode(work)),
-    E.apSW(
-      'posted',
-      pipe(
-        work.published,
-        E.fromPredicate(
-          (date): date is PlainDate => date instanceof PlainDate,
-          () => 'no published date',
-        ),
-      ),
-    ),
+    E.apSW('posted', pipe(work.published, E.fromNullable('no published date'))),
     E.bindW('abstract', ({ id: { type } }) =>
       pipe(
         work.abstract,
