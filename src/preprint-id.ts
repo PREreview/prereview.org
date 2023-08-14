@@ -8,6 +8,7 @@ import { P, match } from 'ts-pattern'
 export type PreprintId =
   | AfricarxivPreprintId
   | ArxivPreprintId
+  | AuthoreaPreprintId
   | BiorxivPreprintId
   | ChemrxivPreprintId
   | EartharxivPreprintId
@@ -48,6 +49,11 @@ export interface AfricarxivZenodoPreprintId {
 export interface ArxivPreprintId {
   readonly type: 'arxiv'
   readonly value: Doi<'48550'>
+}
+
+export interface AuthoreaPreprintId {
+  readonly type: 'authorea'
+  readonly value: Doi<'22541'>
 }
 
 export interface BiorxivPreprintId {
@@ -154,6 +160,7 @@ export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { v
   '21203',
   '26434',
   '20944',
+  '22541',
   '31219',
   '31222',
   '31223',
@@ -188,6 +195,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('6084'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivFigsharePreprintId)
     .when(hasRegistrant('14293'), doi => ({ type: 'science-open', value: doi }) satisfies ScienceOpenPreprintId)
     .when(hasRegistrant('21203'), doi => ({ type: 'research-square', value: doi }) satisfies ResearchSquarePreprintId)
+    .when(hasRegistrant('22541'), doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId)
     .when(hasRegistrant('26434'), doi => ({ type: 'chemrxiv', value: doi }) satisfies ChemrxivPreprintId)
     .when(hasRegistrant('20944'), doi => ({ type: 'preprints.org', value: doi }) satisfies PreprintsorgPreprintId)
     .when(hasRegistrant('31219'), doi => ({ type: 'osf', value: doi }) satisfies OsfPreprintId)

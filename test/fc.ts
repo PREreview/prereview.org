@@ -36,6 +36,7 @@ import type {
   AfricarxivPreprintId,
   AfricarxivZenodoPreprintId,
   ArxivPreprintId,
+  AuthoreaPreprintId,
   BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
@@ -245,6 +246,12 @@ export const arxivPreprintUrl = (): fc.Arbitrary<[URL, ArxivPreprintId]> =>
       new URL(`https://arxiv.org/abs/${suffix}`),
       { type: 'arxiv', value: `10.48550/arXiv.${suffix}` as Doi<'48550'> },
     ])
+
+export const authoreaPreprintId = (): fc.Arbitrary<AuthoreaPreprintId> =>
+  fc.record({
+    type: fc.constant('authorea'),
+    value: doi(fc.constant('22541')),
+  })
 
 export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
   fc.record({
@@ -484,6 +491,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
   fc.oneof(
     africarxivPreprintId(),
     arxivPreprintId(),
+    authoreaPreprintId(),
     biorxivPreprintId(),
     chemrxivPreprintId(),
     eartharxivPreprintId(),

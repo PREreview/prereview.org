@@ -127,6 +127,7 @@ function createPage({ club, prereviews, user }: { club: Club; prereviews: Prerev
                             ${match(prereview.preprint.id.type)
                               .with('africarxiv', () => 'AfricArXiv Preprints')
                               .with('arxiv', () => 'arXiv')
+                              .with('authorea', () => 'Authorea')
                               .with('biorxiv', () => 'bioRxiv')
                               .with('chemrxiv', () => 'ChemRxiv')
                               .with('eartharxiv', () => 'EarthArXiv')
