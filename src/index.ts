@@ -115,4 +115,10 @@ createTerminus(server, {
   signals: ['SIGINT', 'SIGTERM'],
 })
 
-void cacache.verify('data/cache').then(() => server.listen(3000))
+void Promise.resolve()
+  .then(() => L.debug('Verifying cache')(loggerEnv)())
+  .then(() => cacache.verify('data/cache'))
+  .then(() => L.debug('Cache verified')(loggerEnv)())
+  .catch((error: Error) => L.errorP('Failed to verify cache')({ error: error.message })(loggerEnv)())
+
+server.listen(3000)
