@@ -109,27 +109,22 @@ const showDataPresentationErrorForm = (preprint: PreprintTitle, user: User) =>
 
 const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(E.right),
-    RM.map(decodeFields(dataPresentationFields)),
-    RM.chainEitherK(fields =>
-      pipe(
-        sequenceS(E.Apply)(fields),
-        E.bimap(
-          () => fields,
-          fields => ({
-            dataPresentation: fields.dataPresentation,
-            dataPresentationDetails: {
-              'inappropriate-unclear': fields.dataPresentationInappropriateUnclearDetails,
-              'somewhat-inappropriate-unclear': fields.dataPresentationSomewhatInappropriateUnclearDetails,
-              neutral: fields.dataPresentationNeutralDetails,
-              'mostly-appropriate-clear': fields.dataPresentationMostlyAppropriateClearDetails,
-              'highly-appropriate-clear': fields.dataPresentationHighlyAppropriateClearDetails,
-            },
-          }),
-        ),
+    RM.decodeBody(decodeFields(dataPresentationFields)),
+    RM.map(
+      flow(
+        fields => ({
+          dataPresentation: fields.dataPresentation,
+          dataPresentationDetails: {
+            'inappropriate-unclear': fields.dataPresentationInappropriateUnclearDetails,
+            'somewhat-inappropriate-unclear': fields.dataPresentationSomewhatInappropriateUnclearDetails,
+            neutral: fields.dataPresentationNeutralDetails,
+            'mostly-appropriate-clear': fields.dataPresentationMostlyAppropriateClearDetails,
+            'highly-appropriate-clear': fields.dataPresentationHighlyAppropriateClearDetails,
+          },
+        }),
+        updateForm(form),
       ),
     ),
-    RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
@@ -140,17 +135,29 @@ const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; prep
     ),
   )
 
-const decodeFields =
-  <T extends { [key: string]: (input: unknown) => E.Either<unknown, unknown> }>(fields: T) =>
-  (body: unknown): { [K in keyof T]: ReturnType<T[K]> } =>
-    Object.fromEntries(
-      Object.entries(fields).map(([key, decoder]) => {
-        return [
-          key,
-          decoder(typeof body === 'object' && body !== null ? (body as Record<string, unknown>)[key] : undefined),
-        ]
-      }),
-    ) as never
+type EnforceNonEmptyRecord<R> = keyof R extends never ? never : R
+
+const decodeFields = <
+  T extends EnforceNonEmptyRecord<{ [key: string]: (input: unknown) => E.Either<unknown, unknown> }>,
+>(
+  fields: T,
+) =>
+  flow(
+    (body: unknown) =>
+      Object.fromEntries(
+        Object.entries(fields).map(([key, decoder]) => {
+          return [
+            key,
+            decoder(typeof body === 'object' && body !== null ? (body as Record<string, unknown>)[key] : undefined),
+          ]
+        }),
+      ) as EnforceNonEmptyRecord<{ [K in keyof T]: ReturnType<T[K]> }>,
+    fields =>
+      pipe(
+        sequenceS(E.Apply)(fields),
+        E.mapLeft(() => fields),
+      ),
+  )
 
 const dataPresentationFields = {
   dataPresentation: flow(
