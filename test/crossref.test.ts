@@ -212,7 +212,7 @@ describe('getPreprintFromCrossref', () => {
         )
       })
 
-      test.failing.prop([fc.authoreaPreprintId(), fc.plainDate()])('older format', async (id, posted) => {
+      test.prop([fc.authoreaPreprintId(), fc.plainDate()])('older format', async (id, posted) => {
         const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
           body: {
             status: 'ok',
