@@ -19,18 +19,30 @@ describe('writeReviewDataPresentation', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .dataPresentation()
-        .chain(dataPresentation =>
+        .tuple(fc.dataPresentation(), fc.dataPresentationDetails())
+        .chain(([dataPresentation, dataPresentationDetails]) =>
           fc.tuple(
             fc.constant(dataPresentation),
-            fc.connection({ body: fc.constant({ dataPresentation }), method: fc.constant('POST') }),
+            fc.constant(dataPresentationDetails),
+            fc.connection({
+              body: fc.constant({
+                dataPresentation,
+                dataPresentationInappropriateUnclearDetails: dataPresentationDetails['inappropriate-unclear'],
+                dataPresentationSomewhatInappropriateUnclearDetails:
+                  dataPresentationDetails['somewhat-inappropriate-unclear'],
+                dataPresentationNeutralDetails: dataPresentationDetails['neutral'],
+                dataPresentationMostlyAppropriateClearDetails: dataPresentationDetails['mostly-appropriate-clear'],
+                dataPresentationHighlyAppropriateClearDetails: dataPresentationDetails['highly-appropriate-clear'],
+              }),
+              method: fc.constant('POST'),
+            }),
           ),
         ),
       fc.user(),
       fc.completedQuestionsForm(),
     ])(
       'when the form is completed',
-      async (preprintId, preprintTitle, [dataPresentation, connection], user, newReview) => {
+      async (preprintId, preprintTitle, [dataPresentation, dataPresentationDetails, connection], user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -44,7 +56,10 @@ describe('writeReviewDataPresentation', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ dataPresentation })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          dataPresentation,
+          dataPresentationDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -63,18 +78,30 @@ describe('writeReviewDataPresentation', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .dataPresentation()
-        .chain(dataPresentation =>
+        .tuple(fc.dataPresentation(), fc.dataPresentationDetails())
+        .chain(([dataPresentation, dataPresentationDetails]) =>
           fc.tuple(
             fc.constant(dataPresentation),
-            fc.connection({ body: fc.constant({ dataPresentation }), method: fc.constant('POST') }),
+            fc.constant(dataPresentationDetails),
+            fc.connection({
+              body: fc.constant({
+                dataPresentation,
+                dataPresentationInappropriateUnclearDetails: dataPresentationDetails['inappropriate-unclear'],
+                dataPresentationSomewhatInappropriateUnclearDetails:
+                  dataPresentationDetails['somewhat-inappropriate-unclear'],
+                dataPresentationNeutralDetails: dataPresentationDetails['neutral'],
+                dataPresentationMostlyAppropriateClearDetails: dataPresentationDetails['mostly-appropriate-clear'],
+                dataPresentationHighlyAppropriateClearDetails: dataPresentationDetails['highly-appropriate-clear'],
+              }),
+              method: fc.constant('POST'),
+            }),
           ),
         ),
       fc.user(),
       fc.incompleteQuestionsForm(),
     ])(
       'when the form is incomplete',
-      async (preprintId, preprintTitle, [dataPresentation, connection], user, newReview) => {
+      async (preprintId, preprintTitle, [dataPresentation, dataPresentationDetails, connection], user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -88,7 +115,10 @@ describe('writeReviewDataPresentation', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ dataPresentation })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          dataPresentation,
+          dataPresentationDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
