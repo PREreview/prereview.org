@@ -123,11 +123,9 @@ const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; prep
 
 type EnforceNonEmptyRecord<R> = keyof R extends never ? never : R
 
-const decodeFields = <
-  T extends EnforceNonEmptyRecord<{ [key: string]: (input: unknown) => E.Either<unknown, unknown> }>,
->(
-  fields: T,
-) =>
+type FieldDecoders = EnforceNonEmptyRecord<{ [key: string]: (input: unknown) => E.Either<unknown, unknown> }>
+
+const decodeFields = <T extends FieldDecoders>(fields: T) =>
   flow(
     (body: unknown) =>
       Object.fromEntries(
@@ -177,7 +175,7 @@ const dataPresentationFields = {
     NonEmptyStringC.decode,
     E.orElseW(() => E.right<never, undefined>(undefined)),
   ),
-}
+} satisfies FieldDecoders
 
 const updateFormWithFields = (form: Form) =>
   flow(
@@ -194,11 +192,11 @@ const updateFormWithFields = (form: Form) =>
     updateForm(form),
   )
 
-type Fields<T extends { [key: string]: (input: unknown) => E.Either<unknown, unknown> }> = {
+type Fields<T extends FieldDecoders> = {
   [K in keyof T]: ReturnType<T[K]> | E.Right<undefined>
 }
 
-type ValidFields<T extends { [key: string]: (input: unknown) => E.Either<unknown, unknown> }> = {
+type ValidFields<T extends FieldDecoders> = {
   [K in keyof T]: ReturnType<T[K]> extends E.Either<unknown, infer A> ? A : never
 }
 
