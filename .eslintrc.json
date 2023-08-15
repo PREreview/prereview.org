@@ -62,8 +62,7 @@
           "hyper-ts/lib/*",
           "logging-ts/lib/*",
           "nanohtml/*",
-          "remixicon/**/*.svg",
-          "tinyld/heavy"
+          "remixicon/**/*.svg"
         ]
       }
     ],
