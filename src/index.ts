@@ -4,6 +4,7 @@ import cacache from 'cacache'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
 import * as C from 'fp-ts/Console'
+import type { JsonRecord } from 'fp-ts/Json'
 import * as RT from 'fp-ts/ReaderTask'
 import { pipe } from 'fp-ts/function'
 import Redis from 'ioredis'
@@ -118,7 +119,7 @@ createTerminus(server, {
 void Promise.resolve()
   .then(() => L.debug('Verifying cache')(loggerEnv)())
   .then(() => cacache.verify('data/cache'))
-  .then(() => L.debug('Cache verified')(loggerEnv)())
+  .then((stats: JsonRecord) => L.debugP('Cache verified')(stats)(loggerEnv)())
   .catch((error: Error) => L.errorP('Failed to verify cache')({ error: error.message })(loggerEnv)())
 
 server.listen(3000)
