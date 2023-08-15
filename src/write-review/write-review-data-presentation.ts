@@ -1,4 +1,5 @@
 import { format } from 'fp-ts-routing'
+import { sequenceS } from 'fp-ts/Apply'
 import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
 import { flow, identity, pipe } from 'fp-ts/function'
@@ -136,25 +137,20 @@ const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; prep
     ),
     RM.chainEitherK(fields =>
       pipe(
-        E.Do,
-        E.apS('dataPresentation', fields.dataPresentation),
-        E.apS(
-          'dataPresentationDetails',
-          E.right({
-            'inappropriate-unclear': E.getOrElseW(() => undefined)(fields.dataPresentationInappropriateUnclearDetails),
-            'somewhat-inappropriate-unclear': E.getOrElseW(() => undefined)(
-              fields.dataPresentationSomewhatInappropriateUnclearDetails,
-            ),
-            neutral: E.getOrElseW(() => undefined)(fields.dataPresentationNeutralDetails),
-            'mostly-appropriate-clear': E.getOrElseW(() => undefined)(
-              fields.dataPresentationMostlyAppropriateClearDetails,
-            ),
-            'highly-appropriate-clear': E.getOrElseW(() => undefined)(
-              fields.dataPresentationHighlyAppropriateClearDetails,
-            ),
+        sequenceS(E.Apply)(fields),
+        E.bimap(
+          () => fields,
+          fields => ({
+            dataPresentation: fields.dataPresentation,
+            dataPresentationDetails: {
+              'inappropriate-unclear': fields.dataPresentationInappropriateUnclearDetails,
+              'somewhat-inappropriate-unclear': fields.dataPresentationSomewhatInappropriateUnclearDetails,
+              neutral: fields.dataPresentationNeutralDetails,
+              'mostly-appropriate-clear': fields.dataPresentationMostlyAppropriateClearDetails,
+              'highly-appropriate-clear': fields.dataPresentationHighlyAppropriateClearDetails,
+            },
           }),
         ),
-        E.mapLeft(() => fields),
       ),
     ),
     RM.map(updateForm(form)),
