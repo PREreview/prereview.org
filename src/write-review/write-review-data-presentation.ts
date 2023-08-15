@@ -7,7 +7,6 @@ import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
 import { type MissingE, hasAnError, missingE } from '../form'
@@ -110,31 +109,8 @@ const showDataPresentationErrorForm = (preprint: PreprintTitle, user: User) =>
 
 const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body =>
-      E.right({
-        dataPresentation: pipe(DataPresentationFieldD.decode(body), E.mapLeft(missingE)),
-        dataPresentationInappropriateUnclearDetails: pipe(
-          DataPresentationInappropriateUnclearDetailsFieldD.decode(body),
-          E.orElseW(() => E.right(undefined)),
-        ),
-        dataPresentationSomewhatInappropriateUnclearDetails: pipe(
-          DataPresentationSomewhatInappropriateUnclearDetailsFieldD.decode(body),
-          E.orElseW(() => E.right(undefined)),
-        ),
-        dataPresentationNeutralDetails: pipe(
-          DataPresentationNeutralDetailsFieldD.decode(body),
-          E.orElseW(() => E.right(undefined)),
-        ),
-        dataPresentationMostlyAppropriateClearDetails: pipe(
-          DataPresentationMostlyAppropriateClearDetailsFieldD.decode(body),
-          E.orElseW(() => E.right(undefined)),
-        ),
-        dataPresentationHighlyAppropriateClearDetails: pipe(
-          DataPresentationHighlyAppropriateClearDetailsFieldD.decode(body),
-          E.orElseW(() => E.right(undefined)),
-        ),
-      }),
-    ),
+    RM.decodeBody(E.right),
+    RM.map(decodeFields(dataPresentationFields)),
     RM.chainEitherK(fields =>
       pipe(
         sequenceS(E.Apply)(fields),
@@ -164,44 +140,51 @@ const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; prep
     ),
   )
 
-const DataPresentationFieldD = pipe(
-  D.struct({
-    dataPresentation: D.literal(
+const decodeFields =
+  <T extends { [key: string]: (input: unknown) => E.Either<unknown, unknown> }>(fields: T) =>
+  (body: unknown): { [K in keyof T]: ReturnType<T[K]> } =>
+    Object.fromEntries(
+      Object.entries(fields).map(([key, decoder]) => {
+        return [
+          key,
+          decoder(typeof body === 'object' && body !== null ? (body as Record<string, unknown>)[key] : undefined),
+        ]
+      }),
+    ) as never
+
+const dataPresentationFields = {
+  dataPresentation: flow(
+    D.literal(
       'inappropriate-unclear',
       'somewhat-inappropriate-unclear',
       'neutral',
       'mostly-appropriate-clear',
       'highly-appropriate-clear',
       'skip',
-    ),
-  }),
-  D.map(get('dataPresentation')),
-)
-
-const DataPresentationInappropriateUnclearDetailsFieldD = pipe(
-  D.struct({ dataPresentationInappropriateUnclearDetails: NonEmptyStringC }),
-  D.map(get('dataPresentationInappropriateUnclearDetails')),
-)
-
-const DataPresentationSomewhatInappropriateUnclearDetailsFieldD = pipe(
-  D.struct({ dataPresentationSomewhatInappropriateUnclearDetails: NonEmptyStringC }),
-  D.map(get('dataPresentationSomewhatInappropriateUnclearDetails')),
-)
-
-const DataPresentationNeutralDetailsFieldD = pipe(
-  D.struct({ dataPresentationNeutralDetails: NonEmptyStringC }),
-  D.map(get('dataPresentationNeutralDetails')),
-)
-
-const DataPresentationMostlyAppropriateClearDetailsFieldD = pipe(
-  D.struct({ dataPresentationMostlyAppropriateClearDetails: NonEmptyStringC }),
-  D.map(get('dataPresentationMostlyAppropriateClearDetails')),
-)
-
-const DataPresentationHighlyAppropriateClearDetailsFieldD = pipe(
-  D.struct({ dataPresentationHighlyAppropriateClearDetails: NonEmptyStringC }),
-  D.map(get('dataPresentationHighlyAppropriateClearDetails')),
-)
+    ).decode,
+    E.mapLeft(missingE),
+  ),
+  dataPresentationInappropriateUnclearDetails: flow(
+    NonEmptyStringC.decode,
+    E.orElseW(() => E.right<never, undefined>(undefined)),
+  ),
+  dataPresentationSomewhatInappropriateUnclearDetails: flow(
+    NonEmptyStringC.decode,
+    E.orElseW(() => E.right<never, undefined>(undefined)),
+  ),
+  dataPresentationNeutralDetails: flow(
+    NonEmptyStringC.decode,
+    E.orElseW(() => E.right<never, undefined>(undefined)),
+  ),
+  dataPresentationMostlyAppropriateClearDetails: flow(
+    NonEmptyStringC.decode,
+    E.orElseW(() => E.right<never, undefined>(undefined)),
+  ),
+  dataPresentationHighlyAppropriateClearDetails: flow(
+    NonEmptyStringC.decode,
+    E.orElseW(() => E.right<never, undefined>(undefined)),
+  ),
+}
 
 type DataPresentationForm = {
   readonly dataPresentation: E.Either<
