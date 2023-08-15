@@ -110,21 +110,7 @@ const showDataPresentationErrorForm = (preprint: PreprintTitle, user: User) =>
 const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
     RM.decodeBody(decodeFields(dataPresentationFields)),
-    RM.map(
-      flow(
-        fields => ({
-          dataPresentation: fields.dataPresentation,
-          dataPresentationDetails: {
-            'inappropriate-unclear': fields.dataPresentationInappropriateUnclearDetails,
-            'somewhat-inappropriate-unclear': fields.dataPresentationSomewhatInappropriateUnclearDetails,
-            neutral: fields.dataPresentationNeutralDetails,
-            'mostly-appropriate-clear': fields.dataPresentationMostlyAppropriateClearDetails,
-            'highly-appropriate-clear': fields.dataPresentationHighlyAppropriateClearDetails,
-          },
-        }),
-        updateForm(form),
-      ),
-    ),
+    RM.map(updateFormWithFields(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
@@ -193,8 +179,27 @@ const dataPresentationFields = {
   ),
 }
 
+const updateFormWithFields = (form: Form) =>
+  flow(
+    (fields: ValidFields<typeof dataPresentationFields>) => ({
+      dataPresentation: fields.dataPresentation,
+      dataPresentationDetails: {
+        'inappropriate-unclear': fields.dataPresentationInappropriateUnclearDetails,
+        'somewhat-inappropriate-unclear': fields.dataPresentationSomewhatInappropriateUnclearDetails,
+        neutral: fields.dataPresentationNeutralDetails,
+        'mostly-appropriate-clear': fields.dataPresentationMostlyAppropriateClearDetails,
+        'highly-appropriate-clear': fields.dataPresentationHighlyAppropriateClearDetails,
+      },
+    }),
+    updateForm(form),
+  )
+
 type Fields<T extends { [key: string]: (input: unknown) => E.Either<unknown, unknown> }> = {
   [K in keyof T]: ReturnType<T[K]> | E.Right<undefined>
+}
+
+type ValidFields<T extends { [key: string]: (input: unknown) => E.Either<unknown, unknown> }> = {
+  [K in keyof T]: ReturnType<T[K]> extends E.Either<unknown, infer A> ? A : never
 }
 
 type DataPresentationForm = Fields<typeof dataPresentationFields>
