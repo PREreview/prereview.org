@@ -9,7 +9,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -20,7 +20,7 @@ import {
   writeReviewResultsSupportedMatch,
   writeReviewReviewTypeMatch,
 } from '../routes'
-import { type NonEmptyString, NonEmptyStringC } from '../string'
+import { NonEmptyStringC } from '../string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -186,23 +186,11 @@ const dataPresentationFields = {
   ),
 }
 
-type DataPresentationForm = {
-  readonly dataPresentation: E.Either<
-    MissingE,
-    | 'inappropriate-unclear'
-    | 'somewhat-inappropriate-unclear'
-    | 'neutral'
-    | 'mostly-appropriate-clear'
-    | 'highly-appropriate-clear'
-    | 'skip'
-    | undefined
-  >
-  readonly dataPresentationInappropriateUnclearDetails: E.Either<never, NonEmptyString | undefined>
-  readonly dataPresentationSomewhatInappropriateUnclearDetails: E.Either<never, NonEmptyString | undefined>
-  readonly dataPresentationNeutralDetails: E.Either<never, NonEmptyString | undefined>
-  readonly dataPresentationMostlyAppropriateClearDetails: E.Either<never, NonEmptyString | undefined>
-  readonly dataPresentationHighlyAppropriateClearDetails: E.Either<never, NonEmptyString | undefined>
+type Fields<T extends { [key: string]: (input: unknown) => E.Either<unknown, unknown> }> = {
+  [K in keyof T]: ReturnType<T[K]> | E.Right<undefined>
 }
+
+type DataPresentationForm = Fields<typeof dataPresentationFields>
 
 function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationForm, user: User) {
   const error = hasAnError(form)
