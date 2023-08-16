@@ -8,7 +8,15 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, missingE } from '../form'
+import {
+  type FieldDecoders,
+  type Fields,
+  type ValidFields,
+  decodeFields,
+  hasAnError,
+  optionalDecoder,
+  requiredDecoder,
+} from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -121,7 +129,7 @@ const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; prep
   )
 
 const dataPresentationFields = {
-  dataPresentation: flow(
+  dataPresentation: requiredDecoder(
     D.literal(
       'inappropriate-unclear',
       'somewhat-inappropriate-unclear',
@@ -129,29 +137,13 @@ const dataPresentationFields = {
       'mostly-appropriate-clear',
       'highly-appropriate-clear',
       'skip',
-    ).decode,
-    E.mapLeft(missingE),
+    ),
   ),
-  dataPresentationInappropriateUnclearDetails: flow(
-    NonEmptyStringC.decode,
-    E.orElseW(() => E.right<never, undefined>(undefined)),
-  ),
-  dataPresentationSomewhatInappropriateUnclearDetails: flow(
-    NonEmptyStringC.decode,
-    E.orElseW(() => E.right<never, undefined>(undefined)),
-  ),
-  dataPresentationNeutralDetails: flow(
-    NonEmptyStringC.decode,
-    E.orElseW(() => E.right<never, undefined>(undefined)),
-  ),
-  dataPresentationMostlyAppropriateClearDetails: flow(
-    NonEmptyStringC.decode,
-    E.orElseW(() => E.right<never, undefined>(undefined)),
-  ),
-  dataPresentationHighlyAppropriateClearDetails: flow(
-    NonEmptyStringC.decode,
-    E.orElseW(() => E.right<never, undefined>(undefined)),
-  ),
+  dataPresentationInappropriateUnclearDetails: optionalDecoder(NonEmptyStringC),
+  dataPresentationSomewhatInappropriateUnclearDetails: optionalDecoder(NonEmptyStringC),
+  dataPresentationNeutralDetails: optionalDecoder(NonEmptyStringC),
+  dataPresentationMostlyAppropriateClearDetails: optionalDecoder(NonEmptyStringC),
+  dataPresentationHighlyAppropriateClearDetails: optionalDecoder(NonEmptyStringC),
 } satisfies FieldDecoders
 
 const updateFormWithFields = (form: Form) =>

@@ -45,6 +45,15 @@ export const decodeFields = <T extends FieldDecoders>(fields: T) =>
       ),
   )
 
+export const requiredDecoder = <I, A>(decoder: D.Decoder<I, A>): ((value: I) => E.Either<MissingE, A>) =>
+  flow(decoder.decode, E.mapLeft(missingE))
+
+export const optionalDecoder = <I, A>(decoder: D.Decoder<I, A>): ((value: I) => E.Either<never, A | undefined>) =>
+  flow(
+    decoder.decode,
+    E.orElseW(() => E.right(undefined)),
+  )
+
 export const missingE = (): MissingE => ({
   _tag: 'MissingE',
 })
