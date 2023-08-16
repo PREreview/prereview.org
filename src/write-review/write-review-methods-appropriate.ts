@@ -6,10 +6,10 @@ import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
+import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -76,7 +76,7 @@ export const writeReviewMethodsAppropriate = flow(
 
 const showMethodsAppropriateForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    methodsAppropriateForm(preprint, { methodsAppropriate: E.right(form.methodsAppropriate) }, user),
+    methodsAppropriateForm(preprint, FormToFieldsE.encode(form), user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -91,17 +91,8 @@ const showMethodsAppropriateErrorForm = (preprint: PreprintTitle, user: User) =>
 
 const handleMethodsAppropriateForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body =>
-      E.right({ methodsAppropriate: pipe(MethodsAppropriateFieldD.decode(body), E.mapLeft(missingE)) }),
-    ),
-    RM.chainEitherK(fields =>
-      pipe(
-        E.Do,
-        E.apS('methodsAppropriate', fields.methodsAppropriate),
-        E.mapLeft(() => fields),
-      ),
-    ),
-    RM.map(updateForm(form)),
+    RM.decodeBody(decodeFields(methodsAppropriateFields)),
+    RM.map(updateFormWithFields(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
@@ -112,9 +103,9 @@ const handleMethodsAppropriateForm = ({ form, preprint, user }: { form: Form; pr
     ),
   )
 
-const MethodsAppropriateFieldD = pipe(
-  D.struct({
-    methodsAppropriate: D.literal(
+const methodsAppropriateFields = {
+  methodsAppropriate: requiredDecoder(
+    D.literal(
       'inappropriate',
       'somewhat-inappropriate',
       'adequate',
@@ -122,22 +113,24 @@ const MethodsAppropriateFieldD = pipe(
       'highly-appropriate',
       'skip',
     ),
-  }),
-  D.map(get('methodsAppropriate')),
-)
+  ),
+} satisfies FieldDecoders
 
-type MethodsAppropriateForm = {
-  readonly methodsAppropriate: E.Either<
-    MissingE,
-    | 'inappropriate'
-    | 'somewhat-inappropriate'
-    | 'adequate'
-    | 'mostly-appropriate'
-    | 'highly-appropriate'
-    | 'skip'
-    | undefined
-  >
+const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
+
+const FieldsToFormE: Encoder<Form, ValidFields<typeof methodsAppropriateFields>> = {
+  encode: fields => ({
+    methodsAppropriate: fields.methodsAppropriate,
+  }),
 }
+
+const FormToFieldsE: Encoder<MethodsAppropriateForm, Form> = {
+  encode: form => ({
+    methodsAppropriate: E.right(form.methodsAppropriate),
+  }),
+}
+
+type MethodsAppropriateForm = Fields<typeof methodsAppropriateFields>
 
 function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriateForm, user: User) {
   const error = hasAnError(form)
