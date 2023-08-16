@@ -6,10 +6,10 @@ import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
+import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -71,7 +71,7 @@ export const writeReviewIntroductionMatches = flow(
 
 const showIntroductionMatchesForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    introductionMatchesForm(preprint, { introductionMatches: E.right(form.introductionMatches) }, user),
+    introductionMatchesForm(preprint, FormToFieldsE.encode(form), user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -86,17 +86,8 @@ const showIntroductionMatchesErrorForm = (preprint: PreprintTitle, user: User) =
 
 const handleIntroductionMatchesForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body =>
-      E.right({ introductionMatches: pipe(IntroductionMatchesFieldD.decode(body), E.mapLeft(missingE)) }),
-    ),
-    RM.chainEitherK(fields =>
-      pipe(
-        E.Do,
-        E.apS('introductionMatches', fields.introductionMatches),
-        E.mapLeft(() => fields),
-      ),
-    ),
-    RM.map(updateForm(form)),
+    RM.decodeBody(decodeFields(introductionMatchesFields)),
+    RM.map(updateFormWithFields(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
@@ -107,16 +98,25 @@ const handleIntroductionMatchesForm = ({ form, preprint, user }: { form: Form; p
     ),
   )
 
-const IntroductionMatchesFieldD = pipe(
-  D.struct({
-    introductionMatches: D.literal('yes', 'partly', 'no', 'skip'),
-  }),
-  D.map(get('introductionMatches')),
-)
+const introductionMatchesFields = {
+  introductionMatches: requiredDecoder(D.literal('yes', 'partly', 'no', 'skip')),
+} satisfies FieldDecoders
 
-type IntroductionMatchesForm = {
-  readonly introductionMatches: E.Either<MissingE, 'yes' | 'partly' | 'no' | 'skip' | undefined>
+const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
+
+const FieldsToFormE: Encoder<Form, ValidFields<typeof introductionMatchesFields>> = {
+  encode: fields => ({
+    introductionMatches: fields.introductionMatches,
+  }),
 }
+
+const FormToFieldsE: Encoder<IntroductionMatchesForm, Form> = {
+  encode: form => ({
+    introductionMatches: E.right(form.introductionMatches),
+  }),
+}
+
+type IntroductionMatchesForm = Fields<typeof introductionMatchesFields>
 
 function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatchesForm, user: User) {
   const error = hasAnError(form)
