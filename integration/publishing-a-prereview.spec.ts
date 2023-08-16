@@ -122,7 +122,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('Partly').check()
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByLabel('How does the introduction only partly explain the objective?')
+      .fill('Consectetur adipiscing elit.')
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -189,7 +192,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
 
     await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Does the introduction explain the objective and match the rest of the preprint? Partly',
+      'Does the introduction explain the objective and match the rest of the preprint? Partly Consectetur adipiscing elit.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Are the methods appropriate? Adequate',
@@ -455,7 +458,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Partly').check()
+    await page.getByLabel('Partly', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
@@ -1118,7 +1121,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Guided review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('Partly').check()
+    await page.getByLabel('Partly', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequate').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1186,11 +1189,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       })
       .click()
 
-    await page.getByLabel('I don’t know').check()
+    await page.getByLabel('No', { exact: true }).check()
+    await page.getByLabel('How does the introduction not explain the objective?').fill('Consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText(
-      'Does the introduction explain the objective and match the rest of the preprint? I don’t know',
+      'Does the introduction explain the objective and match the rest of the preprint? No Consectetur adipiscing elit.',
     )
 
     await page
@@ -1323,7 +1327,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Guided review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('Partly').check()
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByLabel('How does the introduction only partly explain the objective?')
+      .fill('Consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequate').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1381,7 +1388,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.goBack()
 
-    await expect(page.getByLabel('Partly')).toBeChecked()
+    await expect(page.getByLabel('Partly', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('How does the introduction only partly explain the objective?')).toHaveText(
+      'Consectetur adipiscing elit.',
+    )
 
     await page.goBack()
 
@@ -1464,7 +1474,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Guided review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('Partly').check()
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByLabel('How does the introduction only partly explain the objective?')
+      .fill('Consectetur adipiscing elit.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequate').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1521,7 +1534,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Partly')).toBeChecked()
+    await expect(page.getByLabel('Partly', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('How does the introduction only partly explain the objective?')).toHaveText(
+      'Consectetur adipiscing elit.',
+    )
 
     await page.getByRole('link', { name: 'Back' }).click()
 

@@ -19,18 +19,33 @@ describe('writeReviewIntroductionMatches', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .introductionMatches()
-        .chain(introductionMatches =>
+        .tuple(fc.introductionMatches(), fc.introductionMatchesDetails())
+        .chain(([introductionMatches, introductionMatchesDetails]) =>
           fc.tuple(
             fc.constant(introductionMatches),
-            fc.connection({ body: fc.constant({ introductionMatches }), method: fc.constant('POST') }),
+            fc.constant(introductionMatchesDetails),
+            fc.connection({
+              body: fc.constant({
+                introductionMatches,
+                introductionMatchesYesDetails: introductionMatchesDetails['yes'],
+                introductionMatchesPartlyDetails: introductionMatchesDetails['partly'],
+                introductionMatchesNoDetails: introductionMatchesDetails['no'],
+              }),
+              method: fc.constant('POST'),
+            }),
           ),
         ),
       fc.user(),
       fc.completedQuestionsForm(),
     ])(
       'when the form is completed',
-      async (preprintId, preprintTitle, [introductionMatches, connection], user, newReview) => {
+      async (
+        preprintId,
+        preprintTitle,
+        [introductionMatches, introductionMatchesDetails, connection],
+        user,
+        newReview,
+      ) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -44,7 +59,10 @@ describe('writeReviewIntroductionMatches', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ introductionMatches })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          introductionMatches,
+          introductionMatchesDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -63,18 +81,33 @@ describe('writeReviewIntroductionMatches', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .introductionMatches()
-        .chain(introductionMatches =>
+        .tuple(fc.introductionMatches(), fc.introductionMatchesDetails())
+        .chain(([introductionMatches, introductionMatchesDetails]) =>
           fc.tuple(
             fc.constant(introductionMatches),
-            fc.connection({ body: fc.constant({ introductionMatches }), method: fc.constant('POST') }),
+            fc.constant(introductionMatchesDetails),
+            fc.connection({
+              body: fc.constant({
+                introductionMatches,
+                introductionMatchesYesDetails: introductionMatchesDetails['yes'],
+                introductionMatchesPartlyDetails: introductionMatchesDetails['partly'],
+                introductionMatchesNoDetails: introductionMatchesDetails['no'],
+              }),
+              method: fc.constant('POST'),
+            }),
           ),
         ),
       fc.user(),
       fc.incompleteQuestionsForm(),
     ])(
       'when the form is incomplete',
-      async (preprintId, preprintTitle, [introductionMatches, connection], user, newReview) => {
+      async (
+        preprintId,
+        preprintTitle,
+        [introductionMatches, introductionMatchesDetails, connection],
+        user,
+        newReview,
+      ) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -88,7 +121,10 @@ describe('writeReviewIntroductionMatches', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ introductionMatches })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          introductionMatches,
+          introductionMatchesDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },

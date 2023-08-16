@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
-import { flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -9,12 +9,21 @@ import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
+import {
+  type FieldDecoders,
+  type Fields,
+  type ValidFields,
+  decodeFields,
+  hasAnError,
+  optionalDecoder,
+  requiredDecoder,
+} from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { writeReviewIntroductionMatchesMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
+import { NonEmptyStringC } from '../string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -100,6 +109,9 @@ const handleIntroductionMatchesForm = ({ form, preprint, user }: { form: Form; p
 
 const introductionMatchesFields = {
   introductionMatches: requiredDecoder(D.literal('yes', 'partly', 'no', 'skip')),
+  introductionMatchesYesDetails: optionalDecoder(NonEmptyStringC),
+  introductionMatchesPartlyDetails: optionalDecoder(NonEmptyStringC),
+  introductionMatchesNoDetails: optionalDecoder(NonEmptyStringC),
 } satisfies FieldDecoders
 
 const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
@@ -107,12 +119,20 @@ const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateFo
 const FieldsToFormE: Encoder<Form, ValidFields<typeof introductionMatchesFields>> = {
   encode: fields => ({
     introductionMatches: fields.introductionMatches,
+    introductionMatchesDetails: {
+      yes: fields.introductionMatchesYesDetails,
+      partly: fields.introductionMatchesPartlyDetails,
+      no: fields.introductionMatchesNoDetails,
+    },
   }),
 }
 
 const FormToFieldsE: Encoder<IntroductionMatchesForm, Form> = {
   encode: form => ({
     introductionMatches: E.right(form.introductionMatches),
+    introductionMatchesYesDetails: E.right(form.introductionMatchesDetails?.['yes']),
+    introductionMatchesPartlyDetails: E.right(form.introductionMatchesDetails?.['partly']),
+    introductionMatchesNoDetails: E.right(form.introductionMatchesDetails?.['no']),
   }),
 }
 
@@ -163,110 +183,158 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
             : ''}
 
           <div ${rawHtml(E.isLeft(form.introductionMatches) ? 'class="error"' : '')}>
-            <fieldset
-              role="group"
-              ${rawHtml(
-                E.isLeft(form.introductionMatches)
-                  ? 'aria-invalid="true" aria-errormessage="introduction-matches-error"'
-                  : '',
-              )}
-            >
-              <legend>
-                <h1>Does the introduction explain the objective and match the rest of the preprint?</h1>
-              </legend>
+            <conditional-inputs>
+              <fieldset
+                role="group"
+                ${rawHtml(
+                  E.isLeft(form.introductionMatches)
+                    ? 'aria-invalid="true" aria-errormessage="introduction-matches-error"'
+                    : '',
+                )}
+              >
+                <legend>
+                  <h1>Does the introduction explain the objective and match the rest of the preprint?</h1>
+                </legend>
 
-              ${E.isLeft(form.introductionMatches)
-                ? html`
-                    <div class="error-message" id="introduction-matches-error">
-                      <span class="visually-hidden">Error:</span>
-                      ${match(form.introductionMatches.left)
-                        .with(
-                          { _tag: 'MissingE' },
-                          () =>
-                            'Select if the introduction explains the objective and matches the rest of the preprint',
-                        )
-                        .exhaustive()}
+                ${E.isLeft(form.introductionMatches)
+                  ? html`
+                      <div class="error-message" id="introduction-matches-error">
+                        <span class="visually-hidden">Error:</span>
+                        ${match(form.introductionMatches.left)
+                          .with(
+                            { _tag: 'MissingE' },
+                            () =>
+                              'Select if the introduction explains the objective and matches the rest of the preprint',
+                          )
+                          .exhaustive()}
+                      </div>
+                    `
+                  : ''}
+
+                <ol>
+                  <li>
+                    <label>
+                      <input
+                        name="introductionMatches"
+                        id="introduction-matches-yes"
+                        type="radio"
+                        value="yes"
+                        aria-describedby="introduction-matches-tip-yes"
+                        aria-controls="introduction-matches-yes-control"
+                        ${match(form.introductionMatches)
+                          .with({ right: 'yes' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Yes</span>
+                    </label>
+                    <p id="introduction-matches-tip-yes" role="note">
+                      The aim is clearly explained, and it matches up with what follows.
+                    </p>
+                    <div class="conditional" id="introduction-matches-yes-control">
+                      <div>
+                        <label for="introduction-matches-yes-details" class="textarea"
+                          >How does the introduction explain the objective? (optional)</label
+                        >
+
+                        <textarea name="introductionMatchesYesDetails" id="introduction-matches-yes-details" rows="5">
+${match(form.introductionMatchesYesDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
                     </div>
-                  `
-                : ''}
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="introductionMatches"
+                        type="radio"
+                        value="partly"
+                        aria-describedby="introduction-matches-tip-partly"
+                        aria-controls="introduction-matches-partly-control"
+                        ${match(form.introductionMatches)
+                          .with({ right: 'partly' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Partly</span>
+                    </label>
+                    <p id="introduction-matches-tip-partly" role="note">
+                      The introduction either doesn’t adequately explain the aim of the research, or the rest of the
+                      preprint doesn’t match up with the introduction.
+                    </p>
+                    <div class="conditional" id="introduction-matches-partly-control">
+                      <div>
+                        <label for="introduction-matches-partly-details" class="textarea"
+                          >How does the introduction only partly explain the objective? (optional)</label
+                        >
 
-              <ol>
-                <li>
-                  <label>
-                    <input
-                      name="introductionMatches"
-                      id="introduction-matches-yes"
-                      type="radio"
-                      value="yes"
-                      aria-describedby="introduction-matches-tip-yes"
-                      ${match(form.introductionMatches)
-                        .with({ right: 'yes' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Yes</span>
-                  </label>
-                  <p id="introduction-matches-tip-yes" role="note">
-                    The aim is clearly explained, and it matches up with what follows.
-                  </p>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="introductionMatches"
-                      type="radio"
-                      value="partly"
-                      aria-describedby="introduction-matches-tip-partly"
-                      ${match(form.introductionMatches)
-                        .with({ right: 'partly' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Partly</span>
-                  </label>
-                  <p id="introduction-matches-tip-partly" role="note">
-                    The introduction either doesn’t adequately explain the aim of the research, or the rest of the
-                    preprint doesn’t match up with the introduction.
-                  </p>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="introductionMatches"
-                      type="radio"
-                      value="no"
-                      aria-describedby="introduction-matches-tip-no"
-                      ${match(form.introductionMatches)
-                        .with({ right: 'no' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>No</span>
-                  </label>
-                  <p id="introduction-matches-tip-no" role="note">
-                    The introduction doesn’t explain the aim of the research or match up with what follows.
-                  </p>
-                </li>
-                <li>
-                  <span>or</span>
-                  <label>
-                    <input
-                      name="introductionMatches"
-                      type="radio"
-                      value="skip"
-                      ${match(form.introductionMatches)
-                        .with({ right: 'skip' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>I don’t know</span>
-                  </label>
-                </li>
-              </ol>
-            </fieldset>
+                        <textarea
+                          name="introductionMatchesPartlyDetails"
+                          id="introduction-matches-partly-details"
+                          rows="5"
+                        >
+${match(form.introductionMatchesPartlyDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="introductionMatches"
+                        type="radio"
+                        value="no"
+                        aria-describedby="introduction-matches-tip-no"
+                        aria-controls="introduction-matches-no-control"
+                        ${match(form.introductionMatches)
+                          .with({ right: 'no' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>No</span>
+                    </label>
+                    <p id="introduction-matches-tip-no" role="note">
+                      The introduction doesn’t explain the aim of the research or match up with what follows.
+                    </p>
+                    <div class="conditional" id="introduction-matches-no-control">
+                      <div>
+                        <label for="introduction-matches-no-details" class="textarea"
+                          >How does the introduction not explain the objective? (optional)</label
+                        >
+
+                        <textarea name="introductionMatchesNoDetails" id="introduction-matches-no-details" rows="5">
+${match(form.introductionMatchesNoDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <span>or</span>
+                    <label>
+                      <input
+                        name="introductionMatches"
+                        type="radio"
+                        value="skip"
+                        ${match(form.introductionMatches)
+                          .with({ right: 'skip' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>I don’t know</span>
+                    </label>
+                  </li>
+                </ol>
+              </fieldset>
+            </conditional-inputs>
           </div>
 
           <button>Save and continue</button>
         </form>
       </main>
     `,
-    js: ['error-summary.js'],
+    js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
     user,
