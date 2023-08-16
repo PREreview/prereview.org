@@ -1,5 +1,4 @@
 import { format } from 'fp-ts-routing'
-import { sequenceS } from 'fp-ts/Apply'
 import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
 import { flow, identity, pipe } from 'fp-ts/function'
@@ -9,7 +8,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { hasAnError, missingE } from '../form'
+import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -121,28 +120,6 @@ const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; prep
     ),
   )
 
-type EnforceNonEmptyRecord<R> = keyof R extends never ? never : R
-
-type FieldDecoders = EnforceNonEmptyRecord<{ [key: string]: (input: unknown) => E.Either<unknown, unknown> }>
-
-const decodeFields = <T extends FieldDecoders>(fields: T) =>
-  flow(
-    (body: unknown) =>
-      Object.fromEntries(
-        Object.entries(fields).map(([key, decoder]) => {
-          return [
-            key,
-            decoder(typeof body === 'object' && body !== null ? (body as Record<string, unknown>)[key] : undefined),
-          ]
-        }),
-      ) as EnforceNonEmptyRecord<{ [K in keyof T]: ReturnType<T[K]> }>,
-    fields =>
-      pipe(
-        sequenceS(E.Apply)(fields),
-        E.mapLeft(() => fields),
-      ),
-  )
-
 const dataPresentationFields = {
   dataPresentation: flow(
     D.literal(
@@ -191,14 +168,6 @@ const updateFormWithFields = (form: Form) =>
     }),
     updateForm(form),
   )
-
-type Fields<T extends FieldDecoders> = {
-  [K in keyof T]: ReturnType<T[K]> | E.Right<undefined>
-}
-
-type ValidFields<T extends FieldDecoders> = {
-  [K in keyof T]: ReturnType<T[K]> extends E.Either<unknown, infer A> ? A : never
-}
 
 type DataPresentationForm = Fields<typeof dataPresentationFields>
 
