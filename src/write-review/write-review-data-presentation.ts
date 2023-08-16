@@ -6,6 +6,7 @@ import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
 import {
@@ -84,24 +85,7 @@ export const writeReviewDataPresentation = flow(
 
 const showDataPresentationForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    dataPresentationForm(
-      preprint,
-      {
-        dataPresentation: E.right(form.dataPresentation),
-        dataPresentationInappropriateUnclearDetails: E.right(form.dataPresentationDetails?.['inappropriate-unclear']),
-        dataPresentationSomewhatInappropriateUnclearDetails: E.right(
-          form.dataPresentationDetails?.['somewhat-inappropriate-unclear'],
-        ),
-        dataPresentationNeutralDetails: E.right(form.dataPresentationDetails?.['neutral']),
-        dataPresentationMostlyAppropriateClearDetails: E.right(
-          form.dataPresentationDetails?.['mostly-appropriate-clear'],
-        ),
-        dataPresentationHighlyAppropriateClearDetails: E.right(
-          form.dataPresentationDetails?.['highly-appropriate-clear'],
-        ),
-      },
-      user,
-    ),
+    dataPresentationForm(preprint, FormToFieldsE.encode(form), user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -146,20 +130,33 @@ const dataPresentationFields = {
   dataPresentationHighlyAppropriateClearDetails: optionalDecoder(NonEmptyStringC),
 } satisfies FieldDecoders
 
-const updateFormWithFields = (form: Form) =>
-  flow(
-    (fields: ValidFields<typeof dataPresentationFields>) => ({
-      dataPresentation: fields.dataPresentation,
-      dataPresentationDetails: {
-        'inappropriate-unclear': fields.dataPresentationInappropriateUnclearDetails,
-        'somewhat-inappropriate-unclear': fields.dataPresentationSomewhatInappropriateUnclearDetails,
-        neutral: fields.dataPresentationNeutralDetails,
-        'mostly-appropriate-clear': fields.dataPresentationMostlyAppropriateClearDetails,
-        'highly-appropriate-clear': fields.dataPresentationHighlyAppropriateClearDetails,
-      },
-    }),
-    updateForm(form),
-  )
+const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
+
+const FieldsToFormE: Encoder<Form, ValidFields<typeof dataPresentationFields>> = {
+  encode: fields => ({
+    dataPresentation: fields.dataPresentation,
+    dataPresentationDetails: {
+      'inappropriate-unclear': fields.dataPresentationInappropriateUnclearDetails,
+      'somewhat-inappropriate-unclear': fields.dataPresentationSomewhatInappropriateUnclearDetails,
+      neutral: fields.dataPresentationNeutralDetails,
+      'mostly-appropriate-clear': fields.dataPresentationMostlyAppropriateClearDetails,
+      'highly-appropriate-clear': fields.dataPresentationHighlyAppropriateClearDetails,
+    },
+  }),
+}
+
+const FormToFieldsE: Encoder<DataPresentationForm, Form> = {
+  encode: form => ({
+    dataPresentation: E.right(form.dataPresentation),
+    dataPresentationInappropriateUnclearDetails: E.right(form.dataPresentationDetails?.['inappropriate-unclear']),
+    dataPresentationSomewhatInappropriateUnclearDetails: E.right(
+      form.dataPresentationDetails?.['somewhat-inappropriate-unclear'],
+    ),
+    dataPresentationNeutralDetails: E.right(form.dataPresentationDetails?.['neutral']),
+    dataPresentationMostlyAppropriateClearDetails: E.right(form.dataPresentationDetails?.['mostly-appropriate-clear']),
+    dataPresentationHighlyAppropriateClearDetails: E.right(form.dataPresentationDetails?.['highly-appropriate-clear']),
+  }),
+}
 
 type DataPresentationForm = Fields<typeof dataPresentationFields>
 
