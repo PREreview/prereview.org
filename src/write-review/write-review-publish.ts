@@ -181,6 +181,9 @@ function renderReview(form: CompletedForm) {
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
+              ${form.introductionMatches !== 'skip' && form.introductionMatchesDetails
+                ? html` <dd>${form.introductionMatchesDetails}</dd>`
+                : ''}
             </div>
             <div>
               <dt>Are the methods appropriate?</dt>
@@ -221,7 +224,7 @@ function renderReview(form: CompletedForm) {
                   .exhaustive()}
               </dd>
               ${form.dataPresentation !== 'skip' && form.dataPresentationDetails
-                ? html`<dd>${form.dataPresentationDetails}</dd>`
+                ? html` <dd>${form.dataPresentationDetails}</dd>`
                 : ''}
             </div>
             <div>
@@ -282,7 +285,7 @@ function renderReview(form: CompletedForm) {
                   .exhaustive()}
               </dd>
               ${form.dataPresentation !== 'skip' && form.dataPresentationDetails
-                ? html`<dd>${form.dataPresentationDetails}</dd>`
+                ? html` <dd>${form.dataPresentationDetails}</dd>`
                 : ''}
             </div>
           </dl>`,
@@ -434,6 +437,9 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
                           </dd>
+                          ${review.introductionMatches !== 'skip' && review.introductionMatchesDetails
+                            ? html` <dd>${review.introductionMatchesDetails}</dd>`
+                            : ''}
                           <dd>
                             <a href="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}"
                               >Change
@@ -493,7 +499,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               .exhaustive()}
                           </dd>
                           ${review.dataPresentation !== 'skip' && review.dataPresentationDetails
-                            ? html`<dd>${review.dataPresentationDetails}</dd>`
+                            ? html` <dd>${review.dataPresentationDetails}</dd>`
                             : ''}
                           <dd>
                             <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}"

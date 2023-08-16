@@ -30,7 +30,6 @@ export const CompletedFormC = pipe(
         C.struct({
           reviewType: C.literal('questions'),
           alreadyWritten: C.literal('no'),
-          introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),
           methodsAppropriate: C.literal(
             'inappropriate',
             'somewhat-inappropriate',
@@ -60,6 +59,65 @@ export const CompletedFormC = pipe(
           shouldRead: C.literal('no', 'yes-but', 'yes'),
           readyFullReview: C.literal('no', 'yes-changes', 'yes'),
         }),
+        C.intersect(
+          C.sum('introductionMatches')({
+            yes: pipe(
+              C.struct({ introductionMatches: C.literal('yes') }),
+              C.intersect(
+                pipe(
+                  C.partial({ introductionMatchesDetails: C.partial({ yes: NonEmptyStringC }) }),
+                  C.imap(
+                    form =>
+                      form.introductionMatchesDetails?.['yes']
+                        ? { introductionMatchesDetails: form.introductionMatchesDetails['yes'] }
+                        : {},
+                    form =>
+                      form.introductionMatchesDetails
+                        ? { introductionMatchesDetails: { yes: form.introductionMatchesDetails } }
+                        : {},
+                  ),
+                ),
+              ),
+            ),
+            partly: pipe(
+              C.struct({ introductionMatches: C.literal('partly') }),
+              C.intersect(
+                pipe(
+                  C.partial({ introductionMatchesDetails: C.partial({ partly: NonEmptyStringC }) }),
+                  C.imap(
+                    form =>
+                      form.introductionMatchesDetails?.['partly']
+                        ? { introductionMatchesDetails: form.introductionMatchesDetails['partly'] }
+                        : {},
+                    form =>
+                      form.introductionMatchesDetails
+                        ? { introductionMatchesDetails: { partly: form.introductionMatchesDetails } }
+                        : {},
+                  ),
+                ),
+              ),
+            ),
+            no: pipe(
+              C.struct({ introductionMatches: C.literal('no') }),
+              C.intersect(
+                pipe(
+                  C.partial({ introductionMatchesDetails: C.partial({ no: NonEmptyStringC }) }),
+                  C.imap(
+                    form =>
+                      form.introductionMatchesDetails?.['no']
+                        ? { introductionMatchesDetails: form.introductionMatchesDetails['no'] }
+                        : {},
+                    form =>
+                      form.introductionMatchesDetails
+                        ? { introductionMatchesDetails: { no: form.introductionMatchesDetails } }
+                        : {},
+                  ),
+                ),
+              ),
+            ),
+            skip: C.struct({ introductionMatches: C.literal('skip') }),
+          }),
+        ),
         C.intersect(
           C.sum('dataPresentation')({
             'inappropriate-unclear': pipe(

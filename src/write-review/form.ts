@@ -166,6 +166,7 @@ export const FormC = pipe(
   C.partial({
     alreadyWritten: C.literal('yes', 'no'),
     introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),
+    introductionMatchesDetails: C.partial({ yes: NonEmptyStringC, partly: NonEmptyStringC, no: NonEmptyStringC }),
     review: RawHtmlC,
     reviewType: C.literal('questions', 'freeform'),
     persona: C.literal('public', 'pseudonym'),

@@ -12,6 +12,19 @@ export const conduct = (): fc.Arbitrary<Required<Form>['conduct']> => fc.constan
 export const introductionMatches = (): fc.Arbitrary<Required<Form>['introductionMatches']> =>
   fc.constantFrom('yes', 'partly', 'no', 'skip')
 
+export const introductionMatchesDetails = (): fc.Arbitrary<Required<Form>['introductionMatchesDetails']> =>
+  fc.oneof(
+    fc.record(
+      {
+        yes: fc.nonEmptyString(),
+        partly: fc.nonEmptyString(),
+        no: fc.nonEmptyString(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.constant({}),
+  )
+
 export const methodsAppropriate = (): fc.Arbitrary<Required<Form>['methodsAppropriate']> =>
   fc.constantFrom(
     'inappropriate',
@@ -100,6 +113,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
       fc.oneof(
         fc.record(
           {
+            introductionMatchesDetails: introductionMatchesDetails(),
             dataPresentationDetails: dataPresentationDetails(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
@@ -132,6 +146,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
             introductionMatches: introductionMatches(),
+            introductionMatchesDetails: introductionMatchesDetails(),
             methodsAppropriate: methodsAppropriate(),
             resultsSupported: resultsSupported(),
             dataPresentation: dataPresentation(),
@@ -161,7 +176,6 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
       fc.record({
         alreadyWritten: fc.constant('no' as const),
         conduct: conduct(),
-        introductionMatches: introductionMatches(),
         methodsAppropriate: methodsAppropriate(),
         resultsSupported: resultsSupported(),
         dataPresentation: dataPresentation(),
@@ -182,6 +196,16 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         fc.record({
           competingInterests: fc.constant('no' as const),
         }),
+      ),
+      fc.oneof(
+        fc.record(
+          {
+            introductionMatches: introductionMatches().filter(value => value !== 'skip'),
+            introductionMatchesDetails: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['introductionMatches'] },
+        ),
+        fc.record({ introductionMatches: fc.constant('skip' as const) }),
       ),
       fc.oneof(
         fc.record(
