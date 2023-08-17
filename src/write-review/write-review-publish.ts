@@ -264,6 +264,7 @@ function renderReview(form: CompletedForm) {
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
+              ${form.novel !== 'skip' && form.novelDetails ? html` <dd>${form.novelDetails}</dd>` : ''}
             </div>
             <div>
               <dt>Would it benefit from language editing?</dt>
@@ -564,6 +565,9 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
                           </dd>
+                          ${review.novel !== 'skip' && review.novelDetails
+                            ? html` <dd>${review.novelDetails}</dd>`
+                            : ''}
                           <dd>
                             <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}"
                               >Change <span class="visually-hidden">if the findings are novel</span></a

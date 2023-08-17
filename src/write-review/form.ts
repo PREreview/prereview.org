@@ -232,6 +232,13 @@ export const FormC = pipe(
       skip: NonEmptyStringC,
     }),
     novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
+    novelDetails: C.partial({
+      no: NonEmptyStringC,
+      limited: NonEmptyStringC,
+      some: NonEmptyStringC,
+      substantial: NonEmptyStringC,
+      highly: NonEmptyStringC,
+    }),
     languageEditing: C.literal('yes', 'no'),
     shouldRead: C.literal('no', 'yes-but', 'yes'),
     readyFullReview: C.literal('no', 'yes-changes', 'yes'),

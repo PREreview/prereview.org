@@ -114,6 +114,21 @@ export const findingsNextStepsDetails = (): fc.Arbitrary<Required<Form>['finding
 export const novel = (): fc.Arbitrary<Required<Form>['novel']> =>
   fc.constantFrom('no', 'limited', 'some', 'substantial', 'highly', 'skip')
 
+export const novelDetails = (): fc.Arbitrary<Required<Form>['novelDetails']> =>
+  fc.oneof(
+    fc.record(
+      {
+        no: fc.nonEmptyString(),
+        limited: fc.nonEmptyString(),
+        some: fc.nonEmptyString(),
+        substantial: fc.nonEmptyString(),
+        highly: fc.nonEmptyString(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.constant({}),
+  )
+
 export const languageEditing = (): fc.Arbitrary<Required<Form>['languageEditing']> => fc.constantFrom('yes', 'no')
 
 export const shouldRead = (): fc.Arbitrary<Required<Form>['shouldRead']> => fc.constantFrom('yes', 'yes-but', 'no')
@@ -163,6 +178,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
             resultsSupportedDetails: resultsSupportedDetails(),
             dataPresentationDetails: dataPresentationDetails(),
             findingsNextStepsDetails: findingsNextStepsDetails(),
+            novelDetails: novelDetails(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
             review: fc.html(),
@@ -204,6 +220,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             findingsNextSteps: findingsNextSteps(),
             findingsNextStepsDetails: findingsNextStepsDetails(),
             novel: novel(),
+            novelDetails: novelDetails(),
             languageEditing: languageEditing(),
             shouldRead: shouldRead(),
             readyFullReview: readyFullReview(),
@@ -296,6 +313,16 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           { requiredKeys: ['findingsNextSteps'] },
         ),
         fc.record({ findingsNextSteps: fc.constant('skip' as const) }),
+      ),
+      fc.oneof(
+        fc.record(
+          {
+            novel: novel().filter(value => value !== 'skip'),
+            novelDetails: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['novel'] },
+        ),
+        fc.record({ novel: fc.constant('skip' as const) }),
       ),
     )
     .map(parts => merge(...(parts as never)))
