@@ -285,6 +285,7 @@ function renderReview(form: CompletedForm) {
                   .with('yes', () => 'Yes, it’s of high quality')
                   .exhaustive()}
               </dd>
+              ${form.shouldReadDetails ? html` <dd>${form.shouldReadDetails}</dd>` : ''}
             </div>
             <div>
               <dt>Is it ready for a full and detailed review?</dt>
@@ -599,6 +600,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               .with('yes', () => 'Yes, it’s of high quality')
                               .exhaustive()}
                           </dd>
+                          ${review.shouldReadDetails ? html` <dd>${review.shouldReadDetails}</dd>` : ''}
                           <dd>
                             <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}"
                               >Change <span class="visually-hidden">if others should read this preprint</span></a

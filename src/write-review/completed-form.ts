@@ -38,7 +38,6 @@ export const CompletedFormC = pipe(
             'strongly-supported',
             'skip',
           ),
-          shouldRead: C.literal('no', 'yes-but', 'yes'),
           readyFullReview: C.literal('no', 'yes-changes', 'yes'),
         }),
         C.intersect(
@@ -278,6 +277,30 @@ export const CompletedFormC = pipe(
                 !languageEditingDetails
                   ? { languageEditing }
                   : { languageEditing, languageEditingDetails: { [languageEditing]: languageEditingDetails } },
+            ),
+          ),
+        ),
+        C.intersect(
+          pipe(
+            C.struct({ shouldRead: C.literal('no', 'yes-but', 'yes') }),
+            C.intersect(
+              C.partial({
+                shouldReadDetails: C.partial({
+                  no: NonEmptyStringC,
+                  'yes-but': NonEmptyStringC,
+                  yes: NonEmptyStringC,
+                }),
+              }),
+            ),
+            C.imap(
+              ({ shouldRead, shouldReadDetails }) =>
+                !shouldReadDetails?.[shouldRead]
+                  ? { shouldRead }
+                  : { shouldRead, shouldReadDetails: shouldReadDetails[shouldRead] },
+              ({ shouldRead, shouldReadDetails }) =>
+                !shouldReadDetails
+                  ? { shouldRead }
+                  : { shouldRead, shouldReadDetails: { [shouldRead]: shouldReadDetails } },
             ),
           ),
         ),

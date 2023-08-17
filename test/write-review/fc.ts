@@ -145,6 +145,19 @@ export const languageEditingDetails = (): fc.Arbitrary<Required<Form>['languageE
 
 export const shouldRead = (): fc.Arbitrary<Required<Form>['shouldRead']> => fc.constantFrom('yes', 'yes-but', 'no')
 
+export const shouldReadDetails = (): fc.Arbitrary<Required<Form>['shouldReadDetails']> =>
+  fc.oneof(
+    fc.record(
+      {
+        yes: fc.nonEmptyString(),
+        'yes-but': fc.nonEmptyString(),
+        no: fc.nonEmptyString(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.constant({}),
+  )
+
 export const readyFullReview = (): fc.Arbitrary<Required<Form>['readyFullReview']> =>
   fc.constantFrom('yes', 'yes-changes', 'no')
 
@@ -192,6 +205,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
             findingsNextStepsDetails: findingsNextStepsDetails(),
             novelDetails: novelDetails(),
             languageEditingDetails: languageEditingDetails(),
+            shouldReadDetails: shouldReadDetails(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
             review: fc.html(),
@@ -237,6 +251,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             languageEditing: languageEditing(),
             languageEditingDetails: languageEditingDetails(),
             shouldRead: shouldRead(),
+            shouldReadDetails: shouldReadDetails(),
             readyFullReview: readyFullReview(),
             reviewType: fc.constant('freeform' as const),
           },
@@ -262,7 +277,6 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         dataPresentation: dataPresentation(),
         findingsNextSteps: findingsNextSteps(),
         novel: novel(),
-        shouldRead: shouldRead(),
         readyFullReview: readyFullReview(),
         moreAuthors: moreAuthors(),
         persona: persona(),
@@ -343,6 +357,13 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           languageEditingDetails: fc.nonEmptyString(),
         },
         { requiredKeys: ['languageEditing'] },
+      ),
+      fc.record(
+        {
+          shouldRead: shouldRead(),
+          shouldReadDetails: fc.nonEmptyString(),
+        },
+        { requiredKeys: ['shouldRead'] },
       ),
     )
     .map(parts => merge(...(parts as never)))

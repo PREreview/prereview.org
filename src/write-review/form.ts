@@ -245,6 +245,11 @@ export const FormC = pipe(
       no: NonEmptyStringC,
     }),
     shouldRead: C.literal('no', 'yes-but', 'yes'),
+    shouldReadDetails: C.partial({
+      no: NonEmptyStringC,
+      'yes-but': NonEmptyStringC,
+      yes: NonEmptyStringC,
+    }),
     readyFullReview: C.literal('no', 'yes-changes', 'yes'),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     moreAuthorsApproved: C.literal('yes'),
