@@ -6,10 +6,10 @@ import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
+import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -76,7 +76,7 @@ export const writeReviewFindingsNextSteps = flow(
 
 const showFindingsNextStepsForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    findingsNextStepsForm(preprint, { findingsNextSteps: E.right(form.findingsNextSteps) }, user),
+    findingsNextStepsForm(preprint, FormToFieldsE.encode(form), user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -91,17 +91,8 @@ const showFindingsNextStepsErrorForm = (preprint: PreprintTitle, user: User) =>
 
 const handleFindingsNextStepsForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body =>
-      E.right({ findingsNextSteps: pipe(FindingsNextStepsFieldD.decode(body), E.mapLeft(missingE)) }),
-    ),
-    RM.chainEitherK(fields =>
-      pipe(
-        E.Do,
-        E.apS('findingsNextSteps', fields.findingsNextSteps),
-        E.mapLeft(() => fields),
-      ),
-    ),
-    RM.map(updateForm(form)),
+    RM.decodeBody(decodeFields(findingsNextStepsFields)),
+    RM.map(updateFormWithFields(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
@@ -112,26 +103,27 @@ const handleFindingsNextStepsForm = ({ form, preprint, user }: { form: Form; pre
     ),
   )
 
-const FindingsNextStepsFieldD = pipe(
-  D.struct({
-    findingsNextSteps: D.literal(
-      'inadequately',
-      'insufficiently',
-      'adequately',
-      'clearly-insightfully',
-      'exceptionally',
-      'skip',
-    ),
-  }),
-  D.map(get('findingsNextSteps')),
-)
+const findingsNextStepsFields = {
+  findingsNextSteps: requiredDecoder(
+    D.literal('inadequately', 'insufficiently', 'adequately', 'clearly-insightfully', 'exceptionally', 'skip'),
+  ),
+} satisfies FieldDecoders
 
-type FindingsNextStepsForm = {
-  readonly findingsNextSteps: E.Either<
-    MissingE,
-    'inadequately' | 'insufficiently' | 'adequately' | 'clearly-insightfully' | 'exceptionally' | 'skip' | undefined
-  >
+const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
+
+const FieldsToFormE: Encoder<Form, ValidFields<typeof findingsNextStepsFields>> = {
+  encode: fields => ({
+    findingsNextSteps: fields.findingsNextSteps,
+  }),
 }
+
+const FormToFieldsE: Encoder<FindingsNextStepsForm, Form> = {
+  encode: form => ({
+    findingsNextSteps: E.right(form.findingsNextSteps),
+  }),
+}
+
+type FindingsNextStepsForm = Fields<typeof findingsNextStepsFields>
 
 function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsForm, user: User) {
   const error = hasAnError(form)
