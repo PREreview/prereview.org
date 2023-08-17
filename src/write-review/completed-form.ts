@@ -60,162 +60,75 @@ export const CompletedFormC = pipe(
           readyFullReview: C.literal('no', 'yes-changes', 'yes'),
         }),
         C.intersect(
-          C.sum('introductionMatches')({
-            yes: pipe(
-              C.struct({ introductionMatches: C.literal('yes') }),
-              C.intersect(
-                pipe(
-                  C.partial({ introductionMatchesDetails: C.partial({ yes: NonEmptyStringC }) }),
-                  C.imap(
-                    form =>
-                      form.introductionMatchesDetails?.['yes']
-                        ? { introductionMatchesDetails: form.introductionMatchesDetails['yes'] }
-                        : {},
-                    form =>
-                      form.introductionMatchesDetails
-                        ? { introductionMatchesDetails: { yes: form.introductionMatchesDetails } }
-                        : {},
-                  ),
-                ),
-              ),
+          pipe(
+            C.struct({ introductionMatches: C.literal('yes', 'partly', 'no', 'skip') }),
+            C.intersect(
+              C.partial({
+                introductionMatchesDetails: C.partial({
+                  yes: NonEmptyStringC,
+                  partly: NonEmptyStringC,
+                  no: NonEmptyStringC,
+                }),
+              }),
             ),
-            partly: pipe(
-              C.struct({ introductionMatches: C.literal('partly') }),
-              C.intersect(
-                pipe(
-                  C.partial({ introductionMatchesDetails: C.partial({ partly: NonEmptyStringC }) }),
-                  C.imap(
-                    form =>
-                      form.introductionMatchesDetails?.['partly']
-                        ? { introductionMatchesDetails: form.introductionMatchesDetails['partly'] }
-                        : {},
-                    form =>
-                      form.introductionMatchesDetails
-                        ? { introductionMatchesDetails: { partly: form.introductionMatchesDetails } }
-                        : {},
-                  ),
-                ),
-              ),
+            C.imap(
+              ({ introductionMatches, introductionMatchesDetails }) =>
+                introductionMatches === 'skip' || !introductionMatchesDetails?.[introductionMatches]
+                  ? { introductionMatches }
+                  : {
+                      introductionMatches,
+                      introductionMatchesDetails: introductionMatchesDetails[introductionMatches],
+                    },
+              ({ introductionMatches, introductionMatchesDetails }) =>
+                introductionMatches === 'skip' || !introductionMatchesDetails
+                  ? { introductionMatches }
+                  : {
+                      introductionMatches,
+                      introductionMatchesDetails: { [introductionMatches]: introductionMatchesDetails },
+                    },
             ),
-            no: pipe(
-              C.struct({ introductionMatches: C.literal('no') }),
-              C.intersect(
-                pipe(
-                  C.partial({ introductionMatchesDetails: C.partial({ no: NonEmptyStringC }) }),
-                  C.imap(
-                    form =>
-                      form.introductionMatchesDetails?.['no']
-                        ? { introductionMatchesDetails: form.introductionMatchesDetails['no'] }
-                        : {},
-                    form =>
-                      form.introductionMatchesDetails
-                        ? { introductionMatchesDetails: { no: form.introductionMatchesDetails } }
-                        : {},
-                  ),
-                ),
-              ),
-            ),
-            skip: C.struct({ introductionMatches: C.literal('skip') }),
-          }),
+          ),
         ),
         C.intersect(
-          C.sum('dataPresentation')({
-            'inappropriate-unclear': pipe(
-              C.struct({ dataPresentation: C.literal('inappropriate-unclear') }),
-              C.intersect(
-                pipe(
-                  C.partial({ dataPresentationDetails: C.partial({ 'inappropriate-unclear': NonEmptyStringC }) }),
-                  C.imap(
-                    form =>
-                      form.dataPresentationDetails?.['inappropriate-unclear']
-                        ? { dataPresentationDetails: form.dataPresentationDetails['inappropriate-unclear'] }
-                        : {},
-                    form =>
-                      form.dataPresentationDetails
-                        ? { dataPresentationDetails: { 'inappropriate-unclear': form.dataPresentationDetails } }
-                        : {},
-                  ),
-                ),
+          pipe(
+            C.struct({
+              dataPresentation: C.literal(
+                'inappropriate-unclear',
+                'somewhat-inappropriate-unclear',
+                'neutral',
+                'mostly-appropriate-clear',
+                'highly-appropriate-clear',
+                'skip',
               ),
+            }),
+            C.intersect(
+              C.partial({
+                dataPresentationDetails: C.partial({
+                  'inappropriate-unclear': NonEmptyStringC,
+                  'somewhat-inappropriate-unclear': NonEmptyStringC,
+                  neutral: NonEmptyStringC,
+                  'mostly-appropriate-clear': NonEmptyStringC,
+                  'highly-appropriate-clear': NonEmptyStringC,
+                }),
+              }),
             ),
-            'somewhat-inappropriate-unclear': pipe(
-              C.struct({ dataPresentation: C.literal('somewhat-inappropriate-unclear') }),
-              C.intersect(
-                pipe(
-                  C.partial({
-                    dataPresentationDetails: C.partial({ 'somewhat-inappropriate-unclear': NonEmptyStringC }),
-                  }),
-                  C.imap(
-                    form =>
-                      form.dataPresentationDetails?.['somewhat-inappropriate-unclear']
-                        ? { dataPresentationDetails: form.dataPresentationDetails['somewhat-inappropriate-unclear'] }
-                        : {},
-                    form =>
-                      form.dataPresentationDetails
-                        ? {
-                            dataPresentationDetails: { 'somewhat-inappropriate-unclear': form.dataPresentationDetails },
-                          }
-                        : {},
-                  ),
-                ),
-              ),
+            C.imap(
+              ({ dataPresentation, dataPresentationDetails }) =>
+                dataPresentation === 'skip' || !dataPresentationDetails?.[dataPresentation]
+                  ? { dataPresentation }
+                  : {
+                      dataPresentation,
+                      dataPresentationDetails: dataPresentationDetails[dataPresentation],
+                    },
+              ({ dataPresentation, dataPresentationDetails }) =>
+                dataPresentation === 'skip' || !dataPresentationDetails
+                  ? { dataPresentation }
+                  : {
+                      dataPresentation,
+                      dataPresentationDetails: { [dataPresentation]: dataPresentationDetails },
+                    },
             ),
-            neutral: pipe(
-              C.struct({ dataPresentation: C.literal('neutral') }),
-              C.intersect(
-                pipe(
-                  C.partial({ dataPresentationDetails: C.partial({ neutral: NonEmptyStringC }) }),
-                  C.imap(
-                    form =>
-                      form.dataPresentationDetails?.['neutral']
-                        ? { dataPresentationDetails: form.dataPresentationDetails['neutral'] }
-                        : {},
-                    form =>
-                      form.dataPresentationDetails
-                        ? { dataPresentationDetails: { neutral: form.dataPresentationDetails } }
-                        : {},
-                  ),
-                ),
-              ),
-            ),
-            'mostly-appropriate-clear': pipe(
-              C.struct({ dataPresentation: C.literal('mostly-appropriate-clear') }),
-              C.intersect(
-                pipe(
-                  C.partial({ dataPresentationDetails: C.partial({ 'mostly-appropriate-clear': NonEmptyStringC }) }),
-                  C.imap(
-                    form =>
-                      form.dataPresentationDetails?.['mostly-appropriate-clear']
-                        ? { dataPresentationDetails: form.dataPresentationDetails['mostly-appropriate-clear'] }
-                        : {},
-                    form =>
-                      form.dataPresentationDetails
-                        ? { dataPresentationDetails: { 'mostly-appropriate-clear': form.dataPresentationDetails } }
-                        : {},
-                  ),
-                ),
-              ),
-            ),
-            'highly-appropriate-clear': pipe(
-              C.struct({ dataPresentation: C.literal('highly-appropriate-clear') }),
-              C.intersect(
-                pipe(
-                  C.partial({ dataPresentationDetails: C.partial({ 'highly-appropriate-clear': NonEmptyStringC }) }),
-                  C.imap(
-                    form =>
-                      form.dataPresentationDetails?.['highly-appropriate-clear']
-                        ? { dataPresentationDetails: form.dataPresentationDetails['highly-appropriate-clear'] }
-                        : {},
-                    form =>
-                      form.dataPresentationDetails
-                        ? { dataPresentationDetails: { 'highly-appropriate-clear': form.dataPresentationDetails } }
-                        : {},
-                  ),
-                ),
-              ),
-            ),
-            skip: C.struct({ dataPresentation: C.literal('skip') }),
-          }),
+          ),
         ),
       ),
       freeform: C.struct({
