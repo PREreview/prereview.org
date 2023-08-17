@@ -30,14 +30,6 @@ export const CompletedFormC = pipe(
         C.struct({
           reviewType: C.literal('questions'),
           alreadyWritten: C.literal('no'),
-          methodsAppropriate: C.literal(
-            'inappropriate',
-            'somewhat-inappropriate',
-            'adequate',
-            'mostly-appropriate',
-            'highly-appropriate',
-            'skip',
-          ),
           resultsSupported: C.literal(
             'not-supported',
             'partially-supported',
@@ -85,6 +77,47 @@ export const CompletedFormC = pipe(
                   : {
                       introductionMatches,
                       introductionMatchesDetails: { [introductionMatches]: introductionMatchesDetails },
+                    },
+            ),
+          ),
+        ),
+        C.intersect(
+          pipe(
+            C.struct({
+              methodsAppropriate: C.literal(
+                'inappropriate',
+                'somewhat-inappropriate',
+                'adequate',
+                'mostly-appropriate',
+                'highly-appropriate',
+                'skip',
+              ),
+            }),
+            C.intersect(
+              C.partial({
+                methodsAppropriateDetails: C.partial({
+                  inappropriate: NonEmptyStringC,
+                  'somewhat-inappropriate': NonEmptyStringC,
+                  adequate: NonEmptyStringC,
+                  'mostly-appropriate': NonEmptyStringC,
+                  'highly-appropriate': NonEmptyStringC,
+                }),
+              }),
+            ),
+            C.imap(
+              ({ methodsAppropriate, methodsAppropriateDetails }) =>
+                methodsAppropriate === 'skip' || !methodsAppropriateDetails?.[methodsAppropriate]
+                  ? { methodsAppropriate }
+                  : {
+                      methodsAppropriate,
+                      methodsAppropriateDetails: methodsAppropriateDetails[methodsAppropriate],
+                    },
+              ({ methodsAppropriate, methodsAppropriateDetails }) =>
+                methodsAppropriate === 'skip' || !methodsAppropriateDetails
+                  ? { methodsAppropriate }
+                  : {
+                      methodsAppropriate,
+                      methodsAppropriateDetails: { [methodsAppropriate]: methodsAppropriateDetails },
                     },
             ),
           ),

@@ -197,6 +197,9 @@ function renderReview(form: CompletedForm) {
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
+              ${form.methodsAppropriate !== 'skip' && form.methodsAppropriateDetails
+                ? html` <dd>${form.methodsAppropriateDetails}</dd>`
+                : ''}
             </div>
             <div>
               <dt>Are the results presented supported by the data?</dt>
@@ -461,6 +464,9 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
                           </dd>
+                          ${review.methodsAppropriate !== 'skip' && review.methodsAppropriateDetails
+                            ? html` <dd>${review.methodsAppropriateDetails}</dd>`
+                            : ''}
                           <dd>
                             <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}"
                               >Change <span class="visually-hidden">if the methods are appropriate</span></a

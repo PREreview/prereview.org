@@ -35,6 +35,21 @@ export const methodsAppropriate = (): fc.Arbitrary<Required<Form>['methodsApprop
     'skip',
   )
 
+export const methodsAppropriateDetails = (): fc.Arbitrary<Required<Form>['methodsAppropriateDetails']> =>
+  fc.oneof(
+    fc.record(
+      {
+        inappropriate: fc.nonEmptyString(),
+        'somewhat-inappropriate': fc.nonEmptyString(),
+        adequate: fc.nonEmptyString(),
+        'mostly-appropriate': fc.nonEmptyString(),
+        'highly-appropriate': fc.nonEmptyString(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.constant({}),
+  )
+
 export const resultsSupported = (): fc.Arbitrary<Required<Form>['resultsSupported']> =>
   fc.constantFrom('not-supported', 'partially-supported', 'neutral', 'well-supported', 'strongly-supported', 'skip')
 
@@ -114,6 +129,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
         fc.record(
           {
             introductionMatchesDetails: introductionMatchesDetails(),
+            methodsAppropriateDetails: methodsAppropriateDetails(),
             dataPresentationDetails: dataPresentationDetails(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
@@ -148,6 +164,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             introductionMatches: introductionMatches(),
             introductionMatchesDetails: introductionMatchesDetails(),
             methodsAppropriate: methodsAppropriate(),
+            methodsAppropriateDetails: methodsAppropriateDetails(),
             resultsSupported: resultsSupported(),
             dataPresentation: dataPresentation(),
             dataPresentationDetails: dataPresentationDetails(),
@@ -176,7 +193,6 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
       fc.record({
         alreadyWritten: fc.constant('no' as const),
         conduct: conduct(),
-        methodsAppropriate: methodsAppropriate(),
         resultsSupported: resultsSupported(),
         dataPresentation: dataPresentation(),
         findingsNextSteps: findingsNextSteps(),
@@ -206,6 +222,16 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           { requiredKeys: ['introductionMatches'] },
         ),
         fc.record({ introductionMatches: fc.constant('skip' as const) }),
+      ),
+      fc.oneof(
+        fc.record(
+          {
+            methodsAppropriate: methodsAppropriate().filter(value => value !== 'skip'),
+            methodsAppropriateDetails: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['methodsAppropriate'] },
+        ),
+        fc.record({ methodsAppropriate: fc.constant('skip' as const) }),
       ),
       fc.oneof(
         fc.record(

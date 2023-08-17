@@ -178,6 +178,13 @@ export const FormC = pipe(
       'highly-appropriate',
       'skip',
     ),
+    methodsAppropriateDetails: C.partial({
+      inappropriate: NonEmptyStringC,
+      'somewhat-inappropriate': NonEmptyStringC,
+      adequate: NonEmptyStringC,
+      'mostly-appropriate': NonEmptyStringC,
+      'highly-appropriate': NonEmptyStringC,
+    }),
     resultsSupported: C.literal(
       'not-supported',
       'partially-supported',
