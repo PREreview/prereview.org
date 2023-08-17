@@ -6,10 +6,10 @@ import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
+import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -76,7 +76,7 @@ export const writeReviewLanguageEditing = flow(
 
 const showLanguageEditingForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    languageEditingForm(preprint, { languageEditing: E.right(form.languageEditing) }, user),
+    languageEditingForm(preprint, FormToFieldsE.encode(form), user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -91,15 +91,8 @@ const showLanguageEditingErrorForm = (preprint: PreprintTitle, user: User) =>
 
 const handleLanguageEditingForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body => E.right({ languageEditing: pipe(LanguageEditingFieldD.decode(body), E.mapLeft(missingE)) })),
-    RM.chainEitherK(fields =>
-      pipe(
-        E.Do,
-        E.apS('languageEditing', fields.languageEditing),
-        E.mapLeft(() => fields),
-      ),
-    ),
-    RM.map(updateForm(form)),
+    RM.decodeBody(decodeFields(languageEditingFields)),
+    RM.map(updateFormWithFields(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
@@ -110,16 +103,25 @@ const handleLanguageEditingForm = ({ form, preprint, user }: { form: Form; prepr
     ),
   )
 
-const LanguageEditingFieldD = pipe(
-  D.struct({
-    languageEditing: D.literal('no', 'yes'),
-  }),
-  D.map(get('languageEditing')),
-)
+const languageEditingFields = {
+  languageEditing: requiredDecoder(D.literal('no', 'yes')),
+} satisfies FieldDecoders
 
-type LanguageEditingForm = {
-  readonly languageEditing: E.Either<MissingE, 'no' | 'yes' | undefined>
+const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
+
+const FieldsToFormE: Encoder<Form, ValidFields<typeof languageEditingFields>> = {
+  encode: fields => ({
+    languageEditing: fields.languageEditing,
+  }),
 }
+
+const FormToFieldsE: Encoder<LanguageEditingForm, Form> = {
+  encode: form => ({
+    languageEditing: E.right(form.languageEditing),
+  }),
+}
+
+type LanguageEditingForm = Fields<typeof languageEditingFields>
 
 function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm, user: User) {
   const error = hasAnError(form)
