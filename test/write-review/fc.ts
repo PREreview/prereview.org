@@ -131,6 +131,18 @@ export const novelDetails = (): fc.Arbitrary<Required<Form>['novelDetails']> =>
 
 export const languageEditing = (): fc.Arbitrary<Required<Form>['languageEditing']> => fc.constantFrom('yes', 'no')
 
+export const languageEditingDetails = (): fc.Arbitrary<Required<Form>['languageEditingDetails']> =>
+  fc.oneof(
+    fc.record(
+      {
+        yes: fc.nonEmptyString(),
+        no: fc.nonEmptyString(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.constant({}),
+  )
+
 export const shouldRead = (): fc.Arbitrary<Required<Form>['shouldRead']> => fc.constantFrom('yes', 'yes-but', 'no')
 
 export const readyFullReview = (): fc.Arbitrary<Required<Form>['readyFullReview']> =>
@@ -179,6 +191,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
             dataPresentationDetails: dataPresentationDetails(),
             findingsNextStepsDetails: findingsNextStepsDetails(),
             novelDetails: novelDetails(),
+            languageEditingDetails: languageEditingDetails(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
             review: fc.html(),
@@ -222,6 +235,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             novel: novel(),
             novelDetails: novelDetails(),
             languageEditing: languageEditing(),
+            languageEditingDetails: languageEditingDetails(),
             shouldRead: shouldRead(),
             readyFullReview: readyFullReview(),
             reviewType: fc.constant('freeform' as const),
@@ -248,7 +262,6 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         dataPresentation: dataPresentation(),
         findingsNextSteps: findingsNextSteps(),
         novel: novel(),
-        languageEditing: languageEditing(),
         shouldRead: shouldRead(),
         readyFullReview: readyFullReview(),
         moreAuthors: moreAuthors(),
@@ -323,6 +336,13 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           { requiredKeys: ['novel'] },
         ),
         fc.record({ novel: fc.constant('skip' as const) }),
+      ),
+      fc.record(
+        {
+          languageEditing: languageEditing(),
+          languageEditingDetails: fc.nonEmptyString(),
+        },
+        { requiredKeys: ['languageEditing'] },
       ),
     )
     .map(parts => merge(...(parts as never)))

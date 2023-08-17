@@ -274,6 +274,7 @@ function renderReview(form: CompletedForm) {
                   .with('yes', () => 'Yes')
                   .exhaustive()}
               </dd>
+              ${form.languageEditingDetails ? html` <dd>${form.languageEditingDetails}</dd>` : ''}
             </div>
             <div>
               <dt>Should others read this preprint?</dt>
@@ -582,6 +583,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               .with('yes', () => 'Yes')
                               .exhaustive()}
                           </dd>
+                          ${review.languageEditingDetails ? html` <dd>${review.languageEditingDetails}</dd>` : ''}
                           <dd>
                             <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}"
                               >Change <span class="visually-hidden">if it would benefit from language editing</span></a

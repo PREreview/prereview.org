@@ -38,7 +38,6 @@ export const CompletedFormC = pipe(
             'strongly-supported',
             'skip',
           ),
-          languageEditing: C.literal('yes', 'no'),
           shouldRead: C.literal('no', 'yes-but', 'yes'),
           readyFullReview: C.literal('no', 'yes-changes', 'yes'),
         }),
@@ -256,6 +255,29 @@ export const CompletedFormC = pipe(
                 novel === 'skip' || !novelDetails?.[novel] ? { novel } : { novel, novelDetails: novelDetails[novel] },
               ({ novel, novelDetails }) =>
                 novel === 'skip' || !novelDetails ? { novel } : { novel, novelDetails: { [novel]: novelDetails } },
+            ),
+          ),
+        ),
+        C.intersect(
+          pipe(
+            C.struct({ languageEditing: C.literal('yes', 'no') }),
+            C.intersect(
+              C.partial({
+                languageEditingDetails: C.partial({
+                  yes: NonEmptyStringC,
+                  no: NonEmptyStringC,
+                }),
+              }),
+            ),
+            C.imap(
+              ({ languageEditing, languageEditingDetails }) =>
+                !languageEditingDetails?.[languageEditing]
+                  ? { languageEditing }
+                  : { languageEditing, languageEditingDetails: languageEditingDetails[languageEditing] },
+              ({ languageEditing, languageEditingDetails }) =>
+                !languageEditingDetails
+                  ? { languageEditing }
+                  : { languageEditing, languageEditingDetails: { [languageEditing]: languageEditingDetails } },
             ),
           ),
         ),

@@ -240,6 +240,10 @@ export const FormC = pipe(
       highly: NonEmptyStringC,
     }),
     languageEditing: C.literal('yes', 'no'),
+    languageEditingDetails: C.partial({
+      yes: NonEmptyStringC,
+      no: NonEmptyStringC,
+    }),
     shouldRead: C.literal('no', 'yes-but', 'yes'),
     readyFullReview: C.literal('no', 'yes-changes', 'yes'),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
