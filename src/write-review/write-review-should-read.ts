@@ -6,10 +6,10 @@ import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
+import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -76,7 +76,7 @@ export const writeReviewShouldRead = flow(
 
 const showShouldReadForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    shouldReadForm(preprint, { shouldRead: E.right(form.shouldRead) }, user),
+    shouldReadForm(preprint, FormToFieldsE.encode(form), user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -91,15 +91,8 @@ const showShouldReadErrorForm = (preprint: PreprintTitle, user: User) =>
 
 const handleShouldReadForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body => E.right({ shouldRead: pipe(ShouldReadFieldD.decode(body), E.mapLeft(missingE)) })),
-    RM.chainEitherK(fields =>
-      pipe(
-        E.Do,
-        E.apS('shouldRead', fields.shouldRead),
-        E.mapLeft(() => fields),
-      ),
-    ),
-    RM.map(updateForm(form)),
+    RM.decodeBody(decodeFields(shouldReadFields)),
+    RM.map(updateFormWithFields(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
@@ -110,16 +103,25 @@ const handleShouldReadForm = ({ form, preprint, user }: { form: Form; preprint: 
     ),
   )
 
-const ShouldReadFieldD = pipe(
-  D.struct({
-    shouldRead: D.literal('no', 'yes-but', 'yes'),
-  }),
-  D.map(get('shouldRead')),
-)
+const shouldReadFields = {
+  shouldRead: requiredDecoder(D.literal('no', 'yes-but', 'yes')),
+} satisfies FieldDecoders
 
-type ShouldReadForm = {
-  readonly shouldRead: E.Either<MissingE, 'no' | 'yes-but' | 'yes' | undefined>
+const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
+
+const FieldsToFormE: Encoder<Form, ValidFields<typeof shouldReadFields>> = {
+  encode: fields => ({
+    shouldRead: fields.shouldRead,
+  }),
 }
+
+const FormToFieldsE: Encoder<ShouldReadForm, Form> = {
+  encode: form => ({
+    shouldRead: E.right(form.shouldRead),
+  }),
+}
+
+type ShouldReadForm = Fields<typeof shouldReadFields>
 
 function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: User) {
   const error = hasAnError(form)
