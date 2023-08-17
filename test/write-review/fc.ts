@@ -53,6 +53,21 @@ export const methodsAppropriateDetails = (): fc.Arbitrary<Required<Form>['method
 export const resultsSupported = (): fc.Arbitrary<Required<Form>['resultsSupported']> =>
   fc.constantFrom('not-supported', 'partially-supported', 'neutral', 'well-supported', 'strongly-supported', 'skip')
 
+export const resultsSupportedDetails = (): fc.Arbitrary<Required<Form>['resultsSupportedDetails']> =>
+  fc.oneof(
+    fc.record(
+      {
+        'not-supported': fc.nonEmptyString(),
+        'partially-supported': fc.nonEmptyString(),
+        neutral: fc.nonEmptyString(),
+        'well-supported': fc.nonEmptyString(),
+        'strongly-supported': fc.nonEmptyString(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.constant({}),
+  )
+
 export const dataPresentation = (): fc.Arbitrary<Required<Form>['dataPresentation']> =>
   fc.constantFrom(
     'inappropriate-unclear',
@@ -130,6 +145,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
           {
             introductionMatchesDetails: introductionMatchesDetails(),
             methodsAppropriateDetails: methodsAppropriateDetails(),
+            resultsSupportedDetails: resultsSupportedDetails(),
             dataPresentationDetails: dataPresentationDetails(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
@@ -166,6 +182,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             methodsAppropriate: methodsAppropriate(),
             methodsAppropriateDetails: methodsAppropriateDetails(),
             resultsSupported: resultsSupported(),
+            resultsSupportedDetails: resultsSupportedDetails(),
             dataPresentation: dataPresentation(),
             dataPresentationDetails: dataPresentationDetails(),
             findingsNextSteps: findingsNextSteps(),
@@ -232,6 +249,16 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           { requiredKeys: ['methodsAppropriate'] },
         ),
         fc.record({ methodsAppropriate: fc.constant('skip' as const) }),
+      ),
+      fc.oneof(
+        fc.record(
+          {
+            resultsSupported: resultsSupported().filter(value => value !== 'skip'),
+            resultsSupportedDetails: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['resultsSupported'] },
+        ),
+        fc.record({ resultsSupported: fc.constant('skip' as const) }),
       ),
       fc.oneof(
         fc.record(

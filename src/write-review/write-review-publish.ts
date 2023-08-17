@@ -213,6 +213,9 @@ function renderReview(form: CompletedForm) {
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
+              ${form.resultsSupported !== 'skip' && form.resultsSupportedDetails
+                ? html` <dd>${form.resultsSupportedDetails}</dd>`
+                : ''}
             </div>
             <div>
               <dt>Are the data presentations, including visualizations, appropriate and clear?</dt>
@@ -485,6 +488,9 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
                           </dd>
+                          ${review.resultsSupported !== 'skip' && review.resultsSupportedDetails
+                            ? html` <dd>${review.resultsSupportedDetails}</dd>`
+                            : ''}
                           <dd>
                             <a href="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}"
                               >Change

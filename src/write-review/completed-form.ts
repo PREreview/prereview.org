@@ -125,6 +125,47 @@ export const CompletedFormC = pipe(
         C.intersect(
           pipe(
             C.struct({
+              resultsSupported: C.literal(
+                'not-supported',
+                'partially-supported',
+                'neutral',
+                'well-supported',
+                'strongly-supported',
+                'skip',
+              ),
+            }),
+            C.intersect(
+              C.partial({
+                resultsSupportedDetails: C.partial({
+                  'not-supported': NonEmptyStringC,
+                  'partially-supported': NonEmptyStringC,
+                  neutral: NonEmptyStringC,
+                  'well-supported': NonEmptyStringC,
+                  'strongly-supported': NonEmptyStringC,
+                }),
+              }),
+            ),
+            C.imap(
+              ({ resultsSupported, resultsSupportedDetails }) =>
+                resultsSupported === 'skip' || !resultsSupportedDetails?.[resultsSupported]
+                  ? { resultsSupported }
+                  : {
+                      resultsSupported,
+                      resultsSupportedDetails: resultsSupportedDetails[resultsSupported],
+                    },
+              ({ resultsSupported, resultsSupportedDetails }) =>
+                resultsSupported === 'skip' || !resultsSupportedDetails
+                  ? { resultsSupported }
+                  : {
+                      resultsSupported,
+                      resultsSupportedDetails: { [resultsSupported]: resultsSupportedDetails },
+                    },
+            ),
+          ),
+        ),
+        C.intersect(
+          pipe(
+            C.struct({
               dataPresentation: C.literal(
                 'inappropriate-unclear',
                 'somewhat-inappropriate-unclear',

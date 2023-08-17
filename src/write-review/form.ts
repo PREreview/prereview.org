@@ -193,6 +193,13 @@ export const FormC = pipe(
       'strongly-supported',
       'skip',
     ),
+    resultsSupportedDetails: C.partial({
+      'not-supported': NonEmptyStringC,
+      'partially-supported': NonEmptyStringC,
+      neutral: NonEmptyStringC,
+      'well-supported': NonEmptyStringC,
+      'strongly-supported': NonEmptyStringC,
+    }),
     dataPresentation: C.literal(
       'inappropriate-unclear',
       'somewhat-inappropriate-unclear',
