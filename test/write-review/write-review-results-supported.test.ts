@@ -19,18 +19,29 @@ describe('writeReviewResultsSupported', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .resultsSupported()
-        .chain(resultsSupported =>
+        .tuple(fc.resultsSupported(), fc.resultsSupportedDetails())
+        .chain(([resultsSupported, resultsSupportedDetails]) =>
           fc.tuple(
             fc.constant(resultsSupported),
-            fc.connection({ body: fc.constant({ resultsSupported }), method: fc.constant('POST') }),
+            fc.constant(resultsSupportedDetails),
+            fc.connection({
+              body: fc.constant({
+                resultsSupported,
+                resultsSupportedNotSupportedDetails: resultsSupportedDetails['not-supported'],
+                resultsSupportedPartiallySupportedDetails: resultsSupportedDetails['partially-supported'],
+                resultsSupportedNeutralDetails: resultsSupportedDetails['neutral'],
+                resultsSupportedWellSupportedDetails: resultsSupportedDetails['well-supported'],
+                resultsSupportedStronglySupportedDetails: resultsSupportedDetails['strongly-supported'],
+              }),
+              method: fc.constant('POST'),
+            }),
           ),
         ),
       fc.user(),
       fc.completedQuestionsForm(),
     ])(
       'when the form is completed',
-      async (preprintId, preprintTitle, [resultsSupported, connection], user, newReview) => {
+      async (preprintId, preprintTitle, [resultsSupported, resultsSupportedDetails, connection], user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -44,7 +55,10 @@ describe('writeReviewResultsSupported', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ resultsSupported })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          resultsSupported,
+          resultsSupportedDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -63,18 +77,29 @@ describe('writeReviewResultsSupported', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .resultsSupported()
-        .chain(resultsSupported =>
+        .tuple(fc.resultsSupported(), fc.resultsSupportedDetails())
+        .chain(([resultsSupported, resultsSupportedDetails]) =>
           fc.tuple(
             fc.constant(resultsSupported),
-            fc.connection({ body: fc.constant({ resultsSupported }), method: fc.constant('POST') }),
+            fc.constant(resultsSupportedDetails),
+            fc.connection({
+              body: fc.constant({
+                resultsSupported,
+                resultsSupportedNotSupportedDetails: resultsSupportedDetails['not-supported'],
+                resultsSupportedPartiallySupportedDetails: resultsSupportedDetails['partially-supported'],
+                resultsSupportedNeutralDetails: resultsSupportedDetails['neutral'],
+                resultsSupportedWellSupportedDetails: resultsSupportedDetails['well-supported'],
+                resultsSupportedStronglySupportedDetails: resultsSupportedDetails['strongly-supported'],
+              }),
+              method: fc.constant('POST'),
+            }),
           ),
         ),
       fc.user(),
       fc.incompleteQuestionsForm(),
     ])(
       'when the form is incomplete',
-      async (preprintId, preprintTitle, [resultsSupported, connection], user, newReview) => {
+      async (preprintId, preprintTitle, [resultsSupported, resultsSupportedDetails, connection], user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -88,7 +113,10 @@ describe('writeReviewResultsSupported', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ resultsSupported })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          resultsSupported,
+          resultsSupportedDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },

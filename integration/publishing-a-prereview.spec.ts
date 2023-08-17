@@ -138,7 +138,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither supported nor not supported').check()
+    await page.getByLabel('Neither supported nor not supported', { exact: true }).check()
+    await page.getByLabel('Why are they neither supported nor not supported?').fill('At blandit est facilisis et.')
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -199,7 +200,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'Are the methods appropriate? Adequate Sed egestas tincidunt lacus.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Are the results presented supported by the data? Neither supported nor not supported',
+      'Are the results presented supported by the data? Neither supported nor not supported At blandit est facilisis et.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Are the data presentations, including visualizations, appropriate and clear? Neither adequate nor inadequate Lorem ipsum dolor sit amet.',
@@ -493,7 +494,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Neither supported nor not supported').check()
+    await page.getByLabel('Neither supported nor not supported', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
@@ -1126,7 +1127,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequate', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither supported nor not supported').check()
+    await page.getByLabel('Neither supported nor not supported', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1212,10 +1213,13 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Change if the results presented are supported by the data' }).click()
 
-    await page.getByLabel('Well supported').check()
+    await page.getByLabel('Well supported', { exact: true }).check()
+    await page.getByLabel('Why are they well supported?').fill('At blandit est facilisis et.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(review).toContainText('Are the results presented supported by the data? Well supported')
+    await expect(review).toContainText(
+      'Are the results presented supported by the data? Well supported At blandit est facilisis et.',
+    )
 
     await page.getByRole('link', { name: 'Change if the data presentations are appropriate and clear' }).click()
 
@@ -1337,7 +1341,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Adequate', { exact: true }).check()
     await page.getByLabel('Why are they adequate?').fill('Sed egestas tincidunt lacus.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither supported nor not supported').check()
+    await page.getByLabel('Neither supported nor not supported', { exact: true }).check()
+    await page.getByLabel('Why are they neither supported nor not supported?').fill('At blandit est facilisis et.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
     await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
@@ -1383,7 +1388,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.goBack()
 
-    await expect(page.getByLabel('Neither supported nor not supported')).toBeChecked()
+    await expect(page.getByLabel('Neither supported nor not supported', { exact: true })).toBeChecked()
+    await page.getByLabel('Why are they neither supported nor not supported?').fill('At blandit est facilisis et.')
 
     await page.goBack()
 
@@ -1486,7 +1492,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Adequate', { exact: true }).check()
     await page.getByLabel('Why are they adequate?').fill('Sed egestas tincidunt lacus.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither supported nor not supported').check()
+    await page.getByLabel('Neither supported nor not supported', { exact: true }).check()
+    await page.getByLabel('Why are they neither supported nor not supported?').fill('At blandit est facilisis et.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
     await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
@@ -1531,7 +1538,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Neither supported nor not supported')).toBeChecked()
+    await expect(page.getByLabel('Neither supported nor not supported', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('Why are they neither supported nor not supported?')).toHaveText(
+      'At blandit est facilisis et.',
+    )
 
     await page.getByRole('link', { name: 'Back' }).click()
 
