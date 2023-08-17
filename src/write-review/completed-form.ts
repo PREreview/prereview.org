@@ -38,14 +38,6 @@ export const CompletedFormC = pipe(
             'strongly-supported',
             'skip',
           ),
-          findingsNextSteps: C.literal(
-            'inadequately',
-            'insufficiently',
-            'adequately',
-            'clearly-insightfully',
-            'exceptionally',
-            'skip',
-          ),
           novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
           languageEditing: C.literal('yes', 'no'),
           shouldRead: C.literal('no', 'yes-but', 'yes'),
@@ -200,6 +192,48 @@ export const CompletedFormC = pipe(
                   : {
                       dataPresentation,
                       dataPresentationDetails: { [dataPresentation]: dataPresentationDetails },
+                    },
+            ),
+          ),
+        ),
+        C.intersect(
+          pipe(
+            C.struct({
+              findingsNextSteps: C.literal(
+                'inadequately',
+                'insufficiently',
+                'adequately',
+                'clearly-insightfully',
+                'exceptionally',
+                'skip',
+              ),
+            }),
+            C.intersect(
+              C.partial({
+                findingsNextStepsDetails: C.partial({
+                  inadequately: NonEmptyStringC,
+                  insufficiently: NonEmptyStringC,
+                  adequately: NonEmptyStringC,
+                  'clearly-insightfully': NonEmptyStringC,
+                  exceptionally: NonEmptyStringC,
+                  skip: NonEmptyStringC,
+                }),
+              }),
+            ),
+            C.imap(
+              ({ findingsNextSteps, findingsNextStepsDetails }) =>
+                findingsNextSteps === 'skip' || !findingsNextStepsDetails?.[findingsNextSteps]
+                  ? { findingsNextSteps }
+                  : {
+                      findingsNextSteps,
+                      findingsNextStepsDetails: findingsNextStepsDetails[findingsNextSteps],
+                    },
+              ({ findingsNextSteps, findingsNextStepsDetails }) =>
+                findingsNextSteps === 'skip' || !findingsNextStepsDetails
+                  ? { findingsNextSteps }
+                  : {
+                      findingsNextSteps,
+                      findingsNextStepsDetails: { [findingsNextSteps]: findingsNextStepsDetails },
                     },
             ),
           ),

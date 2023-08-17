@@ -96,6 +96,21 @@ export const dataPresentationDetails = (): fc.Arbitrary<Required<Form>['dataPres
 export const findingsNextSteps = (): fc.Arbitrary<Required<Form>['findingsNextSteps']> =>
   fc.constantFrom('inadequately', 'insufficiently', 'adequately', 'clearly-insightfully', 'exceptionally', 'skip')
 
+export const findingsNextStepsDetails = (): fc.Arbitrary<Required<Form>['findingsNextStepsDetails']> =>
+  fc.oneof(
+    fc.record(
+      {
+        inadequately: fc.nonEmptyString(),
+        insufficiently: fc.nonEmptyString(),
+        adequately: fc.nonEmptyString(),
+        'clearly-insightfully': fc.nonEmptyString(),
+        exceptionally: fc.nonEmptyString(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.constant({}),
+  )
+
 export const novel = (): fc.Arbitrary<Required<Form>['novel']> =>
   fc.constantFrom('no', 'limited', 'some', 'substantial', 'highly', 'skip')
 
@@ -147,6 +162,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
             methodsAppropriateDetails: methodsAppropriateDetails(),
             resultsSupportedDetails: resultsSupportedDetails(),
             dataPresentationDetails: dataPresentationDetails(),
+            findingsNextStepsDetails: findingsNextStepsDetails(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
             review: fc.html(),
@@ -186,6 +202,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             dataPresentation: dataPresentation(),
             dataPresentationDetails: dataPresentationDetails(),
             findingsNextSteps: findingsNextSteps(),
+            findingsNextStepsDetails: findingsNextStepsDetails(),
             novel: novel(),
             languageEditing: languageEditing(),
             shouldRead: shouldRead(),
@@ -269,6 +286,16 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           { requiredKeys: ['dataPresentation'] },
         ),
         fc.record({ dataPresentation: fc.constant('skip' as const) }),
+      ),
+      fc.oneof(
+        fc.record(
+          {
+            findingsNextSteps: findingsNextSteps().filter(value => value !== 'skip'),
+            findingsNextStepsDetails: fc.nonEmptyString(),
+          },
+          { requiredKeys: ['findingsNextSteps'] },
+        ),
+        fc.record({ findingsNextSteps: fc.constant('skip' as const) }),
       ),
     )
     .map(parts => merge(...(parts as never)))
