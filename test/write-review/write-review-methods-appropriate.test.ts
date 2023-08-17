@@ -19,18 +19,35 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .methodsAppropriate()
-        .chain(methodsAppropriate =>
+        .tuple(fc.methodsAppropriate(), fc.methodsAppropriateDetails())
+        .chain(([methodsAppropriate, methodsAppropriateDetails]) =>
           fc.tuple(
             fc.constant(methodsAppropriate),
-            fc.connection({ body: fc.constant({ methodsAppropriate }), method: fc.constant('POST') }),
+            fc.constant(methodsAppropriateDetails),
+            fc.connection({
+              body: fc.constant({
+                methodsAppropriate,
+                methodsAppropriateInappropriateDetails: methodsAppropriateDetails['inappropriate'],
+                methodsAppropriateSomewhatInappropriateDetails: methodsAppropriateDetails['somewhat-inappropriate'],
+                methodsAppropriateAdequateDetails: methodsAppropriateDetails['adequate'],
+                methodsAppropriateMostlyAppropriateDetails: methodsAppropriateDetails['mostly-appropriate'],
+                methodsAppropriateHighlyAppropriateDetails: methodsAppropriateDetails['highly-appropriate'],
+              }),
+              method: fc.constant('POST'),
+            }),
           ),
         ),
       fc.user(),
       fc.completedQuestionsForm(),
     ])(
       'when the form is completed',
-      async (preprintId, preprintTitle, [methodsAppropriate, connection], user, newReview) => {
+      async (
+        preprintId,
+        preprintTitle,
+        [methodsAppropriate, methodsAppropriateDetails, connection],
+        user,
+        newReview,
+      ) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -44,7 +61,10 @@ describe('writeReviewMethodsAppropriate', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ methodsAppropriate })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          methodsAppropriate,
+          methodsAppropriateDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -63,18 +83,35 @@ describe('writeReviewMethodsAppropriate', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc
-        .methodsAppropriate()
-        .chain(methodsAppropriate =>
+        .tuple(fc.methodsAppropriate(), fc.methodsAppropriateDetails())
+        .chain(([methodsAppropriate, methodsAppropriateDetails]) =>
           fc.tuple(
             fc.constant(methodsAppropriate),
-            fc.connection({ body: fc.constant({ methodsAppropriate }), method: fc.constant('POST') }),
+            fc.constant(methodsAppropriateDetails),
+            fc.connection({
+              body: fc.constant({
+                methodsAppropriate,
+                methodsAppropriateInappropriateDetails: methodsAppropriateDetails['inappropriate'],
+                methodsAppropriateSomewhatInappropriateDetails: methodsAppropriateDetails['somewhat-inappropriate'],
+                methodsAppropriateAdequateDetails: methodsAppropriateDetails['adequate'],
+                methodsAppropriateMostlyAppropriateDetails: methodsAppropriateDetails['mostly-appropriate'],
+                methodsAppropriateHighlyAppropriateDetails: methodsAppropriateDetails['highly-appropriate'],
+              }),
+              method: fc.constant('POST'),
+            }),
           ),
         ),
       fc.user(),
       fc.incompleteQuestionsForm(),
     ])(
       'when the form is incomplete',
-      async (preprintId, preprintTitle, [methodsAppropriate, connection], user, newReview) => {
+      async (
+        preprintId,
+        preprintTitle,
+        [methodsAppropriate, methodsAppropriateDetails, connection],
+        user,
+        newReview,
+      ) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -88,7 +125,10 @@ describe('writeReviewMethodsAppropriate', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ methodsAppropriate })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          methodsAppropriate,
+          methodsAppropriateDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
