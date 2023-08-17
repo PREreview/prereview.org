@@ -18,19 +18,25 @@ describe('writeReviewLanguageEditing', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc
-        .languageEditing()
-        .chain(languageEditing =>
-          fc.tuple(
-            fc.constant(languageEditing),
-            fc.connection({ body: fc.constant({ languageEditing }), method: fc.constant('POST') }),
-          ),
+      fc.tuple(fc.languageEditing(), fc.languageEditingDetails()).chain(([languageEditing, languageEditingDetails]) =>
+        fc.tuple(
+          fc.constant(languageEditing),
+          fc.constant(languageEditingDetails),
+          fc.connection({
+            body: fc.constant({
+              languageEditing,
+              languageEditingNoDetails: languageEditingDetails.no,
+              languageEditingYesDetails: languageEditingDetails.yes,
+            }),
+            method: fc.constant('POST'),
+          }),
         ),
+      ),
       fc.user(),
       fc.completedQuestionsForm(),
     ])(
       'when the form is completed',
-      async (preprintId, preprintTitle, [languageEditing, connection], user, newReview) => {
+      async (preprintId, preprintTitle, [languageEditing, languageEditingDetails, connection], user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -44,7 +50,10 @@ describe('writeReviewLanguageEditing', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ languageEditing })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          languageEditing,
+          languageEditingDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -62,19 +71,25 @@ describe('writeReviewLanguageEditing', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc
-        .languageEditing()
-        .chain(languageEditing =>
-          fc.tuple(
-            fc.constant(languageEditing),
-            fc.connection({ body: fc.constant({ languageEditing }), method: fc.constant('POST') }),
-          ),
+      fc.tuple(fc.languageEditing(), fc.languageEditingDetails()).chain(([languageEditing, languageEditingDetails]) =>
+        fc.tuple(
+          fc.constant(languageEditing),
+          fc.constant(languageEditingDetails),
+          fc.connection({
+            body: fc.constant({
+              languageEditing,
+              languageEditingNoDetails: languageEditingDetails.no,
+              languageEditingYesDetails: languageEditingDetails.yes,
+            }),
+            method: fc.constant('POST'),
+          }),
         ),
+      ),
       fc.user(),
       fc.incompleteQuestionsForm(),
     ])(
       'when the form is incomplete',
-      async (preprintId, preprintTitle, [languageEditing, connection], user, newReview) => {
+      async (preprintId, preprintTitle, [languageEditing, languageEditingDetails, connection], user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -88,7 +103,10 @@ describe('writeReviewLanguageEditing', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ languageEditing })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          languageEditing,
+          languageEditingDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },

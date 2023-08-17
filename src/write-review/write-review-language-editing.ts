@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
-import { flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -9,7 +9,15 @@ import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
+import {
+  type FieldDecoders,
+  type Fields,
+  type ValidFields,
+  decodeFields,
+  hasAnError,
+  optionalDecoder,
+  requiredDecoder,
+} from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -20,6 +28,7 @@ import {
   writeReviewNovelMatch,
   writeReviewReviewTypeMatch,
 } from '../routes'
+import { NonEmptyStringC } from '../string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -105,6 +114,8 @@ const handleLanguageEditingForm = ({ form, preprint, user }: { form: Form; prepr
 
 const languageEditingFields = {
   languageEditing: requiredDecoder(D.literal('no', 'yes')),
+  languageEditingNoDetails: optionalDecoder(NonEmptyStringC),
+  languageEditingYesDetails: optionalDecoder(NonEmptyStringC),
 } satisfies FieldDecoders
 
 const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
@@ -112,12 +123,18 @@ const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateFo
 const FieldsToFormE: Encoder<Form, ValidFields<typeof languageEditingFields>> = {
   encode: fields => ({
     languageEditing: fields.languageEditing,
+    languageEditingDetails: {
+      no: fields.languageEditingNoDetails,
+      yes: fields.languageEditingYesDetails,
+    },
   }),
 }
 
 const FormToFieldsE: Encoder<LanguageEditingForm, Form> = {
   encode: form => ({
     languageEditing: E.right(form.languageEditing),
+    languageEditingNoDetails: E.right(form.languageEditingDetails?.no),
+    languageEditingYesDetails: E.right(form.languageEditingDetails?.yes),
   }),
 }
 
@@ -166,72 +183,100 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
             : ''}
 
           <div ${rawHtml(E.isLeft(form.languageEditing) ? 'class="error"' : '')}>
-            <fieldset
-              role="group"
-              ${rawHtml(
-                E.isLeft(form.languageEditing) ? 'aria-invalid="true" aria-errormessage="language-editing-error"' : '',
-              )}
-            >
-              <legend>
-                <h1>Would it benefit from language editing?</h1>
-              </legend>
+            <conditional-inputs>
+              <fieldset
+                role="group"
+                ${rawHtml(
+                  E.isLeft(form.languageEditing)
+                    ? 'aria-invalid="true" aria-errormessage="language-editing-error"'
+                    : '',
+                )}
+              >
+                <legend>
+                  <h1>Would it benefit from language editing?</h1>
+                </legend>
 
-              ${E.isLeft(form.languageEditing)
-                ? html`
-                    <div class="error-message" id="language-editing-error">
-                      <span class="visually-hidden">Error:</span>
-                      ${match(form.languageEditing.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select yes if it would benefit from language editing')
-                        .exhaustive()}
+                ${E.isLeft(form.languageEditing)
+                  ? html`
+                      <div class="error-message" id="language-editing-error">
+                        <span class="visually-hidden">Error:</span>
+                        ${match(form.languageEditing.left)
+                          .with({ _tag: 'MissingE' }, () => 'Select yes if it would benefit from language editing')
+                          .exhaustive()}
+                      </div>
+                    `
+                  : ''}
+
+                <ol>
+                  <li>
+                    <label>
+                      <input
+                        name="languageEditing"
+                        id="language-editing-yes"
+                        type="radio"
+                        value="yes"
+                        aria-describedby="language-editing-tip-yes"
+                        aria-controls="language-editing-yes-control"
+                        ${match(form.languageEditing)
+                          .with({ right: 'yes' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Yes</span>
+                    </label>
+                    <p id="language-editing-tip-yes" role="note">
+                      Grammatical errors, awkward phrasing, or unclear expressions may hinder comprehension.
+                    </p>
+                    <div class="conditional" id="language-editing-yes-control">
+                      <div>
+                        <label for="language-editing-yes-details" class="textarea">Why would it? (optional)</label>
+
+                        <textarea name="languageEditingYesDetails" id="language-editing-yes-details" rows="5">
+${match(form.languageEditingYesDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
                     </div>
-                  `
-                : ''}
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="languageEditing"
+                        type="radio"
+                        value="no"
+                        aria-describedby="language-editing-tip-no"
+                        aria-controls="language-editing-no-control"
+                        ${match(form.languageEditing)
+                          .with({ right: 'no' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>No</span>
+                    </label>
+                    <p id="language-editing-tip-no" role="note">
+                      There may be minor language issues, but they do not impact clarity or understanding.
+                    </p>
+                    <div class="conditional" id="language-editing-no-control">
+                      <div>
+                        <label for="language-editing-no-details" class="textarea">Why wouldn’t it? (optional)</label>
 
-              <ol>
-                <li>
-                  <label>
-                    <input
-                      name="languageEditing"
-                      id="language-editing-yes"
-                      type="radio"
-                      value="yes"
-                      aria-describedby="language-editing-tip-yes"
-                      ${match(form.languageEditing)
-                        .with({ right: 'yes' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Yes</span>
-                  </label>
-                  <p id="language-editing-tip-yes" role="note">
-                    Grammatical errors, awkward phrasing, or unclear expressions may hinder comprehension.
-                  </p>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="languageEditing"
-                      type="radio"
-                      value="no"
-                      aria-describedby="language-editing-tip-no"
-                      ${match(form.languageEditing)
-                        .with({ right: 'no' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>No</span>
-                  </label>
-                  <p id="language-editing-tip-no" role="note">
-                    There may be minor language issues, but they do not impact clarity or understanding.
-                  </p>
-                </li>
-              </ol>
-            </fieldset>
+                        <textarea name="languageEditingNoDetails" id="language-editing-no-details" rows="5">
+${match(form.languageEditingNoDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </fieldset>
+            </conditional-inputs>
           </div>
 
           <button>Save and continue</button>
         </form>
       </main>
     `,
-    js: ['error-summary.js'],
+    js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
     user,

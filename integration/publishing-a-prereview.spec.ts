@@ -167,6 +167,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
+    await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -214,7 +215,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'Are the findings novel? Some novelty Aenean nisl eros.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Would it benefit from language editing? No',
+      'Would it benefit from language editing? No Condimentum in mi in.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Should others read this preprint? Yes, but it needs to be improved',
@@ -1257,9 +1258,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Change if it would benefit from language editing' }).click()
 
     await page.getByLabel('Yes').check()
+    await page.getByLabel('Why would it?').fill('Condimentum in mi in.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(review).toContainText('Would it benefit from language editing? Yes')
+    await expect(review).toContainText('Would it benefit from language editing? Yes Condimentum in mi in.')
 
     await page.getByRole('link', { name: 'Change if others should read this preprint' }).click()
 
@@ -1361,6 +1363,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('How does it have some novelty?').fill('Aenean nisl eros.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
+    await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but it needs to be improved').click()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1379,6 +1382,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.goBack()
 
     await expect(page.getByLabel('No')).toBeChecked()
+    await expect(page.getByLabel('Why wouldn’t it?')).toHaveText('Condimentum in mi in.')
 
     await page.goBack()
 
@@ -1516,6 +1520,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('How does it have some novelty?').fill('Aenean nisl eros.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
+    await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but it needs to be improved').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1533,6 +1538,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Back' }).click()
 
     await expect(page.getByLabel('No')).toBeChecked()
+    await expect(page.getByLabel('Why wouldn’t it?')).toHaveText('Condimentum in mi in.')
 
     await page.getByRole('link', { name: 'Back' }).click()
 
