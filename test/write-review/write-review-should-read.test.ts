@@ -18,84 +18,110 @@ describe('writeReviewShouldRead', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc
-        .shouldRead()
-        .chain(shouldRead =>
-          fc.tuple(
-            fc.constant(shouldRead),
-            fc.connection({ body: fc.constant({ shouldRead }), method: fc.constant('POST') }),
-          ),
+      fc.tuple(fc.shouldRead(), fc.shouldReadDetails()).chain(([shouldRead, shouldReadDetails]) =>
+        fc.tuple(
+          fc.constant(shouldRead),
+          fc.constant(shouldReadDetails),
+          fc.connection({
+            body: fc.constant({
+              shouldRead,
+              shouldReadNoDetails: shouldReadDetails.no,
+              shouldReadYesButDetails: shouldReadDetails['yes-but'],
+              shouldReadYesDetails: shouldReadDetails.yes,
+            }),
+            method: fc.constant('POST'),
+          }),
         ),
+      ),
       fc.user(),
       fc.completedQuestionsForm(),
-    ])('when the form is completed', async (preprintId, preprintTitle, [shouldRead, connection], user, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+    ])(
+      'when the form is completed',
+      async (preprintId, preprintTitle, [shouldRead, shouldReadDetails, connection], user, newReview) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
-      const actual = await runMiddleware(
-        _.writeReviewShouldRead(preprintId)({
-          canRapidReview: () => true,
-          formStore,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-        }),
-        connection,
-      )()
+        const actual = await runMiddleware(
+          _.writeReviewShouldRead(preprintId)({
+            canRapidReview: () => true,
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+            getUser: () => M.of(user),
+          }),
+          connection,
+        )()
 
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ shouldRead })
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          shouldRead,
+          shouldReadDetails,
+        })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
 
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc
-        .shouldRead()
-        .chain(shouldRead =>
-          fc.tuple(
-            fc.constant(shouldRead),
-            fc.connection({ body: fc.constant({ shouldRead }), method: fc.constant('POST') }),
-          ),
+      fc.tuple(fc.shouldRead(), fc.shouldReadDetails()).chain(([shouldRead, shouldReadDetails]) =>
+        fc.tuple(
+          fc.constant(shouldRead),
+          fc.constant(shouldReadDetails),
+          fc.connection({
+            body: fc.constant({
+              shouldRead,
+              shouldReadNoDetails: shouldReadDetails.no,
+              shouldReadYesButDetails: shouldReadDetails['yes-but'],
+              shouldReadYesDetails: shouldReadDetails.yes,
+            }),
+            method: fc.constant('POST'),
+          }),
         ),
+      ),
       fc.user(),
       fc.incompleteQuestionsForm(),
-    ])('when the form is incomplete', async (preprintId, preprintTitle, [shouldRead, connection], user, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    ])(
+      'when the form is incomplete',
+      async (preprintId, preprintTitle, [shouldRead, shouldReadDetails, connection], user, newReview) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-      const actual = await runMiddleware(
-        _.writeReviewShouldRead(preprintId)({
-          canRapidReview: () => true,
-          formStore,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-        }),
-        connection,
-      )()
+        const actual = await runMiddleware(
+          _.writeReviewShouldRead(preprintId)({
+            canRapidReview: () => true,
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+            getUser: () => M.of(user),
+          }),
+          connection,
+        )()
 
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ shouldRead })
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          shouldRead,
+          shouldReadDetails,
+        })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
 
     test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user()])(
       'when there is no form',

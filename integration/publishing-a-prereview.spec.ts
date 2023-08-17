@@ -174,6 +174,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but it needs to be improved').check()
+    await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -218,7 +219,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'Would it benefit from language editing? No Condimentum in mi in.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Should others read this preprint? Yes, but it needs to be improved',
+      'Should others read this preprint? Yes, but it needs to be improved Dignissim lobortis ligula.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Is it ready for a full and detailed review? Yes, after minor changes',
@@ -1266,9 +1267,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Change if others should read this preprint' }).click()
 
     await page.getByLabel('Yes, it’s of high quality').check()
+    await page.getByLabel('How is it of high quality?').fill('Dignissim lobortis ligula.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(review).toContainText('Should others read this preprint? Yes, it’s of high quality')
+    await expect(review).toContainText(
+      'Should others read this preprint? Yes, it’s of high quality Dignissim lobortis ligula.',
+    )
 
     await page.getByRole('link', { name: 'Change if it is ready for a full and detailed review' }).click()
 
@@ -1366,6 +1370,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but it needs to be improved').click()
+    await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, after minor changes').click()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1378,6 +1383,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.goBack()
 
     await expect(page.getByLabel('Yes, but it needs to be improved')).toBeChecked()
+    await expect(page.getByLabel('What needs to be improved?')).toHaveText('Dignissim lobortis ligula.')
 
     await page.goBack()
 
@@ -1523,6 +1529,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, but it needs to be improved').check()
+    await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, after minor changes').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1534,6 +1541,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Back' }).click()
 
     await expect(page.getByLabel('Yes, but it needs to be improved')).toBeChecked()
+    await expect(page.getByLabel('What needs to be improved?')).toHaveText('Dignissim lobortis ligula.')
 
     await page.getByRole('link', { name: 'Back' }).click()
 

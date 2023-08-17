@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
-import { flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -9,7 +9,15 @@ import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
+import {
+  type FieldDecoders,
+  type Fields,
+  type ValidFields,
+  decodeFields,
+  hasAnError,
+  optionalDecoder,
+  requiredDecoder,
+} from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -20,6 +28,7 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
 } from '../routes'
+import { NonEmptyStringC } from '../string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -105,6 +114,9 @@ const handleShouldReadForm = ({ form, preprint, user }: { form: Form; preprint: 
 
 const shouldReadFields = {
   shouldRead: requiredDecoder(D.literal('no', 'yes-but', 'yes')),
+  shouldReadNoDetails: optionalDecoder(NonEmptyStringC),
+  shouldReadYesButDetails: optionalDecoder(NonEmptyStringC),
+  shouldReadYesDetails: optionalDecoder(NonEmptyStringC),
 } satisfies FieldDecoders
 
 const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
@@ -112,12 +124,20 @@ const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateFo
 const FieldsToFormE: Encoder<Form, ValidFields<typeof shouldReadFields>> = {
   encode: fields => ({
     shouldRead: fields.shouldRead,
+    shouldReadDetails: {
+      no: fields.shouldReadNoDetails,
+      'yes-but': fields.shouldReadYesButDetails,
+      yes: fields.shouldReadYesDetails,
+    },
   }),
 }
 
 const FormToFieldsE: Encoder<ShouldReadForm, Form> = {
   encode: form => ({
     shouldRead: E.right(form.shouldRead),
+    shouldReadNoDetails: E.right(form.shouldReadDetails?.no),
+    shouldReadYesButDetails: E.right(form.shouldReadDetails?.['yes-but']),
+    shouldReadYesDetails: E.right(form.shouldReadDetails?.yes),
   }),
 }
 
@@ -157,75 +177,119 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
             : ''}
 
           <div ${rawHtml(E.isLeft(form.shouldRead) ? 'class="error"' : '')}>
-            <fieldset
-              role="group"
-              ${rawHtml(E.isLeft(form.shouldRead) ? 'aria-invalid="true" aria-errormessage="should-read-error"' : '')}
-            >
-              <legend>
-                <h1>Should others read this preprint?</h1>
-              </legend>
+            <conditional-inputs>
+              <fieldset
+                role="group"
+                ${rawHtml(E.isLeft(form.shouldRead) ? 'aria-invalid="true" aria-errormessage="should-read-error"' : '')}
+              >
+                <legend>
+                  <h1>Should others read this preprint?</h1>
+                </legend>
 
-              ${E.isLeft(form.shouldRead)
-                ? html`
-                    <div class="error-message" id="should-read-error">
-                      <span class="visually-hidden">Error:</span>
-                      ${match(form.shouldRead.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select yes if others should read this preprint')
-                        .exhaustive()}
+                ${E.isLeft(form.shouldRead)
+                  ? html`
+                      <div class="error-message" id="should-read-error">
+                        <span class="visually-hidden">Error:</span>
+                        ${match(form.shouldRead.left)
+                          .with({ _tag: 'MissingE' }, () => 'Select yes if others should read this preprint')
+                          .exhaustive()}
+                      </div>
+                    `
+                  : ''}
+
+                <ol>
+                  <li>
+                    <label>
+                      <input
+                        name="shouldRead"
+                        id="should-read-yes"
+                        type="radio"
+                        value="yes"
+                        aria-controls="should-read-yes-control"
+                        ${match(form.shouldRead)
+                          .with({ right: 'yes' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Yes, it’s of high quality</span>
+                    </label>
+                    <div class="conditional" id="should-read-yes-control">
+                      <div>
+                        <label for="should-read-yes-details" class="textarea"
+                          >How is it of high quality? (optional)</label
+                        >
+
+                        <textarea name="shouldReadYesDetails" id="should-read-yes-details" rows="5">
+${match(form.shouldReadYesDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
                     </div>
-                  `
-                : ''}
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="shouldRead"
+                        type="radio"
+                        value="yes-but"
+                        aria-controls="should-read-yes-but-control"
+                        ${match(form.shouldRead)
+                          .with({ right: 'yes-but' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Yes, but it needs to be improved</span>
+                    </label>
+                    <div class="conditional" id="should-read-yes-but-control">
+                      <div>
+                        <label for="should-read-yes-but-details" class="textarea"
+                          >What needs to be improved? (optional)</label
+                        >
 
-              <ol>
-                <li>
-                  <label>
-                    <input
-                      name="shouldRead"
-                      id="should-read-yes"
-                      type="radio"
-                      value="yes"
-                      ${match(form.shouldRead)
-                        .with({ right: 'yes' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Yes, it’s of high quality</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="shouldRead"
-                      type="radio"
-                      value="yes-but"
-                      ${match(form.shouldRead)
-                        .with({ right: 'yes-but' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Yes, but it needs to be improved</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="shouldRead"
-                      type="radio"
-                      value="no"
-                      ${match(form.shouldRead)
-                        .with({ right: 'no' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>No, it’s of low quality or is majorly flawed</span>
-                  </label>
-                </li>
-              </ol>
-            </fieldset>
+                        <textarea name="shouldReadYesButDetails" id="should-read-yes-but-details" rows="5">
+${match(form.shouldReadYesButDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="shouldRead"
+                        type="radio"
+                        value="no"
+                        aria-controls="should-read-no-control"
+                        ${match(form.shouldRead)
+                          .with({ right: 'no' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>No, it’s of low quality or is majorly flawed</span>
+                    </label>
+                    <div class="conditional" id="should-read-no-control">
+                      <div>
+                        <label for="should-read-no-details" class="textarea"
+                          >Why shouldn’t they read it? (optional)</label
+                        >
+
+                        <textarea name="shouldReadNoDetails" id="should-read-no-details" rows="5">
+${match(form.shouldReadNoDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </fieldset>
+            </conditional-inputs>
           </div>
 
           <button>Save and continue</button>
         </form>
       </main>
     `,
-    js: ['error-summary.js'],
+    js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
     user,
