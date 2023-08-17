@@ -6,10 +6,10 @@ import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
+import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -76,7 +76,7 @@ export const writeReviewNovel = flow(
 
 const showNovelForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    novelForm(preprint, { novel: E.right(form.novel) }, user),
+    novelForm(preprint, FormToFieldsE.encode(form), user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -91,14 +91,8 @@ const showNovelErrorForm = (preprint: PreprintTitle, user: User) =>
 
 const handleNovelForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body => E.right({ novel: pipe(NovelFieldD.decode(body), E.mapLeft(missingE)) })),
-    RM.chainEitherK(fields =>
-      pipe(
-        E.Do,
-        E.apS('novel', fields.novel),
-        E.mapLeft(() => fields),
-      ),
-    ),
+    RM.decodeBody(decodeFields(novelFields)),
+    RM.map(updateFormWithFields(form)),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
@@ -110,16 +104,25 @@ const handleNovelForm = ({ form, preprint, user }: { form: Form; preprint: Prepr
     ),
   )
 
-const NovelFieldD = pipe(
-  D.struct({
-    novel: D.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
-  }),
-  D.map(get('novel')),
-)
+const novelFields = {
+  novel: requiredDecoder(D.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip')),
+} satisfies FieldDecoders
 
-type NovelForm = {
-  readonly novel: E.Either<MissingE, 'no' | 'limited' | 'some' | 'substantial' | 'highly' | 'skip' | undefined>
+const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
+
+const FieldsToFormE: Encoder<Form, ValidFields<typeof novelFields>> = {
+  encode: fields => ({
+    novel: fields.novel,
+  }),
 }
+
+const FormToFieldsE: Encoder<NovelForm, Form> = {
+  encode: form => ({
+    novel: E.right(form.novel),
+  }),
+}
+
+type NovelForm = Fields<typeof novelFields>
 
 function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
   const error = hasAnError(form)
