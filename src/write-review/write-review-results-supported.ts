@@ -6,10 +6,10 @@ import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
+import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -76,7 +76,7 @@ export const writeReviewResultsSupported = flow(
 
 const showResultsSupportedForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    resultsSupportedForm(preprint, { resultsSupported: E.right(form.resultsSupported) }, user),
+    resultsSupportedForm(preprint, FormToFieldsE.encode(form), user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -91,16 +91,8 @@ const showResultsSupportedErrorForm = (preprint: PreprintTitle, user: User) =>
 
 const handleResultsSupportedForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body =>
-      E.right({ resultsSupported: pipe(ResultsSupportedFieldD.decode(body), E.mapLeft(missingE)) }),
-    ),
-    RM.chainEitherK(fields =>
-      pipe(
-        E.Do,
-        E.apS('resultsSupported', fields.resultsSupported),
-        E.mapLeft(() => fields),
-      ),
-    ),
+    RM.decodeBody(decodeFields(resultsSupportedFields)),
+    RM.map(updateFormWithFields(form)),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
@@ -112,26 +104,27 @@ const handleResultsSupportedForm = ({ form, preprint, user }: { form: Form; prep
     ),
   )
 
-const ResultsSupportedFieldD = pipe(
-  D.struct({
-    resultsSupported: D.literal(
-      'not-supported',
-      'partially-supported',
-      'neutral',
-      'well-supported',
-      'strongly-supported',
-      'skip',
-    ),
-  }),
-  D.map(get('resultsSupported')),
-)
+const resultsSupportedFields = {
+  resultsSupported: requiredDecoder(
+    D.literal('not-supported', 'partially-supported', 'neutral', 'well-supported', 'strongly-supported', 'skip'),
+  ),
+} satisfies FieldDecoders
 
-type ResultsSupportedForm = {
-  readonly resultsSupported: E.Either<
-    MissingE,
-    'not-supported' | 'partially-supported' | 'neutral' | 'well-supported' | 'strongly-supported' | 'skip' | undefined
-  >
+const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
+
+const FieldsToFormE: Encoder<Form, ValidFields<typeof resultsSupportedFields>> = {
+  encode: fields => ({
+    resultsSupported: fields.resultsSupported,
+  }),
 }
+
+const FormToFieldsE: Encoder<ResultsSupportedForm, Form> = {
+  encode: form => ({
+    resultsSupported: E.right(form.resultsSupported),
+  }),
+}
+
+type ResultsSupportedForm = Fields<typeof resultsSupportedFields>
 
 function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedForm, user: User) {
   const error = hasAnError(form)
