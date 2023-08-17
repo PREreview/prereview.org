@@ -159,7 +159,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Some novelty').check()
+    await page.getByLabel('Some novelty', { exact: true }).check()
+    await page.getByLabel('How does it have some novelty?').fill('Aenean nisl eros.')
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -208,6 +209,9 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately Cras lobortis quam vitae.',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Are the findings novel? Some novelty Aenean nisl eros.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Would it benefit from language editing? No',
@@ -545,7 +549,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Some novelty').check()
+    await page.getByLabel('Some novelty', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
@@ -1134,7 +1138,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Some novelty').check()
+    await page.getByLabel('Some novelty', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1244,10 +1248,11 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Change if the findings are novel' }).click()
 
-    await page.getByLabel('Substantial novelty').check()
+    await page.getByLabel('Substantial novelty', { exact: true }).check()
+    await page.getByLabel('How does it have substantial novelty?').fill('Aenean nisl eros.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(review).toContainText('Are the findings novel? Substantial novelty')
+    await expect(review).toContainText('Are the findings novel? Substantial novelty Aenean nisl eros.')
 
     await page.getByRole('link', { name: 'Change if it would benefit from language editing' }).click()
 
@@ -1352,7 +1357,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Some novelty').check()
+    await page.getByLabel('Some novelty', { exact: true }).check()
+    await page.getByLabel('How does it have some novelty?').fill('Aenean nisl eros.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1376,7 +1382,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.goBack()
 
-    await expect(page.getByLabel('Some novelty')).toBeChecked()
+    await expect(page.getByLabel('Some novelty', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('How does it have some novelty?')).toHaveText('Aenean nisl eros.')
 
     await page.goBack()
 
@@ -1505,7 +1512,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Some novelty').check()
+    await page.getByLabel('Some novelty', { exact: true }).check()
+    await page.getByLabel('How does it have some novelty?').fill('Aenean nisl eros.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1528,7 +1536,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Some novelty')).toBeChecked()
+    await expect(page.getByLabel('Some novelty', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('How does it have some novelty?')).toHaveText('Aenean nisl eros.')
 
     await page.getByRole('link', { name: 'Back' }).click()
 
