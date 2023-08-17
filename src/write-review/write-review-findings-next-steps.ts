@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
-import { flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -9,7 +9,15 @@ import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
+import {
+  type FieldDecoders,
+  type Fields,
+  type ValidFields,
+  decodeFields,
+  hasAnError,
+  optionalDecoder,
+  requiredDecoder,
+} from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -20,6 +28,7 @@ import {
   writeReviewMatch,
   writeReviewReviewTypeMatch,
 } from '../routes'
+import { NonEmptyStringC } from '../string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -107,6 +116,11 @@ const findingsNextStepsFields = {
   findingsNextSteps: requiredDecoder(
     D.literal('inadequately', 'insufficiently', 'adequately', 'clearly-insightfully', 'exceptionally', 'skip'),
   ),
+  findingsNextStepsInadequatelyDetails: optionalDecoder(NonEmptyStringC),
+  findingsNextStepsInsufficientlyDetails: optionalDecoder(NonEmptyStringC),
+  findingsNextStepsAdequatelyDetails: optionalDecoder(NonEmptyStringC),
+  findingsNextStepsClearlyInsightfullyDetails: optionalDecoder(NonEmptyStringC),
+  findingsNextStepsExceptionallyDetails: optionalDecoder(NonEmptyStringC),
 } satisfies FieldDecoders
 
 const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
@@ -114,12 +128,24 @@ const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateFo
 const FieldsToFormE: Encoder<Form, ValidFields<typeof findingsNextStepsFields>> = {
   encode: fields => ({
     findingsNextSteps: fields.findingsNextSteps,
+    findingsNextStepsDetails: {
+      inadequately: fields.findingsNextStepsInadequatelyDetails,
+      insufficiently: fields.findingsNextStepsInsufficientlyDetails,
+      adequately: fields.findingsNextStepsAdequatelyDetails,
+      'clearly-insightfully': fields.findingsNextStepsClearlyInsightfullyDetails,
+      exceptionally: fields.findingsNextStepsExceptionallyDetails,
+    },
   }),
 }
 
 const FormToFieldsE: Encoder<FindingsNextStepsForm, Form> = {
   encode: form => ({
     findingsNextSteps: E.right(form.findingsNextSteps),
+    findingsNextStepsInadequatelyDetails: E.right(form.findingsNextStepsDetails?.inadequately),
+    findingsNextStepsInsufficientlyDetails: E.right(form.findingsNextStepsDetails?.insufficiently),
+    findingsNextStepsAdequatelyDetails: E.right(form.findingsNextStepsDetails?.adequately),
+    findingsNextStepsClearlyInsightfullyDetails: E.right(form.findingsNextStepsDetails?.['clearly-insightfully']),
+    findingsNextStepsExceptionallyDetails: E.right(form.findingsNextStepsDetails?.exceptionally),
   }),
 }
 
@@ -169,149 +195,241 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
             : ''}
 
           <div ${rawHtml(E.isLeft(form.findingsNextSteps) ? 'class="error"' : '')}>
-            <fieldset
-              role="group"
-              ${rawHtml(
-                E.isLeft(form.findingsNextSteps)
-                  ? 'aria-invalid="true" aria-errormessage="findings-next-steps-error"'
-                  : '',
-              )}
-            >
-              <legend>
-                <h1>
-                  How well do the authors discuss, explain, and interpret their findings and potential next steps for
-                  the research?
-                </h1>
-              </legend>
+            <conditional-inputs>
+              <fieldset
+                role="group"
+                ${rawHtml(
+                  E.isLeft(form.findingsNextSteps)
+                    ? 'aria-invalid="true" aria-errormessage="findings-next-steps-error"'
+                    : '',
+                )}
+              >
+                <legend>
+                  <h1>
+                    How well do the authors discuss, explain, and interpret their findings and potential next steps for
+                    the research?
+                  </h1>
+                </legend>
 
-              ${E.isLeft(form.findingsNextSteps)
-                ? html`
-                    <div class="error-message" id="findings-next-steps-error">
-                      <span class="visually-hidden">Error:</span>
-                      ${match(form.findingsNextSteps.left)
-                        .with(
-                          { _tag: 'MissingE' },
-                          () => 'Select how well the authors discuss their findings and next steps',
-                        )
-                        .exhaustive()}
+                ${E.isLeft(form.findingsNextSteps)
+                  ? html`
+                      <div class="error-message" id="findings-next-steps-error">
+                        <span class="visually-hidden">Error:</span>
+                        ${match(form.findingsNextSteps.left)
+                          .with(
+                            { _tag: 'MissingE' },
+                            () => 'Select how well the authors discuss their findings and next steps',
+                          )
+                          .exhaustive()}
+                      </div>
+                    `
+                  : ''}
+
+                <ol>
+                  <li>
+                    <label>
+                      <input
+                        name="findingsNextSteps"
+                        id="findings-next-steps-inadequately"
+                        type="radio"
+                        value="inadequately"
+                        aria-describedby="findings-next-steps-tip-inadequately"
+                        aria-controls="findings-next-steps-inadequately-control"
+                        ${match(form.findingsNextSteps)
+                          .with({ right: 'inadequately' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Inadequately</span>
+                    </label>
+                    <p id="findings-next-steps-tip-inadequately" role="note">
+                      They fail to discuss, explain, or interpret their findings and potential next steps.
+                    </p>
+                    <div class="conditional" id="findings-next-steps-inadequately-control">
+                      <div>
+                        <label for="findings-next-steps-inadequately-details" class="textarea"
+                          >Why is it inadequate? (optional)</label
+                        >
+
+                        <textarea
+                          name="findingsNextStepsInadequatelyDetails"
+                          id="findings-next-steps-inadequately-details"
+                          rows="5"
+                        >
+${match(form.findingsNextStepsInadequatelyDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
                     </div>
-                  `
-                : ''}
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="findingsNextSteps"
+                        type="radio"
+                        value="insufficiently"
+                        aria-describedby="findings-next-steps-tip-insufficiently"
+                        aria-controls="findings-next-steps-insufficiently-control"
+                        ${match(form.findingsNextSteps)
+                          .with({ right: 'insufficiently' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Insufficiently</span>
+                    </label>
+                    <p id="findings-next-steps-tip-insufficiently" role="note">
+                      They provide limited or insufficient discussion, explanation, or interpretation of their findings
+                      and potential next steps.
+                    </p>
+                    <div class="conditional" id="findings-next-steps-insufficiently-control">
+                      <div>
+                        <label for="findings-next-steps-insufficiently-details" class="textarea"
+                          >Why is it insufficient? (optional)</label
+                        >
 
-              <ol>
-                <li>
-                  <label>
-                    <input
-                      name="findingsNextSteps"
-                      id="findings-next-steps-inadequately"
-                      type="radio"
-                      value="inadequately"
-                      aria-describedby="findings-next-steps-tip-inadequately"
-                      ${match(form.findingsNextSteps)
-                        .with({ right: 'inadequately' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Inadequately</span>
-                  </label>
-                  <p id="findings-next-steps-tip-inadequately" role="note">
-                    They fail to discuss, explain, or interpret their findings and potential next steps.
-                  </p>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="findingsNextSteps"
-                      type="radio"
-                      value="insufficiently"
-                      aria-describedby="findings-next-steps-tip-insufficiently"
-                      ${match(form.findingsNextSteps)
-                        .with({ right: 'insufficiently' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Insufficiently</span>
-                  </label>
-                  <p id="findings-next-steps-tip-insufficiently" role="note">
-                    They provide limited or insufficient discussion, explanation, or interpretation of their findings
-                    and potential next steps.
-                  </p>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="findingsNextSteps"
-                      type="radio"
-                      value="adequately"
-                      aria-describedby="findings-next-steps-tip-adequately"
-                      ${match(form.findingsNextSteps)
-                        .with({ right: 'adequately' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Adequately</span>
-                  </label>
-                  <p id="findings-next-steps-tip-adequately" role="note">
-                    They adequately discuss, explain, and interpret their findings and potential next steps for the
-                    research.
-                  </p>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="findingsNextSteps"
-                      type="radio"
-                      value="clearly-insightfully"
-                      aria-describedby="findings-next-steps-tip-clearly-insightfully"
-                      ${match(form.findingsNextSteps)
-                        .with({ right: 'clearly-insightfully' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Clearly and insightfully</span>
-                  </label>
-                  <p id="findings-next-steps-tip-clearly-insightfully" role="note">
-                    They provide clear and insightful discussion, explanation, and interpretation of their findings and
-                    potential next steps.
-                  </p>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="findingsNextSteps"
-                      type="radio"
-                      value="exceptionally"
-                      aria-describedby="findings-next-steps-tip-exceptionally"
-                      ${match(form.findingsNextSteps)
-                        .with({ right: 'exceptionally' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Exceptionally</span>
-                  </label>
-                  <p id="findings-next-steps-tip-exceptionally" role="note">
-                    They demonstrate clarity, depth, and insight in their discussion, explanation, and interpretation of
-                    their findings and potential next steps.
-                  </p>
-                </li>
-                <li>
-                  <span>or</span>
-                  <label>
-                    <input
-                      name="findingsNextSteps"
-                      type="radio"
-                      value="skip"
-                      ${match(form.findingsNextSteps)
-                        .with({ right: 'skip' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>I don’t know</span>
-                  </label>
-                </li>
-              </ol>
-            </fieldset>
+                        <textarea
+                          name="findingsNextStepsInsufficientlyDetails"
+                          id="findings-next-steps-insufficiently-details"
+                          rows="5"
+                        >
+${match(form.findingsNextStepsInsufficientlyDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="findingsNextSteps"
+                        type="radio"
+                        value="adequately"
+                        aria-describedby="findings-next-steps-tip-adequately"
+                        aria-controls="findings-next-steps-adequately-control"
+                        ${match(form.findingsNextSteps)
+                          .with({ right: 'adequately' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Adequately</span>
+                    </label>
+                    <p id="findings-next-steps-tip-adequately" role="note">
+                      They adequately discuss, explain, and interpret their findings and potential next steps for the
+                      research.
+                    </p>
+                    <div class="conditional" id="findings-next-steps-adequately-control">
+                      <div>
+                        <label for="findings-next-steps-adequately-details" class="textarea"
+                          >Why is it adequate? (optional)</label
+                        >
+
+                        <textarea
+                          name="findingsNextStepsAdequatelyDetails"
+                          id="findings-next-steps-adequately-details"
+                          rows="5"
+                        >
+${match(form.findingsNextStepsAdequatelyDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="findingsNextSteps"
+                        type="radio"
+                        value="clearly-insightfully"
+                        aria-describedby="findings-next-steps-tip-clearly-insightfully"
+                        aria-controls="findings-next-steps-clearly-insightfully-control"
+                        ${match(form.findingsNextSteps)
+                          .with({ right: 'clearly-insightfully' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Clearly and insightfully</span>
+                    </label>
+                    <p id="findings-next-steps-tip-clearly-insightfully" role="note">
+                      They provide clear and insightful discussion, explanation, and interpretation of their findings
+                      and potential next steps.
+                    </p>
+                    <div class="conditional" id="findings-next-steps-clearly-insightfully-control">
+                      <div>
+                        <label for="findings-next-steps-clearly-insightfully-details" class="textarea"
+                          >Why is it clear and insightful? (optional)</label
+                        >
+
+                        <textarea
+                          name="findingsNextStepsClearlyInsightfullyDetails"
+                          id="findings-next-steps-clearly-insightfully-details"
+                          rows="5"
+                        >
+${match(form.findingsNextStepsClearlyInsightfullyDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="findingsNextSteps"
+                        type="radio"
+                        value="exceptionally"
+                        aria-describedby="findings-next-steps-tip-exceptionally"
+                        aria-controls="findings-next-steps-exceptionally-control"
+                        ${match(form.findingsNextSteps)
+                          .with({ right: 'exceptionally' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Exceptionally</span>
+                    </label>
+                    <p id="findings-next-steps-tip-exceptionally" role="note">
+                      They demonstrate clarity, depth, and insight in their discussion, explanation, and interpretation
+                      of their findings and potential next steps.
+                    </p>
+                    <div class="conditional" id="findings-next-steps-exceptionally-control">
+                      <div>
+                        <label for="findings-next-steps-exceptionally-details" class="textarea"
+                          >Why is it exceptional? (optional)</label
+                        >
+
+                        <textarea
+                          name="findingsNextStepsExceptionallyDetails"
+                          id="findings-next-steps-exceptionally-details"
+                          rows="5"
+                        >
+${match(form.findingsNextStepsExceptionallyDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <span>or</span>
+                    <label>
+                      <input
+                        name="findingsNextSteps"
+                        type="radio"
+                        value="skip"
+                        ${match(form.findingsNextSteps)
+                          .with({ right: 'skip' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>I don’t know</span>
+                    </label>
+                  </li>
+                </ol>
+              </fieldset>
+            </conditional-inputs>
           </div>
 
           <button>Save and continue</button>
         </form>
       </main>
     `,
-    js: ['error-summary.js'],
+    js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
     user,

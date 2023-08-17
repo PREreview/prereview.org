@@ -153,6 +153,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
+    await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -206,7 +207,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'Are the data presentations, including visualizations, appropriate and clear? Neither adequate nor inadequate Lorem ipsum dolor sit amet.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately',
+      'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately Cras lobortis quam vitae.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Would it benefit from language editing? No',
@@ -1234,10 +1235,11 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Change how well the authors discuss their findings and next steps' }).click()
 
     await page.getByLabel('Clearly and insightfully').check()
+    await page.getByLabel('Why is it clear and insightful?').fill('Cras lobortis quam vitae.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(review).toContainText(
-      'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Clearly and insightfully',
+      'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Clearly and insightfully Cras lobortis quam vitae.',
     )
 
     await page.getByRole('link', { name: 'Change if the findings are novel' }).click()
@@ -1348,6 +1350,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
+    await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Some novelty').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1378,6 +1381,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.goBack()
 
     await expect(page.getByLabel('Adequately', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('Why is it adequate?')).toHaveText('Cras lobortis quam vitae.')
 
     await page.goBack()
 
@@ -1499,6 +1503,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
+    await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Some novelty').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1528,6 +1533,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Back' }).click()
 
     await expect(page.getByLabel('Adequately', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('Why is it adequate?')).toHaveText('Cras lobortis quam vitae.')
 
     await page.getByRole('link', { name: 'Back' }).click()
 
