@@ -125,7 +125,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}How would you like to write your PREreview? – PREreview of “${
+    title: plainText`${error ? 'Error: ' : ''}How would you like to start your PREreview? – PREreview of “${
       preprint.title
     }”`,
     content: html`
@@ -145,7 +145,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                           <li>
                             <a href="#review-type-questions">
                               ${match(form.reviewType.left)
-                                .with({ _tag: 'MissingE' }, () => 'Select how you would like to write your PREreview')
+                                .with({ _tag: 'MissingE' }, () => 'Select how you would like to start your PREreview')
                                 .exhaustive()}
                             </a>
                           </li>
@@ -162,7 +162,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
               ${rawHtml(E.isLeft(form.reviewType) ? 'aria-invalid="true" aria-errormessage="review-type-error"' : '')}
             >
               <legend>
-                <h1>How would you like to write your PREreview?</h1>
+                <h1>How would you like to start your PREreview?</h1>
               </legend>
 
               ${E.isLeft(form.reviewType)
@@ -170,7 +170,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                     <div class="error-message" id="review-type-error">
                       <span class="visually-hidden">Error:</span>
                       ${match(form.reviewType.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select how you would like to write your PREreview')
+                        .with({ _tag: 'MissingE' }, () => 'Select how you would like to start your PREreview')
                         .exhaustive()}
                     </div>
                   `
@@ -189,7 +189,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                         .with({ right: 'questions' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>Guided review</span>
+                    <span>With prompts</span>
                   </label>
                   <p id="review-type-tip-questions" role="note">
                     We’ll ask questions about the preprint to create a structured review.
@@ -206,7 +206,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                         .with({ right: 'freeform' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>Open review</span>
+                    <span>With a template</span>
                   </label>
                   <p id="review-type-tip-freeform" role="note">
                     We’ll offer a basic template, but you can review it your way.

@@ -116,7 +116,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
     await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -451,7 +451,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
@@ -1129,7 +1129,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('Partly', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1348,7 +1348,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('Partly', { exact: true }).check()
     await page
@@ -1432,7 +1432,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.goBack()
 
-    await expect(page.getByLabel('Guided review')).toBeChecked()
+    await expect(page.getByLabel('With prompts')).toBeChecked()
   },
 )
 
@@ -1509,7 +1509,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('Partly', { exact: true }).check()
     await page
@@ -1594,7 +1594,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Guided review')).toBeChecked()
+    await expect(page.getByLabel('With prompts')).toBeChecked()
   },
 )
 
@@ -2086,16 +2086,16 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     } else {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
-    await expect(page.getByRole('group', { name: 'How would you like to write your PREreview?' })).toHaveAttribute(
+    await expect(page.getByRole('group', { name: 'How would you like to start your PREreview?' })).toHaveAttribute(
       'aria-invalid',
       'true',
     )
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Select how you would like to write your PREreview' }).click()
+    await page.getByRole('link', { name: 'Select how you would like to start your PREreview' }).click()
 
-    await expect(page.getByLabel('Guided review')).toBeFocused()
+    await expect(page.getByLabel('With prompts')).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -2197,7 +2197,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2233,7 +2233,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('I don’t know').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2271,7 +2271,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('I don’t know').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2310,7 +2310,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('I don’t know').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2350,7 +2350,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('I don’t know').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2394,7 +2394,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('I don’t know').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2440,7 +2440,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('I don’t know').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2483,7 +2483,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('I don’t know').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2528,7 +2528,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Guided review').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('I don’t know').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
