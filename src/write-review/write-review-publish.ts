@@ -296,9 +296,6 @@ function renderReview(form: CompletedForm) {
                   .with('yes', () => 'Yes, as it is')
                   .exhaustive()}
               </dd>
-              ${form.dataPresentation !== 'skip' && form.dataPresentationDetails
-                ? html` <dd>${form.dataPresentationDetails}</dd>`
-                : ''}
             </div>
           </dl>`,
       )
