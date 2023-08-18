@@ -181,6 +181,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, after minor changes').check()
+    await page.getByLabel('What needs tweaking?').fill('Quisque in blandit arcu.')
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -222,7 +223,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'Should others read this preprint? Yes, but it needs to be improved Dignissim lobortis ligula.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Is it ready for a full and detailed review? Yes, after minor changes',
+      'Is it ready for a full and detailed review? Yes, after minor changes Quisque in blandit arcu.',
     )
     await expect(page.getByRole('main')).toContainText('Competing interests None')
     await page.mouse.move(0, 0)
@@ -1277,9 +1278,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Change if it is ready for a full and detailed review' }).click()
 
     await page.getByLabel('Yes, as it is').check()
+    await page.getByLabel('Why is it ready?').fill('Quisque in blandit arcu.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(review).toContainText('Is it ready for a full and detailed review? Yes, as it is')
+    await expect(review).toContainText(
+      'Is it ready for a full and detailed review? Yes, as it is Quisque in blandit arcu.',
+    )
   },
 )
 
@@ -1373,12 +1377,14 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, after minor changes').click()
+    await page.getByLabel('What needs tweaking?').fill('Quisque in blandit arcu.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
 
     await page.goBack()
 
     await expect(page.getByLabel('Yes, after minor changes')).toBeChecked()
+    await expect(page.getByLabel('What needs tweaking?')).toHaveText('Quisque in blandit arcu.')
 
     await page.goBack()
 
@@ -1532,11 +1538,13 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Yes, after minor changes').check()
+    await page.getByLabel('What needs tweaking?').fill('Quisque in blandit arcu.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByRole('link', { name: 'Back' }).click()
 
     await expect(page.getByLabel('Yes, after minor changes')).toBeChecked()
+    await expect(page.getByLabel('What needs tweaking?')).toHaveText('Quisque in blandit arcu.')
 
     await page.getByRole('link', { name: 'Back' }).click()
 

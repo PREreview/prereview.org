@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
-import { flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -9,7 +9,15 @@ import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
+import {
+  type FieldDecoders,
+  type Fields,
+  type ValidFields,
+  decodeFields,
+  hasAnError,
+  optionalDecoder,
+  requiredDecoder,
+} from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -20,6 +28,7 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
 } from '../routes'
+import { NonEmptyStringC } from '../string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -105,6 +114,9 @@ const handleReadyFullReviewForm = ({ form, preprint, user }: { form: Form; prepr
 
 const readyFullReviewFields = {
   readyFullReview: requiredDecoder(D.literal('no', 'yes-changes', 'yes')),
+  readyFullReviewNoDetails: optionalDecoder(NonEmptyStringC),
+  readyFullReviewYesChangesDetails: optionalDecoder(NonEmptyStringC),
+  readyFullReviewYesDetails: optionalDecoder(NonEmptyStringC),
 } satisfies FieldDecoders
 
 const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
@@ -112,12 +124,20 @@ const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateFo
 const FieldsToFormE: Encoder<Form, ValidFields<typeof readyFullReviewFields>> = {
   encode: fields => ({
     readyFullReview: fields.readyFullReview,
+    readyFullReviewDetails: {
+      no: fields.readyFullReviewNoDetails,
+      'yes-changes': fields.readyFullReviewYesChangesDetails,
+      yes: fields.readyFullReviewYesDetails,
+    },
   }),
 }
 
 const FormToFieldsE: Encoder<ReadyFullReviewForm, Form> = {
   encode: form => ({
     readyFullReview: E.right(form.readyFullReview),
+    readyFullReviewNoDetails: E.right(form.readyFullReviewDetails?.no),
+    readyFullReviewYesChangesDetails: E.right(form.readyFullReviewDetails?.['yes-changes']),
+    readyFullReviewYesDetails: E.right(form.readyFullReviewDetails?.yes),
   }),
 }
 
@@ -166,77 +186,125 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
             : ''}
 
           <div ${rawHtml(E.isLeft(form.readyFullReview) ? 'class="error"' : '')}>
-            <fieldset
-              role="group"
-              ${rawHtml(
-                E.isLeft(form.readyFullReview) ? 'aria-invalid="true" aria-errormessage="ready-full-review-error"' : '',
-              )}
-            >
-              <legend>
-                <h1>Is it ready for a full and detailed review?</h1>
-              </legend>
+            <conditional-inputs>
+              <fieldset
+                role="group"
+                ${rawHtml(
+                  E.isLeft(form.readyFullReview)
+                    ? 'aria-invalid="true" aria-errormessage="ready-full-review-error"'
+                    : '',
+                )}
+              >
+                <legend>
+                  <h1>Is it ready for a full and detailed review?</h1>
+                </legend>
 
-              ${E.isLeft(form.readyFullReview)
-                ? html`
-                    <div class="error-message" id="ready-full-review-error">
-                      <span class="visually-hidden">Error:</span>
-                      ${match(form.readyFullReview.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select yes if it is ready for a full and detailed review')
-                        .exhaustive()}
+                ${E.isLeft(form.readyFullReview)
+                  ? html`
+                      <div class="error-message" id="ready-full-review-error">
+                        <span class="visually-hidden">Error:</span>
+                        ${match(form.readyFullReview.left)
+                          .with({ _tag: 'MissingE' }, () => 'Select yes if it is ready for a full and detailed review')
+                          .exhaustive()}
+                      </div>
+                    `
+                  : ''}
+
+                <ol>
+                  <li>
+                    <label>
+                      <input
+                        name="readyFullReview"
+                        id="ready-full-review-no"
+                        type="radio"
+                        value="no"
+                        aria-controls="ready-full-review-no-control"
+                        ${match(form.readyFullReview)
+                          .with({ right: 'no' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>No, it needs a major revision</span>
+                    </label>
+                    <div class="conditional" id="ready-full-review-no-control">
+                      <div>
+                        <label for="ready-full-review-no-details" class="textarea"
+                          >What needs to change? (optional)</label
+                        >
+
+                        <textarea name="readyFullReviewNoDetails" id="ready-full-review-no-details" rows="5">
+${match(form.readyFullReviewNoDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
                     </div>
-                  `
-                : ''}
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="readyFullReview"
+                        type="radio"
+                        value="yes-changes"
+                        aria-controls="ready-full-review-yes-changes-control"
+                        ${match(form.readyFullReview)
+                          .with({ right: 'yes-changes' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Yes, after minor changes</span>
+                    </label>
+                    <div class="conditional" id="ready-full-review-yes-changes-control">
+                      <div>
+                        <label for="ready-full-review-yes-changes-details" class="textarea"
+                          >What needs tweaking? (optional)</label
+                        >
 
-              <ol>
-                <li>
-                  <label>
-                    <input
-                      name="readyFullReview"
-                      id="ready-full-review-no"
-                      type="radio"
-                      value="no"
-                      ${match(form.readyFullReview)
-                        .with({ right: 'no' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>No, it needs a major revision</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="readyFullReview"
-                      type="radio"
-                      value="yes-changes"
-                      ${match(form.readyFullReview)
-                        .with({ right: 'yes-changes' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Yes, after minor changes</span>
-                  </label>
-                </li>
-                <li>
-                  <label>
-                    <input
-                      name="readyFullReview"
-                      type="radio"
-                      value="yes"
-                      ${match(form.readyFullReview)
-                        .with({ right: 'yes' }, () => 'checked')
-                        .otherwise(() => '')}
-                    />
-                    <span>Yes, as it is</span>
-                  </label>
-                </li>
-              </ol>
-            </fieldset>
+                        <textarea
+                          name="readyFullReviewYesChangesDetails"
+                          id="ready-full-review-yes-changes-details"
+                          rows="5"
+                        >
+${match(form.readyFullReviewYesChangesDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="readyFullReview"
+                        type="radio"
+                        value="yes"
+                        aria-controls="ready-full-review-yes-control"
+                        ${match(form.readyFullReview)
+                          .with({ right: 'yes' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Yes, as it is</span>
+                    </label>
+                    <div class="conditional" id="ready-full-review-yes-control">
+                      <div>
+                        <label for="ready-full-review-yes-details" class="textarea">Why is it ready? (optional)</label>
+
+                        <textarea name="readyFullReviewYesDetails" id="ready-full-review-yes-details" rows="5">
+${match(form.readyFullReviewYesDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </fieldset>
+            </conditional-inputs>
           </div>
 
           <button>Save and continue</button>
         </form>
       </main>
     `,
-    js: ['error-summary.js'],
+    js: ['conditional-inputs.js', 'error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
     user,

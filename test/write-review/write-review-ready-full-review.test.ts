@@ -18,19 +18,26 @@ describe('writeReviewReadyFullReview', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc
-        .readyFullReview()
-        .chain(readyFullReview =>
-          fc.tuple(
-            fc.constant(readyFullReview),
-            fc.connection({ body: fc.constant({ readyFullReview }), method: fc.constant('POST') }),
-          ),
+      fc.tuple(fc.readyFullReview(), fc.readyFullReviewDetails()).chain(([readyFullReview, readyFullReviewDetails]) =>
+        fc.tuple(
+          fc.constant(readyFullReview),
+          fc.constant(readyFullReviewDetails),
+          fc.connection({
+            body: fc.constant({
+              readyFullReview,
+              readyFullReviewNoDetails: readyFullReviewDetails.no,
+              readyFullReviewYesChangesDetails: readyFullReviewDetails['yes-changes'],
+              readyFullReviewYesDetails: readyFullReviewDetails.yes,
+            }),
+            method: fc.constant('POST'),
+          }),
         ),
+      ),
       fc.user(),
       fc.completedQuestionsForm(),
     ])(
       'when the form is completed',
-      async (preprintId, preprintTitle, [readyFullReview, connection], user, newReview) => {
+      async (preprintId, preprintTitle, [readyFullReview, readyFullReviewDetails, connection], user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
@@ -44,7 +51,10 @@ describe('writeReviewReadyFullReview', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ readyFullReview })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          readyFullReview,
+          readyFullReviewDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
@@ -62,19 +72,26 @@ describe('writeReviewReadyFullReview', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc
-        .readyFullReview()
-        .chain(readyFullReview =>
-          fc.tuple(
-            fc.constant(readyFullReview),
-            fc.connection({ body: fc.constant({ readyFullReview }), method: fc.constant('POST') }),
-          ),
+      fc.tuple(fc.readyFullReview(), fc.readyFullReviewDetails()).chain(([readyFullReview, readyFullReviewDetails]) =>
+        fc.tuple(
+          fc.constant(readyFullReview),
+          fc.constant(readyFullReviewDetails),
+          fc.connection({
+            body: fc.constant({
+              readyFullReview,
+              readyFullReviewNoDetails: readyFullReviewDetails.no,
+              readyFullReviewYesChangesDetails: readyFullReviewDetails['yes-changes'],
+              readyFullReviewYesDetails: readyFullReviewDetails.yes,
+            }),
+            method: fc.constant('POST'),
+          }),
         ),
+      ),
       fc.user(),
       fc.incompleteQuestionsForm(),
     ])(
       'when the form is incomplete',
-      async (preprintId, preprintTitle, [readyFullReview, connection], user, newReview) => {
+      async (preprintId, preprintTitle, [readyFullReview, readyFullReviewDetails, connection], user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -88,7 +105,10 @@ describe('writeReviewReadyFullReview', () => {
           connection,
         )()
 
-        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ readyFullReview })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
+          readyFullReview,
+          readyFullReviewDetails,
+        })
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.SeeOther },
