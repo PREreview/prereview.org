@@ -6,10 +6,10 @@ import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
+import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
 import { canRapidReview } from '../feature-flags'
-import { type MissingE, hasAnError, missingE } from '../form'
+import { type FieldDecoders, type Fields, type ValidFields, decodeFields, hasAnError, requiredDecoder } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -76,7 +76,7 @@ export const writeReviewReadyFullReview = flow(
 
 const showReadyFullReviewForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    readyFullReviewForm(preprint, { readyFullReview: E.right(form.readyFullReview) }, user),
+    readyFullReviewForm(preprint, FormToFieldsE.encode(form), user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -91,15 +91,8 @@ const showReadyFullReviewErrorForm = (preprint: PreprintTitle, user: User) =>
 
 const handleReadyFullReviewForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
   pipe(
-    RM.decodeBody(body => E.right({ readyFullReview: pipe(ReadyFullReviewFieldD.decode(body), E.mapLeft(missingE)) })),
-    RM.chainEitherK(fields =>
-      pipe(
-        E.Do,
-        E.apS('readyFullReview', fields.readyFullReview),
-        E.mapLeft(() => fields),
-      ),
-    ),
-    RM.map(updateForm(form)),
+    RM.decodeBody(decodeFields(readyFullReviewFields)),
+    RM.map(updateFormWithFields(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
     RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
     RM.orElseW(error =>
@@ -110,16 +103,25 @@ const handleReadyFullReviewForm = ({ form, preprint, user }: { form: Form; prepr
     ),
   )
 
-const ReadyFullReviewFieldD = pipe(
-  D.struct({
-    readyFullReview: D.literal('no', 'yes-changes', 'yes'),
-  }),
-  D.map(get('readyFullReview')),
-)
+const readyFullReviewFields = {
+  readyFullReview: requiredDecoder(D.literal('no', 'yes-changes', 'yes')),
+} satisfies FieldDecoders
 
-type ReadyFullReviewForm = {
-  readonly readyFullReview: E.Either<MissingE, 'no' | 'yes-changes' | 'yes' | undefined>
+const updateFormWithFields = (form: Form) => flow(FieldsToFormE.encode, updateForm(form))
+
+const FieldsToFormE: Encoder<Form, ValidFields<typeof readyFullReviewFields>> = {
+  encode: fields => ({
+    readyFullReview: fields.readyFullReview,
+  }),
 }
+
+const FormToFieldsE: Encoder<ReadyFullReviewForm, Form> = {
+  encode: form => ({
+    readyFullReview: E.right(form.readyFullReview),
+  }),
+}
+
+type ReadyFullReviewForm = Fields<typeof readyFullReviewFields>
 
 function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm, user: User) {
   const error = hasAnError(form)
