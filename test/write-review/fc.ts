@@ -161,6 +161,19 @@ export const shouldReadDetails = (): fc.Arbitrary<Required<Form>['shouldReadDeta
 export const readyFullReview = (): fc.Arbitrary<Required<Form>['readyFullReview']> =>
   fc.constantFrom('yes', 'yes-changes', 'no')
 
+export const readyFullReviewDetails = (): fc.Arbitrary<Required<Form>['readyFullReviewDetails']> =>
+  fc.oneof(
+    fc.record(
+      {
+        yes: fc.nonEmptyString(),
+        'yes-changes': fc.nonEmptyString(),
+        no: fc.nonEmptyString(),
+      },
+      { withDeletedKeys: true },
+    ),
+    fc.constant({}),
+  )
+
 export const moreAuthors = (): fc.Arbitrary<Required<Form>['moreAuthors']> =>
   fc.constantFrom('yes', 'yes-private', 'no')
 
@@ -206,6 +219,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
             novelDetails: novelDetails(),
             languageEditingDetails: languageEditingDetails(),
             shouldReadDetails: shouldReadDetails(),
+            readyFullReviewDetails: readyFullReviewDetails(),
             moreAuthorsApproved: moreAuthorsApproved(),
             competingInterestsDetails: fc.nonEmptyString(),
             review: fc.html(),
@@ -253,6 +267,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             shouldRead: shouldRead(),
             shouldReadDetails: shouldReadDetails(),
             readyFullReview: readyFullReview(),
+            readyFullReviewDetails: readyFullReviewDetails(),
             reviewType: fc.constant('freeform' as const),
           },
           { withDeletedKeys: true },
@@ -364,6 +379,13 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           shouldReadDetails: fc.nonEmptyString(),
         },
         { requiredKeys: ['shouldRead'] },
+      ),
+      fc.record(
+        {
+          readyFullReview: readyFullReview(),
+          readyFullReviewDetails: fc.nonEmptyString(),
+        },
+        { requiredKeys: ['readyFullReview'] },
       ),
     )
     .map(parts => merge(...(parts as never)))

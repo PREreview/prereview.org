@@ -251,6 +251,11 @@ export const FormC = pipe(
       yes: NonEmptyStringC,
     }),
     readyFullReview: C.literal('no', 'yes-changes', 'yes'),
+    readyFullReviewDetails: C.partial({
+      no: NonEmptyStringC,
+      'yes-changes': NonEmptyStringC,
+      yes: NonEmptyStringC,
+    }),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     moreAuthorsApproved: C.literal('yes'),
     competingInterests: C.literal('yes', 'no'),

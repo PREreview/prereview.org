@@ -296,6 +296,7 @@ function renderReview(form: CompletedForm) {
                   .with('yes', () => 'Yes, as it is')
                   .exhaustive()}
               </dd>
+              ${form.readyFullReviewDetails ? html` <dd>${form.readyFullReviewDetails}</dd>` : ''}
             </div>
           </dl>`,
       )
@@ -613,6 +614,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                               .with('yes', () => 'Yes, as it is')
                               .exhaustive()}
                           </dd>
+                          ${review.readyFullReviewDetails ? html` <dd>${review.readyFullReviewDetails}</dd>` : ''}
                           <dd>
                             <a href="${format(writeReviewReadyFullReviewMatch.formatter, { id: preprint.id })}"
                               >Change
