@@ -119,7 +119,7 @@
     "postcss-font-display": "^0.3.0",
     "postcss-loader": "^7.3.3",
     "postcss-preset-env": "^9.1.1",
-    "prettier": "^3.0.1",
+    "prettier": "^3.0.2",
     "prettier-plugin-sh": "^0.13.1",
     "purgecss-webpack-plugin": "^5.0.0",
     "remixicon": "^3.5.0",
