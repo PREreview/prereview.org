@@ -30,6 +30,15 @@ export const CompletedFormC = pipe(
         C.struct({
           reviewType: C.literal('questions'),
           alreadyWritten: C.literal('no'),
+          introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),
+          methodsAppropriate: C.literal(
+            'inappropriate',
+            'somewhat-inappropriate',
+            'adequate',
+            'mostly-appropriate',
+            'highly-appropriate',
+            'skip',
+          ),
           resultsSupported: C.literal(
             'not-supported',
             'partially-supported',
@@ -38,294 +47,148 @@ export const CompletedFormC = pipe(
             'strongly-supported',
             'skip',
           ),
+          dataPresentation: C.literal(
+            'inappropriate-unclear',
+            'somewhat-inappropriate-unclear',
+            'neutral',
+            'mostly-appropriate-clear',
+            'highly-appropriate-clear',
+            'skip',
+          ),
+          findingsNextSteps: C.literal(
+            'inadequately',
+            'insufficiently',
+            'adequately',
+            'clearly-insightfully',
+            'exceptionally',
+            'skip',
+          ),
+          novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
+          languageEditing: C.literal('yes', 'no'),
+          shouldRead: C.literal('no', 'yes-but', 'yes'),
+          readyFullReview: C.literal('no', 'yes-changes', 'yes'),
         }),
         C.intersect(
-          pipe(
-            C.struct({ introductionMatches: C.literal('yes', 'partly', 'no', 'skip') }),
-            C.intersect(
-              C.partial({
-                introductionMatchesDetails: C.partial({
-                  yes: NonEmptyStringC,
-                  partly: NonEmptyStringC,
-                  no: NonEmptyStringC,
-                }),
-              }),
-            ),
-            C.imap(
-              ({ introductionMatches, introductionMatchesDetails }) =>
-                introductionMatches === 'skip' || !introductionMatchesDetails?.[introductionMatches]
-                  ? { introductionMatches }
-                  : {
-                      introductionMatches,
-                      introductionMatchesDetails: introductionMatchesDetails[introductionMatches],
-                    },
-              ({ introductionMatches, introductionMatchesDetails }) =>
-                introductionMatches === 'skip' || !introductionMatchesDetails
-                  ? { introductionMatches }
-                  : {
-                      introductionMatches,
-                      introductionMatchesDetails: { [introductionMatches]: introductionMatchesDetails },
-                    },
-            ),
-          ),
-        ),
-        C.intersect(
-          pipe(
-            C.struct({
-              methodsAppropriate: C.literal(
-                'inappropriate',
-                'somewhat-inappropriate',
-                'adequate',
-                'mostly-appropriate',
-                'highly-appropriate',
-                'skip',
-              ),
+          C.partial({
+            introductionMatchesDetails: C.partial({
+              yes: NonEmptyStringC,
+              partly: NonEmptyStringC,
+              no: NonEmptyStringC,
             }),
-            C.intersect(
-              C.partial({
-                methodsAppropriateDetails: C.partial({
-                  inappropriate: NonEmptyStringC,
-                  'somewhat-inappropriate': NonEmptyStringC,
-                  adequate: NonEmptyStringC,
-                  'mostly-appropriate': NonEmptyStringC,
-                  'highly-appropriate': NonEmptyStringC,
-                }),
-              }),
-            ),
-            C.imap(
-              ({ methodsAppropriate, methodsAppropriateDetails }) =>
-                methodsAppropriate === 'skip' || !methodsAppropriateDetails?.[methodsAppropriate]
-                  ? { methodsAppropriate }
-                  : {
-                      methodsAppropriate,
-                      methodsAppropriateDetails: methodsAppropriateDetails[methodsAppropriate],
-                    },
-              ({ methodsAppropriate, methodsAppropriateDetails }) =>
-                methodsAppropriate === 'skip' || !methodsAppropriateDetails
-                  ? { methodsAppropriate }
-                  : {
-                      methodsAppropriate,
-                      methodsAppropriateDetails: { [methodsAppropriate]: methodsAppropriateDetails },
-                    },
-            ),
-          ),
-        ),
-        C.intersect(
-          pipe(
-            C.struct({
-              resultsSupported: C.literal(
-                'not-supported',
-                'partially-supported',
-                'neutral',
-                'well-supported',
-                'strongly-supported',
-                'skip',
-              ),
+            methodsAppropriateDetails: C.partial({
+              inappropriate: NonEmptyStringC,
+              'somewhat-inappropriate': NonEmptyStringC,
+              adequate: NonEmptyStringC,
+              'mostly-appropriate': NonEmptyStringC,
+              'highly-appropriate': NonEmptyStringC,
             }),
-            C.intersect(
-              C.partial({
-                resultsSupportedDetails: C.partial({
-                  'not-supported': NonEmptyStringC,
-                  'partially-supported': NonEmptyStringC,
-                  neutral: NonEmptyStringC,
-                  'well-supported': NonEmptyStringC,
-                  'strongly-supported': NonEmptyStringC,
-                }),
-              }),
-            ),
-            C.imap(
-              ({ resultsSupported, resultsSupportedDetails }) =>
-                resultsSupported === 'skip' || !resultsSupportedDetails?.[resultsSupported]
-                  ? { resultsSupported }
-                  : {
-                      resultsSupported,
-                      resultsSupportedDetails: resultsSupportedDetails[resultsSupported],
-                    },
-              ({ resultsSupported, resultsSupportedDetails }) =>
-                resultsSupported === 'skip' || !resultsSupportedDetails
-                  ? { resultsSupported }
-                  : {
-                      resultsSupported,
-                      resultsSupportedDetails: { [resultsSupported]: resultsSupportedDetails },
-                    },
-            ),
-          ),
-        ),
-        C.intersect(
-          pipe(
-            C.struct({
-              dataPresentation: C.literal(
-                'inappropriate-unclear',
-                'somewhat-inappropriate-unclear',
-                'neutral',
-                'mostly-appropriate-clear',
-                'highly-appropriate-clear',
-                'skip',
-              ),
+            resultsSupportedDetails: C.partial({
+              'not-supported': NonEmptyStringC,
+              'partially-supported': NonEmptyStringC,
+              neutral: NonEmptyStringC,
+              'well-supported': NonEmptyStringC,
+              'strongly-supported': NonEmptyStringC,
             }),
-            C.intersect(
-              C.partial({
-                dataPresentationDetails: C.partial({
-                  'inappropriate-unclear': NonEmptyStringC,
-                  'somewhat-inappropriate-unclear': NonEmptyStringC,
-                  neutral: NonEmptyStringC,
-                  'mostly-appropriate-clear': NonEmptyStringC,
-                  'highly-appropriate-clear': NonEmptyStringC,
-                }),
-              }),
-            ),
-            C.imap(
-              ({ dataPresentation, dataPresentationDetails }) =>
-                dataPresentation === 'skip' || !dataPresentationDetails?.[dataPresentation]
-                  ? { dataPresentation }
-                  : {
-                      dataPresentation,
-                      dataPresentationDetails: dataPresentationDetails[dataPresentation],
-                    },
-              ({ dataPresentation, dataPresentationDetails }) =>
-                dataPresentation === 'skip' || !dataPresentationDetails
-                  ? { dataPresentation }
-                  : {
-                      dataPresentation,
-                      dataPresentationDetails: { [dataPresentation]: dataPresentationDetails },
-                    },
-            ),
-          ),
-        ),
-        C.intersect(
-          pipe(
-            C.struct({
-              findingsNextSteps: C.literal(
-                'inadequately',
-                'insufficiently',
-                'adequately',
-                'clearly-insightfully',
-                'exceptionally',
-                'skip',
-              ),
+            dataPresentationDetails: C.partial({
+              'inappropriate-unclear': NonEmptyStringC,
+              'somewhat-inappropriate-unclear': NonEmptyStringC,
+              neutral: NonEmptyStringC,
+              'mostly-appropriate-clear': NonEmptyStringC,
+              'highly-appropriate-clear': NonEmptyStringC,
             }),
-            C.intersect(
-              C.partial({
-                findingsNextStepsDetails: C.partial({
-                  inadequately: NonEmptyStringC,
-                  insufficiently: NonEmptyStringC,
-                  adequately: NonEmptyStringC,
-                  'clearly-insightfully': NonEmptyStringC,
-                  exceptionally: NonEmptyStringC,
-                  skip: NonEmptyStringC,
-                }),
-              }),
-            ),
-            C.imap(
-              ({ findingsNextSteps, findingsNextStepsDetails }) =>
-                findingsNextSteps === 'skip' || !findingsNextStepsDetails?.[findingsNextSteps]
-                  ? { findingsNextSteps }
-                  : {
-                      findingsNextSteps,
-                      findingsNextStepsDetails: findingsNextStepsDetails[findingsNextSteps],
-                    },
-              ({ findingsNextSteps, findingsNextStepsDetails }) =>
-                findingsNextSteps === 'skip' || !findingsNextStepsDetails
-                  ? { findingsNextSteps }
-                  : {
-                      findingsNextSteps,
-                      findingsNextStepsDetails: { [findingsNextSteps]: findingsNextStepsDetails },
-                    },
-            ),
-          ),
+            findingsNextStepsDetails: C.partial({
+              inadequately: NonEmptyStringC,
+              insufficiently: NonEmptyStringC,
+              adequately: NonEmptyStringC,
+              'clearly-insightfully': NonEmptyStringC,
+              exceptionally: NonEmptyStringC,
+              skip: NonEmptyStringC,
+            }),
+            novelDetails: C.partial({
+              no: NonEmptyStringC,
+              limited: NonEmptyStringC,
+              some: NonEmptyStringC,
+              substantial: NonEmptyStringC,
+              highly: NonEmptyStringC,
+            }),
+            languageEditingDetails: C.partial({
+              yes: NonEmptyStringC,
+              no: NonEmptyStringC,
+            }),
+            shouldReadDetails: C.partial({
+              no: NonEmptyStringC,
+              'yes-but': NonEmptyStringC,
+              yes: NonEmptyStringC,
+            }),
+            readyFullReviewDetails: C.partial({
+              no: NonEmptyStringC,
+              'yes-changes': NonEmptyStringC,
+              yes: NonEmptyStringC,
+            }),
+          }),
         ),
-        C.intersect(
-          pipe(
-            C.struct({ novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip') }),
-            C.intersect(
-              C.partial({
-                novelDetails: C.partial({
-                  no: NonEmptyStringC,
-                  limited: NonEmptyStringC,
-                  some: NonEmptyStringC,
-                  substantial: NonEmptyStringC,
-                  highly: NonEmptyStringC,
-                }),
-              }),
-            ),
-            C.imap(
-              ({ novel, novelDetails }) =>
-                novel === 'skip' || !novelDetails?.[novel] ? { novel } : { novel, novelDetails: novelDetails[novel] },
-              ({ novel, novelDetails }) =>
-                novel === 'skip' || !novelDetails ? { novel } : { novel, novelDetails: { [novel]: novelDetails } },
-            ),
-          ),
-        ),
-        C.intersect(
-          pipe(
-            C.struct({ languageEditing: C.literal('yes', 'no') }),
-            C.intersect(
-              C.partial({
-                languageEditingDetails: C.partial({
-                  yes: NonEmptyStringC,
-                  no: NonEmptyStringC,
-                }),
-              }),
-            ),
-            C.imap(
-              ({ languageEditing, languageEditingDetails }) =>
-                !languageEditingDetails?.[languageEditing]
-                  ? { languageEditing }
-                  : { languageEditing, languageEditingDetails: languageEditingDetails[languageEditing] },
-              ({ languageEditing, languageEditingDetails }) =>
-                !languageEditingDetails
-                  ? { languageEditing }
-                  : { languageEditing, languageEditingDetails: { [languageEditing]: languageEditingDetails } },
-            ),
-          ),
-        ),
-        C.intersect(
-          pipe(
-            C.struct({ shouldRead: C.literal('no', 'yes-but', 'yes') }),
-            C.intersect(
-              C.partial({
-                shouldReadDetails: C.partial({
-                  no: NonEmptyStringC,
-                  'yes-but': NonEmptyStringC,
-                  yes: NonEmptyStringC,
-                }),
-              }),
-            ),
-            C.imap(
-              ({ shouldRead, shouldReadDetails }) =>
-                !shouldReadDetails?.[shouldRead]
-                  ? { shouldRead }
-                  : { shouldRead, shouldReadDetails: shouldReadDetails[shouldRead] },
-              ({ shouldRead, shouldReadDetails }) =>
-                !shouldReadDetails
-                  ? { shouldRead }
-                  : { shouldRead, shouldReadDetails: { [shouldRead]: shouldReadDetails } },
-            ),
-          ),
-        ),
-        C.intersect(
-          pipe(
-            C.struct({ readyFullReview: C.literal('no', 'yes-changes', 'yes') }),
-            C.intersect(
-              C.partial({
-                readyFullReviewDetails: C.partial({
-                  no: NonEmptyStringC,
-                  'yes-changes': NonEmptyStringC,
-                  yes: NonEmptyStringC,
-                }),
-              }),
-            ),
-            C.imap(
-              ({ readyFullReview, readyFullReviewDetails }) =>
-                !readyFullReviewDetails?.[readyFullReview]
-                  ? { readyFullReview }
-                  : { readyFullReview, readyFullReviewDetails: readyFullReviewDetails[readyFullReview] },
-              ({ readyFullReview, readyFullReviewDetails }) =>
-                !readyFullReviewDetails
-                  ? { readyFullReview }
-                  : { readyFullReview, readyFullReviewDetails: { [readyFullReview]: readyFullReviewDetails } },
-            ),
-          ),
+        C.imap(
+          values => ({
+            ...values,
+            introductionMatchesDetails:
+              values.introductionMatches !== 'skip' && values.introductionMatchesDetails?.[values.introductionMatches]
+                ? values.introductionMatchesDetails[values.introductionMatches]
+                : undefined,
+            methodsAppropriateDetails:
+              values.methodsAppropriate !== 'skip' && values.methodsAppropriateDetails?.[values.methodsAppropriate]
+                ? values.methodsAppropriateDetails[values.methodsAppropriate]
+                : undefined,
+            resultsSupportedDetails:
+              values.resultsSupported !== 'skip' && values.resultsSupportedDetails?.[values.resultsSupported]
+                ? values.resultsSupportedDetails[values.resultsSupported]
+                : undefined,
+            dataPresentationDetails:
+              values.dataPresentation !== 'skip' && values.dataPresentationDetails?.[values.dataPresentation]
+                ? values.dataPresentationDetails[values.dataPresentation]
+                : undefined,
+            findingsNextStepsDetails:
+              values.findingsNextSteps !== 'skip' && values.findingsNextStepsDetails?.[values.findingsNextSteps]
+                ? values.findingsNextStepsDetails[values.findingsNextSteps]
+                : undefined,
+            novelDetails:
+              values.novel !== 'skip' && values.novelDetails?.[values.novel]
+                ? values.novelDetails[values.novel]
+                : undefined,
+            languageEditingDetails: values.languageEditingDetails?.[values.languageEditing],
+            shouldReadDetails: values.shouldReadDetails?.[values.shouldRead],
+            readyFullReviewDetails: values.readyFullReviewDetails?.[values.readyFullReview],
+          }),
+          values => ({
+            ...values,
+            introductionMatchesDetails:
+              values.introductionMatches !== 'skip' && values.introductionMatchesDetails
+                ? { [values.introductionMatches]: values.introductionMatchesDetails }
+                : {},
+            methodsAppropriateDetails:
+              values.methodsAppropriate !== 'skip' && values.methodsAppropriateDetails
+                ? { [values.methodsAppropriate]: values.methodsAppropriateDetails }
+                : {},
+            resultsSupportedDetails:
+              values.resultsSupported !== 'skip' && values.resultsSupportedDetails
+                ? { [values.resultsSupported]: values.resultsSupportedDetails }
+                : {},
+            dataPresentationDetails:
+              values.dataPresentation !== 'skip' && values.dataPresentationDetails
+                ? { [values.dataPresentation]: values.dataPresentationDetails }
+                : {},
+            findingsNextStepsDetails:
+              values.findingsNextSteps !== 'skip' && values.findingsNextStepsDetails
+                ? { [values.findingsNextSteps]: values.findingsNextStepsDetails }
+                : {},
+            novelDetails: values.novel !== 'skip' && values.novelDetails ? { [values.novel]: values.novelDetails } : {},
+            languageEditingDetails: values.languageEditingDetails
+              ? { [values.languageEditing]: values.languageEditingDetails }
+              : {},
+            shouldReadDetails: values.shouldReadDetails ? { [values.shouldRead]: values.shouldReadDetails } : {},
+            readyFullReviewDetails: values.readyFullReviewDetails
+              ? { [values.readyFullReview]: values.readyFullReviewDetails }
+              : {},
+          }),
         ),
       ),
       freeform: C.struct({
