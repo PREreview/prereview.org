@@ -78,7 +78,7 @@
     "@types/katex": "^0.16.2",
     "@types/make-fetch-happen": "^10.0.1",
     "@types/markdown-it": "^13.0.0",
-    "@types/node": "^18.17.5",
+    "@types/node": "^18.17.6",
     "@types/rtl-detect": "^1.0.0",
     "@types/sanitize-html": "^2.9.0",
     "@types/turndown": "^5.0.1",
