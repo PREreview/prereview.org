@@ -178,7 +178,7 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
                     ${E.isLeft(form.findingsNextSteps)
                       ? html`
                           <li>
-                            <a href="#findings-next-steps-inadequately">
+                            <a href="#findings-next-steps-exceptionally">
                               ${match(form.findingsNextSteps.left)
                                 .with(
                                   { _tag: 'MissingE' },
@@ -230,104 +230,33 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
                     <label>
                       <input
                         name="findingsNextSteps"
-                        id="findings-next-steps-inadequately"
+                        id="findings-next-steps-exceptionally"
                         type="radio"
-                        value="inadequately"
-                        aria-describedby="findings-next-steps-tip-inadequately"
-                        aria-controls="findings-next-steps-inadequately-control"
+                        value="exceptionally"
+                        aria-describedby="findings-next-steps-tip-exceptionally"
+                        aria-controls="findings-next-steps-exceptionally-control"
                         ${match(form.findingsNextSteps)
-                          .with({ right: 'inadequately' }, () => 'checked')
+                          .with({ right: 'exceptionally' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Inadequately</span>
+                      <span>Exceptionally</span>
                     </label>
-                    <p id="findings-next-steps-tip-inadequately" role="note">
-                      They fail to discuss, explain, or interpret their findings and potential next steps.
+                    <p id="findings-next-steps-tip-exceptionally" role="note">
+                      They demonstrate clarity, depth, and insight in their discussion, explanation, and interpretation
+                      of their findings and potential next steps.
                     </p>
-                    <div class="conditional" id="findings-next-steps-inadequately-control">
+                    <div class="conditional" id="findings-next-steps-exceptionally-control">
                       <div>
-                        <label for="findings-next-steps-inadequately-details" class="textarea"
-                          >Why is it inadequate? (optional)</label
+                        <label for="findings-next-steps-exceptionally-details" class="textarea"
+                          >Why is it exceptional? (optional)</label
                         >
 
                         <textarea
-                          name="findingsNextStepsInadequatelyDetails"
-                          id="findings-next-steps-inadequately-details"
+                          name="findingsNextStepsExceptionallyDetails"
+                          id="findings-next-steps-exceptionally-details"
                           rows="5"
                         >
-${match(form.findingsNextStepsInadequatelyDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="findingsNextSteps"
-                        type="radio"
-                        value="insufficiently"
-                        aria-describedby="findings-next-steps-tip-insufficiently"
-                        aria-controls="findings-next-steps-insufficiently-control"
-                        ${match(form.findingsNextSteps)
-                          .with({ right: 'insufficiently' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Insufficiently</span>
-                    </label>
-                    <p id="findings-next-steps-tip-insufficiently" role="note">
-                      They provide limited or insufficient discussion, explanation, or interpretation of their findings
-                      and potential next steps.
-                    </p>
-                    <div class="conditional" id="findings-next-steps-insufficiently-control">
-                      <div>
-                        <label for="findings-next-steps-insufficiently-details" class="textarea"
-                          >Why is it insufficient? (optional)</label
-                        >
-
-                        <textarea
-                          name="findingsNextStepsInsufficientlyDetails"
-                          id="findings-next-steps-insufficiently-details"
-                          rows="5"
-                        >
-${match(form.findingsNextStepsInsufficientlyDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="findingsNextSteps"
-                        type="radio"
-                        value="adequately"
-                        aria-describedby="findings-next-steps-tip-adequately"
-                        aria-controls="findings-next-steps-adequately-control"
-                        ${match(form.findingsNextSteps)
-                          .with({ right: 'adequately' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Adequately</span>
-                    </label>
-                    <p id="findings-next-steps-tip-adequately" role="note">
-                      They adequately discuss, explain, and interpret their findings and potential next steps for the
-                      research.
-                    </p>
-                    <div class="conditional" id="findings-next-steps-adequately-control">
-                      <div>
-                        <label for="findings-next-steps-adequately-details" class="textarea"
-                          >Why is it adequate? (optional)</label
-                        >
-
-                        <textarea
-                          name="findingsNextStepsAdequatelyDetails"
-                          id="findings-next-steps-adequately-details"
-                          rows="5"
-                        >
-${match(form.findingsNextStepsAdequatelyDetails)
+${match(form.findingsNextStepsExceptionallyDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
@@ -375,31 +304,102 @@ ${match(form.findingsNextStepsClearlyInsightfullyDetails)
                       <input
                         name="findingsNextSteps"
                         type="radio"
-                        value="exceptionally"
-                        aria-describedby="findings-next-steps-tip-exceptionally"
-                        aria-controls="findings-next-steps-exceptionally-control"
+                        value="adequately"
+                        aria-describedby="findings-next-steps-tip-adequately"
+                        aria-controls="findings-next-steps-adequately-control"
                         ${match(form.findingsNextSteps)
-                          .with({ right: 'exceptionally' }, () => 'checked')
+                          .with({ right: 'adequately' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Exceptionally</span>
+                      <span>Adequately</span>
                     </label>
-                    <p id="findings-next-steps-tip-exceptionally" role="note">
-                      They demonstrate clarity, depth, and insight in their discussion, explanation, and interpretation
-                      of their findings and potential next steps.
+                    <p id="findings-next-steps-tip-adequately" role="note">
+                      They adequately discuss, explain, and interpret their findings and potential next steps for the
+                      research.
                     </p>
-                    <div class="conditional" id="findings-next-steps-exceptionally-control">
+                    <div class="conditional" id="findings-next-steps-adequately-control">
                       <div>
-                        <label for="findings-next-steps-exceptionally-details" class="textarea"
-                          >Why is it exceptional? (optional)</label
+                        <label for="findings-next-steps-adequately-details" class="textarea"
+                          >Why is it adequate? (optional)</label
                         >
 
                         <textarea
-                          name="findingsNextStepsExceptionallyDetails"
-                          id="findings-next-steps-exceptionally-details"
+                          name="findingsNextStepsAdequatelyDetails"
+                          id="findings-next-steps-adequately-details"
                           rows="5"
                         >
-${match(form.findingsNextStepsExceptionallyDetails)
+${match(form.findingsNextStepsAdequatelyDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="findingsNextSteps"
+                        type="radio"
+                        value="insufficiently"
+                        aria-describedby="findings-next-steps-tip-insufficiently"
+                        aria-controls="findings-next-steps-insufficiently-control"
+                        ${match(form.findingsNextSteps)
+                          .with({ right: 'insufficiently' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Insufficiently</span>
+                    </label>
+                    <p id="findings-next-steps-tip-insufficiently" role="note">
+                      They provide limited or insufficient discussion, explanation, or interpretation of their findings
+                      and potential next steps.
+                    </p>
+                    <div class="conditional" id="findings-next-steps-insufficiently-control">
+                      <div>
+                        <label for="findings-next-steps-insufficiently-details" class="textarea"
+                          >Why is it insufficient? (optional)</label
+                        >
+
+                        <textarea
+                          name="findingsNextStepsInsufficientlyDetails"
+                          id="findings-next-steps-insufficiently-details"
+                          rows="5"
+                        >
+${match(form.findingsNextStepsInsufficientlyDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="findingsNextSteps"
+                        type="radio"
+                        value="inadequately"
+                        aria-describedby="findings-next-steps-tip-inadequately"
+                        aria-controls="findings-next-steps-inadequately-control"
+                        ${match(form.findingsNextSteps)
+                          .with({ right: 'inadequately' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Inadequately</span>
+                    </label>
+                    <p id="findings-next-steps-tip-inadequately" role="note">
+                      They fail to discuss, explain, or interpret their findings and potential next steps.
+                    </p>
+                    <div class="conditional" id="findings-next-steps-inadequately-control">
+                      <div>
+                        <label for="findings-next-steps-inadequately-details" class="textarea"
+                          >Why is it inadequate? (optional)</label
+                        >
+
+                        <textarea
+                          name="findingsNextStepsInadequatelyDetails"
+                          id="findings-next-steps-inadequately-details"
+                          rows="5"
+                        >
+${match(form.findingsNextStepsInadequatelyDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >

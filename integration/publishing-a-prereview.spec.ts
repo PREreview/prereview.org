@@ -2382,7 +2382,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       })
       .click()
 
-    await expect(page.getByLabel('Inadequately')).toBeFocused()
+    await expect(page.getByLabel('Exceptionally')).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
