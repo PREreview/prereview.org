@@ -171,7 +171,7 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
                     ${E.isLeft(form.novel)
                       ? html`
                           <li>
-                            <a href="#novel-no">
+                            <a href="#novel-highly">
                               ${match(form.novel.left)
                                 .with({ _tag: 'MissingE' }, () => 'Select if the findings are novel')
                                 .exhaustive()}
@@ -210,91 +210,27 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
                     <label>
                       <input
                         name="novel"
-                        id="novel-no"
+                        id="novel-highly"
                         type="radio"
-                        value="no"
-                        aria-describedby="novel-tip-no"
-                        aria-controls="novel-no-control"
+                        value="highly"
+                        aria-describedby="novel-tip-highly"
+                        aria-controls="novel-highly-control"
                         ${match(form.novel)
-                          .with({ right: 'no' }, () => 'checked')
+                          .with({ right: 'highly' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Not at all</span>
+                      <span>Highly novel</span>
                     </label>
-                    <p id="novel-tip-no" role="note">
-                      They lack novelty and fail to introduce new insights or advance the existing knowledge in the
-                      field.
+                    <p id="novel-tip-highly" role="note">
+                      They are highly innovative, representing groundbreaking contributions that substantially advance
+                      the understanding of the subject matter or introduce entirely new concepts.
                     </p>
-                    <div class="conditional" id="novel-no-control">
+                    <div class="conditional" id="novel-highly-control">
                       <div>
-                        <label for="novel-no-details" class="textarea">How is it not novel? (optional)</label>
+                        <label for="novel-highly-details" class="textarea">How is it highly novel? (optional)</label>
 
-                        <textarea name="novelNoDetails" id="novel-no-details" rows="5">
-${match(form.novelNoDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="novel"
-                        type="radio"
-                        value="limited"
-                        aria-describedby="novel-tip-limited"
-                        aria-controls="novel-limited-control"
-                        ${match(form.novel)
-                          .with({ right: 'limited' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Limited novelty</span>
-                    </label>
-                    <p id="novel-tip-limited" role="note">
-                      They offer only marginal advancements compared to previous research and provide limited new
-                      perspectives or ideas.
-                    </p>
-                    <div class="conditional" id="novel-limited-control">
-                      <div>
-                        <label for="novel-limited-details" class="textarea"
-                          >How does it have limited novelty? (optional)</label
-                        >
-
-                        <textarea name="novelLimitedDetails" id="novel-limited-details" rows="5">
-${match(form.novelLimitedDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="novel"
-                        type="radio"
-                        value="some"
-                        aria-describedby="novel-tip-some"
-                        aria-controls="novel-some-control"
-                        ${match(form.novel)
-                          .with({ right: 'some' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Some novelty</span>
-                    </label>
-                    <p id="novel-tip-some" role="note">
-                      They present a moderate level of novelty, introducing a few new aspects or perspectives that
-                      contribute to the existing body of knowledge.
-                    </p>
-                    <div class="conditional" id="novel-some-control">
-                      <div>
-                        <label for="novel-some-details" class="textarea"
-                          >How does it have some novelty? (optional)</label
-                        >
-
-                        <textarea name="novelSomeDetails" id="novel-some-details" rows="5">
-${match(form.novelSomeDetails)
+                        <textarea name="novelHighlyDetails" id="novel-highly-details" rows="5">
+${match(form.novelHighlyDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
@@ -338,25 +274,89 @@ ${match(form.novelSubstantialDetails)
                       <input
                         name="novel"
                         type="radio"
-                        value="highly"
-                        aria-describedby="novel-tip-highly"
-                        aria-controls="novel-highly-control"
+                        value="some"
+                        aria-describedby="novel-tip-some"
+                        aria-controls="novel-some-control"
                         ${match(form.novel)
-                          .with({ right: 'highly' }, () => 'checked')
+                          .with({ right: 'some' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Highly novel</span>
+                      <span>Some novelty</span>
                     </label>
-                    <p id="novel-tip-highly" role="note">
-                      They are highly innovative, representing groundbreaking contributions that substantially advance
-                      the understanding of the subject matter or introduce entirely new concepts.
+                    <p id="novel-tip-some" role="note">
+                      They present a moderate level of novelty, introducing a few new aspects or perspectives that
+                      contribute to the existing body of knowledge.
                     </p>
-                    <div class="conditional" id="novel-highly-control">
+                    <div class="conditional" id="novel-some-control">
                       <div>
-                        <label for="novel-highly-details" class="textarea">How is it highly novel? (optional)</label>
+                        <label for="novel-some-details" class="textarea"
+                          >How does it have some novelty? (optional)</label
+                        >
 
-                        <textarea name="novelHighlyDetails" id="novel-highly-details" rows="5">
-${match(form.novelHighlyDetails)
+                        <textarea name="novelSomeDetails" id="novel-some-details" rows="5">
+${match(form.novelSomeDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="novel"
+                        type="radio"
+                        value="limited"
+                        aria-describedby="novel-tip-limited"
+                        aria-controls="novel-limited-control"
+                        ${match(form.novel)
+                          .with({ right: 'limited' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Limited novelty</span>
+                    </label>
+                    <p id="novel-tip-limited" role="note">
+                      They offer only marginal advancements compared to previous research and provide limited new
+                      perspectives or ideas.
+                    </p>
+                    <div class="conditional" id="novel-limited-control">
+                      <div>
+                        <label for="novel-limited-details" class="textarea"
+                          >How does it have limited novelty? (optional)</label
+                        >
+
+                        <textarea name="novelLimitedDetails" id="novel-limited-details" rows="5">
+${match(form.novelLimitedDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="novel"
+                        type="radio"
+                        value="no"
+                        aria-describedby="novel-tip-no"
+                        aria-controls="novel-no-control"
+                        ${match(form.novel)
+                          .with({ right: 'no' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Not at all</span>
+                    </label>
+                    <p id="novel-tip-no" role="note">
+                      They lack novelty and fail to introduce new insights or advance the existing knowledge in the
+                      field.
+                    </p>
+                    <div class="conditional" id="novel-no-control">
+                      <div>
+                        <label for="novel-no-details" class="textarea">How is it not novel? (optional)</label>
+
+                        <textarea name="novelNoDetails" id="novel-no-details" rows="5">
+${match(form.novelNoDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >

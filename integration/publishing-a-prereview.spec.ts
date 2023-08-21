@@ -2428,7 +2428,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       })
       .click()
 
-    await expect(page.getByLabel('Not at all')).toBeFocused()
+    await expect(page.getByLabel('Highly novel', { exact: true })).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
