@@ -2563,7 +2563,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Select yes if it is ready for a full and detailed review' }).click()
 
-    await expect(page.getByLabel('No, it needs a major revision')).toBeFocused()
+    await expect(page.getByLabel('Yes, as it is')).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()

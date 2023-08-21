@@ -169,7 +169,7 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
                     ${E.isLeft(form.readyFullReview)
                       ? html`
                           <li>
-                            <a href="#ready-full-review-no">
+                            <a href="#ready-full-review-yes">
                               ${match(form.readyFullReview.left)
                                 .with(
                                   { _tag: 'MissingE' },
@@ -215,24 +215,22 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
                     <label>
                       <input
                         name="readyFullReview"
-                        id="ready-full-review-no"
+                        id="ready-full-review-yes"
                         type="radio"
-                        value="no"
-                        aria-controls="ready-full-review-no-control"
+                        value="yes"
+                        aria-controls="ready-full-review-yes-control"
                         ${match(form.readyFullReview)
-                          .with({ right: 'no' }, () => 'checked')
+                          .with({ right: 'yes' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>No, it needs a major revision</span>
+                      <span>Yes, as it is</span>
                     </label>
-                    <div class="conditional" id="ready-full-review-no-control">
+                    <div class="conditional" id="ready-full-review-yes-control">
                       <div>
-                        <label for="ready-full-review-no-details" class="textarea"
-                          >What needs to change? (optional)</label
-                        >
+                        <label for="ready-full-review-yes-details" class="textarea">Why is it ready? (optional)</label>
 
-                        <textarea name="readyFullReviewNoDetails" id="ready-full-review-no-details" rows="5">
-${match(form.readyFullReviewNoDetails)
+                        <textarea name="readyFullReviewYesDetails" id="ready-full-review-yes-details" rows="5">
+${match(form.readyFullReviewYesDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
@@ -275,20 +273,22 @@ ${match(form.readyFullReviewYesChangesDetails)
                       <input
                         name="readyFullReview"
                         type="radio"
-                        value="yes"
-                        aria-controls="ready-full-review-yes-control"
+                        value="no"
+                        aria-controls="ready-full-review-no-control"
                         ${match(form.readyFullReview)
-                          .with({ right: 'yes' }, () => 'checked')
+                          .with({ right: 'no' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Yes, as it is</span>
+                      <span>No, it needs a major revision</span>
                     </label>
-                    <div class="conditional" id="ready-full-review-yes-control">
+                    <div class="conditional" id="ready-full-review-no-control">
                       <div>
-                        <label for="ready-full-review-yes-details" class="textarea">Why is it ready? (optional)</label>
+                        <label for="ready-full-review-no-details" class="textarea"
+                          >What needs to change? (optional)</label
+                        >
 
-                        <textarea name="readyFullReviewYesDetails" id="ready-full-review-yes-details" rows="5">
-${match(form.readyFullReviewYesDetails)
+                        <textarea name="readyFullReviewNoDetails" id="ready-full-review-no-details" rows="5">
+${match(form.readyFullReviewNoDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
