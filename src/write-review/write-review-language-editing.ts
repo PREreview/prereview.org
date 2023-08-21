@@ -166,7 +166,7 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
                     ${E.isLeft(form.languageEditing)
                       ? html`
                           <li>
-                            <a href="#language-editing-yes">
+                            <a href="#language-editing-no">
                               ${match(form.languageEditing.left)
                                 .with(
                                   { _tag: 'MissingE' },
@@ -212,36 +212,7 @@ function languageEditingForm(preprint: PreprintTitle, form: LanguageEditingForm,
                     <label>
                       <input
                         name="languageEditing"
-                        id="language-editing-yes"
-                        type="radio"
-                        value="yes"
-                        aria-describedby="language-editing-tip-yes"
-                        aria-controls="language-editing-yes-control"
-                        ${match(form.languageEditing)
-                          .with({ right: 'yes' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Yes</span>
-                    </label>
-                    <p id="language-editing-tip-yes" role="note">
-                      Grammatical errors, awkward phrasing, or unclear expressions may hinder comprehension.
-                    </p>
-                    <div class="conditional" id="language-editing-yes-control">
-                      <div>
-                        <label for="language-editing-yes-details" class="textarea">Why would it? (optional)</label>
-
-                        <textarea name="languageEditingYesDetails" id="language-editing-yes-details" rows="5">
-${match(form.languageEditingYesDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="languageEditing"
+                        id="language-editing-no"
                         type="radio"
                         value="no"
                         aria-describedby="language-editing-tip-no"
@@ -261,6 +232,35 @@ ${match(form.languageEditingYesDetails)
 
                         <textarea name="languageEditingNoDetails" id="language-editing-no-details" rows="5">
 ${match(form.languageEditingNoDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="languageEditing"
+                        type="radio"
+                        value="yes"
+                        aria-describedby="language-editing-tip-yes"
+                        aria-controls="language-editing-yes-control"
+                        ${match(form.languageEditing)
+                          .with({ right: 'yes' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Yes</span>
+                    </label>
+                    <p id="language-editing-tip-yes" role="note">
+                      Grammatical errors, awkward phrasing, or unclear expressions may hinder comprehension.
+                    </p>
+                    <div class="conditional" id="language-editing-yes-control">
+                      <div>
+                        <label for="language-editing-yes-details" class="textarea">Why would it? (optional)</label>
+
+                        <textarea name="languageEditingYesDetails" id="language-editing-yes-details" rows="5">
+${match(form.languageEditingYesDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >

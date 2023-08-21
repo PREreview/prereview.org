@@ -2471,7 +2471,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Select yes if it would benefit from language editing' }).click()
 
-    await expect(page.getByLabel('Yes')).toBeFocused()
+    await expect(page.getByLabel('No')).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
