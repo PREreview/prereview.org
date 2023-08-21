@@ -177,7 +177,7 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
                     ${E.isLeft(form.resultsSupported)
                       ? html`
                           <li>
-                            <a href="#results-supported-not-supported">
+                            <a href="#results-supported-strongly-supported">
                               ${match(form.resultsSupported.left)
                                 .with(
                                   { _tag: 'MissingE' },
@@ -223,101 +223,33 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
                     <label>
                       <input
                         name="resultsSupported"
-                        id="results-supported-not-supported"
+                        id="results-supported-strongly-supported"
                         type="radio"
-                        value="not-supported"
-                        aria-describedby="results-supported-tip-not-supported"
-                        aria-controls="results-supported-not-supported-control"
+                        value="strongly-supported"
+                        aria-describedby="results-supported-tip-strongly-supported"
+                        aria-controls="results-supported-strongly-supported-control"
                         ${match(form.resultsSupported)
-                          .with({ right: 'not-supported' }, () => 'checked')
+                          .with({ right: 'strongly-supported' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Not supported</span>
+                      <span>Strongly supported</span>
                     </label>
-                    <p id="results-supported-tip-not-supported" role="note">
-                      Significant discrepancies, contradictions, or inconsistencies exist between the reported results
-                      and the data provided or analyzed.
+                    <p id="results-supported-tip-strongly-supported" role="note">
+                      The data analysis is thorough, and the conclusions drawn from the data are highly reliable and
+                      trustworthy.
                     </p>
-                    <div class="conditional" id="results-supported-not-supported-control">
+                    <div class="conditional" id="results-supported-strongly-supported-control">
                       <div>
-                        <label for="results-supported-not-supported-details" class="textarea"
-                          >Why are they not supported? (optional)</label
+                        <label for="results-supported-strongly-supported-details" class="textarea"
+                          >Why are they strongly supported? (optional)</label
                         >
 
                         <textarea
-                          name="resultsSupportedNotSupportedDetails"
-                          id="results-supported-not-supported-details"
+                          name="resultsSupportedStronglySupportedDetails"
+                          id="results-supported-strongly-supported-details"
                           rows="5"
                         >
-${match(form.resultsSupportedNotSupportedDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="resultsSupported"
-                        type="radio"
-                        value="partially-supported"
-                        aria-describedby="results-supported-tip-partially-supported"
-                        aria-controls="results-supported-partially-supported-control"
-                        ${match(form.resultsSupported)
-                          .with({ right: 'partially-supported' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Partially supported</span>
-                    </label>
-                    <p id="results-supported-tip-partially-supported" role="note">
-                      Some aspects of the data analysis or interpretation may raise concerns about the validity or
-                      generalizability of the reported results.
-                    </p>
-                    <div class="conditional" id="results-supported-partially-supported-control">
-                      <div>
-                        <label for="results-supported-partially-supported-details" class="textarea"
-                          >Why are they partially supported? (optional)</label
-                        >
-
-                        <textarea
-                          name="resultsSupportedPartiallySupportedDetails"
-                          id="results-supported-partially-supported-details"
-                          rows="5"
-                        >
-${match(form.resultsSupportedPartiallySupportedDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="resultsSupported"
-                        type="radio"
-                        value="neutral"
-                        aria-describedby="results-supported-tip-neutral"
-                        aria-controls="results-supported-neutral-control"
-                        ${match(form.resultsSupported)
-                          .with({ right: 'neutral' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Neither supported nor not supported</span>
-                    </label>
-                    <p id="results-supported-tip-neutral" role="note">
-                      Minor gaps or uncertainties in the data analysis could be addressed to further strengthen the
-                      support for the reported results.
-                    </p>
-                    <div class="conditional" id="results-supported-neutral-control">
-                      <div>
-                        <label for="results-supported-neutral-details" class="textarea"
-                          >Why are they neither supported nor not supported? (optional)</label
-                        >
-
-                        <textarea name="resultsSupportedNeutralDetails" id="results-supported-neutral-details" rows="5">
-${match(form.resultsSupportedNeutralDetails)
+${match(form.resultsSupportedStronglySupportedDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
@@ -365,31 +297,99 @@ ${match(form.resultsSupportedWellSupportedDetails)
                       <input
                         name="resultsSupported"
                         type="radio"
-                        value="strongly-supported"
-                        aria-describedby="results-supported-tip-strongly-supported"
-                        aria-controls="results-supported-strongly-supported-control"
+                        value="neutral"
+                        aria-describedby="results-supported-tip-neutral"
+                        aria-controls="results-supported-neutral-control"
                         ${match(form.resultsSupported)
-                          .with({ right: 'strongly-supported' }, () => 'checked')
+                          .with({ right: 'neutral' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Strongly supported</span>
+                      <span>Neither supported nor not supported</span>
                     </label>
-                    <p id="results-supported-tip-strongly-supported" role="note">
-                      The data analysis is thorough, and the conclusions drawn from the data are highly reliable and
-                      trustworthy.
+                    <p id="results-supported-tip-neutral" role="note">
+                      Minor gaps or uncertainties in the data analysis could be addressed to further strengthen the
+                      support for the reported results.
                     </p>
-                    <div class="conditional" id="results-supported-strongly-supported-control">
+                    <div class="conditional" id="results-supported-neutral-control">
                       <div>
-                        <label for="results-supported-strongly-supported-details" class="textarea"
-                          >Why are they strongly supported? (optional)</label
+                        <label for="results-supported-neutral-details" class="textarea"
+                          >Why are they neither supported nor not supported? (optional)</label
+                        >
+
+                        <textarea name="resultsSupportedNeutralDetails" id="results-supported-neutral-details" rows="5">
+${match(form.resultsSupportedNeutralDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="resultsSupported"
+                        type="radio"
+                        value="partially-supported"
+                        aria-describedby="results-supported-tip-partially-supported"
+                        aria-controls="results-supported-partially-supported-control"
+                        ${match(form.resultsSupported)
+                          .with({ right: 'partially-supported' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Partially supported</span>
+                    </label>
+                    <p id="results-supported-tip-partially-supported" role="note">
+                      Some aspects of the data analysis or interpretation may raise concerns about the validity or
+                      generalizability of the reported results.
+                    </p>
+                    <div class="conditional" id="results-supported-partially-supported-control">
+                      <div>
+                        <label for="results-supported-partially-supported-details" class="textarea"
+                          >Why are they partially supported? (optional)</label
                         >
 
                         <textarea
-                          name="resultsSupportedStronglySupportedDetails"
-                          id="results-supported-strongly-supported-details"
+                          name="resultsSupportedPartiallySupportedDetails"
+                          id="results-supported-partially-supported-details"
                           rows="5"
                         >
-${match(form.resultsSupportedStronglySupportedDetails)
+${match(form.resultsSupportedPartiallySupportedDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="resultsSupported"
+                        type="radio"
+                        value="not-supported"
+                        aria-describedby="results-supported-tip-not-supported"
+                        aria-controls="results-supported-not-supported-control"
+                        ${match(form.resultsSupported)
+                          .with({ right: 'not-supported' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Not supported</span>
+                    </label>
+                    <p id="results-supported-tip-not-supported" role="note">
+                      Significant discrepancies, contradictions, or inconsistencies exist between the reported results
+                      and the data provided or analyzed.
+                    </p>
+                    <div class="conditional" id="results-supported-not-supported-control">
+                      <div>
+                        <label for="results-supported-not-supported-details" class="textarea"
+                          >Why are they not supported? (optional)</label
+                        >
+
+                        <textarea
+                          name="resultsSupportedNotSupportedDetails"
+                          id="results-supported-not-supported-details"
+                          rows="5"
+                        >
+${match(form.resultsSupportedNotSupportedDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
