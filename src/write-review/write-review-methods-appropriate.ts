@@ -182,7 +182,7 @@ function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriat
                     ${E.isLeft(form.methodsAppropriate)
                       ? html`
                           <li>
-                            <a href="#methods-appropriate-inappropriate">
+                            <a href="#methods-appropriate-highly-appropriate">
                               ${match(form.methodsAppropriate.left)
                                 .with({ _tag: 'MissingE' }, () => 'Select if the methods are appropriate')
                                 .exhaustive()}
@@ -225,103 +225,33 @@ function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriat
                     <label>
                       <input
                         name="methodsAppropriate"
-                        id="methods-appropriate-inappropriate"
+                        id="methods-appropriate-highly-appropriate"
                         type="radio"
-                        value="inappropriate"
-                        aria-describedby="methods-appropriate-tip-inappropriate"
-                        aria-controls="methods-appropriate-inappropriate-control"
+                        value="highly-appropriate"
+                        aria-describedby="methods-appropriate-tip-highly-appropriate"
+                        aria-controls="methods-appropriate-highly-appropriate-control"
                         ${match(form.methodsAppropriate)
-                          .with({ right: 'inappropriate' }, () => 'checked')
+                          .with({ right: 'highly-appropriate' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Inappropriate</span>
+                      <span>Highly appropriate</span>
                     </label>
-                    <p id="methods-appropriate-tip-inappropriate" role="note">
-                      They are fundamentally flawed, invalid, or inconsistent with standard practices.
+                    <p id="methods-appropriate-tip-highly-appropriate" role="note">
+                      They follow best practices, are rigorously executed, and provide a robust foundation for drawing
+                      valid conclusions.
                     </p>
-                    <div class="conditional" id="methods-appropriate-inappropriate-control">
+                    <div class="conditional" id="methods-appropriate-highly-appropriate-control">
                       <div>
-                        <label for="methods-appropriate-inappropriate-details" class="textarea"
-                          >Why are they inappropriate? (optional)</label
+                        <label for="methods-appropriate-highly-appropriate-details" class="textarea"
+                          >Why are they highly appropriate? (optional)</label
                         >
 
                         <textarea
-                          name="methodsAppropriateInappropriateDetails"
-                          id="methods-appropriate-inappropriate-details"
+                          name="methodsAppropriateHighlyAppropriateDetails"
+                          id="methods-appropriate-highly-appropriate-details"
                           rows="5"
                         >
-${match(form.methodsAppropriateInappropriateDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="methodsAppropriate"
-                        type="radio"
-                        value="somewhat-inappropriate"
-                        aria-describedby="methods-appropriate-tip-somewhat-inappropriate"
-                        aria-controls="methods-appropriate-somewhat-inappropriate-control"
-                        ${match(form.methodsAppropriate)
-                          .with({ right: 'somewhat-inappropriate' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Somewhat inappropriate</span>
-                    </label>
-                    <p id="methods-appropriate-tip-somewhat-inappropriate" role="note">
-                      They have certain flaws or deviations from best practices but still provide helpful information or
-                      insights.
-                    </p>
-                    <div class="conditional" id="methods-appropriate-somewhat-inappropriate-control">
-                      <div>
-                        <label for="methods-appropriate-somewhat-inappropriate-details" class="textarea"
-                          >Why are they somewhat inappropriate? (optional)</label
-                        >
-
-                        <textarea
-                          name="methodsAppropriateSomewhatInappropriateDetails"
-                          id="methods-appropriate-somewhat-inappropriate-details"
-                          rows="5"
-                        >
-${match(form.methodsAppropriateSomewhatInappropriateDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="methodsAppropriate"
-                        type="radio"
-                        value="adequate"
-                        aria-describedby="methods-appropriate-tip-adequate"
-                        aria-controls="methods-appropriate-adequate-control"
-                        ${match(form.methodsAppropriate)
-                          .with({ right: 'adequate' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Adequate</span>
-                    </label>
-                    <p id="methods-appropriate-tip-adequate" role="note">
-                      They follow standard practices and give a reasonable basis for answering the research question.
-                    </p>
-                    <div class="conditional" id="methods-appropriate-adequate-control">
-                      <div>
-                        <label for="methods-appropriate-adequate-details" class="textarea"
-                          >Why are they adequate? (optional)</label
-                        >
-
-                        <textarea
-                          name="methodsAppropriateAdequateDetails"
-                          id="methods-appropriate-adequate-details"
-                          rows="5"
-                        >
-${match(form.methodsAppropriateAdequateDetails)
+${match(form.methodsAppropriateHighlyAppropriateDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
@@ -369,31 +299,101 @@ ${match(form.methodsAppropriateMostlyAppropriateDetails)
                       <input
                         name="methodsAppropriate"
                         type="radio"
-                        value="highly-appropriate"
-                        aria-describedby="methods-appropriate-tip-highly-appropriate"
-                        aria-controls="methods-appropriate-highly-appropriate-control"
+                        value="adequate"
+                        aria-describedby="methods-appropriate-tip-adequate"
+                        aria-controls="methods-appropriate-adequate-control"
                         ${match(form.methodsAppropriate)
-                          .with({ right: 'highly-appropriate' }, () => 'checked')
+                          .with({ right: 'adequate' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Highly appropriate</span>
+                      <span>Adequate</span>
                     </label>
-                    <p id="methods-appropriate-tip-highly-appropriate" role="note">
-                      They follow best practices, are rigorously executed, and provide a robust foundation for drawing
-                      valid conclusions.
+                    <p id="methods-appropriate-tip-adequate" role="note">
+                      They follow standard practices and give a reasonable basis for answering the research question.
                     </p>
-                    <div class="conditional" id="methods-appropriate-highly-appropriate-control">
+                    <div class="conditional" id="methods-appropriate-adequate-control">
                       <div>
-                        <label for="methods-appropriate-highly-appropriate-details" class="textarea"
-                          >Why are they highly appropriate? (optional)</label
+                        <label for="methods-appropriate-adequate-details" class="textarea"
+                          >Why are they adequate? (optional)</label
                         >
 
                         <textarea
-                          name="methodsAppropriateHighlyAppropriateDetails"
-                          id="methods-appropriate-highly-appropriate-details"
+                          name="methodsAppropriateAdequateDetails"
+                          id="methods-appropriate-adequate-details"
                           rows="5"
                         >
-${match(form.methodsAppropriateHighlyAppropriateDetails)
+${match(form.methodsAppropriateAdequateDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="methodsAppropriate"
+                        type="radio"
+                        value="somewhat-inappropriate"
+                        aria-describedby="methods-appropriate-tip-somewhat-inappropriate"
+                        aria-controls="methods-appropriate-somewhat-inappropriate-control"
+                        ${match(form.methodsAppropriate)
+                          .with({ right: 'somewhat-inappropriate' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Somewhat inappropriate</span>
+                    </label>
+                    <p id="methods-appropriate-tip-somewhat-inappropriate" role="note">
+                      They have certain flaws or deviations from best practices but still provide helpful information or
+                      insights.
+                    </p>
+                    <div class="conditional" id="methods-appropriate-somewhat-inappropriate-control">
+                      <div>
+                        <label for="methods-appropriate-somewhat-inappropriate-details" class="textarea"
+                          >Why are they somewhat inappropriate? (optional)</label
+                        >
+
+                        <textarea
+                          name="methodsAppropriateSomewhatInappropriateDetails"
+                          id="methods-appropriate-somewhat-inappropriate-details"
+                          rows="5"
+                        >
+${match(form.methodsAppropriateSomewhatInappropriateDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="methodsAppropriate"
+                        type="radio"
+                        value="inappropriate"
+                        aria-describedby="methods-appropriate-tip-inappropriate"
+                        aria-controls="methods-appropriate-inappropriate-control"
+                        ${match(form.methodsAppropriate)
+                          .with({ right: 'inappropriate' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Inappropriate</span>
+                    </label>
+                    <p id="methods-appropriate-tip-inappropriate" role="note">
+                      They are fundamentally flawed, invalid, or inconsistent with standard practices.
+                    </p>
+                    <div class="conditional" id="methods-appropriate-inappropriate-control">
+                      <div>
+                        <label for="methods-appropriate-inappropriate-details" class="textarea"
+                          >Why are they inappropriate? (optional)</label
+                        >
+
+                        <textarea
+                          name="methodsAppropriateInappropriateDetails"
+                          id="methods-appropriate-inappropriate-details"
+                          rows="5"
+                        >
+${match(form.methodsAppropriateInappropriateDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
