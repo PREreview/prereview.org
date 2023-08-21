@@ -187,7 +187,7 @@ function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationFor
                     ${E.isLeft(form.dataPresentation)
                       ? html`
                           <li>
-                            <a href="#data-presentation-inappropriate-unclear">
+                            <a href="#data-presentation-highly-appropriate">
                               ${match(form.dataPresentation.left)
                                 .with(
                                   { _tag: 'MissingE' },
@@ -236,32 +236,99 @@ function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationFor
                     <label>
                       <input
                         name="dataPresentation"
-                        id="data-presentation-inappropriate-unclear"
+                        id="data-presentation-highly-appropriate"
                         type="radio"
-                        value="inappropriate-unclear"
-                        aria-describedby="data-presentation-tip-inappropriate-unclear"
-                        aria-controls="data-presentation-inappropriate-unclear-control"
+                        value="highly-appropriate-clear"
+                        aria-describedby="data-presentation-tip-highly-appropriate-clear"
+                        aria-controls="data-presentation-highly-appropriate-clear-control"
                         ${match(form.dataPresentation)
-                          .with({ right: 'inappropriate-unclear' }, () => 'checked')
+                          .with({ right: 'highly-appropriate-clear' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Inappropriate and unclear</span>
+                      <span>Highly appropriate and clear</span>
                     </label>
-                    <p id="data-presentation-tip-inappropriate-unclear" role="note">
-                      They lack proper labeling, appropriate scales, or relevant contextual information.
+                    <p id="data-presentation-tip-highly-appropriate-clear" role="note">
+                      They effectively communicate the key messages and patterns in the data.
                     </p>
-                    <div class="conditional" id="data-presentation-inappropriate-unclear-control">
+                    <div class="conditional" id="data-presentation-highly-appropriate-clear-control">
                       <div>
-                        <label for="data-presentation-inappropriate-unclear-details" class="textarea"
-                          >Why are they inappropriate and unclear? (optional)</label
+                        <label for="data-presentation-highly-appropriate-clear-details" class="textarea"
+                          >Why are they highly appropriate and clear? (optional)</label
                         >
 
                         <textarea
-                          name="dataPresentationInappropriateUnclearDetails"
-                          id="data-presentation-inappropriate-unclear-details"
+                          name="dataPresentationHighlyAppropriateClearDetails"
+                          id="data-presentation-highly-appropriate-clear-details"
                           rows="5"
                         >
-${match(form.dataPresentationInappropriateUnclearDetails)
+${match(form.dataPresentationHighlyAppropriateClearDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="dataPresentation"
+                        type="radio"
+                        value="mostly-appropriate-clear"
+                        aria-describedby="data-presentation-tip-mostly-appropriate-clear"
+                        aria-controls="data-presentation-mostly-appropriate-clear-control"
+                        ${match(form.dataPresentation)
+                          .with({ right: 'mostly-appropriate-clear' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Mostly appropriate and clear</span>
+                    </label>
+                    <p id="data-presentation-tip-mostly-appropriate-clear" role="note">
+                      They represent the data well, allowing for a clear understanding of the findings and trends.
+                    </p>
+                    <div class="conditional" id="data-presentation-mostly-appropriate-clear-control">
+                      <div>
+                        <label for="data-presentation-mostly-appropriate-clear-details" class="textarea"
+                          >Why are they mostly appropriate and clear? (optional)</label
+                        >
+
+                        <textarea
+                          name="dataPresentationMostlyAppropriateClearDetails"
+                          id="data-presentation-mostly-appropriate-clear-details"
+                          rows="5"
+                        >
+${match(form.dataPresentationMostlyAppropriateClearDetails)
+                            .with({ right: P.select(P.string) }, identity)
+                            .otherwise(() => '')}</textarea
+                        >
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <label>
+                      <input
+                        name="dataPresentation"
+                        type="radio"
+                        value="neutral"
+                        aria-describedby="data-presentation-tip-neutral"
+                        aria-controls="data-presentation-neutral-control"
+                        ${match(form.dataPresentation)
+                          .with({ right: 'neutral' }, () => 'checked')
+                          .otherwise(() => '')}
+                      />
+                      <span>Neither adequate nor inadequate</span>
+                    </label>
+                    <p id="data-presentation-tip-neutral" role="note">
+                      They effectively convey the necessary information, employ appropriate labeling, and utilize
+                      suitable visual elements to enhance comprehension.
+                    </p>
+                    <div class="conditional" id="data-presentation-neutral-control">
+                      <div>
+                        <label for="data-presentation-neutral-details" class="textarea"
+                          >Why are they neither adequate nor inadequate? (optional)</label
+                        >
+
+                        <textarea name="dataPresentationNeutralDetails" id="data-presentation-neutral-details" rows="5">
+${match(form.dataPresentationNeutralDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
@@ -309,97 +376,30 @@ ${match(form.dataPresentationSomewhatInappropriateUnclearDetails)
                       <input
                         name="dataPresentation"
                         type="radio"
-                        value="neutral"
-                        aria-describedby="data-presentation-tip-neutral"
-                        aria-controls="data-presentation-neutral-control"
+                        value="inappropriate-unclear"
+                        aria-describedby="data-presentation-tip-inappropriate-unclear"
+                        aria-controls="data-presentation-inappropriate-unclear-control"
                         ${match(form.dataPresentation)
-                          .with({ right: 'neutral' }, () => 'checked')
+                          .with({ right: 'inappropriate-unclear' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Neither adequate nor inadequate</span>
+                      <span>Inappropriate and unclear</span>
                     </label>
-                    <p id="data-presentation-tip-neutral" role="note">
-                      They effectively convey the necessary information, employ appropriate labeling, and utilize
-                      suitable visual elements to enhance comprehension.
+                    <p id="data-presentation-tip-inappropriate-unclear" role="note">
+                      They lack proper labeling, appropriate scales, or relevant contextual information.
                     </p>
-                    <div class="conditional" id="data-presentation-neutral-control">
+                    <div class="conditional" id="data-presentation-inappropriate-unclear-control">
                       <div>
-                        <label for="data-presentation-neutral-details" class="textarea"
-                          >Why are they neither adequate nor inadequate? (optional)</label
-                        >
-
-                        <textarea name="dataPresentationNeutralDetails" id="data-presentation-neutral-details" rows="5">
-${match(form.dataPresentationNeutralDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="dataPresentation"
-                        type="radio"
-                        value="mostly-appropriate-clear"
-                        aria-describedby="data-presentation-tip-mostly-appropriate-clear"
-                        aria-controls="data-presentation-mostly-appropriate-clear-control"
-                        ${match(form.dataPresentation)
-                          .with({ right: 'mostly-appropriate-clear' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Mostly appropriate and clear</span>
-                    </label>
-                    <p id="data-presentation-tip-mostly-appropriate-clear" role="note">
-                      They represent the data well, allowing for a clear understanding of the findings and trends.
-                    </p>
-                    <div class="conditional" id="data-presentation-mostly-appropriate-clear-control">
-                      <div>
-                        <label for="data-presentation-mostly-appropriate-clear-details" class="textarea"
-                          >Why are they mostly appropriate and clear? (optional)</label
+                        <label for="data-presentation-inappropriate-unclear-details" class="textarea"
+                          >Why are they inappropriate and unclear? (optional)</label
                         >
 
                         <textarea
-                          name="dataPresentationMostlyAppropriateClearDetails"
-                          id="data-presentation-mostly-appropriate-clear-details"
+                          name="dataPresentationInappropriateUnclearDetails"
+                          id="data-presentation-inappropriate-unclear-details"
                           rows="5"
                         >
-${match(form.dataPresentationMostlyAppropriateClearDetails)
-                            .with({ right: P.select(P.string) }, identity)
-                            .otherwise(() => '')}</textarea
-                        >
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <label>
-                      <input
-                        name="dataPresentation"
-                        type="radio"
-                        value="highly-appropriate-clear"
-                        aria-describedby="data-presentation-tip-highly-appropriate-clear"
-                        aria-controls="data-presentation-highly-appropriate-clear-control"
-                        ${match(form.dataPresentation)
-                          .with({ right: 'highly-appropriate-clear' }, () => 'checked')
-                          .otherwise(() => '')}
-                      />
-                      <span>Highly appropriate and clear</span>
-                    </label>
-                    <p id="data-presentation-tip-highly-appropriate-clear" role="note">
-                      They effectively communicate the key messages and patterns in the data.
-                    </p>
-                    <div class="conditional" id="data-presentation-highly-appropriate-clear-control">
-                      <div>
-                        <label for="data-presentation-highly-appropriate-clear-details" class="textarea"
-                          >Why are they highly appropriate and clear? (optional)</label
-                        >
-
-                        <textarea
-                          name="dataPresentationHighlyAppropriateClearDetails"
-                          id="data-presentation-highly-appropriate-clear-details"
-                          rows="5"
-                        >
-${match(form.dataPresentationHighlyAppropriateClearDetails)
+${match(form.dataPresentationInappropriateUnclearDetails)
                             .with({ right: P.select(P.string) }, identity)
                             .otherwise(() => '')}</textarea
                         >
