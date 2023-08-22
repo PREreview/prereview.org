@@ -27,9 +27,9 @@ describe('writeReviewIntroductionMatches', () => {
             fc.connection({
               body: fc.constant({
                 introductionMatches,
-                introductionMatchesYesDetails: introductionMatchesDetails['yes'],
-                introductionMatchesPartlyDetails: introductionMatchesDetails['partly'],
-                introductionMatchesNoDetails: introductionMatchesDetails['no'],
+                introductionMatchesYesDetails: introductionMatchesDetails.yes,
+                introductionMatchesPartlyDetails: introductionMatchesDetails.partly,
+                introductionMatchesNoDetails: introductionMatchesDetails.no,
               }),
               method: fc.constant('POST'),
             }),
@@ -89,9 +89,9 @@ describe('writeReviewIntroductionMatches', () => {
             fc.connection({
               body: fc.constant({
                 introductionMatches,
-                introductionMatchesYesDetails: introductionMatchesDetails['yes'],
-                introductionMatchesPartlyDetails: introductionMatchesDetails['partly'],
-                introductionMatchesNoDetails: introductionMatchesDetails['no'],
+                introductionMatchesYesDetails: introductionMatchesDetails.yes,
+                introductionMatchesPartlyDetails: introductionMatchesDetails.partly,
+                introductionMatchesNoDetails: introductionMatchesDetails.no,
               }),
               method: fc.constant('POST'),
             }),

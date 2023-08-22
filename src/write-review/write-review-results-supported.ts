@@ -144,7 +144,7 @@ const FormToFieldsE: Encoder<ResultsSupportedForm, Form> = {
     resultsSupported: E.right(form.resultsSupported),
     resultsSupportedNotSupportedDetails: E.right(form.resultsSupportedDetails?.['not-supported']),
     resultsSupportedPartiallySupportedDetails: E.right(form.resultsSupportedDetails?.['partially-supported']),
-    resultsSupportedNeutralDetails: E.right(form.resultsSupportedDetails?.['neutral']),
+    resultsSupportedNeutralDetails: E.right(form.resultsSupportedDetails?.neutral),
     resultsSupportedWellSupportedDetails: E.right(form.resultsSupportedDetails?.['well-supported']),
     resultsSupportedStronglySupportedDetails: E.right(form.resultsSupportedDetails?.['strongly-supported']),
   }),

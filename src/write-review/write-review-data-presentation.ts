@@ -152,7 +152,7 @@ const FormToFieldsE: Encoder<DataPresentationForm, Form> = {
     dataPresentationSomewhatInappropriateUnclearDetails: E.right(
       form.dataPresentationDetails?.['somewhat-inappropriate-unclear'],
     ),
-    dataPresentationNeutralDetails: E.right(form.dataPresentationDetails?.['neutral']),
+    dataPresentationNeutralDetails: E.right(form.dataPresentationDetails?.neutral),
     dataPresentationMostlyAppropriateClearDetails: E.right(form.dataPresentationDetails?.['mostly-appropriate-clear']),
     dataPresentationHighlyAppropriateClearDetails: E.right(form.dataPresentationDetails?.['highly-appropriate-clear']),
   }),

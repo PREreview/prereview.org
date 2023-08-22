@@ -30,7 +30,7 @@ describe('writeReviewDataPresentation', () => {
                 dataPresentationInappropriateUnclearDetails: dataPresentationDetails['inappropriate-unclear'],
                 dataPresentationSomewhatInappropriateUnclearDetails:
                   dataPresentationDetails['somewhat-inappropriate-unclear'],
-                dataPresentationNeutralDetails: dataPresentationDetails['neutral'],
+                dataPresentationNeutralDetails: dataPresentationDetails.neutral,
                 dataPresentationMostlyAppropriateClearDetails: dataPresentationDetails['mostly-appropriate-clear'],
                 dataPresentationHighlyAppropriateClearDetails: dataPresentationDetails['highly-appropriate-clear'],
               }),
@@ -89,7 +89,7 @@ describe('writeReviewDataPresentation', () => {
                 dataPresentationInappropriateUnclearDetails: dataPresentationDetails['inappropriate-unclear'],
                 dataPresentationSomewhatInappropriateUnclearDetails:
                   dataPresentationDetails['somewhat-inappropriate-unclear'],
-                dataPresentationNeutralDetails: dataPresentationDetails['neutral'],
+                dataPresentationNeutralDetails: dataPresentationDetails.neutral,
                 dataPresentationMostlyAppropriateClearDetails: dataPresentationDetails['mostly-appropriate-clear'],
                 dataPresentationHighlyAppropriateClearDetails: dataPresentationDetails['highly-appropriate-clear'],
               }),

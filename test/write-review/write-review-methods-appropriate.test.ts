@@ -27,9 +27,9 @@ describe('writeReviewMethodsAppropriate', () => {
             fc.connection({
               body: fc.constant({
                 methodsAppropriate,
-                methodsAppropriateInappropriateDetails: methodsAppropriateDetails['inappropriate'],
+                methodsAppropriateInappropriateDetails: methodsAppropriateDetails.inappropriate,
                 methodsAppropriateSomewhatInappropriateDetails: methodsAppropriateDetails['somewhat-inappropriate'],
-                methodsAppropriateAdequateDetails: methodsAppropriateDetails['adequate'],
+                methodsAppropriateAdequateDetails: methodsAppropriateDetails.adequate,
                 methodsAppropriateMostlyAppropriateDetails: methodsAppropriateDetails['mostly-appropriate'],
                 methodsAppropriateHighlyAppropriateDetails: methodsAppropriateDetails['highly-appropriate'],
               }),
@@ -91,9 +91,9 @@ describe('writeReviewMethodsAppropriate', () => {
             fc.connection({
               body: fc.constant({
                 methodsAppropriate,
-                methodsAppropriateInappropriateDetails: methodsAppropriateDetails['inappropriate'],
+                methodsAppropriateInappropriateDetails: methodsAppropriateDetails.inappropriate,
                 methodsAppropriateSomewhatInappropriateDetails: methodsAppropriateDetails['somewhat-inappropriate'],
-                methodsAppropriateAdequateDetails: methodsAppropriateDetails['adequate'],
+                methodsAppropriateAdequateDetails: methodsAppropriateDetails.adequate,
                 methodsAppropriateMostlyAppropriateDetails: methodsAppropriateDetails['mostly-appropriate'],
                 methodsAppropriateHighlyAppropriateDetails: methodsAppropriateDetails['highly-appropriate'],
               }),

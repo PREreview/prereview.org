@@ -148,9 +148,9 @@ const FieldsToFormE: Encoder<Form, ValidFields<typeof methodsAppropriateFields>>
 const FormToFieldsE: Encoder<MethodsAppropriateForm, Form> = {
   encode: form => ({
     methodsAppropriate: E.right(form.methodsAppropriate),
-    methodsAppropriateInappropriateDetails: E.right(form.methodsAppropriateDetails?.['inappropriate']),
+    methodsAppropriateInappropriateDetails: E.right(form.methodsAppropriateDetails?.inappropriate),
     methodsAppropriateSomewhatInappropriateDetails: E.right(form.methodsAppropriateDetails?.['somewhat-inappropriate']),
-    methodsAppropriateAdequateDetails: E.right(form.methodsAppropriateDetails?.['adequate']),
+    methodsAppropriateAdequateDetails: E.right(form.methodsAppropriateDetails?.adequate),
     methodsAppropriateMostlyAppropriateDetails: E.right(form.methodsAppropriateDetails?.['mostly-appropriate']),
     methodsAppropriateHighlyAppropriateDetails: E.right(form.methodsAppropriateDetails?.['highly-appropriate']),
   }),

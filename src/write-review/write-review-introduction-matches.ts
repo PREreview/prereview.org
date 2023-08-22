@@ -130,9 +130,9 @@ const FieldsToFormE: Encoder<Form, ValidFields<typeof introductionMatchesFields>
 const FormToFieldsE: Encoder<IntroductionMatchesForm, Form> = {
   encode: form => ({
     introductionMatches: E.right(form.introductionMatches),
-    introductionMatchesYesDetails: E.right(form.introductionMatchesDetails?.['yes']),
-    introductionMatchesPartlyDetails: E.right(form.introductionMatchesDetails?.['partly']),
-    introductionMatchesNoDetails: E.right(form.introductionMatchesDetails?.['no']),
+    introductionMatchesYesDetails: E.right(form.introductionMatchesDetails?.yes),
+    introductionMatchesPartlyDetails: E.right(form.introductionMatchesDetails?.partly),
+    introductionMatchesNoDetails: E.right(form.introductionMatchesDetails?.no),
   }),
 }
 
