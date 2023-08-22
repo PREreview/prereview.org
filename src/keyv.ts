@@ -6,7 +6,7 @@ import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
 
-export type CareerStageStoreEnv = {
+export interface CareerStageStoreEnv {
   careerStageStore: Keyv<string>
 }
 

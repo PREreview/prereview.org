@@ -99,7 +99,7 @@ const ConductFieldD = pipe(
   D.map(get('conduct')),
 )
 
-type CodeOfConductForm = {
+interface CodeOfConductForm {
   readonly conduct: E.Either<MissingE, 'yes' | undefined>
 }
 

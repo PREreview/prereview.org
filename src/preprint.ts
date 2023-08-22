@@ -7,7 +7,7 @@ import type { Html } from './html'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import type { PartialDate } from './time'
 
-export type Preprint = {
+export interface Preprint {
   abstract?: {
     language: LanguageCode
     text: Html
@@ -25,7 +25,7 @@ export type Preprint = {
   url: URL
 }
 
-export type PreprintTitle = {
+export interface PreprintTitle {
   id: PreprintId
   language: LanguageCode
   title: Html

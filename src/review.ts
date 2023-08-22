@@ -25,7 +25,7 @@ import { type User, maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
-export type Prereview = {
+export interface Prereview {
   authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
   club?: ClubId
   doi: Doi

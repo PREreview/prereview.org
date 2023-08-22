@@ -178,11 +178,11 @@ const ReviewFieldD = pipe(
   D.map(({ review }) => sanitizeHtml(markdownIt({ html: true }).render(review))),
 )
 
-type WriteReviewForm = {
+interface WriteReviewForm {
   readonly review: E.Either<MissingE | InvalidE, Html | undefined>
 }
 
-type PasteReviewForm = {
+interface PasteReviewForm {
   readonly review: E.Either<MissingE, Html | undefined>
 }
 

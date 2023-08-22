@@ -118,7 +118,7 @@ const CompetingInterestsDetailsFieldD = pipe(
   D.map(get('competingInterestsDetails')),
 )
 
-type CompetingInterestsForm = {
+interface CompetingInterestsForm {
   readonly competingInterests: E.Either<MissingE, 'yes' | 'no' | undefined>
   readonly competingInterestsDetails: E.Either<MissingE, NonEmptyString | undefined>
 }

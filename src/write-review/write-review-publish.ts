@@ -42,7 +42,7 @@ import { type CompletedForm, CompletedFormC } from './completed-form'
 import { type Form, type FormStoreEnv, deleteForm, getForm, redirectToNextForm, saveForm } from './form'
 import { storeInformationForWriteReviewPublishedPage } from './published-review'
 
-export type NewPrereview = {
+export interface NewPrereview {
   conduct: 'yes'
   persona: 'public' | 'pseudonym'
   preprint: PreprintTitle

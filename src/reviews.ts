@@ -23,7 +23,7 @@ import { type User, maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
-type RecentPrereviews = {
+interface RecentPrereviews {
   readonly currentPage: number
   readonly totalPages: number
   readonly recentPrereviews: RNEA.ReadonlyNonEmptyArray<{

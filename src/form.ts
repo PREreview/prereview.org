@@ -63,7 +63,8 @@ export const invalidE = (actual: string): InvalidE => ({
   actual,
 })
 
-export const hasAnError: (form: RR.ReadonlyRecord<string, E.Either<unknown, unknown>>) => boolean = RR.some(E.isLeft)
+export const hasAnError: <K extends string>(form: RR.ReadonlyRecord<K, E.Either<unknown, unknown>>) => boolean =
+  RR.some(E.isLeft)
 
 export function getInput(field: string): (error: D.DecodeError) => O.Option<string> {
   return FS.fold(

@@ -97,7 +97,7 @@ const PersonaFieldD = pipe(
   D.map(get('persona')),
 )
 
-type PersonaForm = {
+interface PersonaForm {
   readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>
 }
 

@@ -113,7 +113,7 @@ const AlreadyWrittenFieldD = pipe(
   D.map(get('alreadyWritten')),
 )
 
-type AlreadyWrittenForm = {
+interface AlreadyWrittenForm {
   readonly alreadyWritten: E.Either<MissingE, 'yes' | 'no' | undefined>
 }
 

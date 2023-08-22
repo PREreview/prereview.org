@@ -34,7 +34,7 @@ export interface PhaseEnv {
   }
 }
 
-type Page = {
+interface Page {
   readonly title: PlainText
   readonly type?: 'two-up' | 'streamline'
   readonly content: Html

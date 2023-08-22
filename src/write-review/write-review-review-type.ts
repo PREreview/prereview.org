@@ -117,7 +117,7 @@ const ReviewTypeFieldD = pipe(
   D.map(get('reviewType')),
 )
 
-type ReviewTypeForm = {
+interface ReviewTypeForm {
   readonly reviewType: E.Either<MissingE, 'questions' | 'freeform' | 'already-written' | undefined>
 }
 

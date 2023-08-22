@@ -25,7 +25,7 @@ import { type User, maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
-export type RecentPrereview = {
+export interface RecentPrereview {
   readonly id: number
   readonly club?: ClubId
   readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>

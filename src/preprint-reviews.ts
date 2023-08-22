@@ -29,7 +29,7 @@ import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } fro
 import { renderDate } from './time'
 import { type GetUserEnv, type User, maybeGetUser } from './user'
 
-export type Prereview = {
+export interface Prereview {
   authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
   club?: ClubId
   id: number
@@ -37,7 +37,7 @@ export type Prereview = {
   text: Html
 }
 
-type RapidPrereview = {
+interface RapidPrereview {
   author: {
     name: string
     orcid?: Orcid

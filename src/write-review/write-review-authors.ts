@@ -132,7 +132,7 @@ const MoreAuthorsApprovedFieldD = pipe(
   D.map(get('moreAuthorsApproved')),
 )
 
-type AuthorsForm = {
+interface AuthorsForm {
   readonly moreAuthors: E.Either<MissingE, 'yes' | 'yes-private' | 'no' | undefined>
   readonly moreAuthorsApproved: E.Either<MissingE, 'yes' | undefined>
 }

@@ -6,7 +6,7 @@ import { match } from 'ts-pattern'
 import type { ClubId } from './club-id'
 import { type Html, html } from './html'
 
-export type Club = {
+export interface Club {
   readonly name: string
   readonly description: Html
   readonly leads: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid: Orcid }>

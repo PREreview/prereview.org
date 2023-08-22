@@ -32,7 +32,7 @@ import LogEntry = L.LogEntry
 
 export { expect } from '@playwright/test'
 
-type AppFixtures = {
+interface AppFixtures {
   canRapidReview: CanRapidReviewEnv['canRapidReview']
   fetch: FetchMockSandbox
   logger: Logger
