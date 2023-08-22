@@ -405,7 +405,7 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
       if (r.parts.length === 0) {
         return O.none
       } else {
-        const head = r.parts[0]
+        const head = r.parts[0]!
         const tail = r.parts.slice(1)
         return O.Functor.map(O.fromEither(type.decode(head)), a => tuple(singleton(k, a), new P.Route(tail, r.query)))
       }

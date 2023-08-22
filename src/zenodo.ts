@@ -263,7 +263,7 @@ function recordToPrereview(
         doi: RTE.right(review.metadata.doi),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
         license: RTE.right(review.license),
-        published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
+        published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0]!)),
         preprint: pipe(
           getPreprint(review.preprintId),
           RTE.map(preprint => ({
@@ -306,7 +306,7 @@ function recordToRecentPrereview(
         club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         id: RTE.right(review.id),
         reviewers: RTE.right(pipe(review.metadata.creators, RNEA.map(get('name')))),
-        published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0])),
+        published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0]!)),
         preprint: getPreprintTitle(review.preprintId),
       }),
     ),
