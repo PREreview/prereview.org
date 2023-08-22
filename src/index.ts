@@ -67,7 +67,7 @@ const server = app({
     tokenUrl: new URL('https://orcid.org/oauth/token'),
   },
   phase:
-    env.PHASE_TAG && env.PHASE_TEXT
+    typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT === 'string'
       ? {
           tag: env.PHASE_TAG,
           text: env.PHASE_TEXT,

@@ -113,11 +113,11 @@ export function sanitizeHtml(html: string, allowButtons = false): Html {
     },
     transformTags: {
       a: (tagName, attribs) => {
-        if (attribs['href'] !== undefined && !/^[A-z][A-z0-9+\-.]*:/.test(attribs['href'])) {
+        if (typeof attribs['href'] === 'string' && !/^[A-z][A-z0-9+\-.]*:/.test(attribs['href'])) {
           delete attribs['href']
         }
 
-        if (allowButtons && attribs['class']?.includes('kg-btn')) {
+        if (allowButtons && typeof attribs['class'] === 'string' && attribs['class'].includes('kg-btn')) {
           attribs['class'] = 'button'
         }
 

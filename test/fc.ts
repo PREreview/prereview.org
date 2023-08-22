@@ -65,7 +65,7 @@ import { type NonEmptyString, isNonEmptyString } from '../src/string'
 import type { User } from '../src/user'
 import { shouldNotBeCalled } from './should-not-be-called'
 
-if (process.env['FAST_CHECK_NUM_RUNS']) {
+if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
   fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })
 }
 

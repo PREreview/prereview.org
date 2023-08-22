@@ -91,7 +91,7 @@ export function page({
             RA.map(preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
           ),
         )}
-        ${fathomId
+        ${typeof fathomId === 'string'
           ? html` <script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
           : ''}
 

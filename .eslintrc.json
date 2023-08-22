@@ -41,6 +41,7 @@
   "rules": {
     "@typescript-eslint/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
     "@typescript-eslint/no-import-type-side-effects": "error",
+    "@typescript-eslint/strict-boolean-expressions": "error",
     "fp-ts/no-module-imports": "off",
     "import/no-cycle": "error",
     "import/no-duplicates": ["error", { "prefer-inline": true }],

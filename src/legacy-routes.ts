@@ -76,7 +76,7 @@ const ArxivPreprintIdC = C.make(
     D.parse(s => {
       const [, match] = s.match(/^arxiv-([A-z0-9.+-]+?)(?:v[0-9]+)?$/i) ?? []
 
-      if (match) {
+      if (typeof match === 'string') {
         return D.success({ type: 'arxiv', value: `10.48550/arxiv.${match}` as Doi<'48550'> } satisfies ArxivPreprintId)
       }
 

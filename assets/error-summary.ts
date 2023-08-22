@@ -27,7 +27,10 @@ export class ErrorSummary extends HTMLElement {
 function focusTarget(target: HTMLAnchorElement) {
   const input = getTargetElement(target)
 
-  if (!(input instanceof HTMLInputElement) && !(input instanceof HTMLTextAreaElement) && !input?.isContentEditable) {
+  if (
+    !(input instanceof HTMLElement) ||
+    (!(input instanceof HTMLInputElement) && !(input instanceof HTMLTextAreaElement) && !input.isContentEditable)
+  ) {
     return false
   }
 
@@ -73,13 +76,15 @@ function getAssociatedLegendOrLabel(input: HTMLElement) {
 
   const labelledBy = input.getAttribute('aria-labelledby')
 
-  if (labelledBy) {
+  if (typeof labelledBy === 'string') {
     return document.getElementById(labelledBy)
   }
 
   const id = input.getAttribute('id')
 
-  return id ? document.querySelector<HTMLLabelElement>(`label[for="${id}"]`) : input.closest('label')
+  return typeof id === 'string'
+    ? document.querySelector<HTMLLabelElement>(`label[for="${id}"]`)
+    : input.closest('label')
 }
 
 window.customElements.define(ErrorSummary.element, ErrorSummary)

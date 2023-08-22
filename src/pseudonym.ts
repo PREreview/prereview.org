@@ -12,7 +12,7 @@ export const PseudonymC = C.fromDecoder(pipe(D.string, D.refine(isPseudonym, 'Ps
 export function isPseudonym(value: string): value is Pseudonym {
   const parts = value.split(' ', 2)
 
-  if (!parts[0] || !parts[1]) {
+  if (typeof parts[0] !== 'string' || typeof parts[1] !== 'string') {
     return false
   }
 

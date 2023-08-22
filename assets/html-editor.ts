@@ -215,7 +215,7 @@ export class HtmlEditor extends HTMLElement {
 
       const href = window.prompt('Enter a URL')
 
-      if (!href) {
+      if (typeof href !== 'string' || href === '') {
         return
       }
 
@@ -317,7 +317,7 @@ function extractAttributes(source: Element, qualifiedNames: ReadonlyArray<string
     qualifiedNames.flatMap(qualifiedName => {
       const value = source.getAttribute(qualifiedName)
 
-      if (!value) {
+      if (typeof value !== 'string') {
         return []
       }
 

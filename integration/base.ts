@@ -665,7 +665,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   oauthServer: async ({}, use) => {
     const server = new OAuth2Server()
     server.service.on('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
-      if (!url.searchParams.get('state')) {
+      if (!url.searchParams.has('state')) {
         url.searchParams.set('state', '')
       }
     })
