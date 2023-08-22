@@ -12,6 +12,10 @@ export const PseudonymC = C.fromDecoder(pipe(D.string, D.refine(isPseudonym, 'Ps
 export function isPseudonym(value: string): value is Pseudonym {
   const parts = value.split(' ', 2)
 
+  if (!parts[0] || !parts[1]) {
+    return false
+  }
+
   return colors.includes(parts[0]) && animals.map(animal => capitalCase(animal)).includes(parts[1])
 }
 

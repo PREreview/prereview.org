@@ -13,11 +13,13 @@ import stripTags from 'striptags'
 
 export interface Html {
   readonly Html: unique symbol
+
   toString(): string
 }
 
 export interface PlainText {
   readonly PlainText: unique symbol
+
   toString(): string
 }
 
@@ -111,7 +113,7 @@ export function sanitizeHtml(html: string, allowButtons = false): Html {
     },
     transformTags: {
       a: (tagName, attribs) => {
-        if (!/^[A-z][A-z0-9+\-.]*:/.test(attribs.href)) {
+        if (attribs.href !== undefined && !/^[A-z][A-z0-9+\-.]*:/.test(attribs.href)) {
           delete attribs.href
         }
 
