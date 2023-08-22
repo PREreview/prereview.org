@@ -8,7 +8,7 @@ import * as DE from 'io-ts/DecodeError'
 import type * as D from 'io-ts/Decoder'
 import * as FS from 'io-ts/FreeSemigroup'
 
-export type FieldDecoders = EnforceNonEmptyRecord<{ [key: string]: (input: unknown) => E.Either<unknown, unknown> }>
+export type FieldDecoders = EnforceNonEmptyRecord<Record<string, (input: unknown) => E.Either<unknown, unknown>>>
 
 export type Fields<T extends FieldDecoders> = {
   [K in keyof T]: ReturnType<T[K]> | E.Right<undefined>
