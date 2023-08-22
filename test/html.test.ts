@@ -583,7 +583,7 @@ test.each([
   expect(actual.toString()).toBe(expected)
 })
 
-test.prop([fc.html().map(html => [html.toString(), html.toString()])], {
+test.prop([fc.html().map(html => [html.toString(), html.toString()] as const)], {
   examples: [
     [
       [
