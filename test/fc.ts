@@ -105,7 +105,7 @@ export const alphanumeric = (): fc.Arbitrary<string> =>
     { num: 10, build: v => String.fromCharCode(v + 0x30) },
   )
 
-export const partialRecord = <T, TConstraints extends { requiredKeys: (keyof T)[] } | undefined>(
+export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyof T> } | undefined>(
   recordModel: { [K in keyof T]: fc.Arbitrary<T[K]> },
   constraints?: TConstraints,
 ): fc.Arbitrary<
