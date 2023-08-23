@@ -69,7 +69,7 @@
     "@tiptap/extension-typography": "^2.1.6",
     "@tiptap/starter-kit": "^2.1.6",
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
-    "@tsconfig/node18": "^18.2.0",
+    "@tsconfig/node18": "^18.2.1",
     "@types/cacache": "^17.0.0",
     "@types/connect-slashes": "^0.0.33",
     "@types/cookie-signature": "^1.1.0",
