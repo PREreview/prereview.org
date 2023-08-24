@@ -224,31 +224,31 @@ describe('profile', () => {
       expect(getPrereviews).toHaveBeenCalledWith(profile)
     })
   })
+})
 
-  test.prop([
-    fc.connection({ method: fc.requestMethod() }),
-    fc.profileId(),
-    fc.url(),
-    fc.string(),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-  ])("when the PREreviews can't be loaded", async (connection, profile, avatar, name, user) => {
-    const actual = await runMiddleware(
-      _.profile(profile)({
-        getAvatar: () => TE.of(avatar),
-        getName: () => TE.of(name),
-        getPrereviews: () => TE.left('unavailable'),
-        getUser: () => M.fromEither(user),
-      }),
-      connection,
-    )()
+test.prop([
+  fc.connection({ method: fc.requestMethod() }),
+  fc.profileId(),
+  fc.url(),
+  fc.string(),
+  fc.either(fc.constant('no-session' as const), fc.user()),
+])("when the PREreviews can't be loaded", async (connection, profile, avatar, name, user) => {
+  const actual = await runMiddleware(
+    _.profile(profile)({
+      getAvatar: () => TE.of(avatar),
+      getName: () => TE.of(name),
+      getPrereviews: () => TE.left('unavailable'),
+      getUser: () => M.fromEither(user),
+    }),
+    connection,
+  )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+  expect(actual).toStrictEqual(
+    E.right([
+      { type: 'setStatus', status: Status.ServiceUnavailable },
+      { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+      { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+      { type: 'setBody', body: expect.anything() },
+    ]),
+  )
 })
