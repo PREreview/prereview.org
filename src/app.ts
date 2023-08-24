@@ -7,7 +7,6 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -22,11 +21,11 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
-import type { Orcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
+import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
@@ -305,16 +304,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getAvatar: orcid =>
-            match(orcid)
-              .with('0000-0003-4921-6155' as Orcid, () =>
-                TE.right(
-                  new URL(
-                    'https://res.cloudinary.com/prereview/image/upload/c_thumb,f_auto,g_face,h_300,q_auto,w_300,z_0.666/prereview-profile/dvyalmcsaz6bwri1iux4',
-                  ),
-                ),
-              )
-              .otherwise(() => TE.left('not-found' as const)),
+          getAvatar: getAvatarFromCloudinary,
           getName: flip(getNameFromOrcid)(env),
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
         })),
