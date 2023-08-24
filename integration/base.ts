@@ -676,11 +676,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await server.stop()
   },
-  page: async ({ page }, use) => {
-    await page.route('https://res.cloudinary.com/**/*', route => route.abort())
-
-    await use(page)
-  },
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },

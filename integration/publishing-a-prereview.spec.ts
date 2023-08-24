@@ -1337,6 +1337,10 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
   await page.goBack()
 
   await expect(page.getByLabel('No')).toBeChecked()
+
+  await page.goBack()
+
+  await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
 })
 
 test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
