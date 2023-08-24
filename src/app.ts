@@ -149,6 +149,7 @@ import {
 
 export type AppEnv = CanRapidReviewEnv &
   CareerStageStoreEnv &
+  CloudinaryApiEnv &
   FathomEnv &
   FormStoreEnv &
   GhostApiEnv &
@@ -162,13 +163,7 @@ export type AppEnv = CanRapidReviewEnv &
     allowSiteCrawlers: boolean
   }
 
-type RouterEnv = AppEnv &
-  CloudinaryApiEnv &
-  DoesPreprintExistEnv &
-  GetPreprintEnv &
-  GetPreprintTitleEnv &
-  GetUserEnv &
-  TemplatePageEnv
+type RouterEnv = AppEnv & DoesPreprintExistEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv & TemplatePageEnv
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [

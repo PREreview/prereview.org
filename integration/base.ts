@@ -686,6 +686,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     const server = app({
       allowSiteCrawlers: true,
       canRapidReview,
+      cloudinaryApi: { cloudName: 'prereview' },
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),
