@@ -112,9 +112,25 @@ function createPage({
     title: plainText`${name}’s PREreviews`,
     content: html`
       <main id="main-content">
-        <h1>${name}’s PREreviews</h1>
+        <div class="profile-header">
+          <div>
+            <h1>${name}’s PREreviews</h1>
 
-        ${orcid ? html`<a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a> ` : ''}
+            ${orcid ? html`<a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a> ` : ''}
+          </div>
+
+          ${orcid === '0000-0003-4921-6155'
+            ? html`
+                <img
+                  src="https://res.cloudinary.com/prereview/image/upload/c_thumb,f_auto,g_face,h_300,q_auto,w_300,z_0.666/prereview-profile/dvyalmcsaz6bwri1iux4"
+                  width="300"
+                  height="300"
+                  alt=""
+                />
+              `
+            : ''}
+        </div>
+
         ${pipe(
           prereviews,
           RA.match(

@@ -2154,3 +2154,26 @@ skip-link {
     line-height: 1;
   }
 }
+
+.profile-header {
+  display: flex;
+  column-gap: var(--space-xs);
+  margin-block-start: var(--space-s-m);
+
+  > div {
+    flex: 1;
+
+    > :first-child {
+      margin-block-start: 0;
+    }
+  }
+
+  > img {
+    align-self: center;
+    object-fit: cover;
+    border: var(--width-divider-wide) solid var(--color-black-900);
+    border-radius: 50%;
+    inline-size: 10em;
+    max-inline-size: 25vi;
+  }
+}
