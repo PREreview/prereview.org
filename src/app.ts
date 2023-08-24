@@ -25,7 +25,7 @@ import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
-import { getAvatarFromCloudinary } from './cloudinary'
+import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
@@ -162,7 +162,13 @@ export type AppEnv = CanRapidReviewEnv &
     allowSiteCrawlers: boolean
   }
 
-type RouterEnv = AppEnv & DoesPreprintExistEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv & TemplatePageEnv
+type RouterEnv = AppEnv &
+  CloudinaryApiEnv &
+  DoesPreprintExistEnv &
+  GetPreprintEnv &
+  GetPreprintTitleEnv &
+  GetUserEnv &
+  TemplatePageEnv
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -304,7 +310,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getAvatar: getAvatarFromCloudinary,
+          getAvatar: flip(getAvatarFromCloudinary)(env),
           getName: flip(getNameFromOrcid)(env),
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
         })),
@@ -486,6 +492,7 @@ const appMiddleware: RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, neve
   R.local(
     (env: AppEnv): RouterEnv => ({
       ...env,
+      cloudinaryApi: { cloudName: 'prereview' },
       doesPreprintExist: flip(doesPreprintExist)(env),
       getUser: () => getUser(env),
       getPreprint: flip(getPreprint)(env),
