@@ -7,9 +7,10 @@ import { URL } from 'url'
 
 export const getAvatarFromCloudinary = flow(
   (orcid: Orcid) =>
-    match(orcid)
+    match(orcid as string)
       .returnType<TE.TaskEither<'not-found', string>>()
-      .with('0000-0003-4921-6155' as Orcid, () => TE.right('prereview-profile/dvyalmcsaz6bwri1iux4'))
+      .with('0000-0002-6109-0367', () => TE.right('prereview-profile/c4a5fhc4arzb2chn6txg'))
+      .with('0000-0003-4921-6155', () => TE.right('prereview-profile/dvyalmcsaz6bwri1iux4'))
       .otherwise(() => TE.left('not-found' as const)),
   TE.map(
     imageId =>
