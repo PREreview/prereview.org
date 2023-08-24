@@ -3,9 +3,11 @@ import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { flow, identity, pipe } from 'fp-ts/function'
+import * as TE from 'fp-ts/TaskEither'
+import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
+import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { URL } from 'url'
@@ -51,8 +53,10 @@ const findImageOnCloudinary = (orcid: Orcid) =>
     ),
     RTE.map(F.Request('GET')),
     RTE.chainW(F.send),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-    RTE.chainTaskEitherKW(F.decode(SearchResultsD)),
+    RTE.mapLeft(() => 'network-error' as const),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+    RTE.chainTaskEitherKW(flow(F.decode(SearchResultsD), TE.mapLeft(D.draw))),
+    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get image from Cloudinary')))),
     RTE.mapLeft(() => 'unavailable' as const),
     RTE.chainOptionKW(() => 'not-found' as const)(get('resources.[number].public_id', 0)),
   )

@@ -1,7 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
 import * as _ from '../src/cloudinary'
 import * as fc from './fc'
@@ -20,7 +22,12 @@ describe('getAvatarFromCloudinary', () => {
       body: { resources: [{ public_id: imageId }] },
     })
 
-    const actual = await _.getAvatarFromCloudinary(orcid)({ cloudinaryApi, fetch })()
+    const actual = await _.getAvatarFromCloudinary(orcid)({
+      cloudinaryApi,
+      fetch,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(
       E.right(
@@ -44,7 +51,12 @@ describe('getAvatarFromCloudinary', () => {
       .sandbox()
       .getOnce(`begin:https://res.cloudinary.com/${cloudinaryApi.cloudName}/search/`, { body: { resources: [] } })
 
-    const actual = await _.getAvatarFromCloudinary(orcid)({ cloudinaryApi, fetch })()
+    const actual = await _.getAvatarFromCloudinary(orcid)({
+      cloudinaryApi,
+      fetch,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
     expect(fetch.done()).toBeTruthy()
@@ -63,7 +75,12 @@ describe('getAvatarFromCloudinary', () => {
       .sandbox()
       .getOnce(`begin:https://res.cloudinary.com/${cloudinaryApi.cloudName}/search/`, response)
 
-    const actual = await _.getAvatarFromCloudinary(orcid)({ cloudinaryApi, fetch })()
+    const actual = await _.getAvatarFromCloudinary(orcid)({
+      cloudinaryApi,
+      fetch,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
     expect(fetch.done()).toBeTruthy()
@@ -82,7 +99,12 @@ describe('getAvatarFromCloudinary', () => {
       .sandbox()
       .getOnce(`begin:https://res.cloudinary.com/${cloudinaryApi.cloudName}/search/`, status)
 
-    const actual = await _.getAvatarFromCloudinary(orcid)({ cloudinaryApi, fetch })()
+    const actual = await _.getAvatarFromCloudinary(orcid)({
+      cloudinaryApi,
+      fetch,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
     expect(fetch.done()).toBeTruthy()
@@ -97,7 +119,12 @@ describe('getAvatarFromCloudinary', () => {
     fc.orcid(),
     fc.error(),
   ])('when fetch throws an error', async (cloudinaryApi, orcid, error) => {
-    const actual = await _.getAvatarFromCloudinary(orcid)({ cloudinaryApi, fetch: () => Promise.reject(error) })()
+    const actual = await _.getAvatarFromCloudinary(orcid)({
+      cloudinaryApi,
+      fetch: () => Promise.reject(error),
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
