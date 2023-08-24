@@ -8,7 +8,11 @@ import * as fc from './fc'
 
 describe('getAvatarFromCloudinary', () => {
   test.prop([
-    fc.record({ cloudName: fc.lorem({ maxCount: 1 }) }),
+    fc.record({
+      cloudName: fc.lorem({ maxCount: 1 }),
+      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    }),
     fc.constantFrom('0000-0002-6109-0367' as Orcid, '0000-0003-4921-6155' as Orcid),
   ])('when the ORCID iD has an avatar', async (cloudinaryApi, orcid) => {
     const actual = await _.getAvatarFromCloudinary(orcid)({ cloudinaryApi })()
@@ -23,7 +27,11 @@ describe('getAvatarFromCloudinary', () => {
   })
 
   test.prop([
-    fc.record({ cloudName: fc.lorem({ maxCount: 1 }) }),
+    fc.record({
+      cloudName: fc.lorem({ maxCount: 1 }),
+      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    }),
     fc.orcid().filter(orcid => orcid !== '0000-0002-6109-0367' && orcid !== '0000-0003-4921-6155'),
   ])("when the ORCID iD doesn't have an avatar", async (cloudinaryApi, orcid) => {
     const actual = await _.getAvatarFromCloudinary(orcid)({ cloudinaryApi })()

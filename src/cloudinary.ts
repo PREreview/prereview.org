@@ -9,6 +9,8 @@ import { URL } from 'url'
 export interface CloudinaryApiEnv {
   cloudinaryApi: {
     cloudName: string
+    key: string
+    secret: string
   }
 }
 

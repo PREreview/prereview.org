@@ -43,6 +43,8 @@ const EnvD = pipe(
   D.struct({
     ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
     CAN_RAPID_REVIEW: withDefault(pipe(D.string, D.map(split(',')), D.compose(D.array(OrcidD))), []),
+    CLOUDINARY_API_KEY: D.string,
+    CLOUDINARY_API_SECRET: D.string,
     GHOST_API_KEY: D.string,
     LEGACY_PREREVIEW_API_APP: D.string,
     LEGACY_PREREVIEW_API_KEY: D.string,

@@ -41,7 +41,7 @@ const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   canRapidReview: user => env.CAN_RAPID_REVIEW.includes(user.orcid) === true,
-  cloudinaryApi: { cloudName: 'prereview' },
+  cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: 'data/cache',
