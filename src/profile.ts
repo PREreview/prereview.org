@@ -45,6 +45,10 @@ export interface GetNameEnv {
   getName: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', string>
 }
 
+export interface GetAvatarEnv {
+  getAvatar: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', URL>
+}
+
 const getPrereviews = (profile: ProfileId) =>
   pipe(
     RTE.ask<GetPrereviewsEnv>(),
@@ -55,6 +59,12 @@ const getName = (orcid: Orcid) =>
   pipe(
     RTE.ask<GetNameEnv>(),
     RTE.chainTaskEitherK(({ getName }) => getName(orcid)),
+  )
+
+const getAvatar = (orcid: Orcid) =>
+  pipe(
+    RTE.ask<GetAvatarEnv>(),
+    RTE.chainTaskEitherK(({ getAvatar }) => getAvatar(orcid)),
   )
 
 export const profile = (profileId: ProfileId) =>
@@ -69,6 +79,18 @@ const profileForOrcid = (profile: OrcidProfileId) =>
     RM.bindTo('prereviews'),
     RM.apSW('name', RM.fromReaderTaskEither(getName(profile.value))),
     RM.apSW('user', maybeGetUser),
+    RM.apSW(
+      'avatar',
+      pipe(
+        RM.fromReaderTaskEither(getAvatar(profile.value)),
+        RM.orElseW(error =>
+          match(error)
+            .with('not-found', () => RM.right(undefined))
+            .with('unavailable', RM.left)
+            .exhaustive(),
+        ),
+      ),
+    ),
     RM.apS('orcid', RM.of(profile.value)),
     chainReaderKW(createPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
@@ -102,7 +124,9 @@ function createPage({
   name,
   prereviews,
   user,
+  avatar,
 }: {
+  avatar?: URL
   name: string
   orcid?: Orcid
   prereviews: Prereviews
@@ -119,16 +143,7 @@ function createPage({
             ${orcid ? html`<a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a> ` : ''}
           </div>
 
-          ${orcid === '0000-0003-4921-6155'
-            ? html`
-                <img
-                  src="https://res.cloudinary.com/prereview/image/upload/c_thumb,f_auto,g_face,h_300,q_auto,w_300,z_0.666/prereview-profile/dvyalmcsaz6bwri1iux4"
-                  width="300"
-                  height="300"
-                  alt=""
-                />
-              `
-            : ''}
+          ${avatar instanceof URL ? html` <img src="${avatar.href}" width="300" height="300" alt="" /> ` : ''}
         </div>
 
         ${pipe(

@@ -15,6 +15,7 @@ describe('profile', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
+      fc.url(),
       fc.string(),
       fc.array(
         fc.record({
@@ -25,12 +26,14 @@ describe('profile', () => {
         }),
       ),
       fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the data can be loaded', async (connection, profile, name, prereviews, user) => {
+    ])('when the data can be loaded', async (connection, profile, avatar, name, prereviews, user) => {
+      const getAvatar: Mock<_.GetAvatarEnv['getAvatar']> = jest.fn(_ => TE.of(avatar))
       const getName: Mock<_.GetNameEnv['getName']> = jest.fn(_ => TE.of(name))
       const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.of(prereviews))
 
       const actual = await runMiddleware(
         _.profile(profile)({
+          getAvatar,
           getName,
           getPrereviews,
           getUser: () => M.fromEither(user),
@@ -45,6 +48,7 @@ describe('profile', () => {
           { type: 'setBody', body: expect.anything() },
         ]),
       )
+      expect(getAvatar).toHaveBeenCalledWith(profile.value)
       expect(getName).toHaveBeenCalledWith(profile.value)
       expect(getPrereviews).toHaveBeenCalledWith(profile)
     })
@@ -52,6 +56,7 @@ describe('profile', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
+      fc.url(),
       fc.array(
         fc.record({
           id: fc.integer(),
@@ -61,9 +66,10 @@ describe('profile', () => {
         }),
       ),
       fc.either(fc.constant('no-session' as const), fc.user()),
-    ])("when the name can't be found", async (connection, profile, prereviews, user) => {
+    ])("when the name can't be found", async (connection, profile, avatar, prereviews, user) => {
       const actual = await runMiddleware(
         _.profile(profile)({
+          getAvatar: () => TE.of(avatar),
           getName: () => TE.left('not-found'),
           getPrereviews: () => TE.of(prereviews),
           getUser: () => M.fromEither(user),
@@ -84,6 +90,7 @@ describe('profile', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
+      fc.url(),
       fc.array(
         fc.record({
           id: fc.integer(),
@@ -93,10 +100,77 @@ describe('profile', () => {
         }),
       ),
       fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the name is unavailable', async (connection, profile, prereviews, user) => {
+    ])('when the name is unavailable', async (connection, profile, avatar, prereviews, user) => {
       const actual = await runMiddleware(
         _.profile(profile)({
+          getAvatar: () => TE.of(avatar),
           getName: () => TE.left('unavailable'),
+          getPrereviews: () => TE.of(prereviews),
+          getUser: () => M.fromEither(user),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+    test.prop([
+      fc.connection({ method: fc.requestMethod() }),
+      fc.orcidProfileId(),
+      fc.string(),
+      fc.array(
+        fc.record({
+          id: fc.integer(),
+          reviewers: fc.nonEmptyArray(fc.string()),
+          published: fc.plainDate(),
+          preprint: fc.preprintTitle(),
+        }),
+      ),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])("when the avatar can't be found", async (connection, profile, name, prereviews, user) => {
+      const actual = await runMiddleware(
+        _.profile(profile)({
+          getAvatar: () => TE.left('not-found'),
+          getName: () => TE.of(name),
+          getPrereviews: () => TE.of(prereviews),
+          getUser: () => M.fromEither(user),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.OK },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.connection({ method: fc.requestMethod() }),
+      fc.orcidProfileId(),
+      fc.string(),
+      fc.array(
+        fc.record({
+          id: fc.integer(),
+          reviewers: fc.nonEmptyArray(fc.string()),
+          published: fc.plainDate(),
+          preprint: fc.preprintTitle(),
+        }),
+      ),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when the avatar is unavailable', async (connection, profile, name, prereviews, user) => {
+      const actual = await runMiddleware(
+        _.profile(profile)({
+          getAvatar: () => TE.left('unavailable'),
+          getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
           getUser: () => M.fromEither(user),
         }),
@@ -132,6 +206,7 @@ describe('profile', () => {
 
       const actual = await runMiddleware(
         _.profile(profile)({
+          getAvatar: shouldNotBeCalled,
           getName: shouldNotBeCalled,
           getPrereviews,
           getUser: () => M.fromEither(user),
@@ -153,11 +228,13 @@ describe('profile', () => {
   test.prop([
     fc.connection({ method: fc.requestMethod() }),
     fc.profileId(),
+    fc.url(),
     fc.string(),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])("when the PREreviews can't be loaded", async (connection, profile, name, user) => {
+  ])("when the PREreviews can't be loaded", async (connection, profile, avatar, name, user) => {
     const actual = await runMiddleware(
       _.profile(profile)({
+        getAvatar: () => TE.of(avatar),
         getName: () => TE.of(name),
         getPrereviews: () => TE.left('unavailable'),
         getUser: () => M.fromEither(user),
