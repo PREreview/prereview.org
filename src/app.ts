@@ -487,7 +487,6 @@ const appMiddleware: RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, neve
   R.local(
     (env: AppEnv): RouterEnv => ({
       ...env,
-      cloudinaryApi: { cloudName: 'prereview' },
       doesPreprintExist: flip(doesPreprintExist)(env),
       getUser: () => getUser(env),
       getPreprint: flip(getPreprint)(env),
