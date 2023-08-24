@@ -652,6 +652,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
     })
 
+    fetch.get('begin:https://res.cloudinary.com/prereview/search/', { body: { resources: [] } })
+
     await use(fetch)
   },
   logger: async ({}, use, testInfo) => {
