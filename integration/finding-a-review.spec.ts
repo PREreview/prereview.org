@@ -158,6 +158,20 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
           <div>
             <dt>Does the introduction explain the objective and match the rest of the preprint?</dt>
             <dd>Yes</dd>
+            <dd>The aim is clearly explained, and it matches up with what follows.</dd>
+          </div>
+          <div>
+            <dt>Would it benefit from language editing?</dt>
+            <dd>No</dd>
+          </div>
+          <div>
+            <dt>Should others read this preprint?</dt>
+            <dd>Yes, but it needs to be improved</dd>
+          </div>
+          <div>
+            <dt>Is it ready for a full and detailed review?</dt>
+            <dd>Yes, after minor changes</dd>
+            <dd>They effectively convey the necessary information, employ appropriate labeling, and utilize suitable visual elements to enhance comprehension.</dd>
           </div>
         </dl>
       `,
