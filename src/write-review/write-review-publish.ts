@@ -47,6 +47,7 @@ export interface NewPrereview {
   persona: 'public' | 'pseudonym'
   preprint: PreprintTitle
   review: Html
+  structured: boolean
   user: User
 }
 
@@ -130,6 +131,7 @@ const handlePublishForm = ({
       persona: form.persona,
       preprint,
       review: renderReview(form),
+      structured: form.reviewType === 'questions',
       user,
     })),
     RM.chainReaderTaskEitherKW(

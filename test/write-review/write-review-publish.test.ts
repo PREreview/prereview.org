@@ -76,6 +76,7 @@ describe('writeReviewPublish', () => {
         persona: newReview.persona,
         preprint: preprintTitle,
         review: expect.stringContaining('<dl>'),
+        structured: true,
         user,
       })
       expect(actual).toStrictEqual(
@@ -153,6 +154,7 @@ describe('writeReviewPublish', () => {
         persona: newReview.persona,
         preprint: preprintTitle,
         review: expect.stringContaining(newReview.review.toString()),
+        structured: false,
         user,
       })
       expect(actual).toStrictEqual(

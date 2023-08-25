@@ -199,18 +199,21 @@ function createDepositMetadata(deposition: EmptyDeposition, newPrereview: NewPre
         ({
           upload_type: 'publication',
           publication_type: 'peerreview',
-          title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
+          title: plainText`${newPrereview.structured ? 'Structured ' : ''}PREreview of “${
+            newPrereview.preprint.title
+          }”`.toString(),
           creators: [
             newPrereview.persona === 'public'
               ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
               : { name: newPrereview.user.pseudonym },
           ],
-          description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${
-            url.href
-          }">${url.href}</a>.</strong></p>
+          description: `<p><strong>This Zenodo record is a permanently preserved version of a ${
+            newPrereview.structured ? 'Structured ' : ''
+          }PREreview. You can view the complete PREreview at <a href="${url.href}">${url.href}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
           communities: [{ identifier: 'prereview-reviews' }],
+          keywords: newPrereview.structured ? ['Structured PREreview'] : undefined,
           related_identifiers: [
             {
               ...toExternalIdentifier(newPrereview.preprint.id),

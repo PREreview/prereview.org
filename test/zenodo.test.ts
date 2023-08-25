@@ -2559,266 +2559,538 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
 })
 
 describe('createRecordOnZenodo', () => {
-  test.prop([
-    fc.record<NewPrereview>({
-      conduct: fc.constant('yes'),
-      persona: fc.constant('public'),
-      preprint: fc.preprintTitle(),
-      review: fc.html(),
-      user: fc.user(),
-    }),
-    fc.string(),
-    fc.origin(),
-    fc.doi(),
-  ])('as a public persona', async (newPrereview, zenodoApiKey, publicUrl, reviewDoi) => {
-    const emptyDeposition: EmptyDeposition = {
-      id: 1,
-      links: {
-        bucket: new URL('http://example.com/bucket'),
-        self: new URL('http://example.com/self'),
-      },
-      metadata: {
-        prereserve_doi: {
-          doi: reviewDoi,
+  describe('as a public persona', () => {
+    test.prop([
+      fc.record<NewPrereview>({
+        conduct: fc.constant('yes'),
+        persona: fc.constant('public'),
+        preprint: fc.preprintTitle(),
+        review: fc.html(),
+        structured: fc.constant(false),
+        user: fc.user(),
+      }),
+      fc.string(),
+      fc.origin(),
+      fc.doi(),
+    ])('with a PREreview', async (newPrereview, zenodoApiKey, publicUrl, reviewDoi) => {
+      const emptyDeposition: EmptyDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          self: new URL('http://example.com/self'),
         },
-      },
-      state: 'unsubmitted',
-      submitted: false,
-    }
-    const unsubmittedDeposition: UnsubmittedDeposition = {
-      id: 1,
-      links: {
-        bucket: new URL('http://example.com/bucket'),
-        publish: new URL('http://example.com/publish'),
-        self: new URL('http://example.com/self'),
-      },
-      metadata: {
-        creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
-        description: 'Description',
-        prereserve_doi: {
-          doi: reviewDoi,
+        metadata: {
+          prereserve_doi: {
+            doi: reviewDoi,
+          },
         },
-        title: 'Title',
-        upload_type: 'publication',
-        publication_type: 'peerreview',
-      },
-      state: 'unsubmitted',
-      submitted: false,
-    }
-    const submittedDeposition: SubmittedDeposition = {
-      id: 1,
-      metadata: {
-        creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
-        description: 'Description',
-        doi: reviewDoi,
-        title: 'Title',
-        upload_type: 'publication',
-        publication_type: 'peerreview',
-      },
-      state: 'done',
-      submitted: true,
-    }
-    const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const unsubmittedDeposition: UnsubmittedDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+          description: 'Description',
+          prereserve_doi: {
+            doi: reviewDoi,
+          },
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const submittedDeposition: SubmittedDeposition = {
+        id: 1,
+        metadata: {
+          creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+          description: 'Description',
+          doi: reviewDoi,
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'done',
+        submitted: true,
+      }
+      const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
 
-    const actual = await _.createRecordOnZenodo(newPrereview)({
-      clock: SystemClock,
-      fetch: fetchMock
-        .sandbox()
-        .postOnce(
-          {
-            url: 'https://zenodo.org/api/deposit/depositions',
-            body: {},
-          },
-          {
-            body: EmptyDepositionC.encode(emptyDeposition),
-            status: Status.Created,
-          },
-        )
-        .putOnce(
-          {
-            url: 'http://example.com/self',
-            body: {
-              metadata: {
-                upload_type: 'publication',
-                publication_type: 'peerreview',
-                title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
-                communities: [{ identifier: 'prereview-reviews' }],
-                description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
+      const actual = await _.createRecordOnZenodo(newPrereview)({
+        clock: SystemClock,
+        fetch: fetchMock
+          .sandbox()
+          .postOnce(
+            {
+              url: 'https://zenodo.org/api/deposit/depositions',
+              body: {},
+            },
+            {
+              body: EmptyDepositionC.encode(emptyDeposition),
+              status: Status.Created,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/self',
+              body: {
+                metadata: {
+                  upload_type: 'publication',
+                  publication_type: 'peerreview',
+                  title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
+                  creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+                  communities: [{ identifier: 'prereview-reviews' }],
+                  description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
-                related_identifiers: [
-                  {
-                    ..._.toExternalIdentifier(newPrereview.preprint.id),
-                    relation: 'reviews',
-                    resource_type: 'publication-preprint',
-                  },
-                  {
-                    identifier: reviewUrl,
-                    relation: 'isIdenticalTo',
-                    resource_type: 'publication-peerreview',
-                    scheme: 'url',
-                  },
-                ],
+                  related_identifiers: [
+                    {
+                      ..._.toExternalIdentifier(newPrereview.preprint.id),
+                      relation: 'reviews',
+                      resource_type: 'publication-preprint',
+                    },
+                    {
+                      identifier: reviewUrl,
+                      relation: 'isIdenticalTo',
+                      resource_type: 'publication-peerreview',
+                      scheme: 'url',
+                    },
+                  ],
+                },
               },
             },
-          },
-          {
-            body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-            status: Status.OK,
-          },
-        )
-        .putOnce(
-          {
-            url: 'http://example.com/bucket/review.html',
-            headers: { 'Content-Type': 'text/html' },
-            functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
-          },
-          {
-            status: Status.Created,
-          },
-        )
-        .postOnce('http://example.com/publish', {
-          body: SubmittedDepositionC.encode(submittedDeposition),
-          status: Status.Accepted,
-        }),
-      logger: () => IO.of(undefined),
-      publicUrl,
-      zenodoApiKey,
-    })()
+            {
+              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+              status: Status.OK,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/bucket/review.html',
+              headers: { 'Content-Type': 'text/html' },
+              functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
+            },
+            {
+              status: Status.Created,
+            },
+          )
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
+          }),
+        logger: () => IO.of(undefined),
+        publicUrl,
+        zenodoApiKey,
+      })()
 
-    expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
+      expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
+    })
+
+    test.prop([
+      fc.record<NewPrereview>({
+        conduct: fc.constant('yes'),
+        persona: fc.constant('public'),
+        preprint: fc.preprintTitle(),
+        review: fc.html(),
+        structured: fc.constant(true),
+        user: fc.user(),
+      }),
+      fc.string(),
+      fc.origin(),
+      fc.doi(),
+    ])('with a Structured PREreview', async (newPrereview, zenodoApiKey, publicUrl, reviewDoi) => {
+      const emptyDeposition: EmptyDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          prereserve_doi: {
+            doi: reviewDoi,
+          },
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const unsubmittedDeposition: UnsubmittedDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+          description: 'Description',
+          prereserve_doi: {
+            doi: reviewDoi,
+          },
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const submittedDeposition: SubmittedDeposition = {
+        id: 1,
+        metadata: {
+          creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+          description: 'Description',
+          doi: reviewDoi,
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'done',
+        submitted: true,
+      }
+      const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
+
+      const actual = await _.createRecordOnZenodo(newPrereview)({
+        clock: SystemClock,
+        fetch: fetchMock
+          .sandbox()
+          .postOnce(
+            {
+              url: 'https://zenodo.org/api/deposit/depositions',
+              body: {},
+            },
+            {
+              body: EmptyDepositionC.encode(emptyDeposition),
+              status: Status.Created,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/self',
+              body: {
+                metadata: {
+                  upload_type: 'publication',
+                  publication_type: 'peerreview',
+                  title: plainText`Structured PREreview of “${newPrereview.preprint.title}”`.toString(),
+                  creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+                  communities: [{ identifier: 'prereview-reviews' }],
+                  description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
+
+${newPrereview.review.toString()}`,
+                  keywords: ['Structured PREreview'],
+                  related_identifiers: [
+                    {
+                      ..._.toExternalIdentifier(newPrereview.preprint.id),
+                      relation: 'reviews',
+                      resource_type: 'publication-preprint',
+                    },
+                    {
+                      identifier: reviewUrl,
+                      relation: 'isIdenticalTo',
+                      resource_type: 'publication-peerreview',
+                      scheme: 'url',
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+              status: Status.OK,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/bucket/review.html',
+              headers: { 'Content-Type': 'text/html' },
+              functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
+            },
+            {
+              status: Status.Created,
+            },
+          )
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
+          }),
+        logger: () => IO.of(undefined),
+        publicUrl,
+        zenodoApiKey,
+      })()
+
+      expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
+    })
   })
 
-  test.prop([
-    fc.record<NewPrereview>({
-      conduct: fc.constant('yes'),
-      persona: fc.constant('pseudonym'),
-      preprint: fc.preprintTitle(),
-      review: fc.html(),
-      user: fc.user(),
-    }),
-    fc.string(),
-    fc.origin(),
-    fc.doi(),
-  ])('as an pseudonym persona', async (newPrereview, zenodoApiKey, publicUrl, reviewDoi) => {
-    const emptyDeposition: EmptyDeposition = {
-      id: 1,
-      links: {
-        bucket: new URL('http://example.com/bucket'),
-        self: new URL('http://example.com/self'),
-      },
-      metadata: {
-        prereserve_doi: {
-          doi: reviewDoi,
+  describe('as an pseudonym persona', () => {
+    test.prop([
+      fc.record<NewPrereview>({
+        conduct: fc.constant('yes'),
+        persona: fc.constant('pseudonym'),
+        preprint: fc.preprintTitle(),
+        review: fc.html(),
+        structured: fc.constant(false),
+        user: fc.user(),
+      }),
+      fc.string(),
+      fc.origin(),
+      fc.doi(),
+    ])('with a PREreview', async (newPrereview, zenodoApiKey, publicUrl, reviewDoi) => {
+      const emptyDeposition: EmptyDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          self: new URL('http://example.com/self'),
         },
-      },
-      state: 'unsubmitted',
-      submitted: false,
-    }
-    const unsubmittedDeposition: UnsubmittedDeposition = {
-      id: 1,
-      links: {
-        bucket: new URL('http://example.com/bucket'),
-        publish: new URL('http://example.com/publish'),
-        self: new URL('http://example.com/self'),
-      },
-      metadata: {
-        creators: [{ name: 'PREreviewer' }],
-        description: 'Description',
-        prereserve_doi: {
-          doi: reviewDoi,
+        metadata: {
+          prereserve_doi: {
+            doi: reviewDoi,
+          },
         },
-        title: 'Title',
-        upload_type: 'publication',
-        publication_type: 'peerreview',
-      },
-      state: 'unsubmitted',
-      submitted: false,
-    }
-    const submittedDeposition: SubmittedDeposition = {
-      id: 1,
-      metadata: {
-        creators: [{ name: 'PREreviewer' }],
-        description: 'Description',
-        doi: reviewDoi,
-        title: 'Title',
-        upload_type: 'publication',
-        publication_type: 'peerreview',
-      },
-      state: 'done',
-      submitted: true,
-    }
-    const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const unsubmittedDeposition: UnsubmittedDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          prereserve_doi: {
+            doi: reviewDoi,
+          },
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const submittedDeposition: SubmittedDeposition = {
+        id: 1,
+        metadata: {
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          doi: reviewDoi,
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'done',
+        submitted: true,
+      }
+      const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
 
-    const actual = await _.createRecordOnZenodo(newPrereview)({
-      clock: SystemClock,
-      fetch: fetchMock
-        .sandbox()
-        .postOnce(
-          {
-            url: 'https://zenodo.org/api/deposit/depositions',
-            body: {},
-          },
-          {
-            body: EmptyDepositionC.encode(emptyDeposition),
-            status: Status.Created,
-          },
-        )
-        .putOnce(
-          {
-            url: 'http://example.com/self',
-            body: {
-              metadata: {
-                upload_type: 'publication',
-                publication_type: 'peerreview',
-                title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                creators: [{ name: newPrereview.user.pseudonym }],
-                communities: [{ identifier: 'prereview-reviews' }],
-                description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
+      const actual = await _.createRecordOnZenodo(newPrereview)({
+        clock: SystemClock,
+        fetch: fetchMock
+          .sandbox()
+          .postOnce(
+            {
+              url: 'https://zenodo.org/api/deposit/depositions',
+              body: {},
+            },
+            {
+              body: EmptyDepositionC.encode(emptyDeposition),
+              status: Status.Created,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/self',
+              body: {
+                metadata: {
+                  upload_type: 'publication',
+                  publication_type: 'peerreview',
+                  title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
+                  creators: [{ name: newPrereview.user.pseudonym }],
+                  communities: [{ identifier: 'prereview-reviews' }],
+                  description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
 ${newPrereview.review.toString()}`,
-                related_identifiers: [
-                  {
-                    ..._.toExternalIdentifier(newPrereview.preprint.id),
-                    relation: 'reviews',
-                    resource_type: 'publication-preprint',
-                  },
-                  {
-                    identifier: reviewUrl,
-                    relation: 'isIdenticalTo',
-                    resource_type: 'publication-peerreview',
-                    scheme: 'url',
-                  },
-                ],
+                  related_identifiers: [
+                    {
+                      ..._.toExternalIdentifier(newPrereview.preprint.id),
+                      relation: 'reviews',
+                      resource_type: 'publication-preprint',
+                    },
+                    {
+                      identifier: reviewUrl,
+                      relation: 'isIdenticalTo',
+                      resource_type: 'publication-peerreview',
+                      scheme: 'url',
+                    },
+                  ],
+                },
               },
             },
-          },
-          {
-            body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
-            status: Status.OK,
-          },
-        )
-        .putOnce(
-          {
-            url: 'http://example.com/bucket/review.html',
-            headers: { 'Content-Type': 'text/html' },
-            functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
-          },
-          {
-            status: Status.Created,
-          },
-        )
-        .postOnce('http://example.com/publish', {
-          body: SubmittedDepositionC.encode(submittedDeposition),
-          status: Status.Accepted,
-        }),
-      logger: () => IO.of(undefined),
-      publicUrl,
-      zenodoApiKey,
-    })()
+            {
+              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+              status: Status.OK,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/bucket/review.html',
+              headers: { 'Content-Type': 'text/html' },
+              functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
+            },
+            {
+              status: Status.Created,
+            },
+          )
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
+          }),
+        logger: () => IO.of(undefined),
+        publicUrl,
+        zenodoApiKey,
+      })()
 
-    expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
+      expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
+    })
+
+    test.prop([
+      fc.record<NewPrereview>({
+        conduct: fc.constant('yes'),
+        persona: fc.constant('pseudonym'),
+        preprint: fc.preprintTitle(),
+        review: fc.html(),
+        structured: fc.constant(true),
+        user: fc.user(),
+      }),
+      fc.string(),
+      fc.origin(),
+      fc.doi(),
+    ])('with a Structured PREreview', async (newPrereview, zenodoApiKey, publicUrl, reviewDoi) => {
+      const emptyDeposition: EmptyDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          prereserve_doi: {
+            doi: reviewDoi,
+          },
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const unsubmittedDeposition: UnsubmittedDeposition = {
+        id: 1,
+        links: {
+          bucket: new URL('http://example.com/bucket'),
+          publish: new URL('http://example.com/publish'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          prereserve_doi: {
+            doi: reviewDoi,
+          },
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'unsubmitted',
+        submitted: false,
+      }
+      const submittedDeposition: SubmittedDeposition = {
+        id: 1,
+        metadata: {
+          creators: [{ name: 'PREreviewer' }],
+          description: 'Description',
+          doi: reviewDoi,
+          title: 'Title',
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'done',
+        submitted: true,
+      }
+      const reviewUrl = `${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id: 1 })}`
+
+      const actual = await _.createRecordOnZenodo(newPrereview)({
+        clock: SystemClock,
+        fetch: fetchMock
+          .sandbox()
+          .postOnce(
+            {
+              url: 'https://zenodo.org/api/deposit/depositions',
+              body: {},
+            },
+            {
+              body: EmptyDepositionC.encode(emptyDeposition),
+              status: Status.Created,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/self',
+              body: {
+                metadata: {
+                  upload_type: 'publication',
+                  publication_type: 'peerreview',
+                  title: plainText`Structured PREreview of “${newPrereview.preprint.title}”`.toString(),
+                  creators: [{ name: newPrereview.user.pseudonym }],
+                  communities: [{ identifier: 'prereview-reviews' }],
+                  description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
+
+${newPrereview.review.toString()}`,
+                  keywords: ['Structured PREreview'],
+                  related_identifiers: [
+                    {
+                      ..._.toExternalIdentifier(newPrereview.preprint.id),
+                      relation: 'reviews',
+                      resource_type: 'publication-preprint',
+                    },
+                    {
+                      identifier: reviewUrl,
+                      relation: 'isIdenticalTo',
+                      resource_type: 'publication-peerreview',
+                      scheme: 'url',
+                    },
+                  ],
+                },
+              },
+            },
+            {
+              body: UnsubmittedDepositionC.encode(unsubmittedDeposition),
+              status: Status.OK,
+            },
+          )
+          .putOnce(
+            {
+              url: 'http://example.com/bucket/review.html',
+              headers: { 'Content-Type': 'text/html' },
+              functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
+            },
+            {
+              status: Status.Created,
+            },
+          )
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
+          }),
+        logger: () => IO.of(undefined),
+        publicUrl,
+        zenodoApiKey,
+      })()
+
+      expect(actual).toStrictEqual(E.right([reviewDoi, 1]))
+    })
   })
 
   test.prop([
@@ -2827,6 +3099,7 @@ ${newPrereview.review.toString()}`,
       persona: fc.constantFrom('public', 'pseudonym'),
       preprint: fc.preprintTitle(),
       review: fc.html(),
+      structured: fc.boolean(),
       user: fc.user(),
     }),
     fc.string(),
