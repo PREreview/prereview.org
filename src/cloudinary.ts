@@ -44,12 +44,15 @@ const SearchResultsD = pipe(
 const findImageOnCloudinary = (orcid: Orcid) =>
   pipe(
     RTE.asks(({ cloudinaryApi }: CloudinaryApiEnv) =>
-      cloudinary.search.expression(`metadata.orcid_id="${orcid}"`).max_results(1).to_url(undefined, undefined, {
-        api_key: cloudinaryApi.key,
-        api_secret: cloudinaryApi.secret,
-        cloud_name: cloudinaryApi.cloudName,
-        secure: true,
-      }),
+      cloudinary.search
+        .expression(`metadata.orcid_id="${orcid}"`)
+        .max_results(1)
+        .to_url(60 * 10, undefined, {
+          api_key: cloudinaryApi.key,
+          api_secret: cloudinaryApi.secret,
+          cloud_name: cloudinaryApi.cloudName,
+          secure: true,
+        }),
     ),
     RTE.map(F.Request('GET')),
     RTE.chainW(F.send),
