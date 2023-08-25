@@ -28,6 +28,7 @@ describe('review', () => {
         title: fc.html(),
         url: fc.url(),
       }),
+      structured: fc.boolean(),
       text: fc.html(),
     }),
     fc.either(fc.constant('no-session' as const), fc.user()),

@@ -629,9 +629,9 @@ describe('getRecentPrereviewsFromZenodo', () => {
 })
 
 describe('getPrereviewFromZenodo', () => {
-  test.prop([fc.integer(), fc.preprint(), fc.option(fc.clubId(), { nil: undefined })])(
+  test.prop([fc.integer(), fc.preprint(), fc.option(fc.clubId(), { nil: undefined }), fc.boolean()])(
     'when the PREreview can be loaded',
-    async (id, preprint, club) => {
+    async (id, preprint, club, structured) => {
       const record: Record = {
         conceptdoi: '10.5072/zenodo.1061863' as Doi,
         conceptrecid: 1061863,
@@ -663,6 +663,7 @@ describe('getPrereviewFromZenodo', () => {
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
           doi: '10.5281/zenodo.1061864' as Doi,
+          keywords: structured ? ['Structured PREreview'] : undefined,
           language: 'eng',
           license: {
             id: 'CC-BY-4.0',
@@ -715,6 +716,7 @@ describe('getPrereviewFromZenodo', () => {
             language: preprint.title.language,
             url: preprint.url,
           },
+          structured,
           text: rawHtml('Some text'),
         }),
       )
@@ -797,6 +799,7 @@ describe('getPrereviewFromZenodo', () => {
           language: preprint.title.language,
           url: preprint.url,
         },
+        structured: false,
         text: rawHtml('Some text'),
       }),
     )

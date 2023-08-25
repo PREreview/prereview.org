@@ -119,6 +119,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
       license: {
         id: 'CC-BY-4.0',
       },
+      keywords: ['Structured PREreview'],
       publication_date: new Date('2022-07-05'),
       related_identifiers: [
         {

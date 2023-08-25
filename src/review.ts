@@ -38,6 +38,7 @@ export interface Prereview {
     title: Html
     url: URL
   }
+  structured: boolean
   text: Html
 }
 
@@ -94,7 +95,7 @@ function failureMessage(user?: User) {
 
 function createPage(review: Prereview, user?: User) {
   return page({
-    title: plainText`PREreview of “${review.preprint.title}”`,
+    title: plainText`${review.structured ? 'Structured ' : ''}PREreview of “${review.preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
@@ -106,7 +107,7 @@ function createPage(review: Prereview, user?: User) {
       <main id="prereview">
         <header>
           <h1>
-            PREreview of
+            ${review.structured ? 'Structured ' : ''}PREreview of
             <cite lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
               >${review.preprint.title}</cite
             >

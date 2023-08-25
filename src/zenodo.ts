@@ -273,6 +273,7 @@ function recordToPrereview(
             url: preprint.url,
           })),
         ),
+        structured: RTE.right(review.metadata.keywords?.includes('Structured PREreview') === true),
         text: getReviewText(review.reviewTextUrl),
       }),
     ),
