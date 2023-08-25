@@ -633,6 +633,10 @@ dt {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
   }
+
+  dd + & {
+    margin-block-start: var(--space-2xs);
+  }
 }
 
 math {
