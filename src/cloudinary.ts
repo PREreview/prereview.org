@@ -11,6 +11,7 @@ import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { URL } from 'url'
+import { timeoutRequest } from './fetch'
 
 export interface CloudinaryApiEnv {
   cloudinaryApi: {
@@ -59,6 +60,7 @@ const findImageOnCloudinary = (orcid: Orcid) =>
     RTE.mapLeft(() => 'network-error' as const),
     RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
     RTE.chainTaskEitherKW(flow(F.decode(SearchResultsD), TE.mapLeft(D.draw))),
+    RTE.local(timeoutRequest(2000)),
     RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get image from Cloudinary')))),
     RTE.mapLeft(() => 'unavailable' as const),
     RTE.chainOptionKW(() => 'not-found' as const)(get('resources.[number].public_id', 0)),
