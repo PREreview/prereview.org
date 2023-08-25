@@ -599,8 +599,11 @@ h6 {
 }
 
 dl {
-  margin-block-start: var(--space-m);
   max-inline-size: 64ch;
+
+  * + & {
+    margin-block-start: var(--space-m);
+  }
 
   .summary-card & {
     max-inline-size: 100%;
@@ -1700,7 +1703,7 @@ skip-link {
     font-weight: 500;
   }
 
-  & dl {
+  & article > dl {
     display: flex;
     justify-content: space-between;
     column-gap: var(--space-m);
@@ -1709,16 +1712,16 @@ skip-link {
     color: var(--color-text-light);
     margin-block-start: var(--space-2xs);
     max-inline-size: 100%;
-  }
 
-  & dt {
-    position: absolute;
-    white-space: nowrap;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    block-size: 1px;
-    inline-size: 1px;
+    & dt {
+      position: absolute;
+      white-space: nowrap;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      block-size: 1px;
+      inline-size: 1px;
+    }
   }
 
   &[aria-labelledby][tabindex] {
