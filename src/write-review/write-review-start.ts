@@ -31,16 +31,18 @@ export const writeReviewStart = flow(
       RM.ichainW(({ form, user }) => showCarryOnPage(preprint, form, user)),
       RM.orElseW(error =>
         match(error)
-          .with(
-            'no-form',
-            fromMiddlewareK<
+          .returnType<
+            RM.ReaderMiddleware<
               GetUserEnv & FathomEnv & PhaseEnv & PublicUrlEnv & OAuthEnv,
-              [],
-              void,
               StatusOpen,
               ResponseEnded,
-              never
-            >(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
+              never,
+              void
+            >
+          >()
+          .with(
+            'no-form',
+            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
           )
           .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { id: preprint.id }))
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
