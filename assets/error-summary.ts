@@ -51,11 +51,9 @@ function getAssociatedLegendOrLabel(input: HTMLElement) {
     const fieldset = input.closest('fieldset')
 
     if (fieldset) {
-      const legends = fieldset.getElementsByTagName('legend')
+      const candidateLegend = fieldset.getElementsByTagName('legend')[0]
 
-      if (legends.length) {
-        const candidateLegend = legends[0]!
-
+      if (candidateLegend instanceof HTMLLegendElement) {
         if (input.type === 'checkbox' || input.type === 'radio') {
           return candidateLegend
         }

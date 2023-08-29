@@ -402,10 +402,10 @@ function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.
 function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Match<{ [_ in K]: A }> {
   return new P.Match(
     new P.Parser(r => {
-      if (r.parts.length === 0) {
+      if (typeof r.parts[0] !== 'string') {
         return O.none
       } else {
-        const head = r.parts[0]!
+        const head = r.parts[0]
         const tail = r.parts.slice(1)
         return O.Functor.map(O.fromEither(type.decode(head)), a => tuple(singleton(k, a), new P.Route(tail, r.query)))
       }
