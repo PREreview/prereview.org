@@ -22,10 +22,6 @@ const deps = Promise.all([
 export class HtmlEditor extends HTMLElement {
   static element = 'html-editor' as const
 
-  constructor() {
-    super()
-  }
-
   async connectedCallback() {
     const textArea = this.firstElementChild
 
