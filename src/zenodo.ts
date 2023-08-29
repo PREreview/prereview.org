@@ -1,4 +1,4 @@
-import { Temporal } from '@js-temporal/polyfill'
+import { toTemporalInstant } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
 import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
@@ -47,8 +47,6 @@ import { type PublicUrlEnv, toUrl } from './public-url'
 import type { Prereview } from './review'
 import { reviewMatch } from './routes'
 import type { NewPrereview } from './write-review'
-
-import PlainDate = Temporal.PlainDate
 
 export const getRecentPrereviewsFromZenodo = flow(
   RTE.fromPredicate(
@@ -266,7 +264,9 @@ function recordToPrereview(
         doi: RTE.right(review.metadata.doi),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
         license: RTE.right(review.license),
-        published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0]!)),
+        published: RTE.right(
+          toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
+        ),
         preprint: pipe(
           getPreprint(review.preprintId),
           RTE.map(preprint => ({
@@ -310,7 +310,9 @@ function recordToRecentPrereview(
         club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         id: RTE.right(review.id),
         reviewers: RTE.right(pipe(review.metadata.creators, RNEA.map(get('name')))),
-        published: RTE.right(PlainDate.from(review.metadata.publication_date.toISOString().split('T')[0]!)),
+        published: RTE.right(
+          toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
+        ),
         preprint: getPreprintTitle(review.preprintId),
       }),
     ),
