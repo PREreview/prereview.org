@@ -333,7 +333,7 @@ function fetchSvg(path: string) {
       const svg = document.createRange().createContextualFragment(body).firstElementChild
 
       if (!(svg instanceof SVGSVGElement)) {
-        throw 'Not an SVG'
+        throw new Error('Not an SVG')
       }
 
       svg.removeAttribute('xmlns')

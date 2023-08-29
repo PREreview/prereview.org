@@ -1,3 +1,3 @@
 export function shouldNotBeCalled(): never {
-  throw 'should not be called'
+  throw new Error('should not be called')
 }
