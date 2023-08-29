@@ -120,7 +120,7 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
     .chain(omit =>
       fc.record(
         Object.fromEntries(Object.entries(recordModel).filter(([key]) => key !== omit)) as never,
-        (constraints as never) ?? { withDeletedKeys: true },
+        (constraints ?? { withDeletedKeys: true }) as never,
       ),
     )
 
