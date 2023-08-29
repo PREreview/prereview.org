@@ -122,7 +122,7 @@ const showFailureMessage = pipe(
 
 const endSession = pipe(
   _endSession(),
-  RM.orElse(() => RM.right(undefined as void)),
+  RM.orElseW(() => RM.right(undefined)),
 )
 
 function accessDeniedMessage() {
