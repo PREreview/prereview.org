@@ -3,7 +3,7 @@
   "plugins": ["@typescript-eslint", "no-comments"],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended-type-checked",
+    "plugin:@typescript-eslint/strict-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:import/recommended",
     "plugin:import/typescript",
@@ -42,6 +42,7 @@
   "rules": {
     "@typescript-eslint/array-type": ["error", { "default": "generic" }],
     "@typescript-eslint/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
+    "@typescript-eslint/no-confusing-void-expression": "off",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/prefer-nullish-coalescing": ["error", { "ignoreConditionalTests": true }],
     "@typescript-eslint/strict-boolean-expressions": "error",
