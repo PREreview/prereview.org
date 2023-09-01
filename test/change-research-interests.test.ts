@@ -7,6 +7,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import * as _ from '../src/change-research-interests'
+import type { EditResearchInterestsEnv } from '../src/research-interests'
 import { myDetailsMatch } from '../src/routes'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -55,7 +56,7 @@ describe('changeResearchInterests', () => {
     ),
     fc.user(),
   ])('when the form has been submitted', async (oauth, publicUrl, [researchInterests, connection], user) => {
-    const saveResearchInterests: Mock<_.EditResearchInterestsEnv['saveResearchInterests']> = jest.fn(_ =>
+    const saveResearchInterests: Mock<EditResearchInterestsEnv['saveResearchInterests']> = jest.fn(_ =>
       TE.right(undefined),
     )
 
@@ -126,7 +127,7 @@ describe('changeResearchInterests', () => {
   ])(
     'when the form has been submitted without setting research interests',
     async (oauth, publicUrl, connection, user) => {
-      const deleteResearchInterests: Mock<_.EditResearchInterestsEnv['deleteResearchInterests']> = jest.fn(_ =>
+      const deleteResearchInterests: Mock<EditResearchInterestsEnv['deleteResearchInterests']> = jest.fn(_ =>
         TE.right(undefined),
       )
 

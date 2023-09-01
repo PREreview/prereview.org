@@ -1,13 +1,10 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import type * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, getCareerStage } from './career-stage'
 import { html, plainText, sendHtml } from './html'
@@ -15,18 +12,10 @@ import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
+import { getResearchInterests } from './research-interests'
 import { changeCareerStageMatch, changeResearchInterestsMatch, myDetailsMatch } from './routes'
 import type { NonEmptyString } from './string'
 import { type GetUserEnv, type User, getUser } from './user'
-
-interface GetResearchInterestsEnv {
-  getResearchInterests: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString>
-}
-
-const getResearchInterests = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ getResearchInterests }: GetResearchInterestsEnv) => getResearchInterests(orcid)),
-  )
 
 export const myDetails = pipe(
   getUser,

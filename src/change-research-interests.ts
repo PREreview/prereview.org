@@ -1,49 +1,21 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
 import { getMethod, seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
+import { deleteResearchInterests, getResearchInterests, saveResearchInterests } from './research-interests'
 import { changeResearchInterestsMatch, myDetailsMatch } from './routes'
 import { type NonEmptyString, NonEmptyStringC } from './string'
 import { type GetUserEnv, type User, getUser } from './user'
-
-interface GetResearchInterestsEnv {
-  getResearchInterests: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString>
-}
-
-export interface EditResearchInterestsEnv extends GetResearchInterestsEnv {
-  deleteResearchInterests: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
-  saveResearchInterests: (orcid: Orcid, researchInterests: NonEmptyString) => TE.TaskEither<'unavailable', void>
-}
-
-const getResearchInterests = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ getResearchInterests }: GetResearchInterestsEnv) => getResearchInterests(orcid)),
-  )
-
-const deleteResearchInterests = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ deleteResearchInterests }: EditResearchInterestsEnv) => deleteResearchInterests(orcid)),
-  )
-
-const saveResearchInterests = (orcid: Orcid, researchInterests: NonEmptyString) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ saveResearchInterests }: EditResearchInterestsEnv) =>
-      saveResearchInterests(orcid, researchInterests),
-    ),
-  )
 
 export const changeResearchInterests = pipe(
   getUser,
