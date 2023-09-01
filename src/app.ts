@@ -25,6 +25,7 @@ import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
+import { changeResearchInterests } from './change-research-interests'
 import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { codeOfConduct } from './code-of-conduct'
@@ -42,9 +43,11 @@ import {
   type CareerStageStoreEnv,
   type ResearchInterestsStoreEnv,
   deleteCareerStage,
+  deleteResearchInterests,
   getCareerStage,
   getResearchInterests,
   saveCareerStage,
+  saveResearchInterests,
 } from './keyv'
 import {
   type LegacyPrereviewApiEnv,
@@ -76,6 +79,7 @@ import { reviews } from './reviews'
 import {
   aboutUsMatch,
   changeCareerStageMatch,
+  changeResearchInterestsMatch,
   clubProfileMatch,
   codeOfConductMatch,
   communitiesMatch,
@@ -305,6 +309,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           deleteCareerStage: flip(deleteCareerStage)(env),
           getCareerStage: flip(getCareerStage)(env),
           saveCareerStage: (orcid, careerStage) => saveCareerStage(orcid, careerStage)(env),
+        })),
+      ),
+    ),
+    pipe(
+      changeResearchInterestsMatch.parser,
+      P.map(() => changeResearchInterests),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteResearchInterests: flip(deleteResearchInterests)(env),
+          getResearchInterests: flip(getResearchInterests)(env),
+          saveResearchInterests: (orcid, researchInterests) => saveResearchInterests(orcid, researchInterests)(env),
         })),
       ),
     ),

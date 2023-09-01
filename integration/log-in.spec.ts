@@ -43,8 +43,49 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
   await expect(page.getByLabel('Early')).toBeChecked()
 })
 
+test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async ({ page }) => {
+  await page.getByRole('link', { name: 'My details' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Research interests Unknown')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.goto('/my-details/change-research-interests')
+  await page
+    .getByLabel('What are your research interests?')
+    .fill('Nunc vestibulum sapien eu magna elementum consectetur.')
+
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText(
+    'Research interests Nunc vestibulum sapien eu magna elementum consectetur.',
+  )
+
+  await page.goto('/my-details/change-research-interests')
+
+  await expect(page.getByLabel('What are your research interests?')).toHaveValue(
+    'Nunc vestibulum sapien eu magna elementum consectetur.',
+  )
+})
+
 test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaScriptEnabled, page }) => {
   await page.goto('/my-details/change-career-stage')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.goto('/my-details/change-research-interests')
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()

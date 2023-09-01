@@ -1294,6 +1294,10 @@ notification-banner {
     margin-block-start: var(--space-s-m);
   }
 
+  :--heading + & {
+    margin-block-start: var(--space-xs-s);
+  }
+
   .error-message + & {
     margin-block-start: var(--space-3xs);
   }

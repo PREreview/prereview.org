@@ -52,6 +52,17 @@ export const saveCareerStage = (
     TE.map(constVoid),
   )
 
+export const deleteResearchInterests = (
+  orcid: Orcid,
+): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable', void> =>
+  flow(
+    TE.tryCatchK(
+      env => env.researchInterestsStore.delete(orcid),
+      () => 'unavailable' as const,
+    ),
+    TE.map(constVoid),
+  )
+
 export const getResearchInterests = (
   orcid: Orcid,
 ): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable' | 'not-found', NonEmptyString> =>
@@ -66,4 +77,16 @@ export const getResearchInterests = (
         E.mapLeft(() => 'not-found' as const),
       ),
     ),
+  )
+
+export const saveResearchInterests = (
+  orcid: Orcid,
+  researchInterests: NonEmptyString,
+): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable', void> =>
+  flow(
+    TE.tryCatchK(
+      env => env.researchInterestsStore.set(orcid, NonEmptyStringC.encode(researchInterests)),
+      () => 'unavailable' as const,
+    ),
+    TE.map(constVoid),
   )

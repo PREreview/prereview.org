@@ -134,6 +134,52 @@ describe('saveCareerStage', () => {
   )
 })
 
+describe('deleteResearchInterests', () => {
+  test.prop([fc.orcid(), fc.nonEmptyString()])(
+    'when the key contains research interests',
+    async (orcid, researchInterests) => {
+      const store = new Keyv()
+      await store.set(orcid, researchInterests)
+
+      const actual = await _.deleteResearchInterests(orcid)({ researchInterestsStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.has(orcid)).toBeFalsy()
+    },
+  )
+
+  test.prop([fc.orcid(), fc.anything()])(
+    'when the key contains something other than research interests',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.deleteResearchInterests(orcid)({ researchInterestsStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.has(orcid)).toBeFalsy()
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.deleteResearchInterests(orcid)({ researchInterestsStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.delete = () => Promise.reject(error)
+
+    const actual = await _.deleteResearchInterests(orcid)({ researchInterestsStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
 describe('getResearchInterests', () => {
   test.prop([fc.orcid(), fc.nonEmptyString()])(
     'when the key contains research interests',
@@ -178,4 +224,60 @@ describe('getResearchInterests', () => {
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
+})
+
+describe('saveResearchInterests', () => {
+  test.prop([fc.orcid(), fc.nonEmptyString()])(
+    'when the key contains research interests',
+    async (orcid, researchInterests) => {
+      const store = new Keyv()
+      await store.set(orcid, researchInterests)
+
+      const actual = await _.saveResearchInterests(orcid, researchInterests)({ researchInterestsStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(researchInterests)
+    },
+  )
+
+  test.prop([
+    fc.orcid(),
+    fc.oneof(
+      fc.constant(''),
+      fc.anything().filter(value => typeof value !== 'string'),
+    ),
+    fc.nonEmptyString(),
+  ])(
+    'when the key already contains something other than research interests',
+    async (orcid, value, researchInterests) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveResearchInterests(orcid, researchInterests)({ researchInterestsStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(researchInterests)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key is not set', async (orcid, researchInterests) => {
+    const store = new Keyv()
+
+    const actual = await _.saveResearchInterests(orcid, researchInterests)({ researchInterestsStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(researchInterests)
+  })
+
+  test.prop([fc.orcid(), fc.nonEmptyString(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, researchInterests, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveResearchInterests(orcid, researchInterests)({ researchInterestsStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
 })
