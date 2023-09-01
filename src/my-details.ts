@@ -15,7 +15,7 @@ import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
-import { changeCareerStageMatch, myDetailsMatch } from './routes'
+import { changeCareerStageMatch, changeResearchInterestsMatch, myDetailsMatch } from './routes'
 import type { NonEmptyString } from './string'
 import { type GetUserEnv, type User, getUser } from './user'
 
@@ -123,6 +123,11 @@ function createPage(user: User, careerStage: O.Option<CareerStage>, researchInte
                 .with({ value: P.select() }, identity)
                 .when(O.isNone, () => 'Unknown')
                 .exhaustive()}
+            </dd>
+            <dd>
+              <a href="${format(changeResearchInterestsMatch.formatter, {})}"
+                >Change <span class="visually-hidden">research interests</span></a
+              >
             </dd>
           </div>
         </dl>

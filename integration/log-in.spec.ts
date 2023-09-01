@@ -50,7 +50,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
-  await page.goto('/my-details/change-research-interests')
+  await page.getByRole('link', { name: 'Change research interests' }).click()
   await page
     .getByLabel('What are your research interests?')
     .fill('Nunc vestibulum sapien eu magna elementum consectetur.')
@@ -64,7 +64,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
     'Research interests Nunc vestibulum sapien eu magna elementum consectetur.',
   )
 
-  await page.goto('/my-details/change-research-interests')
+  await page.getByRole('link', { name: 'Change research interests' }).click()
 
   await expect(page.getByLabel('What are your research interests?')).toHaveValue(
     'Nunc vestibulum sapien eu magna elementum consectetur.',
