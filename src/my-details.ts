@@ -90,6 +90,11 @@ function createPage(user: User, careerStage: O.Option<CareerStage>) {
               >
             </dd>
           </div>
+
+          <div>
+            <dt>Research interests</dt>
+            <dd>Unknown</dd>
+          </div>
         </dl>
       </main>
     `,
