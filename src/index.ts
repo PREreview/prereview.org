@@ -75,6 +75,7 @@ const server = app({
         }
       : undefined,
   publicUrl: env.PUBLIC_URL,
+  researchInterestsStore: new Keyv({ namespace: 'research-interests', store: keyvStore }),
   secret: env.SECRET,
   sessionCookie: 'session',
   sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),

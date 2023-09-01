@@ -5,9 +5,14 @@ import { constVoid, flow } from 'fp-ts/function'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
+import { type NonEmptyString, NonEmptyStringC } from './string'
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<string>
+}
+
+export interface ResearchInterestsStoreEnv {
+  researchInterestsStore: Keyv<string>
 }
 
 export const deleteCareerStage = (orcid: Orcid): RTE.ReaderTaskEither<CareerStageStoreEnv, 'unavailable', void> =>
@@ -45,4 +50,20 @@ export const saveCareerStage = (
       () => 'unavailable' as const,
     ),
     TE.map(constVoid),
+  )
+
+export const getResearchInterests = (
+  orcid: Orcid,
+): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable' | 'not-found', NonEmptyString> =>
+  flow(
+    TE.tryCatchK(
+      env => env.researchInterestsStore.get(orcid),
+      () => 'unavailable' as const,
+    ),
+    TE.chainEitherKW(
+      flow(
+        NonEmptyStringC.decode,
+        E.mapLeft(() => 'not-found' as const),
+      ),
+    ),
   )

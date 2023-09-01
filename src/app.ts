@@ -7,7 +7,6 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -39,7 +38,14 @@ import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
 import { handleError } from './http-error'
-import { type CareerStageStoreEnv, deleteCareerStage, getCareerStage, saveCareerStage } from './keyv'
+import {
+  type CareerStageStoreEnv,
+  type ResearchInterestsStoreEnv,
+  deleteCareerStage,
+  getCareerStage,
+  getResearchInterests,
+  saveCareerStage,
+} from './keyv'
 import {
   type LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
@@ -159,6 +165,7 @@ export type AppEnv = CanRapidReviewEnv &
   OAuthEnv &
   PhaseEnv &
   PublicUrlEnv &
+  ResearchInterestsStoreEnv &
   SessionEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean
@@ -285,7 +292,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getCareerStage: flip(getCareerStage)(env),
-          getResearchInterests: () => TE.left('not-found'),
+          getResearchInterests: flip(getResearchInterests)(env),
         })),
       ),
     ),
