@@ -19,13 +19,15 @@ describe('myDetails', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
-    ])('when the career stage can be loaded', async (oauth, publicUrl, connection, user, careerStage) => {
+      fc.either(fc.constant('not-found' as const), fc.nonEmptyString()),
+    ])('when the details can be loaded', async (oauth, publicUrl, connection, user, careerStage, researchInterests) => {
       const actual = await runMiddleware(
         _.myDetails({
           getUser: () => M.right(user),
           oauth,
           publicUrl,
           getCareerStage: () => TE.fromEither(careerStage),
+          getResearchInterests: () => TE.fromEither(researchInterests),
         }),
         connection,
       )()
@@ -39,29 +41,61 @@ describe('myDetails', () => {
       )
     })
 
-    test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.user()])(
-      'when the career stage cannot be loaded',
-      async (oauth, publicUrl, connection, user) => {
-        const actual = await runMiddleware(
-          _.myDetails({
-            getUser: () => M.right(user),
-            oauth,
-            publicUrl,
-            getCareerStage: () => TE.left('unavailable'),
-          }),
-          connection,
-        )()
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.connection({ method: fc.requestMethod() }),
+      fc.user(),
+      fc.either(fc.constant('not-found' as const), fc.nonEmptyString()),
+    ])('when the career stage cannot be loaded', async (oauth, publicUrl, connection, user, researchInterests) => {
+      const actual = await runMiddleware(
+        _.myDetails({
+          getUser: () => M.right(user),
+          oauth,
+          publicUrl,
+          getCareerStage: () => TE.left('unavailable'),
+          getResearchInterests: () => TE.fromEither(researchInterests),
+        }),
+        connection,
+      )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.connection({ method: fc.requestMethod() }),
+      fc.user(),
+      fc.either(fc.constant('not-found' as const), fc.careerStage()),
+    ])('when the career stage cannot be loaded', async (oauth, publicUrl, connection, user, careerStage) => {
+      const actual = await runMiddleware(
+        _.myDetails({
+          getUser: () => M.right(user),
+          oauth,
+          publicUrl,
+          getCareerStage: () => TE.fromEither(careerStage),
+          getResearchInterests: () => TE.left('unavailable'),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
   })
 
   test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() })])(
@@ -73,6 +107,7 @@ describe('myDetails', () => {
           oauth,
           publicUrl,
           getCareerStage: shouldNotBeCalled,
+          getResearchInterests: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -109,6 +144,7 @@ describe('myDetails', () => {
           oauth,
           publicUrl,
           getCareerStage: shouldNotBeCalled,
+          getResearchInterests: shouldNotBeCalled,
         }),
         connection,
       )()

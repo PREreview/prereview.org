@@ -1,10 +1,13 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import { flow, pipe } from 'fp-ts/function'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import type * as TE from 'fp-ts/TaskEither'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, getCareerStage } from './career-stage'
 import { html, plainText, sendHtml } from './html'
@@ -13,7 +16,17 @@ import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { changeCareerStageMatch, myDetailsMatch } from './routes'
+import type { NonEmptyString } from './string'
 import { type GetUserEnv, type User, getUser } from './user'
+
+interface GetResearchInterestsEnv {
+  getResearchInterests: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString>
+}
+
+const getResearchInterests = (orcid: Orcid) =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ getResearchInterests }: GetResearchInterestsEnv) => getResearchInterests(orcid)),
+  )
 
 export const myDetails = pipe(
   getUser,
@@ -30,7 +43,19 @@ export const myDetails = pipe(
       ),
     ),
   ),
-  chainReaderKW(({ user, careerStage }) => createPage(user, careerStage)),
+  RM.bindW(
+    'researchInterests',
+    flow(
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => getResearchInterests(orcid)),
+      RM.map(O.some),
+      RM.orElseW(error =>
+        match(error)
+          .with('not-found', () => RM.of(O.none))
+          .otherwise(RM.left),
+      ),
+    ),
+  ),
+  chainReaderKW(({ user, careerStage, researchInterests }) => createPage(user, careerStage, researchInterests)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(error =>
@@ -51,7 +76,7 @@ export const myDetails = pipe(
   ),
 )
 
-function createPage(user: User, careerStage: O.Option<CareerStage>) {
+function createPage(user: User, careerStage: O.Option<CareerStage>, researchInterests: O.Option<NonEmptyString>) {
   return page({
     title: plainText`My details`,
     content: html`
@@ -93,7 +118,12 @@ function createPage(user: User, careerStage: O.Option<CareerStage>) {
 
           <div>
             <dt>Research interests</dt>
-            <dd>Unknown</dd>
+            <dd>
+              ${match(researchInterests)
+                .with({ value: P.select() }, identity)
+                .when(O.isNone, () => 'Unknown')
+                .exhaustive()}
+            </dd>
           </div>
         </dl>
       </main>
