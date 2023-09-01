@@ -133,3 +133,49 @@ describe('saveCareerStage', () => {
     },
   )
 })
+
+describe('getResearchInterests', () => {
+  test.prop([fc.orcid(), fc.nonEmptyString()])(
+    'when the key contains research interests',
+    async (orcid, researchInterests) => {
+      const store = new Keyv()
+      await store.set(orcid, researchInterests)
+
+      const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+
+      expect(actual).toStrictEqual(E.right(researchInterests))
+    },
+  )
+
+  test.prop([
+    fc.orcid(),
+    fc.oneof(
+      fc.constant(''),
+      fc.anything().filter(value => typeof value !== 'string'),
+    ),
+  ])('when the key contains something other than research interests', async (orcid, value) => {
+    const store = new Keyv()
+    await store.set(orcid, value)
+
+    const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.get = (): Promise<never> => Promise.reject(error)
+
+    const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
