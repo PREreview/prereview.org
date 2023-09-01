@@ -13,7 +13,7 @@ import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { getResearchInterests } from './research-interests'
-import { changeCareerStageMatch, changeResearchInterestsMatch, myDetailsMatch } from './routes'
+import { changeCareerStageMatch, changeResearchInterestsMatch, myDetailsMatch, profileMatch } from './routes'
 import type { NonEmptyString } from './string'
 import { type GetUserEnv, type User, getUser } from './user'
 
@@ -81,11 +81,21 @@ function createPage(user: User, careerStage: O.Option<CareerStage>, researchInte
           <div>
             <dt>ORCID iD</dt>
             <dd><a href="https://orcid.org/${user.orcid}" class="orcid">${user.orcid}</a></dd>
+            <dd>
+              <a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: user.orcid } })}"
+                >View <span class="visually-hidden">public profile</span></a
+              >
+            </dd>
           </div>
 
           <div>
             <dt>PREreview pseudonym</dt>
             <dd>${user.pseudonym}</dd>
+            <dd>
+              <a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: user.pseudonym } })}"
+                >View <span class="visually-hidden">pseudonym profile</span></a
+              >
+            </dd>
           </div>
 
           <div>

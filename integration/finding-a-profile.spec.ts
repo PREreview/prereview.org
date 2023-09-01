@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC } from 'zenodo-ts'
-import { expect, test } from './base'
+import { areLoggedIn, canLogIn, expect, test } from './base'
 
 test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) => {
   fetch
@@ -184,6 +184,32 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
   await expect(page).toHaveScreenshot()
 })
 
+test.extend(canLogIn).extend(areLoggedIn)('can view my profile', async ({ fetch, page }) => {
+  await page.goto('/my-details')
+
+  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-1825-0097/personal-details', {
+    body: { name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' } } },
+  })
+  fetch.get(
+    {
+      name: 'profile-prereviews',
+      url: 'http://zenodo.test/api/records/',
+      query: {
+        communities: 'prereview-reviews',
+        q: 'creators.orcid:0000-0002-1825-0097',
+        size: 100,
+        sort: '-publication_date',
+        subtype: 'peerreview',
+      },
+    },
+    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  )
+
+  await page.getByRole('link', { name: 'View public profile' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Josiah Carberry’s PREreviews')
+})
+
 test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
   fetch
     .getOnce('http://zenodo.test/api/records/7747129', {
@@ -347,6 +373,29 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Blue Sheep’s PREreviews')
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
+})
+
+test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", async ({ fetch, page }) => {
+  await page.goto('/my-details')
+
+  fetch.get(
+    {
+      name: 'profile-prereviews',
+      url: 'http://zenodo.test/api/records/',
+      query: {
+        communities: 'prereview-reviews',
+        q: 'creators.name:"Orange Panda"',
+        size: 100,
+        sort: '-publication_date',
+        subtype: 'peerreview',
+      },
+    },
+    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  )
+
+  await page.getByRole('link', { name: 'View pseudonym profile' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Orange Panda’s PREreviews')
 })
 
 test('the list might be empty', async ({ fetch, page }) => {
