@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import { flow, identity, pipe } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -90,34 +90,56 @@ function createPage(user: User, careerStage: O.Option<CareerStage>, researchInte
 
           <div>
             <dt>Career stage</dt>
-            <dd>
-              ${match(careerStage)
-                .with({ value: 'early' }, () => 'Early')
-                .with({ value: 'mid' }, () => 'Mid')
-                .with({ value: 'late' }, () => 'Late')
-                .when(O.isNone, () => 'Unknown')
-                .exhaustive()}
-            </dd>
-            <dd>
-              <a href="${format(changeCareerStageMatch.formatter, {})}"
-                >Change <span class="visually-hidden">career stage</span></a
-              >
-            </dd>
+            ${match(careerStage)
+              .when(
+                O.isNone,
+                () => html`
+                  <dd>
+                    <a href="${format(changeCareerStageMatch.formatter, {})}">Enter career stage</a>
+                  </dd>
+                `,
+              )
+              .otherwise(
+                careerStage => html`
+                  <dd>
+                    ${match(careerStage)
+                      .with({ value: 'early' }, () => 'Early')
+                      .with({ value: 'mid' }, () => 'Mid')
+                      .with({ value: 'late' }, () => 'Late')
+                      .exhaustive()}
+                  </dd>
+                  <dd>
+                    <a href="${format(changeCareerStageMatch.formatter, {})}"
+                      >Change <span class="visually-hidden">career stage</span></a
+                    >
+                  </dd>
+                `,
+              )}
           </div>
 
           <div>
             <dt>Research interests</dt>
-            <dd>
-              ${match(researchInterests)
-                .with({ value: P.select() }, identity)
-                .when(O.isNone, () => 'Unknown')
-                .exhaustive()}
-            </dd>
-            <dd>
-              <a href="${format(changeResearchInterestsMatch.formatter, {})}"
-                >Change <span class="visually-hidden">research interests</span></a
-              >
-            </dd>
+            ${match(researchInterests)
+              .when(
+                O.isNone,
+                () => html`
+                  <dd>
+                    <a href="${format(changeResearchInterestsMatch.formatter, {})}">Enter research interests</a>
+                  </dd>
+                `,
+              )
+              .with(
+                { value: P.select() },
+                researchInterests => html`
+                  <dd>${researchInterests}</dd>
+                  <dd>
+                    <a href="${format(changeResearchInterestsMatch.formatter, {})}"
+                      >Change <span class="visually-hidden">research interests</span></a
+                    >
+                  </dd>
+                `,
+              )
+              .exhaustive()}
           </div>
         </dl>
       </main>

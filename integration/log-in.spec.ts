@@ -28,7 +28,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
-  await page.getByRole('link', { name: 'Change career stage' }).click()
+  await page.getByRole('link', { name: 'Enter career stage' }).click()
   await page.getByLabel('Early').check()
 
   await page.mouse.move(0, 0)
@@ -50,7 +50,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
-  await page.getByRole('link', { name: 'Change research interests' }).click()
+  await page.getByRole('link', { name: 'Enter research interests' }).click()
   await page
     .getByLabel('What are your research interests?')
     .fill('Nunc vestibulum sapien eu magna elementum consectetur.')
