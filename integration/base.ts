@@ -25,6 +25,7 @@ import {
 } from 'zenodo-ts'
 import { app } from '../src/app'
 import type { CanRapidReviewEnv } from '../src/feature-flags'
+import type { ResearchInterestsStoreEnv } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
 import Logger = L.Logger
@@ -41,6 +42,7 @@ interface AppFixtures {
   server: Server
   updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
   careerStageStore: Keyv<string>
+  researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -681,8 +683,20 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
+  researchInterestsStore: async ({}, use) => {
+    await use(new Keyv())
+  },
   server: async (
-    { canRapidReview, fetch, logger, oauthServer, port, updatesLegacyPrereview, careerStageStore },
+    {
+      canRapidReview,
+      fetch,
+      logger,
+      oauthServer,
+      port,
+      updatesLegacyPrereview,
+      careerStageStore,
+      researchInterestsStore,
+    },
     use,
   ) => {
     const server = app({
@@ -711,7 +725,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         tokenUrl: new URL('http://orcid.test/token'),
       },
       publicUrl: new URL(`http://localhost:${port}`),
-      researchInterestsStore: new Keyv(),
+      researchInterestsStore,
       secret: '',
       sessionCookie: 'session',
       sessionStore: new Keyv(),
