@@ -748,6 +748,11 @@ math {
       }
     }
   }
+
+  & small {
+    display: block;
+    font-size: var(--step--2);
+  }
 }
 
 table {

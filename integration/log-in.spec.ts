@@ -59,7 +59,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText(
-    'Research interests Nunc vestibulum sapien eu magna elementum consectetur.',
+    'Research interests Nunc vestibulum sapien eu magna elementum consectetur. Only visible to PREreview',
   )
 
   await page.getByRole('link', { name: 'Change research interests' }).click()
@@ -83,6 +83,10 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
   await expect(page).toHaveScreenshot()
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText(
+    'Research interests Nunc vestibulum sapien eu magna elementum consectetur. Shown on your public profile',
+  )
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaScriptEnabled, page }) => {

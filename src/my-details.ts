@@ -146,7 +146,15 @@ function createPage(user: User, careerStage: O.Option<CareerStage>, researchInte
               .with(
                 { value: P.select() },
                 researchInterests => html`
-                  <dd>${researchInterests.value}</dd>
+                  <dd>
+                    ${researchInterests.value}
+                    <small
+                      >${match(researchInterests.visibility)
+                        .with('public', () => 'Shown on your public profile')
+                        .with('restricted', () => 'Only visible to PREreview')
+                        .exhaustive()}</small
+                    >
+                  </dd>
                   <dd>
                     <a href="${format(changeResearchInterestsMatch.formatter, {})}"
                       >Change <span class="visually-hidden">research interests</span></a
