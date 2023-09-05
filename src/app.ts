@@ -26,6 +26,7 @@ import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
 import { changeResearchInterests } from './change-research-interests'
+import { changeResearchInterestsVisibility } from './change-research-interests-visibility'
 import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { codeOfConduct } from './code-of-conduct'
@@ -80,6 +81,7 @@ import {
   aboutUsMatch,
   changeCareerStageMatch,
   changeResearchInterestsMatch,
+  changeResearchInterestsVisibilityMatch,
   clubProfileMatch,
   codeOfConductMatch,
   communitiesMatch,
@@ -315,6 +317,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       changeResearchInterestsMatch.parser,
       P.map(() => changeResearchInterests),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteResearchInterests: flip(deleteResearchInterests)(env),
+          getResearchInterests: flip(getResearchInterests)(env),
+          saveResearchInterests: (orcid, researchInterests) => saveResearchInterests(orcid, researchInterests)(env),
+        })),
+      ),
+    ),
+    pipe(
+      changeResearchInterestsVisibilityMatch.parser,
+      P.map(() => changeResearchInterestsVisibility),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,

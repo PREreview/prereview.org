@@ -184,13 +184,16 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('can view my profile', async ({ fetch, page, researchInterestsStore }) => {
+test.extend(canLogIn).extend(areLoggedIn)('can view my profile', async ({ fetch, page }) => {
   await page.goto('/my-details')
-
-  await researchInterestsStore.set('0000-0002-1825-0097', {
-    value: 'Nunc vestibulum sapien eu magna elementum consectetur.',
-    visibility: 'public',
-  })
+  await page.getByRole('link', { name: 'Enter research interests' }).click()
+  await page
+    .getByLabel('What are your research interests?')
+    .fill('Nunc vestibulum sapien eu magna elementum consectetur.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.goto('/my-details/change-research-interests-visibility')
+  await page.getByLabel('Everyone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
   fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-1825-0097/personal-details', {
     body: { name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' } } },
