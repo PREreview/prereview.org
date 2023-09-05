@@ -6,6 +6,7 @@ import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
@@ -70,7 +71,18 @@ const handleChangeResearchInterestsForm = (user: User) =>
           pipe(
             RM.of({}),
             RM.apS('value', RM.of(researchInterests)),
-            RM.apS('visibility', RM.of('restricted' as const)),
+            RM.apS(
+              'visibility',
+              pipe(
+                RM.fromReaderTaskEither(getResearchInterests(user.orcid)),
+                RM.map(get('visibility')),
+                RM.orElseW(error =>
+                  match(error)
+                    .with('not-found', () => RM.of('restricted' as const))
+                    .otherwise(RM.left),
+                ),
+              ),
+            ),
             RM.chainReaderTaskEitherKW(researchInterests => saveResearchInterests(user.orcid, researchInterests)),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),

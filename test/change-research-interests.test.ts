@@ -85,7 +85,7 @@ describe('changeResearchInterests', () => {
         )
         expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, {
           value: researchInterests,
-          visibility: 'restricted',
+          visibility: existingResearchInterests.visibility,
         })
       },
     )
@@ -142,16 +142,17 @@ describe('changeResearchInterests', () => {
       method: fc.constant('POST'),
     }),
     fc.user(),
+    fc.either(fc.constant('not-found' as const), fc.researchInterests()),
   ])(
     'when the form has been submitted but the research interests cannot be saved',
-    async (oauth, publicUrl, connection, user) => {
+    async (oauth, publicUrl, connection, user, researchInterests) => {
       const actual = await runMiddleware(
         _.changeResearchInterests({
           getUser: () => M.right(user),
           publicUrl,
           oauth,
           deleteResearchInterests: () => TE.left('unavailable'),
-          getResearchInterests: shouldNotBeCalled,
+          getResearchInterests: () => TE.fromEither(researchInterests),
           saveResearchInterests: () => TE.left('unavailable'),
         }),
         connection,
