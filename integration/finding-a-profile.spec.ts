@@ -191,7 +191,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my profile', async ({ fetch,
     .getByLabel('What are your research interests?')
     .fill('Nunc vestibulum sapien eu magna elementum consectetur.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.goto('/my-details/change-research-interests-visibility')
+  await page.getByRole('link', { name: 'Set research-interests visibility' }).click()
   await page.getByLabel('Everyone').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 

@@ -13,7 +13,13 @@ import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { type ResearchInterests, getResearchInterests } from './research-interests'
-import { changeCareerStageMatch, changeResearchInterestsMatch, myDetailsMatch, profileMatch } from './routes'
+import {
+  changeCareerStageMatch,
+  changeResearchInterestsMatch,
+  changeResearchInterestsVisibilityMatch,
+  myDetailsMatch,
+  profileMatch,
+} from './routes'
 import { type GetUserEnv, type User, getUser } from './user'
 
 export const myDetails = pipe(
@@ -144,6 +150,11 @@ function createPage(user: User, careerStage: O.Option<CareerStage>, researchInte
                   <dd>
                     <a href="${format(changeResearchInterestsMatch.formatter, {})}"
                       >Change <span class="visually-hidden">research interests</span></a
+                    >
+                  </dd>
+                  <dd>
+                    <a href="${format(changeResearchInterestsVisibilityMatch.formatter, {})}"
+                      >Set <span class="visually-hidden">research-interests</span> visibility</a
                     >
                   </dd>
                 `,

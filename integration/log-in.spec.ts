@@ -68,7 +68,12 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
     'Nunc vestibulum sapien eu magna elementum consectetur.',
   )
 
-  await page.goto('/my-details/change-research-interests-visibility')
+  await page.getByRole('link', { name: 'Back' }).click()
+
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('link', { name: 'Set research-interests visibility' }).click()
 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
