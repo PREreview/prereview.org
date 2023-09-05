@@ -12,9 +12,14 @@ import { logInAndRedirect } from './log-in'
 import { getMethod, seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
-import { deleteResearchInterests, getResearchInterests, saveResearchInterests } from './research-interests'
+import {
+  type ResearchInterests,
+  deleteResearchInterests,
+  getResearchInterests,
+  saveResearchInterests,
+} from './research-interests'
 import { changeResearchInterestsMatch, myDetailsMatch } from './routes'
-import { type NonEmptyString, NonEmptyStringC } from './string'
+import { NonEmptyStringC } from './string'
 import { type GetUserEnv, type User, getUser } from './user'
 
 export const changeResearchInterests = pipe(
@@ -63,7 +68,9 @@ const handleChangeResearchInterestsForm = (user: User) =>
       match(researchInterests)
         .with(P.string, researchInterests =>
           pipe(
-            RM.fromReaderTaskEither(saveResearchInterests(user.orcid, researchInterests)),
+            RM.of({}),
+            RM.apS('value', RM.of(researchInterests)),
+            RM.chainReaderTaskEitherKW(researchInterests => saveResearchInterests(user.orcid, researchInterests)),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),
           ),
@@ -79,7 +86,7 @@ const handleChangeResearchInterestsForm = (user: User) =>
     ),
   )
 
-function createFormPage(user: User, researchInterests: O.Option<NonEmptyString>) {
+function createFormPage(user: User, researchInterests: O.Option<ResearchInterests>) {
   return page({
     title: plainText`What are your research interests?`,
     content: html`
@@ -93,7 +100,7 @@ function createFormPage(user: User, researchInterests: O.Option<NonEmptyString>)
 
           <textarea name="researchInterests" id="research-interests" rows="5">
 ${match(researchInterests)
-              .with({ value: P.select() }, rawHtml)
+              .with({ value: { value: P.select() } }, rawHtml)
               .when(O.isNone, () => '')
               .exhaustive()}</textarea
           >

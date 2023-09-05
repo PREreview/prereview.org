@@ -135,7 +135,7 @@ describe('saveCareerStage', () => {
 })
 
 describe('deleteResearchInterests', () => {
-  test.prop([fc.orcid(), fc.nonEmptyString()])(
+  test.prop([fc.orcid(), fc.researchInterests()])(
     'when the key contains research interests',
     async (orcid, researchInterests) => {
       const store = new Keyv()
@@ -181,7 +181,7 @@ describe('deleteResearchInterests', () => {
 })
 
 describe('getResearchInterests', () => {
-  test.prop([fc.orcid(), fc.nonEmptyString()])(
+  test.prop([fc.orcid(), fc.researchInterests()])(
     'when the key contains research interests',
     async (orcid, researchInterests) => {
       const store = new Keyv()
@@ -190,6 +190,18 @@ describe('getResearchInterests', () => {
       const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
 
       expect(actual).toStrictEqual(E.right(researchInterests))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.nonEmptyString()])(
+    'when the key contains research interests as a string',
+    async (orcid, researchInterests) => {
+      const store = new Keyv()
+      await store.set(orcid, researchInterests)
+
+      const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+
+      expect(actual).toStrictEqual(E.right({ value: researchInterests }))
     },
   )
 
@@ -227,7 +239,7 @@ describe('getResearchInterests', () => {
 })
 
 describe('saveResearchInterests', () => {
-  test.prop([fc.orcid(), fc.nonEmptyString()])(
+  test.prop([fc.orcid(), fc.researchInterests()])(
     'when the key contains research interests',
     async (orcid, researchInterests) => {
       const store = new Keyv()
@@ -240,14 +252,7 @@ describe('saveResearchInterests', () => {
     },
   )
 
-  test.prop([
-    fc.orcid(),
-    fc.oneof(
-      fc.constant(''),
-      fc.anything().filter(value => typeof value !== 'string'),
-    ),
-    fc.nonEmptyString(),
-  ])(
+  test.prop([fc.orcid(), fc.anything(), fc.researchInterests()])(
     'when the key already contains something other than research interests',
     async (orcid, value, researchInterests) => {
       const store = new Keyv()
@@ -260,7 +265,7 @@ describe('saveResearchInterests', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key is not set', async (orcid, researchInterests) => {
+  test.prop([fc.orcid(), fc.researchInterests()])('when the key is not set', async (orcid, researchInterests) => {
     const store = new Keyv()
 
     const actual = await _.saveResearchInterests(orcid, researchInterests)({ researchInterestsStore: store })()
@@ -269,7 +274,7 @@ describe('saveResearchInterests', () => {
     expect(await store.get(orcid)).toStrictEqual(researchInterests)
   })
 
-  test.prop([fc.orcid(), fc.nonEmptyString(), fc.anything()])(
+  test.prop([fc.orcid(), fc.researchInterests(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, researchInterests, error) => {
       const store = new Keyv()

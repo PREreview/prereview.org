@@ -1,18 +1,21 @@
 import * as E from 'fp-ts/Either'
+import type { JsonRecord } from 'fp-ts/Json'
 import type * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { constVoid, flow } from 'fp-ts/function'
+import { constVoid, flow, pipe } from 'fp-ts/function'
+import * as D from 'io-ts/Decoder'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
-import { type NonEmptyString, NonEmptyStringC } from './string'
+import { type ResearchInterests, ResearchInterestsC } from './research-interests'
+import { NonEmptyStringC } from './string'
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<string>
 }
 
 export interface ResearchInterestsStoreEnv {
-  researchInterestsStore: Keyv<string>
+  researchInterestsStore: Keyv<JsonRecord>
 }
 
 export const deleteCareerStage = (orcid: Orcid): RTE.ReaderTaskEither<CareerStageStoreEnv, 'unavailable', void> =>
@@ -65,7 +68,7 @@ export const deleteResearchInterests = (
 
 export const getResearchInterests = (
   orcid: Orcid,
-): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable' | 'not-found', NonEmptyString> =>
+): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable' | 'not-found', ResearchInterests> =>
   flow(
     TE.tryCatchK(
       env => env.researchInterestsStore.get(orcid),
@@ -73,7 +76,13 @@ export const getResearchInterests = (
     ),
     TE.chainEitherKW(
       flow(
-        NonEmptyStringC.decode,
+        D.union(
+          ResearchInterestsC,
+          pipe(
+            NonEmptyStringC,
+            D.map(value => ({ value }) satisfies ResearchInterests),
+          ),
+        ).decode,
         E.mapLeft(() => 'not-found' as const),
       ),
     ),
@@ -81,11 +90,11 @@ export const getResearchInterests = (
 
 export const saveResearchInterests = (
   orcid: Orcid,
-  researchInterests: NonEmptyString,
+  researchInterests: ResearchInterests,
 ): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable', void> =>
   flow(
     TE.tryCatchK(
-      env => env.researchInterestsStore.set(orcid, NonEmptyStringC.encode(researchInterests)),
+      env => env.researchInterestsStore.set(orcid, ResearchInterestsC.encode(researchInterests)),
       () => 'unavailable' as const,
     ),
     TE.map(constVoid),

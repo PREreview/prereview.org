@@ -19,7 +19,7 @@ describe('myDetails', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
-      fc.either(fc.constant('not-found' as const), fc.nonEmptyString()),
+      fc.either(fc.constant('not-found' as const), fc.researchInterests()),
     ])('when the details can be loaded', async (oauth, publicUrl, connection, user, careerStage, researchInterests) => {
       const actual = await runMiddleware(
         _.myDetails({
@@ -46,7 +46,7 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
-      fc.either(fc.constant('not-found' as const), fc.nonEmptyString()),
+      fc.either(fc.constant('not-found' as const), fc.researchInterests()),
     ])('when the career stage cannot be loaded', async (oauth, publicUrl, connection, user, researchInterests) => {
       const actual = await runMiddleware(
         _.myDetails({

@@ -61,6 +61,7 @@ import type {
 } from '../src/preprint-id'
 import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/profile-id'
 import type { Pseudonym } from '../src/pseudonym'
+import type { ResearchInterests } from '../src/research-interests'
 import { type NonEmptyString, isNonEmptyString } from '../src/string'
 import type { User } from '../src/user'
 import { shouldNotBeCalled } from './should-not-be-called'
@@ -551,6 +552,8 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .filter(isOrcid)
 
 export const careerStage = (): fc.Arbitrary<CareerStage> => fc.constantFrom('early', 'mid', 'late')
+
+export const researchInterests = (): fc.Arbitrary<ResearchInterests> => fc.record({ value: nonEmptyString() })
 
 export const clubId = (): fc.Arbitrary<ClubId> =>
   fc.constantFrom('asapbio-cancer-biology', 'asapbio-meta-research', 'asapbio-metabolism', 'asapbio-neurobiology')

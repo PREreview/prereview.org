@@ -19,7 +19,7 @@ describe('changeResearchInterests', () => {
     fc.origin(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.nonEmptyString()),
+    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.researchInterests()),
   ])('when there is a logged in user', async (oauth, publicUrl, connection, user, researchInterests) => {
     const actual = await runMiddleware(
       _.changeResearchInterests({
@@ -56,7 +56,7 @@ describe('changeResearchInterests', () => {
         ),
       ),
       fc.user(),
-      fc.nonEmptyString(),
+      fc.researchInterests(),
     ])(
       'there are research interests already',
       async (oauth, publicUrl, [researchInterests, connection], user, existingResearchInterests) => {
@@ -83,7 +83,9 @@ describe('changeResearchInterests', () => {
             { type: 'endResponse' },
           ]),
         )
-        expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, researchInterests)
+        expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, {
+          value: researchInterests,
+        })
       },
     )
 
@@ -124,7 +126,9 @@ describe('changeResearchInterests', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, researchInterests)
+      expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, {
+        value: researchInterests,
+      })
     })
   })
 

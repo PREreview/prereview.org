@@ -12,9 +12,8 @@ import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
-import { getResearchInterests } from './research-interests'
+import { type ResearchInterests, getResearchInterests } from './research-interests'
 import { changeCareerStageMatch, changeResearchInterestsMatch, myDetailsMatch, profileMatch } from './routes'
-import type { NonEmptyString } from './string'
 import { type GetUserEnv, type User, getUser } from './user'
 
 export const myDetails = pipe(
@@ -65,7 +64,7 @@ export const myDetails = pipe(
   ),
 )
 
-function createPage(user: User, careerStage: O.Option<CareerStage>, researchInterests: O.Option<NonEmptyString>) {
+function createPage(user: User, careerStage: O.Option<CareerStage>, researchInterests: O.Option<ResearchInterests>) {
   return page({
     title: plainText`My details`,
     content: html`
@@ -141,7 +140,7 @@ function createPage(user: User, careerStage: O.Option<CareerStage>, researchInte
               .with(
                 { value: P.select() },
                 researchInterests => html`
-                  <dd>${researchInterests}</dd>
+                  <dd>${researchInterests.value}</dd>
                   <dd>
                     <a href="${format(changeResearchInterestsMatch.formatter, {})}"
                       >Change <span class="visually-hidden">research interests</span></a
