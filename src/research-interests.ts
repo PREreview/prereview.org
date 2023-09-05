@@ -6,6 +6,7 @@ import { type NonEmptyString, NonEmptyStringC } from './string'
 
 export interface ResearchInterests {
   readonly value: NonEmptyString
+  readonly visibility: 'public' | 'restricted'
 }
 
 export interface GetResearchInterestsEnv {
@@ -19,6 +20,7 @@ export interface EditResearchInterestsEnv extends GetResearchInterestsEnv {
 
 export const ResearchInterestsC = C.struct({
   value: NonEmptyStringC,
+  visibility: C.literal('public', 'restricted'),
 }) satisfies C.Codec<unknown, unknown, ResearchInterests>
 
 export const getResearchInterests = (orcid: Orcid) =>

@@ -85,6 +85,7 @@ describe('changeResearchInterests', () => {
         )
         expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, {
           value: researchInterests,
+          visibility: 'restricted',
         })
       },
     )
@@ -128,6 +129,7 @@ describe('changeResearchInterests', () => {
       )
       expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, {
         value: researchInterests,
+        visibility: 'restricted',
       })
     })
   })

@@ -194,6 +194,18 @@ describe('getResearchInterests', () => {
   )
 
   test.prop([fc.orcid(), fc.nonEmptyString()])(
+    'when the key contains research interests without a visibility level',
+    async (orcid, researchInterests) => {
+      const store = new Keyv()
+      await store.set(orcid, { value: researchInterests })
+
+      const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+
+      expect(actual).toStrictEqual(E.right({ value: researchInterests, visibility: 'restricted' }))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.nonEmptyString()])(
     'when the key contains research interests as a string',
     async (orcid, researchInterests) => {
       const store = new Keyv()
@@ -201,7 +213,7 @@ describe('getResearchInterests', () => {
 
       const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
 
-      expect(actual).toStrictEqual(E.right({ value: researchInterests }))
+      expect(actual).toStrictEqual(E.right({ value: researchInterests, visibility: 'restricted' }))
     },
   )
 

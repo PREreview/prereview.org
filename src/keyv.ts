@@ -79,8 +79,12 @@ export const getResearchInterests = (
         D.union(
           ResearchInterestsC,
           pipe(
+            D.struct({ value: NonEmptyStringC }),
+            D.map(value => ({ ...value, visibility: 'restricted' }) satisfies ResearchInterests),
+          ),
+          pipe(
             NonEmptyStringC,
-            D.map(value => ({ value }) satisfies ResearchInterests),
+            D.map(value => ({ value, visibility: 'restricted' }) satisfies ResearchInterests),
           ),
         ).decode,
         E.mapLeft(() => 'not-found' as const),

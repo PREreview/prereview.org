@@ -70,6 +70,7 @@ const handleChangeResearchInterestsForm = (user: User) =>
           pipe(
             RM.of({}),
             RM.apS('value', RM.of(researchInterests)),
+            RM.apS('visibility', RM.of('restricted' as const)),
             RM.chainReaderTaskEitherKW(researchInterests => saveResearchInterests(user.orcid, researchInterests)),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),

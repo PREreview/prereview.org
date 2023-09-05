@@ -553,7 +553,8 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
 
 export const careerStage = (): fc.Arbitrary<CareerStage> => fc.constantFrom('early', 'mid', 'late')
 
-export const researchInterests = (): fc.Arbitrary<ResearchInterests> => fc.record({ value: nonEmptyString() })
+export const researchInterests = (): fc.Arbitrary<ResearchInterests> =>
+  fc.record({ value: nonEmptyString(), visibility: fc.constantFrom('public', 'restricted') })
 
 export const clubId = (): fc.Arbitrary<ClubId> =>
   fc.constantFrom('asapbio-cancer-biology', 'asapbio-meta-research', 'asapbio-metabolism', 'asapbio-neurobiology')
