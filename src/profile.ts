@@ -140,7 +140,16 @@ function createPage({
           <div>
             <h1>${name}’s PREreviews</h1>
 
-            ${orcid ? html`<a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a> ` : ''}
+            ${orcid
+              ? html`
+                  <dl class="summary-list">
+                    <div>
+                      <dt>ORCID iD</dt>
+                      <dd><a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a></dd>
+                    </div>
+                  </dl>
+                `
+              : ''}
           </div>
 
           ${avatar instanceof URL ? html` <img src="${avatar.href}" width="300" height="300" alt="" /> ` : ''}
