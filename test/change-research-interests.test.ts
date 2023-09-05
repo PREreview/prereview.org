@@ -42,44 +42,90 @@ describe('changeResearchInterests', () => {
     )
   })
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.nonEmptyString().chain(researchInterests =>
-      fc.tuple(
-        fc.constant(researchInterests),
-        fc.connection({
-          body: fc.constant({ researchInterests }),
-          method: fc.constant('POST'),
-        }),
+  describe('when the form has been submitted', () => {
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.nonEmptyString().chain(researchInterests =>
+        fc.tuple(
+          fc.constant(researchInterests),
+          fc.connection({
+            body: fc.constant({ researchInterests }),
+            method: fc.constant('POST'),
+          }),
+        ),
       ),
-    ),
-    fc.user(),
-  ])('when the form has been submitted', async (oauth, publicUrl, [researchInterests, connection], user) => {
-    const saveResearchInterests: Mock<EditResearchInterestsEnv['saveResearchInterests']> = jest.fn(_ =>
-      TE.right(undefined),
+      fc.user(),
+      fc.nonEmptyString(),
+    ])(
+      'there are research interests already',
+      async (oauth, publicUrl, [researchInterests, connection], user, existingResearchInterests) => {
+        const saveResearchInterests: Mock<EditResearchInterestsEnv['saveResearchInterests']> = jest.fn(_ =>
+          TE.right(undefined),
+        )
+
+        const actual = await runMiddleware(
+          _.changeResearchInterests({
+            getUser: () => M.right(user),
+            publicUrl,
+            oauth,
+            deleteResearchInterests: shouldNotBeCalled,
+            getResearchInterests: () => TE.right(existingResearchInterests),
+            saveResearchInterests,
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+            { type: 'endResponse' },
+          ]),
+        )
+        expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, researchInterests)
+      },
     )
 
-    const actual = await runMiddleware(
-      _.changeResearchInterests({
-        getUser: () => M.right(user),
-        publicUrl,
-        oauth,
-        deleteResearchInterests: shouldNotBeCalled,
-        getResearchInterests: shouldNotBeCalled,
-        saveResearchInterests,
-      }),
-      connection,
-    )()
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.nonEmptyString().chain(researchInterests =>
+        fc.tuple(
+          fc.constant(researchInterests),
+          fc.connection({
+            body: fc.constant({ researchInterests }),
+            method: fc.constant('POST'),
+          }),
+        ),
+      ),
+      fc.user(),
+    ])("there aren't research interests already", async (oauth, publicUrl, [researchInterests, connection], user) => {
+      const saveResearchInterests: Mock<EditResearchInterestsEnv['saveResearchInterests']> = jest.fn(_ =>
+        TE.right(undefined),
+      )
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-        { type: 'endResponse' },
-      ]),
-    )
-    expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, researchInterests)
+      const actual = await runMiddleware(
+        _.changeResearchInterests({
+          getUser: () => M.right(user),
+          publicUrl,
+          oauth,
+          deleteResearchInterests: shouldNotBeCalled,
+          getResearchInterests: () => TE.left('not-found'),
+          saveResearchInterests,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, researchInterests)
+    })
   })
 
   test.prop([
