@@ -6,6 +6,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import * as _ from '../src/profile'
+import type { GetResearchInterestsEnv } from '../src/research-interests'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 import { shouldNotBeCalled } from './should-not-be-called'
@@ -26,32 +27,41 @@ describe('profile', () => {
         }),
       ),
       fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the data can be loaded', async (connection, profile, avatar, name, prereviews, user) => {
-      const getAvatar: Mock<_.GetAvatarEnv['getAvatar']> = jest.fn(_ => TE.of(avatar))
-      const getName: Mock<_.GetNameEnv['getName']> = jest.fn(_ => TE.of(name))
-      const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.of(prereviews))
+      fc.either(fc.constant('not-found' as const), fc.researchInterests()),
+    ])(
+      'when the data can be loaded',
+      async (connection, profile, avatar, name, prereviews, user, researchInterests) => {
+        const getAvatar: Mock<_.GetAvatarEnv['getAvatar']> = jest.fn(_ => TE.of(avatar))
+        const getName: Mock<_.GetNameEnv['getName']> = jest.fn(_ => TE.of(name))
+        const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.of(prereviews))
+        const getResearchInterests: Mock<GetResearchInterestsEnv['getResearchInterests']> = jest.fn(_ =>
+          TE.fromEither(researchInterests),
+        )
 
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar,
-          getName,
-          getPrereviews,
-          getUser: () => M.fromEither(user),
-        }),
-        connection,
-      )()
+        const actual = await runMiddleware(
+          _.profile(profile)({
+            getAvatar,
+            getName,
+            getPrereviews,
+            getResearchInterests,
+            getUser: () => M.fromEither(user),
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.OK },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-      expect(getAvatar).toHaveBeenCalledWith(profile.value)
-      expect(getName).toHaveBeenCalledWith(profile.value)
-      expect(getPrereviews).toHaveBeenCalledWith(profile)
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.OK },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+        expect(getAvatar).toHaveBeenCalledWith(profile.value)
+        expect(getName).toHaveBeenCalledWith(profile.value)
+        expect(getPrereviews).toHaveBeenCalledWith(profile)
+        expect(getResearchInterests).toHaveBeenCalledWith(profile.value)
+      },
+    )
 
     test.prop([
       fc.connection({ method: fc.requestMethod() }),
@@ -72,6 +82,7 @@ describe('profile', () => {
           getAvatar: () => TE.of(avatar),
           getName: () => TE.left('not-found'),
           getPrereviews: () => TE.of(prereviews),
+          getResearchInterests: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -106,6 +117,7 @@ describe('profile', () => {
           getAvatar: () => TE.of(avatar),
           getName: () => TE.left('unavailable'),
           getPrereviews: () => TE.of(prereviews),
+          getResearchInterests: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -139,6 +151,7 @@ describe('profile', () => {
           getAvatar: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
+          getResearchInterests: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -172,6 +185,42 @@ describe('profile', () => {
           getAvatar: () => TE.left('unavailable'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
+          getResearchInterests: () => TE.left('not-found'),
+          getUser: () => M.fromEither(user),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.connection({ method: fc.requestMethod() }),
+      fc.orcidProfileId(),
+      fc.string(),
+      fc.array(
+        fc.record({
+          id: fc.integer(),
+          reviewers: fc.nonEmptyArray(fc.string()),
+          published: fc.plainDate(),
+          preprint: fc.preprintTitle(),
+        }),
+      ),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when the research interests are unavailable', async (connection, profile, name, prereviews, user) => {
+      const actual = await runMiddleware(
+        _.profile(profile)({
+          getAvatar: () => TE.left('not-found'),
+          getName: () => TE.of(name),
+          getPrereviews: () => TE.of(prereviews),
+          getResearchInterests: () => TE.left('unavailable'),
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -209,6 +258,7 @@ describe('profile', () => {
           getAvatar: shouldNotBeCalled,
           getName: shouldNotBeCalled,
           getPrereviews,
+          getResearchInterests: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
         }),
         connection,
@@ -238,6 +288,7 @@ test.prop([
       getAvatar: () => TE.of(avatar),
       getName: () => TE.of(name),
       getPrereviews: () => TE.left('unavailable'),
+      getResearchInterests: shouldNotBeCalled,
       getUser: () => M.fromEither(user),
     }),
     connection,

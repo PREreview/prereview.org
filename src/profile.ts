@@ -5,13 +5,13 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
-import { flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { getClubName } from './club-details'
 import type { ClubId } from './club-id'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
@@ -19,7 +19,9 @@ import { notFound, serviceUnavailable } from './middleware'
 import { page } from './page'
 import type { PreprintId } from './preprint-id'
 import type { OrcidProfileId, ProfileId, PseudonymProfileId } from './profile-id'
+import { getResearchInterests } from './research-interests'
 import { reviewMatch } from './routes'
+import type { NonEmptyString } from './string'
 import { renderDate } from './time'
 import { type User, maybeGetUser } from './user'
 
@@ -80,6 +82,23 @@ const profileForOrcid = (profile: OrcidProfileId) =>
     RM.apSW('name', RM.fromReaderTaskEither(getName(profile.value))),
     RM.apSW('user', maybeGetUser),
     RM.apSW(
+      'researchInterests',
+      pipe(
+        RM.fromReaderTaskEither(getResearchInterests(profile.value)),
+        RM.map(researchInterests =>
+          match(researchInterests)
+            .with({ visibility: 'public', value: P.select() }, identity)
+            .with({ visibility: 'restricted' }, () => undefined)
+            .exhaustive(),
+        ),
+        RM.orElseW(error =>
+          match(error)
+            .with('not-found', () => RM.of(undefined))
+            .otherwise(RM.left),
+        ),
+      ),
+    ),
+    RM.apSW(
       'avatar',
       pipe(
         RM.fromReaderTaskEither(getAvatar(profile.value)),
@@ -125,11 +144,13 @@ function createPage({
   prereviews,
   user,
   avatar,
+  researchInterests,
 }: {
   avatar?: URL
   name: string
   orcid?: Orcid
   prereviews: Prereviews
+  researchInterests?: NonEmptyString
   user?: User
 }) {
   return page({
@@ -147,6 +168,14 @@ function createPage({
                       <dt>ORCID iD</dt>
                       <dd><a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a></dd>
                     </div>
+                    ${researchInterests
+                      ? html`
+                          <div>
+                            <dt>Research interests</dt>
+                            <dd>${researchInterests}</dd>
+                          </div>
+                        `
+                      : ''}
                   </dl>
                 `
               : ''}
