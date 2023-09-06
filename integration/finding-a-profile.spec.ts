@@ -167,7 +167,7 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
 
   await page.getByRole('link', { name: 'CJ San Felipe' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('CJ San Felipe’s PREreviews')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('CJ San Felipe')
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
@@ -215,7 +215,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my profile', async ({ fetch,
 
   await page.getByRole('link', { name: 'View public profile' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Josiah Carberry’s PREreviews')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Josiah Carberry')
   await expect(page.getByRole('main')).toContainText('ORCID iD 0000-0002-1825-0097')
   await expect(page.getByRole('main')).toContainText(
     'Research interests Nunc vestibulum sapien eu magna elementum consectetur.',
@@ -384,7 +384,7 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
 
   await page.getByRole('link', { name: 'Blue Sheep' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Blue Sheep’s PREreviews')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Blue Sheep')
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
@@ -409,7 +409,7 @@ test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", asy
 
   await page.getByRole('link', { name: 'View pseudonym profile' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Orange Panda’s PREreviews')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Orange Panda')
 })
 
 test('the list might be empty', async ({ fetch, page }) => {
@@ -433,6 +433,6 @@ test('the list might be empty', async ({ fetch, page }) => {
 
   await page.goto('/profiles/0000-0002-6109-0367')
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Daniela Saderi’s PREreviews')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Daniela Saderi')
   await expect(page).toHaveScreenshot()
 })

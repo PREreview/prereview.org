@@ -154,12 +154,12 @@ function createPage({
   user?: User
 }) {
   return page({
-    title: plainText`${name}’s PREreviews`,
+    title: plainText`${name}`,
     content: html`
       <main id="main-content">
         <div class="profile-header">
           <div>
-            <h1>${name}’s PREreviews</h1>
+            <h1>${name}</h1>
 
             ${orcid
               ? html`
@@ -183,6 +183,8 @@ function createPage({
 
           ${avatar instanceof URL ? html` <img src="${avatar.href}" width="300" height="300" alt="" /> ` : ''}
         </div>
+
+        <h2>PREreviews</h2>
 
         ${pipe(
           prereviews,
