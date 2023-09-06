@@ -174,7 +174,7 @@ function renderReview(form: CompletedForm) {
         form =>
           html` <dl>
             <div>
-              <dt>Does the introduction explain the objective and match the rest of the preprint?</dt>
+              <dt>Does the introduction explain the objective of the research presented in the preprint?</dt>
               <dd>
                 ${match(form.introductionMatches)
                   .with('yes', () => 'Yes')
@@ -440,7 +440,9 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                   : html`
                       <dl class="summary-list">
                         <div>
-                          <dt>Does the introduction explain the objective and match the rest of the preprint?</dt>
+                          <dt>
+                            Does the introduction explain the objective of the research presented in the preprint?
+                          </dt>
                           <dd>
                             ${match(review.introductionMatches)
                               .with('yes', () => 'Yes')
@@ -456,7 +458,8 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                             <a href="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}"
                               >Change
                               <span class="visually-hidden"
-                                >if the introduction explains the objective and matches the rest of the preprint</span
+                                >if the introduction explains the objective of the research presented in the
+                                preprint</span
                               ></a
                             >
                           </dd>

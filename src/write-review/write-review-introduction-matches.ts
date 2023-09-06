@@ -144,7 +144,7 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
   return page({
     title: plainText`${
       error ? 'Error: ' : ''
-    }Does the introduction explain the objective and match the rest of the preprint?
+    }Does the introduction explain the objective of the research presented in the preprint?
  – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
@@ -170,7 +170,7 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
                                 .with(
                                   { _tag: 'MissingE' },
                                   () =>
-                                    'Select if the introduction explains the objective and matches the rest of the preprint',
+                                    'Select if the introduction explains the objective of the research presented in the preprint',
                                 )
                                 .exhaustive()}
                             </a>
@@ -193,7 +193,7 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
                 )}
               >
                 <legend>
-                  <h1>Does the introduction explain the objective and match the rest of the preprint?</h1>
+                  <h1>Does the introduction explain the objective of the research presented in the preprint?</h1>
                 </legend>
 
                 ${E.isLeft(form.introductionMatches)
@@ -204,7 +204,7 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
                           .with(
                             { _tag: 'MissingE' },
                             () =>
-                              'Select if the introduction explains the objective and matches the rest of the preprint',
+                              'Select if the introduction explains the objective of the research presented in the preprint',
                           )
                           .exhaustive()}
                       </div>
@@ -228,7 +228,7 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
                       <span>Yes</span>
                     </label>
                     <p id="introduction-matches-tip-yes" role="note">
-                      The aim is clearly explained, and it matches up with what follows.
+                      It clearly explains the objective of the research.
                     </p>
                     <div class="conditional" id="introduction-matches-yes-control">
                       <div>
@@ -259,8 +259,7 @@ ${match(form.introductionMatchesYesDetails)
                       <span>Partly</span>
                     </label>
                     <p id="introduction-matches-tip-partly" role="note">
-                      The introduction either doesn’t adequately explain the aim of the research, or the rest of the
-                      preprint doesn’t match up with the introduction.
+                      It mentions, but doesn’t fully explain, the objective.
                     </p>
                     <div class="conditional" id="introduction-matches-partly-control">
                       <div>
@@ -295,7 +294,7 @@ ${match(form.introductionMatchesPartlyDetails)
                       <span>No</span>
                     </label>
                     <p id="introduction-matches-tip-no" role="note">
-                      The introduction doesn’t explain the aim of the research or match up with what follows.
+                      The introduction doesn’t mention or explain the objective.
                     </p>
                     <div class="conditional" id="introduction-matches-no-control">
                       <div>

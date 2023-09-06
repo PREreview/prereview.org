@@ -156,7 +156,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
       body: `
         <dl>
           <div>
-            <dt>Does the introduction explain the objective and match the rest of the preprint?</dt>
+            <dt>Does the introduction explain the objective of the research presented in the preprint?</dt>
             <dd>Yes</dd>
             <dd>The aim is clearly explained, and it matches up with what follows.</dd>
           </div>
@@ -184,7 +184,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
     .click()
 
   await expect(page.getByRole('main')).toContainText(
-    'Does the introduction explain the objective and match the rest of the preprint?',
+    'Does the introduction explain the objective of the research presented in the preprint?',
   )
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()

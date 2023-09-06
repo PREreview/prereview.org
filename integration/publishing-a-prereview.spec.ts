@@ -199,7 +199,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
 
     await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Does the introduction explain the objective and match the rest of the preprint? Partly Consectetur adipiscing elit.',
+      'Does the introduction explain the objective of the research presented in the preprint? Partly Consectetur adipiscing elit.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Are the methods appropriate? Adequate Sed egestas tincidunt lacus.',
@@ -1161,7 +1161,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     const review = page.getByRole('region', { name: 'Your review' })
 
     await expect(review).toContainText(
-      'Does the introduction explain the objective and match the rest of the preprint? Partly',
+      'Does the introduction explain the objective of the research presented in the preprint? Partly',
     )
     await expect(review).toContainText('Are the methods appropriate? Adequate')
     await expect(review).toContainText(
@@ -1182,7 +1182,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page
       .getByRole('link', {
-        name: 'Change if the introduction explains the objective and matches the rest of the preprint',
+        name: 'Change if the introduction explains the objective of the research presented in the preprint',
       })
       .click()
 
@@ -1190,12 +1190,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText(
-      'Does the introduction explain the objective and match the rest of the preprint? I don’t know',
+      'Does the introduction explain the objective of the research presented in the preprint? I don’t know',
     )
 
     await page
       .getByRole('link', {
-        name: 'Change if the introduction explains the objective and matches the rest of the preprint',
+        name: 'Change if the introduction explains the objective of the research presented in the preprint',
       })
       .click()
 
@@ -1204,7 +1204,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText(
-      'Does the introduction explain the objective and match the rest of the preprint? No Consectetur adipiscing elit.',
+      'Does the introduction explain the objective of the research presented in the preprint? No Consectetur adipiscing elit.',
     )
 
     await page
@@ -2193,7 +2193,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
-  'have to say if the introduction matches the rest of the preprint',
+  'have to say if the introduction explains the objective',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -2209,7 +2209,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(
       page.getByRole('group', {
-        name: 'Does the introduction explain the objective and match the rest of the preprint?',
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
       }),
     ).toHaveAttribute('aria-invalid', 'true')
     await page.mouse.move(0, 0)
@@ -2217,7 +2217,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page
       .getByRole('link', {
-        name: 'Select if the introduction explains the objective and matches the rest of the preprint',
+        name: 'Select if the introduction explains the objective of the research presented in the preprint',
       })
       .click()
 
