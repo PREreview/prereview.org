@@ -162,7 +162,9 @@ function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriat
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Are the methods appropriate? – PREreview of “${preprint.title}”`,
+    title: plainText`${error ? 'Error: ' : ''}Are the methods well-suited for this research? – PREreview of “${
+      preprint.title
+    }”`,
     content: html`
       <nav>
         <a href="${format(writeReviewIntroductionMatchesMatch.formatter, { id: preprint.id })}" class="back">Back</a>
@@ -184,7 +186,10 @@ function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriat
                           <li>
                             <a href="#methods-appropriate-highly-appropriate">
                               ${match(form.methodsAppropriate.left)
-                                .with({ _tag: 'MissingE' }, () => 'Select if the methods are appropriate')
+                                .with(
+                                  { _tag: 'MissingE' },
+                                  () => 'Select if the methods are well-suited for this research',
+                                )
                                 .exhaustive()}
                             </a>
                           </li>
@@ -206,7 +211,7 @@ function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriat
                 )}
               >
                 <legend>
-                  <h1>Are the methods appropriate?</h1>
+                  <h1>Are the methods well-suited for this research?</h1>
                 </legend>
 
                 ${E.isLeft(form.methodsAppropriate)
@@ -214,7 +219,7 @@ function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriat
                       <div class="error-message" id="methods-appropriate-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.methodsAppropriate.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select if the methods are appropriate')
+                          .with({ _tag: 'MissingE' }, () => 'Select if the methods are well-suited for this research')
                           .exhaustive()}
                       </div>
                     `
@@ -270,16 +275,16 @@ ${match(form.methodsAppropriateHighlyAppropriateDetails)
                           .with({ right: 'mostly-appropriate' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Mostly appropriate</span>
+                      <span>Somewhat appropriate</span>
                     </label>
                     <p id="methods-appropriate-tip-mostly-appropriate" role="note">
-                      They show that the authors clearly understand the research field and effectively explain the
-                      methods they used.
+                      They follow best practices, are well executed, and provide a good foundation for drawing valid
+                      conclusions.
                     </p>
                     <div class="conditional" id="methods-appropriate-mostly-appropriate-control">
                       <div>
                         <label for="methods-appropriate-mostly-appropriate-details" class="textarea"
-                          >Why are they mostly appropriate? (optional)</label
+                          >Why are they somewhat appropriate? (optional)</label
                         >
 
                         <textarea
@@ -306,15 +311,16 @@ ${match(form.methodsAppropriateMostlyAppropriateDetails)
                           .with({ right: 'adequate' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Adequate</span>
+                      <span>Neither appropriate nor inappropriate</span>
                     </label>
                     <p id="methods-appropriate-tip-adequate" role="note">
-                      They follow standard practices and give a reasonable basis for answering the research question.
+                      They do not always follow best practices but give a reasonable basis for answering the research
+                      question.
                     </p>
                     <div class="conditional" id="methods-appropriate-adequate-control">
                       <div>
                         <label for="methods-appropriate-adequate-details" class="textarea"
-                          >Why are they adequate? (optional)</label
+                          >Why are they neither appropriate nor inappropriate? (optional)</label
                         >
 
                         <textarea
@@ -344,8 +350,8 @@ ${match(form.methodsAppropriateAdequateDetails)
                       <span>Somewhat inappropriate</span>
                     </label>
                     <p id="methods-appropriate-tip-somewhat-inappropriate" role="note">
-                      They have certain flaws or deviations from best practices but still provide helpful information or
-                      insights.
+                      They have certain flaws or deviations from best practices that limit the value of the information
+                      and insights they share.
                     </p>
                     <div class="conditional" id="methods-appropriate-somewhat-inappropriate-control">
                       <div>
@@ -377,15 +383,15 @@ ${match(form.methodsAppropriateSomewhatInappropriateDetails)
                           .with({ right: 'inappropriate' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Inappropriate</span>
+                      <span>Highly inappropriate</span>
                     </label>
                     <p id="methods-appropriate-tip-inappropriate" role="note">
-                      They are fundamentally flawed, invalid, or inconsistent with standard practices.
+                      They are fundamentally flawed, invalid, or inconsistent with best practices.
                     </p>
                     <div class="conditional" id="methods-appropriate-inappropriate-control">
                       <div>
                         <label for="methods-appropriate-inappropriate-details" class="textarea"
-                          >Why are they inappropriate? (optional)</label
+                          >Why are they highly inappropriate? (optional)</label
                         >
 
                         <textarea

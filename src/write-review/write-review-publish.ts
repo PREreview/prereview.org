@@ -188,13 +188,13 @@ function renderReview(form: CompletedForm) {
                 : ''}
             </div>
             <div>
-              <dt>Are the methods appropriate?</dt>
+              <dt>Are the methods well-suited for this research?</dt>
               <dd>
                 ${match(form.methodsAppropriate)
-                  .with('inappropriate', () => 'Inappropriate')
+                  .with('inappropriate', () => 'Highly inappropriate')
                   .with('somewhat-inappropriate', () => 'Somewhat inappropriate')
-                  .with('adequate', () => 'Adequate')
-                  .with('mostly-appropriate', () => 'Mostly appropriate')
+                  .with('adequate', () => 'Neither appropriate nor inappropriate')
+                  .with('mostly-appropriate', () => 'Somewhat appropriate')
                   .with('highly-appropriate', () => 'Highly appropriate')
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
@@ -465,13 +465,13 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           </dd>
                         </div>
                         <div>
-                          <dt>Are the methods appropriate?</dt>
+                          <dt>Are the methods well-suited for this research?</dt>
                           <dd>
                             ${match(review.methodsAppropriate)
-                              .with('inappropriate', () => 'Inappropriate')
+                              .with('inappropriate', () => 'Highly inappropriate')
                               .with('somewhat-inappropriate', () => 'Somewhat inappropriate')
-                              .with('adequate', () => 'Adequate')
-                              .with('mostly-appropriate', () => 'Mostly appropriate')
+                              .with('adequate', () => 'Neither appropriate nor inappropriate')
+                              .with('mostly-appropriate', () => 'Somewhat appropriate')
                               .with('highly-appropriate', () => 'Highly appropriate')
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
@@ -481,7 +481,8 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                             : ''}
                           <dd>
                             <a href="${format(writeReviewMethodsAppropriateMatch.formatter, { id: preprint.id })}"
-                              >Change <span class="visually-hidden">if the methods are appropriate</span></a
+                              >Change
+                              <span class="visually-hidden">if the methods are well-suited for this research</span></a
                             >
                           </dd>
                         </div>
