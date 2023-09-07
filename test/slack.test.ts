@@ -1,7 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
 import * as _ from '../src/slack'
 import * as fc from './fc'
@@ -21,7 +23,12 @@ describe('getUserFromSlack', () => {
           { body: { ok: true, profile: { real_name: name, image_48: image } } },
         )
 
-        const actual = await _.getUserFromSlack('U05BUCDTN2X')({ fetch, slackApiToken })()
+        const actual = await _.getUserFromSlack('U05BUCDTN2X')({
+          fetch,
+          slackApiToken,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        })()
 
         expect(actual).toStrictEqual(
           E.right({
@@ -45,7 +52,12 @@ describe('getUserFromSlack', () => {
           response,
         )
 
-        const actual = await _.getUserFromSlack('U05BUCDTN2X')({ fetch, slackApiToken })()
+        const actual = await _.getUserFromSlack('U05BUCDTN2X')({
+          fetch,
+          slackApiToken,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
         expect(fetch.done()).toBeTruthy()
@@ -64,7 +76,12 @@ describe('getUserFromSlack', () => {
           { status },
         )
 
-        const actual = await _.getUserFromSlack('U05BUCDTN2X')({ fetch, slackApiToken })()
+        const actual = await _.getUserFromSlack('U05BUCDTN2X')({
+          fetch,
+          slackApiToken,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        })()
 
         expect(actual).toStrictEqual(E.left('unavailable'))
         expect(fetch.done()).toBeTruthy()
@@ -72,14 +89,24 @@ describe('getUserFromSlack', () => {
     )
 
     test.prop([fc.string(), fc.error()])('when fetch throws an error', async (slackApiToken, error) => {
-      const actual = await _.getUserFromSlack('U05BUCDTN2X')({ fetch: () => Promise.reject(error), slackApiToken })()
+      const actual = await _.getUserFromSlack('U05BUCDTN2X')({
+        fetch: () => Promise.reject(error),
+        slackApiToken,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     })
   })
 
   test.prop([fc.string(), fc.string()])('when the ID is something else', async (slackApiToken, id) => {
-    const actual = await _.getUserFromSlack(id)({ fetch: shouldNotBeCalled, slackApiToken })()
+    const actual = await _.getUserFromSlack(id)({
+      fetch: shouldNotBeCalled,
+      slackApiToken,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })

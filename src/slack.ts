@@ -3,9 +3,11 @@ import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { identity, pipe } from 'fp-ts/function'
+import * as TE from 'fp-ts/TaskEither'
+import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
+import * as L from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import { URL } from 'url'
 import { NonEmptyStringC } from './string'
@@ -53,8 +55,10 @@ export const getUserFromSlack = (slackId: string) =>
         F.Request('GET'),
         RTE.fromReaderK(addSlackApiHeaders),
         RTE.chainW(F.send),
-        RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-        RTE.chainTaskEitherKW(F.decode(SlackProfileD)),
+        RTE.mapLeft(() => 'network-error' as const),
+        RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+        RTE.chainTaskEitherKW(flow(F.decode(SlackProfileD), TE.mapLeft(D.draw))),
+        RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get profile from Slack')))),
         RTE.bimap(
           () => 'unavailable' as const,
           ({ profile }) => ({ name: profile.real_name, image: profile.image_48 }),
