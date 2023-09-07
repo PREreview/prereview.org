@@ -39,7 +39,7 @@ export type Prereviews = ReadonlyArray<{
   }
 }>
 
-interface SlackUser {
+export interface SlackUser {
   readonly name: string
   readonly image: URL
 }
@@ -54,6 +54,10 @@ export interface GetNameEnv {
 
 export interface GetAvatarEnv {
   getAvatar: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', URL>
+}
+
+export interface GetSlackUserEnv {
+  getSlackUser: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', SlackUser>
 }
 
 const getPrereviews = (profile: ProfileId) =>
@@ -72,6 +76,12 @@ const getAvatar = (orcid: Orcid) =>
   pipe(
     RTE.ask<GetAvatarEnv>(),
     RTE.chainTaskEitherK(({ getAvatar }) => getAvatar(orcid)),
+  )
+
+const getSlackUser = (orcid: Orcid) =>
+  pipe(
+    RTE.ask<GetSlackUserEnv>(),
+    RTE.chainTaskEitherK(({ getSlackUser }) => getSlackUser(orcid)),
   )
 
 export const profile = (profileId: ProfileId) =>
@@ -117,15 +127,16 @@ const profileForOrcid = (profile: OrcidProfileId) =>
     ),
     RM.apS('orcid', RM.of(profile.value)),
     RM.apS('clubs', RM.of(isLeadFor(profile.value))),
-    RM.apS(
+    RM.apSW(
       'slackUser',
-      RM.of(
-        profile.value === '0000-0002-6109-0367'
-          ? ({
-              name: 'Daniela Saderi (she/her)',
-              image: new URL('https://avatars.slack-edge.com/2023-06-27/5493277920274_7b5878dc4f15503ae153_48.jpg'),
-            } satisfies SlackUser)
-          : undefined,
+      pipe(
+        RM.fromReaderTaskEither(getSlackUser(profile.value)),
+        RM.orElseW(error =>
+          match(error)
+            .with('not-found', () => RM.right(undefined))
+            .with('unavailable', RM.left)
+            .exhaustive(),
+        ),
       ),
     ),
     chainReaderKW(createPage),

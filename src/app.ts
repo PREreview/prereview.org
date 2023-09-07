@@ -7,6 +7,7 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
+import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -348,6 +349,15 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getName: flip(getNameFromOrcid)(env),
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
           getResearchInterests: flip(getResearchInterests)(env),
+          getSlackUser: orcid =>
+            match(orcid as string)
+              .with('0000-0002-6109-0367', () =>
+                TE.right({
+                  name: 'Daniela Saderi (she/her)',
+                  image: new URL('https://avatars.slack-edge.com/2023-06-27/5493277920274_7b5878dc4f15503ae153_48.jpg'),
+                }),
+              )
+              .otherwise(() => TE.left('not-found')),
         })),
       ),
     ),
