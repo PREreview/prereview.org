@@ -54,6 +54,7 @@ const EnvD = pipe(
     ORCID_CLIENT_SECRET: D.string,
     PUBLIC_URL: UrlD,
     SECRET: D.string,
+    SLACK_API_TOKEN: D.string,
     ZENODO_API_KEY: D.string,
     ZENODO_URL: UrlD,
   }),

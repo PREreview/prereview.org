@@ -1,23 +1,85 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import { Status } from 'hyper-ts'
 import * as _ from '../src/slack'
 import * as fc from './fc'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('getUserFromSlack', () => {
-  test('when the ID is U05BUCDTN2X', async () => {
-    const actual = await _.getUserFromSlack('U05BUCDTN2X')()
+  describe('when the ID is U05BUCDTN2X', () => {
+    test.prop([fc.string(), fc.nonEmptyString(), fc.url()])(
+      'when the user can be decoded',
+      async (slackApiToken, name, image) => {
+        const fetch = fetchMock.sandbox().getOnce(
+          {
+            url: 'begin:https://slack.com/api/users.profile.get?',
+            query: { user: 'U05BUCDTN2X' },
+            headers: { Authorization: `Bearer ${slackApiToken}` },
+          },
+          { body: { ok: true, profile: { real_name: name, image_48: image } } },
+        )
 
-    expect(actual).toStrictEqual(
-      E.right({
-        name: 'Daniela Saderi (she/her)',
-        image: new URL('https://avatars.slack-edge.com/2023-06-27/5493277920274_7b5878dc4f15503ae153_48.jpg'),
-      }),
+        const actual = await _.getUserFromSlack('U05BUCDTN2X')({ fetch, slackApiToken })()
+
+        expect(actual).toStrictEqual(
+          E.right({
+            name,
+            image,
+          }),
+        )
+        expect(fetch.done()).toBeTruthy()
+      },
     )
+
+    test.prop([fc.string(), fc.fetchResponse({ status: fc.constant(Status.OK) })])(
+      "when the user can't be decoded",
+      async (slackApiToken, response) => {
+        const fetch = fetchMock.sandbox().getOnce(
+          {
+            url: 'begin:https://slack.com/api/users.profile.get?',
+            query: { user: 'U05BUCDTN2X' },
+            headers: { Authorization: `Bearer ${slackApiToken}` },
+          },
+          response,
+        )
+
+        const actual = await _.getUserFromSlack('U05BUCDTN2X')({ fetch, slackApiToken })()
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+        expect(fetch.done()).toBeTruthy()
+      },
+    )
+
+    test.prop([fc.string(), fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK)])(
+      'when the response has a non-200 status code',
+      async (slackApiToken, status) => {
+        const fetch = fetchMock.sandbox().getOnce(
+          {
+            url: 'begin:https://slack.com/api/users.profile.get?',
+            query: { user: 'U05BUCDTN2X' },
+            headers: { Authorization: `Bearer ${slackApiToken}` },
+          },
+          { status },
+        )
+
+        const actual = await _.getUserFromSlack('U05BUCDTN2X')({ fetch, slackApiToken })()
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+        expect(fetch.done()).toBeTruthy()
+      },
+    )
+
+    test.prop([fc.string(), fc.error()])('when fetch throws an error', async (slackApiToken, error) => {
+      const actual = await _.getUserFromSlack('U05BUCDTN2X')({ fetch: () => Promise.reject(error), slackApiToken })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    })
   })
 
-  test.prop([fc.string()])('when the ID is something else', async id => {
-    const actual = await _.getUserFromSlack(id)()
+  test.prop([fc.string(), fc.string()])('when the ID is something else', async (slackApiToken, id) => {
+    const actual = await _.getUserFromSlack(id)({ fetch: shouldNotBeCalled, slackApiToken })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })

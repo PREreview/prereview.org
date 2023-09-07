@@ -7,7 +7,6 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -22,6 +21,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
+import type { Orcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
@@ -125,7 +125,7 @@ import {
   writeReviewShouldReadMatch,
   writeReviewStartMatch,
 } from './routes'
-import { getUserFromSlack } from './slack'
+import { type SlackApiEnv, getUserFromSlack } from './slack'
 import { trainings } from './trainings'
 import { type GetUserEnv, getUserFromSession } from './user'
 import {
@@ -175,6 +175,7 @@ export type AppEnv = CanRapidReviewEnv &
   PublicUrlEnv &
   ResearchInterestsStoreEnv &
   SessionEnv &
+  SlackApiEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean
   }
@@ -350,13 +351,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getName: flip(getNameFromOrcid)(env),
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
           getResearchInterests: flip(getResearchInterests)(env),
-          getSlackUser: flow(
-            orcid =>
-              match(orcid as string)
-                .with('0000-0002-6109-0367', () => TE.right('U05BUCDTN2X'))
-                .otherwise(() => TE.left('not-found' as const)),
-            TE.chain(getUserFromSlack),
-          ),
+          getSlackUser: flip(getSlackUser)(env),
         })),
       ),
     ),
@@ -514,6 +509,14 @@ const doesPreprintExist = flow(
       .with('unavailable', RTE.left)
       .exhaustive(),
   ),
+)
+
+const getSlackUser = flow(
+  (orcid: Orcid) =>
+    match(orcid as string)
+      .with('0000-0002-6109-0367', () => RTE.right('U05BUCDTN2X'))
+      .otherwise(() => RTE.left('not-found' as const)),
+  RTE.chain(getUserFromSlack),
 )
 
 const getUser = pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))

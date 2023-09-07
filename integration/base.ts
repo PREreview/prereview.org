@@ -729,6 +729,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       secret: '',
       sessionCookie: 'session',
       sessionStore: new Keyv(),
+      slackApiToken: '',
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
     })
