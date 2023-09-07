@@ -34,7 +34,7 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { getClubName } from './club-details'
+import { getClubByName, getClubName } from './club-details'
 import type { ClubId } from './club-id'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import type { RecentPrereview } from './home'
@@ -338,19 +338,7 @@ function isPeerReview(record: Record) {
 
 const getReviewClub = flow(
   (record: Record) => record.metadata.contributors ?? [],
-  RA.findFirstMap(contributor =>
-    match(contributor)
-      .returnType<O.Option<ClubId>>()
-      .with({ type: 'ResearchGroup', name: getClubName('asapbio-cancer-biology') }, () =>
-        O.some('asapbio-cancer-biology'),
-      )
-      .with({ type: 'ResearchGroup', name: getClubName('asapbio-meta-research') }, () =>
-        O.some('asapbio-meta-research'),
-      )
-      .with({ type: 'ResearchGroup', name: getClubName('asapbio-metabolism') }, () => O.some('asapbio-metabolism'))
-      .with({ type: 'ResearchGroup', name: getClubName('asapbio-neurobiology') }, () => O.some('asapbio-neurobiology'))
-      .otherwise(() => O.none),
-  ),
+  RA.findFirstMap(flow(get('name'), getClubByName)),
 )
 
 const getReviewUrl = flow(

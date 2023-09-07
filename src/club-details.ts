@@ -1,7 +1,9 @@
+import type * as O from 'fp-ts/Option'
 import * as RA from 'fp-ts/ReadonlyArray'
 import type * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, pipe } from 'fp-ts/function'
+import { Eq as stringEq } from 'fp-ts/string'
 import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import type { ClubId } from './club-id'
@@ -17,6 +19,9 @@ export interface Club {
 export const getClubDetails = (id: ClubId) => clubs[id]
 
 export const getClubName = flow(getClubDetails, get('name'))
+
+export const getClubByName = (name: string): O.Option<ClubId> =>
+  pipe(RR.keys(clubs), RA.findFirst(flow(getClubDetails, club => stringEq.equals(club.name, name))))
 
 export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
   pipe(
