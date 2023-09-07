@@ -39,6 +39,11 @@ export type Prereviews = ReadonlyArray<{
   }
 }>
 
+interface SlackUser {
+  readonly name: string
+  readonly image: URL
+}
+
 export interface GetPrereviewsEnv {
   getPrereviews: (profile: ProfileId) => TE.TaskEither<'unavailable', Prereviews>
 }
@@ -112,6 +117,17 @@ const profileForOrcid = (profile: OrcidProfileId) =>
     ),
     RM.apS('orcid', RM.of(profile.value)),
     RM.apS('clubs', RM.of(isLeadFor(profile.value))),
+    RM.apS(
+      'slackUser',
+      RM.of(
+        profile.value === '0000-0002-6109-0367'
+          ? ({
+              name: 'Daniela Saderi (she/her)',
+              image: new URL('https://avatars.slack-edge.com/2023-06-27/5493277920274_7b5878dc4f15503ae153_48.jpg'),
+            } satisfies SlackUser)
+          : undefined,
+      ),
+    ),
     chainReaderKW(createPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareKW(sendHtml),
@@ -147,6 +163,7 @@ function createPage({
   avatar,
   researchInterests,
   clubs = [],
+  slackUser,
 }: {
   avatar?: URL
   clubs?: ReadonlyArray<ClubId>
@@ -154,6 +171,7 @@ function createPage({
   orcid?: Orcid
   prereviews: Prereviews
   researchInterests?: NonEmptyString
+  slackUser?: SlackUser
   user?: User
 }) {
   return page({
@@ -172,19 +190,14 @@ function createPage({
                       <dd><a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a></dd>
                     </div>
 
-                    ${orcid === '0000-0002-6109-0367'
+                    ${slackUser
                       ? html`
                           <div>
                             <dt>Slack Community name</dt>
                             <dd>
                               <span class="slack">
-                                <img
-                                  src="https://avatars.slack-edge.com/2023-06-27/5493277920274_7b5878dc4f15503ae153_48.jpg"
-                                  alt=""
-                                  width="48"
-                                  height="48"
-                                />
-                                <span>Daniela Saderi (she/her)</span>
+                                <img src="${slackUser.image.href}" alt="" width="48" height="48" />
+                                <span>${slackUser.name}</span>
                               </span>
                             </dd>
                           </div>
