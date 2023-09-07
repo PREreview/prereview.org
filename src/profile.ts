@@ -203,7 +203,11 @@ function createPage({
                     <li>
                       <article>
                         <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                          ${formatList('en')(prereview.reviewers)}
+                          ${pipe(
+                            prereview.reviewers,
+                            RNEA.map(name => html`<b>${name}</b>`),
+                            formatList('en'),
+                          )}
                           ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
                           <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
                             >${prereview.preprint.title}</cite
@@ -260,7 +264,7 @@ function formatList(
   const formatter = new Intl.ListFormat(...args)
 
   return flow(
-    RNEA.map(item => html`<b>${item}</b>`.toString()),
+    RNEA.map(item => html`${item}`.toString()),
     list => formatter.format(list),
     rawHtml,
   )
