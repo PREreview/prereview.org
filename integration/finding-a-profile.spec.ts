@@ -421,7 +421,7 @@ test('the list might be empty', async ({ fetch, page }) => {
       ok: true,
       profile: {
         real_name: 'Daniela Saderi (she/her)',
-        image_48: 'https://avatars.slack-edge.com/2023-06-27/5493277920274_7b5878dc4f15503ae153_48.jpg',
+        image_48: 'https://secure.gravatar.com/avatar/00000000000000000000000000000000?s=48&d=mp&f=y',
       },
     },
   })
