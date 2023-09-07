@@ -10,6 +10,7 @@ import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
+import { timeoutRequest } from './fetch'
 import { NonEmptyStringC } from './string'
 
 export interface SlackApiEnv {
@@ -68,6 +69,7 @@ export const getUserFromSlack = (slackId: string) =>
         RTE.mapLeft(() => 'network-error' as const),
         RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
         RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackProfileD, SlackErrorD))), TE.mapLeft(D.draw))),
+        RTE.local(timeoutRequest(2000)),
         RTE.chainEitherKW(response =>
           match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
         ),
