@@ -12,7 +12,7 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { getClubName } from './club-details'
+import { getClubName, isLeadFor } from './club-details'
 import type { ClubId } from './club-id'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import { notFound, serviceUnavailable } from './middleware'
@@ -20,7 +20,7 @@ import { page } from './page'
 import type { PreprintId } from './preprint-id'
 import type { OrcidProfileId, ProfileId, PseudonymProfileId } from './profile-id'
 import { getResearchInterests } from './research-interests'
-import { reviewMatch } from './routes'
+import { clubProfileMatch, reviewMatch } from './routes'
 import type { NonEmptyString } from './string'
 import { renderDate } from './time'
 import { type User, maybeGetUser } from './user'
@@ -111,6 +111,7 @@ const profileForOrcid = (profile: OrcidProfileId) =>
       ),
     ),
     RM.apS('orcid', RM.of(profile.value)),
+    RM.apS('clubs', RM.of(isLeadFor(profile.value))),
     chainReaderKW(createPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareKW(sendHtml),
@@ -145,8 +146,10 @@ function createPage({
   user,
   avatar,
   researchInterests,
+  clubs = [],
 }: {
   avatar?: URL
+  clubs?: ReadonlyArray<ClubId>
   name: string
   orcid?: Orcid
   prereviews: Prereviews
@@ -173,6 +176,25 @@ function createPage({
                           <div>
                             <dt>Research interests</dt>
                             <dd>${researchInterests}</dd>
+                          </div>
+                        `
+                      : ''}
+                    ${RA.isNonEmpty(clubs)
+                      ? html`
+                          <div>
+                            <dt>Clubs</dt>
+                            <dd>
+                              ${pipe(
+                                clubs,
+                                RNEA.map(
+                                  club =>
+                                    html`<a href="${format(clubProfileMatch.formatter, { id: club })}"
+                                      >${getClubName(club)}</a
+                                    >`,
+                                ),
+                                formatList('en'),
+                              )}
+                            </dd>
                           </div>
                         `
                       : ''}

@@ -1,7 +1,8 @@
+import * as RA from 'fp-ts/ReadonlyArray'
 import type * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
-import type * as RR from 'fp-ts/ReadonlyRecord'
-import { flow } from 'fp-ts/function'
-import type { Orcid } from 'orcid-id-ts'
+import * as RR from 'fp-ts/ReadonlyRecord'
+import { flow, pipe } from 'fp-ts/function'
+import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import type { ClubId } from './club-id'
 import { type Html, html } from './html'
@@ -16,6 +17,18 @@ export interface Club {
 export const getClubDetails = (id: ClubId) => clubs[id]
 
 export const getClubName = flow(getClubDetails, get('name'))
+
+export const isLeadFor = (orcid: Orcid): ReadonlyArray<ClubId> =>
+  pipe(
+    RR.keys(clubs),
+    RA.filter(
+      flow(
+        getClubDetails,
+        get('leads'),
+        RA.some(lead => eqOrcid.equals(lead.orcid, orcid)),
+      ),
+    ),
+  )
 
 const clubs: RR.ReadonlyRecord<ClubId, Club> = {
   'asapbio-cancer-biology': {
