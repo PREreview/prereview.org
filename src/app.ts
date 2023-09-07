@@ -125,6 +125,7 @@ import {
   writeReviewShouldReadMatch,
   writeReviewStartMatch,
 } from './routes'
+import { getUserFromSlack } from './slack'
 import { trainings } from './trainings'
 import { type GetUserEnv, getUserFromSession } from './user'
 import {
@@ -349,15 +350,13 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getName: flip(getNameFromOrcid)(env),
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
           getResearchInterests: flip(getResearchInterests)(env),
-          getSlackUser: orcid =>
-            match(orcid as string)
-              .with('0000-0002-6109-0367', () =>
-                TE.right({
-                  name: 'Daniela Saderi (she/her)',
-                  image: new URL('https://avatars.slack-edge.com/2023-06-27/5493277920274_7b5878dc4f15503ae153_48.jpg'),
-                }),
-              )
-              .otherwise(() => TE.left('not-found')),
+          getSlackUser: flow(
+            orcid =>
+              match(orcid as string)
+                .with('0000-0002-6109-0367', () => TE.right('U05BUCDTN2X'))
+                .otherwise(() => TE.left('not-found' as const)),
+            TE.chain(getUserFromSlack),
+          ),
         })),
       ),
     ),
