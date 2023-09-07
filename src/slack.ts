@@ -8,7 +8,7 @@ import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import { NonEmptyStringC } from './string'
 
@@ -31,6 +31,16 @@ const UrlD = pipe(
       () => new URL(s),
       () => D.error(s, 'URL'),
     ),
+  ),
+)
+
+const SlackErrorD = pipe(
+  JsonD,
+  D.compose(
+    D.struct({
+      ok: D.literal(false),
+      error: NonEmptyStringC,
+    }),
   ),
 )
 
@@ -57,7 +67,10 @@ export const getUserFromSlack = (slackId: string) =>
         RTE.chainW(F.send),
         RTE.mapLeft(() => 'network-error' as const),
         RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
-        RTE.chainTaskEitherKW(flow(F.decode(SlackProfileD), TE.mapLeft(D.draw))),
+        RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackProfileD, SlackErrorD))), TE.mapLeft(D.draw))),
+        RTE.chainEitherKW(response =>
+          match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
+        ),
         RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get profile from Slack')))),
         RTE.bimap(
           () => 'unavailable' as const,

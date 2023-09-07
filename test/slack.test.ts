@@ -64,6 +64,30 @@ describe('getUserFromSlack', () => {
       },
     )
 
+    test.prop([fc.string(), fc.nonEmptyString()])(
+      'when the response has a Slack error',
+      async (slackApiToken, error) => {
+        const fetch = fetchMock.sandbox().getOnce(
+          {
+            url: 'begin:https://slack.com/api/users.profile.get?',
+            query: { user: 'U05BUCDTN2X' },
+            headers: { Authorization: `Bearer ${slackApiToken}` },
+          },
+          { body: { ok: false, error } },
+        )
+
+        const actual = await _.getUserFromSlack('U05BUCDTN2X')({
+          fetch,
+          slackApiToken,
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
+        })()
+
+        expect(actual).toStrictEqual(E.left('unavailable'))
+        expect(fetch.done()).toBeTruthy()
+      },
+    )
+
     test.prop([fc.string(), fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK)])(
       'when the response has a non-200 status code',
       async (slackApiToken, status) => {
