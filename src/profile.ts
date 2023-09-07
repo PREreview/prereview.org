@@ -171,6 +171,25 @@ function createPage({
                       <dt>ORCID iD</dt>
                       <dd><a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a></dd>
                     </div>
+
+                    ${orcid === '0000-0002-6109-0367'
+                      ? html`
+                          <div>
+                            <dt>Slack Community name</dt>
+                            <dd>
+                              <span class="slack">
+                                <img
+                                  src="https://avatars.slack-edge.com/2023-06-27/5493277920274_7b5878dc4f15503ae153_48.jpg"
+                                  alt=""
+                                  width="48"
+                                  height="48"
+                                />
+                                <span>Daniela Saderi (she/her)</span>
+                              </span>
+                            </dd>
+                          </div>
+                        `
+                      : ''}
                     ${researchInterests
                       ? html`
                           <div>

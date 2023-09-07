@@ -578,7 +578,7 @@ export const app = (deps: AppEnv) => {
         contentSecurityPolicy: {
           directives: {
             'script-src': ["'self'", 'cdn.usefathom.com'],
-            'img-src': ["'self'", 'data:', 'cdn.usefathom.com', 'res.cloudinary.com'],
+            'img-src': ["'self'", 'data:', 'avatars.slack-edge.com', 'cdn.usefathom.com', 'res.cloudinary.com'],
             upgradeInsecureRequests: deps.publicUrl.protocol === 'https:' ? [] : null,
           },
         },

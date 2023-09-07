@@ -364,6 +364,18 @@ body > footer {
   }
 }
 
+.slack {
+  display: flex;
+  column-gap: var(--space-3xs);
+  user-select: all;
+
+  img {
+    align-self: center;
+    border-radius: var(--width-divider);
+    inline-size: 1.3em;
+  }
+}
+
 img {
   object-fit: contain;
   display: block;
