@@ -7,6 +7,7 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
+import * as RR from 'fp-ts/ReadonlyRecord'
 import { type Lazy, constant, flip, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -511,11 +512,17 @@ const doesPreprintExist = flow(
   ),
 )
 
+const slackUsers = {
+  '0000-0001-8511-8689': 'U057XMQ1RGR',
+  '0000-0002-1472-1824': 'U05CJ7ELWRE',
+  '0000-0002-3708-3546': 'U05BE7SE4AK',
+  '0000-0002-6109-0367': 'U05BUCDTN2X',
+  '0000-0002-6750-9341': 'U05CJEXUSGY',
+  '0000-0003-4921-6155': 'U05CJ7E6YKA',
+}
+
 const getSlackUser = flow(
-  (orcid: Orcid) =>
-    match(orcid as string)
-      .with('0000-0002-6109-0367', () => RTE.right('U05BUCDTN2X'))
-      .otherwise(() => RTE.left('not-found' as const)),
+  RTE.fromOptionK(() => 'not-found' as const)((orcid: Orcid) => RR.lookup(orcid, slackUsers)),
   RTE.chainW(getUserFromSlack),
 )
 
