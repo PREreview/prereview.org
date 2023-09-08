@@ -8,16 +8,21 @@ export function useStaleCache<E extends F.FetchEnv>(): (env: E) => E {
 }
 
 export function revalidateIfStale<E extends F.FetchEnv>(): (env: E) => E {
+  const openRequests = new Set<string>()
+
   return env => ({
     ...env,
     fetch: async (url, init) => {
       const response = await env.fetch(url, init)
 
-      if (response.headers.get('x-local-cache-status') === 'stale') {
+      if (response.headers.get('x-local-cache-status') === 'stale' && !openRequests.has(url)) {
+        openRequests.add(url)
+
         void env
           .fetch(url, { ...init, cache: 'no-cache' })
           .then(response => response.text())
           .catch(constVoid)
+          .finally(() => openRequests.delete(url))
       }
 
       return response
