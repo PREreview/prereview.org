@@ -75,7 +75,12 @@ export const getUserFromSlack = (slackId: string) =>
     RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get profile from Slack')))),
     RTE.bimap(
       () => 'unavailable' as const,
-      ({ profile }) => ({ name: profile.real_name, image: profile.image_48 }) satisfies SlackUser,
+      ({ profile }) =>
+        ({
+          name: profile.real_name,
+          image: profile.image_48,
+          profile: new URL(`https://prereviewcommunity.slack.com/team/${slackId}`),
+        }) satisfies SlackUser,
     ),
   )
 

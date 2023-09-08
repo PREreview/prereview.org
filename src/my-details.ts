@@ -137,6 +137,11 @@ function createPage(
                       <span>${slackUser.name}</span>
                     </span>
                   </dd>
+                  <dd>
+                    <a href="${slackUser.profile.href}"
+                      >View <span class="visually-hidden">Slack Community profile</span></a
+                    >
+                  </dd>
                 </div>
               `,
             )

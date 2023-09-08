@@ -6,6 +6,7 @@ import type { Orcid } from 'orcid-id-ts'
 export interface SlackUser {
   readonly name: string
   readonly image: URL
+  readonly profile: URL
 }
 
 export interface GetSlackUserEnv {

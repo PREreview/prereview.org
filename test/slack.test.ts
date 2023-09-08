@@ -5,6 +5,7 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
+import { URL } from 'url'
 import * as _ from '../src/slack'
 import * as fc from './fc'
 
@@ -32,6 +33,7 @@ describe('getUserFromSlack', () => {
         E.right({
           name,
           image,
+          profile: new URL(`https://prereviewcommunity.slack.com/team/${user}`),
         }),
       )
       expect(fetch.done()).toBeTruthy()
