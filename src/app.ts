@@ -516,7 +516,7 @@ const getSlackUser = flow(
     match(orcid as string)
       .with('0000-0002-6109-0367', () => RTE.right('U05BUCDTN2X'))
       .otherwise(() => RTE.left('not-found' as const)),
-  RTE.chain(getUserFromSlack),
+  RTE.chainW(getUserFromSlack),
 )
 
 const getUser = pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))
