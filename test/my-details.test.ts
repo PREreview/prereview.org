@@ -18,56 +18,33 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
-    ])('when the details can be loaded', async (oauth, publicUrl, connection, user, careerStage, researchInterests) => {
-      const actual = await runMiddleware(
-        _.myDetails({
-          getUser: () => M.right(user),
-          oauth,
-          publicUrl,
-          getCareerStage: () => TE.fromEither(careerStage),
-          getResearchInterests: () => TE.fromEither(researchInterests),
-        }),
-        connection,
-      )()
+    ])(
+      'when the details can be loaded',
+      async (oauth, publicUrl, connection, user, slackUser, careerStage, researchInterests) => {
+        const actual = await runMiddleware(
+          _.myDetails({
+            getUser: () => M.right(user),
+            oauth,
+            publicUrl,
+            getCareerStage: () => TE.fromEither(careerStage),
+            getResearchInterests: () => TE.fromEither(researchInterests),
+            getSlackUser: () => TE.fromEither(slackUser),
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.OK },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    })
-
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
-      fc.user(),
-      fc.either(fc.constant('not-found' as const), fc.researchInterests()),
-    ])('when the career stage cannot be loaded', async (oauth, publicUrl, connection, user, researchInterests) => {
-      const actual = await runMiddleware(
-        _.myDetails({
-          getUser: () => M.right(user),
-          oauth,
-          publicUrl,
-          getCareerStage: () => TE.left('unavailable'),
-          getResearchInterests: () => TE.fromEither(researchInterests),
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.OK },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
 
     test.prop([
       fc.oauth(),
@@ -75,7 +52,74 @@ describe('myDetails', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
-    ])('when the career stage cannot be loaded', async (oauth, publicUrl, connection, user, careerStage) => {
+      fc.either(fc.constant('not-found' as const), fc.researchInterests()),
+    ])(
+      'when the Slack user cannot be loaded',
+      async (oauth, publicUrl, connection, user, careerStage, researchInterests) => {
+        const actual = await runMiddleware(
+          _.myDetails({
+            getUser: () => M.right(user),
+            oauth,
+            publicUrl,
+            getCareerStage: () => TE.fromEither(careerStage),
+            getResearchInterests: () => TE.fromEither(researchInterests),
+            getSlackUser: () => TE.left('unavailable'),
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
+
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.connection({ method: fc.requestMethod() }),
+      fc.user(),
+      fc.either(fc.constant('not-found' as const), fc.slackUser()),
+      fc.either(fc.constant('not-found' as const), fc.researchInterests()),
+    ])(
+      'when the career stage cannot be loaded',
+      async (oauth, publicUrl, connection, user, slackUser, researchInterests) => {
+        const actual = await runMiddleware(
+          _.myDetails({
+            getUser: () => M.right(user),
+            oauth,
+            publicUrl,
+            getCareerStage: () => TE.left('unavailable'),
+            getResearchInterests: () => TE.fromEither(researchInterests),
+            getSlackUser: () => TE.fromEither(slackUser),
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
+
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.connection({ method: fc.requestMethod() }),
+      fc.user(),
+      fc.either(fc.constant('not-found' as const), fc.slackUser()),
+      fc.either(fc.constant('not-found' as const), fc.careerStage()),
+    ])('when the career stage cannot be loaded', async (oauth, publicUrl, connection, user, slackUser, careerStage) => {
       const actual = await runMiddleware(
         _.myDetails({
           getUser: () => M.right(user),
@@ -83,6 +127,7 @@ describe('myDetails', () => {
           publicUrl,
           getCareerStage: () => TE.fromEither(careerStage),
           getResearchInterests: () => TE.left('unavailable'),
+          getSlackUser: () => TE.fromEither(slackUser),
         }),
         connection,
       )()
@@ -108,6 +153,7 @@ describe('myDetails', () => {
           publicUrl,
           getCareerStage: shouldNotBeCalled,
           getResearchInterests: shouldNotBeCalled,
+          getSlackUser: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -145,6 +191,7 @@ describe('myDetails', () => {
           publicUrl,
           getCareerStage: shouldNotBeCalled,
           getResearchInterests: shouldNotBeCalled,
+          getSlackUser: shouldNotBeCalled,
         }),
         connection,
       )()

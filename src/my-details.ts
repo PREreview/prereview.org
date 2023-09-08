@@ -1,10 +1,13 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, getCareerStage } from './career-stage'
 import { html, plainText, sendHtml } from './html'
@@ -22,9 +25,37 @@ import {
 } from './routes'
 import { type GetUserEnv, type User, getUser } from './user'
 
+interface SlackUser {
+  readonly name: string
+  readonly image: URL
+}
+
+interface GetSlackUserEnv {
+  getSlackUser: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', SlackUser>
+}
+
+const getSlackUser = (orcid: Orcid) =>
+  pipe(
+    RTE.ask<GetSlackUserEnv>(),
+    RTE.chainTaskEitherK(({ getSlackUser }) => getSlackUser(orcid)),
+  )
+
 export const myDetails = pipe(
   getUser,
   RM.bindTo('user'),
+  RM.bindW(
+    'slackUser',
+    flow(
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => getSlackUser(orcid)),
+      RM.map(O.some),
+      RM.orElseW(error =>
+        match(error)
+          .with('not-found', () => RM.of(O.none))
+          .with('unavailable', RM.left)
+          .exhaustive(),
+      ),
+    ),
+  ),
   RM.bindW(
     'careerStage',
     flow(
@@ -49,7 +80,9 @@ export const myDetails = pipe(
       ),
     ),
   ),
-  chainReaderKW(({ user, careerStage, researchInterests }) => createPage(user, careerStage, researchInterests)),
+  chainReaderKW(({ user, slackUser, careerStage, researchInterests }) =>
+    createPage(user, slackUser, careerStage, researchInterests),
+  ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(error =>
@@ -70,7 +103,12 @@ export const myDetails = pipe(
   ),
 )
 
-function createPage(user: User, careerStage: O.Option<CareerStage>, researchInterests: O.Option<ResearchInterests>) {
+function createPage(
+  user: User,
+  slackUser: O.Option<SlackUser>,
+  careerStage: O.Option<CareerStage>,
+  researchInterests: O.Option<ResearchInterests>,
+) {
   return page({
     title: plainText`My details`,
     content: html`
@@ -102,6 +140,24 @@ function createPage(user: User, careerStage: O.Option<CareerStage>, researchInte
               >
             </dd>
           </div>
+
+          ${match(slackUser)
+            .when(O.isNone, () => '')
+            .with(
+              { value: P.select() },
+              slackUser => html`
+                <div>
+                  <dt>Slack Community name</dt>
+                  <dd>
+                    <span class="slack">
+                      <img src="${slackUser.image.href}" alt="" width="48" height="48" />
+                      <span>${slackUser.name}</span>
+                    </span>
+                  </dd>
+                </div>
+              `,
+            )
+            .exhaustive()}
 
           <div>
             <dt>Career stage</dt>
