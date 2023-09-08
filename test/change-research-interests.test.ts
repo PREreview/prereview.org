@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
 import * as _ from '../src/change-research-interests'
 import type { EditResearchInterestsEnv } from '../src/research-interests'
 import { myDetailsMatch } from '../src/routes'
@@ -60,7 +59,7 @@ describe('changeResearchInterests', () => {
     ])(
       'there are research interests already',
       async (oauth, publicUrl, [researchInterests, connection], user, existingResearchInterests) => {
-        const saveResearchInterests: Mock<EditResearchInterestsEnv['saveResearchInterests']> = jest.fn(_ =>
+        const saveResearchInterests = jest.fn<EditResearchInterestsEnv['saveResearchInterests']>(_ =>
           TE.right(undefined),
         )
 
@@ -104,9 +103,7 @@ describe('changeResearchInterests', () => {
       ),
       fc.user(),
     ])("there aren't research interests already", async (oauth, publicUrl, [researchInterests, connection], user) => {
-      const saveResearchInterests: Mock<EditResearchInterestsEnv['saveResearchInterests']> = jest.fn(_ =>
-        TE.right(undefined),
-      )
+      const saveResearchInterests = jest.fn<EditResearchInterestsEnv['saveResearchInterests']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeResearchInterests({
@@ -180,7 +177,7 @@ describe('changeResearchInterests', () => {
   ])(
     'when the form has been submitted without setting research interests',
     async (oauth, publicUrl, connection, user) => {
-      const deleteResearchInterests: Mock<EditResearchInterestsEnv['deleteResearchInterests']> = jest.fn(_ =>
+      const deleteResearchInterests = jest.fn<EditResearchInterestsEnv['deleteResearchInterests']>(_ =>
         TE.right(undefined),
       )
 

@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
 import * as _ from '../src/review'
 import { reviewMatch } from '../src/routes'
 import * as fc from './fc'
@@ -33,7 +32,7 @@ describe('review', () => {
     }),
     fc.either(fc.constant('no-session' as const), fc.user()),
   ])('when the review can be loaded', async (publicUrl, id, connection, prereview, user) => {
-    const getPrereview: Mock<_.GetPrereviewEnv['getPrereview']> = jest.fn(_ => TE.right(prereview))
+    const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
     const actual = await runMiddleware(
       _.review(id)({ getPrereview, getUser: () => M.fromEither(user), publicUrl }),

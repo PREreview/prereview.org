@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
 import type { GetPreprintEnv } from '../src/preprint'
 import * as _ from '../src/preprint-reviews'
 import { preprintReviewsMatch } from '../src/routes'
@@ -61,11 +60,9 @@ describe('preprintReviews', () => {
       }),
     ),
   ])('when the reviews can be loaded', async (publicUrl, connection, user, preprint, prereviews, rapidPrereviews) => {
-    const getPreprint: Mock<GetPreprintEnv['getPreprint']> = jest.fn(_ => TE.right(preprint))
-    const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.right(prereviews))
-    const getRapidPrereviews: Mock<_.GetRapidPrereviewsEnv['getRapidPrereviews']> = jest.fn(_ =>
-      TE.right(rapidPrereviews),
-    )
+    const getPreprint = jest.fn<GetPreprintEnv['getPreprint']>(_ => TE.right(preprint))
+    const getPrereviews = jest.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.right(prereviews))
+    const getRapidPrereviews = jest.fn<_.GetRapidPrereviewsEnv['getRapidPrereviews']>(_ => TE.right(rapidPrereviews))
 
     const actual = await runMiddleware(
       _.preprintReviews(preprint.id)({

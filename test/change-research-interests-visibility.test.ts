@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
 import * as _ from '../src/change-research-interests-visibility'
 import type { EditResearchInterestsEnv } from '../src/research-interests'
 import { myDetailsMatch } from '../src/routes'
@@ -59,9 +58,7 @@ describe('changeResearchInterestsVisibility', () => {
   ])(
     'when the form has been submitted',
     async (oauth, publicUrl, [visibility, connection], user, existingResearchInterests) => {
-      const saveResearchInterests: Mock<EditResearchInterestsEnv['saveResearchInterests']> = jest.fn(_ =>
-        TE.right(undefined),
-      )
+      const saveResearchInterests = jest.fn<EditResearchInterestsEnv['saveResearchInterests']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeResearchInterestsVisibility({
@@ -136,9 +133,7 @@ describe('changeResearchInterestsVisibility', () => {
   ])(
     'when the form has been submitted without setting visibility',
     async (oauth, publicUrl, connection, user, researchInterests) => {
-      const saveResearchInterests: Mock<EditResearchInterestsEnv['saveResearchInterests']> = jest.fn(_ =>
-        TE.right(undefined),
-      )
+      const saveResearchInterests = jest.fn<EditResearchInterestsEnv['saveResearchInterests']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeResearchInterestsVisibility({

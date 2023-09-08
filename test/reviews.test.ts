@@ -4,7 +4,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
 import * as _ from '../src/reviews'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -27,7 +26,7 @@ describe('reviews', () => {
     }),
     fc.either(fc.constant('no-session' as const), fc.user()),
   ])('when the recent reviews can be loaded', async (page, connection, recentPrereviews, user) => {
-    const getRecentPrereviews: Mock<_.GetRecentPrereviewsEnv['getRecentPrereviews']> = jest.fn(_ =>
+    const getRecentPrereviews = jest.fn<_.GetRecentPrereviewsEnv['getRecentPrereviews']>(_ =>
       TE.right(recentPrereviews),
     )
 

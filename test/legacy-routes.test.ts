@@ -6,7 +6,6 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import { ExpressConnection } from 'hyper-ts/lib/express'
-import type { Mock } from 'jest-mock'
 import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/legacy-routes'
 import { preprintReviewsMatch, profileMatch } from '../src/routes'
@@ -89,9 +88,7 @@ describe('legacyRoutes', () => {
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.profileId(),
     ])('when the profile ID is found', async ([uuid, connection], user, profile) => {
-      const getProfileIdFromUuid: Mock<_.GetProfileIdFromUuidEnv['getProfileIdFromUuid']> = jest.fn(_ =>
-        TE.right(profile),
-      )
+      const getProfileIdFromUuid = jest.fn<_.GetProfileIdFromUuidEnv['getProfileIdFromUuid']>(_ => TE.right(profile))
 
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -169,9 +166,7 @@ describe('legacyRoutes', () => {
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.indeterminatePreprintId(),
     ])('when the ID is found', async ([uuid, connection], user, id) => {
-      const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
-        TE.right(id),
-      )
+      const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
 
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -256,9 +251,7 @@ describe('legacyRoutes', () => {
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.indeterminatePreprintId(),
     ])('when the ID is found', async ([uuid, connection], user, id) => {
-      const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
-        TE.right(id),
-      )
+      const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
 
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -340,9 +333,7 @@ describe('legacyRoutes', () => {
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.indeterminatePreprintId(),
     ])('when the ID is found', async ([uuid, connection], user, id) => {
-      const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
-        TE.right(id),
-      )
+      const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
 
       const actual = await runMiddleware(
         _.legacyRoutes({

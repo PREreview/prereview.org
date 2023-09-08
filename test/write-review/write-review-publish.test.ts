@@ -6,7 +6,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
 import Keyv from 'keyv'
 import merge from 'ts-deepmerge'
 import { writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes'
@@ -52,9 +51,7 @@ describe('writeReviewPublish', () => {
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
-      const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
-        TE.right([reviewDoi, reviewId]),
-      )
+      const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ => TE.right([reviewDoi, reviewId]))
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
@@ -130,9 +127,7 @@ describe('writeReviewPublish', () => {
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-      const publishPrereview: Mock<_.PublishPrereviewEnv['publishPrereview']> = jest.fn(_ =>
-        TE.right([reviewDoi, reviewId]),
-      )
+      const publishPrereview = jest.fn<_.PublishPrereviewEnv['publishPrereview']>(_ => TE.right([reviewDoi, reviewId]))
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({

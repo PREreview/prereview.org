@@ -4,7 +4,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
 import { getClubName } from '../src/club-details'
 import * as _ from '../src/club-profile'
 import * as fc from './fc'
@@ -26,7 +25,7 @@ describe('clubProfile', () => {
       }),
     ),
   ])('when the data can be loaded', async (connection, user, clubId, page, prereviews) => {
-    const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.right(prereviews))
+    const getPrereviews = jest.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.right(prereviews))
     const templatePage = jest.fn(_ => page)
 
     const actual = await runMiddleware(

@@ -4,7 +4,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
 import * as _ from '../src/profile'
 import type { GetResearchInterestsEnv } from '../src/research-interests'
 import type { GetSlackUserEnv } from '../src/slack-user'
@@ -33,13 +32,13 @@ describe('profile', () => {
     ])(
       'when the data can be loaded',
       async (connection, profile, avatar, name, prereviews, user, researchInterests, slackUser) => {
-        const getAvatar: Mock<_.GetAvatarEnv['getAvatar']> = jest.fn(_ => TE.of(avatar))
-        const getName: Mock<_.GetNameEnv['getName']> = jest.fn(_ => TE.of(name))
-        const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.of(prereviews))
-        const getResearchInterests: Mock<GetResearchInterestsEnv['getResearchInterests']> = jest.fn(_ =>
+        const getAvatar = jest.fn<_.GetAvatarEnv['getAvatar']>(_ => TE.of(avatar))
+        const getName = jest.fn<_.GetNameEnv['getName']>(_ => TE.of(name))
+        const getPrereviews = jest.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.of(prereviews))
+        const getResearchInterests = jest.fn<GetResearchInterestsEnv['getResearchInterests']>(_ =>
           TE.fromEither(researchInterests),
         )
-        const getSlackUser: Mock<GetSlackUserEnv['getSlackUser']> = jest.fn(_ => TE.fromEither(slackUser))
+        const getSlackUser = jest.fn<GetSlackUserEnv['getSlackUser']>(_ => TE.fromEither(slackUser))
 
         const actual = await runMiddleware(
           _.profile(profile)({
@@ -297,7 +296,7 @@ describe('profile', () => {
       ),
       fc.either(fc.constant('no-session' as const), fc.user()),
     ])('when the data can be loaded', async (connection, profile, prereviews, user) => {
-      const getPrereviews: Mock<_.GetPrereviewsEnv['getPrereviews']> = jest.fn(_ => TE.of(prereviews))
+      const getPrereviews = jest.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.of(prereviews))
 
       const actual = await runMiddleware(
         _.profile(profile)({
