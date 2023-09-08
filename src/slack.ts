@@ -11,6 +11,7 @@ import * as L from 'logger-fp-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import { timeoutRequest } from './fetch'
+import type { SlackUser } from './slack-user'
 import { NonEmptyStringC } from './string'
 
 export interface SlackApiEnv {
@@ -74,7 +75,7 @@ export const getUserFromSlack = (slackId: string) =>
     RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get profile from Slack')))),
     RTE.bimap(
       () => 'unavailable' as const,
-      ({ profile }) => ({ name: profile.real_name, image: profile.image_48 }),
+      ({ profile }) => ({ name: profile.real_name, image: profile.image_48 }) satisfies SlackUser,
     ),
   )
 
