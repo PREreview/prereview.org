@@ -1,6 +1,5 @@
 import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import { sequenceS } from 'fp-ts/Apply'
 import * as I from 'fp-ts/Identity'
 import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -27,7 +26,7 @@ import type { PreprintId } from './preprint-id'
 import { isPseudonym } from './pseudonym'
 import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
-import { type GetUserEnv, type User, maybeGetUser } from './user'
+import { type User, maybeGetUser } from './user'
 
 export interface Prereview {
   authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
@@ -79,24 +78,27 @@ const sendPage = (args: {
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const getPrereviews = (id: PreprintId) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }: GetPrereviewsEnv) => getPrereviews(id)))
+const getPrereviews = (
+  id: PreprintId,
+): RTE.ReaderTaskEither<GetPrereviewsEnv, 'unavailable', ReadonlyArray<Prereview>> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }) => getPrereviews(id)))
 
-const getRapidPrereviews = (id: PreprintId) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ getRapidPrereviews }: GetRapidPrereviewsEnv) => getRapidPrereviews(id)),
-  )
+const getRapidPrereviews = (
+  id: PreprintId,
+): RTE.ReaderTaskEither<GetRapidPrereviewsEnv, 'unavailable', ReadonlyArray<RapidPrereview>> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getRapidPrereviews }) => getRapidPrereviews(id)))
 
 export const preprintReviews = flow(
   RM.fromReaderTaskEitherK(getPreprint),
-  RM.chainW(preprint =>
-    sequenceS(RM.ApplyPar)({
-      preprint: RM.right<GetRapidPrereviewsEnv & GetPrereviewsEnv & GetUserEnv, StatusOpen, never, Preprint>(preprint),
-      rapidPrereviews: RM.fromReaderTaskEither(getRapidPrereviews(preprint.id)),
-      reviews: RM.fromReaderTaskEither(getPrereviews(preprint.id)),
-      user: maybeGetUser,
-    }),
+  RM.chainReaderTaskEitherKW(preprint =>
+    pipe(
+      RTE.Do,
+      RTE.let('preprint', () => preprint),
+      RTE.apS('rapidPrereviews', getRapidPrereviews(preprint.id)),
+      RTE.apSW('reviews', getPrereviews(preprint.id)),
+    ),
   ),
+  RM.apSW('user', maybeGetUser),
   RM.ichainW(sendPage),
   RM.orElseW(error =>
     match(error)
