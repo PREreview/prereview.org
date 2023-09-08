@@ -93,6 +93,38 @@ describe('revalidateIfStale', () => {
       status: fc.integer({ min: 200, max: 599 }),
       headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
     }),
+    fc.error(),
+  ])('does nothing if the revalidation fails', async (url, method, headers, fetchResponse, error) => {
+    const fetch = fetchMock
+      .sandbox()
+      .once(
+        { method, url: url.href, functionMatcher: (_, req) => req.cache === undefined },
+        { ...fetchResponse, headers: { ...fetchResponse.headers, 'X-Local-Cache-Status': 'stale' } },
+      )
+      .once(
+        { name: 'revalidate', method, url: url.href, functionMatcher: (_, req) => req.cache === 'no-cache' },
+        { throws: error },
+      )
+    const env = _.revalidateIfStale()({ fetch })
+
+    const response = await env.fetch(url.href, { headers, method })
+
+    expect(response.status).toStrictEqual(fetchResponse.status)
+    expect(Object.fromEntries(Array.from(response.headers))).toStrictEqual({
+      ...fetchResponse.headers,
+      'x-local-cache-status': 'stale',
+    })
+    expect(fetch.done()).toBeTruthy()
+  })
+
+  test.prop([
+    fc.url(),
+    fc.constant('GET'),
+    fc.headers().map(headers => Object.fromEntries(headers.entries())),
+    fc.record({
+      status: fc.integer({ min: 200, max: 599 }),
+      headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
+    }),
   ])("doesn't revalidate if the response is not stale", async (url, method, headers, fetchResponse) => {
     const fetch = fetchMock.sandbox().once({ url: url.href, method }, fetchResponse)
     const env = _.revalidateIfStale()({ fetch })
