@@ -78,53 +78,57 @@ export const profile = (profileId: ProfileId) =>
 
 const profileForOrcid = (profile: OrcidProfileId) =>
   pipe(
-    RM.fromReaderTaskEither(getPrereviews(profile)),
-    RM.bindTo('prereviews'),
-    RM.apSW('name', RM.fromReaderTaskEither(getName(profile.value))),
+    RM.fromReaderTaskEither(
+      pipe(
+        RTE.Do,
+        RTE.apS('prereviews', getPrereviews(profile)),
+        RTE.apSW('name', getName(profile.value)),
+        RTE.apSW(
+          'researchInterests',
+          pipe(
+            getResearchInterests(profile.value),
+            RTE.map(researchInterests =>
+              match(researchInterests)
+                .with({ visibility: 'public', value: P.select() }, identity)
+                .with({ visibility: 'restricted' }, () => undefined)
+                .exhaustive(),
+            ),
+            RTE.orElseW(error =>
+              match(error)
+                .with('not-found', () => RTE.of(undefined))
+                .otherwise(RTE.left),
+            ),
+          ),
+        ),
+        RTE.apSW(
+          'avatar',
+          pipe(
+            getAvatar(profile.value),
+            RTE.orElseW(error =>
+              match(error)
+                .with('not-found', () => RTE.right(undefined))
+                .with('unavailable', RTE.left)
+                .exhaustive(),
+            ),
+          ),
+        ),
+        RTE.let('orcid', () => profile.value),
+        RTE.let('clubs', () => isLeadFor(profile.value)),
+        RTE.apSW(
+          'slackUser',
+          pipe(
+            getSlackUser(profile.value),
+            RTE.orElseW(error =>
+              match(error)
+                .with('not-found', () => RTE.right(undefined))
+                .with('unavailable', RTE.left)
+                .exhaustive(),
+            ),
+          ),
+        ),
+      ),
+    ),
     RM.apSW('user', maybeGetUser),
-    RM.apSW(
-      'researchInterests',
-      pipe(
-        RM.fromReaderTaskEither(getResearchInterests(profile.value)),
-        RM.map(researchInterests =>
-          match(researchInterests)
-            .with({ visibility: 'public', value: P.select() }, identity)
-            .with({ visibility: 'restricted' }, () => undefined)
-            .exhaustive(),
-        ),
-        RM.orElseW(error =>
-          match(error)
-            .with('not-found', () => RM.of(undefined))
-            .otherwise(RM.left),
-        ),
-      ),
-    ),
-    RM.apSW(
-      'avatar',
-      pipe(
-        RM.fromReaderTaskEither(getAvatar(profile.value)),
-        RM.orElseW(error =>
-          match(error)
-            .with('not-found', () => RM.right(undefined))
-            .with('unavailable', RM.left)
-            .exhaustive(),
-        ),
-      ),
-    ),
-    RM.apS('orcid', RM.of(profile.value)),
-    RM.apS('clubs', RM.of(isLeadFor(profile.value))),
-    RM.apSW(
-      'slackUser',
-      pipe(
-        RM.fromReaderTaskEither(getSlackUser(profile.value)),
-        RM.orElseW(error =>
-          match(error)
-            .with('not-found', () => RM.right(undefined))
-            .with('unavailable', RM.left)
-            .exhaustive(),
-        ),
-      ),
-    ),
     chainReaderKW(createPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareKW(sendHtml),
