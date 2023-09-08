@@ -33,16 +33,7 @@ export function revalidateIfStale<E extends F.FetchEnv>(): (env: E) => E {
 export function timeoutRequest<E extends F.FetchEnv>(timeout: number): (env: E) => E {
   return env => ({
     ...env,
-    fetch: async (url, init) => {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), timeout)
-
-      try {
-        return await env.fetch(url, { signal: controller.signal, ...init })
-      } finally {
-        clearTimeout(timeoutId)
-      }
-    },
+    fetch: async (url, init) => env.fetch(url, { signal: AbortSignal.timeout(timeout), ...init }),
   })
 }
 
