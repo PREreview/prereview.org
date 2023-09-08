@@ -7,6 +7,7 @@ import * as M from 'hyper-ts/lib/Middleware'
 import type { Mock } from 'jest-mock'
 import * as _ from '../src/profile'
 import type { GetResearchInterestsEnv } from '../src/research-interests'
+import type { GetSlackUserEnv } from '../src/slack-user'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 import { shouldNotBeCalled } from './should-not-be-called'
@@ -38,7 +39,7 @@ describe('profile', () => {
         const getResearchInterests: Mock<GetResearchInterestsEnv['getResearchInterests']> = jest.fn(_ =>
           TE.fromEither(researchInterests),
         )
-        const getSlackUser: Mock<_.GetSlackUserEnv['getSlackUser']> = jest.fn(_ => TE.fromEither(slackUser))
+        const getSlackUser: Mock<GetSlackUserEnv['getSlackUser']> = jest.fn(_ => TE.fromEither(slackUser))
 
         const actual = await runMiddleware(
           _.profile(profile)({

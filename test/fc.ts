@@ -59,10 +59,10 @@ import type {
   ZenodoOrAfricarxivPreprintId,
   ZenodoPreprintId,
 } from '../src/preprint-id'
-import type { SlackUser } from '../src/profile'
 import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/profile-id'
 import type { Pseudonym } from '../src/pseudonym'
 import type { ResearchInterests } from '../src/research-interests'
+import type { SlackUser } from '../src/slack-user'
 import { type NonEmptyString, isNonEmptyString } from '../src/string'
 import type { User } from '../src/user'
 import { shouldNotBeCalled } from './should-not-be-called'

@@ -21,6 +21,7 @@ import type { PreprintId } from './preprint-id'
 import type { OrcidProfileId, ProfileId, PseudonymProfileId } from './profile-id'
 import { getResearchInterests } from './research-interests'
 import { clubProfileMatch, reviewMatch } from './routes'
+import { type SlackUser, getSlackUser } from './slack-user'
 import type { NonEmptyString } from './string'
 import { renderDate } from './time'
 import { type User, maybeGetUser } from './user'
@@ -39,11 +40,6 @@ export type Prereviews = ReadonlyArray<{
   }
 }>
 
-export interface SlackUser {
-  readonly name: string
-  readonly image: URL
-}
-
 export interface GetPrereviewsEnv {
   getPrereviews: (profile: ProfileId) => TE.TaskEither<'unavailable', Prereviews>
 }
@@ -54,10 +50,6 @@ export interface GetNameEnv {
 
 export interface GetAvatarEnv {
   getAvatar: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', URL>
-}
-
-export interface GetSlackUserEnv {
-  getSlackUser: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', SlackUser>
 }
 
 const getPrereviews = (profile: ProfileId) =>
@@ -76,12 +68,6 @@ const getAvatar = (orcid: Orcid) =>
   pipe(
     RTE.ask<GetAvatarEnv>(),
     RTE.chainTaskEitherK(({ getAvatar }) => getAvatar(orcid)),
-  )
-
-const getSlackUser = (orcid: Orcid) =>
-  pipe(
-    RTE.ask<GetSlackUserEnv>(),
-    RTE.chainTaskEitherK(({ getSlackUser }) => getSlackUser(orcid)),
   )
 
 export const profile = (profileId: ProfileId) =>

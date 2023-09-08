@@ -1,13 +1,10 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, getCareerStage } from './career-stage'
 import { html, plainText, sendHtml } from './html'
@@ -23,22 +20,8 @@ import {
   myDetailsMatch,
   profileMatch,
 } from './routes'
+import { type SlackUser, getSlackUser } from './slack-user'
 import { type GetUserEnv, type User, getUser } from './user'
-
-interface SlackUser {
-  readonly name: string
-  readonly image: URL
-}
-
-interface GetSlackUserEnv {
-  getSlackUser: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', SlackUser>
-}
-
-const getSlackUser = (orcid: Orcid) =>
-  pipe(
-    RTE.ask<GetSlackUserEnv>(),
-    RTE.chainTaskEitherK(({ getSlackUser }) => getSlackUser(orcid)),
-  )
 
 export const myDetails = pipe(
   getUser,
