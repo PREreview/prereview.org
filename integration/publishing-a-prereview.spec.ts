@@ -2398,7 +2398,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
-  'have to say if the preprint is likely to advance academic knowledge',
+  'have to say if the findings are novel',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
