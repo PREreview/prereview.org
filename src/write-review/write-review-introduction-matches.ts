@@ -227,9 +227,7 @@ function introductionMatchesForm(preprint: PreprintTitle, form: IntroductionMatc
                       />
                       <span>Yes</span>
                     </label>
-                    <p id="introduction-matches-tip-yes" role="note">
-                      It clearly explains the objective of the research.
-                    </p>
+                    <p id="introduction-matches-tip-yes" role="note">It clearly explains the objective.</p>
                     <div class="conditional" id="introduction-matches-yes-control">
                       <div>
                         <label for="introduction-matches-yes-details" class="textarea"
@@ -293,9 +291,7 @@ ${match(form.introductionMatchesPartlyDetails)
                       />
                       <span>No</span>
                     </label>
-                    <p id="introduction-matches-tip-no" role="note">
-                      The introduction doesn’t mention or explain the objective.
-                    </p>
+                    <p id="introduction-matches-tip-no" role="note">It doesn’t mention or explain the objective.</p>
                     <div class="conditional" id="introduction-matches-no-control">
                       <div>
                         <label for="introduction-matches-no-details" class="textarea"
