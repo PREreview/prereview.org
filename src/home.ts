@@ -137,7 +137,7 @@ function createPage(
 
           <ul class="statistics">
             <li>
-              <data value="703">703</data>
+              <data value="732">732</data>
               PREreviews
             </li>
             <li>
@@ -145,7 +145,7 @@ function createPage(
               preprint servers
             </li>
             <li>
-              <data value="2368">2,368</data>
+              <data value="2391">2,391</data>
               PREreviewers
             </li>
           </ul>
