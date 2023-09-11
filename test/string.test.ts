@@ -6,16 +6,16 @@ import * as fc from './fc'
 
 describe('NonEmptyStringC', () => {
   describe('decode', () => {
-    test.prop([fc.string({ minLength: 1 })])('with a non-empty string', string => {
+    test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 })])('with a non-empty string', string => {
       const actual = _.NonEmptyStringC.decode(string)
 
       expect(actual).toStrictEqual(D.success(string))
     })
 
-    test('with an empty string', () => {
-      const actual = _.NonEmptyStringC.decode('')
+    test.prop([fc.stringOf(fc.invisibleCharacter())])('with an empty string', string => {
+      const actual = _.NonEmptyStringC.decode(string)
 
-      expect(actual).toStrictEqual(D.failure('', 'NonEmptyString'))
+      expect(actual).toStrictEqual(D.failure(string, 'NonEmptyString'))
     })
 
     test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
@@ -34,12 +34,12 @@ describe('NonEmptyStringC', () => {
 
 describe('isNonEmptyString', () => {
   describe('decode', () => {
-    test.prop([fc.string({ minLength: 1 })])('with a non-empty string', string => {
+    test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 })])('with a non-empty string', string => {
       expect(_.isNonEmptyString(string)).toBe(true)
     })
 
-    test('with an empty string', () => {
-      expect(_.isNonEmptyString('')).toBe(false)
+    test.prop([fc.stringOf(fc.invisibleCharacter())])('with an empty string', string => {
+      expect(_.isNonEmptyString(string)).toBe(false)
     })
   })
 })

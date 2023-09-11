@@ -7,7 +7,7 @@ export type NonEmptyString = string & NonEmptyStringBrand
 export const NonEmptyStringC = C.fromDecoder(pipe(D.string, D.refine(isNonEmptyString, 'NonEmptyString')))
 
 export function isNonEmptyString(value: string): value is NonEmptyString {
-  return value.length > 0
+  return value.trim().length > 0
 }
 
 interface NonEmptyStringBrand {

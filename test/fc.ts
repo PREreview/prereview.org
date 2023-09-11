@@ -107,6 +107,35 @@ export const alphanumeric = (): fc.Arbitrary<string> =>
     { num: 10, build: v => String.fromCharCode(v + 0x30) },
   )
 
+export const invisibleCharacter = (): fc.Arbitrary<string> => fc.oneof(lineTerminator(), whiteSpaceCharacter())
+
+export const lineTerminator = (): fc.Arbitrary<string> => fc.constantFrom('\n', '\r', '\u2028', '\u2029')
+
+export const whiteSpaceCharacter = (): fc.Arbitrary<string> =>
+  fc.constantFrom(
+    '\t',
+    '\v',
+    '\f',
+    ' ',
+    '\ufeff',
+    '\u00a0',
+    '\u1680',
+    '\u2000',
+    '\u2001',
+    '\u2002',
+    '\u2003',
+    '\u2004',
+    '\u2005',
+    '\u2006',
+    '\u2007',
+    '\u2008',
+    '\u2009',
+    '\u200a',
+    '\u202f',
+    '\u205f',
+    '\u3000',
+  )
+
 export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyof T> } | undefined>(
   recordModel: { [K in keyof T]: fc.Arbitrary<T[K]> },
   constraints?: TConstraints,
