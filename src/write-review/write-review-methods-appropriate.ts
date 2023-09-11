@@ -242,8 +242,8 @@ function methodsAppropriateForm(preprint: PreprintTitle, form: MethodsAppropriat
                       <span>Highly appropriate</span>
                     </label>
                     <p id="methods-appropriate-tip-highly-appropriate" role="note">
-                      They follow best practices, are rigorously executed, and provide a robust foundation for drawing
-                      valid conclusions.
+                      They follow best practices throughout the research. They are rigorously executed and provide a
+                      robust foundation for drawing valid conclusions.
                     </p>
                     <div class="conditional" id="methods-appropriate-highly-appropriate-control">
                       <div>
@@ -278,8 +278,8 @@ ${match(form.methodsAppropriateHighlyAppropriateDetails)
                       <span>Somewhat appropriate</span>
                     </label>
                     <p id="methods-appropriate-tip-mostly-appropriate" role="note">
-                      They follow best practices, are well executed, and provide a good foundation for drawing valid
-                      conclusions.
+                      They follow best practices through most, but not all, of the research. They are well executed and
+                      provide a good foundation for drawing valid conclusions.
                     </p>
                     <div class="conditional" id="methods-appropriate-mostly-appropriate-control">
                       <div>
