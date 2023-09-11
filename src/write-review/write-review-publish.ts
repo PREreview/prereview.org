@@ -204,14 +204,14 @@ function renderReview(form: CompletedForm) {
                 : ''}
             </div>
             <div>
-              <dt>Are the results presented supported by the data?</dt>
+              <dt>Are the conclusions supported by the data?</dt>
               <dd>
                 ${match(form.resultsSupported)
-                  .with('not-supported', () => 'Not supported')
-                  .with('partially-supported', () => 'Partially supported')
-                  .with('neutral', () => 'Neither supported nor not supported')
-                  .with('well-supported', () => 'Well supported')
-                  .with('strongly-supported', () => 'Strongly supported')
+                  .with('not-supported', () => 'Highly unsupported')
+                  .with('partially-supported', () => 'Somewhat unsupported')
+                  .with('neutral', () => 'Neither supported nor unsupported')
+                  .with('well-supported', () => 'Somewhat supported')
+                  .with('strongly-supported', () => 'Highly supported')
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
@@ -487,14 +487,14 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           </dd>
                         </div>
                         <div>
-                          <dt>Are the results presented supported by the data?</dt>
+                          <dt>Are the conclusions supported by the data?</dt>
                           <dd>
                             ${match(review.resultsSupported)
-                              .with('not-supported', () => 'Not supported')
-                              .with('partially-supported', () => 'Partially supported')
-                              .with('neutral', () => 'Neither supported nor not supported')
-                              .with('well-supported', () => 'Well supported')
-                              .with('strongly-supported', () => 'Strongly supported')
+                              .with('not-supported', () => 'Highly unsupported')
+                              .with('partially-supported', () => 'Somewhat unsupported')
+                              .with('neutral', () => 'Neither supported nor unsupported')
+                              .with('well-supported', () => 'Somewhat supported')
+                              .with('strongly-supported', () => 'Highly supported')
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
                           </dd>
@@ -504,7 +504,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           <dd>
                             <a href="${format(writeReviewResultsSupportedMatch.formatter, { id: preprint.id })}"
                               >Change
-                              <span class="visually-hidden">if the results presented are supported by the data</span></a
+                              <span class="visually-hidden">if the conclusions are supported by the data</span></a
                             >
                           </dd>
                         </div>

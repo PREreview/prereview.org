@@ -156,7 +156,7 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Are the results presented supported by the data?
+    title: plainText`${error ? 'Error: ' : ''}Are the conclusions supported by the data?
  – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
@@ -179,10 +179,7 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
                           <li>
                             <a href="#results-supported-strongly-supported">
                               ${match(form.resultsSupported.left)
-                                .with(
-                                  { _tag: 'MissingE' },
-                                  () => 'Select if the results presented are supported by the data',
-                                )
+                                .with({ _tag: 'MissingE' }, () => 'Select if the conclusions are supported by the data')
                                 .exhaustive()}
                             </a>
                           </li>
@@ -204,7 +201,7 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
                 )}
               >
                 <legend>
-                  <h1>Are the results presented supported by the data?</h1>
+                  <h1>Are the conclusions supported by the data?</h1>
                 </legend>
 
                 ${E.isLeft(form.resultsSupported)
@@ -212,7 +209,7 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
                       <div class="error-message" id="results-supported-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.resultsSupported.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select if the results presented are supported by the data')
+                          .with({ _tag: 'MissingE' }, () => 'Select if the conclusions are supported by the data')
                           .exhaustive()}
                       </div>
                     `
@@ -232,16 +229,16 @@ function resultsSupportedForm(preprint: PreprintTitle, form: ResultsSupportedFor
                           .with({ right: 'strongly-supported' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Strongly supported</span>
+                      <span>Highly supported</span>
                     </label>
                     <p id="results-supported-tip-strongly-supported" role="note">
-                      The data analysis is thorough, and the conclusions drawn from the data are highly reliable and
-                      trustworthy.
+                      The conclusions are consistently thorough and provide a realistic interpretation of the data
+                      without overreaching or drawing conclusions not reflected in the results.
                     </p>
                     <div class="conditional" id="results-supported-strongly-supported-control">
                       <div>
                         <label for="results-supported-strongly-supported-details" class="textarea"
-                          >Why are they strongly supported? (optional)</label
+                          >Why are they highly supported? (optional)</label
                         >
 
                         <textarea
@@ -268,16 +265,16 @@ ${match(form.resultsSupportedStronglySupportedDetails)
                           .with({ right: 'well-supported' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Well supported</span>
+                      <span>Somewhat supported</span>
                     </label>
                     <p id="results-supported-tip-well-supported" role="note">
-                      The data analysis and interpretation are sound, and the presented results are consistent and
-                      reliable.
+                      The conclusions are mostly, but not always, thorough. They provide a reasonable interpretation of
+                      the data without overreaching or adding interpretations not reflected in the results.
                     </p>
                     <div class="conditional" id="results-supported-well-supported-control">
                       <div>
                         <label for="results-supported-well-supported-details" class="textarea"
-                          >Why are they well supported? (optional)</label
+                          >Why are they somewhat supported? (optional)</label
                         >
 
                         <textarea
@@ -304,16 +301,16 @@ ${match(form.resultsSupportedWellSupportedDetails)
                           .with({ right: 'neutral' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Neither supported nor not supported</span>
+                      <span>Neither supported nor unsupported</span>
                     </label>
                     <p id="results-supported-tip-neutral" role="note">
-                      Minor gaps or uncertainties in the data analysis could be addressed to further strengthen the
-                      support for the reported results.
+                      No conclusions have been drawn about the data, or those presented are reasonable but not well
+                      explained or justified by the authors.
                     </p>
                     <div class="conditional" id="results-supported-neutral-control">
                       <div>
                         <label for="results-supported-neutral-details" class="textarea"
-                          >Why are they neither supported nor not supported? (optional)</label
+                          >Why are they neither supported nor unsupported? (optional)</label
                         >
 
                         <textarea name="resultsSupportedNeutralDetails" id="results-supported-neutral-details" rows="5">
@@ -336,16 +333,16 @@ ${match(form.resultsSupportedNeutralDetails)
                           .with({ right: 'partially-supported' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Partially supported</span>
+                      <span>Somewhat unsupported</span>
                     </label>
                     <p id="results-supported-tip-partially-supported" role="note">
-                      Some aspects of the data analysis or interpretation may raise concerns about the validity or
-                      generalizability of the reported results.
+                      The conclusions do not entirely address the data, or the conclusions overgeneralize and are not
+                      well-supported by the data.
                     </p>
                     <div class="conditional" id="results-supported-partially-supported-control">
                       <div>
                         <label for="results-supported-partially-supported-details" class="textarea"
-                          >Why are they partially supported? (optional)</label
+                          >Why are they somewhat unsupported? (optional)</label
                         >
 
                         <textarea
@@ -372,16 +369,15 @@ ${match(form.resultsSupportedPartiallySupportedDetails)
                           .with({ right: 'not-supported' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Not supported</span>
+                      <span>Highly unsupported</span>
                     </label>
                     <p id="results-supported-tip-not-supported" role="note">
-                      Significant discrepancies, contradictions, or inconsistencies exist between the reported results
-                      and the data provided or analyzed.
+                      The conclusions do not follow from the data and are unsupported or contradicted by it.
                     </p>
                     <div class="conditional" id="results-supported-not-supported-control">
                       <div>
                         <label for="results-supported-not-supported-details" class="textarea"
-                          >Why are they not supported? (optional)</label
+                          >Why are they highly unsupported? (optional)</label
                         >
 
                         <textarea
