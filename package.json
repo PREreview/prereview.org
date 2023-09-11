@@ -61,7 +61,7 @@
     "@ibm/plex": "^6.3.0",
     "@open-wc/testing": "^3.2.0",
     "@playwright/test": "^1.37.1",
-    "@prettier/plugin-xml": "^3.2.0",
+    "@prettier/plugin-xml": "^3.2.1",
     "@rollup/plugin-url": "^8.0.1",
     "@tiptap/core": "^2.1.8",
     "@tiptap/extension-link": "^2.1.8",
