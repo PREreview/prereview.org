@@ -159,8 +159,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Some novelty', { exact: true }).check()
-    await page.getByLabel('How does it have some novelty?').fill('Aenean nisl eros.')
+    await page.getByLabel('Moderately likely', { exact: true }).check()
+    await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -214,7 +214,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately Cras lobortis quam vitae.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Are the findings novel? Some novelty Aenean nisl eros.',
+      'Is the preprint likely to advance academic knowledge? Moderately likely Aenean nisl eros.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Would it benefit from language editing? No Condimentum in mi in.',
@@ -552,7 +552,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Some novelty', { exact: true }).check()
+    await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
@@ -1141,7 +1141,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Some novelty', { exact: true }).check()
+    await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1173,7 +1173,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(review).toContainText(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately',
     )
-    await expect(review).toContainText('Are the findings novel? Some novelty')
+    await expect(review).toContainText('Is the preprint likely to advance academic knowledge? Moderately likely')
     await expect(review).toContainText('Would it benefit from language editing? No')
     await expect(review).toContainText('Should others read this preprint? Yes, but it needs to be improved')
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
@@ -1251,13 +1251,15 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Clearly and insightfully Cras lobortis quam vitae.',
     )
 
-    await page.getByRole('link', { name: 'Change if the findings are novel' }).click()
+    await page.getByRole('link', { name: 'Change if the preprint is likely to advance academic knowledge' }).click()
 
-    await page.getByLabel('Substantial novelty', { exact: true }).check()
-    await page.getByLabel('How does it have substantial novelty?').fill('Aenean nisl eros.')
+    await page.getByLabel('Somewhat likely', { exact: true }).check()
+    await page.getByLabel('Why is it somewhat likely?').fill('Aenean nisl eros.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(review).toContainText('Are the findings novel? Substantial novelty Aenean nisl eros.')
+    await expect(review).toContainText(
+      'Is the preprint likely to advance academic knowledge? Somewhat likely Aenean nisl eros.',
+    )
 
     await page.getByRole('link', { name: 'Change if it would benefit from language editing' }).click()
 
@@ -1369,8 +1371,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Some novelty', { exact: true }).check()
-    await page.getByLabel('How does it have some novelty?').fill('Aenean nisl eros.')
+    await page.getByLabel('Moderately likely', { exact: true }).check()
+    await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
     await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
@@ -1400,8 +1402,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.goBack()
 
-    await expect(page.getByLabel('Some novelty', { exact: true })).toBeChecked()
-    await expect(page.getByLabel('How does it have some novelty?')).toHaveText('Aenean nisl eros.')
+    await expect(page.getByLabel('Moderately likely', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('Why is it moderately likely?')).toHaveText('Aenean nisl eros.')
 
     await page.goBack()
 
@@ -1532,8 +1534,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Some novelty', { exact: true }).check()
-    await page.getByLabel('How does it have some novelty?').fill('Aenean nisl eros.')
+    await page.getByLabel('Moderately likely', { exact: true }).check()
+    await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
     await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
@@ -1562,8 +1564,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Some novelty', { exact: true })).toBeChecked()
-    await expect(page.getByLabel('How does it have some novelty?')).toHaveText('Aenean nisl eros.')
+    await expect(page.getByLabel('Moderately likely', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('Why is it moderately likely?')).toHaveText('Aenean nisl eros.')
 
     await page.getByRole('link', { name: 'Back' }).click()
 
@@ -2396,7 +2398,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 )
 
 test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
-  'have to say if the findings are novel',
+  'have to say if the preprint is likely to advance academic knowledge',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -2422,7 +2424,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(
       page.getByRole('group', {
-        name: 'Are the findings novel?',
+        name: 'Is the preprint likely to advance academic knowledge?',
       }),
     ).toHaveAttribute('aria-invalid', 'true')
     await page.mouse.move(0, 0)
@@ -2430,11 +2432,11 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page
       .getByRole('link', {
-        name: 'Select if the findings are novel',
+        name: 'Select if the preprint is likely to advance academic knowledge',
       })
       .click()
 
-    await expect(page.getByLabel('Highly novel', { exact: true })).toBeFocused()
+    await expect(page.getByLabel('Highly likely', { exact: true })).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()

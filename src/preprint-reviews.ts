@@ -430,7 +430,7 @@ function displayRapidPrereviewQuestion(question: keyof RapidPrereview['questions
     .with('limitations', () => html`Does the manuscript discuss limitations?`)
     .with('methods', () => html`Are the methods and statistics appropriate for the analysis?`)
     .with('newData', () => html`Does the manuscript include new data?`)
-    .with('novel', () => html`Are the findings novel?`)
+    .with('novel', () => html`Is the preprint likely to advance academic knowledge?`)
     .with('peerReview', () => html`Do you recommend this manuscript for peer review?`)
     .with('recommend', () => html`Would you recommend this manuscript to others?`)
     .with('reproducibility', () => html`Is sufficient detail provided to allow reproduction of the study?`)

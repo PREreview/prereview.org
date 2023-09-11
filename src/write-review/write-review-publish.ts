@@ -255,14 +255,14 @@ function renderReview(form: CompletedForm) {
                 : ''}
             </div>
             <div>
-              <dt>Are the findings novel?</dt>
+              <dt>Is the preprint likely to advance academic knowledge?</dt>
               <dd>
                 ${match(form.novel)
-                  .with('no', () => 'Not at all')
-                  .with('limited', () => 'Limited novelty')
-                  .with('some', () => 'Some novelty')
-                  .with('substantial', () => 'Substantial novelty')
-                  .with('highly', () => 'Highly novel')
+                  .with('no', () => 'Not at all likely')
+                  .with('limited', () => 'Not likely')
+                  .with('some', () => 'Moderately likely')
+                  .with('substantial', () => 'Somewhat likely')
+                  .with('highly', () => 'Highly likely')
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
@@ -560,14 +560,14 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           </dd>
                         </div>
                         <div>
-                          <dt>Are the findings novel?</dt>
+                          <dt>Is the preprint likely to advance academic knowledge?</dt>
                           <dd>
                             ${match(review.novel)
-                              .with('no', () => 'Not at all')
-                              .with('limited', () => 'Limited novelty')
-                              .with('some', () => 'Some novelty')
-                              .with('substantial', () => 'Substantial novelty')
-                              .with('highly', () => 'Highly novel')
+                              .with('no', () => 'Not at all likely')
+                              .with('limited', () => 'Not likely')
+                              .with('some', () => 'Moderately likely')
+                              .with('substantial', () => 'Somewhat likely')
+                              .with('highly', () => 'Highly likely')
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
                           </dd>
@@ -576,7 +576,10 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                             : ''}
                           <dd>
                             <a href="${format(writeReviewNovelMatch.formatter, { id: preprint.id })}"
-                              >Change <span class="visually-hidden">if the findings are novel</span></a
+                              >Change
+                              <span class="visually-hidden"
+                                >if the preprint is likely to advance academic knowledge</span
+                              ></a
                             >
                           </dd>
                         </div>

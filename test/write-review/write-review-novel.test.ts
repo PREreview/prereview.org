@@ -205,28 +205,31 @@ describe('writeReviewNovel', () => {
       }),
       fc.user(),
       fc.questionsForm(),
-    ])('without saying if the findings are novel', async (preprintId, preprintTitle, connection, user, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    ])(
+      'without saying if the preprint is likely to advance academic knowledge',
+      async (preprintId, preprintTitle, connection, user, newReview) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-      const actual = await runMiddleware(
-        _.writeReviewNovel(preprintId)({
-          canRapidReview: () => true,
-          formStore,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-        }),
-        connection,
-      )()
+        const actual = await runMiddleware(
+          _.writeReviewNovel(preprintId)({
+            canRapidReview: () => true,
+            formStore,
+            getPreprintTitle: () => TE.right(preprintTitle),
+            getUser: () => M.of(user),
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.BadRequest },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.BadRequest },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
 
     test.prop([
       fc.indeterminatePreprintId(),

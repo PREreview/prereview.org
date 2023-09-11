@@ -154,7 +154,7 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Are the findings novel?
+    title: plainText`${error ? 'Error: ' : ''}Is the preprint likely to advance academic knowledge?
  – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
@@ -173,7 +173,10 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
                           <li>
                             <a href="#novel-highly">
                               ${match(form.novel.left)
-                                .with({ _tag: 'MissingE' }, () => 'Select if the findings are novel')
+                                .with(
+                                  { _tag: 'MissingE' },
+                                  () => 'Select if the preprint is likely to advance academic knowledge',
+                                )
                                 .exhaustive()}
                             </a>
                           </li>
@@ -191,7 +194,7 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
                 ${rawHtml(E.isLeft(form.novel) ? 'aria-invalid="true" aria-errormessage="novel-error"' : '')}
               >
                 <legend>
-                  <h1>Are the findings novel?</h1>
+                  <h1>Is the preprint likely to advance academic knowledge?</h1>
                 </legend>
 
                 ${E.isLeft(form.novel)
@@ -199,7 +202,10 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
                       <div class="error-message" id="novel-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.novel.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select if the findings are novel')
+                          .with(
+                            { _tag: 'MissingE' },
+                            () => 'Select if the preprint is likely to advance academic knowledge',
+                          )
                           .exhaustive()}
                       </div>
                     `
@@ -219,15 +225,15 @@ function novelForm(preprint: PreprintTitle, form: NovelForm, user: User) {
                           .with({ right: 'highly' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Highly novel</span>
+                      <span>Highly likely</span>
                     </label>
                     <p id="novel-tip-highly" role="note">
-                      They are highly innovative, representing groundbreaking contributions that substantially advance
-                      the understanding of the subject matter or introduce entirely new concepts.
+                      The preprint offers significant contributions that substantially advance or confirm understanding
+                      of the subject matter.
                     </p>
                     <div class="conditional" id="novel-highly-control">
                       <div>
-                        <label for="novel-highly-details" class="textarea">How is it highly novel? (optional)</label>
+                        <label for="novel-highly-details" class="textarea">Why is it highly likely? (optional)</label>
 
                         <textarea name="novelHighlyDetails" id="novel-highly-details" rows="5">
 ${match(form.novelHighlyDetails)
@@ -249,16 +255,15 @@ ${match(form.novelHighlyDetails)
                           .with({ right: 'substantial' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Substantial novelty</span>
+                      <span>Somewhat likely</span>
                     </label>
                     <p id="novel-tip-substantial" role="note">
-                      They exhibit significant novelty and contribute noteworthy advancements or novel insights compared
-                      to prior research.
+                      The preprint contributes several noteworthy advancements or confirmations.
                     </p>
                     <div class="conditional" id="novel-substantial-control">
                       <div>
                         <label for="novel-substantial-details" class="textarea"
-                          >How does it have substantial novelty? (optional)</label
+                          >Why is it somewhat likely? (optional)</label
                         >
 
                         <textarea name="novelSubstantialDetails" id="novel-substantial-details" rows="5">
@@ -281,17 +286,15 @@ ${match(form.novelSubstantialDetails)
                           .with({ right: 'some' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Some novelty</span>
+                      <span>Moderately likely</span>
                     </label>
                     <p id="novel-tip-some" role="note">
-                      They present a moderate level of novelty, introducing a few new aspects or perspectives that
-                      contribute to the existing body of knowledge.
+                      The preprint contributes only a few advancements or confirmations to the existing body of
+                      knowledge.
                     </p>
                     <div class="conditional" id="novel-some-control">
                       <div>
-                        <label for="novel-some-details" class="textarea"
-                          >How does it have some novelty? (optional)</label
-                        >
+                        <label for="novel-some-details" class="textarea">Why is it moderately likely? (optional)</label>
 
                         <textarea name="novelSomeDetails" id="novel-some-details" rows="5">
 ${match(form.novelSomeDetails)
@@ -313,17 +316,15 @@ ${match(form.novelSomeDetails)
                           .with({ right: 'limited' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Limited novelty</span>
+                      <span>Not likely</span>
                     </label>
                     <p id="novel-tip-limited" role="note">
-                      They offer only marginal advancements compared to previous research and provide limited new
-                      perspectives or ideas.
+                      The preprint offers no significant advancements or confirmations, though its research and
+                      conclusions may be sound.
                     </p>
                     <div class="conditional" id="novel-limited-control">
                       <div>
-                        <label for="novel-limited-details" class="textarea"
-                          >How does it have limited novelty? (optional)</label
-                        >
+                        <label for="novel-limited-details" class="textarea">Why is it not likely? (optional)</label>
 
                         <textarea name="novelLimitedDetails" id="novel-limited-details" rows="5">
 ${match(form.novelLimitedDetails)
@@ -345,15 +346,14 @@ ${match(form.novelLimitedDetails)
                           .with({ right: 'no' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Not at all</span>
+                      <span>Not at all likely</span>
                     </label>
                     <p id="novel-tip-no" role="note">
-                      They lack novelty and fail to introduce new insights or advance the existing knowledge in the
-                      field.
+                      The preprint offers no significant advancements or confirmations because of its flaws.
                     </p>
                     <div class="conditional" id="novel-no-control">
                       <div>
-                        <label for="novel-no-details" class="textarea">How is it not novel? (optional)</label>
+                        <label for="novel-no-details" class="textarea">Why is it not at all likely? (optional)</label>
 
                         <textarea name="novelNoDetails" id="novel-no-details" rows="5">
 ${match(form.novelNoDetails)
