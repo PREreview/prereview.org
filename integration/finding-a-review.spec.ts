@@ -169,7 +169,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
             <dd>Yes, but it needs to be improved</dd>
           </div>
           <div>
-            <dt>Is it ready for a full and detailed review?</dt>
+            <dt>Is it ready for attention from an editor, publisher or broader audience?</dt>
             <dd>Yes, after minor changes</dd>
             <dd>They effectively convey the necessary information, employ appropriate labeling, and utilize suitable visual elements to enhance comprehension.</dd>
           </div>

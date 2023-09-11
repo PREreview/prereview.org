@@ -147,9 +147,9 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Is it ready for a full and detailed review? – PREreview of “${
-      preprint.title
-    }”`,
+    title: plainText`${
+      error ? 'Error: ' : ''
+    }Is it ready for attention from an editor, publisher or broader audience? – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}" class="back">Back</a>
@@ -173,7 +173,8 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
                               ${match(form.readyFullReview.left)
                                 .with(
                                   { _tag: 'MissingE' },
-                                  () => 'Select yes if it is ready for a full and detailed review',
+                                  () =>
+                                    'Select yes if it is ready for attention from an editor, publisher or broader audience',
                                 )
                                 .exhaustive()}
                             </a>
@@ -196,7 +197,7 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
                 )}
               >
                 <legend>
-                  <h1>Is it ready for a full and detailed review?</h1>
+                  <h1>Is it ready for attention from an editor, publisher or broader audience?</h1>
                 </legend>
 
                 ${E.isLeft(form.readyFullReview)
@@ -204,7 +205,11 @@ function readyFullReviewForm(preprint: PreprintTitle, form: ReadyFullReviewForm,
                       <div class="error-message" id="ready-full-review-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.readyFullReview.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select yes if it is ready for a full and detailed review')
+                          .with(
+                            { _tag: 'MissingE' },
+                            () =>
+                              'Select yes if it is ready for attention from an editor, publisher or broader audience',
+                          )
                           .exhaustive()}
                       </div>
                     `

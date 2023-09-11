@@ -290,7 +290,7 @@ function renderReview(form: CompletedForm) {
               ${form.shouldReadDetails ? html` <dd>${form.shouldReadDetails}</dd>` : ''}
             </div>
             <div>
-              <dt>Is it ready for a full and detailed review?</dt>
+              <dt>Is it ready for attention from an editor, publisher or broader audience?</dt>
               <dd>
                 ${match(form.readyFullReview)
                   .with('no', () => 'No, it needs a major revision')
@@ -618,7 +618,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           </dd>
                         </div>
                         <div>
-                          <dt>Is it ready for a full and detailed review?</dt>
+                          <dt>Is it ready for attention from an editor, publisher or broader audience?</dt>
                           <dd>
                             ${match(review.readyFullReview)
                               .with('no', () => 'No, it needs a major revision')
@@ -630,7 +630,9 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           <dd>
                             <a href="${format(writeReviewReadyFullReviewMatch.formatter, { id: preprint.id })}"
                               >Change
-                              <span class="visually-hidden">if it is ready for a full and detailed review</span></a
+                              <span class="visually-hidden"
+                                >it it is ready for attention from an editor, publisher or broader audience</span
+                              ></a
                             >
                           </dd>
                         </div>

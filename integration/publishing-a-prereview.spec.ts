@@ -225,7 +225,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'Would you recommend this preprint to others? Yes, but it needs to be improved Dignissim lobortis ligula.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Is it ready for a full and detailed review? Yes, after minor changes Quisque in blandit arcu.',
+      'Is it ready for attention from an editor, publisher or broader audience? Yes, after minor changes Quisque in blandit arcu.',
     )
     await expect(page.getByRole('main')).toContainText('Competing interests None')
     await page.mouse.move(0, 0)
@@ -1179,7 +1179,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(review).toContainText('Would it benefit from language editing? No')
     await expect(review).toContainText('Would you recommend this preprint to others? Yes, but it needs to be improved')
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Is it ready for a full and detailed review? Yes, after minor changes',
+      'Is it ready for attention from an editor, publisher or broader audience? Yes, after minor changes',
     )
 
     await page
@@ -1285,14 +1285,16 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       'Would you recommend this preprint to others? Yes, it’s of high quality Dignissim lobortis ligula.',
     )
 
-    await page.getByRole('link', { name: 'Change if it is ready for a full and detailed review' }).click()
+    await page
+      .getByRole('link', { name: 'Change it it is ready for attention from an editor, publisher or broader audience' })
+      .click()
 
     await page.getByLabel('Yes, as it is').check()
     await page.getByLabel('Why is it ready?').fill('Quisque in blandit arcu.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(review).toContainText(
-      'Is it ready for a full and detailed review? Yes, as it is Quisque in blandit arcu.',
+      'Is it ready for attention from an editor, publisher or broader audience? Yes, as it is Quisque in blandit arcu.',
     )
   },
 )
@@ -2578,14 +2580,17 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     } else {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
-    await expect(page.getByRole('group', { name: 'Is it ready for a full and detailed review?' })).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    )
+    await expect(
+      page.getByRole('group', { name: 'Is it ready for attention from an editor, publisher or broader audience?' }),
+    ).toHaveAttribute('aria-invalid', 'true')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Select yes if it is ready for a full and detailed review' }).click()
+    await page
+      .getByRole('link', {
+        name: 'Select yes if it is ready for attention from an editor, publisher or broader audience',
+      })
+      .click()
 
     await expect(page.getByLabel('Yes, as it is')).toBeFocused()
 
