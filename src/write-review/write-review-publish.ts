@@ -220,13 +220,13 @@ function renderReview(form: CompletedForm) {
                 : ''}
             </div>
             <div>
-              <dt>Are the data presentations, including visualizations, appropriate and clear?</dt>
+              <dt>Are the data presentations, including visualizations, well-suited to represent the data?</dt>
               <dd>
                 ${match(form.dataPresentation)
-                  .with('inappropriate-unclear', () => 'Inappropriate and unclear')
+                  .with('inappropriate-unclear', () => 'Highly inappropriate or unclear')
                   .with('somewhat-inappropriate-unclear', () => 'Somewhat inappropriate or unclear')
-                  .with('neutral', () => 'Neither adequate nor inadequate')
-                  .with('mostly-appropriate-clear', () => 'Mostly appropriate and clear')
+                  .with('neutral', () => 'Neither appropriate and clear nor inappropriate and unclear')
+                  .with('mostly-appropriate-clear', () => 'Somewhat appropriate and clear')
                   .with('highly-appropriate-clear', () => 'Highly appropriate and clear')
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
@@ -509,13 +509,15 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           </dd>
                         </div>
                         <div>
-                          <dt>Are the data presentations, including visualizations, appropriate and clear?</dt>
+                          <dt>
+                            Are the data presentations, including visualizations, well-suited to represent the data?
+                          </dt>
                           <dd>
                             ${match(review.dataPresentation)
-                              .with('inappropriate-unclear', () => 'Inappropriate and unclear')
+                              .with('inappropriate-unclear', () => 'Highly inappropriate or unclear')
                               .with('somewhat-inappropriate-unclear', () => 'Somewhat inappropriate or unclear')
-                              .with('neutral', () => 'Neither adequate nor inadequate')
-                              .with('mostly-appropriate-clear', () => 'Mostly appropriate and clear')
+                              .with('neutral', () => 'Neither appropriate and clear nor inappropriate and unclear')
+                              .with('mostly-appropriate-clear', () => 'Somewhat appropriate and clear')
                               .with('highly-appropriate-clear', () => 'Highly appropriate and clear')
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
@@ -527,7 +529,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                             <a href="${format(writeReviewDataPresentationMatch.formatter, { id: preprint.id })}"
                               >Change
                               <span class="visually-hidden"
-                                >if the data presentations are appropriate and clear</span
+                                >if the data presentations are well-suited to represent the data?</span
                               ></a
                             >
                           </dd>

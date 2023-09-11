@@ -166,7 +166,7 @@ function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationFor
   return page({
     title: plainText`${
       error ? 'Error: ' : ''
-    }Are the data presentations, including visualizations, appropriate and clear?
+    }Are the data presentations, including visualizations, well-suited to represent the data?
  – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
@@ -191,7 +191,7 @@ function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationFor
                               ${match(form.dataPresentation.left)
                                 .with(
                                   { _tag: 'MissingE' },
-                                  () => 'Select if the data presentations are appropriate and clear',
+                                  () => 'Select if the data presentations are well-suited to represent the data?',
                                 )
                                 .exhaustive()}
                             </a>
@@ -214,7 +214,7 @@ function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationFor
                 )}
               >
                 <legend>
-                  <h1>Are the data presentations, including visualizations, appropriate and clear?</h1>
+                  <h1>Are the data presentations, including visualizations, well-suited to represent the data?</h1>
                 </legend>
 
                 ${E.isLeft(form.dataPresentation)
@@ -224,7 +224,7 @@ function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationFor
                         ${match(form.dataPresentation.left)
                           .with(
                             { _tag: 'MissingE' },
-                            () => 'Select if the data presentations are appropriate and clear',
+                            () => 'Select if the data presentations are well-suited to represent the data?',
                           )
                           .exhaustive()}
                       </div>
@@ -248,7 +248,8 @@ function dataPresentationForm(preprint: PreprintTitle, form: DataPresentationFor
                       <span>Highly appropriate and clear</span>
                     </label>
                     <p id="data-presentation-tip-highly-appropriate-clear" role="note">
-                      They effectively communicate the key messages and patterns in the data.
+                      They thoroughly follow accessibility best practices and effectively communicate the results and
+                      key patterns in the data, making it very easy to comprehend or interpret the data.
                     </p>
                     <div class="conditional" id="data-presentation-highly-appropriate-clear-control">
                       <div>
@@ -280,15 +281,16 @@ ${match(form.dataPresentationHighlyAppropriateClearDetails)
                           .with({ right: 'mostly-appropriate-clear' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Mostly appropriate and clear</span>
+                      <span>Somewhat appropriate and clear</span>
                     </label>
                     <p id="data-presentation-tip-mostly-appropriate-clear" role="note">
-                      They represent the data well, allowing for a clear understanding of the findings and trends.
+                      They follow accessibility best practices and well communicate the results and main patterns in the
+                      data, making it easy to comprehend or interpret the data effectively.
                     </p>
                     <div class="conditional" id="data-presentation-mostly-appropriate-clear-control">
                       <div>
                         <label for="data-presentation-mostly-appropriate-clear-details" class="textarea"
-                          >Why are they mostly appropriate and clear? (optional)</label
+                          >Why are they somewhat appropriate and clear? (optional)</label
                         >
 
                         <textarea
@@ -315,16 +317,17 @@ ${match(form.dataPresentationMostlyAppropriateClearDetails)
                           .with({ right: 'neutral' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Neither adequate nor inadequate</span>
+                      <span>Neither appropriate and clear nor inappropriate and unclear</span>
                     </label>
                     <p id="data-presentation-tip-neutral" role="note">
-                      They effectively convey the necessary information, employ appropriate labeling, and utilize
-                      suitable visual elements to enhance comprehension.
+                      They follow some elements of accessibility best practices and communicate the results and
+                      patterns. However, the presentations chosen are not the best or clearest ones to use for this kind
+                      of data.
                     </p>
                     <div class="conditional" id="data-presentation-neutral-control">
                       <div>
                         <label for="data-presentation-neutral-details" class="textarea"
-                          >Why are they neither adequate nor inadequate? (optional)</label
+                          >Why are they neither appropriate and clear nor inappropriate and unclear? (optional)</label
                         >
 
                         <textarea name="dataPresentationNeutralDetails" id="data-presentation-neutral-details" rows="5">
@@ -350,8 +353,8 @@ ${match(form.dataPresentationNeutralDetails)
                       <span>Somewhat inappropriate or unclear</span>
                     </label>
                     <p id="data-presentation-tip-somewhat-inappropriate-unclear" role="note">
-                      They contain minor inaccuracies, ambiguities, or omissions, making it slightly challenging to
-                      comprehend or interpret the data effectively.
+                      They don’t follow accessibility best practices, and contain minor inaccuracies, ambiguities, or
+                      omissions, making it slightly challenging to comprehend or interpret the data effectively.
                     </p>
                     <div class="conditional" id="data-presentation-somewhat-inappropriate-unclear-control">
                       <div>
@@ -383,15 +386,17 @@ ${match(form.dataPresentationSomewhatInappropriateUnclearDetails)
                           .with({ right: 'inappropriate-unclear' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Inappropriate and unclear</span>
+                      <span>Highly inappropriate or unclear</span>
                     </label>
                     <p id="data-presentation-tip-inappropriate-unclear" role="note">
-                      They lack proper labeling, appropriate scales, or relevant contextual information.
+                      They present major accessibility barriers, and lack proper labeling, appropriate scales, or
+                      relevant contextual information, making it very challenging to comprehend or interpret the data
+                      effectively.
                     </p>
                     <div class="conditional" id="data-presentation-inappropriate-unclear-control">
                       <div>
                         <label for="data-presentation-inappropriate-unclear-details" class="textarea"
-                          >Why are they inappropriate and unclear? (optional)</label
+                          >Why are they highly inappropriate or unclear? (optional)</label
                         >
 
                         <textarea

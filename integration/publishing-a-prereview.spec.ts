@@ -145,12 +145,14 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
+    await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
+    await page
+      .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
+      .fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
@@ -208,7 +210,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'Are the conclusions supported by the data? Neither supported nor unsupported At blandit est facilisis et.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Are the data presentations, including visualizations, appropriate and clear? Neither adequate nor inadequate Lorem ipsum dolor sit amet.',
+      'Are the data presentations, including visualizations, well-suited to represent the data? Neither appropriate and clear nor inappropriate and unclear Lorem ipsum dolor sit amet.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately Cras lobortis quam vitae.',
@@ -519,7 +521,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
+    await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
@@ -1137,7 +1139,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
+    await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1168,7 +1170,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     )
     await expect(review).toContainText('Are the conclusions supported by the data? Neither supported nor unsupported')
     await expect(review).toContainText(
-      'Are the data presentations, including visualizations, appropriate and clear? Neither adequate nor inadequate',
+      'Are the data presentations, including visualizations, well-suited to represent the data? Neither appropriate and clear nor inappropriate and unclear',
     )
     await expect(review).toContainText(
       'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately',
@@ -1231,14 +1233,16 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       'Are the conclusions supported by the data? Somewhat supported At blandit est facilisis et.',
     )
 
-    await page.getByRole('link', { name: 'Change if the data presentations are appropriate and clear' }).click()
+    await page
+      .getByRole('link', { name: 'Change if the data presentations are well-suited to represent the data?' })
+      .click()
 
-    await page.getByLabel('Mostly appropriate and clear', { exact: true }).check()
-    await page.getByLabel('Why are they mostly appropriate and clear?').fill('Lorem ipsum dolor sit amet.')
+    await page.getByLabel('Somewhat appropriate and clear', { exact: true }).check()
+    await page.getByLabel('Why are they somewhat appropriate and clear?').fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(review).toContainText(
-      'Are the data presentations, including visualizations, appropriate and clear? Mostly appropriate and clear Lorem ipsum dolor sit amet.',
+      'Are the data presentations, including visualizations, well-suited to represent the data? Somewhat appropriate and clear Lorem ipsum dolor sit amet.',
     )
 
     await page.getByRole('link', { name: 'Change how well the authors discuss their findings and next steps' }).click()
@@ -1365,8 +1369,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
     await page.getByLabel('Why are they neither supported nor unsupported?').fill('At blandit est facilisis et.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
-    await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
+    await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
+    await page
+      .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
+      .fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
@@ -1412,10 +1418,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.goBack()
 
-    await expect(page.getByLabel('Neither adequate nor inadequate', { exact: true })).toBeChecked()
-    await expect(page.getByLabel('Why are they neither adequate nor inadequate?')).toHaveText(
-      'Lorem ipsum dolor sit amet.',
-    )
+    await expect(
+      page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }),
+    ).toBeChecked()
+    await expect(
+      page.getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?'),
+    ).toHaveText('Lorem ipsum dolor sit amet.')
 
     await page.goBack()
 
@@ -1528,8 +1536,10 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
     await page.getByLabel('Why are they neither supported nor unsupported?').fill('At blandit est facilisis et.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Neither adequate nor inadequate', { exact: true }).check()
-    await page.getByLabel('Why are they neither adequate nor inadequate?').fill('Lorem ipsum dolor sit amet.')
+    await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
+    await page
+      .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
+      .fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Adequately', { exact: true }).check()
     await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
@@ -1574,10 +1584,12 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Neither adequate nor inadequate', { exact: true })).toBeChecked()
-    await expect(page.getByLabel('Why are they neither adequate nor inadequate?')).toHaveText(
-      'Lorem ipsum dolor sit amet.',
-    )
+    await expect(
+      page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }),
+    ).toBeChecked()
+    await expect(
+      page.getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?'),
+    ).toHaveText('Lorem ipsum dolor sit amet.')
 
     await page.getByRole('link', { name: 'Back' }).click()
 
@@ -2335,14 +2347,16 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(
-      page.getByRole('group', { name: 'Are the data presentations, including visualizations, appropriate and clear?' }),
+      page.getByRole('group', {
+        name: 'Are the data presentations, including visualizations, well-suited to represent the data?',
+      }),
     ).toHaveAttribute('aria-invalid', 'true')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page
       .getByRole('link', {
-        name: 'Select if the data presentations are appropriate and clear',
+        name: 'Select if the data presentations are well-suited to represent the data',
       })
       .click()
 
