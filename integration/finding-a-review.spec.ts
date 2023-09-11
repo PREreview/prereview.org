@@ -165,7 +165,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
             <dd>No</dd>
           </div>
           <div>
-            <dt>Should others read this preprint?</dt>
+            <dt>Would you recommend this preprint to others?</dt>
             <dd>Yes, but it needs to be improved</dd>
           </div>
           <div>

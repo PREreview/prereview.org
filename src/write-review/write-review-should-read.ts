@@ -147,7 +147,9 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Should others read this preprint? – PREreview of “${preprint.title}”`,
+    title: plainText`${error ? 'Error: ' : ''}Would you recommend this preprint to others? – PREreview of “${
+      preprint.title
+    }”`,
     content: html`
       <nav>
         <a href="${format(writeReviewLanguageEditingMatch.formatter, { id: preprint.id })}" class="back">Back</a>
@@ -165,7 +167,10 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
                           <li>
                             <a href="#should-read-yes">
                               ${match(form.shouldRead.left)
-                                .with({ _tag: 'MissingE' }, () => 'Select yes if others should read this preprint')
+                                .with(
+                                  { _tag: 'MissingE' },
+                                  () => 'Select yes if you would recommend this preprint to others',
+                                )
                                 .exhaustive()}
                             </a>
                           </li>
@@ -183,7 +188,7 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
                 ${rawHtml(E.isLeft(form.shouldRead) ? 'aria-invalid="true" aria-errormessage="should-read-error"' : '')}
               >
                 <legend>
-                  <h1>Should others read this preprint?</h1>
+                  <h1>Would you recommend this preprint to others?</h1>
                 </legend>
 
                 ${E.isLeft(form.shouldRead)
@@ -191,7 +196,7 @@ function shouldReadForm(preprint: PreprintTitle, form: ShouldReadForm, user: Use
                       <div class="error-message" id="should-read-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.shouldRead.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select yes if others should read this preprint')
+                          .with({ _tag: 'MissingE' }, () => 'Select yes if you would recommend this preprint to others')
                           .exhaustive()}
                       </div>
                     `
@@ -269,7 +274,7 @@ ${match(form.shouldReadYesButDetails)
                     <div class="conditional" id="should-read-no-control">
                       <div>
                         <label for="should-read-no-details" class="textarea"
-                          >Why shouldn’t they read it? (optional)</label
+                          >Why wouldn’t you recommend it? (optional)</label
                         >
 
                         <textarea name="shouldReadNoDetails" id="should-read-no-details" rows="5">

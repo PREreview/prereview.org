@@ -279,7 +279,7 @@ function renderReview(form: CompletedForm) {
               ${form.languageEditingDetails ? html` <dd>${form.languageEditingDetails}</dd>` : ''}
             </div>
             <div>
-              <dt>Should others read this preprint?</dt>
+              <dt>Would you recommend this preprint to others?</dt>
               <dd>
                 ${match(form.shouldRead)
                   .with('no', () => 'No, it’s of low quality or is majorly flawed')
@@ -601,7 +601,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           </dd>
                         </div>
                         <div>
-                          <dt>Should others read this preprint?</dt>
+                          <dt>Would you recommend this preprint to others?</dt>
                           <dd>
                             ${match(review.shouldRead)
                               .with('no', () => 'No, it’s of low quality or is majorly flawed')
@@ -612,7 +612,8 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                           ${review.shouldReadDetails ? html` <dd>${review.shouldReadDetails}</dd>` : ''}
                           <dd>
                             <a href="${format(writeReviewShouldReadMatch.formatter, { id: preprint.id })}"
-                              >Change <span class="visually-hidden">if others should read this preprint</span></a
+                              >Change
+                              <span class="visually-hidden">if you would recommend this preprint to others</span></a
                             >
                           </dd>
                         </div>

@@ -222,7 +222,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'Would it benefit from language editing? No Condimentum in mi in.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'Should others read this preprint? Yes, but it needs to be improved Dignissim lobortis ligula.',
+      'Would you recommend this preprint to others? Yes, but it needs to be improved Dignissim lobortis ligula.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Is it ready for a full and detailed review? Yes, after minor changes Quisque in blandit arcu.',
@@ -1177,7 +1177,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     )
     await expect(review).toContainText('Is the preprint likely to advance academic knowledge? Moderately likely')
     await expect(review).toContainText('Would it benefit from language editing? No')
-    await expect(review).toContainText('Should others read this preprint? Yes, but it needs to be improved')
+    await expect(review).toContainText('Would you recommend this preprint to others? Yes, but it needs to be improved')
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Is it ready for a full and detailed review? Yes, after minor changes',
     )
@@ -1273,14 +1273,14 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await expect(review).toContainText('Would it benefit from language editing? Yes Condimentum in mi in.')
 
-    await page.getByRole('link', { name: 'Change if others should read this preprint' }).click()
+    await page.getByRole('link', { name: 'Change if you would recommend this preprint to others' }).click()
 
     await page.getByLabel('Yes, it’s of high quality').check()
     await page.getByLabel('How is it of high quality?').fill('Dignissim lobortis ligula.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(review).toContainText(
-      'Should others read this preprint? Yes, it’s of high quality Dignissim lobortis ligula.',
+      'Would you recommend this preprint to others? Yes, it’s of high quality Dignissim lobortis ligula.',
     )
 
     await page.getByRole('link', { name: 'Change if it is ready for a full and detailed review' }).click()
@@ -2529,14 +2529,14 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     } else {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
-    await expect(page.getByRole('group', { name: 'Should others read this preprint?' })).toHaveAttribute(
+    await expect(page.getByRole('group', { name: 'Would you recommend this preprint to others?' })).toHaveAttribute(
       'aria-invalid',
       'true',
     )
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Select yes if others should read this preprint' }).click()
+    await page.getByRole('link', { name: 'Select yes if you would recommend this preprint to others' }).click()
 
     await expect(page.getByLabel('Yes, it’s of high quality')).toBeFocused()
 

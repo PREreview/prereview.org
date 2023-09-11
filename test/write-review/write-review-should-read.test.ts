@@ -208,7 +208,7 @@ describe('writeReviewShouldRead', () => {
       fc.user(),
       fc.questionsForm(),
     ])(
-      'without saying if others should read this preprint',
+      'without saying if you would recommend this preprint to others',
       async (preprintId, preprintTitle, connection, user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
