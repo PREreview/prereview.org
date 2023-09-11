@@ -157,7 +157,7 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
   return page({
     title: plainText`${
       error ? 'Error: ' : ''
-    }How well do the authors discuss, explain, and interpret their findings and potential next steps for the research?
+    }How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?
  – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
@@ -182,7 +182,7 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
                               ${match(form.findingsNextSteps.left)
                                 .with(
                                   { _tag: 'MissingE' },
-                                  () => 'Select how well the authors discuss their findings and next steps',
+                                  () => 'Select how clearly the authors discuss their findings and next steps',
                                 )
                                 .exhaustive()}
                             </a>
@@ -206,8 +206,8 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
               >
                 <legend>
                   <h1>
-                    How well do the authors discuss, explain, and interpret their findings and potential next steps for
-                    the research?
+                    How clearly do the authors discuss, explain, and interpret their findings and potential next steps
+                    for the research?
                   </h1>
                 </legend>
 
@@ -218,7 +218,7 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
                         ${match(form.findingsNextSteps.left)
                           .with(
                             { _tag: 'MissingE' },
-                            () => 'Select how well the authors discuss their findings and next steps',
+                            () => 'Select how clearly the authors discuss their findings and next steps',
                           )
                           .exhaustive()}
                       </div>
@@ -239,7 +239,7 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
                           .with({ right: 'exceptionally' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Exceptionally</span>
+                      <span>Very clearly</span>
                     </label>
                     <p id="findings-next-steps-tip-exceptionally" role="note">
                       They demonstrate clarity, depth, and insight in their discussion, explanation, and interpretation
@@ -248,7 +248,7 @@ function findingsNextStepsForm(preprint: PreprintTitle, form: FindingsNextStepsF
                     <div class="conditional" id="findings-next-steps-exceptionally-control">
                       <div>
                         <label for="findings-next-steps-exceptionally-details" class="textarea"
-                          >Why is it exceptional? (optional)</label
+                          >How is it very clear? (optional)</label
                         >
 
                         <textarea
@@ -275,7 +275,7 @@ ${match(form.findingsNextStepsExceptionallyDetails)
                           .with({ right: 'clearly-insightfully' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Clearly and insightfully</span>
+                      <span>Somewhat clearly</span>
                     </label>
                     <p id="findings-next-steps-tip-clearly-insightfully" role="note">
                       They provide clear and insightful discussion, explanation, and interpretation of their findings
@@ -284,7 +284,7 @@ ${match(form.findingsNextStepsExceptionallyDetails)
                     <div class="conditional" id="findings-next-steps-clearly-insightfully-control">
                       <div>
                         <label for="findings-next-steps-clearly-insightfully-details" class="textarea"
-                          >Why is it clear and insightful? (optional)</label
+                          >How is it somewhat clear? (optional)</label
                         >
 
                         <textarea
@@ -311,16 +311,15 @@ ${match(form.findingsNextStepsClearlyInsightfullyDetails)
                           .with({ right: 'adequately' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Adequately</span>
+                      <span>Neither clearly nor unclearly</span>
                     </label>
                     <p id="findings-next-steps-tip-adequately" role="note">
-                      They adequately discuss, explain, and interpret their findings and potential next steps for the
-                      research.
+                      They mention their findings or potential next steps, but do not address or explain them.
                     </p>
                     <div class="conditional" id="findings-next-steps-adequately-control">
                       <div>
                         <label for="findings-next-steps-adequately-details" class="textarea"
-                          >Why is it adequate? (optional)</label
+                          >How is it neither clear nor unclear? (optional)</label
                         >
 
                         <textarea
@@ -347,16 +346,16 @@ ${match(form.findingsNextStepsAdequatelyDetails)
                           .with({ right: 'insufficiently' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Insufficiently</span>
+                      <span>Somewhat unclearly</span>
                     </label>
                     <p id="findings-next-steps-tip-insufficiently" role="note">
-                      They provide limited or insufficient discussion, explanation, or interpretation of their findings
-                      and potential next steps.
+                      They provide confusing or contradictory discussion, explanation, or interpretation of their
+                      findings and potential next steps.
                     </p>
                     <div class="conditional" id="findings-next-steps-insufficiently-control">
                       <div>
                         <label for="findings-next-steps-insufficiently-details" class="textarea"
-                          >Why is it insufficient? (optional)</label
+                          >How is it somewhat unclear? (optional)</label
                         >
 
                         <textarea
@@ -383,15 +382,16 @@ ${match(form.findingsNextStepsInsufficientlyDetails)
                           .with({ right: 'inadequately' }, () => 'checked')
                           .otherwise(() => '')}
                       />
-                      <span>Inadequately</span>
+                      <span>Very unclearly</span>
                     </label>
                     <p id="findings-next-steps-tip-inadequately" role="note">
-                      They fail to discuss, explain, or interpret their findings and potential next steps.
+                      They provide incorrect or unfounded discussion, explanation, or interpretation of their findings
+                      and potential next steps.
                     </p>
                     <div class="conditional" id="findings-next-steps-inadequately-control">
                       <div>
                         <label for="findings-next-steps-inadequately-details" class="textarea"
-                          >Why is it inadequate? (optional)</label
+                          >How is it very unclear? (optional)</label
                         >
 
                         <textarea

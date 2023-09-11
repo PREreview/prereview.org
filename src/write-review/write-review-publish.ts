@@ -237,16 +237,16 @@ function renderReview(form: CompletedForm) {
             </div>
             <div>
               <dt>
-                How well do the authors discuss, explain, and interpret their findings and potential next steps for the
-                research?
+                How clearly do the authors discuss, explain, and interpret their findings and potential next steps for
+                the research?
               </dt>
               <dd>
                 ${match(form.findingsNextSteps)
-                  .with('inadequately', () => 'Inadequately')
-                  .with('insufficiently', () => 'Insufficiently')
-                  .with('adequately', () => 'Adequately')
-                  .with('clearly-insightfully', () => 'Clearly and insightfully')
-                  .with('exceptionally', () => 'Exceptionally')
+                  .with('inadequately', () => 'Very unclearly')
+                  .with('insufficiently', () => 'Somewhat unclearly')
+                  .with('adequately', () => 'Neither clearly nor unclearly')
+                  .with('clearly-insightfully', () => 'Somewhat clearly')
+                  .with('exceptionally', () => 'Very clearly')
                   .with('skip', () => 'I don’t know')
                   .exhaustive()}
               </dd>
@@ -536,16 +536,16 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                         </div>
                         <div>
                           <dt>
-                            How well do the authors discuss, explain, and interpret their findings and potential next
+                            How clearly do the authors discuss, explain, and interpret their findings and potential next
                             steps for the research?
                           </dt>
                           <dd>
                             ${match(review.findingsNextSteps)
-                              .with('inadequately', () => 'Inadequately')
-                              .with('insufficiently', () => 'Insufficiently')
-                              .with('adequately', () => 'Adequately')
-                              .with('clearly-insightfully', () => 'Clearly and insightfully')
-                              .with('exceptionally', () => 'Exceptionally')
+                              .with('inadequately', () => 'Very unclearly')
+                              .with('insufficiently', () => 'Somewhat unclearly')
+                              .with('adequately', () => 'Neither clearly nor unclearly')
+                              .with('clearly-insightfully', () => 'Somewhat clearly')
+                              .with('exceptionally', () => 'Very clearly')
                               .with('skip', () => 'I don’t know')
                               .exhaustive()}
                           </dd>
@@ -556,7 +556,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
                             <a href="${format(writeReviewFindingsNextStepsMatch.formatter, { id: preprint.id })}"
                               >Change
                               <span class="visually-hidden"
-                                >how well the authors discuss their findings and next steps</span
+                                >how clearly the authors discuss their findings and next steps</span
                               ></a
                             >
                           </dd>

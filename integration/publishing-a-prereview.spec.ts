@@ -154,8 +154,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
       .fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Adequately', { exact: true }).check()
-    await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
+    await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
+    await page.getByLabel('How is it neither clear nor unclear?').fill('Cras lobortis quam vitae.')
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -213,7 +213,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
       'Are the data presentations, including visualizations, well-suited to represent the data? Neither appropriate and clear nor inappropriate and unclear Lorem ipsum dolor sit amet.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-      'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately Cras lobortis quam vitae.',
+      'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research? Neither clearly nor unclearly Cras lobortis quam vitae.',
     )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Is the preprint likely to advance academic knowledge? Moderately likely Aenean nisl eros.',
@@ -538,7 +538,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Adequately', { exact: true }).check()
+    await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
@@ -1141,7 +1141,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Adequately', { exact: true }).check()
+    await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1173,7 +1173,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       'Are the data presentations, including visualizations, well-suited to represent the data? Neither appropriate and clear nor inappropriate and unclear',
     )
     await expect(review).toContainText(
-      'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Adequately',
+      'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research? Neither clearly nor unclearly',
     )
     await expect(review).toContainText('Is the preprint likely to advance academic knowledge? Moderately likely')
     await expect(review).toContainText('Would it benefit from language editing? No')
@@ -1245,14 +1245,16 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       'Are the data presentations, including visualizations, well-suited to represent the data? Somewhat appropriate and clear Lorem ipsum dolor sit amet.',
     )
 
-    await page.getByRole('link', { name: 'Change how well the authors discuss their findings and next steps' }).click()
+    await page
+      .getByRole('link', { name: 'Change how clearly the authors discuss their findings and next steps' })
+      .click()
 
-    await page.getByLabel('Clearly and insightfully').check()
-    await page.getByLabel('Why is it clear and insightful?').fill('Cras lobortis quam vitae.')
+    await page.getByLabel('Somewhat clearly').check()
+    await page.getByLabel('How is it somewhat clear?').fill('Cras lobortis quam vitae.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(review).toContainText(
-      'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research? Clearly and insightfully Cras lobortis quam vitae.',
+      'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research? Somewhat clearly Cras lobortis quam vitae.',
     )
 
     await page.getByRole('link', { name: 'Change if the preprint is likely to advance academic knowledge' }).click()
@@ -1374,8 +1376,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
       .fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Adequately', { exact: true }).check()
-    await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
+    await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
+    await page.getByLabel('How is it neither clear nor unclear?').fill('Cras lobortis quam vitae.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
@@ -1413,8 +1415,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.goBack()
 
-    await expect(page.getByLabel('Adequately', { exact: true })).toBeChecked()
-    await expect(page.getByLabel('Why is it adequate?')).toHaveText('Cras lobortis quam vitae.')
+    await expect(page.getByLabel('Neither clearly nor unclearly', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('How is it neither clear nor unclear?')).toHaveText('Cras lobortis quam vitae.')
 
     await page.goBack()
 
@@ -1541,8 +1543,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
       .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
       .fill('Lorem ipsum dolor sit amet.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Adequately', { exact: true }).check()
-    await page.getByLabel('Why is it adequate?').fill('Cras lobortis quam vitae.')
+    await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
+    await page.getByLabel('How is it neither clear nor unclear?').fill('Cras lobortis quam vitae.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
@@ -1579,8 +1581,8 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Adequately', { exact: true })).toBeChecked()
-    await expect(page.getByLabel('Why is it adequate?')).toHaveText('Cras lobortis quam vitae.')
+    await expect(page.getByLabel('Neither clearly nor unclearly', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('How is it neither clear nor unclear?')).toHaveText('Cras lobortis quam vitae.')
 
     await page.getByRole('link', { name: 'Back' }).click()
 
@@ -2392,7 +2394,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(
       page.getByRole('group', {
-        name: 'How well do the authors discuss, explain, and interpret their findings and potential next steps for the research?',
+        name: 'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?',
       }),
     ).toHaveAttribute('aria-invalid', 'true')
     await page.mouse.move(0, 0)
@@ -2400,11 +2402,11 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page
       .getByRole('link', {
-        name: 'Select how well the authors discuss their findings and next steps',
+        name: 'Select how clearly the authors discuss their findings and next steps',
       })
       .click()
 
-    await expect(page.getByLabel('Exceptionally')).toBeFocused()
+    await expect(page.getByLabel('Very clearly')).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
