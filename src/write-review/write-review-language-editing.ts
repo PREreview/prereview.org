@@ -253,7 +253,7 @@ ${match(form.languageEditingNoDetails)
                       <span>Yes</span>
                     </label>
                     <p id="language-editing-tip-yes" role="note">
-                      Grammatical errors, awkward phrasing, or unclear expressions may hinder comprehension.
+                      Grammatical errors, confusing phrasing, or unclear expressions may hinder comprehension.
                     </p>
                     <div class="conditional" id="language-editing-yes-control">
                       <div>
