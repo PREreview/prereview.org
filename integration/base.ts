@@ -24,7 +24,6 @@ import {
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { app } from '../src/app'
-import type { CanRapidReviewEnv } from '../src/feature-flags'
 import type { ResearchInterestsStoreEnv } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
@@ -34,7 +33,6 @@ import LogEntry = L.LogEntry
 export { expect } from '@playwright/test'
 
 interface AppFixtures {
-  canRapidReview: CanRapidReviewEnv['canRapidReview']
   fetch: FetchMockSandbox
   logger: Logger
   oauthServer: OAuth2Server
@@ -54,9 +52,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     }
 
     await use(`http://localhost:${address.port}`)
-  },
-  canRapidReview: async ({}, use) => {
-    await use(() => false)
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
@@ -687,21 +682,12 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(new Keyv())
   },
   server: async (
-    {
-      canRapidReview,
-      fetch,
-      logger,
-      oauthServer,
-      port,
-      updatesLegacyPrereview,
-      careerStageStore,
-      researchInterestsStore,
-    },
+    { fetch, logger, oauthServer, port, updatesLegacyPrereview, careerStageStore, researchInterestsStore },
     use,
   ) => {
     const server = app({
       allowSiteCrawlers: true,
-      canRapidReview,
+      canRapidReview: () => true,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
@@ -782,16 +768,6 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
     await expect(page).toHaveTitle(/PREreview/)
 
     await use(page)
-  },
-}
-
-export const canRapidReview: Fixtures<
-  Pick<AppFixtures, 'canRapidReview'>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canRapidReview'>
-> = {
-  canRapidReview: async ({}, use) => {
-    await use(() => true)
   },
 }
 
