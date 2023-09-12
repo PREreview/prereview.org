@@ -8,7 +8,7 @@ import { serviceUnavailable } from './middleware'
 import { page } from './page'
 import { type User, maybeGetUser } from './user'
 
-export const preprintJournalClubs = pipe(
+export const liveReviews = pipe(
   RM.fromReaderTaskEither(getPage('6154aa157741400e8722bb10')),
   RM.bindTo('content'),
   RM.apSW('user', maybeGetUser),

@@ -4,11 +4,11 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import * as _ from '../src/preprint-journal-clubs'
+import * as _ from '../src/live-reviews'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
-describe('preprintJournalClubs', () => {
+describe('liveReviews', () => {
   test.prop([
     fc.connection({ method: fc.requestMethod() }),
     fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
@@ -23,7 +23,7 @@ describe('preprintJournalClubs', () => {
     )
 
     const actual = await runMiddleware(
-      _.preprintJournalClubs({
+      _.liveReviews({
         fetch,
         ghostApi: { key },
         getUser: () => M.fromEither(user),
@@ -55,7 +55,7 @@ describe('preprintJournalClubs', () => {
     )
 
     const actual = await runMiddleware(
-      _.preprintJournalClubs({
+      _.liveReviews({
         fetch,
         ghostApi: { key },
         getUser: () => M.fromEither(user),

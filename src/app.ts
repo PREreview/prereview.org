@@ -63,6 +63,7 @@ import {
   isLegacyCompatiblePrereview,
 } from './legacy-prereview'
 import { legacyRoutes } from './legacy-routes'
+import { liveReviews } from './live-reviews'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
 import { myDetails } from './my-details'
 import { getNameFromOrcid } from './orcid'
@@ -71,7 +72,6 @@ import { partners } from './partners'
 import { getPreprintFromPhilsci } from './philsci'
 import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv } from './preprint'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
-import { preprintJournalClubs } from './preprint-journal-clubs'
 import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile'
@@ -238,7 +238,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       preprintJournalClubsMatch.parser,
-      P.map(() => preprintJournalClubs),
+      P.map(() => liveReviews),
     ),
     pipe(
       privacyPolicyMatch.parser,
