@@ -22,7 +22,7 @@ test('can skip to the main content', async ({ fetch, javaScriptEnabled, page }) 
     { body: { pages: [{ html: '<p>Some information about Live Reviews.</p>' }] } },
   )
 
-  await page.goto('/preprint-journal-clubs')
+  await page.goto('/live-reviews')
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
@@ -44,7 +44,7 @@ test('might not load the text in time', async ({ fetch, javaScriptEnabled, page 
     ),
   )
 
-  await page.goto('/preprint-journal-clubs')
+  await page.goto('/live-reviews')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await expect(page).toHaveScreenshot()

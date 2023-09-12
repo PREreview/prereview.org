@@ -27,6 +27,7 @@ import {
   homeMatch,
   logInMatch,
   logOutMatch,
+  preprintJournalClubsMatch,
   preprintReviewsMatch,
   profileMatch,
   reviewAPreprintMatch,
@@ -196,6 +197,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('logout'), P.then(P.end)).parser,
       P.map(fromMiddlewareK(() => movedPermanently(format(logOutMatch.formatter, {})))),
+    ),
+    pipe(
+      pipe(P.lit('preprint-journal-clubs'), P.then(P.end)).parser,
+      P.map(fromMiddlewareK(() => movedPermanently(format(preprintJournalClubsMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('preprints'), P.then(type('preprintId', ArxivPreprintIdC)), P.then(P.end)).parser,
