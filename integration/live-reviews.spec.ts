@@ -1,6 +1,6 @@
 import { expect, test } from './base'
 
-test('can read about preprint journal clubs', async ({ fetch, page }) => {
+test('can read about Live Reviews', async ({ fetch, page }) => {
   await page.goto('/')
 
   fetch.getOnce(
