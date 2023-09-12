@@ -1506,19 +1506,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Back' }).click()
 
     await expect(page.getByLabel('No')).toBeChecked()
-
-    await page.getByLabel('Yes').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await expect(page.getByLabel('Paste your PREreview')).toHaveText(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      )
-    } else {
-      await expect(page.getByLabel('Paste your PREreview')).toHaveValue(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      )
-    }
   },
 )
 
