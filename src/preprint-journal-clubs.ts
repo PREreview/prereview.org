@@ -20,10 +20,10 @@ export const preprintJournalClubs = pipe(
 
 function createPage({ content, user }: { content: Html; user?: User }) {
   return page({
-    title: plainText`Preprint journal clubs`,
+    title: plainText`Live Reviews`,
     content: html`
       <main id="main-content">
-        <h1>Preprint journal clubs</h1>
+        <h1>Live Reviews</h1>
 
         ${content}
       </main>

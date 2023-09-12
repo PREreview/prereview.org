@@ -5,13 +5,13 @@ test('can read about preprint journal clubs', async ({ fetch, page }) => {
 
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb10', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about preprint journal clubs.</p>' }] } },
+    { body: { pages: [{ html: '<p>Some information about Live Reviews.</p>' }] } },
   )
 
-  await page.getByRole('link', { name: 'Preprint journal clubs' }).click()
+  await page.getByRole('link', { name: 'Live Reviews' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Some information about preprint journal clubs.')
-  await expect(page.getByRole('link', { name: 'Preprint journal clubs' })).toHaveAttribute('aria-current', 'page')
+  await expect(page.getByRole('main')).toContainText('Some information about Live Reviews.')
+  await expect(page.getByRole('link', { name: 'Live Reviews' })).toHaveAttribute('aria-current', 'page')
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
@@ -19,7 +19,7 @@ test('can read about preprint journal clubs', async ({ fetch, page }) => {
 test('can skip to the main content', async ({ fetch, javaScriptEnabled, page }) => {
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb10', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about preprint journal clubs.</p>' }] } },
+    { body: { pages: [{ html: '<p>Some information about Live Reviews.</p>' }] } },
   )
 
   await page.goto('/preprint-journal-clubs')
@@ -40,10 +40,7 @@ test('might not load the text in time', async ({ fetch, javaScriptEnabled, page 
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb10', query: { key: 'key' } },
     new Promise(() =>
-      setTimeout(
-        () => ({ body: { pages: [{ html: '<p>Some information about preprint journal clubs.</p>' }] } }),
-        2000,
-      ),
+      setTimeout(() => ({ body: { pages: [{ html: '<p>Some information about Live Reviews.</p>' }] } }), 2000),
     ),
   )
 

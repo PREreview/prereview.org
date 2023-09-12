@@ -178,7 +178,7 @@ export function page({
                             <a
                               href="${format(preprintJournalClubsMatch.formatter, {})}"
                               ${current === 'preprint-journal-clubs' ? html`aria-current="page"` : ''}
-                              >Preprint journal clubs</a
+                              >Live Reviews</a
                             >
                           </li>
                           <li>

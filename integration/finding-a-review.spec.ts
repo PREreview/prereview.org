@@ -497,7 +497,7 @@ test('can view an older review', async ({ fetch, page }) => {
 
   await expect(page).toHaveTitle('Recent PREreviews (page 1)')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent PREreviews')
-  await expect(page.getByRole('link', { name: 'Reviews' })).toHaveAttribute('aria-current', 'page')
+  await expect(page.getByRole('link', { name: 'Reviews', exact: true })).toHaveAttribute('aria-current', 'page')
   await expect(page.getByRole('link', { name: 'Older' })).toHaveAttribute('rel', 'next')
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
