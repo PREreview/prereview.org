@@ -12,11 +12,11 @@ import {
   communitiesMatch,
   fundingMatch,
   homeMatch,
+  liveReviewsMatch,
   logInMatch,
   logOutMatch,
   myDetailsMatch,
   partnersMatch,
-  preprintJournalClubsMatch,
   privacyPolicyMatch,
   reviewsMatch,
   trainingsMatch,
@@ -45,9 +45,9 @@ interface Page {
     | 'code-of-conduct'
     | 'funding'
     | 'home'
+    | 'live-reviews'
     | 'my-details'
     | 'partners'
-    | 'preprint-journal-clubs'
     | 'privacy-policy'
     | 'reviews'
     | 'trainings'
@@ -176,8 +176,8 @@ export function page({
                           </li>
                           <li>
                             <a
-                              href="${format(preprintJournalClubsMatch.formatter, {})}"
-                              ${current === 'preprint-journal-clubs' ? html`aria-current="page"` : ''}
+                              href="${format(liveReviewsMatch.formatter, {})}"
+                              ${current === 'live-reviews' ? html`aria-current="page"` : ''}
                               >Live Reviews</a
                             >
                           </li>

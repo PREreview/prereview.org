@@ -123,7 +123,7 @@ export const fundingMatch = pipe(P.lit('funding'), P.then(P.end))
 
 export const partnersMatch = pipe(P.lit('partners'), P.then(P.end))
 
-export const preprintJournalClubsMatch = pipe(P.lit('live-reviews'), P.then(P.end))
+export const liveReviewsMatch = pipe(P.lit('live-reviews'), P.then(P.end))
 
 export const privacyPolicyMatch = pipe(P.lit('privacy-policy'), P.then(P.end))
 
