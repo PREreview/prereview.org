@@ -121,6 +121,7 @@ const profileForOrcid = (profile: OrcidProfileId) =>
             ),
           ),
         ),
+        RTE.let('isOpenForRequests', () => profile.value === '0000-0003-4921-6155'),
       ),
     ),
     RM.map(createPage),

@@ -17,6 +17,7 @@ export function createPage({
   researchInterests,
   clubs = [],
   slackUser,
+  isOpenForRequests = false,
 }: {
   avatar?: URL
   clubs?: ReadonlyArray<ClubId>
@@ -25,6 +26,7 @@ export function createPage({
   prereviews: Prereviews
   researchInterests?: NonEmptyString
   slackUser?: SlackUser
+  isOpenForRequests?: boolean
 }) {
   const profile = orcid
     ? {
@@ -35,7 +37,7 @@ export function createPage({
         researchInterests,
         clubs,
         avatar,
-        isOpenForRequests: orcid === '0000-0003-4921-6155',
+        isOpenForRequests,
         prereviews,
       }
     : { type: 'pseudonym' as const, name, prereviews }
