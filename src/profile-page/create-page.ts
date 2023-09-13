@@ -9,41 +9,9 @@ import type { NonEmptyString } from '../string'
 import { renderListOfPrereviews } from './render-list-of-prereviews'
 import { renderOrcidProfile } from './render-orcid-profile'
 
-export function createPage({
-  orcid,
-  name,
-  prereviews,
-  avatar,
-  researchInterests,
-  clubs = [],
-  slackUser,
-  isOpenForRequests = false,
-}: {
-  avatar?: URL
-  clubs?: ReadonlyArray<ClubId>
-  name: string
-  orcid?: Orcid
-  prereviews: Prereviews
-  researchInterests?: NonEmptyString
-  slackUser?: SlackUser
-  isOpenForRequests?: boolean
-}) {
-  const profile = orcid
-    ? {
-        type: 'orcid' as const,
-        name,
-        orcid,
-        slackUser,
-        researchInterests,
-        clubs,
-        avatar,
-        isOpenForRequests,
-        prereviews,
-      }
-    : { type: 'pseudonym' as const, name, prereviews }
-
+export function createPage(profile: OrcidProfile | PseudonymProfile) {
   return {
-    title: plainText`${name}`,
+    title: plainText`${profile.name}`,
     content: match(profile)
       .with({ type: 'orcid' }, renderContentForOrcid)
       .with({ type: 'pseudonym' }, renderContentForPseudonym)

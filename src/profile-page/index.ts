@@ -76,6 +76,7 @@ const profileForOrcid = (profile: OrcidProfileId) =>
     RM.fromReaderTaskEither(
       pipe(
         RTE.Do,
+        RTE.let('type', () => 'orcid' as const),
         RTE.apS('prereviews', getPrereviews(profile)),
         RTE.apSW('name', getName(profile.value)),
         RTE.apSW(
@@ -139,9 +140,9 @@ const profileForOrcid = (profile: OrcidProfileId) =>
 
 const profileForPseudonym = (profileId: PseudonymProfileId) =>
   pipe(
-    RM.fromReaderTaskEither(getPrereviews(profileId)),
-    RM.bindTo('prereviews'),
-    RM.apSW('name', RM.of(profileId.value)),
+    RM.of({ type: 'pseudonym' as const }),
+    RM.apS('prereviews', RM.fromReaderTaskEither(getPrereviews(profileId))),
+    RM.apS('name', RM.of(profileId.value)),
     RM.map(createPage),
     RM.apSW('user', maybeGetUser),
     chainReaderKW(page),
