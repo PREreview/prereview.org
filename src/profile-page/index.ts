@@ -24,6 +24,8 @@ import { createPage } from './create-page'
 
 import PlainDate = Temporal.PlainDate
 
+export type Env = EnvFor<ReturnType<typeof profile>>
+
 export type Prereviews = ReadonlyArray<{
   readonly id: number
   readonly club?: ClubId
@@ -36,15 +38,15 @@ export type Prereviews = ReadonlyArray<{
   }
 }>
 
-export interface GetPrereviewsEnv {
+interface GetPrereviewsEnv {
   getPrereviews: (profile: ProfileId) => TE.TaskEither<'unavailable', Prereviews>
 }
 
-export interface GetNameEnv {
+interface GetNameEnv {
   getName: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString>
 }
 
-export interface GetAvatarEnv {
+interface GetAvatarEnv {
   getAvatar: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', URL>
 }
 
@@ -155,6 +157,8 @@ const profileForPseudonym = (profileId: PseudonymProfileId) =>
         .exhaustive(),
     ),
   )
+
+type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
