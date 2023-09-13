@@ -4,12 +4,12 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import * as _ from '../src/profile'
-import type { GetResearchInterestsEnv } from '../src/research-interests'
-import type { GetSlackUserEnv } from '../src/slack-user'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
-import { shouldNotBeCalled } from './should-not-be-called'
+import * as _ from '../../src/profile-page'
+import type { GetResearchInterestsEnv } from '../../src/research-interests'
+import type { GetSlackUserEnv } from '../../src/slack-user'
+import * as fc from '../fc'
+import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('profile', () => {
   describe('with an ORCID iD', () => {
