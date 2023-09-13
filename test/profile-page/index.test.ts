@@ -17,7 +17,7 @@ describe('profile', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.url(),
-      fc.string(),
+      fc.nonEmptyString(),
       fc.array(
         fc.record({
           id: fc.integer(),
@@ -141,7 +141,7 @@ describe('profile', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
-      fc.string(),
+      fc.nonEmptyString(),
       fc.array(
         fc.record({
           id: fc.integer(),
@@ -176,7 +176,7 @@ describe('profile', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
-      fc.string(),
+      fc.nonEmptyString(),
       fc.array(
         fc.record({
           id: fc.integer(),
@@ -212,7 +212,7 @@ describe('profile', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
-      fc.string(),
+      fc.nonEmptyString(),
       fc.array(
         fc.record({
           id: fc.integer(),
@@ -248,7 +248,7 @@ describe('profile', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
-      fc.string(),
+      fc.nonEmptyString(),
       fc.array(
         fc.record({
           id: fc.integer(),
@@ -326,7 +326,7 @@ test.prop([
   fc.connection({ method: fc.requestMethod() }),
   fc.profileId(),
   fc.url(),
-  fc.string(),
+  fc.nonEmptyString(),
   fc.either(fc.constant('no-session' as const), fc.user()),
 ])("when the PREreviews can't be loaded", async (connection, profile, avatar, name, user) => {
   const actual = await runMiddleware(

@@ -18,6 +18,7 @@ import type { PreprintId } from '../preprint-id'
 import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../profile-id'
 import { getResearchInterests } from '../research-interests'
 import { getSlackUser } from '../slack-user'
+import type { NonEmptyString } from '../string'
 import { maybeGetUser } from '../user'
 import { createPage } from './create-page'
 
@@ -40,7 +41,7 @@ export interface GetPrereviewsEnv {
 }
 
 export interface GetNameEnv {
-  getName: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', string>
+  getName: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString>
 }
 
 export interface GetAvatarEnv {

@@ -23,7 +23,7 @@ export function createPage(profile: OrcidProfile | PseudonymProfile) {
 
 interface OrcidProfile {
   type: 'orcid'
-  name: string
+  name: NonEmptyString
   orcid: Orcid
   slackUser: SlackUser | undefined
   researchInterests: NonEmptyString | undefined
