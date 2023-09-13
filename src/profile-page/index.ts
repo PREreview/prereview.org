@@ -1,21 +1,16 @@
 import type { Reader } from 'fp-ts/Reader'
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import { identity, pipe } from 'fp-ts/function'
+import { flow } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import { P, match } from 'ts-pattern'
-import { isLeadFor } from '../club-details'
+import { match } from 'ts-pattern'
 import { sendHtml } from '../html'
 import { notFound, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../profile-id'
-import { getResearchInterests } from '../research-interests'
-import { getSlackUser } from '../slack-user'
+import type { ProfileId } from '../profile-id'
 import { maybeGetUser } from '../user'
-import { getAvatar } from './avatar'
 import { createPage } from './create-page'
-import { getName } from './name'
-import { getPrereviews } from './prereviews'
+import { getOrcidProfile } from './orcid-profile'
+import { getPseudonymProfile } from './pseudonym-profile'
 
 export type Env = EnvFor<ReturnType<typeof profile>>
 
@@ -25,89 +20,34 @@ export const profile = (profileId: ProfileId) =>
     .with({ type: 'pseudonym' }, profileForPseudonym)
     .exhaustive()
 
-const profileForOrcid = (profile: OrcidProfileId) =>
-  pipe(
-    RM.fromReaderTaskEither(
-      pipe(
-        RTE.Do,
-        RTE.let('type', () => 'orcid' as const),
-        RTE.apS('prereviews', getPrereviews(profile)),
-        RTE.apSW('name', getName(profile.value)),
-        RTE.apSW(
-          'researchInterests',
-          pipe(
-            getResearchInterests(profile.value),
-            RTE.map(researchInterests =>
-              match(researchInterests)
-                .with({ visibility: 'public', value: P.select() }, identity)
-                .with({ visibility: 'restricted' }, () => undefined)
-                .exhaustive(),
-            ),
-            RTE.orElseW(error =>
-              match(error)
-                .with('not-found', () => RTE.of(undefined))
-                .otherwise(RTE.left),
-            ),
-          ),
-        ),
-        RTE.apSW(
-          'avatar',
-          pipe(
-            getAvatar(profile.value),
-            RTE.orElseW(error =>
-              match(error)
-                .with('not-found', () => RTE.right(undefined))
-                .with('unavailable', RTE.left)
-                .exhaustive(),
-            ),
-          ),
-        ),
-        RTE.let('orcid', () => profile.value),
-        RTE.let('clubs', () => isLeadFor(profile.value)),
-        RTE.apSW(
-          'slackUser',
-          pipe(
-            getSlackUser(profile.value),
-            RTE.orElseW(error =>
-              match(error)
-                .with('not-found', () => RTE.right(undefined))
-                .with('unavailable', RTE.left)
-                .exhaustive(),
-            ),
-          ),
-        ),
-        RTE.let('isOpenForRequests', () => profile.value === '0000-0003-4921-6155'),
-      ),
-    ),
-    RM.map(createPage),
-    RM.apSW('user', maybeGetUser),
-    chainReaderKW(page),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareKW(sendHtml),
-    RM.orElseW(error =>
-      match(error)
-        .with('not-found', () => notFound)
-        .with('unavailable', () => serviceUnavailable)
-        .exhaustive(),
-    ),
-  )
+const profileForOrcid = flow(
+  RM.fromReaderTaskEitherK(getOrcidProfile),
+  RM.map(createPage),
+  RM.apSW('user', maybeGetUser),
+  chainReaderKW(page),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareKW(sendHtml),
+  RM.orElseW(error =>
+    match(error)
+      .with('not-found', () => notFound)
+      .with('unavailable', () => serviceUnavailable)
+      .exhaustive(),
+  ),
+)
 
-const profileForPseudonym = (profileId: PseudonymProfileId) =>
-  pipe(
-    RM.of({ type: 'pseudonym' as const }),
-    RM.apS('prereviews', RM.fromReaderTaskEither(getPrereviews(profileId))),
-    RM.apS('name', RM.of(profileId.value)),
-    RM.map(createPage),
-    RM.apSW('user', maybeGetUser),
-    chainReaderKW(page),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareKW(sendHtml),
-    RM.orElseW(error =>
-      match(error)
-        .with('unavailable', () => serviceUnavailable)
-        .exhaustive(),
-    ),
-  )
+const profileForPseudonym = flow(
+  RM.fromReaderTaskEitherK(getPseudonymProfile),
+  RM.map(createPage),
+  RM.apSW('user', maybeGetUser),
+  chainReaderKW(page),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareKW(sendHtml),
+  RM.orElseW(error =>
+    match(error)
+      .with('unavailable', () => serviceUnavailable)
+      .exhaustive(),
+  ),
+)
 
 type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never
 

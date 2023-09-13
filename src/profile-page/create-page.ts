@@ -1,12 +1,8 @@
-import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import type { ClubId } from '../club-id'
 import { html, plainText } from '../html'
 import type { Page } from '../page'
-import type { Pseudonym } from '../pseudonym'
-import type { SlackUser } from '../slack-user'
-import type { NonEmptyString } from '../string'
-import type { Prereviews } from './prereviews'
+import type { OrcidProfile } from './orcid-profile'
+import type { PseudonymProfile } from './pseudonym-profile'
 import { renderListOfPrereviews } from './render-list-of-prereviews'
 import { renderOrcidProfile } from './render-orcid-profile'
 
@@ -23,18 +19,6 @@ export function createPage(profile: OrcidProfile | PseudonymProfile) {
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
   } satisfies Page
-}
-
-interface OrcidProfile {
-  type: 'orcid'
-  name: NonEmptyString
-  orcid: Orcid
-  slackUser: SlackUser | undefined
-  researchInterests: NonEmptyString | undefined
-  clubs: ReadonlyArray<ClubId>
-  avatar: URL | undefined
-  isOpenForRequests: boolean
-  prereviews: Prereviews
 }
 
 function renderContentForOrcid({
@@ -63,12 +47,6 @@ function renderContentForOrcid({
     ${isOpenForRequests ? html` <div class="inset">${name} is happy to take requests for a PREreview.</div> ` : ''}
     ${renderListOfPrereviews(prereviews, name)}
   `
-}
-
-interface PseudonymProfile {
-  type: 'pseudonym'
-  name: Pseudonym
-  prereviews: Prereviews
 }
 
 function renderContentForPseudonym({ name, prereviews }: PseudonymProfile) {
