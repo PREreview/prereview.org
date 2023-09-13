@@ -242,7 +242,7 @@ function createPage({
         <h2>PREreviews</h2>
 
         ${orcid === '0000-0003-4921-6155'
-          ? html` <div class="inset">Chris Wilkinson is happy to take requests for a PREreview.</div> `
+          ? html` <div class="inset">${name} is happy to take requests for a PREreview.</div> `
           : ''}
         ${pipe(
           prereviews,
