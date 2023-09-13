@@ -13,6 +13,7 @@ import { isLeadFor } from '../club-details'
 import type { ClubId } from '../club-id'
 import { type Html, sendHtml } from '../html'
 import { notFound, serviceUnavailable } from '../middleware'
+import { page } from '../page'
 import type { PreprintId } from '../preprint-id'
 import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../profile-id'
 import { getResearchInterests } from '../research-interests'
@@ -122,8 +123,9 @@ const profileForOrcid = (profile: OrcidProfileId) =>
         ),
       ),
     ),
+    RM.map(createPage),
     RM.apSW('user', maybeGetUser),
-    chainReaderKW(createPage),
+    chainReaderKW(page),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareKW(sendHtml),
     RM.orElseW(error =>
@@ -139,8 +141,9 @@ const profileForPseudonym = (profileId: PseudonymProfileId) =>
     RM.fromReaderTaskEither(getPrereviews(profileId)),
     RM.bindTo('prereviews'),
     RM.apSW('name', RM.of(profileId.value)),
+    RM.map(createPage),
     RM.apSW('user', maybeGetUser),
-    chainReaderKW(createPage),
+    chainReaderKW(page),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareKW(sendHtml),
     RM.orElseW(error =>

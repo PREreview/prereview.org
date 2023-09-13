@@ -3,10 +3,9 @@ import { match } from 'ts-pattern'
 import type { Prereviews } from '.'
 import type { ClubId } from '../club-id'
 import { html, plainText } from '../html'
-import { page } from '../page'
+import type { Page } from '../page'
 import type { SlackUser } from '../slack-user'
 import type { NonEmptyString } from '../string'
-import type { User } from '../user'
 import { renderListOfPrereviews } from './render-list-of-prereviews'
 import { renderOrcidProfile } from './render-orcid-profile'
 
@@ -14,7 +13,6 @@ export function createPage({
   orcid,
   name,
   prereviews,
-  user,
   avatar,
   researchInterests,
   clubs = [],
@@ -27,7 +25,6 @@ export function createPage({
   prereviews: Prereviews
   researchInterests?: NonEmptyString
   slackUser?: SlackUser
-  user?: User
 }) {
   const profile = orcid
     ? {
@@ -43,15 +40,14 @@ export function createPage({
       }
     : { type: 'pseudonym' as const, name, prereviews }
 
-  return page({
+  return {
     title: plainText`${name}`,
     content: match(profile)
       .with({ type: 'orcid' }, renderContentForOrcid)
       .with({ type: 'pseudonym' }, renderContentForPseudonym)
       .exhaustive(),
     skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
+  } satisfies Page
 }
 
 interface OrcidProfile {
