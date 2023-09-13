@@ -3,18 +3,16 @@ import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import type { Orcid } from 'orcid-id-ts'
-import { getLangDir } from 'rtl-detect'
-import { match } from 'ts-pattern'
 import type { Prereviews } from '.'
 import { getClubName } from '../club-details'
 import type { ClubId } from '../club-id'
 import { type Html, html, plainText, rawHtml } from '../html'
 import { page } from '../page'
-import { clubProfileMatch, reviewMatch } from '../routes'
+import { clubProfileMatch } from '../routes'
 import type { SlackUser } from '../slack-user'
 import type { NonEmptyString } from '../string'
-import { renderDate } from '../time'
 import type { User } from '../user'
+import { renderListOfPrereviews } from './render-list-of-prereviews'
 
 export function createPage({
   orcid,
@@ -103,71 +101,7 @@ export function createPage({
         <h2>PREreviews</h2>
 
         ${isOpenForRequests ? html` <div class="inset">${name} is happy to take requests for a PREreview.</div> ` : ''}
-        ${pipe(
-          prereviews,
-          RA.match(
-            () => html`
-              <div class="inset">
-                <p>${name} hasn’t published a PREreview yet.</p>
-
-                <p>When they do, it’ll appear here.</p>
-              </div>
-            `,
-            prereviews => html`
-              <ol class="cards">
-                ${prereviews.map(
-                  prereview => html`
-                    <li>
-                      <article>
-                        <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                          ${pipe(
-                            prereview.reviewers,
-                            RNEA.map(name => html`<b>${name}</b>`),
-                            formatList('en'),
-                          )}
-                          ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
-                          <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
-                            >${prereview.preprint.title}</cite
-                          >
-                        </a>
-
-                        <dl>
-                          <dt>Review published</dt>
-                          <dd>${renderDate(prereview.published)}</dd>
-                          <dt>Preprint server</dt>
-                          <dd>
-                            ${match(prereview.preprint.id.type)
-                              .with('africarxiv', () => 'AfricArXiv Preprints')
-                              .with('arxiv', () => 'arXiv')
-                              .with('authorea', () => 'Authorea')
-                              .with('biorxiv', () => 'bioRxiv')
-                              .with('chemrxiv', () => 'ChemRxiv')
-                              .with('eartharxiv', () => 'EarthArXiv')
-                              .with('ecoevorxiv', () => 'EcoEvoRxiv')
-                              .with('edarxiv', () => 'EdArXiv')
-                              .with('engrxiv', () => 'engrXiv')
-                              .with('medrxiv', () => 'medRxiv')
-                              .with('metaarxiv', () => 'MetaArXiv')
-                              .with('osf', () => 'OSF Preprints')
-                              .with('philsci', () => 'PhilSci-Archive')
-                              .with('preprints.org', () => 'Preprints.org')
-                              .with('psyarxiv', () => 'PsyArXiv')
-                              .with('research-square', () => 'Research Square')
-                              .with('scielo', () => 'SciELO Preprints')
-                              .with('science-open', () => 'ScienceOpen Preprints')
-                              .with('socarxiv', () => 'SocArXiv')
-                              .with('zenodo', () => 'Zenodo')
-                              .exhaustive()}
-                          </dd>
-                        </dl>
-                      </article>
-                    </li>
-                  `,
-                )}
-              </ol>
-            `,
-          ),
-        )}
+        ${renderListOfPrereviews(prereviews, name)}
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
