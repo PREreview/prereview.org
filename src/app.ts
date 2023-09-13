@@ -520,6 +520,7 @@ const slackUsers = {
   '0000-0002-6109-0367': 'U05BUCDTN2X',
   '0000-0002-6750-9341': 'U05CJEXUSGY',
   '0000-0003-4921-6155': 'U05CJ7E6YKA',
+  '0000-0002-5753-2556': 'U05N1N0DH26',
 }
 
 const getSlackUser = flow(
