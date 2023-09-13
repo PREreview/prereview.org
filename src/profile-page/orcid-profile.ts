@@ -4,6 +4,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { isLeadFor } from '../club-details'
 import type { ClubId } from '../club-id'
+import { isOpenForRequests } from '../is-open-for-requests'
 import type { OrcidProfileId } from '../profile-id'
 import { getResearchInterests } from '../research-interests'
 import { type SlackUser, maybeGetSlackUser } from '../slack-user'
@@ -35,7 +36,7 @@ export function getOrcidProfile(profileId: OrcidProfileId) {
     RTE.let('orcid', () => profileId.value),
     RTE.let('clubs', () => isLeadFor(profileId.value)),
     RTE.apSW('slackUser', maybeGetSlackUser(profileId.value)),
-    RTE.let('isOpenForRequests', () => profileId.value === '0000-0003-4921-6155'),
+    RTE.apSW('isOpenForRequests', maybeIsOpenForRequests(profileId.value)),
   ) satisfies RTE.ReaderTaskEither<any, any, OrcidProfile> // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
@@ -50,6 +51,15 @@ const maybeGetPublicResearchInterests = flow(
   RTE.orElseW(error =>
     match(error)
       .with('not-found', () => RTE.of(undefined))
+      .otherwise(RTE.left),
+  ),
+)
+
+const maybeIsOpenForRequests = flow(
+  isOpenForRequests,
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.of(false))
       .otherwise(RTE.left),
   ),
 )

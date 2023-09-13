@@ -27,14 +27,16 @@ describe('profile', () => {
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
+      fc.either(fc.constant('not-found' as const), fc.boolean()),
     ])(
       'when the data can be loaded',
-      async (connection, profile, avatar, name, prereviews, user, researchInterests, slackUser) => {
+      async (connection, profile, avatar, name, prereviews, user, researchInterests, slackUser, openForRequests) => {
         const getAvatar = jest.fn<_.Env['getAvatar']>(_ => TE.of(avatar))
         const getName = jest.fn<_.Env['getName']>(_ => TE.of(name))
         const getPrereviews = jest.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
         const getResearchInterests = jest.fn<_.Env['getResearchInterests']>(_ => TE.fromEither(researchInterests))
         const getSlackUser = jest.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
+        const isOpenForRequests = jest.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
 
         const actual = await runMiddleware(
           _.profile(profile)({
@@ -44,6 +46,7 @@ describe('profile', () => {
             getResearchInterests,
             getSlackUser,
             getUser: () => M.fromEither(user),
+            isOpenForRequests,
           }),
           connection,
         )()
@@ -60,6 +63,7 @@ describe('profile', () => {
         expect(getPrereviews).toHaveBeenCalledWith(profile)
         expect(getResearchInterests).toHaveBeenCalledWith(profile.value)
         expect(getSlackUser).toHaveBeenCalledWith(profile.value)
+        expect(isOpenForRequests).toHaveBeenCalledWith(profile.value)
       },
     )
 
@@ -85,6 +89,7 @@ describe('profile', () => {
           getResearchInterests: () => TE.left('not-found'),
           getSlackUser: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
+          isOpenForRequests: () => TE.left('not-found'),
         }),
         connection,
       )()
@@ -121,6 +126,7 @@ describe('profile', () => {
           getResearchInterests: () => TE.left('not-found'),
           getSlackUser: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
+          isOpenForRequests: () => TE.left('not-found'),
         }),
         connection,
       )()
@@ -156,6 +162,7 @@ describe('profile', () => {
           getResearchInterests: () => TE.left('not-found'),
           getSlackUser: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
+          isOpenForRequests: () => TE.left('not-found'),
         }),
         connection,
       )()
@@ -191,6 +198,7 @@ describe('profile', () => {
           getResearchInterests: () => TE.left('not-found'),
           getSlackUser: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
+          isOpenForRequests: () => TE.left('not-found'),
         }),
         connection,
       )()
@@ -227,6 +235,7 @@ describe('profile', () => {
           getResearchInterests: () => TE.left('unavailable'),
           getSlackUser: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
+          isOpenForRequests: () => TE.left('not-found'),
         }),
         connection,
       )()
@@ -263,6 +272,44 @@ describe('profile', () => {
           getResearchInterests: () => TE.left('not-found'),
           getSlackUser: () => TE.left('unavailable'),
           getUser: () => M.fromEither(user),
+          isOpenForRequests: () => TE.left('not-found'),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.connection({ method: fc.requestMethod() }),
+      fc.orcidProfileId(),
+      fc.nonEmptyString(),
+      fc.array(
+        fc.record({
+          id: fc.integer(),
+          reviewers: fc.nonEmptyArray(fc.string()),
+          published: fc.plainDate(),
+          preprint: fc.preprintTitle(),
+        }),
+      ),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when being open for requests is unavailable', async (connection, profile, name, prereviews, user) => {
+      const actual = await runMiddleware(
+        _.profile(profile)({
+          getAvatar: () => TE.left('not-found'),
+          getName: () => TE.of(name),
+          getPrereviews: () => TE.of(prereviews),
+          getResearchInterests: () => TE.left('not-found'),
+          getSlackUser: () => TE.left('not-found'),
+          getUser: () => M.fromEither(user),
+          isOpenForRequests: () => TE.left('unavailable'),
         }),
         connection,
       )()
@@ -302,6 +349,7 @@ describe('profile', () => {
           getResearchInterests: shouldNotBeCalled,
           getSlackUser: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
+          isOpenForRequests: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -333,6 +381,7 @@ test.prop([
       getResearchInterests: () => TE.left('not-found'),
       getSlackUser: () => TE.left('not-found'),
       getUser: () => M.fromEither(user),
+      isOpenForRequests: () => TE.left('not-found'),
     }),
     connection,
   )()
