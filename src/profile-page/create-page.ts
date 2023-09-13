@@ -55,6 +55,7 @@ export function createPage({
 }
 
 interface OrcidProfile {
+  type: 'orcid'
   name: string
   orcid: Orcid
   slackUser: SlackUser | undefined
@@ -96,6 +97,7 @@ function renderContentForOrcid({
 }
 
 interface PseudonymProfile {
+  type: 'pseudonym'
   name: string
   prereviews: Prereviews
 }
