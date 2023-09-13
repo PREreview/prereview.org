@@ -9,7 +9,7 @@ import { type Html, html, rawHtml } from '../html'
 import { reviewMatch } from '../routes'
 import type { NonEmptyString } from '../string'
 import { renderDate } from '../time'
-import type { Prereviews } from './index'
+import type { Prereviews } from './prereviews'
 
 export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyString) {
   return pipe(

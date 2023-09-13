@@ -1,12 +1,12 @@
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import type { Prereviews } from '.'
 import type { ClubId } from '../club-id'
 import { html, plainText } from '../html'
 import type { Page } from '../page'
 import type { Pseudonym } from '../pseudonym'
 import type { SlackUser } from '../slack-user'
 import type { NonEmptyString } from '../string'
+import type { Prereviews } from './prereviews'
 import { renderListOfPrereviews } from './render-list-of-prereviews'
 import { renderOrcidProfile } from './render-orcid-profile'
 

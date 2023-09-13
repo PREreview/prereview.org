@@ -1,72 +1,23 @@
-import { Temporal } from '@js-temporal/polyfill'
 import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import type * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
-import type * as TE from 'fp-ts/TaskEither'
 import { identity, pipe } from 'fp-ts/function'
 import { Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
-import type { LanguageCode } from 'iso-639-1'
-import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { isLeadFor } from '../club-details'
-import type { ClubId } from '../club-id'
-import { type Html, sendHtml } from '../html'
+import { sendHtml } from '../html'
 import { notFound, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import type { PreprintId } from '../preprint-id'
 import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../profile-id'
 import { getResearchInterests } from '../research-interests'
 import { getSlackUser } from '../slack-user'
-import type { NonEmptyString } from '../string'
 import { maybeGetUser } from '../user'
+import { getAvatar } from './avatar'
 import { createPage } from './create-page'
-
-import PlainDate = Temporal.PlainDate
+import { getName } from './name'
+import { getPrereviews } from './prereviews'
 
 export type Env = EnvFor<ReturnType<typeof profile>>
-
-export type Prereviews = ReadonlyArray<{
-  readonly id: number
-  readonly club?: ClubId
-  readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
-  readonly published: PlainDate
-  readonly preprint: {
-    readonly id: PreprintId
-    readonly language: LanguageCode
-    readonly title: Html
-  }
-}>
-
-interface GetPrereviewsEnv {
-  getPrereviews: (profile: ProfileId) => TE.TaskEither<'unavailable', Prereviews>
-}
-
-interface GetNameEnv {
-  getName: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString>
-}
-
-interface GetAvatarEnv {
-  getAvatar: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', URL>
-}
-
-const getPrereviews = (profile: ProfileId) =>
-  pipe(
-    RTE.ask<GetPrereviewsEnv>(),
-    RTE.chainTaskEitherK(({ getPrereviews }) => getPrereviews(profile)),
-  )
-
-const getName = (orcid: Orcid) =>
-  pipe(
-    RTE.ask<GetNameEnv>(),
-    RTE.chainTaskEitherK(({ getName }) => getName(orcid)),
-  )
-
-const getAvatar = (orcid: Orcid) =>
-  pipe(
-    RTE.ask<GetAvatarEnv>(),
-    RTE.chainTaskEitherK(({ getAvatar }) => getAvatar(orcid)),
-  )
 
 export const profile = (profileId: ProfileId) =>
   match(profileId)
