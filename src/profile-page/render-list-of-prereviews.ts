@@ -7,10 +7,11 @@ import { match } from 'ts-pattern'
 import { getClubName } from '../club-details'
 import { type Html, html, rawHtml } from '../html'
 import { reviewMatch } from '../routes'
+import type { NonEmptyString } from '../string'
 import { renderDate } from '../time'
 import type { Prereviews } from './index'
 
-export function renderListOfPrereviews(prereviews: Prereviews, name: string) {
+export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyString) {
   return pipe(
     prereviews,
     RA.match(
