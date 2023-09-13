@@ -1,4 +1,5 @@
 import type { Orcid } from 'orcid-id-ts'
+import { match } from 'ts-pattern'
 import type { Prereviews } from '.'
 import type { ClubId } from '../club-id'
 import { html, plainText } from '../html'
@@ -28,21 +29,26 @@ export function createPage({
   slackUser?: SlackUser
   user?: User
 }) {
-  const isOpenForRequests = orcid === '0000-0003-4921-6155'
+  const profile = orcid
+    ? {
+        type: 'orcid' as const,
+        name,
+        orcid,
+        slackUser,
+        researchInterests,
+        clubs,
+        avatar,
+        isOpenForRequests: orcid === '0000-0003-4921-6155',
+        prereviews,
+      }
+    : { type: 'pseudonym' as const, name, prereviews }
+
   return page({
     title: plainText`${name}`,
-    content: orcid
-      ? renderContentForOrcid({
-          name,
-          orcid,
-          slackUser,
-          researchInterests,
-          clubs,
-          avatar,
-          isOpenForRequests,
-          prereviews,
-        })
-      : renderContentForPseudonym({ name, prereviews }),
+    content: match(profile)
+      .with({ type: 'orcid' }, renderContentForOrcid)
+      .with({ type: 'pseudonym' }, renderContentForPseudonym)
+      .exhaustive(),
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
