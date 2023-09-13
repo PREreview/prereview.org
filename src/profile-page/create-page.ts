@@ -32,23 +32,43 @@ export function createPage({
   return page({
     title: plainText`${name}`,
     content: orcid
-      ? renderContentForOrcid(name, orcid, slackUser, researchInterests, clubs, avatar, isOpenForRequests, prereviews)
-      : renderContentForPseudonym(name, prereviews),
+      ? renderContentForOrcid({
+          name,
+          orcid,
+          slackUser,
+          researchInterests,
+          clubs,
+          avatar,
+          isOpenForRequests,
+          prereviews,
+        })
+      : renderContentForPseudonym({ name, prereviews }),
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
 }
 
-function renderContentForOrcid(
-  name: string,
-  orcid: Orcid,
-  slackUser: SlackUser | undefined,
-  researchInterests: NonEmptyString | undefined,
-  clubs: ReadonlyArray<ClubId>,
-  avatar: URL | undefined,
-  isOpenForRequests: boolean,
-  prereviews: Prereviews,
-) {
+interface OrcidProfile {
+  name: string
+  orcid: Orcid
+  slackUser: SlackUser | undefined
+  researchInterests: NonEmptyString | undefined
+  clubs: ReadonlyArray<ClubId>
+  avatar: URL | undefined
+  isOpenForRequests: boolean
+  prereviews: Prereviews
+}
+
+function renderContentForOrcid({
+  name,
+  orcid,
+  slackUser,
+  researchInterests,
+  clubs,
+  avatar,
+  isOpenForRequests,
+  prereviews,
+}: OrcidProfile) {
   return html`
     <main id="main-content">
       <div class="profile-header">
@@ -69,7 +89,12 @@ function renderContentForOrcid(
   `
 }
 
-function renderContentForPseudonym(name: string, prereviews: Prereviews) {
+interface PseudonymProfile {
+  name: string
+  prereviews: Prereviews
+}
+
+function renderContentForPseudonym({ name, prereviews }: PseudonymProfile) {
   return html`
     <main id="main-content">
       <div class="profile-header">
