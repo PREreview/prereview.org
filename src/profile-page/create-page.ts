@@ -1,18 +1,13 @@
-import { format } from 'fp-ts-routing'
-import * as RA from 'fp-ts/ReadonlyArray'
-import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
-import { flow, pipe } from 'fp-ts/function'
 import type { Orcid } from 'orcid-id-ts'
 import type { Prereviews } from '.'
-import { getClubName } from '../club-details'
 import type { ClubId } from '../club-id'
-import { type Html, html, plainText, rawHtml } from '../html'
+import { html, plainText } from '../html'
 import { page } from '../page'
-import { clubProfileMatch } from '../routes'
 import type { SlackUser } from '../slack-user'
 import type { NonEmptyString } from '../string'
 import type { User } from '../user'
 import { renderListOfPrereviews } from './render-list-of-prereviews'
+import { renderOrcidProfile } from './render-orcid-profile'
 
 export function createPage({
   orcid,
@@ -42,57 +37,7 @@ export function createPage({
           <div>
             <h1>${name}</h1>
 
-            ${orcid
-              ? html`
-                  <dl class="summary-list">
-                    <div>
-                      <dt>ORCID iD</dt>
-                      <dd><a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a></dd>
-                    </div>
-
-                    ${slackUser
-                      ? html`
-                          <div>
-                            <dt>Slack Community name</dt>
-                            <dd>
-                              <span class="slack">
-                                <img src="${slackUser.image.href}" alt="" width="48" height="48" />
-                                <span>${slackUser.name}</span>
-                              </span>
-                            </dd>
-                          </div>
-                        `
-                      : ''}
-                    ${researchInterests
-                      ? html`
-                          <div>
-                            <dt>Research interests</dt>
-                            <dd>${researchInterests}</dd>
-                          </div>
-                        `
-                      : ''}
-                    ${RA.isNonEmpty(clubs)
-                      ? html`
-                          <div>
-                            <dt>Clubs</dt>
-                            <dd>
-                              ${pipe(
-                                clubs,
-                                RNEA.map(
-                                  club =>
-                                    html`<a href="${format(clubProfileMatch.formatter, { id: club })}"
-                                      >${getClubName(club)}</a
-                                    >`,
-                                ),
-                                formatList('en'),
-                              )}
-                            </dd>
-                          </div>
-                        `
-                      : ''}
-                  </dl>
-                `
-              : ''}
+            ${orcid ? renderOrcidProfile(orcid, slackUser, researchInterests, clubs) : ''}
           </div>
 
           ${avatar instanceof URL ? html` <img src="${avatar.href}" width="300" height="300" alt="" /> ` : ''}
@@ -107,16 +52,4 @@ export function createPage({
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
-}
-
-function formatList(
-  ...args: ConstructorParameters<typeof Intl.ListFormat>
-): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
-  const formatter = new Intl.ListFormat(...args)
-
-  return flow(
-    RNEA.map(item => html`${item}`.toString()),
-    list => formatter.format(list),
-    rawHtml,
-  )
 }
