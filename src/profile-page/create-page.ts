@@ -4,6 +4,7 @@ import type { Prereviews } from '.'
 import type { ClubId } from '../club-id'
 import { html, plainText } from '../html'
 import type { Page } from '../page'
+import type { Pseudonym } from '../pseudonym'
 import type { SlackUser } from '../slack-user'
 import type { NonEmptyString } from '../string'
 import { renderListOfPrereviews } from './render-list-of-prereviews'
@@ -64,7 +65,7 @@ function renderContentForOrcid({
 
 interface PseudonymProfile {
   type: 'pseudonym'
-  name: string
+  name: Pseudonym
   prereviews: Prereviews
 }
 
