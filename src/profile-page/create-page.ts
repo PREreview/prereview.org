@@ -93,7 +93,14 @@ function renderContentForOrcid({
 
     <h2>PREreviews</h2>
 
-    ${isOpenForRequests ? html` <div class="inset">${name} is happy to take requests for a PREreview.</div> ` : ''}
+    ${isOpenForRequests
+      ? html`
+          <div class="inset">
+            ${name} is happy to take requests for a PREreview.
+            ${slackUser ? html`They can be contacted on our Slack Community.` : ''}
+          </div>
+        `
+      : ''}
     ${renderListOfPrereviews(prereviews, name)}
   `
 }
