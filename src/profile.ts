@@ -175,6 +175,7 @@ function createPage({
   slackUser?: SlackUser
   user?: User
 }) {
+  const isOpenForRequests = orcid === '0000-0003-4921-6155'
   return page({
     title: plainText`${name}`,
     content: html`
@@ -241,9 +242,7 @@ function createPage({
 
         <h2>PREreviews</h2>
 
-        ${orcid === '0000-0003-4921-6155'
-          ? html` <div class="inset">${name} is happy to take requests for a PREreview.</div> `
-          : ''}
+        ${isOpenForRequests ? html` <div class="inset">${name} is happy to take requests for a PREreview.</div> ` : ''}
         ${pipe(
           prereviews,
           RA.match(
