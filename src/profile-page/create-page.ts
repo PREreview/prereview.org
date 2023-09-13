@@ -13,10 +13,14 @@ import { renderOrcidProfile } from './render-orcid-profile'
 export function createPage(profile: OrcidProfile | PseudonymProfile) {
   return {
     title: plainText`${profile.name}`,
-    content: match(profile)
-      .with({ type: 'orcid' }, renderContentForOrcid)
-      .with({ type: 'pseudonym' }, renderContentForPseudonym)
-      .exhaustive(),
+    content: html`
+      <main id="main-content">
+        ${match(profile)
+          .with({ type: 'orcid' }, renderContentForOrcid)
+          .with({ type: 'pseudonym' }, renderContentForPseudonym)
+          .exhaustive()}
+      </main>
+    `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
   } satisfies Page
 }
@@ -44,22 +48,20 @@ function renderContentForOrcid({
   prereviews,
 }: OrcidProfile) {
   return html`
-    <main id="main-content">
-      <div class="profile-header">
-        <div>
-          <h1>${name}</h1>
+    <div class="profile-header">
+      <div>
+        <h1>${name}</h1>
 
-          ${renderOrcidProfile(orcid, slackUser, researchInterests, clubs)}
-        </div>
-
-        ${avatar instanceof URL ? html` <img src="${avatar.href}" width="300" height="300" alt="" /> ` : ''}
+        ${renderOrcidProfile(orcid, slackUser, researchInterests, clubs)}
       </div>
 
-      <h2>PREreviews</h2>
+      ${avatar instanceof URL ? html` <img src="${avatar.href}" width="300" height="300" alt="" /> ` : ''}
+    </div>
 
-      ${isOpenForRequests ? html` <div class="inset">${name} is happy to take requests for a PREreview.</div> ` : ''}
-      ${renderListOfPrereviews(prereviews, name)}
-    </main>
+    <h2>PREreviews</h2>
+
+    ${isOpenForRequests ? html` <div class="inset">${name} is happy to take requests for a PREreview.</div> ` : ''}
+    ${renderListOfPrereviews(prereviews, name)}
   `
 }
 
@@ -71,16 +73,14 @@ interface PseudonymProfile {
 
 function renderContentForPseudonym({ name, prereviews }: PseudonymProfile) {
   return html`
-    <main id="main-content">
-      <div class="profile-header">
-        <div>
-          <h1>${name}</h1>
-        </div>
+    <div class="profile-header">
+      <div>
+        <h1>${name}</h1>
       </div>
+    </div>
 
-      <h2>PREreviews</h2>
+    <h2>PREreviews</h2>
 
-      ${renderListOfPrereviews(prereviews, name)}
-    </main>
+    ${renderListOfPrereviews(prereviews, name)}
   `
 }
