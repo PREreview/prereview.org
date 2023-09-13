@@ -1,10 +1,15 @@
+import { format } from 'fp-ts-routing'
+import * as RA from 'fp-ts/ReadonlyArray'
+import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
+import { flow, pipe } from 'fp-ts/function'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html'
+import { getClubName } from '../club-details'
+import { type Html, html, plainText, rawHtml } from '../html'
 import type { Page } from '../page'
+import { clubProfileMatch } from '../routes'
 import type { OrcidProfile } from './orcid-profile'
 import type { PseudonymProfile } from './pseudonym-profile'
 import { renderListOfPrereviews } from './render-list-of-prereviews'
-import { renderOrcidProfile } from './render-orcid-profile'
 
 export function createPage(profile: OrcidProfile | PseudonymProfile) {
   return {
@@ -36,7 +41,51 @@ function renderContentForOrcid({
       <div>
         <h1>${name}</h1>
 
-        ${renderOrcidProfile(orcid, slackUser, researchInterests, clubs)}
+        <dl class="summary-list">
+          <div>
+            <dt>ORCID iD</dt>
+            <dd><a href="https://orcid.org/${orcid}" class="orcid">${orcid}</a></dd>
+          </div>
+
+          ${slackUser
+            ? html`
+                <div>
+                  <dt>Slack Community name</dt>
+                  <dd>
+                    <span class="slack">
+                      <img src="${slackUser.image.href}" alt="" width="48" height="48" />
+                      <span>${slackUser.name}</span>
+                    </span>
+                  </dd>
+                </div>
+              `
+            : ''}
+          ${researchInterests
+            ? html`
+                <div>
+                  <dt>Research interests</dt>
+                  <dd>${researchInterests}</dd>
+                </div>
+              `
+            : ''}
+          ${RA.isNonEmpty(clubs)
+            ? html`
+                <div>
+                  <dt>Clubs</dt>
+                  <dd>
+                    ${pipe(
+                      clubs,
+                      RNEA.map(
+                        club =>
+                          html`<a href="${format(clubProfileMatch.formatter, { id: club })}">${getClubName(club)}</a>`,
+                      ),
+                      formatList('en'),
+                    )}
+                  </dd>
+                </div>
+              `
+            : ''}
+        </dl>
       </div>
 
       ${avatar instanceof URL ? html` <img src="${avatar.href}" width="300" height="300" alt="" /> ` : ''}
@@ -61,4 +110,16 @@ function renderContentForPseudonym({ name, prereviews }: PseudonymProfile) {
 
     ${renderListOfPrereviews(prereviews, name)}
   `
+}
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    RNEA.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
 }
