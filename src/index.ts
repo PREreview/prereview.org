@@ -120,7 +120,7 @@ createTerminus(server, {
 
 void Promise.resolve()
   .then(() => L.debug('Verifying cache')(loggerEnv)())
-  .then(() => cacache.verify('data/cache'))
+  .then(() => cacache.verify('data/cache', { concurrency: 5 }))
   .then((stats: JsonRecord) => L.debugP('Cache verified')(stats)(loggerEnv)())
   .catch((error: Error) => L.errorP('Failed to verify cache')({ error: error.message })(loggerEnv)())
 
