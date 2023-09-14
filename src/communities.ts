@@ -20,10 +20,10 @@ export const communities = pipe(
 
 function createPage({ content, user }: { content: Html; user?: User }) {
   return page({
-    title: plainText`Communities`,
+    title: plainText`Clubs`,
     content: html`
       <main id="main-content">
-        <h1>Communities</h1>
+        <h1>Clubs</h1>
 
         ${content}
       </main>

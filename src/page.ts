@@ -185,7 +185,7 @@ export function page({
                             <a
                               href="${format(communitiesMatch.formatter, {})}"
                               ${current === 'communities' ? html`aria-current="page"` : ''}
-                              >Communities</a
+                              >Clubs</a
                             >
                           </li>
                           <li>
