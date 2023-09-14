@@ -30,6 +30,7 @@ import type { ProfileId } from './profile-id'
 import {
   aboutUsMatch,
   codeOfConductMatch,
+  communitiesMatch,
   homeMatch,
   liveReviewsMatch,
   logInMatch,
@@ -197,7 +198,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('communities'), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
+      P.map(fromMiddlewareK(() => movedPermanently(format(communitiesMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('communities'), P.then(P.str('communityName')), P.then(query(C.partial({}))), P.then(P.end)).parser,

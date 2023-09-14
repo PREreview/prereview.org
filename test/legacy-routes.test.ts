@@ -20,6 +20,9 @@ describe('legacyRoutes', () => {
     ['/blog', 'https://content.prereview.org/'],
     ['/blog?articles_format=grid', 'https://content.prereview.org/'],
     ['/coc', '/code-of-conduct'],
+    ['/communities', '/clubs'],
+    ['/communities?page=1', '/clubs'],
+    ['/communities?search=&page=2&limit=10&offset=0', '/clubs'],
     ['/docs/about', '/about'],
     ['/docs/codeofconduct', '/code-of-conduct'],
     ['/docs/code_of_conduct', '/code-of-conduct'],
@@ -420,8 +423,6 @@ describe('legacyRoutes', () => {
   test.each([
     ['/admin'],
     ['/api/docs'],
-    ['/communities?page=1'],
-    ['/communities?search=&page=2&limit=10&offset=0'],
     ['/communities/africarxiv'],
     ['/communities/africarxiv?page=2'],
     ['/communities/africarxiv?page=2&limit=10&offset=0&search='],
