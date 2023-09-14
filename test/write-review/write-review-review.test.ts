@@ -6,16 +6,10 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import Keyv from 'keyv'
-import {
-  writeReviewAlreadyWrittenMatch,
-  writeReviewMatch,
-  writeReviewPublishMatch,
-  writeReviewReviewTypeMatch,
-} from '../../src/routes'
+import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
-import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
 
 describe('writeReviewReview', () => {
@@ -39,7 +33,6 @@ describe('writeReviewReview', () => {
 
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
-          canRapidReview: () => canRapidReview,
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
@@ -82,7 +75,6 @@ describe('writeReviewReview', () => {
 
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
-          canRapidReview: () => canRapidReview,
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
@@ -110,7 +102,6 @@ describe('writeReviewReview', () => {
     async (preprintId, preprintTitle, connection, user) => {
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
@@ -137,7 +128,6 @@ describe('writeReviewReview', () => {
     async (preprintId, connection, user) => {
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
@@ -161,7 +151,6 @@ describe('writeReviewReview', () => {
     async (preprintId, connection, user) => {
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
@@ -185,7 +174,6 @@ describe('writeReviewReview', () => {
     async (preprintId, preprintTitle, connection) => {
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
@@ -223,7 +211,6 @@ describe('writeReviewReview', () => {
 
     const actual = await runMiddleware(
       _.writeReviewReview(preprintId)({
-        canRapidReview: () => canRapidReview,
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
         getUser: () => M.of(user),
@@ -255,7 +242,6 @@ describe('writeReviewReview', () => {
 
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
-          canRapidReview: () => canRapidReview,
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
@@ -292,7 +278,6 @@ describe('writeReviewReview', () => {
 
       const actual = await runMiddleware(
         _.writeReviewReview(preprintId)({
-          canRapidReview: () => canRapidReview,
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
@@ -306,7 +291,7 @@ describe('writeReviewReview', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewAlreadyWrittenMatch.formatter, { id: preprintTitle.id }),
+            value: format(writeReviewReviewTypeMatch.formatter, { id: preprintTitle.id }),
           },
           { type: 'endResponse' },
         ]),

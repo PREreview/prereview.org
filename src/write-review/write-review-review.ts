@@ -9,18 +9,12 @@ import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
 import { P, match } from 'ts-pattern'
 import TurndownService from 'turndown'
-import { canRapidReview } from '../feature-flags'
 import { type InvalidE, type MissingE, hasAnError, invalidE, missingE } from '../form'
 import { type Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import {
-  writeReviewAlreadyWrittenMatch,
-  writeReviewMatch,
-  writeReviewReviewMatch,
-  writeReviewReviewTypeMatch,
-} from '../routes'
+import { writeReviewMatch, writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../routes'
 import { NonEmptyStringC } from '../string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
@@ -38,25 +32,22 @@ export const writeReviewReview = flow(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
-      RM.bindW(
-        'canRapidReview',
-        fromReaderK(({ user }) => canRapidReview(user)),
-      ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
           .with(
-            { form: { alreadyWritten: 'no', reviewType: 'questions' } },
+            {
+              form: P.union(
+                { alreadyWritten: P.optional(undefined) },
+                { alreadyWritten: 'no', reviewType: 'questions' },
+              ),
+            },
             fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
           )
           .with({ method: 'POST', form: { alreadyWritten: 'yes' } }, handlePasteReviewForm)
           .with({ method: 'POST', form: { alreadyWritten: 'no' } }, handleWriteReviewForm)
           .with({ form: { alreadyWritten: 'yes' } }, showPasteReviewForm)
           .with({ form: { alreadyWritten: 'no' } }, showWriteReviewForm)
-          .with(
-            { form: { alreadyWritten: P.optional(undefined) } },
-            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
-          )
           .exhaustive(),
       ),
       RM.orElseW(error =>
@@ -80,18 +71,8 @@ export const writeReviewReview = flow(
 )
 
 const showWriteReviewForm = flow(
-  fromReaderK(
-    ({
-      canRapidReview,
-      form,
-      preprint,
-      user,
-    }: {
-      canRapidReview: boolean
-      form: Form
-      preprint: PreprintTitle
-      user: User
-    }) => writeReviewForm(preprint, { review: E.right(form.review) }, user, canRapidReview),
+  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+    writeReviewForm(preprint, { review: E.right(form.review) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -99,7 +80,7 @@ const showWriteReviewForm = flow(
 
 const showWriteReviewErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form, user, true)),
+    fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -186,7 +167,7 @@ interface PasteReviewForm {
   readonly review: E.Either<MissingE, Html | undefined>
 }
 
-function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm, user: User, canRapidReview: boolean) {
+function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm, user: User) {
   const error = hasAnError(form)
 
   return page({
@@ -194,7 +175,7 @@ function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm, user: U
     content: html`
       <nav>
         <a
-          href="${format((canRapidReview ? writeReviewReviewTypeMatch : writeReviewAlreadyWrittenMatch).formatter, {
+          href="${format(writeReviewReviewTypeMatch.formatter, {
             id: preprint.id,
           })}"
           class="back"
@@ -340,7 +321,7 @@ function pasteReviewForm(preprint: PreprintTitle, form: PasteReviewForm, user: U
     title: plainText`${error ? 'Error: ' : ''}Paste your PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">

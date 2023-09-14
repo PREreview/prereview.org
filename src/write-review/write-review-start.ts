@@ -13,7 +13,7 @@ import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { type FathomEnv, type PhaseEnv, page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import type { PublicUrlEnv } from '../public-url'
-import { preprintReviewsMatch, writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../routes'
+import { preprintReviewsMatch, writeReviewReviewTypeMatch, writeReviewStartMatch } from '../routes'
 import { type GetUserEnv, type User, getUser } from '../user'
 import { type Form, getForm, nextFormMatch } from './form'
 
@@ -41,7 +41,7 @@ export const writeReviewStart = flow(
           >()
           .with(
             'no-form',
-            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
+            fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
           )
           .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { id: preprint.id }))
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)

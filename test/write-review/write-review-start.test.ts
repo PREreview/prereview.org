@@ -6,7 +6,7 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
 import Keyv from 'keyv'
-import { writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../../src/routes'
+import { writeReviewReviewTypeMatch, writeReviewStartMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
@@ -66,7 +66,7 @@ describe('writeReviewStart', () => {
             {
               type: 'setHeader',
               name: 'Location',
-              value: format(writeReviewAlreadyWrittenMatch.formatter, { id: preprintTitle.id }),
+              value: format(writeReviewReviewTypeMatch.formatter, { id: preprintTitle.id }),
             },
             { type: 'endResponse' },
           ]),
