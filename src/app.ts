@@ -36,7 +36,6 @@ import { codeOfConduct } from './code-of-conduct'
 import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
-import type { CanRapidReviewEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
@@ -162,8 +161,7 @@ import {
   getRecentPrereviewsFromZenodo,
 } from './zenodo'
 
-export type AppEnv = CanRapidReviewEnv &
-  CareerStageStoreEnv &
+export type AppEnv = CareerStageStoreEnv &
   CloudinaryApiEnv &
   FathomEnv &
   FormStoreEnv &

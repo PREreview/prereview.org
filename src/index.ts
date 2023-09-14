@@ -40,7 +40,6 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
 const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
-  canRapidReview: () => true,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
