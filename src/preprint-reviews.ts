@@ -236,7 +236,10 @@ function createPage({
       <main id="prereviews">
         ${pipe(
           rapidPrereviews,
-          RA.matchW(() => '', showRapidPrereviews),
+          RA.matchW(
+            () => '',
+            rapidPrereviews => showRapidPrereviews(rapidPrereviews, preprint),
+          ),
         )}
 
         <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
@@ -293,7 +296,7 @@ function showReview(review: Prereview) {
   `
 }
 
-function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview>): Html {
+function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview>, preprint: Preprint): Html {
   return html`
     <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
 
@@ -307,9 +310,18 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
 
       <div>
         <p>
-          We haven’t yet added the form to the new version of PREreview as we’re looking to improve how Rapid PREreviews
-          work; if you could help, please <a href="mailto:contact@prereview.org">get in touch</a>.
+          We’ve recently replaced Rapid PREreviews with
+          <a href="https://content.prereview.org/introducing-structured-prereviews-on-prereview-org/"
+            >Structured PREreviews</a
+          >.
         </p>
+
+        <p>
+          You can
+          <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}">write a Structured PREreview</a> now.
+        </p>
+
+        <p>We’ll be updating older Rapid PREreviews like these soon.</p>
       </div>
     </details>
 
