@@ -8,7 +8,6 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
 import { P, match } from 'ts-pattern'
-import { canRapidReview } from '../feature-flags'
 import {
   type FieldDecoders,
   type Fields,
@@ -42,16 +41,6 @@ export const writeReviewNovel = flow(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
-      RM.bindW(
-        'canRapidReview',
-        flow(
-          fromReaderK(({ user }) => canRapidReview(user)),
-          RM.filterOrElse(
-            canRapidReview => canRapidReview,
-            () => 'not-found' as const,
-          ),
-        ),
-      ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
@@ -69,7 +58,6 @@ export const writeReviewNovel = flow(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
-          .with('not-found', () => notFound)
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
       ),

@@ -23,37 +23,33 @@ describe('writeReviewReview', () => {
         fc.tuple(fc.constant(review), fc.connection({ body: fc.constant({ review }), method: fc.constant('POST') })),
       ),
     fc.user(),
-    fc.boolean(),
     fc.completedFreeformForm(),
-  ])(
-    'when the form is completed',
-    async (preprintId, preprintTitle, [review, connection], user, canRapidReview, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+  ])('when the form is completed', async (preprintId, preprintTitle, [review, connection], user, newReview) => {
+    const formStore = new Keyv()
+    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-      const actual = await runMiddleware(
-        _.writeReviewReview(preprintId)({
-          formStore,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewReview(preprintId)({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getUser: () => M.of(user),
+      }),
+      connection,
+    )()
 
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ review })
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
+    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ review })
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.SeeOther },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+  })
 
   test.prop([
     fc.indeterminatePreprintId(),
@@ -65,37 +61,33 @@ describe('writeReviewReview', () => {
         fc.tuple(fc.constant(review), fc.connection({ body: fc.constant({ review }), method: fc.constant('POST') })),
       ),
     fc.user(),
-    fc.boolean(),
     fc.incompleteFreeformForm(),
-  ])(
-    'when the form is incomplete',
-    async (preprintId, preprintTitle, [review, connection], user, canRapidReview, newReview) => {
-      const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+  ])('when the form is incomplete', async (preprintId, preprintTitle, [review, connection], user, newReview) => {
+    const formStore = new Keyv()
+    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-      const actual = await runMiddleware(
-        _.writeReviewReview(preprintId)({
-          formStore,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.of(user),
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.writeReviewReview(preprintId)({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getUser: () => M.of(user),
+      }),
+      connection,
+    )()
 
-      expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ review })
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
+    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ review })
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.SeeOther },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+  })
 
   test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user()])(
     'when there is no form',
@@ -203,9 +195,8 @@ describe('writeReviewReview', () => {
       method: fc.constant('POST'),
     }),
     fc.user(),
-    fc.boolean(),
     fc.freeformForm(),
-  ])('without a review', async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
+  ])('without a review', async (preprintId, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -227,16 +218,9 @@ describe('writeReviewReview', () => {
     )
   })
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection(),
-    fc.user(),
-    fc.boolean(),
-    fc.questionsForm(),
-  ])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user(), fc.questionsForm()])(
     'when you said you want to answer questions',
-    async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
+    async (preprintId, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -263,16 +247,9 @@ describe('writeReviewReview', () => {
     },
   )
 
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.connection(),
-    fc.user(),
-    fc.boolean(),
-    fc.unknownFormType(),
-  ])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user(), fc.unknownFormType()])(
     'without saying if you have already written the PREreview',
-    async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
+    async (preprintId, preprintTitle, connection, user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 

@@ -8,7 +8,6 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { canRapidReview } from '../feature-flags'
 import { type MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
@@ -25,16 +24,6 @@ export const writeReviewReviewType = flow(
       RM.right({ preprint }),
       RM.apS('user', getUser),
       RM.bindW(
-        'canRapidReview',
-        flow(
-          fromReaderK(({ user }) => canRapidReview(user)),
-          RM.filterOrElse(
-            canRapidReview => canRapidReview,
-            () => 'not-found' as const,
-          ),
-        ),
-      ),
-      RM.bindW(
         'form',
         flow(
           RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -45,7 +34,6 @@ export const writeReviewReviewType = flow(
       RM.ichainW(state => match(state).with({ method: 'POST' }, handleReviewTypeForm).otherwise(showReviewTypeForm)),
       RM.orElseW(error =>
         match(error)
-          .with('not-found', () => notFound)
           .with(
             'no-session',
             fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
