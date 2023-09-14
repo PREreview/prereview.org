@@ -1,4 +1,4 @@
-import type { Doi } from 'doi-ts'
+import { type Doi, isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/Monoid'
@@ -14,12 +14,18 @@ import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
-import { match } from 'ts-pattern'
+import { match, P as p } from 'ts-pattern'
 import { type Uuid, isUuid } from 'uuid-ts'
 import { html, plainText, sendHtml } from './html'
 import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
-import type { ArxivPreprintId, IndeterminatePreprintId } from './preprint-id'
+import {
+  type ArxivPreprintId,
+  type IndeterminatePreprintId,
+  type PhilsciPreprintId,
+  PreprintDoiD,
+  fromPreprintDoi,
+} from './preprint-id'
 import type { ProfileId } from './profile-id'
 import {
   aboutUsMatch,
@@ -32,6 +38,7 @@ import {
   profileMatch,
   reviewAPreprintMatch,
   reviewsMatch,
+  writeReviewReviewTypeMatch,
 } from './routes'
 import { type GetUserEnv, type User, maybeGetUser } from './user'
 
@@ -88,6 +95,52 @@ const ArxivPreprintIdC = C.make(
     encode: id => `philsci-${id.value}`,
   },
 )
+
+const PreprintDoiC = C.make(
+  pipe(
+    D.string,
+    D.parse(s => {
+      const [, match] = s.match(/^doi-(.+)$/) ?? []
+
+      if (typeof match === 'string' && match.toLowerCase() === match) {
+        return pipe(PreprintDoiD, D.map(fromPreprintDoi)).decode(match.replaceAll('-', '/').replaceAll('+', '-'))
+      }
+
+      return D.failure(s, 'DOI')
+    }),
+  ),
+  {
+    encode: id => `doi-${id.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
+  },
+)
+
+const PreprintPhilsciC = C.make(
+  pipe(
+    D.string,
+    D.parse(s => {
+      const [, match] = s.match(/^philsci-([1-9][0-9]*)$/) ?? []
+
+      if (typeof match === 'string') {
+        return D.success({ type: 'philsci', value: parseInt(match, 10) } satisfies PhilsciPreprintId)
+      }
+
+      return D.failure(s, 'ID')
+    }),
+  ),
+  {
+    encode: id => `philsci-${id.value}`,
+  },
+)
+
+// Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
+// Refs https://github.com/gcanti/io-ts/issues/625#issuecomment-1007478009
+const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
+  encode: id =>
+    match(id)
+      .with({ type: 'philsci' }, PreprintPhilsciC.encode)
+      .with({ value: p.when(isDoi) }, PreprintDoiC.encode)
+      .exhaustive(),
+})
 
 const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
@@ -201,6 +254,20 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('preprint-journal-clubs'), P.then(P.end)).parser,
       P.map(fromMiddlewareK(() => movedPermanently(format(liveReviewsMatch.formatter, {})))),
+    ),
+    pipe(
+      pipe(
+        P.lit('preprints'),
+        P.then(type('preprintId', PreprintIdC)),
+        P.then(P.lit('write-a-prereview')),
+        P.then(P.lit('already-written')),
+        P.then(P.end),
+      ).parser,
+      P.map(
+        fromMiddlewareK(({ preprintId }) =>
+          movedPermanently(format(writeReviewReviewTypeMatch.formatter, { id: preprintId })),
+        ),
+      ),
     ),
     pipe(
       pipe(P.lit('preprints'), P.then(type('preprintId', ArxivPreprintIdC)), P.then(P.end)).parser,

@@ -30,7 +30,18 @@ describe('legacyRoutes', () => {
     ['/login?next=/10.1101/2020.03.24.004655', '/log-in'],
     ['/logout', '/log-out'],
     ['/preprint-journal-clubs', '/live-reviews'],
-    ['/preprints/arxiv-2204.09673', '/preprints/doi-10.48550-arxiv.2204.09673'],
+    [
+      '/preprints/doi-10.1101-2022.02.14.480364/write-a-prereview/already-written',
+      '/preprints/doi-10.1101-2022.02.14.480364/write-a-prereview/review-type',
+    ],
+    [
+      '/preprints/doi-10.1590-a+b-c/write-a-prereview/already-written',
+      '/preprints/doi-10.1590-a%2Bb-c/write-a-prereview/review-type',
+    ],
+    [
+      '/preprints/philsci-22206/write-a-prereview/already-written',
+      '/preprints/philsci-22206/write-a-prereview/review-type',
+    ],
     ['/preprints/arxiv-1312.0906', '/preprints/doi-10.48550-arxiv.1312.0906'],
     ['/preprints/arXiv-2106.14108', '/preprints/doi-10.48550-arxiv.2106.14108'],
     ['/prereview.org', '/'],

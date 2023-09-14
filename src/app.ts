@@ -106,7 +106,6 @@ import {
   reviewsMatch,
   trainingsMatch,
   writeReviewAddAuthorsMatch,
-  writeReviewAlreadyWrittenMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
@@ -135,7 +134,6 @@ import {
   type NewPrereview,
   writeReview,
   writeReviewAddAuthors,
-  writeReviewAlreadyWritten,
   writeReviewAuthors,
   writeReviewCompetingInterests,
   writeReviewConduct,
@@ -376,10 +374,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       writeReviewStartMatch.parser,
       P.map(({ id }) => writeReviewStart(id)),
-    ),
-    pipe(
-      writeReviewAlreadyWrittenMatch.parser,
-      P.map(({ id }) => writeReviewAlreadyWritten(id)),
     ),
     pipe(
       writeReviewReviewTypeMatch.parser,
