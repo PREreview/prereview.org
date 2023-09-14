@@ -5,17 +5,15 @@ import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import type { SessionEnv } from 'hyper-ts-session'
+import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import type { CanRapidReviewEnv } from '../feature-flags'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { type FathomEnv, type PhaseEnv, page } from '../page'
+import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { isPseudonym } from '../pseudonym'
 import {
@@ -37,9 +35,9 @@ import {
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
 } from '../routes'
-import { type GetUserEnv, type User, getUser } from '../user'
+import { type User, getUser } from '../user'
 import { type CompletedForm, CompletedFormC } from './completed-form'
-import { type Form, type FormStoreEnv, deleteForm, getForm, redirectToNextForm, saveForm } from './form'
+import { type Form, deleteForm, getForm, redirectToNextForm, saveForm } from './form'
 import { storeInformationForWriteReviewPublishedPage } from './published-review'
 
 export interface NewPrereview {
@@ -69,15 +67,6 @@ export const writeReviewPublish = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
-          .returnType<
-            RM.ReaderMiddleware<
-              CanRapidReviewEnv & FathomEnv & FormStoreEnv & GetUserEnv & PhaseEnv & PublishPrereviewEnv & SessionEnv,
-              StatusOpen,
-              ResponseEnded,
-              never,
-              void
-            >
-          >()
           .with(
             P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
             ({ originalForm }) => redirectToNextForm(preprint.id)(originalForm),

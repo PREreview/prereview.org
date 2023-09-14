@@ -55,7 +55,6 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
@@ -131,7 +130,6 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
@@ -186,17 +184,9 @@ describe('writeReviewPublish', () => {
     ),
     fc.incompleteForm(),
     fc.user(),
-    fc.boolean(),
   ])(
     'when the form is incomplete',
-    async (
-      preprintId,
-      preprintTitle,
-      [connection, sessionCookie, sessionId, secret],
-      newPrereview,
-      user,
-      canRapidReview,
-    ) => {
+    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newPrereview, user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
@@ -204,7 +194,6 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
-          canRapidReview: () => canRapidReview,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           formStore,
@@ -252,7 +241,6 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           formStore: new Keyv(),
@@ -297,7 +285,6 @@ describe('writeReviewPublish', () => {
 
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({
-        canRapidReview: shouldNotBeCalled,
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left('unavailable'),
         getUser: () => M.of(user),
@@ -338,7 +325,6 @@ describe('writeReviewPublish', () => {
 
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({
-        canRapidReview: shouldNotBeCalled,
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left('not-found'),
         getUser: () => M.of(user),
@@ -365,7 +351,6 @@ describe('writeReviewPublish', () => {
     async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
           formStore: new Keyv(),
@@ -418,7 +403,6 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           formStore,
