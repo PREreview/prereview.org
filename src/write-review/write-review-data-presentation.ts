@@ -103,7 +103,7 @@ const handleDataPresentationForm = ({ form, preprint, user }: { form: Form; prep
     RM.decodeBody(decodeFields(dataPresentationFields)),
     RM.map(updateFormWithFields(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainW(redirectToNextForm(preprint.id)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)

@@ -1,17 +1,16 @@
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import { Status, type StatusOpen } from 'hyper-ts'
 import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
-import type { CanRapidReviewEnv } from '../feature-flags'
 import { html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { type FathomEnv, type PhaseEnv, page } from '../page'
+import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
-import { type GetUserEnv, type User, getUser } from '../user'
+import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm } from './form'
 
 export const writeReviewAddAuthors = flow(
@@ -27,16 +26,7 @@ export const writeReviewAddAuthors = flow(
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
-          .returnType<
-            RM.ReaderMiddleware<
-              CanRapidReviewEnv & FathomEnv & GetUserEnv & PhaseEnv,
-              StatusOpen,
-              ResponseEnded,
-              never,
-              void
-            >
-          >()
-          .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleCannotAddAuthorsForm)
+          .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, fromMiddlewareK(handleCannotAddAuthorsForm))
           .with({ form: { moreAuthors: 'yes' } }, showCannotAddAuthorsForm)
           .otherwise(() => notFound),
       ),

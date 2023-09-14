@@ -69,7 +69,7 @@ export const writeReviewPublish = flow(
         match(state)
           .with(
             P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
-            ({ originalForm }) => redirectToNextForm(preprint.id)(originalForm),
+            ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(preprint.id)(originalForm)),
           )
           .with({ method: 'POST', form: P.when(E.isRight) }, ({ form, ...state }) =>
             handlePublishForm({ ...state, form: form.right }),

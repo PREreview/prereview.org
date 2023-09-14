@@ -2,14 +2,10 @@ import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import type { JsonRecord } from 'fp-ts/Json'
-import * as R from 'fp-ts/Reader'
-import type { Reader } from 'fp-ts/Reader'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
-import type { StatusOpen } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
@@ -102,49 +98,38 @@ export function deleteForm(
 }
 
 export const nextFormMatch = (form: Form) =>
-  R.of(
-    match(form)
-      .with(
-        { alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
-        () => writeReviewReviewTypeMatch,
-      )
-      .with(
-        { reviewType: 'questions', introductionMatches: P.optional(undefined) },
-        () => writeReviewIntroductionMatchesMatch,
-      )
-      .with(
-        { reviewType: 'questions', methodsAppropriate: P.optional(undefined) },
-        () => writeReviewMethodsAppropriateMatch,
-      )
-      .with(
-        { reviewType: 'questions', resultsSupported: P.optional(undefined) },
-        () => writeReviewResultsSupportedMatch,
-      )
-      .with(
-        { reviewType: 'questions', dataPresentation: P.optional(undefined) },
-        () => writeReviewDataPresentationMatch,
-      )
-      .with(
-        { reviewType: 'questions', findingsNextSteps: P.optional(undefined) },
-        () => writeReviewFindingsNextStepsMatch,
-      )
-      .with({ reviewType: 'questions', novel: P.optional(undefined) }, () => writeReviewNovelMatch)
-      .with({ reviewType: 'questions', languageEditing: P.optional(undefined) }, () => writeReviewLanguageEditingMatch)
-      .with({ reviewType: 'questions', shouldRead: P.optional(undefined) }, () => writeReviewShouldReadMatch)
-      .with({ reviewType: 'questions', readyFullReview: P.optional(undefined) }, () => writeReviewReadyFullReviewMatch)
-      .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
-      .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
-      .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
-      .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
-      .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
-      .otherwise(() => writeReviewPublishMatch),
-  )
+  match(form)
+    .with(
+      { alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
+      () => writeReviewReviewTypeMatch,
+    )
+    .with(
+      { reviewType: 'questions', introductionMatches: P.optional(undefined) },
+      () => writeReviewIntroductionMatchesMatch,
+    )
+    .with(
+      { reviewType: 'questions', methodsAppropriate: P.optional(undefined) },
+      () => writeReviewMethodsAppropriateMatch,
+    )
+    .with({ reviewType: 'questions', resultsSupported: P.optional(undefined) }, () => writeReviewResultsSupportedMatch)
+    .with({ reviewType: 'questions', dataPresentation: P.optional(undefined) }, () => writeReviewDataPresentationMatch)
+    .with(
+      { reviewType: 'questions', findingsNextSteps: P.optional(undefined) },
+      () => writeReviewFindingsNextStepsMatch,
+    )
+    .with({ reviewType: 'questions', novel: P.optional(undefined) }, () => writeReviewNovelMatch)
+    .with({ reviewType: 'questions', languageEditing: P.optional(undefined) }, () => writeReviewLanguageEditingMatch)
+    .with({ reviewType: 'questions', shouldRead: P.optional(undefined) }, () => writeReviewShouldReadMatch)
+    .with({ reviewType: 'questions', readyFullReview: P.optional(undefined) }, () => writeReviewReadyFullReviewMatch)
+    .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
+    .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
+    .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
+    .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
+    .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
+    .otherwise(() => writeReviewPublishMatch)
 
 export const redirectToNextForm = (preprint: PreprintId) =>
-  flow(
-    fromReaderK(nextFormMatch),
-    RM.ichainMiddlewareK(flow(match => format(match.formatter, { id: preprint }), seeOther)),
-  )
+  flow(nextFormMatch, match => format(match.formatter, { id: preprint }), seeOther)
 
 export const FormC = pipe(
   C.partial({
@@ -251,10 +236,3 @@ export const FormC = pipe(
     identity,
   ),
 )
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
-}

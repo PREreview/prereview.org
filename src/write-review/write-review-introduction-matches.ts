@@ -98,7 +98,7 @@ const handleIntroductionMatchesForm = ({ form, preprint, user }: { form: Form; p
     RM.decodeBody(decodeFields(introductionMatchesFields)),
     RM.map(updateFormWithFields(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainW(redirectToNextForm(preprint.id)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
