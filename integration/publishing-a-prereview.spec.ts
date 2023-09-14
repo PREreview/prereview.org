@@ -1453,6 +1453,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('I’ve already written the review').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('I’ve already written the review')).toBeChecked()
+
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()

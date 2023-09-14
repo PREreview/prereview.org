@@ -53,7 +53,11 @@ export const writeReviewReviewType = flow(
 
 const showReviewTypeForm = flow(
   fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    reviewTypeForm(preprint, { reviewType: E.right(form.reviewType) }, user),
+    reviewTypeForm(
+      preprint,
+      { reviewType: E.right(form.alreadyWritten === 'yes' ? 'already-written' : form.reviewType) },
+      user,
+    ),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
