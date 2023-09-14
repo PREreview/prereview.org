@@ -108,7 +108,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
           { form: { moreAuthors: 'yes' } },
           fromMiddlewareK(() => seeOther(format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }))),
         )
-        .otherwise(({ form }) => redirectToNextForm(preprint.id)(form, user)),
+        .otherwise(({ form }) => redirectToNextForm(preprint.id)(form)),
     ),
     RM.orElseW(error =>
       match(error)

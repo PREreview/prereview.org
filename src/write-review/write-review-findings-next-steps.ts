@@ -103,7 +103,7 @@ const handleFindingsNextStepsForm = ({ form, preprint, user }: { form: Form; pre
     RM.decodeBody(decodeFields(findingsNextStepsFields)),
     RM.map(updateFormWithFields(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
+    RM.ichainW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)

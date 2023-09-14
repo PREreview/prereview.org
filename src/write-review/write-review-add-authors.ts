@@ -66,8 +66,8 @@ const showCannotAddAuthorsForm = flow(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const handleCannotAddAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-  redirectToNextForm(preprint.id)(form, user)
+const handleCannotAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
+  redirectToNextForm(preprint.id)(form)
 
 function cannotAddAuthorsForm(preprint: PreprintTitle, user: User) {
   return page({

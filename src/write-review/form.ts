@@ -14,12 +14,10 @@ import * as C from 'io-ts/Codec'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import { canRapidReview } from '../feature-flags'
 import { RawHtmlC } from '../html'
 import { seeOther } from '../middleware'
 import type { PreprintId } from '../preprint-id'
 import {
-  writeReviewAlreadyWrittenMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
@@ -38,7 +36,6 @@ import {
   writeReviewShouldReadMatch,
 } from '../routes'
 import { NonEmptyStringC } from '../string'
-import type { User } from '../user'
 
 export type Form = C.TypeOf<typeof FormC>
 
@@ -104,56 +101,43 @@ export function deleteForm(
   )
 }
 
-export const nextFormMatch = (form: Form, user: User) =>
-  pipe(
-    canRapidReview(user),
-    R.map(canRapidReview =>
-      match({ ...form, canRapidReview })
-        .with(
-          { canRapidReview: false, alreadyWritten: P.optional(undefined), review: P.optional(undefined) },
-          () => writeReviewAlreadyWrittenMatch,
-        )
-        .with(
-          { canRapidReview: true, alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
-          () => writeReviewReviewTypeMatch,
-        )
-        .with(
-          { reviewType: 'questions', introductionMatches: P.optional(undefined) },
-          () => writeReviewIntroductionMatchesMatch,
-        )
-        .with(
-          { reviewType: 'questions', methodsAppropriate: P.optional(undefined) },
-          () => writeReviewMethodsAppropriateMatch,
-        )
-        .with(
-          { reviewType: 'questions', resultsSupported: P.optional(undefined) },
-          () => writeReviewResultsSupportedMatch,
-        )
-        .with(
-          { reviewType: 'questions', dataPresentation: P.optional(undefined) },
-          () => writeReviewDataPresentationMatch,
-        )
-        .with(
-          { reviewType: 'questions', findingsNextSteps: P.optional(undefined) },
-          () => writeReviewFindingsNextStepsMatch,
-        )
-        .with({ reviewType: 'questions', novel: P.optional(undefined) }, () => writeReviewNovelMatch)
-        .with(
-          { reviewType: 'questions', languageEditing: P.optional(undefined) },
-          () => writeReviewLanguageEditingMatch,
-        )
-        .with({ reviewType: 'questions', shouldRead: P.optional(undefined) }, () => writeReviewShouldReadMatch)
-        .with(
-          { reviewType: 'questions', readyFullReview: P.optional(undefined) },
-          () => writeReviewReadyFullReviewMatch,
-        )
-        .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
-        .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
-        .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
-        .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
-        .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
-        .otherwise(() => writeReviewPublishMatch),
-    ),
+export const nextFormMatch = (form: Form) =>
+  R.of(
+    match(form)
+      .with(
+        { alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
+        () => writeReviewReviewTypeMatch,
+      )
+      .with(
+        { reviewType: 'questions', introductionMatches: P.optional(undefined) },
+        () => writeReviewIntroductionMatchesMatch,
+      )
+      .with(
+        { reviewType: 'questions', methodsAppropriate: P.optional(undefined) },
+        () => writeReviewMethodsAppropriateMatch,
+      )
+      .with(
+        { reviewType: 'questions', resultsSupported: P.optional(undefined) },
+        () => writeReviewResultsSupportedMatch,
+      )
+      .with(
+        { reviewType: 'questions', dataPresentation: P.optional(undefined) },
+        () => writeReviewDataPresentationMatch,
+      )
+      .with(
+        { reviewType: 'questions', findingsNextSteps: P.optional(undefined) },
+        () => writeReviewFindingsNextStepsMatch,
+      )
+      .with({ reviewType: 'questions', novel: P.optional(undefined) }, () => writeReviewNovelMatch)
+      .with({ reviewType: 'questions', languageEditing: P.optional(undefined) }, () => writeReviewLanguageEditingMatch)
+      .with({ reviewType: 'questions', shouldRead: P.optional(undefined) }, () => writeReviewShouldReadMatch)
+      .with({ reviewType: 'questions', readyFullReview: P.optional(undefined) }, () => writeReviewReadyFullReviewMatch)
+      .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
+      .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
+      .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
+      .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
+      .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
+      .otherwise(() => writeReviewPublishMatch),
   )
 
 export const redirectToNextForm = (preprint: PreprintId) =>

@@ -66,7 +66,7 @@ const showCarryOnPage = flow(
 
 function carryOnPage(preprint: PreprintTitle, form: Form, user: User) {
   return pipe(
-    nextFormMatch(form, user),
+    nextFormMatch(form),
     R.chainW(nextFormMatch =>
       page({
         title: plainText`Write a PREreview`,

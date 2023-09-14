@@ -11,7 +11,6 @@ import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
-import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
 
 describe('writeReviewConduct', () => {
@@ -20,15 +19,13 @@ describe('writeReviewConduct', () => {
     fc.preprintTitle(),
     fc.connection({ body: fc.record({ conduct: fc.conduct() }), method: fc.constant('POST') }),
     fc.user(),
-    fc.boolean(),
     fc.completedForm(),
-  ])('when the form is completed', async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
+  ])('when the form is completed', async (preprintId, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
 
     const actual = await runMiddleware(
       _.writeReviewConduct(preprintId)({
-        canRapidReview: () => canRapidReview,
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
         getUser: () => M.of(user),
@@ -55,15 +52,13 @@ describe('writeReviewConduct', () => {
     fc.preprintTitle(),
     fc.connection({ body: fc.record({ conduct: fc.conduct() }), method: fc.constant('POST') }),
     fc.user(),
-    fc.boolean(),
     fc.incompleteForm(),
-  ])('when the form is incomplete', async (preprintId, preprintTitle, connection, user, canRapidReview, newReview) => {
+  ])('when the form is incomplete', async (preprintId, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
     const actual = await runMiddleware(
       _.writeReviewConduct(preprintId)({
-        canRapidReview: () => canRapidReview,
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
         getUser: () => M.of(user),
@@ -90,7 +85,6 @@ describe('writeReviewConduct', () => {
     async (preprintId, preprintTitle, connection, user) => {
       const actual = await runMiddleware(
         _.writeReviewConduct(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
@@ -117,7 +111,6 @@ describe('writeReviewConduct', () => {
     async (preprintId, connection, user) => {
       const actual = await runMiddleware(
         _.writeReviewConduct(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
@@ -141,7 +134,6 @@ describe('writeReviewConduct', () => {
     async (preprintId, connection, user) => {
       const actual = await runMiddleware(
         _.writeReviewConduct(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
@@ -165,7 +157,6 @@ describe('writeReviewConduct', () => {
     async (preprintId, preprintTitle, connection) => {
       const actual = await runMiddleware(
         _.writeReviewConduct(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
@@ -202,7 +193,6 @@ describe('writeReviewConduct', () => {
 
     const actual = await runMiddleware(
       _.writeReviewConduct(preprintId)({
-        canRapidReview: shouldNotBeCalled,
         formStore,
         getPreprintTitle: () => TE.right(preprintTitle),
         getUser: () => M.of(user),

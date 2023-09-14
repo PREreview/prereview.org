@@ -10,7 +10,6 @@ import { writeReviewAlreadyWrittenMatch, writeReviewStartMatch } from '../../src
 import * as _ from '../../src/write-review'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
-import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
 
 describe('writeReviewStart', () => {
@@ -23,41 +22,35 @@ describe('writeReviewStart', () => {
       fc.connection(),
       fc.form(),
       fc.user(),
-      fc.boolean(),
-    ])(
-      'there is a form',
-      async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, canRapidReview) => {
-        const formStore = new Keyv()
-        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    ])('there is a form', async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-        const actual = await runMiddleware(
-          _.writeReviewStart(preprintId)({
-            canRapidReview: () => canRapidReview,
-            formStore,
-            getPreprintTitle: () => TE.right(preprintTitle),
-            getUser: () => M.of(user),
-            oauth,
-            publicUrl,
-          }),
-          connection,
-        )()
+      const actual = await runMiddleware(
+        _.writeReviewStart(preprintId)({
+          formStore,
+          getPreprintTitle: () => TE.right(preprintTitle),
+          getUser: () => M.of(user),
+          oauth,
+          publicUrl,
+        }),
+        connection,
+      )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.OK },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.OK },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
 
     test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user()])(
       "there isn't a form",
       async (oauth, publicUrl, preprintId, preprintTitle, connection, user) => {
         const actual = await runMiddleware(
           _.writeReviewStart(preprintId)({
-            canRapidReview: shouldNotBeCalled,
             formStore: new Keyv(),
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
@@ -87,7 +80,6 @@ describe('writeReviewStart', () => {
     async (oauth, publicUrl, preprintId, preprintTitle, connection) => {
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
@@ -125,7 +117,6 @@ describe('writeReviewStart', () => {
     async (oauth, publicUrl, preprintId, connection) => {
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.left('no-session'),
@@ -159,7 +150,6 @@ describe('writeReviewStart', () => {
     async (oauth, publicUrl, preprintId, connection, sessionCookie, secret, user) => {
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
-          canRapidReview: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
