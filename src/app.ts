@@ -42,6 +42,7 @@ import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
 import { handleError } from './http-error'
+import type { IsOpenForRequests } from './is-open-for-requests'
 import {
   type CareerStageStoreEnv,
   type ResearchInterestsStoreEnv,
@@ -524,7 +525,12 @@ const getSlackUser = flow(
 )
 
 const isOpenForRequests = (orcid: Orcid) =>
-  orcid === '0000-0003-4921-6155' ? TE.right(true) : TE.left('not-found' as const)
+  orcid === '0000-0003-4921-6155'
+    ? TE.right({
+        value: true,
+        visibility: 'public',
+      } satisfies IsOpenForRequests)
+    : TE.left('not-found' as const)
 
 const getUser = pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))
 

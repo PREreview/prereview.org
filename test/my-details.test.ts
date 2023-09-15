@@ -19,7 +19,7 @@ describe('myDetails', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
-      fc.either(fc.constant('not-found' as const), fc.boolean()),
+      fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
     ])(
@@ -123,7 +123,7 @@ describe('myDetails', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
-      fc.either(fc.constant('not-found' as const), fc.boolean()),
+      fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
     ])(
       'when the career stage cannot be loaded',
@@ -158,7 +158,7 @@ describe('myDetails', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
-      fc.either(fc.constant('not-found' as const), fc.boolean()),
+      fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
     ])(
       'when the career stage cannot be loaded',

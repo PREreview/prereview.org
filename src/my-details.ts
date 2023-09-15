@@ -8,7 +8,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, getCareerStage } from './career-stage'
 import { html, plainText, sendHtml } from './html'
-import { isOpenForRequests } from './is-open-for-requests'
+import { type IsOpenForRequests, isOpenForRequests } from './is-open-for-requests'
 import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
@@ -103,7 +103,7 @@ export const myDetails = pipe(
 function createPage(
   user: User,
   slackUser: O.Option<SlackUser>,
-  openForRequests: O.Option<boolean>,
+  openForRequests: O.Option<IsOpenForRequests>,
   careerStage: O.Option<CareerStage>,
   researchInterests: O.Option<ResearchInterests>,
 ) {
@@ -167,10 +167,16 @@ function createPage(
                       <div>
                         <dt>Open for review requests</dt>
                         <dd>
-                          ${match(openForRequests)
+                          ${match(openForRequests.value)
                             .with(true, () => 'Yes')
                             .with(false, () => 'No')
                             .exhaustive()}
+                          <small
+                            >${match(openForRequests.visibility)
+                              .with('public', () => 'Shown on your public profile')
+                              .with('restricted', () => 'Only visible to PREreview')
+                              .exhaustive()}</small
+                          >
                         </dd>
                       </div>
                     `,

@@ -57,6 +57,12 @@ const maybeGetPublicResearchInterests = flow(
 
 const maybeIsOpenForRequests = flow(
   isOpenForRequests,
+  RTE.map(openForRequests =>
+    match(openForRequests)
+      .with({ visibility: 'public', value: P.select() }, identity)
+      .with({ visibility: 'restricted' }, () => false)
+      .exhaustive(),
+  ),
   RTE.orElseW(error =>
     match(error)
       .with('not-found', () => RTE.of(false))

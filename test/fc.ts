@@ -29,6 +29,7 @@ import type { ClubId } from '../src/club-id'
 import type { CrossrefPreprintId } from '../src/crossref'
 import type { DatacitePreprintId } from '../src/datacite'
 import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
+import type { IsOpenForRequests } from '../src/is-open-for-requests'
 import type { Preprint, PreprintTitle } from '../src/preprint'
 import type {
   AfricarxivFigsharePreprintId,
@@ -587,6 +588,12 @@ export const researchInterests = (): fc.Arbitrary<ResearchInterests> =>
   fc.record({ value: nonEmptyString(), visibility: researchInterestsVisibility() })
 
 export const researchInterestsVisibility = (): fc.Arbitrary<ResearchInterests['visibility']> =>
+  fc.constantFrom('public', 'restricted')
+
+export const isOpenForRequests = (): fc.Arbitrary<IsOpenForRequests> =>
+  fc.record({ value: boolean(), visibility: isOpenForRequestsVisibility() })
+
+export const isOpenForRequestsVisibility = (): fc.Arbitrary<IsOpenForRequests['visibility']> =>
   fc.constantFrom('public', 'restricted')
 
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })

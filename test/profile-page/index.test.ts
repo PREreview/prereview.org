@@ -27,7 +27,7 @@ describe('profile', () => {
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
-      fc.either(fc.constant('not-found' as const), fc.boolean()),
+      fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
     ])(
       'when the data can be loaded',
       async (connection, profile, avatar, name, prereviews, user, researchInterests, slackUser, openForRequests) => {
