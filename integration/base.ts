@@ -23,7 +23,7 @@ import {
   UnsubmittedDepositionC,
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
-import { app } from '../src/app'
+import { type AppEnv, app } from '../src/app'
 import type { IsOpenForRequestsStoreEnv, ResearchInterestsStoreEnv } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
@@ -42,6 +42,7 @@ interface AppFixtures {
   careerStageStore: Keyv<string>
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
+  slackUsers: AppEnv['slackUsers']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -695,6 +696,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       careerStageStore,
       isOpenForRequestsStore,
       researchInterestsStore,
+      slackUsers,
     },
     use,
   ) => {
@@ -729,9 +731,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       sessionCookie: 'session',
       sessionStore: new Keyv(),
       slackApiToken: '',
-      slackUsers: {
-        '0000-0002-6109-0367': 'U05BUCDTN2X',
-      },
+      slackUsers,
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
     })
@@ -741,6 +741,11 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(server)
 
     server.close()
+  },
+  slackUsers: async ({}, use) => {
+    await use({
+      '0000-0002-6109-0367': 'U05BUCDTN2X',
+    })
   },
   updatesLegacyPrereview: async ({}, use) => {
     await use(false)
@@ -784,6 +789,29 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
     await expect(page).toHaveTitle(/PREreview/)
 
     await use(page)
+  },
+}
+
+export const isASlackUser: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'slackUsers' | 'fetch'>
+> = {
+  fetch: async ({ fetch }, use) => {
+    fetch.get('https://slack.com/api/users.profile.get?user=U0JM', {
+      body: {
+        ok: true,
+        profile: {
+          real_name: 'jcarberry',
+          image_48: 'https://secure.gravatar.com/avatar/00000000000000000000000000000000?s=48&d=mp&f=y',
+        },
+      },
+    })
+
+    await use(fetch)
+  },
+  slackUsers: async ({}, use) => {
+    await use({ '0000-0002-1825-0097': 'U0JM' })
   },
 }
 

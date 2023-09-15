@@ -1,4 +1,4 @@
-import { areLoggedIn, canLogIn, expect, test } from './base'
+import { areLoggedIn, canLogIn, expect, isASlackUser, test } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
@@ -18,6 +18,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
+  await expect(page).toHaveScreenshot()
+})
+
+test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can see my Slack Community name', async ({ page }) => {
+  await page.getByRole('link', { name: 'My details' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Slack Community name jcarberry')
+  await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
 

@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, expect, test } from './base'
+import { areLoggedIn, canLogIn, expect, isASlackUser, test } from './base'
 
 test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) => {
   fetch
@@ -184,7 +184,7 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn).extend(areLoggedIn)('can view my profile', async ({ fetch, page }) => {
+test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my profile', async ({ fetch, page }) => {
   await page.goto('/my-details')
   await page.getByRole('link', { name: 'Enter research interests' }).click()
   await page
@@ -217,6 +217,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my profile', async ({ fetch,
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Josiah Carberry')
   await expect(page.getByRole('main')).toContainText('ORCID iD 0000-0002-1825-0097')
+  await expect(page.getByRole('main')).toContainText('Slack Community name jcarberry')
   await expect(page.getByRole('main')).toContainText(
     'Research interests Nunc vestibulum sapien eu magna elementum consectetur.',
   )
