@@ -70,7 +70,7 @@
     "@tiptap/extension-typography": "^2.1.10",
     "@tiptap/starter-kit": "^2.1.10",
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
-    "@tsconfig/node18": "^18.2.1",
+    "@tsconfig/node18": "^18.2.2",
     "@types/cacache": "^17.0.0",
     "@types/connect-slashes": "^0.0.34",
     "@types/cookie-signature": "^1.1.0",
