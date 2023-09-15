@@ -7,11 +7,16 @@ import * as D from 'io-ts/Decoder'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
+import { type IsOpenForRequests, IsOpenForRequestsC } from './is-open-for-requests'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { NonEmptyStringC } from './string'
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<string>
+}
+
+export interface IsOpenForRequestsStoreEnv {
+  isOpenForRequestsStore: Keyv<JsonRecord>
 }
 
 export interface ResearchInterestsStoreEnv {
@@ -53,6 +58,22 @@ export const saveCareerStage = (
       () => 'unavailable' as const,
     ),
     TE.map(constVoid),
+  )
+
+export const isOpenForRequests = (
+  orcid: Orcid,
+): RTE.ReaderTaskEither<IsOpenForRequestsStoreEnv, 'unavailable' | 'not-found', IsOpenForRequests> =>
+  flow(
+    TE.tryCatchK(
+      env => env.isOpenForRequestsStore.get(orcid),
+      () => 'unavailable' as const,
+    ),
+    TE.chainEitherKW(
+      flow(
+        IsOpenForRequestsC.decode,
+        E.mapLeft(() => 'not-found' as const),
+      ),
+    ),
   )
 
 export const deleteResearchInterests = (

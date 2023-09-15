@@ -134,6 +134,49 @@ describe('saveCareerStage', () => {
   )
 })
 
+describe('isOpenForRequests', () => {
+  test.prop([fc.orcid(), fc.isOpenForRequests()])(
+    'when the key contains open for requests',
+    async (orcid, isOpenForRequests) => {
+      const store = new Keyv()
+      await store.set(orcid, isOpenForRequests)
+
+      const actual = await _.isOpenForRequests(orcid)({ isOpenForRequestsStore: store })()
+
+      expect(actual).toStrictEqual(E.right(isOpenForRequests))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.oneof(fc.constant(''), fc.anything())])(
+    'when the key contains something other than open for requests',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.isOpenForRequests(orcid)({ isOpenForRequestsStore: store })()
+
+      expect(actual).toStrictEqual(E.left('not-found'))
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.isOpenForRequests(orcid)({ isOpenForRequestsStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.get = (): Promise<never> => Promise.reject(error)
+
+    const actual = await _.isOpenForRequests(orcid)({ isOpenForRequestsStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
 describe('deleteResearchInterests', () => {
   test.prop([fc.orcid(), fc.researchInterests()])(
     'when the key contains research interests',

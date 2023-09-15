@@ -24,7 +24,7 @@ import {
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { app } from '../src/app'
-import type { ResearchInterestsStoreEnv } from '../src/keyv'
+import type { IsOpenForRequestsStoreEnv, ResearchInterestsStoreEnv } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
 import Logger = L.Logger
@@ -41,6 +41,7 @@ interface AppFixtures {
   updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
   careerStageStore: Keyv<string>
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
+  isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -653,6 +654,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await use(fetch)
   },
+  isOpenForRequestsStore: async ({}, use) => {
+    await use(new Keyv())
+  },
   logger: async ({}, use, testInfo) => {
     const logs: Array<LogEntry> = []
     const logger: Logger = entry => () => logs.push(entry)
@@ -682,7 +686,16 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(new Keyv())
   },
   server: async (
-    { fetch, logger, oauthServer, port, updatesLegacyPrereview, careerStageStore, researchInterestsStore },
+    {
+      fetch,
+      logger,
+      oauthServer,
+      port,
+      updatesLegacyPrereview,
+      careerStageStore,
+      isOpenForRequestsStore,
+      researchInterestsStore,
+    },
     use,
   ) => {
     const server = app({
@@ -695,6 +708,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       ghostApi: {
         key: 'key',
       },
+      isOpenForRequestsStore,
       legacyPrereviewApi: {
         app: 'app',
         key: 'key',

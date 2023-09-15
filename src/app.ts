@@ -8,7 +8,6 @@ import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RR from 'fp-ts/ReadonlyRecord'
-import * as TE from 'fp-ts/TaskEither'
 import { type Lazy, constant, flip, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -42,14 +41,15 @@ import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
 import { handleError } from './http-error'
-import type { IsOpenForRequests } from './is-open-for-requests'
 import {
   type CareerStageStoreEnv,
+  type IsOpenForRequestsStoreEnv,
   type ResearchInterestsStoreEnv,
   deleteCareerStage,
   deleteResearchInterests,
   getCareerStage,
   getResearchInterests,
+  isOpenForRequests,
   saveCareerStage,
   saveResearchInterests,
 } from './keyv'
@@ -167,6 +167,7 @@ export type AppEnv = CareerStageStoreEnv &
   FathomEnv &
   FormStoreEnv &
   GhostApiEnv &
+  IsOpenForRequestsStoreEnv &
   LegacyPrereviewApiEnv &
   L.LoggerEnv &
   OAuthEnv &
@@ -302,7 +303,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getCareerStage: flip(getCareerStage)(env),
           getResearchInterests: flip(getResearchInterests)(env),
           getSlackUser: flip(getSlackUser)(env),
-          isOpenForRequests,
+          isOpenForRequests: flip(isOpenForRequests)(env),
         })),
       ),
     ),
@@ -353,7 +354,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
           getResearchInterests: flip(getResearchInterests)(env),
           getSlackUser: flip(getSlackUser)(env),
-          isOpenForRequests,
+          isOpenForRequests: flip(isOpenForRequests)(env),
         })),
       ),
     ),
@@ -523,14 +524,6 @@ const getSlackUser = flow(
   RTE.fromOptionK(() => 'not-found' as const)((orcid: Orcid) => RR.lookup(orcid, slackUsers)),
   RTE.chainW(getUserFromSlack),
 )
-
-const isOpenForRequests = (orcid: Orcid) =>
-  orcid === '0000-0003-4921-6155'
-    ? TE.right({
-        value: true,
-        visibility: 'public',
-      } satisfies IsOpenForRequests)
-    : TE.left('not-found' as const)
 
 const getUser = pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))
 

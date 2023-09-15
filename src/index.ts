@@ -51,6 +51,7 @@ const server = app({
   ghostApi: {
     key: env.GHOST_API_KEY,
   },
+  isOpenForRequestsStore: new Keyv({ namespace: 'is-open-for-requests', store: keyvStore }),
   legacyPrereviewApi: {
     app: env.LEGACY_PREREVIEW_API_APP,
     key: env.LEGACY_PREREVIEW_API_KEY,
