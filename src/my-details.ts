@@ -8,6 +8,7 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, getCareerStage } from './career-stage'
 import { html, plainText, sendHtml } from './html'
+import { isOpenForRequests } from './is-open-for-requests'
 import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
@@ -30,6 +31,19 @@ export const myDetails = pipe(
     'slackUser',
     flow(
       RM.fromReaderTaskEitherK(({ user: { orcid } }) => getSlackUser(orcid)),
+      RM.map(O.some),
+      RM.orElseW(error =>
+        match(error)
+          .with('not-found', () => RM.of(O.none))
+          .with('unavailable', RM.left)
+          .exhaustive(),
+      ),
+    ),
+  ),
+  RM.bindW(
+    'openForRequests',
+    flow(
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => isOpenForRequests(orcid)),
       RM.map(O.some),
       RM.orElseW(error =>
         match(error)
@@ -63,8 +77,8 @@ export const myDetails = pipe(
       ),
     ),
   ),
-  chainReaderKW(({ user, slackUser, careerStage, researchInterests }) =>
-    createPage(user, slackUser, careerStage, researchInterests),
+  chainReaderKW(({ user, slackUser, openForRequests, careerStage, researchInterests }) =>
+    createPage(user, slackUser, openForRequests, careerStage, researchInterests),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
@@ -89,6 +103,7 @@ export const myDetails = pipe(
 function createPage(
   user: User,
   slackUser: O.Option<SlackUser>,
+  openForRequests: O.Option<boolean>,
   careerStage: O.Option<CareerStage>,
   researchInterests: O.Option<ResearchInterests>,
 ) {
@@ -143,6 +158,24 @@ function createPage(
                     >
                   </dd>
                 </div>
+
+                ${match(openForRequests)
+                  .when(O.isNone, () => '')
+                  .with(
+                    { value: P.select() },
+                    openForRequests => html`
+                      <div>
+                        <dt>Open for review requests</dt>
+                        <dd>
+                          ${match(openForRequests)
+                            .with(true, () => 'Yes')
+                            .with(false, () => 'No')
+                            .exhaustive()}
+                        </dd>
+                      </div>
+                    `,
+                  )
+                  .exhaustive()}
               `,
             )
             .exhaustive()}
