@@ -8,7 +8,7 @@ import { serviceUnavailable } from './middleware'
 import { page } from './page'
 import { type User, maybeGetUser } from './user'
 
-export const communities = pipe(
+export const clubs = pipe(
   RM.fromReaderTaskEither(getPage('64637b4c07fb34a92c7f84ec')),
   RM.bindTo('content'),
   RM.apSW('user', maybeGetUser),

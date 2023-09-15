@@ -32,8 +32,8 @@ import { changeResearchInterests } from './change-research-interests'
 import { changeResearchInterestsVisibility } from './change-research-interests-visibility'
 import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
+import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
-import { communities } from './communities'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
@@ -219,7 +219,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       communitiesMatch.parser,
-      P.map(() => communities),
+      P.map(() => clubs),
     ),
     pipe(
       fundingMatch.parser,

@@ -4,11 +4,11 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
-import * as _ from '../src/communities'
+import * as _ from '../src/clubs'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
-describe('communities', () => {
+describe('clubs', () => {
   test.prop([
     fc.connection({ method: fc.requestMethod() }),
     fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
@@ -23,7 +23,7 @@ describe('communities', () => {
     )
 
     const actual = await runMiddleware(
-      _.communities({
+      _.clubs({
         fetch,
         ghostApi: { key },
         getUser: () => M.fromEither(user),
@@ -55,7 +55,7 @@ describe('communities', () => {
     )
 
     const actual = await runMiddleware(
-      _.communities({
+      _.clubs({
         fetch,
         ghostApi: { key },
         getUser: () => M.fromEither(user),
