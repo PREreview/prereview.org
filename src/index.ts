@@ -78,6 +78,15 @@ const server = app({
   sessionCookie: 'session',
   sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),
   slackApiToken: env.SLACK_API_TOKEN,
+  slackUsers: {
+    '0000-0001-8511-8689': 'U057XMQ1RGR',
+    '0000-0002-1472-1824': 'U05CJ7ELWRE',
+    '0000-0002-3708-3546': 'U05BE7SE4AK',
+    '0000-0002-6109-0367': 'U05BUCDTN2X',
+    '0000-0002-6750-9341': 'U05CJEXUSGY',
+    '0000-0003-4921-6155': 'U05CJ7E6YKA',
+    '0000-0002-5753-2556': 'U05N1N0DH26',
+  },
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
 })

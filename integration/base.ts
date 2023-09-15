@@ -729,6 +729,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       sessionCookie: 'session',
       sessionStore: new Keyv(),
       slackApiToken: '',
+      slackUsers: {
+        '0000-0002-6109-0367': 'U05BUCDTN2X',
+      },
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
     })

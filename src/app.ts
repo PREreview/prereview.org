@@ -176,9 +176,14 @@ export type AppEnv = CareerStageStoreEnv &
   ResearchInterestsStoreEnv &
   SessionEnv &
   SlackApiEnv &
+  SlackUsersEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean
   }
+
+interface SlackUsersEnv {
+  slackUsers: RR.ReadonlyRecord<string, string>
+}
 
 type RouterEnv = AppEnv & DoesPreprintExistEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv & TemplatePageEnv
 
@@ -510,20 +515,13 @@ const doesPreprintExist = flow(
   ),
 )
 
-const slackUsers = {
-  '0000-0001-8511-8689': 'U057XMQ1RGR',
-  '0000-0002-1472-1824': 'U05CJ7ELWRE',
-  '0000-0002-3708-3546': 'U05BE7SE4AK',
-  '0000-0002-6109-0367': 'U05BUCDTN2X',
-  '0000-0002-6750-9341': 'U05CJEXUSGY',
-  '0000-0003-4921-6155': 'U05CJ7E6YKA',
-  '0000-0002-5753-2556': 'U05N1N0DH26',
-}
-
-const getSlackUser = flow(
-  RTE.fromOptionK(() => 'not-found' as const)((orcid: Orcid) => RR.lookup(orcid, slackUsers)),
-  RTE.chainW(getUserFromSlack),
-)
+const getSlackUser = (orcid: Orcid) =>
+  pipe(
+    RTE.asksReaderTaskEither(
+      RTE.fromOptionK(() => 'not-found' as const)(({ slackUsers }: SlackUsersEnv) => RR.lookup(orcid, slackUsers)),
+    ),
+    RTE.chainW(getUserFromSlack),
+  )
 
 const getUser = pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))
 
