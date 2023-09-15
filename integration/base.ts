@@ -743,9 +743,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     server.close()
   },
   slackUsers: async ({}, use) => {
-    await use({
-      '0000-0002-6109-0367': 'U05BUCDTN2X',
-    })
+    await use({})
   },
   updatesLegacyPrereview: async ({}, use) => {
     await use(false)

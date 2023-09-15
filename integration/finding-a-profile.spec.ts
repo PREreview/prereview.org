@@ -417,15 +417,6 @@ test('the list might be empty', async ({ fetch, page }) => {
   fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-6109-0367/personal-details', {
     body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
   })
-  fetch.getOnce('https://slack.com/api/users.profile.get?user=U05BUCDTN2X', {
-    body: {
-      ok: true,
-      profile: {
-        real_name: 'Daniela Saderi (she/her)',
-        image_48: 'https://secure.gravatar.com/avatar/00000000000000000000000000000000?s=48&d=mp&f=y',
-      },
-    },
-  })
   fetch.get(
     {
       name: 'profile-prereviews',
