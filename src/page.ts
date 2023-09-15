@@ -8,8 +8,8 @@ import { type Html, type PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
 import {
   aboutUsMatch,
+  clubsMatch,
   codeOfConductMatch,
-  communitiesMatch,
   fundingMatch,
   homeMatch,
   liveReviewsMatch,
@@ -41,7 +41,7 @@ export interface Page {
   readonly skipLinks?: ReadonlyArray<[Html, string]>
   readonly current?:
     | 'about-us'
-    | 'communities'
+    | 'clubs'
     | 'code-of-conduct'
     | 'funding'
     | 'home'
@@ -183,8 +183,8 @@ export function page({
                           </li>
                           <li>
                             <a
-                              href="${format(communitiesMatch.formatter, {})}"
-                              ${current === 'communities' ? html`aria-current="page"` : ''}
+                              href="${format(clubsMatch.formatter, {})}"
+                              ${current === 'clubs' ? html`aria-current="page"` : ''}
                               >Clubs</a
                             >
                           </li>

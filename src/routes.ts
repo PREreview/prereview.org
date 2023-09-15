@@ -117,7 +117,7 @@ export const aboutUsMatch = pipe(P.lit('about'), P.then(P.end))
 
 export const codeOfConductMatch = pipe(P.lit('code-of-conduct'), P.then(P.end))
 
-export const communitiesMatch = pipe(P.lit('clubs'), P.then(P.end))
+export const clubsMatch = pipe(P.lit('clubs'), P.then(P.end))
 
 export const fundingMatch = pipe(P.lit('funding'), P.then(P.end))
 

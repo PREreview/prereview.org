@@ -85,8 +85,8 @@ import {
   changeResearchInterestsMatch,
   changeResearchInterestsVisibilityMatch,
   clubProfileMatch,
+  clubsMatch,
   codeOfConductMatch,
-  communitiesMatch,
   findAPreprintMatch,
   fundingMatch,
   homeMatch,
@@ -218,7 +218,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(() => codeOfConduct),
     ),
     pipe(
-      communitiesMatch.parser,
+      clubsMatch.parser,
       P.map(() => clubs),
     ),
     pipe(
