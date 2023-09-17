@@ -75,7 +75,7 @@
     "@types/connect-slashes": "^0.0.34",
     "@types/cookie-signature": "^1.1.0",
     "@types/express": "^4.17.17",
-    "@types/http-errors": "^2.0.1",
+    "@types/http-errors": "^2.0.2",
     "@types/katex": "^0.16.3",
     "@types/make-fetch-happen": "^10.0.1",
     "@types/markdown-it": "^13.0.1",
