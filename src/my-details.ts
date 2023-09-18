@@ -16,6 +16,7 @@ import type { PublicUrlEnv } from './public-url'
 import { type ResearchInterests, getResearchInterests } from './research-interests'
 import {
   changeCareerStageMatch,
+  changeOpenForRequestsMatch,
   changeResearchInterestsMatch,
   changeResearchInterestsVisibilityMatch,
   myDetailsMatch,
@@ -159,13 +160,22 @@ function createPage(
                   </dd>
                 </div>
 
-                ${match(openForRequests)
-                  .when(O.isNone, () => '')
-                  .with(
-                    { value: P.select() },
-                    openForRequests => html`
-                      <div>
-                        <dt>Open for review requests</dt>
+                <div>
+                  <dt>Open for review requests</dt>
+                  ${match(openForRequests)
+                    .when(
+                      O.isNone,
+                      () => html`
+                        <dd>
+                          <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
+                            >Enter open for review requests</a
+                          >
+                        </dd>
+                      `,
+                    )
+                    .with(
+                      { value: P.select() },
+                      openForRequests => html`
                         <dd>
                           ${match(openForRequests.value)
                             .with(true, () => 'Yes')
@@ -178,10 +188,15 @@ function createPage(
                               .exhaustive()}</small
                           >
                         </dd>
-                      </div>
-                    `,
-                  )
-                  .exhaustive()}
+                        <dd>
+                          <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
+                            >Change <span class="visually-hidden">open for review requests</span></a
+                          >
+                        </dd>
+                      `,
+                    )
+                    .exhaustive()}
+                </div>
               `,
             )
             .exhaustive()}

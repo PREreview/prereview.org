@@ -58,7 +58,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await page.goto('/my-details/change-open-for-requests')
+    await page.getByRole('link', { name: 'Enter open for review requests' }).click()
     await page.getByLabel('Yes').check()
 
     await page.mouse.move(0, 0)
@@ -76,7 +76,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
 
     await expect(page.getByRole('main')).toContainText('Open for review requests Yes Shown on your public profile')
 
-    await page.goto('/my-details/change-open-for-requests')
+    await page.getByRole('link', { name: 'Change open for review requests' }).click()
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
