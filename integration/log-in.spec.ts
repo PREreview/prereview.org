@@ -69,7 +69,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)("can say if I'm o
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
-  await page.goto('/my-details/change-open-for-requests-visibility')
+  await page.getByRole('link', { name: 'Set open-for-review-requests visibility' }).click()
 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 

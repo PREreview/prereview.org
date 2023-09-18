@@ -17,6 +17,7 @@ import { type ResearchInterests, getResearchInterests } from './research-interes
 import {
   changeCareerStageMatch,
   changeOpenForRequestsMatch,
+  changeOpenForRequestsVisibilityMatch,
   changeResearchInterestsMatch,
   changeResearchInterestsVisibilityMatch,
   myDetailsMatch,
@@ -197,6 +198,19 @@ function createPage(
                             >Change <span class="visually-hidden">open for review requests</span></a
                           >
                         </dd>
+                        ${match(openForRequests)
+                          .with(
+                            { value: true },
+                            () => html`
+                              <dd>
+                                <a href="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}"
+                                  >Set <span class="visually-hidden">open-for-review-requests</span> visibility</a
+                                >
+                              </dd>
+                            `,
+                          )
+                          .with({ value: false }, () => '')
+                          .exhaustive()}
                       `,
                     )
                     .exhaustive()}

@@ -189,7 +189,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my prof
   await page.getByRole('link', { name: 'Enter open for review requests' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.goto('/my-details/change-open-for-requests-visibility')
+  await page.getByRole('link', { name: 'Set open-for-review-requests visibility' }).click()
   await page.getByLabel('Everyone').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
   await page.getByRole('link', { name: 'Enter research interests' }).click()
