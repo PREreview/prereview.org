@@ -97,7 +97,10 @@ function renderContentForOrcid({
       ? html`
           <div class="inset">
             ${name} is happy to take requests for a PREreview.
-            ${slackUser ? html`They can be contacted on our Slack Community.` : ''}
+            ${slackUser
+              ? html`They can be contacted on our
+                  <a href="https://content.prereview.org/join-prereview-slack/">Slack Community</a>.`
+              : ''}
           </div>
         `
       : ''}
