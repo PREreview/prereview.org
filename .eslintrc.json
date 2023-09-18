@@ -73,7 +73,8 @@
     "import/no-named-as-default": "off",
     "import/no-named-as-default-member": "off",
     "no-comments/disallowComments": ["error", { "allow": ["eslint", "https://", "Do", "Unfortunately", "Refs"] }],
-    "quotes": ["error", "single", { "avoidEscape": true }]
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "wc/no-child-traversal-in-connectedcallback": "off"
   },
   "settings": {
     "import/core-modules": ["@jest/globals"],
