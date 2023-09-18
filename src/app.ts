@@ -28,6 +28,7 @@ import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
 import { changeOpenForRequests } from './change-open-for-requests'
+import { changeOpenForRequestsVisibility } from './change-open-for-requests-visibility'
 import { changeResearchInterests } from './change-research-interests'
 import { changeResearchInterestsVisibility } from './change-research-interests-visibility'
 import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
@@ -86,6 +87,7 @@ import {
   aboutUsMatch,
   changeCareerStageMatch,
   changeOpenForRequestsMatch,
+  changeOpenForRequestsVisibilityMatch,
   changeResearchInterestsMatch,
   changeResearchInterestsVisibilityMatch,
   clubProfileMatch,
@@ -330,6 +332,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       changeOpenForRequestsMatch.parser,
       P.map(() => changeOpenForRequests),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          isOpenForRequests: flip(isOpenForRequests)(env),
+          saveOpenForRequests: (orcid, isOpenForRequests) => saveOpenForRequests(orcid, isOpenForRequests)(env),
+        })),
+      ),
+    ),
+    pipe(
+      changeOpenForRequestsVisibilityMatch.parser,
+      P.map(() => changeOpenForRequestsVisibility),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,

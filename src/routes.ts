@@ -157,6 +157,12 @@ export const changeOpenForRequestsMatch = pipe(
   P.then(P.end),
 )
 
+export const changeOpenForRequestsVisibilityMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-open-for-requests-visibility')),
+  P.then(P.end),
+)
+
 export const changeResearchInterestsMatch = pipe(
   P.lit('my-details'),
   P.then(P.lit('change-research-interests')),

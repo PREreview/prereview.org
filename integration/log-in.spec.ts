@@ -50,39 +50,44 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
   await expect(page.getByLabel('Early')).toBeChecked()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
-  "can say if I'm open for requests",
-  async ({ page, isOpenForRequestsStore }) => {
-    await page.getByRole('link', { name: 'My details' }).click()
+test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)("can say if I'm open for requests", async ({ page }) => {
+  await page.getByRole('link', { name: 'My details' }).click()
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Enter open for review requests' }).click()
-    await page.getByLabel('Yes').check()
+  await page.getByRole('link', { name: 'Enter open for review requests' }).click()
+  await page.getByLabel('Yes').check()
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Open for review requests Yes Only visible to PREreview')
+  await expect(page.getByRole('main')).toContainText('Open for review requests Yes Only visible to PREreview')
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await isOpenForRequestsStore.set('0000-0002-1825-0097', { value: true, visibility: 'public' })
-    await page.reload()
+  await page.goto('/my-details/change-open-for-requests-visibility')
 
-    await expect(page.getByRole('main')).toContainText('Open for review requests Yes Shown on your public profile')
+  await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
-    await page.getByRole('link', { name: 'Change open for review requests' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Everyone').check()
 
-    await expect(page.getByRole('main')).toContainText('Open for review requests No')
-  },
-)
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Open for review requests Yes Shown on your public profile')
+
+  await page.getByRole('link', { name: 'Change open for review requests' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Open for review requests No')
+})
 
 test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async ({ page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
@@ -177,6 +182,22 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaS
   await expect(page).toHaveScreenshot()
 
   await page.goto('/my-details/change-open-for-requests')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.getByLabel('Yes').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await page.goto('/my-details/change-open-for-requests-visibility')
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
