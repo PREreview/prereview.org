@@ -27,6 +27,7 @@ import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
+import { changeOpenForRequests } from './change-open-for-requests'
 import { changeResearchInterests } from './change-research-interests'
 import { changeResearchInterestsVisibility } from './change-research-interests-visibility'
 import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
@@ -51,6 +52,7 @@ import {
   getResearchInterests,
   isOpenForRequests,
   saveCareerStage,
+  saveOpenForRequests,
   saveResearchInterests,
 } from './keyv'
 import {
@@ -83,6 +85,7 @@ import { reviews } from './reviews'
 import {
   aboutUsMatch,
   changeCareerStageMatch,
+  changeOpenForRequestsMatch,
   changeResearchInterestsMatch,
   changeResearchInterestsVisibilityMatch,
   clubProfileMatch,
@@ -321,6 +324,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           deleteCareerStage: flip(deleteCareerStage)(env),
           getCareerStage: flip(getCareerStage)(env),
           saveCareerStage: (orcid, careerStage) => saveCareerStage(orcid, careerStage)(env),
+        })),
+      ),
+    ),
+    pipe(
+      changeOpenForRequestsMatch.parser,
+      P.map(() => changeOpenForRequests),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          isOpenForRequests: flip(isOpenForRequests)(env),
+          saveOpenForRequests: (orcid, isOpenForRequests) => saveOpenForRequests(orcid, isOpenForRequests)(env),
         })),
       ),
     ),

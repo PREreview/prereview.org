@@ -58,8 +58,13 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await isOpenForRequestsStore.set('0000-0002-1825-0097', { value: true, visibility: 'restricted' })
-    await page.reload()
+    await page.goto('/my-details/change-open-for-requests')
+    await page.getByLabel('Yes').check()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('Open for review requests Yes Only visible to PREreview')
 
@@ -71,8 +76,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
 
     await expect(page.getByRole('main')).toContainText('Open for review requests Yes Shown on your public profile')
 
-    await isOpenForRequestsStore.set('0000-0002-1825-0097', { value: false, visibility: 'public' })
-    await page.reload()
+    await page.goto('/my-details/change-open-for-requests')
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('Open for review requests No Shown on your public profile')
   },
@@ -169,6 +175,19 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaS
     await expect(page.getByRole('main')).toBeFocused()
   }
   await expect(page).toHaveScreenshot()
+
+  await page.goto('/my-details/change-open-for-requests')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnabled, page }, testInfo) => {
@@ -195,6 +214,33 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
 
   await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 })
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if you are open for requests',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/my-details/change-open-for-requests')
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByRole('group', { name: 'Are you happy to take requests for a PREreview?' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Select yes if you are happy to take requests for a PREreview' }).click()
+
+    await expect(page.getByLabel('Yes')).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say what your career stage is',

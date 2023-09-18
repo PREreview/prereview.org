@@ -76,6 +76,18 @@ export const isOpenForRequests = (
     ),
   )
 
+export const saveOpenForRequests = (
+  orcid: Orcid,
+  isOpenForRequests: IsOpenForRequests,
+): RTE.ReaderTaskEither<IsOpenForRequestsStoreEnv, 'unavailable', void> =>
+  flow(
+    TE.tryCatchK(
+      env => env.isOpenForRequestsStore.set(orcid, IsOpenForRequestsC.encode(isOpenForRequests)),
+      () => 'unavailable' as const,
+    ),
+    TE.map(constVoid),
+  )
+
 export const deleteResearchInterests = (
   orcid: Orcid,
 ): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable', void> =>

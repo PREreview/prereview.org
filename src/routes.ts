@@ -151,6 +151,12 @@ export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
 
 export const changeCareerStageMatch = pipe(P.lit('my-details'), P.then(P.lit('change-career-stage')), P.then(P.end))
 
+export const changeOpenForRequestsMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-open-for-requests')),
+  P.then(P.end),
+)
+
 export const changeResearchInterestsMatch = pipe(
   P.lit('my-details'),
   P.then(P.lit('change-research-interests')),

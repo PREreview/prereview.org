@@ -13,6 +13,10 @@ export interface IsOpenForRequestsEnv {
   isOpenForRequests: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', IsOpenForRequests>
 }
 
+export interface EditOpenForRequestsEnv extends IsOpenForRequestsEnv {
+  saveOpenForRequests: (orcid: Orcid, isOpenForRequests: IsOpenForRequests) => TE.TaskEither<'unavailable', void>
+}
+
 export const IsOpenForRequestsC = C.struct({
   value: C.boolean,
   visibility: C.literal('public', 'restricted'),
@@ -22,4 +26,12 @@ export const isOpenForRequests = (orcid: Orcid) =>
   pipe(
     RTE.ask<IsOpenForRequestsEnv>(),
     RTE.chainTaskEitherK(({ isOpenForRequests }) => isOpenForRequests(orcid)),
+  )
+
+export const saveOpenForRequests = (
+  orcid: Orcid,
+  isOpenForRequests: IsOpenForRequests,
+): RTE.ReaderTaskEither<EditOpenForRequestsEnv, 'unavailable', void> =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ saveOpenForRequests }) => saveOpenForRequests(orcid, isOpenForRequests)),
   )

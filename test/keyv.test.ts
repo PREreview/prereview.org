@@ -177,6 +177,55 @@ describe('isOpenForRequests', () => {
   })
 })
 
+describe('saveOpenForRequests', () => {
+  test.prop([fc.orcid(), fc.isOpenForRequests()])(
+    'when the key contains open for requests',
+    async (orcid, isOpenForRequests) => {
+      const store = new Keyv()
+      await store.set(orcid, isOpenForRequests)
+
+      const actual = await _.saveOpenForRequests(orcid, isOpenForRequests)({ isOpenForRequestsStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.anything(), fc.isOpenForRequests()])(
+    'when the key already contains something other than open for requests',
+    async (orcid, value, isOpenForRequests) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveOpenForRequests(orcid, isOpenForRequests)({ isOpenForRequestsStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.isOpenForRequests()])('when the key is not set', async (orcid, isOpenForRequests) => {
+    const store = new Keyv()
+
+    const actual = await _.saveOpenForRequests(orcid, isOpenForRequests)({ isOpenForRequestsStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
+  })
+
+  test.prop([fc.orcid(), fc.isOpenForRequests(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, isOpenForRequests, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveOpenForRequests(orcid, isOpenForRequests)({ isOpenForRequestsStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
+
 describe('deleteResearchInterests', () => {
   test.prop([fc.orcid(), fc.researchInterests()])(
     'when the key contains research interests',
