@@ -78,10 +78,15 @@ describe('changeOpenForRequests', () => {
             { type: 'endResponse' },
           ]),
         )
-        expect(saveOpenForRequests).toHaveBeenCalledWith(user.orcid, {
-          value: openForRequests === 'yes',
-          visibility: existingOpenForRequests.visibility,
-        })
+        expect(saveOpenForRequests).toHaveBeenCalledWith(
+          user.orcid,
+          openForRequests === 'yes'
+            ? {
+                value: true,
+                visibility: existingOpenForRequests.value ? existingOpenForRequests.visibility : 'restricted',
+              }
+            : { value: false },
+        )
       },
     )
 
@@ -119,10 +124,15 @@ describe('changeOpenForRequests', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(saveOpenForRequests).toHaveBeenCalledWith(user.orcid, {
-        value: openForRequests === 'yes',
-        visibility: 'restricted',
-      })
+      expect(saveOpenForRequests).toHaveBeenCalledWith(
+        user.orcid,
+        openForRequests === 'yes'
+          ? {
+              value: true,
+              visibility: 'restricted',
+            }
+          : { value: false },
+      )
     })
   })
 

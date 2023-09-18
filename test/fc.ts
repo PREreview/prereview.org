@@ -591,10 +591,14 @@ export const researchInterestsVisibility = (): fc.Arbitrary<ResearchInterests['v
   fc.constantFrom('public', 'restricted')
 
 export const isOpenForRequests = (): fc.Arbitrary<IsOpenForRequests> =>
-  fc.record({ value: boolean(), visibility: isOpenForRequestsVisibility() })
+  fc.oneof(
+    fc.constant({ value: false as const }),
+    fc.record({ value: fc.constant(true as const), visibility: isOpenForRequestsVisibility() }),
+  )
 
-export const isOpenForRequestsVisibility = (): fc.Arbitrary<IsOpenForRequests['visibility']> =>
-  fc.constantFrom('public', 'restricted')
+export const isOpenForRequestsVisibility = (): fc.Arbitrary<
+  Extract<IsOpenForRequests, { value: true }>['visibility']
+> => fc.constantFrom('public', 'restricted')
 
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
 

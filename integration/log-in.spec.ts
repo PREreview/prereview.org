@@ -80,7 +80,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Open for review requests No Shown on your public profile')
+    await expect(page.getByRole('main')).toContainText('Open for review requests No')
   },
 )
 

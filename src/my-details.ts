@@ -177,16 +177,20 @@ function createPage(
                       { value: P.select() },
                       openForRequests => html`
                         <dd>
-                          ${match(openForRequests.value)
-                            .with(true, () => 'Yes')
-                            .with(false, () => 'No')
+                          ${match(openForRequests)
+                            .with(
+                              { value: true },
+                              openForRequests =>
+                                html`Yes
+                                  <small
+                                    >${match(openForRequests.visibility)
+                                      .with('public', () => 'Shown on your public profile')
+                                      .with('restricted', () => 'Only visible to PREreview')
+                                      .exhaustive()}</small
+                                  > `,
+                            )
+                            .with({ value: false }, () => 'No')
                             .exhaustive()}
-                          <small
-                            >${match(openForRequests.visibility)
-                              .with('public', () => 'Shown on your public profile')
-                              .with('restricted', () => 'Only visible to PREreview')
-                              .exhaustive()}</small
-                          >
                         </dd>
                         <dd>
                           <a href="${format(changeOpenForRequestsMatch.formatter, {})}"

@@ -1,15 +1,20 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import { pipe } from 'fp-ts/function'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { html, plainText, rawHtml, sendHtml } from './html'
-import { type IsOpenForRequests, isOpenForRequests, saveOpenForRequests } from './is-open-for-requests'
+import {
+  type IsOpenForRequests,
+  type IsOpenForRequestsEnv,
+  isOpenForRequests,
+  saveOpenForRequests,
+} from './is-open-for-requests'
 import { logInAndRedirect } from './log-in'
 import { getMethod, seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
@@ -65,27 +70,36 @@ const ChangeOpenForRequestsFormD = pipe(D.struct({ openForRequests: D.literal('y
 const handleChangeOpenForRequestsForm = (user: User) =>
   pipe(
     RM.decodeBody(body => ChangeOpenForRequestsFormD.decode(body)),
-    RM.ichainW(({ openForRequests }) =>
-      pipe(
-        RM.of({}),
-        RM.apS(
-          'value',
+    RM.ichainW(
+      flow(
+        RM.fromReaderTaskEitherK(({ openForRequests }) =>
           match(openForRequests)
-            .with('yes', () => RM.of(true))
-            .with('no', () => RM.of(false))
+            .returnType<RTE.ReaderTaskEither<IsOpenForRequestsEnv, 'unavailable', IsOpenForRequests>>()
+            .with('yes', () =>
+              pipe(
+                RTE.Do,
+                RTE.let('value', () => true),
+                RTE.apS(
+                  'visibility',
+                  pipe(
+                    isOpenForRequests(user.orcid),
+                    RTE.map(openForRequests =>
+                      match(openForRequests)
+                        .with({ value: true, visibility: P.select() }, identity)
+                        .with({ value: false }, () => 'restricted' as const)
+                        .exhaustive(),
+                    ),
+                    RTE.orElseW(error =>
+                      match(error)
+                        .with('not-found', () => RTE.of('restricted' as const))
+                        .otherwise(RTE.left),
+                    ),
+                  ),
+                ),
+              ),
+            )
+            .with('no', () => RTE.of({ value: false }))
             .exhaustive(),
-        ),
-        RM.apS(
-          'visibility',
-          pipe(
-            RM.fromReaderTaskEither(isOpenForRequests(user.orcid)),
-            RM.map(get('visibility')),
-            RM.orElseW(error =>
-              match(error)
-                .with('not-found', () => RM.of('restricted' as const))
-                .otherwise(RM.left),
-            ),
-          ),
         ),
         RM.chainReaderTaskEitherK(openForRequests => saveOpenForRequests(user.orcid, openForRequests)),
         RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),

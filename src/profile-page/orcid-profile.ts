@@ -59,8 +59,8 @@ const maybeIsOpenForRequests = flow(
   isOpenForRequests,
   RTE.map(openForRequests =>
     match(openForRequests)
-      .with({ visibility: 'public', value: P.select() }, identity)
-      .with({ visibility: 'restricted' }, () => false)
+      .with({ visibility: 'public', value: true }, () => true)
+      .with({ visibility: 'restricted' }, { value: false }, () => false)
       .exhaustive(),
   ),
   RTE.orElseW(error =>
