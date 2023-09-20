@@ -603,7 +603,13 @@ export const isOpenForRequestsVisibility = (): fc.Arbitrary<
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
 
 export const clubId = (): fc.Arbitrary<ClubId> =>
-  fc.constantFrom('asapbio-cancer-biology', 'asapbio-meta-research', 'asapbio-metabolism', 'asapbio-neurobiology')
+  fc.constantFrom(
+    'asapbio-cancer-biology',
+    'asapbio-meta-research',
+    'asapbio-metabolism',
+    'asapbio-neurobiology',
+    'language-club',
+  )
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
   fc

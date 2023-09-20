@@ -98,4 +98,22 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
     ),
   },
+  'language-club': {
+    name: 'Language Club',
+    description: html`
+      <p>
+        The Language Club is a community of linguists and language enthusiasts who share a common interest in language
+        research and a commitment to open science.
+      </p>
+      <p>
+        Our purpose is to offer timely and constructive peer feedback to authors of preprints in the field of
+        linguistics. By doing so, we aim to foster a culture of transparency, collaboration, and responsible research
+        practices.
+      </p>
+    `,
+    leads: [{ name: 'Miguel Oliveira, Jr.', orcid: '0000-0002-0866-0535' as Orcid }],
+    joinLink: new URL(
+      'https://docs.google.com/forms/d/e/1FAIpQLScamu28Lkm2pBS1n-g0UpMmp8trCeGPVVdAxJ8MIauhlwx7Dw/viewform',
+    ),
+  },
 }
