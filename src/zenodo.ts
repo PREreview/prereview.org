@@ -130,8 +130,8 @@ export const getPrereviewsForProfileFromZenodo = flow(
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
-export const getPrereviewsForClubFromZenodo = flow(
-  (club: ClubId) =>
+export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
+  pipe(
     new URLSearchParams({
       communities: 'prereview-reviews',
       q: `contributors.name:"${getClubName(club)}"`,
@@ -139,15 +139,18 @@ export const getPrereviewsForClubFromZenodo = flow(
       sort: '-publication_date',
       subtype: 'peerreview',
     }),
-  getRecords,
-  RTE.local(revalidateIfStale()),
-  RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(2000)),
-  RTE.chainReaderTaskKW(
-    flow(records => records.hits.hits, RT.traverseArray(recordToRecentPrereview), RT.map(RA.rights)),
-  ),
-  RTE.mapLeft(() => 'unavailable' as const),
-)
+    getRecords,
+    RTE.local(revalidateIfStale()),
+    RTE.local(useStaleCache()),
+    RTE.local(timeoutRequest(2000)),
+    RTE.chainReaderTaskKW(
+      flow(records => records.hits.hits, RT.traverseArray(recordToRecentPrereview), RT.map(RA.rights)),
+    ),
+    RTE.bimap(
+      () => 'unavailable' as const,
+      RA.filter(recentPrereview => recentPrereview.club === club),
+    ),
+  )
 
 export const getPrereviewsForPreprintFromZenodo = flow(
   (preprint: PreprintId) =>
