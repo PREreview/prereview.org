@@ -35,6 +35,18 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
   dns.setDefaultResultOrder('ipv4first')
 }
 
+const slackUserIdStore = new Keyv()
+
+void Promise.all([
+  slackUserIdStore.set('0000-0001-8511-8689', 'U057XMQ1RGR'),
+  slackUserIdStore.set('0000-0002-1472-1824', 'U05CJ7ELWRE'),
+  slackUserIdStore.set('0000-0002-3708-3546', 'U05BE7SE4AK'),
+  slackUserIdStore.set('0000-0002-6109-0367', 'U05BUCDTN2X'),
+  slackUserIdStore.set('0000-0002-6750-9341', 'U05CJEXUSGY'),
+  slackUserIdStore.set('0000-0003-4921-6155', 'U05CJ7E6YKA'),
+  slackUserIdStore.set('0000-0002-5753-2556', 'U05N1N0DH26'),
+])
+
 const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
@@ -78,15 +90,7 @@ const server = app({
   sessionCookie: 'session',
   sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),
   slackApiToken: env.SLACK_API_TOKEN,
-  slackUsers: {
-    '0000-0001-8511-8689': 'U057XMQ1RGR',
-    '0000-0002-1472-1824': 'U05CJ7ELWRE',
-    '0000-0002-3708-3546': 'U05BE7SE4AK',
-    '0000-0002-6109-0367': 'U05BUCDTN2X',
-    '0000-0002-6750-9341': 'U05CJEXUSGY',
-    '0000-0003-4921-6155': 'U05CJ7E6YKA',
-    '0000-0002-5753-2556': 'U05N1N0DH26',
-  },
+  slackUserIdStore,
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
 })

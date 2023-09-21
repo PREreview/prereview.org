@@ -7,7 +7,6 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import * as RR from 'fp-ts/ReadonlyRecord'
 import { type Lazy, constant, flip, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
@@ -22,7 +21,6 @@ import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
-import type { Orcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
@@ -47,10 +45,12 @@ import {
   type CareerStageStoreEnv,
   type IsOpenForRequestsStoreEnv,
   type ResearchInterestsStoreEnv,
+  type SlackUserIdStoreEnv,
   deleteCareerStage,
   deleteResearchInterests,
   getCareerStage,
   getResearchInterests,
+  getSlackUserId,
   isOpenForRequests,
   saveCareerStage,
   saveOpenForRequests,
@@ -181,14 +181,10 @@ export type AppEnv = CareerStageStoreEnv &
   ResearchInterestsStoreEnv &
   SessionEnv &
   SlackApiEnv &
-  SlackUsersEnv &
+  SlackUserIdStoreEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean
   }
-
-interface SlackUsersEnv {
-  slackUsers: RR.ReadonlyRecord<string, string>
-}
 
 type RouterEnv = AppEnv & DoesPreprintExistEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv & TemplatePageEnv
 
@@ -542,13 +538,7 @@ const doesPreprintExist = flow(
   ),
 )
 
-const getSlackUser = (orcid: Orcid) =>
-  pipe(
-    RTE.asksReaderTaskEither(
-      RTE.fromOptionK(() => 'not-found' as const)(({ slackUsers }: SlackUsersEnv) => RR.lookup(orcid, slackUsers)),
-    ),
-    RTE.chainW(getUserFromSlack),
-  )
+const getSlackUser = flow(getSlackUserId, RTE.chainW(getUserFromSlack))
 
 const getUser = pipe(getSession(), chainOptionKW(() => 'no-session' as const)(getUserFromSession))
 

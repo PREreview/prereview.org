@@ -9,7 +9,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
 import { type IsOpenForRequests, IsOpenForRequestsC } from './is-open-for-requests'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
-import { NonEmptyStringC } from './string'
+import { type NonEmptyString, NonEmptyStringC } from './string'
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<string>
@@ -21,6 +21,10 @@ export interface IsOpenForRequestsStoreEnv {
 
 export interface ResearchInterestsStoreEnv {
   researchInterestsStore: Keyv<JsonRecord>
+}
+
+export interface SlackUserIdStoreEnv {
+  slackUserIdStore: Keyv<string>
 }
 
 export const deleteCareerStage = (orcid: Orcid): RTE.ReaderTaskEither<CareerStageStoreEnv, 'unavailable', void> =>
@@ -135,4 +139,20 @@ export const saveResearchInterests = (
       () => 'unavailable' as const,
     ),
     TE.map(constVoid),
+  )
+
+export const getSlackUserId = (
+  orcid: Orcid,
+): RTE.ReaderTaskEither<SlackUserIdStoreEnv, 'unavailable' | 'not-found', NonEmptyString> =>
+  flow(
+    TE.tryCatchK(
+      env => env.slackUserIdStore.get(orcid),
+      () => 'unavailable' as const,
+    ),
+    TE.chainEitherKW(
+      flow(
+        NonEmptyStringC.decode,
+        E.mapLeft(() => 'not-found' as const),
+      ),
+    ),
   )

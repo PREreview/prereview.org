@@ -42,7 +42,7 @@ interface AppFixtures {
   careerStageStore: Keyv<string>
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
-  slackUsers: AppEnv['slackUsers']
+  slackUserIdStore: AppEnv['slackUserIdStore']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -696,7 +696,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       careerStageStore,
       isOpenForRequestsStore,
       researchInterestsStore,
-      slackUsers,
+      slackUserIdStore,
     },
     use,
   ) => {
@@ -731,7 +731,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       sessionCookie: 'session',
       sessionStore: new Keyv(),
       slackApiToken: '',
-      slackUsers,
+      slackUserIdStore,
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
     })
@@ -742,8 +742,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     server.close()
   },
-  slackUsers: async ({}, use) => {
-    await use({})
+  slackUserIdStore: async ({}, use) => {
+    await use(new Keyv())
   },
   updatesLegacyPrereview: async ({}, use) => {
     await use(false)
@@ -793,7 +793,7 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
 export const isASlackUser: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'slackUsers' | 'fetch'>
+  Pick<AppFixtures, 'slackUserIdStore' | 'fetch'>
 > = {
   fetch: async ({ fetch }, use) => {
     fetch.get('https://slack.com/api/users.profile.get?user=U0JM', {
@@ -808,8 +808,10 @@ export const isASlackUser: Fixtures<
 
     await use(fetch)
   },
-  slackUsers: async ({}, use) => {
-    await use({ '0000-0002-1825-0097': 'U0JM' })
+  slackUserIdStore: async ({ slackUserIdStore }, use) => {
+    await slackUserIdStore.set('0000-0002-1825-0097', 'U0JM')
+
+    await use(slackUserIdStore)
   },
 }
 
