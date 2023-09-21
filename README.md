@@ -11,6 +11,7 @@ The source code for [prereview.org].
 - [Docker]
 - [Docker Compose]
 - [GNU Make]
+- [mkcert]
 - [Node.js]
 - [Git LFS]
 - Unix-like operating system
@@ -25,7 +26,7 @@ To build and run the app for development, execute:
 make start
 ```
 
-You can now access the app at <http://localhost:3000>.
+You can now access the app at <https://localhost>.
 
 You will also have a `.env` file. This file contains environment variables controlling specific behaviours, including credentials for accessing external services.
 
@@ -38,6 +39,7 @@ Once it passes CI, we deploy every commit on the `main` branch to [prereview.org
 [fly.io]: https://fly.io/
 [git lfs]: https://git-lfs.github.com/
 [gnu make]: https://www.gnu.org/software/make/
+[mkcert]: https://github.com/FiloSottile/mkcert
 [node.js]: https://nodejs.org/
 [prereview.org]: https://prereview.org/
 [sandbox.prereview.org]: https://sandbox.prereview.org/

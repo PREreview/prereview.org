@@ -14,7 +14,11 @@ check: format lint-ts lint-css typecheck test-fast
 start: .env node_modules start-services
 	REDIS_URI=redis://$(shell docker compose port redis 6379) npm start
 
-start-services:
+.dev/server.crt .dev/server.key: SHELL := /usr/bin/env bash
+.dev/server.crt .dev/server.key: .env
+	source .env && mkcert -install -cert-file .dev/server.crt -key-file .dev/server.key $$(echo $${PUBLIC_URL} | awk -F[/:] '{print $$4}')
+
+start-services: .dev/server.crt .dev/server.key
 	docker compose up --detach
 
 format: node_modules
