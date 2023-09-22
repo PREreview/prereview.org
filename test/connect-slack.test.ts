@@ -160,7 +160,7 @@ describe('connectSlackCode', () => {
         access_token: fc.string(),
         token_type: fc.string(),
         id_token: fc.oneof(
-          fc.dictionary(fc.string(), fc.string()).map(record => jwt.sign(record, 'secret')),
+          fc.dictionary(fc.lorem(), fc.string()).map(record => jwt.sign(record, 'secret')),
           fc.string(),
         ),
       },
