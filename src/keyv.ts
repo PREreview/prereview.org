@@ -1,14 +1,16 @@
 import * as E from 'fp-ts/Either'
-import type * as RTE from 'fp-ts/ReaderTaskEither'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { constVoid, flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
+import type { Decoder } from 'io-ts/Decoder'
 import * as D from 'io-ts/Decoder'
+import type { Encoder } from 'io-ts/Encoder'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
-import { type CareerStage, CareerStageC } from './career-stage'
-import { type IsOpenForRequests, IsOpenForRequestsC } from './is-open-for-requests'
+import { CareerStageC } from './career-stage'
+import { IsOpenForRequestsC } from './is-open-for-requests'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
-import { type NonEmptyString, NonEmptyStringC } from './string'
+import { NonEmptyStringC } from './string'
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<unknown>
@@ -26,144 +28,103 @@ export interface SlackUserIdStoreEnv {
   slackUserIdStore: Keyv<unknown>
 }
 
-export const deleteCareerStage = (orcid: Orcid): RTE.ReaderTaskEither<CareerStageStoreEnv, 'unavailable', void> =>
-  flow(
-    TE.tryCatchK(
-      env => env.careerStageStore.delete(orcid),
-      () => 'unavailable' as const,
-    ),
-    TE.map(constVoid),
-  )
+const OrcidE: Encoder<string, Orcid> = { encode: identity }
 
-export const getCareerStage = (
-  orcid: Orcid,
-): RTE.ReaderTaskEither<CareerStageStoreEnv, 'unavailable' | 'not-found', CareerStage> =>
-  flow(
+const deleteKey =
+  <K>(keyEncoder: Encoder<string, K>) =>
+  (key: K): RTE.ReaderTaskEither<Keyv<unknown>, 'unavailable', void> =>
     TE.tryCatchK(
-      env => env.careerStageStore.get(orcid),
+      async keyv => {
+        await keyv.delete(keyEncoder.encode(key))
+      },
       () => 'unavailable' as const,
-    ),
-    TE.chainEitherKW(
-      flow(
-        CareerStageC.decode,
-        E.mapLeft(() => 'not-found' as const),
+    )
+
+const getKey =
+  <K, V>(keyEncoder: Encoder<string, K>, valueDecoder: Decoder<unknown, V>) =>
+  (key: K): RTE.ReaderTaskEither<Keyv<unknown>, 'unavailable' | 'not-found', V> =>
+    flow(
+      TE.tryCatchK(
+        keyv => keyv.get(keyEncoder.encode(key)),
+        () => 'unavailable' as const,
+      ),
+      TE.chainEitherKW(
+        flow(
+          valueDecoder.decode,
+          E.mapLeft(() => 'not-found' as const),
+        ),
+      ),
+    )
+
+const setKey =
+  <K, V>(keyEncoder: Encoder<string, K>, valueEncoder: Encoder<unknown, V>) =>
+  (key: K, value: V): RTE.ReaderTaskEither<Keyv<unknown>, 'unavailable', void> =>
+    TE.tryCatchK(
+      async keyv => {
+        await keyv.set(keyEncoder.encode(key), valueEncoder.encode(value))
+      },
+      () => 'unavailable' as const,
+    )
+
+export const deleteCareerStage = flow(
+  deleteKey(OrcidE),
+  RTE.local((env: CareerStageStoreEnv) => env.careerStageStore),
+)
+
+export const getCareerStage = flow(
+  getKey(OrcidE, CareerStageC),
+  RTE.local((env: CareerStageStoreEnv) => env.careerStageStore),
+)
+
+export const saveCareerStage = flow(
+  setKey(OrcidE, CareerStageC),
+  RTE.local((env: CareerStageStoreEnv) => env.careerStageStore),
+)
+
+export const isOpenForRequests = flow(
+  getKey(OrcidE, IsOpenForRequestsC),
+  RTE.local((env: IsOpenForRequestsStoreEnv) => env.isOpenForRequestsStore),
+)
+
+export const saveOpenForRequests = flow(
+  setKey(OrcidE, IsOpenForRequestsC),
+  RTE.local((env: IsOpenForRequestsStoreEnv) => env.isOpenForRequestsStore),
+)
+
+export const deleteResearchInterests = flow(
+  deleteKey(OrcidE),
+  RTE.local((env: ResearchInterestsStoreEnv) => env.researchInterestsStore),
+)
+
+export const getResearchInterests = flow(
+  getKey(
+    OrcidE,
+    D.union(
+      ResearchInterestsC,
+      pipe(
+        D.struct({ value: NonEmptyStringC }),
+        D.map(value => ({ ...value, visibility: 'restricted' }) satisfies ResearchInterests),
+      ),
+      pipe(
+        NonEmptyStringC,
+        D.map(value => ({ value, visibility: 'restricted' }) satisfies ResearchInterests),
       ),
     ),
-  )
+  ),
+  RTE.local((env: ResearchInterestsStoreEnv) => env.researchInterestsStore),
+)
 
-export const saveCareerStage = (
-  orcid: Orcid,
-  careerStage: CareerStage,
-): RTE.ReaderTaskEither<CareerStageStoreEnv, 'unavailable', void> =>
-  flow(
-    TE.tryCatchK(
-      env => env.careerStageStore.set(orcid, CareerStageC.encode(careerStage)),
-      () => 'unavailable' as const,
-    ),
-    TE.map(constVoid),
-  )
+export const saveResearchInterests = flow(
+  setKey(OrcidE, ResearchInterestsC),
+  RTE.local((env: ResearchInterestsStoreEnv) => env.researchInterestsStore),
+)
 
-export const isOpenForRequests = (
-  orcid: Orcid,
-): RTE.ReaderTaskEither<IsOpenForRequestsStoreEnv, 'unavailable' | 'not-found', IsOpenForRequests> =>
-  flow(
-    TE.tryCatchK(
-      env => env.isOpenForRequestsStore.get(orcid),
-      () => 'unavailable' as const,
-    ),
-    TE.chainEitherKW(
-      flow(
-        IsOpenForRequestsC.decode,
-        E.mapLeft(() => 'not-found' as const),
-      ),
-    ),
-  )
+export const getSlackUserId = flow(
+  getKey(OrcidE, NonEmptyStringC),
+  RTE.local((env: SlackUserIdStoreEnv) => env.slackUserIdStore),
+)
 
-export const saveOpenForRequests = (
-  orcid: Orcid,
-  isOpenForRequests: IsOpenForRequests,
-): RTE.ReaderTaskEither<IsOpenForRequestsStoreEnv, 'unavailable', void> =>
-  flow(
-    TE.tryCatchK(
-      env => env.isOpenForRequestsStore.set(orcid, IsOpenForRequestsC.encode(isOpenForRequests)),
-      () => 'unavailable' as const,
-    ),
-    TE.map(constVoid),
-  )
-
-export const deleteResearchInterests = (
-  orcid: Orcid,
-): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable', void> =>
-  flow(
-    TE.tryCatchK(
-      env => env.researchInterestsStore.delete(orcid),
-      () => 'unavailable' as const,
-    ),
-    TE.map(constVoid),
-  )
-
-export const getResearchInterests = (
-  orcid: Orcid,
-): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable' | 'not-found', ResearchInterests> =>
-  flow(
-    TE.tryCatchK(
-      env => env.researchInterestsStore.get(orcid),
-      () => 'unavailable' as const,
-    ),
-    TE.chainEitherKW(
-      flow(
-        D.union(
-          ResearchInterestsC,
-          pipe(
-            D.struct({ value: NonEmptyStringC }),
-            D.map(value => ({ ...value, visibility: 'restricted' }) satisfies ResearchInterests),
-          ),
-          pipe(
-            NonEmptyStringC,
-            D.map(value => ({ value, visibility: 'restricted' }) satisfies ResearchInterests),
-          ),
-        ).decode,
-        E.mapLeft(() => 'not-found' as const),
-      ),
-    ),
-  )
-
-export const saveResearchInterests = (
-  orcid: Orcid,
-  researchInterests: ResearchInterests,
-): RTE.ReaderTaskEither<ResearchInterestsStoreEnv, 'unavailable', void> =>
-  flow(
-    TE.tryCatchK(
-      env => env.researchInterestsStore.set(orcid, ResearchInterestsC.encode(researchInterests)),
-      () => 'unavailable' as const,
-    ),
-    TE.map(constVoid),
-  )
-
-export const getSlackUserId = (
-  orcid: Orcid,
-): RTE.ReaderTaskEither<SlackUserIdStoreEnv, 'unavailable' | 'not-found', NonEmptyString> =>
-  flow(
-    TE.tryCatchK(
-      env => env.slackUserIdStore.get(orcid),
-      () => 'unavailable' as const,
-    ),
-    TE.chainEitherKW(
-      flow(
-        NonEmptyStringC.decode,
-        E.mapLeft(() => 'not-found' as const),
-      ),
-    ),
-  )
-
-export const saveSlackUserId = (
-  orcid: Orcid,
-  slackUserId: NonEmptyString,
-): RTE.ReaderTaskEither<SlackUserIdStoreEnv, 'unavailable', void> =>
-  flow(
-    TE.tryCatchK(
-      env => env.slackUserIdStore.set(orcid, NonEmptyStringC.encode(slackUserId)),
-      () => 'unavailable' as const,
-    ),
-    TE.map(constVoid),
-  )
+export const saveSlackUserId = flow(
+  setKey(OrcidE, NonEmptyStringC),
+  RTE.local((env: SlackUserIdStoreEnv) => env.slackUserIdStore),
+)
