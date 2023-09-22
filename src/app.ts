@@ -7,7 +7,7 @@ import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import { type Lazy, constant, flip, flow, identity, pipe } from 'fp-ts/function'
+import { type Lazy, constant, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -203,14 +203,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getRecentPrereviews: () =>
-            pipe(
-              getRecentPrereviewsFromZenodo(1),
-              RTE.matchW(
-                () => RA.empty,
-                ({ recentPrereviews }) => recentPrereviews,
+          getRecentPrereviews: withEnv(
+            () =>
+              pipe(
+                getRecentPrereviewsFromZenodo(1),
+                RTE.matchW(
+                  () => RA.empty,
+                  ({ recentPrereviews }) => recentPrereviews,
+                ),
               ),
-            )(env),
+            env,
+          ),
         })),
       ),
     ),
@@ -220,7 +223,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getRecentPrereviews: flip(getRecentPrereviewsFromZenodo)(env),
+          getRecentPrereviews: withEnv(getRecentPrereviewsFromZenodo, env),
         })),
       ),
     ),
@@ -278,7 +281,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: AppEnv) => ({
           ...env,
-          getPseudonym: flip(getPseudonymFromLegacyPrereview)(env),
+          getPseudonym: withEnv(getPseudonymFromLegacyPrereview, env),
         })),
       ),
     ),
@@ -292,7 +295,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          isSlackUser: flip(isSlackUser)(env),
+          isSlackUser: withEnv(isSlackUser, env),
         })),
       ),
     ),
@@ -302,7 +305,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          saveSlackUserId: (orcid, slackUserId) => saveSlackUserId(orcid, slackUserId)(env),
+          saveSlackUserId: withEnv(saveSlackUserId, env),
         })),
       ),
     ),
@@ -316,8 +319,8 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getPrereviews: flip(getPrereviewsForPreprintFromZenodo)(env),
-          getRapidPrereviews: flip(getRapidPrereviews)(env),
+          getPrereviews: withEnv(getPrereviewsForPreprintFromZenodo, env),
+          getRapidPrereviews: withEnv(getRapidPrereviews, env),
         })),
       ),
     ),
@@ -327,7 +330,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getPrereview: flip(getPrereviewFromZenodo)(env),
+          getPrereview: withEnv(getPrereviewFromZenodo, env),
         })),
       ),
     ),
@@ -337,10 +340,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getCareerStage: flip(getCareerStage)(env),
-          getResearchInterests: flip(getResearchInterests)(env),
-          getSlackUser: flip(getSlackUser)(env),
-          isOpenForRequests: flip(isOpenForRequests)(env),
+          getCareerStage: withEnv(getCareerStage, env),
+          getResearchInterests: withEnv(getResearchInterests, env),
+          getSlackUser: withEnv(getSlackUser, env),
+          isOpenForRequests: withEnv(isOpenForRequests, env),
         })),
       ),
     ),
@@ -350,9 +353,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteCareerStage: flip(deleteCareerStage)(env),
-          getCareerStage: flip(getCareerStage)(env),
-          saveCareerStage: (orcid, careerStage) => saveCareerStage(orcid, careerStage)(env),
+          deleteCareerStage: withEnv(deleteCareerStage, env),
+          getCareerStage: withEnv(getCareerStage, env),
+          saveCareerStage: withEnv(saveCareerStage, env),
         })),
       ),
     ),
@@ -362,8 +365,8 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          isOpenForRequests: flip(isOpenForRequests)(env),
-          saveOpenForRequests: (orcid, isOpenForRequests) => saveOpenForRequests(orcid, isOpenForRequests)(env),
+          isOpenForRequests: withEnv(isOpenForRequests, env),
+          saveOpenForRequests: withEnv(saveOpenForRequests, env),
         })),
       ),
     ),
@@ -373,8 +376,8 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          isOpenForRequests: flip(isOpenForRequests)(env),
-          saveOpenForRequests: (orcid, isOpenForRequests) => saveOpenForRequests(orcid, isOpenForRequests)(env),
+          isOpenForRequests: withEnv(isOpenForRequests, env),
+          saveOpenForRequests: withEnv(saveOpenForRequests, env),
         })),
       ),
     ),
@@ -384,9 +387,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteResearchInterests: flip(deleteResearchInterests)(env),
-          getResearchInterests: flip(getResearchInterests)(env),
-          saveResearchInterests: (orcid, researchInterests) => saveResearchInterests(orcid, researchInterests)(env),
+          deleteResearchInterests: withEnv(deleteResearchInterests, env),
+          getResearchInterests: withEnv(getResearchInterests, env),
+          saveResearchInterests: withEnv(saveResearchInterests, env),
         })),
       ),
     ),
@@ -396,9 +399,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteResearchInterests: flip(deleteResearchInterests)(env),
-          getResearchInterests: flip(getResearchInterests)(env),
-          saveResearchInterests: (orcid, researchInterests) => saveResearchInterests(orcid, researchInterests)(env),
+          deleteResearchInterests: withEnv(deleteResearchInterests, env),
+          getResearchInterests: withEnv(getResearchInterests, env),
+          saveResearchInterests: withEnv(saveResearchInterests, env),
         })),
       ),
     ),
@@ -408,12 +411,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getAvatar: flip(getAvatarFromCloudinary)(env),
-          getName: flip(getNameFromOrcid)(env),
-          getPrereviews: flip(getPrereviewsForProfileFromZenodo)(env),
-          getResearchInterests: flip(getResearchInterests)(env),
-          getSlackUser: flip(getSlackUser)(env),
-          isOpenForRequests: flip(isOpenForRequests)(env),
+          getAvatar: withEnv(getAvatarFromCloudinary, env),
+          getName: withEnv(getNameFromOrcid, env),
+          getPrereviews: withEnv(getPrereviewsForProfileFromZenodo, env),
+          getResearchInterests: withEnv(getResearchInterests, env),
+          getSlackUser: withEnv(getSlackUser, env),
+          isOpenForRequests: withEnv(isOpenForRequests, env),
         })),
       ),
     ),
@@ -423,7 +426,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getPrereviews: flip(getPrereviewsForClubFromZenodo)(env),
+          getPrereviews: withEnv(getPrereviewsForClubFromZenodo, env),
         })),
       ),
     ),
@@ -505,7 +508,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          publishPrereview: flip(publishPrereview)(env),
+          publishPrereview: withEnv(publishPrereview, env),
         })),
       ),
     ),
@@ -593,8 +596,8 @@ const appMiddleware: RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, neve
       legacyRoutes,
       R.local((env: RouterEnv) => ({
         ...env,
-        getPreprintIdFromUuid: flip(getPreprintIdFromLegacyPreviewUuid)(env),
-        getProfileIdFromUuid: flip(getProfileIdFromLegacyPreviewUuid)(env),
+        getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
+        getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
       })),
     ),
   ),
@@ -602,16 +605,21 @@ const appMiddleware: RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, neve
   R.local(
     (env: AppEnv): RouterEnv => ({
       ...env,
-      doesPreprintExist: flip(doesPreprintExist)(env),
-      getUser: () => getUser(env),
-      getPreprint: flip(getPreprint)(env),
-      getPreprintTitle: flip(getPreprintTitle)(env),
-      templatePage: flip(page)(env),
+      doesPreprintExist: withEnv(doesPreprintExist, env),
+      getUser: withEnv(() => getUser, env),
+      getPreprint: withEnv(getPreprint, env),
+      getPreprintTitle: withEnv(getPreprintTitle, env),
+      templatePage: withEnv(page, env),
     }),
   ),
   R.local(collapseRequests()),
   R.local(logFetch),
 )
+
+const withEnv =
+  <R, A extends ReadonlyArray<unknown>, B>(f: (...a: A) => R.Reader<R, B>, env: R) =>
+  (...a: A) =>
+    f(...a)(env)
 
 export const app = (deps: AppEnv) => {
   const app = express()
