@@ -7,6 +7,7 @@ import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, getCareerStage } from './career-stage'
+import { canConnectSlack } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
 import { type IsOpenForRequests, isOpenForRequests } from './is-open-for-requests'
 import { logInAndRedirect } from './log-in'
@@ -20,6 +21,7 @@ import {
   changeOpenForRequestsVisibilityMatch,
   changeResearchInterestsMatch,
   changeResearchInterestsVisibilityMatch,
+  connectSlackMatch,
   myDetailsMatch,
   profileMatch,
 } from './routes'
@@ -29,6 +31,10 @@ import { type GetUserEnv, type User, getUser } from './user'
 export const myDetails = pipe(
   getUser,
   RM.bindTo('user'),
+  RM.bindW(
+    'canConnectSlack',
+    fromReaderK(({ user }) => canConnectSlack(user)),
+  ),
   RM.bindW(
     'slackUser',
     flow(
@@ -79,8 +85,8 @@ export const myDetails = pipe(
       ),
     ),
   ),
-  chainReaderKW(({ user, slackUser, openForRequests, careerStage, researchInterests }) =>
-    createPage(user, slackUser, openForRequests, careerStage, researchInterests),
+  chainReaderKW(({ user, canConnectSlack, slackUser, openForRequests, careerStage, researchInterests }) =>
+    createPage(user, canConnectSlack, slackUser, openForRequests, careerStage, researchInterests),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
@@ -104,6 +110,7 @@ export const myDetails = pipe(
 
 function createPage(
   user: User,
+  canConnectSlack: boolean,
   slackUser: O.Option<SlackUser>,
   openForRequests: O.Option<IsOpenForRequests>,
   careerStage: O.Option<CareerStage>,
@@ -141,83 +148,95 @@ function createPage(
             </dd>
           </div>
 
-          ${match(slackUser)
-            .when(O.isNone, () => '')
-            .with(
-              { value: P.select() },
-              slackUser => html`
-                <div>
-                  <dt>Slack Community name</dt>
-                  <dd>
-                    <span class="slack">
-                      <img src="${slackUser.image.href}" alt="" width="48" height="48" />
-                      <span>${slackUser.name}</span>
-                    </span>
-                  </dd>
-                  <dd>
-                    <a href="${slackUser.profile.href}"
-                      >View <span class="visually-hidden">Slack Community profile</span></a
-                    >
-                  </dd>
-                </div>
+          ${canConnectSlack
+            ? match(slackUser)
+                .when(
+                  O.isNone,
+                  () => html`
+                    <div>
+                      <dt>Slack Community name</dt>
+                      <dd>
+                        <a href="${format(connectSlackMatch.formatter, {})}">Connect Slack account</a>
+                      </dd>
+                    </div>
+                  `,
+                )
+                .with(
+                  { value: P.select() },
+                  slackUser => html`
+                    <div>
+                      <dt>Slack Community name</dt>
+                      <dd>
+                        <span class="slack">
+                          <img src="${slackUser.image.href}" alt="" width="48" height="48" />
+                          <span>${slackUser.name}</span>
+                        </span>
+                      </dd>
+                      <dd>
+                        <a href="${slackUser.profile.href}"
+                          >View <span class="visually-hidden">Slack Community profile</span></a
+                        >
+                      </dd>
+                    </div>
 
-                <div>
-                  <dt>Open for review requests</dt>
-                  ${match(openForRequests)
-                    .when(
-                      O.isNone,
-                      () => html`
-                        <dd>
-                          <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                            >Enter open for review requests</a
-                          >
-                        </dd>
-                      `,
-                    )
-                    .with(
-                      { value: P.select() },
-                      openForRequests => html`
-                        <dd>
-                          ${match(openForRequests)
-                            .with(
-                              { value: true },
-                              openForRequests =>
-                                html`Yes
-                                  <small
-                                    >${match(openForRequests.visibility)
-                                      .with('public', () => 'Shown on your public profile')
-                                      .with('restricted', () => 'Only visible to PREreview')
-                                      .exhaustive()}</small
-                                  > `,
-                            )
-                            .with({ value: false }, () => 'No')
-                            .exhaustive()}
-                        </dd>
-                        <dd>
-                          <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                            >Change <span class="visually-hidden">open for review requests</span></a
-                          >
-                        </dd>
-                        ${match(openForRequests)
-                          .with(
-                            { value: true },
-                            () => html`
-                              <dd>
-                                <a href="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}"
-                                  >Set <span class="visually-hidden">open-for-review-requests</span> visibility</a
-                                >
-                              </dd>
-                            `,
-                          )
-                          .with({ value: false }, () => '')
-                          .exhaustive()}
-                      `,
-                    )
-                    .exhaustive()}
-                </div>
-              `,
-            )
-            .exhaustive()}
+                    <div>
+                      <dt>Open for review requests</dt>
+                      ${match(openForRequests)
+                        .when(
+                          O.isNone,
+                          () => html`
+                            <dd>
+                              <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
+                                >Enter open for review requests</a
+                              >
+                            </dd>
+                          `,
+                        )
+                        .with(
+                          { value: P.select() },
+                          openForRequests => html`
+                            <dd>
+                              ${match(openForRequests)
+                                .with(
+                                  { value: true },
+                                  openForRequests =>
+                                    html`Yes
+                                      <small
+                                        >${match(openForRequests.visibility)
+                                          .with('public', () => 'Shown on your public profile')
+                                          .with('restricted', () => 'Only visible to PREreview')
+                                          .exhaustive()}</small
+                                      > `,
+                                )
+                                .with({ value: false }, () => 'No')
+                                .exhaustive()}
+                            </dd>
+                            <dd>
+                              <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
+                                >Change <span class="visually-hidden">open for review requests</span></a
+                              >
+                            </dd>
+                            ${match(openForRequests)
+                              .with(
+                                { value: true },
+                                () => html`
+                                  <dd>
+                                    <a href="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}"
+                                      >Set <span class="visually-hidden">open-for-review-requests</span> visibility</a
+                                    >
+                                  </dd>
+                                `,
+                              )
+                              .with({ value: false }, () => '')
+                              .exhaustive()}
+                          `,
+                        )
+                        .exhaustive()}
+                    </div>
+                  `,
+                )
+                .exhaustive()
+            : ''}
 
           <div>
             <dt>Career stage</dt>

@@ -26,7 +26,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
   'can connect my Slack Community account',
   async ({ page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
-    await page.goto('/connect-slack')
+    await page.getByRole('link', { name: 'Connect Slack account' }).click()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -92,7 +92,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
   "can say if I'm open for requests",
   async ({ page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
-    await page.goto('/connect-slack')
+    await page.getByRole('link', { name: 'Connect Slack account' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
 
     await page.mouse.move(0, 0)

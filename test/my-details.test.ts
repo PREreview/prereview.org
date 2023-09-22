@@ -18,15 +18,27 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
     ])(
       'when the details can be loaded',
-      async (oauth, publicUrl, connection, user, slackUser, isOpenForRequests, careerStage, researchInterests) => {
+      async (
+        oauth,
+        publicUrl,
+        connection,
+        user,
+        canConnectSlack,
+        slackUser,
+        isOpenForRequests,
+        careerStage,
+        researchInterests,
+      ) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -53,13 +65,15 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
     ])(
       'when the Slack user cannot be loaded',
-      async (oauth, publicUrl, connection, user, careerStage, researchInterests) => {
+      async (oauth, publicUrl, connection, user, canConnectSlack, careerStage, researchInterests) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -87,14 +101,16 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.boolean(),
       fc.slackUser(),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
     ])(
       'when being open for requests is unavailable',
-      async (oauth, publicUrl, connection, user, slackUser, careerStage, researchInterests) => {
+      async (oauth, publicUrl, connection, user, canConnectSlack, slackUser, careerStage, researchInterests) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -122,14 +138,16 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
     ])(
       'when the career stage cannot be loaded',
-      async (oauth, publicUrl, connection, user, slackUser, isOpenForRequests, researchInterests) => {
+      async (oauth, publicUrl, connection, user, canConnectSlack, slackUser, isOpenForRequests, researchInterests) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -157,14 +175,16 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
     ])(
       'when the career stage cannot be loaded',
-      async (oauth, publicUrl, connection, user, slackUser, isOpenForRequests, careerStage) => {
+      async (oauth, publicUrl, connection, user, canConnectSlack, slackUser, isOpenForRequests, careerStage) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -193,6 +213,7 @@ describe('myDetails', () => {
     async (oauth, publicUrl, connection) => {
       const actual = await runMiddleware(
         _.myDetails({
+          canConnectSlack: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
@@ -232,6 +253,7 @@ describe('myDetails', () => {
     async (oauth, publicUrl, connection, error) => {
       const actual = await runMiddleware(
         _.myDetails({
+          canConnectSlack: shouldNotBeCalled,
           getUser: () => M.left(error),
           oauth,
           publicUrl,

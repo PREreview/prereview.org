@@ -188,7 +188,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
   'can view my profile',
   async ({ fetch, page }) => {
     await page.goto('/my-details')
-    await page.goto('/connect-slack')
+    await page.getByRole('link', { name: 'Connect Slack account' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByRole('link', { name: 'Enter open for review requests' }).click()
     await page.getByLabel('Yes').check()
