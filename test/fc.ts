@@ -80,6 +80,7 @@ export const {
   boolean,
   constant,
   constantFrom,
+  dictionary,
   integer,
   lorem,
   oneof,

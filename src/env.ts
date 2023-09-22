@@ -50,6 +50,8 @@ const EnvD = pipe(
     PUBLIC_URL: UrlD,
     SECRET: D.string,
     SLACK_API_TOKEN: D.string,
+    SLACK_CLIENT_ID: D.string,
+    SLACK_CLIENT_SECRET: D.string,
     ZENODO_API_KEY: D.string,
     ZENODO_URL: UrlD,
   }),

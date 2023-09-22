@@ -35,18 +35,6 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
   dns.setDefaultResultOrder('ipv4first')
 }
 
-const slackUserIdStore = new Keyv()
-
-void Promise.all([
-  slackUserIdStore.set('0000-0001-8511-8689', 'U057XMQ1RGR'),
-  slackUserIdStore.set('0000-0002-1472-1824', 'U05CJ7ELWRE'),
-  slackUserIdStore.set('0000-0002-3708-3546', 'U05BE7SE4AK'),
-  slackUserIdStore.set('0000-0002-6109-0367', 'U05BUCDTN2X'),
-  slackUserIdStore.set('0000-0002-6750-9341', 'U05CJEXUSGY'),
-  slackUserIdStore.set('0000-0003-4921-6155', 'U05CJ7E6YKA'),
-  slackUserIdStore.set('0000-0002-5753-2556', 'U05N1N0DH26'),
-])
-
 const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
@@ -59,6 +47,16 @@ const server = app({
     },
   }),
   formStore: new Keyv({ namespace: 'forms', store: keyvStore }),
+  canConnectSlack: user =>
+    [
+      '0000-0001-8511-8689',
+      '0000-0002-1472-1824',
+      '0000-0002-3708-3546',
+      '0000-0002-6109-0367',
+      '0000-0002-6750-9341',
+      '0000-0003-4921-6155',
+      '0000-0002-5753-2556',
+    ].includes(user.orcid),
   careerStageStore: new Keyv({ namespace: 'career-stage', store: keyvStore }),
   ghostApi: {
     key: env.GHOST_API_KEY,
@@ -89,8 +87,15 @@ const server = app({
   secret: env.SECRET,
   sessionCookie: 'session',
   sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),
+  slackOauth: {
+    authorizeUrl: new URL('https://slack.com/openid/connect/authorize'),
+    clientId: env.SLACK_CLIENT_ID,
+    clientSecret: env.SLACK_CLIENT_SECRET,
+    redirectUri: new URL('/connect-slack', env.PUBLIC_URL),
+    tokenUrl: new URL('https://slack.com/api/openid.connect.token'),
+  },
   slackApiToken: env.SLACK_API_TOKEN,
-  slackUserIdStore,
+  slackUserIdStore: new Keyv({ namespace: 'slack-user-id', store: keyvStore }),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
 })

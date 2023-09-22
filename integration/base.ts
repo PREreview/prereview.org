@@ -11,6 +11,7 @@ import fetchMock, { type FetchMockSandbox } from 'fetch-mock'
 import * as fs from 'fs/promises'
 import type { Server } from 'http'
 import { Status } from 'hyper-ts'
+import jwt from 'jsonwebtoken'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
@@ -24,6 +25,7 @@ import {
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { type AppEnv, app } from '../src/app'
+import type { CanConnectSlackEnv } from '../src/feature-flags'
 import type { IsOpenForRequestsStoreEnv, ResearchInterestsStoreEnv } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
@@ -43,6 +45,7 @@ interface AppFixtures {
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: AppEnv['slackUserIdStore']
+  canConnectSlack: CanConnectSlackEnv['canConnectSlack']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -54,6 +57,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     }
 
     await use(`http://localhost:${address.port}`)
+  },
+  canConnectSlack: async ({}, use) => {
+    await use(() => false)
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
@@ -688,6 +694,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   server: async (
     {
+      canConnectSlack,
       fetch,
       logger,
       oauthServer,
@@ -702,6 +709,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   ) => {
     const server = app({
       allowSiteCrawlers: true,
+      canConnectSlack,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
@@ -731,6 +739,13 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       sessionCookie: 'session',
       sessionStore: new Keyv(),
       slackApiToken: '',
+      slackOauth: {
+        authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
+        clientId: 'client-id',
+        clientSecret: 'client-secret',
+        redirectUri: new URL(`http://localhost:${port}/connect-slack`),
+        tokenUrl: new URL('http://slack.test/token'),
+      },
       slackUserIdStore,
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
@@ -790,6 +805,28 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
   },
 }
 
+export const canConnectSlack: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canConnectSlack' | 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+> = {
+  canConnectSlack: async ({}, use) => {
+    await use(() => true)
+  },
+  page: async ({ fetch, page }, use) => {
+    fetch.post('http://slack.test/token', {
+      status: Status.OK,
+      body: {
+        access_token: 'access-token',
+        token_type: 'Bearer',
+        id_token: jwt.sign({ 'https://slack.com/user_id': 'U0JM' }, 'secret'),
+      },
+    })
+
+    await use(page)
+  },
+}
+
 export const isASlackUser: Fixtures<
   Record<never, never>,
   Record<never, never>,
@@ -809,8 +846,6 @@ export const isASlackUser: Fixtures<
     await use(fetch)
   },
   slackUserIdStore: async ({ slackUserIdStore }, use) => {
-    await slackUserIdStore.set('0000-0002-1825-0097', 'U0JM')
-
     await use(slackUserIdStore)
   },
 }

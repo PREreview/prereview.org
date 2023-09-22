@@ -156,3 +156,15 @@ export const getSlackUserId = (
       ),
     ),
   )
+
+export const saveSlackUserId = (
+  orcid: Orcid,
+  slackUserId: NonEmptyString,
+): RTE.ReaderTaskEither<SlackUserIdStoreEnv, 'unavailable', void> =>
+  flow(
+    TE.tryCatchK(
+      env => env.slackUserIdStore.set(orcid, NonEmptyStringC.encode(slackUserId)),
+      () => 'unavailable' as const,
+    ),
+    TE.map(constVoid),
+  )

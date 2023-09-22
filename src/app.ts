@@ -33,8 +33,10 @@ import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
+import { type SlackOAuthEnv, connectSlack, connectSlackCode, connectSlackError } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
+import type { CanConnectSlackEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
@@ -55,6 +57,7 @@ import {
   saveCareerStage,
   saveOpenForRequests,
   saveResearchInterests,
+  saveSlackUserId,
 } from './keyv'
 import {
   type LegacyPrereviewApiEnv,
@@ -93,6 +96,9 @@ import {
   clubProfileMatch,
   clubsMatch,
   codeOfConductMatch,
+  connectSlackCodeMatch,
+  connectSlackErrorMatch,
+  connectSlackMatch,
   findAPreprintMatch,
   fundingMatch,
   homeMatch,
@@ -181,10 +187,11 @@ export type AppEnv = CareerStageStoreEnv &
   ResearchInterestsStoreEnv &
   SessionEnv &
   SlackApiEnv &
+  SlackOAuthEnv &
   SlackUserIdStoreEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean
-  }
+  } & CanConnectSlackEnv
 
 type RouterEnv = AppEnv & DoesPreprintExistEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv & TemplatePageEnv
 
@@ -278,6 +285,24 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       orcidErrorMatch.parser,
       P.map(({ error }) => authenticateError(error)),
+    ),
+    pipe(
+      connectSlackMatch.parser,
+      P.map(() => connectSlack),
+    ),
+    pipe(
+      connectSlackCodeMatch.parser,
+      P.map(({ code }) => connectSlackCode(code)),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          saveSlackUserId: (orcid, slackUserId) => saveSlackUserId(orcid, slackUserId)(env),
+        })),
+      ),
+    ),
+    pipe(
+      connectSlackErrorMatch.parser,
+      P.map(({ error }) => connectSlackError(error)),
     ),
     pipe(
       preprintReviewsMatch.parser,

@@ -436,3 +436,49 @@ describe('getSlackUserId', () => {
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
 })
+
+describe('saveSlackUserId', () => {
+  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key contains a Slack user ID', async (orcid, slackUserId) => {
+    const store = new Keyv()
+    await store.set(orcid, slackUserId)
+
+    const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(slackUserId)
+  })
+
+  test.prop([fc.orcid(), fc.anything(), fc.nonEmptyString()])(
+    'when the key already contains something other than a Slack user ID',
+    async (orcid, value, slackUserId) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(slackUserId)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key is not set', async (orcid, slackUserId) => {
+    const store = new Keyv()
+
+    const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(slackUserId)
+  })
+
+  test.prop([fc.orcid(), fc.nonEmptyString(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, slackUserId, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})

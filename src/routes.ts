@@ -147,6 +147,20 @@ export const orcidErrorMatch = pipe(
   P.then(P.end),
 )
 
+export const connectSlackMatch = pipe(P.lit('connect-slack'), P.then(P.end))
+
+export const connectSlackCodeMatch = pipe(
+  P.lit('connect-slack'),
+  P.then(query(C.struct({ code: C.string }))),
+  P.then(P.end),
+)
+
+export const connectSlackErrorMatch = pipe(
+  P.lit('connect-slack'),
+  P.then(query(C.struct({ error: C.string }))),
+  P.then(P.end),
+)
+
 export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
 
 export const changeCareerStageMatch = pipe(P.lit('my-details'), P.then(P.lit('change-career-stage')), P.then(P.end))
