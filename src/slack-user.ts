@@ -10,9 +10,19 @@ export interface SlackUser {
   readonly profile: URL
 }
 
+export interface IsSlackUserEnv {
+  isSlackUser: (orcid: Orcid) => TE.TaskEither<'unavailable', boolean>
+}
+
 export interface GetSlackUserEnv {
   getSlackUser: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', SlackUser>
 }
+
+export const isSlackUser = (orcid: Orcid) =>
+  pipe(
+    RTE.ask<IsSlackUserEnv>(),
+    RTE.chainTaskEitherK(({ isSlackUser }) => isSlackUser(orcid)),
+  )
 
 export const getSlackUser = (orcid: Orcid) =>
   pipe(

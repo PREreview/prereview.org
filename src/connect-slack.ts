@@ -15,10 +15,11 @@ import { P, match } from 'ts-pattern'
 import { canConnectSlack } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
-import { notFound, serviceUnavailable } from './middleware'
+import { notFound, seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { connectSlackMatch, myDetailsMatch } from './routes'
+import { isSlackUser } from './slack-user'
 import { saveSlackUserId } from './slack-user-id'
 import { NonEmptyStringC } from './string'
 import { type GetUserEnv, type User, getUser, maybeGetUser } from './user'
@@ -54,9 +55,18 @@ export const connectSlack = pipe(
       ),
     ),
   ),
-  chainReaderKW(connectSlackPage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareKW(sendHtml),
+  RM.bindW(
+    'isSlackUser',
+    RM.fromReaderTaskEitherK(({ user }) => isSlackUser(user.orcid)),
+  ),
+  RM.ichainW(state =>
+    match(state)
+      .with({ isSlackUser: true, authorizationRequestUrl: P.select() }, authorizationRequestUrl =>
+        RM.fromMiddleware(seeOther(authorizationRequestUrl.href)),
+      )
+      .with({ isSlackUser: false }, showConnectSlackPage)
+      .exhaustive(),
+  ),
   RM.orElseW(error =>
     match(error)
       .returnType<
@@ -70,7 +80,7 @@ export const connectSlack = pipe(
       >()
       .with('not-found', () => notFound)
       .with('no-session', () => logInAndRedirect(connectSlackMatch.formatter, {}))
-      .with(P.instanceOf(Error), () => serviceUnavailable)
+      .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
       .exhaustive(),
   ),
 )
@@ -122,6 +132,12 @@ export const connectSlackError = (error: string) =>
   match(error)
     .with('access_denied', () => showAccessDeniedMessage)
     .otherwise(() => showFailureMessage)
+
+const showConnectSlackPage = flow(
+  fromReaderK(connectSlackPage),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainMiddlewareKW(sendHtml),
+)
 
 const showAccessDeniedMessage = pipe(
   maybeGetUser,

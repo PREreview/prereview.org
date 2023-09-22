@@ -18,32 +18,99 @@ import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('connectSlack', () => {
   describe('when Slack can be connected', () => {
-    test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
-      'when the user is logged in',
-      async (oauth, slackOauth, user, connection) => {
-        const canConnectSlack = jest.fn<CanConnectSlackEnv['canConnectSlack']>(_ => true)
+    describe('when the user is logged in', () => {
+      test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
+        'when the Slack is not already connected',
+        async (oauth, slackOauth, user, connection) => {
+          const canConnectSlack = jest.fn<CanConnectSlackEnv['canConnectSlack']>(_ => true)
 
-        const actual = await runMiddleware(
-          _.connectSlack({
-            canConnectSlack,
-            getUser: () => M.of(user),
-            oauth,
-            publicUrl: new URL('http://example.com'),
-            slackOauth,
-          }),
-          connection,
-        )()
+          const actual = await runMiddleware(
+            _.connectSlack({
+              canConnectSlack,
+              isSlackUser: () => TE.right(false),
+              getUser: () => M.of(user),
+              oauth,
+              publicUrl: new URL('http://example.com'),
+              slackOauth,
+            }),
+            connection,
+          )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.OK },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-        expect(canConnectSlack).toHaveBeenCalledWith(user)
-      },
-    )
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.OK },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+          expect(canConnectSlack).toHaveBeenCalledWith(user)
+        },
+      )
+
+      test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
+        'when the Slack is connected',
+        async (oauth, slackOauth, user, connection) => {
+          const actual = await runMiddleware(
+            _.connectSlack({
+              canConnectSlack: () => true,
+              isSlackUser: () => TE.right(true),
+              getUser: () => M.of(user),
+              oauth,
+              publicUrl: new URL('http://example.com'),
+              slackOauth,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.SeeOther },
+              {
+                type: 'setHeader',
+                name: 'Location',
+                value: new URL(
+                  `?${new URLSearchParams({
+                    client_id: slackOauth.clientId,
+                    response_type: 'code',
+                    redirect_uri: slackOauth.redirectUri.href,
+                    scope: 'openid profile',
+                    team: 'T057XMB3EGH',
+                  }).toString()}`,
+                  slackOauth.authorizeUrl,
+                ).href,
+              },
+              { type: 'endResponse' },
+            ]),
+          )
+        },
+      )
+
+      test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
+        "when the Slack user can't be loaded",
+        async (oauth, slackOauth, user, connection) => {
+          const actual = await runMiddleware(
+            _.connectSlack({
+              canConnectSlack: () => true,
+              isSlackUser: () => TE.left('unavailable'),
+              getUser: () => M.of(user),
+              oauth,
+              publicUrl: new URL('http://example.com'),
+              slackOauth,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.ServiceUnavailable },
+              { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+        },
+      )
+    })
   })
 
   test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
@@ -52,6 +119,7 @@ describe('connectSlack', () => {
       const actual = await runMiddleware(
         _.connectSlack({
           canConnectSlack: () => false,
+          isSlackUser: shouldNotBeCalled,
           getUser: () => M.of(user),
           oauth,
           publicUrl: new URL('http://example.com'),
@@ -77,6 +145,7 @@ describe('connectSlack', () => {
       const actual = await runMiddleware(
         _.connectSlack({
           canConnectSlack: shouldNotBeCalled,
+          isSlackUser: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
           oauth,
           publicUrl,

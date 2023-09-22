@@ -289,6 +289,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       connectSlackMatch.parser,
       P.map(() => connectSlack),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          isSlackUser: flip(isSlackUser)(env),
+        })),
+      ),
     ),
     pipe(
       connectSlackCodeMatch.parser,
@@ -558,6 +564,17 @@ const doesPreprintExist = flow(
     match(error)
       .with('not-found', () => RTE.right(false))
       .with('not-a-preprint', RTE.left)
+      .with('unavailable', RTE.left)
+      .exhaustive(),
+  ),
+)
+
+const isSlackUser = flow(
+  getSlackUserId,
+  RTE.map(() => true),
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.right(false))
       .with('unavailable', RTE.left)
       .exhaustive(),
   ),
