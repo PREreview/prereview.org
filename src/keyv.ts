@@ -1,5 +1,4 @@
 import * as E from 'fp-ts/Either'
-import type { JsonRecord } from 'fp-ts/Json'
 import type * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { constVoid, flow, pipe } from 'fp-ts/function'
@@ -12,19 +11,19 @@ import { type ResearchInterests, ResearchInterestsC } from './research-interests
 import { type NonEmptyString, NonEmptyStringC } from './string'
 
 export interface CareerStageStoreEnv {
-  careerStageStore: Keyv<string>
+  careerStageStore: Keyv<unknown>
 }
 
 export interface IsOpenForRequestsStoreEnv {
-  isOpenForRequestsStore: Keyv<JsonRecord>
+  isOpenForRequestsStore: Keyv<unknown>
 }
 
 export interface ResearchInterestsStoreEnv {
-  researchInterestsStore: Keyv<JsonRecord>
+  researchInterestsStore: Keyv<unknown>
 }
 
 export interface SlackUserIdStoreEnv {
-  slackUserIdStore: Keyv<string>
+  slackUserIdStore: Keyv<unknown>
 }
 
 export const deleteCareerStage = (orcid: Orcid): RTE.ReaderTaskEither<CareerStageStoreEnv, 'unavailable', void> =>

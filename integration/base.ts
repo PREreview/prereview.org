@@ -41,7 +41,7 @@ interface AppFixtures {
   port: number
   server: Server
   updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
-  careerStageStore: Keyv<string>
+  careerStageStore: Keyv<unknown>
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: AppEnv['slackUserIdStore']
