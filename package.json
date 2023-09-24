@@ -75,7 +75,7 @@
     "@types/cacache": "^17.0.0",
     "@types/connect-slashes": "^0.0.34",
     "@types/cookie-signature": "^1.1.0",
-    "@types/express": "^4.17.17",
+    "@types/express": "^4.17.18",
     "@types/http-errors": "^2.0.2",
     "@types/jsonwebtoken": "^9.0.3",
     "@types/katex": "^0.16.3",
