@@ -149,6 +149,8 @@ export const orcidErrorMatch = pipe(
 
 export const connectSlackMatch = pipe(P.lit('connect-slack'), P.then(P.end))
 
+export const connectSlackStartMatch = pipe(P.lit('connect-slack'), P.then(P.lit('start-now')), P.then(P.end))
+
 export const connectSlackCodeMatch = pipe(
   P.lit('connect-slack'),
   P.then(query(C.struct({ code: C.string }))),

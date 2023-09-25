@@ -18,7 +18,7 @@ import { logInAndRedirect } from './log-in'
 import { notFound, seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
-import { connectSlackMatch, myDetailsMatch } from './routes'
+import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from './routes'
 import { isSlackUser } from './slack-user'
 import { saveSlackUserId } from './slack-user-id'
 import { NonEmptyStringC } from './string'
@@ -81,6 +81,39 @@ export const connectSlack = pipe(
       .with('not-found', () => notFound)
       .with('no-session', () => logInAndRedirect(connectSlackMatch.formatter, {}))
       .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
+      .exhaustive(),
+  ),
+)
+
+export const connectSlackStart = pipe(
+  RM.of({}),
+  RM.apS('user', getUser),
+  RM.bindW(
+    'canConnectSlack',
+    flow(
+      fromReaderK(({ user }) => canConnectSlack(user)),
+      RM.filterOrElse(
+        canConnectSlack => canConnectSlack,
+        () => 'not-found' as const,
+      ),
+    ),
+  ),
+  RM.apSW('authorizationRequestUrl', RM.rightReader(authorizationRequestUrl)),
+  RM.ichainMiddlewareK(({ authorizationRequestUrl }) => seeOther(authorizationRequestUrl.href)),
+  RM.orElseW(error =>
+    match(error)
+      .returnType<
+        RM.ReaderMiddleware<
+          GetUserEnv & FathomEnv & OAuthEnv & PhaseEnv & PublicUrlEnv,
+          StatusOpen,
+          ResponseEnded,
+          never,
+          void
+        >
+      >()
+      .with('not-found', () => notFound)
+      .with('no-session', () => logInAndRedirect(connectSlackMatch.formatter, {}))
+      .with(P.instanceOf(Error), () => serviceUnavailable)
       .exhaustive(),
   ),
 )
@@ -155,7 +188,7 @@ const showFailureMessage = pipe(
   RM.ichainMiddlewareK(sendHtml),
 )
 
-function connectSlackPage({ user, authorizationRequestUrl }: { user: User; authorizationRequestUrl: URL }) {
+function connectSlackPage({ user }: { user: User }) {
   return page({
     title: plainText`My details`,
     content: html`
@@ -177,7 +210,7 @@ function connectSlackPage({ user, authorizationRequestUrl }: { user: User; autho
           PREreview.
         </p>
 
-        <a href="${authorizationRequestUrl.href}" role="button" draggable="false">Start now</a>
+        <a href="${format(connectSlackStartMatch.formatter, {})}" role="button" draggable="false">Start now</a>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],

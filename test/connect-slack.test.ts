@@ -178,6 +178,107 @@ describe('connectSlack', () => {
   )
 })
 
+describe('connectSlackStart', () => {
+  test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
+    'when Slack can be connected',
+    async (oauth, slackOauth, user, connection) => {
+      const actual = await runMiddleware(
+        _.connectSlackStart({
+          canConnectSlack: () => true,
+          getUser: () => M.of(user),
+          oauth,
+          publicUrl: new URL('http://example.com'),
+          slackOauth,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: new URL(
+              `?${new URLSearchParams({
+                client_id: slackOauth.clientId,
+                response_type: 'code',
+                redirect_uri: slackOauth.redirectUri.href,
+                scope: 'openid profile',
+                team: 'T057XMB3EGH',
+              }).toString()}`,
+              slackOauth.authorizeUrl,
+            ).href,
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
+
+  test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
+    'when Slack cannot be connected',
+    async (oauth, slackOauth, user, connection) => {
+      const actual = await runMiddleware(
+        _.connectSlackStart({
+          canConnectSlack: () => false,
+          getUser: () => M.of(user),
+          oauth,
+          publicUrl: new URL('http://example.com'),
+          slackOauth,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.NotFound },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
+
+  test.prop([fc.oauth(), fc.oauth(), fc.origin(), fc.connection()])(
+    'when the user is not logged in',
+    async (oauth, slackOauth, publicUrl, connection) => {
+      const actual = await runMiddleware(
+        _.connectSlackStart({
+          canConnectSlack: shouldNotBeCalled,
+          getUser: () => M.left('no-session'),
+          oauth,
+          publicUrl,
+          slackOauth,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: new URL(
+              `?${new URLSearchParams({
+                client_id: oauth.clientId,
+                response_type: 'code',
+                redirect_uri: oauth.redirectUri.href,
+                scope: '/authenticate',
+                state: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
+              }).toString()}`,
+              oauth.authorizeUrl,
+            ).href,
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
+})
+
 describe('connectSlackCode', () => {
   test.prop([
     fc.string(),

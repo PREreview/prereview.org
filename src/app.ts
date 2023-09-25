@@ -33,7 +33,13 @@ import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
-import { type SlackOAuthEnv, connectSlack, connectSlackCode, connectSlackError } from './connect-slack'
+import {
+  type SlackOAuthEnv,
+  connectSlack,
+  connectSlackCode,
+  connectSlackError,
+  connectSlackStart,
+} from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import type { CanConnectSlackEnv } from './feature-flags'
@@ -99,6 +105,7 @@ import {
   connectSlackCodeMatch,
   connectSlackErrorMatch,
   connectSlackMatch,
+  connectSlackStartMatch,
   findAPreprintMatch,
   fundingMatch,
   homeMatch,
@@ -298,6 +305,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           isSlackUser: withEnv(isSlackUser, env),
         })),
       ),
+    ),
+    pipe(
+      connectSlackStartMatch.parser,
+      P.map(() => connectSlackStart),
     ),
     pipe(
       connectSlackCodeMatch.parser,
