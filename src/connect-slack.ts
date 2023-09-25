@@ -7,6 +7,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, exchangeAuthorizationCode } from 'hyper-ts-oauth'
+import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import jwtDecode from 'jwt-decode'
@@ -44,7 +45,6 @@ const authorizationRequestUrl = R.asks(({ slackOauth: { authorizeUrl, clientId, 
 export const connectSlack = pipe(
   RM.of({}),
   RM.apS('user', getUser),
-  RM.apSW('authorizationRequestUrl', RM.rightReader(authorizationRequestUrl)),
   RM.bindW(
     'canConnectSlack',
     flow(
@@ -61,8 +61,9 @@ export const connectSlack = pipe(
   ),
   RM.ichainW(state =>
     match(state)
-      .with({ isSlackUser: true, authorizationRequestUrl: P.select() }, authorizationRequestUrl =>
-        RM.fromMiddleware(seeOther(authorizationRequestUrl.href)),
+      .with(
+        { isSlackUser: true },
+        fromMiddlewareK(() => seeOther(format(connectSlackStartMatch.formatter, {}))),
       )
       .with({ isSlackUser: false }, showConnectSlackPage)
       .exhaustive(),
@@ -251,6 +252,14 @@ function failureMessage(user?: User) {
     user,
   })
 }
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/83
+const fromMiddlewareK =
+  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
+    f: (...a: A) => M.Middleware<I, O, E, B>,
+  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
+  (...a) =>
+    RM.fromMiddleware(f(...a))
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/85
 function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(

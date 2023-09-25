@@ -10,7 +10,7 @@ import jwt from 'jsonwebtoken'
 import Keyv from 'keyv'
 import * as _ from '../src/connect-slack'
 import type { CanConnectSlackEnv } from '../src/feature-flags'
-import { connectSlackMatch, myDetailsMatch } from '../src/routes'
+import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../src/routes'
 import type { EditSlackUserIdEnv } from '../src/slack-user-id'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -19,9 +19,9 @@ import { shouldNotBeCalled } from './should-not-be-called'
 describe('connectSlack', () => {
   describe('when Slack can be connected', () => {
     describe('when the user is logged in', () => {
-      test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
+      test.prop([fc.oauth(), fc.user(), fc.connection()])(
         'when the Slack is not already connected',
-        async (oauth, slackOauth, user, connection) => {
+        async (oauth, user, connection) => {
           const canConnectSlack = jest.fn<CanConnectSlackEnv['canConnectSlack']>(_ => true)
 
           const actual = await runMiddleware(
@@ -31,7 +31,6 @@ describe('connectSlack', () => {
               getUser: () => M.of(user),
               oauth,
               publicUrl: new URL('http://example.com'),
-              slackOauth,
             }),
             connection,
           )()
@@ -47,9 +46,9 @@ describe('connectSlack', () => {
         },
       )
 
-      test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
+      test.prop([fc.oauth(), fc.user(), fc.connection()])(
         'when the Slack is connected',
-        async (oauth, slackOauth, user, connection) => {
+        async (oauth, user, connection) => {
           const actual = await runMiddleware(
             _.connectSlack({
               canConnectSlack: () => true,
@@ -57,7 +56,6 @@ describe('connectSlack', () => {
               getUser: () => M.of(user),
               oauth,
               publicUrl: new URL('http://example.com'),
-              slackOauth,
             }),
             connection,
           )()
@@ -68,16 +66,7 @@ describe('connectSlack', () => {
               {
                 type: 'setHeader',
                 name: 'Location',
-                value: new URL(
-                  `?${new URLSearchParams({
-                    client_id: slackOauth.clientId,
-                    response_type: 'code',
-                    redirect_uri: slackOauth.redirectUri.href,
-                    scope: 'openid profile',
-                    team: 'T057XMB3EGH',
-                  }).toString()}`,
-                  slackOauth.authorizeUrl,
-                ).href,
+                value: format(connectSlackStartMatch.formatter, {}),
               },
               { type: 'endResponse' },
             ]),
@@ -85,9 +74,9 @@ describe('connectSlack', () => {
         },
       )
 
-      test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
+      test.prop([fc.oauth(), fc.user(), fc.connection()])(
         "when the Slack user can't be loaded",
-        async (oauth, slackOauth, user, connection) => {
+        async (oauth, user, connection) => {
           const actual = await runMiddleware(
             _.connectSlack({
               canConnectSlack: () => true,
@@ -95,7 +84,6 @@ describe('connectSlack', () => {
               getUser: () => M.of(user),
               oauth,
               publicUrl: new URL('http://example.com'),
-              slackOauth,
             }),
             connection,
           )()
@@ -113,9 +101,9 @@ describe('connectSlack', () => {
     })
   })
 
-  test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
+  test.prop([fc.oauth(), fc.user(), fc.connection()])(
     'when Slack cannot be connected',
-    async (oauth, slackOauth, user, connection) => {
+    async (oauth, user, connection) => {
       const actual = await runMiddleware(
         _.connectSlack({
           canConnectSlack: () => false,
@@ -123,7 +111,6 @@ describe('connectSlack', () => {
           getUser: () => M.of(user),
           oauth,
           publicUrl: new URL('http://example.com'),
-          slackOauth,
         }),
         connection,
       )()
@@ -139,9 +126,9 @@ describe('connectSlack', () => {
     },
   )
 
-  test.prop([fc.oauth(), fc.oauth(), fc.origin(), fc.connection()])(
+  test.prop([fc.oauth(), fc.origin(), fc.connection()])(
     'when the user is not logged in',
-    async (oauth, slackOauth, publicUrl, connection) => {
+    async (oauth, publicUrl, connection) => {
       const actual = await runMiddleware(
         _.connectSlack({
           canConnectSlack: shouldNotBeCalled,
@@ -149,7 +136,6 @@ describe('connectSlack', () => {
           getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
-          slackOauth,
         }),
         connection,
       )()
