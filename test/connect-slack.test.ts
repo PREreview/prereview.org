@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as O from 'fp-ts/Option'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/lib/Middleware'
@@ -165,10 +166,11 @@ describe('connectSlack', () => {
 })
 
 describe('connectSlackStart', () => {
-  test.prop([fc.oauth(), fc.oauth(), fc.uuid(), fc.user(), fc.connection()])(
+  test.prop([fc.oauth(), fc.oauth(), fc.uuid(), fc.string(), fc.user(), fc.connection()])(
     'when Slack can be connected',
-    async (oauth, slackOauth, uuid, user, connection) => {
+    async (oauth, slackOauth, uuid, signedValue, user, connection) => {
       const generateUuid = jest.fn<_.GenerateUuidEnv['generateUuid']>(() => uuid)
+      const signValue = jest.fn<_.SignValueEnv['signValue']>(_ => signedValue)
 
       const actual = await runMiddleware(
         _.connectSlackStart({
@@ -177,6 +179,7 @@ describe('connectSlackStart', () => {
           getUser: () => M.of(user),
           oauth,
           publicUrl: new URL('http://example.com'),
+          signValue,
           slackOauth,
         }),
         connection,
@@ -200,11 +203,12 @@ describe('connectSlackStart', () => {
               slackOauth.authorizeUrl,
             ).href,
           },
-          { type: 'setCookie', name: 'slack-state', options: { httpOnly: true }, value: uuid },
+          { type: 'setCookie', name: 'slack-state', options: { httpOnly: true }, value: signedValue },
           { type: 'endResponse' },
         ]),
       )
       expect(generateUuid).toHaveBeenCalledTimes(1)
+      expect(signValue).toHaveBeenCalledWith(uuid)
     },
   )
 
@@ -218,6 +222,7 @@ describe('connectSlackStart', () => {
           getUser: () => M.of(user),
           oauth,
           publicUrl: new URL('http://example.com'),
+          signValue: shouldNotBeCalled,
           slackOauth,
         }),
         connection,
@@ -244,6 +249,7 @@ describe('connectSlackStart', () => {
           getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
+          signValue: shouldNotBeCalled,
           slackOauth,
         }),
         connection,
@@ -288,39 +294,46 @@ describe('connectSlackCode', () => {
         }),
       ),
     ),
+    fc.lorem(),
     fc
       .lorem()
       .chain(state =>
         fc.tuple(fc.constant(state), fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
       ),
-  ])('when the access token can be decoded', async (code, user, oauth, [userId, accessToken], [state, connection]) => {
-    const saveSlackUserId = jest.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
+  ])(
+    'when the access token can be decoded',
+    async (code, user, oauth, [userId, accessToken], state, [signedState, connection]) => {
+      const saveSlackUserId = jest.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
+      const unsignValue = jest.fn<_.UnsignValueEnv['unsignValue']>(_ => O.some(state))
 
-    const actual = await runMiddleware(
-      _.connectSlackCode(
-        code,
-        state,
-      )({
-        fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-          status: Status.OK,
-          body: accessToken,
+      const actual = await runMiddleware(
+        _.connectSlackCode(
+          code,
+          state,
+        )({
+          fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+            status: Status.OK,
+            body: accessToken,
+          }),
+          getUser: () => M.of(user),
+          saveSlackUserId,
+          slackOauth: oauth,
+          unsignValue,
         }),
-        getUser: () => M.of(user),
-        saveSlackUserId,
-        slackOauth: oauth,
-      }),
-      connection,
-    )()
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.Found },
-        { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-        { type: 'endResponse' },
-      ]),
-    )
-    expect(saveSlackUserId).toHaveBeenCalledWith(user.orcid, userId)
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(unsignValue).toHaveBeenCalledWith(signedState)
+      expect(saveSlackUserId).toHaveBeenCalledWith(user.orcid, userId)
+    },
+  )
 
   test.prop([
     fc.string(),
@@ -337,12 +350,9 @@ describe('connectSlackCode', () => {
       },
       { withDeletedKeys: true },
     ),
-    fc
-      .lorem()
-      .chain(state =>
-        fc.tuple(fc.constant(state), fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
-      ),
-  ])('when the access token cannot be decoded', async (code, user, oauth, accessToken, [state, connection]) => {
+    fc.string(),
+    fc.lorem().chain(state => fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
+  ])('when the access token cannot be decoded', async (code, user, oauth, accessToken, state, connection) => {
     const slackUserIdStore = new Keyv()
     const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
       status: Status.OK,
@@ -358,6 +368,7 @@ describe('connectSlackCode', () => {
         getUser: () => M.of(user),
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
+        unsignValue: () => O.some(state),
       }),
       connection,
     )()
@@ -379,10 +390,11 @@ describe('connectSlackCode', () => {
     fc.user(),
     fc.oauth(),
     fc.string(),
+    fc.string(),
     fc.connection({
       headers: fc.record({ Cookie: fc.lorem() }, { withDeletedKeys: true }),
     }),
-  ])("when the state doesn't match", async (code, user, oauth, state, connection) => {
+  ])("when the state doesn't match", async (code, user, oauth, state, unsignedState, connection) => {
     const actual = await runMiddleware(
       _.connectSlackCode(
         code,
@@ -392,6 +404,38 @@ describe('connectSlackCode', () => {
         getUser: () => M.of(user),
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
+        unsignValue: () => O.some(unsignedState),
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
+
+  test.prop([
+    fc.string(),
+    fc.user(),
+    fc.oauth(),
+    fc.string(),
+    fc.lorem().chain(state => fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
+  ])("when the state can't be unsigned", async (code, user, oauth, state, connection) => {
+    const actual = await runMiddleware(
+      _.connectSlackCode(
+        code,
+        state,
+      )({
+        fetch: shouldNotBeCalled,
+        getUser: () => M.of(user),
+        saveSlackUserId: shouldNotBeCalled,
+        slackOauth: oauth,
+        unsignValue: () => O.none,
       }),
       connection,
     )()
@@ -432,6 +476,7 @@ describe('connectSlackCode', () => {
         getUser: () => M.of(user),
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
+        unsignValue: () => O.some(state),
       }),
       connection,
     )()
@@ -453,12 +498,9 @@ describe('connectSlackCode', () => {
     fc.user(),
     fc.oauth(),
     fc.error(),
-    fc
-      .lorem()
-      .chain(state =>
-        fc.tuple(fc.constant(state), fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
-      ),
-  ])('when fetch throws an error', async (code, user, oauth, error, [state, connection]) => {
+    fc.string(),
+    fc.lorem().chain(state => fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
+  ])('when fetch throws an error', async (code, user, oauth, error, state, connection) => {
     const slackUserIdStore = new Keyv()
 
     const actual = await runMiddleware(
@@ -470,6 +512,7 @@ describe('connectSlackCode', () => {
         getUser: () => M.of(user),
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
+        unsignValue: () => O.some(state),
       }),
       connection,
     )()

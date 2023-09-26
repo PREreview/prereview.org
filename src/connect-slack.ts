@@ -3,6 +3,7 @@ import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import type { IO } from 'fp-ts/IO'
+import type * as O from 'fp-ts/Option'
 import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import type { Reader } from 'fp-ts/Reader'
@@ -39,10 +40,22 @@ export interface GenerateUuidEnv {
   generateUuid: IO<Uuid>
 }
 
+export interface SignValueEnv {
+  signValue: (value: string) => string
+}
+
+export interface UnsignValueEnv {
+  unsignValue: (value: string) => O.Option<string>
+}
+
 const generateUuid = pipe(
   RIO.ask<GenerateUuidEnv>(),
   RIO.chainIOK(({ generateUuid }) => generateUuid),
 )
+
+const signValue = (value: string) => R.asks(({ signValue }: SignValueEnv) => signValue(value))
+
+const unsignValue = (value: string) => R.asks(({ unsignValue }: UnsignValueEnv) => unsignValue(value))
 
 const authorizationRequestUrl = (state: string) =>
   R.asks(({ slackOauth: { authorizeUrl, clientId, redirectUri } }: SlackOAuthEnv) => {
@@ -118,12 +131,16 @@ export const connectSlackStart = pipe(
   ),
   RM.apSW('state', fromReaderIO(generateUuid)),
   RM.bindW(
+    'signedState',
+    fromReaderK(({ state }) => signValue(state)),
+  ),
+  RM.bindW(
     'authorizationRequestUrl',
     fromReaderK(({ state }) => authorizationRequestUrl(state)),
   ),
   RM.ichainFirst(() => RM.status(Status.SeeOther)),
   RM.ichainFirst(({ authorizationRequestUrl }) => RM.header('Location', authorizationRequestUrl.href)),
-  RM.ichainFirst(({ state }) => RM.cookie('slack-state', state, { httpOnly: true })),
+  RM.ichainFirst(({ signedState }) => RM.cookie('slack-state', signedState, { httpOnly: true })),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichain(() => RM.end()),
   RM.orElseW(error =>
@@ -173,6 +190,8 @@ export const connectSlackCode = flow(
       RM.decodeHeader('Cookie', D.string.decode),
       RM.mapLeft(() => 'no-cookie' as const),
       chainOptionK(() => 'no-cookie' as const)(flow(cookie.parse, RR.lookup('slack-state'))),
+      chainReaderKW(unsignValue),
+      RM.chainEitherK(E.fromOption(() => 'no-cookie' as const)),
       RM.filterOrElseW(
         expectedState => state === expectedState,
         () => 'invalid-state' as const,

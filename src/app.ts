@@ -1,13 +1,15 @@
 import slashes from 'connect-slashes'
+import cookieSignature from 'cookie-signature'
 import express from 'express'
 import * as P from 'fp-ts-routing'
 import type { Json } from 'fp-ts/Json'
 import { concatAll } from 'fp-ts/Monoid'
-import type { Option } from 'fp-ts/Option'
+import * as O from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { type Lazy, constant, flow, identity, pipe } from 'fp-ts/function'
+import { isString } from 'fp-ts/string'
 import helmet from 'helmet'
 import http from 'http'
 import { NotFound } from 'http-errors'
@@ -314,6 +316,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           generateUuid: uuid.v4(),
+          signValue: value => cookieSignature.sign(value, env.secret),
         })),
       ),
     ),
@@ -324,6 +327,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           saveSlackUserId: withEnv(saveSlackUserId, env),
+          unsignValue: value => O.fromPredicate(isString)(cookieSignature.unsign(value, env.secret)),
         })),
       ),
     ),
@@ -775,7 +779,7 @@ export const app = (deps: AppEnv) => {
 function chainOptionKW<E2>(
   onNone: Lazy<E2>,
 ): <A, B>(
-  f: (a: A) => Option<B>,
+  f: (a: A) => O.Option<B>,
 ) => <R, I, E1>(ma: RM.ReaderMiddleware<R, I, I, E1, A>) => RM.ReaderMiddleware<R, I, I, E1 | E2, B> {
   return f => RM.ichainMiddlewareKW((...a) => M.fromOption(onNone)(f(...a)))
 }
