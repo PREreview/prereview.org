@@ -41,7 +41,7 @@ export interface GenerateUuidEnv {
 
 const generateUuid = pipe(
   RIO.ask<GenerateUuidEnv>(),
-  RIO.chainIOK(({ generateUuid }: GenerateUuidEnv) => generateUuid),
+  RIO.chainIOK(({ generateUuid }) => generateUuid),
 )
 
 const authorizationRequestUrl = (state: string) =>
