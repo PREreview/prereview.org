@@ -41,7 +41,7 @@
     "logger-fp-ts": "^0.2.2",
     "logging-ts": "^0.3.4",
     "make-fetch-happen": "^13.0.0",
-    "markdown-it": "^13.0.1",
+    "markdown-it": "^13.0.2",
     "nanohtml": "^1.10.0",
     "orcid-id-ts": "^0.1.2",
     "rtl-detect": "^1.0.4",
