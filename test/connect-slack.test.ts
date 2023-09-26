@@ -197,6 +197,7 @@ describe('connectSlackStart', () => {
               slackOauth.authorizeUrl,
             ).href,
           },
+          { type: 'setCookie', name: 'slack-state', options: { httpOnly: true, sameSite: 'strict' }, value: 'slack' },
           { type: 'endResponse' },
         ]),
       )
@@ -281,14 +282,18 @@ describe('connectSlackCode', () => {
         }),
       ),
     ),
-    fc.connection(),
-  ])('when the access token can be decoded', async (code, user, oauth, [userId, accessToken], connection) => {
+    fc
+      .lorem()
+      .chain(state =>
+        fc.tuple(fc.constant(state), fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
+      ),
+  ])('when the access token can be decoded', async (code, user, oauth, [userId, accessToken], [state, connection]) => {
     const saveSlackUserId = jest.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
 
     const actual = await runMiddleware(
       _.connectSlackCode(
         code,
-        'slack',
+        state,
       )({
         fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
           status: Status.OK,
@@ -326,8 +331,12 @@ describe('connectSlackCode', () => {
       },
       { withDeletedKeys: true },
     ),
-    fc.connection(),
-  ])('when the access token cannot be decoded', async (code, user, oauth, accessToken, connection) => {
+    fc
+      .lorem()
+      .chain(state =>
+        fc.tuple(fc.constant(state), fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
+      ),
+  ])('when the access token cannot be decoded', async (code, user, oauth, accessToken, [state, connection]) => {
     const slackUserIdStore = new Keyv()
     const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
       status: Status.OK,
@@ -337,7 +346,7 @@ describe('connectSlackCode', () => {
     const actual = await runMiddleware(
       _.connectSlackCode(
         code,
-        'slack',
+        state,
       )({
         fetch,
         getUser: () => M.of(user),
@@ -359,40 +368,49 @@ describe('connectSlackCode', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.string(), fc.user(), fc.oauth(), fc.string(), fc.connection()])(
-    "when the state doesn't match",
-    async (code, user, oauth, state, connection) => {
-      const actual = await runMiddleware(
-        _.connectSlackCode(
-          code,
-          state,
-        )({
-          fetch: shouldNotBeCalled,
-          getUser: () => M.of(user),
-          saveSlackUserId: shouldNotBeCalled,
-          slackOauth: oauth,
-        }),
-        connection,
-      )()
+  test.prop([
+    fc.string(),
+    fc.user(),
+    fc.oauth(),
+    fc.string(),
+    fc.connection({
+      headers: fc.record({ Cookie: fc.lorem() }, { withDeletedKeys: true }),
+    }),
+  ])("when the state doesn't match", async (code, user, oauth, state, connection) => {
+    const actual = await runMiddleware(
+      _.connectSlackCode(
+        code,
+        state,
+      )({
+        fetch: shouldNotBeCalled,
+        getUser: () => M.of(user),
+        saveSlackUserId: shouldNotBeCalled,
+        slackOauth: oauth,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 
   test.prop([
     fc.string(),
     fc.user(),
     fc.oauth(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
-    fc.connection(),
-  ])('when the response has a non-200/404 status code', async (code, user, oauth, accessToken, connection) => {
+    fc
+      .lorem()
+      .chain(state =>
+        fc.tuple(fc.constant(state), fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
+      ),
+  ])('when the response has a non-200/404 status code', async (code, user, oauth, accessToken, [state, connection]) => {
     const slackUserIdStore = new Keyv()
     const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
       status: Status.OK,
@@ -402,7 +420,7 @@ describe('connectSlackCode', () => {
     const actual = await runMiddleware(
       _.connectSlackCode(
         code,
-        'slack',
+        state,
       )({
         fetch,
         getUser: () => M.of(user),
@@ -424,35 +442,42 @@ describe('connectSlackCode', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.string(), fc.user(), fc.oauth(), fc.error(), fc.connection()])(
-    'when fetch throws an error',
-    async (code, user, oauth, error, connection) => {
-      const slackUserIdStore = new Keyv()
+  test.prop([
+    fc.string(),
+    fc.user(),
+    fc.oauth(),
+    fc.error(),
+    fc
+      .lorem()
+      .chain(state =>
+        fc.tuple(fc.constant(state), fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
+      ),
+  ])('when fetch throws an error', async (code, user, oauth, error, [state, connection]) => {
+    const slackUserIdStore = new Keyv()
 
-      const actual = await runMiddleware(
-        _.connectSlackCode(
-          code,
-          'slack',
-        )({
-          fetch: () => Promise.reject(error),
-          getUser: () => M.of(user),
-          saveSlackUserId: shouldNotBeCalled,
-          slackOauth: oauth,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.connectSlackCode(
+        code,
+        state,
+      )({
+        fetch: () => Promise.reject(error),
+        getUser: () => M.of(user),
+        saveSlackUserId: shouldNotBeCalled,
+        slackOauth: oauth,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-      expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+    expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
+  })
 })
 
 describe('connectSlackError', () => {

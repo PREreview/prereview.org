@@ -1,13 +1,16 @@
+import cookie from 'cookie'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { flow, pipe } from 'fp-ts/function'
+import * as RR from 'fp-ts/ReadonlyRecord'
+import { type Lazy, flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, exchangeAuthorizationCode } from 'hyper-ts-oauth'
-import type * as M from 'hyper-ts/lib/Middleware'
+import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import jwtDecode from 'jwt-decode'
@@ -101,9 +104,14 @@ export const connectSlackStart = pipe(
       ),
     ),
   ),
-  RM.apSW('authorizationRequestUrl', RM.rightReader(authorizationRequestUrl('slack'))),
+  RM.apSW('state', RM.of('slack')),
+  RM.bindW(
+    'authorizationRequestUrl',
+    fromReaderK(({ state }) => authorizationRequestUrl(state)),
+  ),
   RM.ichainFirst(() => RM.status(Status.SeeOther)),
   RM.ichainFirst(({ authorizationRequestUrl }) => RM.header('Location', authorizationRequestUrl.href)),
+  RM.ichainFirst(({ state }) => RM.cookie('slack-state', state, { httpOnly: true, sameSite: 'strict' })),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichain(() => RM.end()),
   RM.orElseW(error =>
@@ -150,7 +158,9 @@ export const connectSlackCode = flow(
   RM.apSW('user', getUser),
   RM.chainFirstW(({ state }) =>
     pipe(
-      RM.of('slack'),
+      RM.decodeHeader('Cookie', D.string.decode),
+      RM.mapLeft(() => 'no-cookie' as const),
+      chainOptionK(() => 'no-cookie' as const)(flow(cookie.parse, RR.lookup('slack-state'))),
       RM.filterOrElseW(
         expectedState => state === expectedState,
         () => 'invalid-state' as const,
@@ -265,6 +275,15 @@ function failureMessage(user?: User) {
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/80
+function chainOptionK<E>(
+  onNone: Lazy<E>,
+): <A, B>(
+  f: (a: A) => Option<B>,
+) => <R, I>(ma: RM.ReaderMiddleware<R, I, I, E, A>) => RM.ReaderMiddleware<R, I, I, E, B> {
+  return f => RM.ichainMiddlewareK((...a) => M.fromOption(onNone)(f(...a)))
 }
 
 // https://github.com/DenisFrezzato/hyper-ts/pull/83
