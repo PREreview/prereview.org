@@ -212,8 +212,11 @@ export const connectSlackCode = flow(
     saveSlackUserId(user.orcid, slackUser.id_token['https://slack.com/user_id']),
   ),
   RM.ichain(() => RM.redirect(format(myDetailsMatch.formatter, {}))),
-  RM.ichainFirst(() => RM.closeHeaders()),
-  RM.ichainFirst(() => RM.end()),
+  RM.ichainFirst(() => RM.clearCookie('slack-state', { httpOnly: true })),
+  flow(
+    RM.ichainFirst(() => RM.closeHeaders()),
+    RM.ichainFirst(() => RM.end()),
+  ),
   RM.orElseW(() => showFailureMessage),
 )
 
@@ -233,6 +236,7 @@ const showAccessDeniedMessage = pipe(
   chainReaderKW(accessDeniedMessage),
   RM.ichainFirst(() => RM.status(Status.Forbidden)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainFirst(() => RM.clearCookie('slack-state', { httpOnly: true })),
   RM.ichainMiddlewareKW(sendHtml),
 )
 
@@ -241,6 +245,7 @@ const showFailureMessage = pipe(
   chainReaderKW(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
+  RM.ichainFirst(() => RM.clearCookie('slack-state', { httpOnly: true })),
   RM.ichainMiddlewareK(sendHtml),
 )
 

@@ -327,6 +327,7 @@ describe('connectSlackCode', () => {
         E.right([
           { type: 'setStatus', status: Status.Found },
           { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+          { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
           { type: 'endResponse' },
         ]),
       )
@@ -377,6 +378,7 @@ describe('connectSlackCode', () => {
       E.right([
         { type: 'setStatus', status: Status.ServiceUnavailable },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: expect.anything() },
       ]),
@@ -413,6 +415,7 @@ describe('connectSlackCode', () => {
       E.right([
         { type: 'setStatus', status: Status.ServiceUnavailable },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: expect.anything() },
       ]),
@@ -444,6 +447,7 @@ describe('connectSlackCode', () => {
       E.right([
         { type: 'setStatus', status: Status.ServiceUnavailable },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: expect.anything() },
       ]),
@@ -485,6 +489,7 @@ describe('connectSlackCode', () => {
       E.right([
         { type: 'setStatus', status: Status.ServiceUnavailable },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: expect.anything() },
       ]),
@@ -521,6 +526,7 @@ describe('connectSlackCode', () => {
       E.right([
         { type: 'setStatus', status: Status.ServiceUnavailable },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: expect.anything() },
       ]),
@@ -542,6 +548,7 @@ describe('connectSlackError', () => {
         E.right([
           { type: 'setStatus', status: Status.Forbidden },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: expect.anything() },
         ]),
@@ -560,6 +567,7 @@ describe('connectSlackError', () => {
       E.right([
         { type: 'setStatus', status: Status.ServiceUnavailable },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: expect.anything() },
       ]),
