@@ -2,9 +2,11 @@ import cookie from 'cookie'
 import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import type { IO } from 'fp-ts/IO'
 import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import type { Reader } from 'fp-ts/Reader'
+import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import { type Lazy, flow, pipe } from 'fp-ts/function'
@@ -16,6 +18,7 @@ import * as D from 'io-ts/Decoder'
 import jwtDecode from 'jwt-decode'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
+import type { Uuid } from 'uuid-ts'
 import { canConnectSlack } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
@@ -31,6 +34,15 @@ import { type GetUserEnv, type User, getUser, maybeGetUser } from './user'
 export interface SlackOAuthEnv {
   slackOauth: OAuthEnv['oauth']
 }
+
+export interface GenerateUuidEnv {
+  generateUuid: IO<Uuid>
+}
+
+const generateUuid = pipe(
+  RIO.ask<GenerateUuidEnv>(),
+  RIO.chainIOK(({ generateUuid }: GenerateUuidEnv) => generateUuid),
+)
 
 const authorizationRequestUrl = (state: string) =>
   R.asks(({ slackOauth: { authorizeUrl, clientId, redirectUri } }: SlackOAuthEnv) => {
@@ -104,7 +116,7 @@ export const connectSlackStart = pipe(
       ),
     ),
   ),
-  RM.apSW('state', RM.of('slack')),
+  RM.apSW('state', fromReaderIO(generateUuid)),
   RM.bindW(
     'authorizationRequestUrl',
     fromReaderK(({ state }) => authorizationRequestUrl(state)),
@@ -306,4 +318,9 @@ function chainReaderKW<R2, A, B>(
   f: (a: A) => Reader<R2, B>,
 ): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
   return RM.chainW(fromReaderK(f))
+}
+
+// https://github.com/DenisFrezzato/hyper-ts/pull/93
+function fromReaderIO<R, I = StatusOpen, A = never>(fa: RIO.ReaderIO<R, A>): RM.ReaderMiddleware<R, I, I, never, A> {
+  return r => M.fromIO(fa(r))
 }

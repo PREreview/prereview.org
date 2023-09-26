@@ -165,12 +165,15 @@ describe('connectSlack', () => {
 })
 
 describe('connectSlackStart', () => {
-  test.prop([fc.oauth(), fc.oauth(), fc.user(), fc.connection()])(
+  test.prop([fc.oauth(), fc.oauth(), fc.uuid(), fc.user(), fc.connection()])(
     'when Slack can be connected',
-    async (oauth, slackOauth, user, connection) => {
+    async (oauth, slackOauth, uuid, user, connection) => {
+      const generateUuid = jest.fn<_.GenerateUuidEnv['generateUuid']>(() => uuid)
+
       const actual = await runMiddleware(
         _.connectSlackStart({
           canConnectSlack: () => true,
+          generateUuid,
           getUser: () => M.of(user),
           oauth,
           publicUrl: new URL('http://example.com'),
@@ -191,16 +194,17 @@ describe('connectSlackStart', () => {
                 response_type: 'code',
                 redirect_uri: slackOauth.redirectUri.href,
                 scope: 'openid profile',
-                state: 'slack',
+                state: uuid,
                 team: 'T057XMB3EGH',
               }).toString()}`,
               slackOauth.authorizeUrl,
             ).href,
           },
-          { type: 'setCookie', name: 'slack-state', options: { httpOnly: true }, value: 'slack' },
+          { type: 'setCookie', name: 'slack-state', options: { httpOnly: true }, value: uuid },
           { type: 'endResponse' },
         ]),
       )
+      expect(generateUuid).toHaveBeenCalledTimes(1)
     },
   )
 
@@ -210,6 +214,7 @@ describe('connectSlackStart', () => {
       const actual = await runMiddleware(
         _.connectSlackStart({
           canConnectSlack: () => false,
+          generateUuid: shouldNotBeCalled,
           getUser: () => M.of(user),
           oauth,
           publicUrl: new URL('http://example.com'),
@@ -235,6 +240,7 @@ describe('connectSlackStart', () => {
       const actual = await runMiddleware(
         _.connectSlackStart({
           canConnectSlack: shouldNotBeCalled,
+          generateUuid: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
