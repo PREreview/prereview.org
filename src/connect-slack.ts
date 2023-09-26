@@ -111,7 +111,7 @@ export const connectSlackStart = pipe(
   ),
   RM.ichainFirst(() => RM.status(Status.SeeOther)),
   RM.ichainFirst(({ authorizationRequestUrl }) => RM.header('Location', authorizationRequestUrl.href)),
-  RM.ichainFirst(({ state }) => RM.cookie('slack-state', state, { httpOnly: true, sameSite: 'strict' })),
+  RM.ichainFirst(({ state }) => RM.cookie('slack-state', state, { httpOnly: true })),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichain(() => RM.end()),
   RM.orElseW(error =>

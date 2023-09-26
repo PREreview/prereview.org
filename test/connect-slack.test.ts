@@ -197,7 +197,7 @@ describe('connectSlackStart', () => {
               slackOauth.authorizeUrl,
             ).href,
           },
-          { type: 'setCookie', name: 'slack-state', options: { httpOnly: true, sameSite: 'strict' }, value: 'slack' },
+          { type: 'setCookie', name: 'slack-state', options: { httpOnly: true }, value: 'slack' },
           { type: 'endResponse' },
         ]),
       )
