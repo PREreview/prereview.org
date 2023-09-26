@@ -29,18 +29,20 @@ export interface SlackOAuthEnv {
   slackOauth: OAuthEnv['oauth']
 }
 
-const authorizationRequestUrl = R.asks(({ slackOauth: { authorizeUrl, clientId, redirectUri } }: SlackOAuthEnv) => {
-  return new URL(
-    `?${new URLSearchParams({
-      client_id: clientId,
-      response_type: 'code',
-      redirect_uri: redirectUri.href,
-      scope: 'openid profile',
-      team: 'T057XMB3EGH',
-    }).toString()}`,
-    authorizeUrl,
-  )
-})
+const authorizationRequestUrl = (state: string) =>
+  R.asks(({ slackOauth: { authorizeUrl, clientId, redirectUri } }: SlackOAuthEnv) => {
+    return new URL(
+      `?${new URLSearchParams({
+        client_id: clientId,
+        response_type: 'code',
+        redirect_uri: redirectUri.href,
+        scope: 'openid profile',
+        state,
+        team: 'T057XMB3EGH',
+      }).toString()}`,
+      authorizeUrl,
+    )
+  })
 
 export const connectSlack = pipe(
   RM.of({}),
@@ -99,8 +101,11 @@ export const connectSlackStart = pipe(
       ),
     ),
   ),
-  RM.apSW('authorizationRequestUrl', RM.rightReader(authorizationRequestUrl)),
-  RM.ichainMiddlewareK(({ authorizationRequestUrl }) => seeOther(authorizationRequestUrl.href)),
+  RM.apSW('authorizationRequestUrl', RM.rightReader(authorizationRequestUrl('slack'))),
+  RM.ichainFirst(() => RM.status(Status.SeeOther)),
+  RM.ichainFirst(({ authorizationRequestUrl }) => RM.header('Location', authorizationRequestUrl.href)),
+  RM.ichainFirst(() => RM.closeHeaders()),
+  RM.ichain(() => RM.end()),
   RM.orElseW(error =>
     match(error)
       .returnType<
@@ -141,8 +146,17 @@ const SlackD = D.struct({
 })
 
 export const connectSlackCode = flow(
-  (code: string) => RM.of({ code }),
+  (code: string, state: string) => RM.of({ code, state }),
   RM.apSW('user', getUser),
+  RM.chainFirstW(({ state }) =>
+    pipe(
+      RM.of('slack'),
+      RM.filterOrElseW(
+        expectedState => state === expectedState,
+        () => 'invalid-state' as const,
+      ),
+    ),
+  ),
   RM.bindW(
     'slackUser',
     RM.fromReaderTaskEitherK(

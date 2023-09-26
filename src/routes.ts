@@ -153,7 +153,7 @@ export const connectSlackStartMatch = pipe(P.lit('connect-slack'), P.then(P.lit(
 
 export const connectSlackCodeMatch = pipe(
   P.lit('connect-slack'),
-  P.then(query(C.struct({ code: C.string }))),
+  P.then(query(C.struct({ code: C.string, state: C.string }))),
   P.then(P.end),
 )
 

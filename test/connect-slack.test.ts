@@ -191,6 +191,7 @@ describe('connectSlackStart', () => {
                 response_type: 'code',
                 redirect_uri: slackOauth.redirectUri.href,
                 scope: 'openid profile',
+                state: 'slack',
                 team: 'T057XMB3EGH',
               }).toString()}`,
               slackOauth.authorizeUrl,
@@ -285,7 +286,10 @@ describe('connectSlackCode', () => {
     const saveSlackUserId = jest.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
 
     const actual = await runMiddleware(
-      _.connectSlackCode(code)({
+      _.connectSlackCode(
+        code,
+        'slack',
+      )({
         fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
           status: Status.OK,
           body: accessToken,
@@ -331,7 +335,10 @@ describe('connectSlackCode', () => {
     })
 
     const actual = await runMiddleware(
-      _.connectSlackCode(code)({
+      _.connectSlackCode(
+        code,
+        'slack',
+      )({
         fetch,
         getUser: () => M.of(user),
         saveSlackUserId: shouldNotBeCalled,
@@ -352,6 +359,33 @@ describe('connectSlackCode', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
+  test.prop([fc.string(), fc.user(), fc.oauth(), fc.string(), fc.connection()])(
+    "when the state doesn't match",
+    async (code, user, oauth, state, connection) => {
+      const actual = await runMiddleware(
+        _.connectSlackCode(
+          code,
+          state,
+        )({
+          fetch: shouldNotBeCalled,
+          getUser: () => M.of(user),
+          saveSlackUserId: shouldNotBeCalled,
+          slackOauth: oauth,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
+
   test.prop([
     fc.string(),
     fc.user(),
@@ -366,7 +400,10 @@ describe('connectSlackCode', () => {
     })
 
     const actual = await runMiddleware(
-      _.connectSlackCode(code)({
+      _.connectSlackCode(
+        code,
+        'slack',
+      )({
         fetch,
         getUser: () => M.of(user),
         saveSlackUserId: shouldNotBeCalled,
@@ -393,7 +430,10 @@ describe('connectSlackCode', () => {
       const slackUserIdStore = new Keyv()
 
       const actual = await runMiddleware(
-        _.connectSlackCode(code)({
+        _.connectSlackCode(
+          code,
+          'slack',
+        )({
           fetch: () => Promise.reject(error),
           getUser: () => M.of(user),
           saveSlackUserId: shouldNotBeCalled,

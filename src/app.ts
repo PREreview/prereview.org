@@ -22,6 +22,7 @@ import { toRequestHandler } from 'hyper-ts/lib/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
+import * as uuid from 'uuid-ts'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
@@ -309,10 +310,16 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       connectSlackStartMatch.parser,
       P.map(() => connectSlackStart),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          generateUuid: uuid.v4(),
+        })),
+      ),
     ),
     pipe(
       connectSlackCodeMatch.parser,
-      P.map(({ code }) => connectSlackCode(code)),
+      P.map(({ code, state }) => connectSlackCode(code, state)),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
