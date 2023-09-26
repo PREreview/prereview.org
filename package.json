@@ -27,7 +27,7 @@
     "html-entities": "^2.4.0",
     "http-errors": "^2.0.0",
     "http-proxy-middleware": "^2.0.6",
-    "hyper-ts": "^0.7.8",
+    "hyper-ts": "^0.7.9",
     "hyper-ts-oauth": "^0.1.1",
     "hyper-ts-routing": "^0.1.1",
     "hyper-ts-session": "^0.3.0",
