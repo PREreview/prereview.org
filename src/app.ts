@@ -27,6 +27,7 @@ import * as uuid from 'uuid-ts'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
+import { changeCareerStageVisibility } from './change-career-stage-visibility'
 import { changeOpenForRequests } from './change-open-for-requests'
 import { changeOpenForRequestsVisibility } from './change-open-for-requests-visibility'
 import { changeResearchInterests } from './change-research-interests'
@@ -97,6 +98,7 @@ import { reviews } from './reviews'
 import {
   aboutUsMatch,
   changeCareerStageMatch,
+  changeCareerStageVisibilityMatch,
   changeOpenForRequestsMatch,
   changeOpenForRequestsVisibilityMatch,
   changeResearchInterestsMatch,
@@ -371,6 +373,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       changeCareerStageMatch.parser,
       P.map(() => changeCareerStage),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteCareerStage: withEnv(deleteCareerStage, env),
+          getCareerStage: withEnv(getCareerStage, env),
+          saveCareerStage: withEnv(saveCareerStage, env),
+        })),
+      ),
+    ),
+    pipe(
+      changeCareerStageVisibilityMatch.parser,
+      P.map(() => changeCareerStageVisibility),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,

@@ -91,6 +91,19 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
 
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
+
+  await page.goto('/my-details/change-career-stage-visibility')
+
+  await expect(page.getByLabel('Only PREreview')).toBeChecked()
+
+  await page.getByLabel('Everyone').check()
+
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Career stage Early Shown on your public profile')
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlackUser)(
@@ -186,6 +199,22 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
 
 test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaScriptEnabled, page }) => {
   await page.goto('/my-details/change-career-stage')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.getByLabel('Mid').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await page.goto('/my-details/change-career-stage-visibility')
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()

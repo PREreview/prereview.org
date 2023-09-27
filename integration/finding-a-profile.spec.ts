@@ -186,7 +186,7 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlackUser)(
   'can view my profile',
-  async ({ careerStageStore, fetch, page }) => {
+  async ({ fetch, page }) => {
     await page.goto('/my-details')
     await page.getByRole('link', { name: 'Connect Slack account' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -196,7 +196,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     await page.getByRole('link', { name: 'Set open-for-review-requests visibility' }).click()
     await page.getByLabel('Everyone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await careerStageStore.set('0000-0002-1825-0097', { value: 'mid', visibility: 'public' })
+    await page.getByRole('link', { name: 'Enter career stage' }).click()
+    await page.getByLabel('Mid').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.goto('/my-details/change-career-stage-visibility')
+    await page.getByLabel('Everyone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByRole('link', { name: 'Enter research interests' }).click()
     await page
       .getByLabel('What are your research interests?')
