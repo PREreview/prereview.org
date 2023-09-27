@@ -248,13 +248,14 @@ function createPage(
                   </dd>
                 `,
               )
-              .otherwise(
+              .with(
+                { value: P.select() },
                 careerStage => html`
                   <dd>
                     ${match(careerStage.value)
-                      .with({ value: 'early' }, () => 'Early')
-                      .with({ value: 'mid' }, () => 'Mid')
-                      .with({ value: 'late' }, () => 'Late')
+                      .with('early', () => 'Early')
+                      .with('mid', () => 'Mid')
+                      .with('late', () => 'Late')
                       .exhaustive()}
                   </dd>
                   <dd>
@@ -263,7 +264,8 @@ function createPage(
                     >
                   </dd>
                 `,
-              )}
+              )
+              .exhaustive()}
           </div>
 
           <div>
