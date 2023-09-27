@@ -25,15 +25,28 @@ describe('profile', () => {
         }),
       ),
       fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
     ])(
       'when the data can be loaded',
-      async (connection, profile, avatar, name, prereviews, user, researchInterests, slackUser, openForRequests) => {
+      async (
+        connection,
+        profile,
+        avatar,
+        name,
+        prereviews,
+        user,
+        careerStage,
+        researchInterests,
+        slackUser,
+        openForRequests,
+      ) => {
         const getAvatar = jest.fn<_.Env['getAvatar']>(_ => TE.of(avatar))
         const getName = jest.fn<_.Env['getName']>(_ => TE.of(name))
         const getPrereviews = jest.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
+        const getCareerStage = jest.fn<_.Env['getCareerStage']>(_ => TE.fromEither(careerStage))
         const getResearchInterests = jest.fn<_.Env['getResearchInterests']>(_ => TE.fromEither(researchInterests))
         const getSlackUser = jest.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
         const isOpenForRequests = jest.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
@@ -41,6 +54,7 @@ describe('profile', () => {
         const actual = await runMiddleware(
           _.profile(profile)({
             getAvatar,
+            getCareerStage,
             getName,
             getPrereviews,
             getResearchInterests,
@@ -59,6 +73,7 @@ describe('profile', () => {
           ]),
         )
         expect(getAvatar).toHaveBeenCalledWith(profile.value)
+        expect(getCareerStage).toHaveBeenCalledWith(profile.value)
         expect(getName).toHaveBeenCalledWith(profile.value)
         expect(getPrereviews).toHaveBeenCalledWith(profile)
         expect(getResearchInterests).toHaveBeenCalledWith(profile.value)
@@ -84,6 +99,7 @@ describe('profile', () => {
       const actual = await runMiddleware(
         _.profile(profile)({
           getAvatar: () => TE.of(avatar),
+          getCareerStage: () => TE.left('not-found'),
           getName: () => TE.left('not-found'),
           getPrereviews: () => TE.of(prereviews),
           getResearchInterests: () => TE.left('not-found'),
@@ -121,6 +137,7 @@ describe('profile', () => {
       const actual = await runMiddleware(
         _.profile(profile)({
           getAvatar: () => TE.of(avatar),
+          getCareerStage: () => TE.left('not-found'),
           getName: () => TE.left('unavailable'),
           getPrereviews: () => TE.of(prereviews),
           getResearchInterests: () => TE.left('not-found'),
@@ -157,6 +174,7 @@ describe('profile', () => {
       const actual = await runMiddleware(
         _.profile(profile)({
           getAvatar: () => TE.left('not-found'),
+          getCareerStage: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
           getResearchInterests: () => TE.left('not-found'),
@@ -193,6 +211,45 @@ describe('profile', () => {
       const actual = await runMiddleware(
         _.profile(profile)({
           getAvatar: () => TE.left('unavailable'),
+          getCareerStage: () => TE.left('not-found'),
+          getName: () => TE.of(name),
+          getPrereviews: () => TE.of(prereviews),
+          getResearchInterests: () => TE.left('not-found'),
+          getSlackUser: () => TE.left('not-found'),
+          getUser: () => M.fromEither(user),
+          isOpenForRequests: () => TE.left('not-found'),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.connection({ method: fc.requestMethod() }),
+      fc.orcidProfileId(),
+      fc.nonEmptyString(),
+      fc.array(
+        fc.record({
+          id: fc.integer(),
+          reviewers: fc.nonEmptyArray(fc.string()),
+          published: fc.plainDate(),
+          preprint: fc.preprintTitle(),
+        }),
+      ),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when the career stage is unavailable', async (connection, profile, name, prereviews, user) => {
+      const actual = await runMiddleware(
+        _.profile(profile)({
+          getAvatar: () => TE.left('not-found'),
+          getCareerStage: () => TE.left('unavailable'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
           getResearchInterests: () => TE.left('not-found'),
@@ -230,6 +287,7 @@ describe('profile', () => {
       const actual = await runMiddleware(
         _.profile(profile)({
           getAvatar: () => TE.left('not-found'),
+          getCareerStage: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
           getResearchInterests: () => TE.left('unavailable'),
@@ -267,6 +325,7 @@ describe('profile', () => {
       const actual = await runMiddleware(
         _.profile(profile)({
           getAvatar: () => TE.left('not-found'),
+          getCareerStage: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
           getResearchInterests: () => TE.left('not-found'),
@@ -304,6 +363,7 @@ describe('profile', () => {
       const actual = await runMiddleware(
         _.profile(profile)({
           getAvatar: () => TE.left('not-found'),
+          getCareerStage: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
           getResearchInterests: () => TE.left('not-found'),
@@ -344,6 +404,7 @@ describe('profile', () => {
       const actual = await runMiddleware(
         _.profile(profile)({
           getAvatar: shouldNotBeCalled,
+          getCareerStage: shouldNotBeCalled,
           getName: shouldNotBeCalled,
           getPrereviews,
           getResearchInterests: shouldNotBeCalled,
@@ -376,6 +437,7 @@ test.prop([
   const actual = await runMiddleware(
     _.profile(profile)({
       getAvatar: () => TE.of(avatar),
+      getCareerStage: () => TE.left('not-found'),
       getName: () => TE.of(name),
       getPrereviews: () => TE.left('unavailable'),
       getResearchInterests: () => TE.left('not-found'),

@@ -433,6 +433,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getAvatar: withEnv(getAvatarFromCloudinary, env),
+          getCareerStage: withEnv(getCareerStage, env),
           getName: withEnv(getNameFromOrcid, env),
           getPrereviews: withEnv(getPrereviewsForProfileFromZenodo, env),
           getResearchInterests: withEnv(getResearchInterests, env),

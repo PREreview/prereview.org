@@ -2,6 +2,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
+import { getCareerStage } from '../career-stage'
 import { isLeadFor } from '../club-details'
 import type { ClubId } from '../club-id'
 import { isOpenForRequests } from '../is-open-for-requests'
@@ -18,6 +19,7 @@ export interface OrcidProfile {
   name: NonEmptyString
   orcid: Orcid
   slackUser: SlackUser | undefined
+  careerStage: 'early' | 'mid' | 'late' | undefined
   researchInterests: NonEmptyString | undefined
   clubs: ReadonlyArray<ClubId>
   avatar: URL | undefined
@@ -31,6 +33,7 @@ export function getOrcidProfile(profileId: OrcidProfileId) {
     RTE.let('type', () => 'orcid' as const),
     RTE.apS('prereviews', getPrereviews(profileId)),
     RTE.apSW('name', getName(profileId.value)),
+    RTE.apSW('careerStage', maybeGetPublicCareerStage(profileId.value)),
     RTE.apSW('researchInterests', maybeGetPublicResearchInterests(profileId.value)),
     RTE.apSW('avatar', maybeGetAvatar(profileId.value)),
     RTE.let('orcid', () => profileId.value),
@@ -39,6 +42,21 @@ export function getOrcidProfile(profileId: OrcidProfileId) {
     RTE.apSW('isOpenForRequests', maybeIsOpenForRequests(profileId.value)),
   ) satisfies RTE.ReaderTaskEither<any, any, OrcidProfile> // eslint-disable-line @typescript-eslint/no-explicit-any
 }
+
+const maybeGetPublicCareerStage = flow(
+  getCareerStage,
+  RTE.map(careerStage =>
+    match(careerStage)
+      .with({ visibility: 'public', value: P.select() }, identity)
+      .with({ visibility: 'restricted' }, () => undefined)
+      .exhaustive(),
+  ),
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.of(undefined))
+      .otherwise(RTE.left),
+  ),
+)
 
 const maybeGetPublicResearchInterests = flow(
   getResearchInterests,

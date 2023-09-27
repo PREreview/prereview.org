@@ -186,7 +186,7 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlackUser)(
   'can view my profile',
-  async ({ fetch, page }) => {
+  async ({ careerStageStore, fetch, page }) => {
     await page.goto('/my-details')
     await page.getByRole('link', { name: 'Connect Slack account' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -196,6 +196,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     await page.getByRole('link', { name: 'Set open-for-review-requests visibility' }).click()
     await page.getByLabel('Everyone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await careerStageStore.set('0000-0002-1825-0097', { value: 'mid', visibility: 'public' })
     await page.getByRole('link', { name: 'Enter research interests' }).click()
     await page
       .getByLabel('What are your research interests?')
@@ -228,6 +229,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Josiah Carberry')
     await expect(page.getByRole('main')).toContainText('ORCID iD 0000-0002-1825-0097')
     await expect(page.getByRole('main')).toContainText('Slack Community name jcarberry')
+    await expect(page.getByRole('main')).toContainText('Career stage Mid')
     await expect(page.getByRole('main')).toContainText(
       'Research interests Nunc vestibulum sapien eu magna elementum consectetur.',
     )

@@ -30,6 +30,7 @@ function renderContentForOrcid({
   name,
   orcid,
   slackUser,
+  careerStage,
   researchInterests,
   clubs,
   avatar,
@@ -56,6 +57,20 @@ function renderContentForOrcid({
                       <img src="${slackUser.image.href}" alt="" width="48" height="48" />
                       <span>${slackUser.name}</span>
                     </span>
+                  </dd>
+                </div>
+              `
+            : ''}
+          ${careerStage
+            ? html`
+                <div>
+                  <dt>Career stage</dt>
+                  <dd>
+                    ${match(careerStage)
+                      .with('early', () => 'Early')
+                      .with('mid', () => 'Mid')
+                      .with('late', () => 'Late')
+                      .exhaustive()}
                   </dd>
                 </div>
               `
