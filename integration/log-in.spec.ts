@@ -92,7 +92,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
-  await page.goto('/my-details/change-career-stage-visibility')
+  await page.getByRole('link', { name: 'Set career-stage visibility' }).click()
 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 

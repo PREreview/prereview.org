@@ -199,7 +199,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     await page.getByRole('link', { name: 'Enter career stage' }).click()
     await page.getByLabel('Mid').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/my-details/change-career-stage-visibility')
+    await page.getByRole('link', { name: 'Set career-stage visibility' }).click()
     await page.getByLabel('Everyone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByRole('link', { name: 'Enter research interests' }).click()

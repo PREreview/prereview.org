@@ -16,6 +16,7 @@ import type { PublicUrlEnv } from './public-url'
 import { type ResearchInterests, getResearchInterests } from './research-interests'
 import {
   changeCareerStageMatch,
+  changeCareerStageVisibilityMatch,
   changeOpenForRequestsMatch,
   changeOpenForRequestsVisibilityMatch,
   changeResearchInterestsMatch,
@@ -267,6 +268,11 @@ function createPage(
                   <dd>
                     <a href="${format(changeCareerStageMatch.formatter, {})}"
                       >Change <span class="visually-hidden">career stage</span></a
+                    >
+                  </dd>
+                  <dd>
+                    <a href="${format(changeCareerStageVisibilityMatch.formatter, {})}"
+                      >Set <span class="visually-hidden">career-stage</span> visibility</a
                     >
                   </dd>
                 `,
