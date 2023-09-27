@@ -1,7 +1,7 @@
 import { pipe } from 'fp-ts/function'
 import type { HttpError } from 'http-errors'
 import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'

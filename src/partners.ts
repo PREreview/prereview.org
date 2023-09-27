@@ -1,6 +1,6 @@
 import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import { html, plainText, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { serviceUnavailable } from './middleware'

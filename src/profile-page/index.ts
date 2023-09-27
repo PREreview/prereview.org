@@ -1,7 +1,7 @@
 import type { Reader } from 'fp-ts/Reader'
 import { flow } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import { match } from 'ts-pattern'
 import { sendHtml } from '../html'
 import { notFound, serviceUnavailable } from '../middleware'

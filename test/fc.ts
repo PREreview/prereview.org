@@ -13,7 +13,7 @@ import type { NonEmptyArray } from 'fp-ts/NonEmptyArray'
 import type { Refinement } from 'fp-ts/Refinement'
 import type * as H from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
-import { ExpressConnection } from 'hyper-ts/lib/express'
+import { ExpressConnection } from 'hyper-ts/express'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
 import {
   type Body,

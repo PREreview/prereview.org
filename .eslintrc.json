@@ -62,7 +62,7 @@
           "io-ts/*",
           "iso-639-3/to-*.json",
           "http-proxy-middleware/dist/types",
-          "hyper-ts/lib/*",
+          "hyper-ts/*",
           "logging-ts/lib/*",
           "nanohtml/*",
           "remixicon/**/*.svg",

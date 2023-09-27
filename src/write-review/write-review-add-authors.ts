@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
