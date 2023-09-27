@@ -28,6 +28,7 @@ import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
 import { changeCareerStageVisibility } from './change-career-stage-visibility'
+import { changeLocation } from './change-location'
 import { changeOpenForRequests } from './change-open-for-requests'
 import { changeOpenForRequestsVisibility } from './change-open-for-requests-visibility'
 import { changeResearchInterests } from './change-research-interests'
@@ -55,15 +56,19 @@ import { handleError } from './http-error'
 import {
   type CareerStageStoreEnv,
   type IsOpenForRequestsStoreEnv,
+  type LocationStoreEnv,
   type ResearchInterestsStoreEnv,
   type SlackUserIdStoreEnv,
   deleteCareerStage,
+  deleteLocation,
   deleteResearchInterests,
   getCareerStage,
+  getLocation,
   getResearchInterests,
   getSlackUserId,
   isOpenForRequests,
   saveCareerStage,
+  saveLocation,
   saveOpenForRequests,
   saveResearchInterests,
   saveSlackUserId,
@@ -99,6 +104,7 @@ import {
   aboutUsMatch,
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
+  changeLocationMatch,
   changeOpenForRequestsMatch,
   changeOpenForRequestsVisibilityMatch,
   changeResearchInterestsMatch,
@@ -191,6 +197,7 @@ export type AppEnv = CareerStageStoreEnv &
   GhostApiEnv &
   IsOpenForRequestsStoreEnv &
   LegacyPrereviewApiEnv &
+  LocationStoreEnv &
   L.LoggerEnv &
   OAuthEnv &
   PhaseEnv &
@@ -437,6 +444,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           deleteResearchInterests: withEnv(deleteResearchInterests, env),
           getResearchInterests: withEnv(getResearchInterests, env),
           saveResearchInterests: withEnv(saveResearchInterests, env),
+        })),
+      ),
+    ),
+    pipe(
+      changeLocationMatch.parser,
+      P.map(() => changeLocation),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteLocation: withEnv(deleteLocation, env),
+          getLocation: withEnv(getLocation, env),
+          saveLocation: withEnv(saveLocation, env),
         })),
       ),
     ),

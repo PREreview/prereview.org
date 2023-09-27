@@ -30,6 +30,7 @@ import type { CrossrefPreprintId } from '../src/crossref'
 import type { DatacitePreprintId } from '../src/datacite'
 import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
 import type { IsOpenForRequests } from '../src/is-open-for-requests'
+import type { Location } from '../src/location'
 import type { Preprint, PreprintTitle } from '../src/preprint'
 import type {
   AfricarxivFigsharePreprintId,
@@ -590,6 +591,11 @@ export const careerStageValue = (): fc.Arbitrary<CareerStage['value']> => fc.con
 
 export const careerStageVisibility = (): fc.Arbitrary<CareerStage['visibility']> =>
   fc.constantFrom('public', 'restricted')
+
+export const location = (): fc.Arbitrary<Location> =>
+  fc.record({ value: nonEmptyString(), visibility: locationVisibility() })
+
+export const locationVisibility = (): fc.Arbitrary<Location['visibility']> => fc.constantFrom('public', 'restricted')
 
 export const researchInterests = (): fc.Arbitrary<ResearchInterests> =>
   fc.record({ value: nonEmptyString(), visibility: researchInterestsVisibility() })

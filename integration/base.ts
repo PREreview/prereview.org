@@ -26,7 +26,7 @@ import {
 } from 'zenodo-ts'
 import { type AppEnv, app } from '../src/app'
 import type { CanConnectSlackEnv } from '../src/feature-flags'
-import type { IsOpenForRequestsStoreEnv, ResearchInterestsStoreEnv } from '../src/keyv'
+import type { IsOpenForRequestsStoreEnv, LocationStoreEnv, ResearchInterestsStoreEnv } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 
 import Logger = L.Logger
@@ -43,6 +43,7 @@ interface AppFixtures {
   updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
   careerStageStore: Keyv<unknown>
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
+  locationStore: LocationStoreEnv['locationStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: AppEnv['slackUserIdStore']
   canConnectSlack: CanConnectSlackEnv['canConnectSlack']
@@ -664,6 +665,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   isOpenForRequestsStore: async ({}, use) => {
     await use(new Keyv())
   },
+  locationStore: async ({}, use) => {
+    await use(new Keyv())
+  },
   logger: async ({}, use, testInfo) => {
     const logs: Array<LogEntry> = []
     const logger: Logger = entry => () => logs.push(entry)
@@ -702,6 +706,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       updatesLegacyPrereview,
       careerStageStore,
       isOpenForRequestsStore,
+      locationStore,
       researchInterestsStore,
       slackUserIdStore,
     },
@@ -725,6 +730,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         url: new URL('http://prereview.test'),
         update: updatesLegacyPrereview,
       },
+      locationStore,
       logger,
       oauth: {
         authorizeUrl: new URL('/authorize', oauthServer.issuer.url),

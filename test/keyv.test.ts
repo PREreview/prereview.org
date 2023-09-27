@@ -495,3 +495,135 @@ describe('saveSlackUserId', () => {
     },
   )
 })
+
+describe('deleteLocation', () => {
+  test.prop([fc.orcid(), fc.location()])('when the key contains a location', async (orcid, location) => {
+    const store = new Keyv()
+    await store.set(orcid, location)
+
+    const actual = await _.deleteLocation(orcid)({ locationStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
+  })
+
+  test.prop([fc.orcid(), fc.anything()])(
+    'when the key contains something other than a location',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.deleteLocation(orcid)({ locationStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.has(orcid)).toBeFalsy()
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.deleteLocation(orcid)({ locationStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.delete = () => Promise.reject(error)
+
+    const actual = await _.deleteLocation(orcid)({ locationStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
+describe('getLocation', () => {
+  test.prop([fc.orcid(), fc.location()])('when the key contains a location', async (orcid, location) => {
+    const store = new Keyv()
+    await store.set(orcid, location)
+
+    const actual = await _.getLocation(orcid)({ locationStore: store })()
+
+    expect(actual).toStrictEqual(E.right(location))
+  })
+
+  test.prop([
+    fc.orcid(),
+    fc.oneof(
+      fc.constant(''),
+      fc.anything().filter(value => typeof value !== 'string'),
+    ),
+  ])('when the key contains something other than a location', async (orcid, value) => {
+    const store = new Keyv()
+    await store.set(orcid, value)
+
+    const actual = await _.getLocation(orcid)({ locationStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.getLocation(orcid)({ locationStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.get = (): Promise<never> => Promise.reject(error)
+
+    const actual = await _.getLocation(orcid)({ locationStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
+describe('saveLocation', () => {
+  test.prop([fc.orcid(), fc.location()])('when the key contains a location', async (orcid, location) => {
+    const store = new Keyv()
+    await store.set(orcid, location)
+
+    const actual = await _.saveLocation(orcid, location)({ locationStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(location)
+  })
+
+  test.prop([fc.orcid(), fc.anything(), fc.location()])(
+    'when the key already contains something other than a location',
+    async (orcid, value, location) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveLocation(orcid, location)({ locationStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(location)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.location()])('when the key is not set', async (orcid, location) => {
+    const store = new Keyv()
+
+    const actual = await _.saveLocation(orcid, location)({ locationStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(location)
+  })
+
+  test.prop([fc.orcid(), fc.location(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, location, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveLocation(orcid, location)({ locationStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})

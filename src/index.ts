@@ -68,6 +68,7 @@ const server = app({
     url: env.LEGACY_PREREVIEW_URL,
     update: env.LEGACY_PREREVIEW_UPDATE,
   },
+  locationStore: new Keyv({ namespace: 'location', store: keyvStore }),
   oauth: {
     authorizeUrl: new URL('https://orcid.org/oauth/authorize'),
     clientId: env.ORCID_CLIENT_ID,

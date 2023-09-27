@@ -9,6 +9,7 @@ import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
 import { IsOpenForRequestsC } from './is-open-for-requests'
+import { LocationC } from './location'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { NonEmptyStringC } from './string'
 
@@ -18,6 +19,10 @@ export interface CareerStageStoreEnv {
 
 export interface IsOpenForRequestsStoreEnv {
   isOpenForRequestsStore: Keyv<unknown>
+}
+
+export interface LocationStoreEnv {
+  locationStore: Keyv<unknown>
 }
 
 export interface ResearchInterestsStoreEnv {
@@ -136,4 +141,19 @@ export const getSlackUserId = flow(
 export const saveSlackUserId = flow(
   setKey(OrcidE, NonEmptyStringC),
   RTE.local((env: SlackUserIdStoreEnv) => env.slackUserIdStore),
+)
+
+export const deleteLocation = flow(
+  deleteKey(OrcidE),
+  RTE.local((env: LocationStoreEnv) => env.locationStore),
+)
+
+export const getLocation = flow(
+  getKey(OrcidE, LocationC),
+  RTE.local((env: LocationStoreEnv) => env.locationStore),
+)
+
+export const saveLocation = flow(
+  setKey(OrcidE, LocationC),
+  RTE.local((env: LocationStoreEnv) => env.locationStore),
 )
