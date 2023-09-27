@@ -81,11 +81,16 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Career stage Early')
+  await expect(page.getByRole('main')).toContainText('Career stage Early Only visible to PREreview')
 
   await page.getByRole('link', { name: 'Change career stage' }).click()
 
   await expect(page.getByLabel('Early')).toBeChecked()
+
+  await page.getByRole('link', { name: 'Back' }).click()
+
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlackUser)(

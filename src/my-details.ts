@@ -257,6 +257,12 @@ function createPage(
                       .with('mid', () => 'Mid')
                       .with('late', () => 'Late')
                       .exhaustive()}
+                    <small
+                      >${match(careerStage.visibility)
+                        .with('public', () => 'Shown on your public profile')
+                        .with('restricted', () => 'Only visible to PREreview')
+                        .exhaustive()}</small
+                    >
                   </dd>
                   <dd>
                     <a href="${format(changeCareerStageMatch.formatter, {})}"
