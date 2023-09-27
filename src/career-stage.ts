@@ -3,7 +3,10 @@ import type * as TE from 'fp-ts/TaskEither'
 import * as C from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
 
-export type CareerStage = 'early' | 'mid' | 'late'
+export interface CareerStage {
+  readonly value: 'early' | 'mid' | 'late'
+  readonly visibility: 'public' | 'restricted'
+}
 
 export interface GetCareerStageEnv {
   getCareerStage: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', CareerStage>
@@ -14,7 +17,10 @@ export interface EditCareerStageEnv extends GetCareerStageEnv {
   saveCareerStage: (orcid: Orcid, careerStage: CareerStage) => TE.TaskEither<'unavailable', void>
 }
 
-export const CareerStageC: C.Codec<unknown, string, CareerStage> = C.literal('early', 'mid', 'late')
+export const CareerStageC = C.struct({
+  value: C.literal('early', 'mid', 'late'),
+  visibility: C.literal('public', 'restricted'),
+}) satisfies C.Codec<unknown, unknown, CareerStage>
 
 export const getCareerStage = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }: GetCareerStageEnv) => getCareerStage(orcid)))
@@ -22,7 +28,8 @@ export const getCareerStage = (orcid: Orcid) =>
 export const deleteCareerStage = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ deleteCareerStage }: EditCareerStageEnv) => deleteCareerStage(orcid)))
 
-export const saveCareerStage = (orcid: Orcid, careerStage: CareerStage) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ saveCareerStage }: EditCareerStageEnv) => saveCareerStage(orcid, careerStage)),
-  )
+export const saveCareerStage = (
+  orcid: Orcid,
+  careerStage: CareerStage,
+): RTE.ReaderTaskEither<EditCareerStageEnv, 'unavailable', void> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ saveCareerStage }) => saveCareerStage(orcid, careerStage)))

@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import * as E from 'fp-ts/Either'
 import * as D from 'io-ts/Decoder'
 import * as _ from '../src/career-stage'
 import * as fc from './fc'
@@ -15,7 +16,7 @@ describe('CareerStageC', () => {
     test.prop([fc.anything()])('with a non-career stage', value => {
       const actual = _.CareerStageC.decode(value)
 
-      expect(actual).toStrictEqual(D.failure(value, '"early" | "mid" | "late"'))
+      expect(actual).toStrictEqual(E.left(expect.anything()))
     })
   })
 

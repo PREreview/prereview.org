@@ -41,62 +41,110 @@ describe('changeCareerStage', () => {
     )
   })
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.careerStage().chain(careerStage =>
-      fc.tuple(
-        fc.constant(careerStage),
-        fc.connection({
-          body: fc.constant({ careerStage }),
-          method: fc.constant('POST'),
-        }),
+  describe('when the form has been submitted', () => {
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.careerStageValue().chain(careerStage =>
+        fc.tuple(
+          fc.constant(careerStage),
+          fc.connection({
+            body: fc.constant({ careerStage }),
+            method: fc.constant('POST'),
+          }),
+        ),
       ),
-    ),
-    fc.user(),
-  ])('when the form has been submitted', async (oauth, publicUrl, [careerStage, connection], user) => {
-    const saveCareerStage = jest.fn<EditCareerStageEnv['saveCareerStage']>(_ => TE.right(undefined))
+      fc.user(),
+      fc.careerStage(),
+    ])(
+      'there is a career stage already',
+      async (oauth, publicUrl, [careerStage, connection], user, existingCareerStage) => {
+        const saveCareerStage = jest.fn<EditCareerStageEnv['saveCareerStage']>(_ => TE.right(undefined))
 
-    const actual = await runMiddleware(
-      _.changeCareerStage({
-        getUser: () => M.right(user),
-        publicUrl,
-        oauth,
-        deleteCareerStage: shouldNotBeCalled,
-        getCareerStage: shouldNotBeCalled,
-        saveCareerStage,
-      }),
-      connection,
-    )()
+        const actual = await runMiddleware(
+          _.changeCareerStage({
+            getUser: () => M.right(user),
+            publicUrl,
+            oauth,
+            deleteCareerStage: shouldNotBeCalled,
+            getCareerStage: () => TE.right(existingCareerStage),
+            saveCareerStage,
+          }),
+          connection,
+        )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-        { type: 'endResponse' },
-      ]),
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+            { type: 'endResponse' },
+          ]),
+        )
+        expect(saveCareerStage).toHaveBeenCalledWith(user.orcid, {
+          value: careerStage,
+          visibility: existingCareerStage.visibility,
+        })
+      },
     )
-    expect(saveCareerStage).toHaveBeenCalledWith(user.orcid, careerStage)
+
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.careerStageValue().chain(careerStage =>
+        fc.tuple(
+          fc.constant(careerStage),
+          fc.connection({
+            body: fc.constant({ careerStage }),
+            method: fc.constant('POST'),
+          }),
+        ),
+      ),
+      fc.user(),
+    ])("when there isn't a career stage already", async (oauth, publicUrl, [careerStage, connection], user) => {
+      const saveCareerStage = jest.fn<EditCareerStageEnv['saveCareerStage']>(_ => TE.right(undefined))
+
+      const actual = await runMiddleware(
+        _.changeCareerStage({
+          getUser: () => M.right(user),
+          publicUrl,
+          oauth,
+          deleteCareerStage: shouldNotBeCalled,
+          getCareerStage: () => TE.left('not-found'),
+          saveCareerStage,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(saveCareerStage).toHaveBeenCalledWith(user.orcid, { value: careerStage, visibility: 'restricted' })
+    })
   })
 
   test.prop([
     fc.oauth(),
     fc.origin(),
     fc.connection({
-      body: fc.record({ careerStage: fc.oneof(fc.careerStage(), fc.constant('skip')) }),
+      body: fc.record({ careerStage: fc.oneof(fc.careerStageValue(), fc.constant('skip')) }),
       method: fc.constant('POST'),
     }),
     fc.user(),
+    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.careerStage()),
   ])(
     'when the form has been submitted but the career stage cannot be saved',
-    async (oauth, publicUrl, connection, user) => {
+    async (oauth, publicUrl, connection, user, existingCareerStage) => {
       const actual = await runMiddleware(
         _.changeCareerStage({
           getUser: () => M.right(user),
           publicUrl,
           oauth,
           deleteCareerStage: () => TE.left('unavailable'),
-          getCareerStage: shouldNotBeCalled,
+          getCareerStage: () => TE.fromEither(existingCareerStage),
           saveCareerStage: () => TE.left('unavailable'),
         }),
         connection,

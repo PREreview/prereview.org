@@ -583,7 +583,13 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcid)
 
-export const careerStage = (): fc.Arbitrary<CareerStage> => fc.constantFrom('early', 'mid', 'late')
+export const careerStage = (): fc.Arbitrary<CareerStage> =>
+  fc.record({ value: careerStageValue(), visibility: careerStageVisibility() })
+
+export const careerStageValue = (): fc.Arbitrary<CareerStage['value']> => fc.constantFrom('early', 'mid', 'late')
+
+export const careerStageVisibility = (): fc.Arbitrary<CareerStage['visibility']> =>
+  fc.constantFrom('public', 'restricted')
 
 export const researchInterests = (): fc.Arbitrary<ResearchInterests> =>
   fc.record({ value: nonEmptyString(), visibility: researchInterestsVisibility() })

@@ -251,7 +251,7 @@ function createPage(
               .otherwise(
                 careerStage => html`
                   <dd>
-                    ${match(careerStage)
+                    ${match(careerStage.value)
                       .with({ value: 'early' }, () => 'Early')
                       .with({ value: 'mid' }, () => 'Mid')
                       .with({ value: 'late' }, () => 'Late')

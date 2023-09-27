@@ -7,7 +7,7 @@ import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
-import { CareerStageC } from './career-stage'
+import { type CareerStage, CareerStageC } from './career-stage'
 import { IsOpenForRequestsC } from './is-open-for-requests'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { NonEmptyStringC } from './string'
@@ -72,7 +72,16 @@ export const deleteCareerStage = flow(
 )
 
 export const getCareerStage = flow(
-  getKey(OrcidE, CareerStageC),
+  getKey(
+    OrcidE,
+    D.union(
+      CareerStageC,
+      pipe(
+        D.literal('early', 'mid', 'late'),
+        D.map(value => ({ value, visibility: 'restricted' }) satisfies CareerStage),
+      ),
+    ),
+  ),
   RTE.local((env: CareerStageStoreEnv) => env.careerStageStore),
 )
 

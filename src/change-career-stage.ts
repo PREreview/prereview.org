@@ -5,6 +5,7 @@ import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, deleteCareerStage, getCareerStage, saveCareerStage } from './career-stage'
 import { html, plainText, rawHtml, sendHtml } from './html'
@@ -67,7 +68,21 @@ const handleChangeCareerStageForm = (user: User) =>
       match(careerStage)
         .with(P.union('early', 'mid', 'late'), careerStage =>
           pipe(
-            RM.fromReaderTaskEither(saveCareerStage(user.orcid, careerStage)),
+            RM.of({}),
+            RM.apS('value', RM.of(careerStage)),
+            RM.apS(
+              'visibility',
+              pipe(
+                RM.fromReaderTaskEither(getCareerStage(user.orcid)),
+                RM.map(get('visibility')),
+                RM.orElseW(error =>
+                  match(error)
+                    .with('not-found', () => RM.of('restricted' as const))
+                    .otherwise(RM.left),
+                ),
+              ),
+            ),
+            RM.chainReaderTaskEitherK(careerStage => saveCareerStage(user.orcid, careerStage)),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),
           ),
@@ -134,7 +149,7 @@ function createFormPage(user: User, careerStage: O.Option<CareerStage>, error = 
                       value="early"
                       id="career-stage-early"
                       ${match(careerStage)
-                        .with({ value: 'early' }, () => 'checked')
+                        .with({ value: { value: 'early' } }, () => 'checked')
                         .otherwise(() => '')}
                     />
                     <span>Early</span>
@@ -147,7 +162,7 @@ function createFormPage(user: User, careerStage: O.Option<CareerStage>, error = 
                       type="radio"
                       value="mid"
                       ${match(careerStage)
-                        .with({ value: 'mid' }, () => 'checked')
+                        .with({ value: { value: 'mid' } }, () => 'checked')
                         .otherwise(() => '')}
                     />
                     <span>Mid</span>
@@ -160,7 +175,7 @@ function createFormPage(user: User, careerStage: O.Option<CareerStage>, error = 
                       type="radio"
                       value="late"
                       ${match(careerStage)
-                        .with({ value: 'late' }, () => 'checked')
+                        .with({ value: { value: 'late' } }, () => 'checked')
                         .otherwise(() => '')}
                     />
                     <span>Late</span>
