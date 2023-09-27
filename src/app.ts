@@ -29,6 +29,7 @@ import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
 import { changeCareerStageVisibility } from './change-career-stage-visibility'
 import { changeLocation } from './change-location'
+import { changeLocationVisibility } from './change-location-visibility'
 import { changeOpenForRequests } from './change-open-for-requests'
 import { changeOpenForRequestsVisibility } from './change-open-for-requests-visibility'
 import { changeResearchInterests } from './change-research-interests'
@@ -105,6 +106,7 @@ import {
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
   changeLocationMatch,
+  changeLocationVisibilityMatch,
   changeOpenForRequestsMatch,
   changeOpenForRequestsVisibilityMatch,
   changeResearchInterestsMatch,
@@ -450,6 +452,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       changeLocationMatch.parser,
       P.map(() => changeLocation),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteLocation: withEnv(deleteLocation, env),
+          getLocation: withEnv(getLocation, env),
+          saveLocation: withEnv(saveLocation, env),
+        })),
+      ),
+    ),
+    pipe(
+      changeLocationVisibilityMatch.parser,
+      P.map(() => changeLocationVisibility),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
