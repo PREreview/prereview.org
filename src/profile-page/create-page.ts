@@ -32,6 +32,7 @@ function renderContentForOrcid({
   slackUser,
   careerStage,
   researchInterests,
+  location,
   clubs,
   avatar,
   isOpenForRequests,
@@ -80,6 +81,14 @@ function renderContentForOrcid({
                 <div>
                   <dt>Research interests</dt>
                   <dd>${researchInterests}</dd>
+                </div>
+              `
+            : ''}
+          ${location
+            ? html`
+                <div>
+                  <dt>Location</dt>
+                  <dd>${location}</dd>
                 </div>
               `
             : ''}
