@@ -1,13 +1,12 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
-import type { Reader } from 'fp-ts/Reader'
 import * as RE from 'fp-ts/ReaderEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
-import { Status, type StatusOpen } from 'hyper-ts'
+import { Status } from 'hyper-ts'
 import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { endSession as _endSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
@@ -40,7 +39,7 @@ export const logIn = pipe(
 )
 
 export const logInAndRedirect = flow(
-  fromReaderK(toUrl),
+  RM.fromReaderK(toUrl),
   RM.ichainW(flow(String, requestAuthorizationCode('/authenticate'))),
 )
 
@@ -65,7 +64,7 @@ const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'u
 
 export const authenticate = flow(
   (code: string, state: string) => RM.of({ code, state }),
-  RM.bind('referer', fromReaderK(flow(get('state'), getReferer))),
+  RM.bind('referer', RM.fromReaderK(flow(get('state'), getReferer))),
   RM.bindW(
     'user',
     RM.fromReaderTaskEitherK(
@@ -155,11 +154,4 @@ function failureMessage() {
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

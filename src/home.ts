@@ -1,13 +1,11 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
-import type { Reader } from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as T from 'fp-ts/Task'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
+import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
@@ -61,8 +59,8 @@ export const home = (message?: 'logged-out' | 'logged-in') =>
       () => 'redirect' as const,
     ),
     RM.bindTo('user'),
-    RM.apSW('recentPrereviews', fromReaderTask(getRecentPrereviews())),
-    chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user, message)),
+    RM.apSW('recentPrereviews', RM.fromReaderTask(getRecentPrereviews())),
+    RM.chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user, message)),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainFirstW(() => addCanonicalLinkHeader(homeMatch.formatter, {})),
     RM.ichainMiddlewareKW(sendHtml),
@@ -277,23 +275,4 @@ function formatList(
     list => formatter.format(list),
     rawHtml,
   )
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function chainReaderKW<R2, A, B>(
-  f: (a: A) => Reader<R2, B>,
-): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
-  return RM.chainW(fromReaderK(f))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/87
-function fromReaderTask<R, I = StatusOpen, A = never>(fa: RT.ReaderTask<R, A>): RM.ReaderMiddleware<R, I, I, never, A> {
-  return r => M.fromTask(fa(r))
 }

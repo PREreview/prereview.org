@@ -1,6 +1,5 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
-import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
@@ -53,7 +52,7 @@ const showChangeOpenForRequestsForm = (user: User) =>
     RM.fromReaderTaskEither(isOpenForRequests(user.orcid)),
     RM.map(O.some),
     RM.orElseW(() => RM.of(O.none)),
-    chainReaderKW(openForRequests => createFormPage(user, openForRequests)),
+    RM.chainReaderKW(openForRequests => createFormPage(user, openForRequests)),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -190,18 +189,4 @@ function createFormPage(user: User, openForRequests: O.Option<IsOpenForRequests>
     skipLinks: [[html`Skip to form`, '#form']],
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function chainReaderKW<R2, A, B>(
-  f: (a: A) => Reader<R2, B>,
-): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
-  return RM.chainW(fromReaderK(f))
 }

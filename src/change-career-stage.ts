@@ -1,6 +1,5 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
-import type { Reader } from 'fp-ts/Reader'
 import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -47,7 +46,7 @@ const showChangeCareerStageForm = (user: User) =>
     RM.fromReaderTaskEither(getCareerStage(user.orcid)),
     RM.map(O.some),
     RM.orElseW(() => RM.of(O.none)),
-    chainReaderKW(careerStage => createFormPage(user, careerStage)),
+    RM.chainReaderKW(careerStage => createFormPage(user, careerStage)),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -186,18 +185,4 @@ function createFormPage(user: User, careerStage: O.Option<CareerStage>, error = 
     skipLinks: [[html`Skip to form`, '#form']],
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function chainReaderKW<R2, A, B>(
-  f: (a: A) => Reader<R2, B>,
-): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
-  return RM.chainW(fromReaderK(f))
 }

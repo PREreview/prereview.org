@@ -2,7 +2,6 @@ import { format } from 'fp-ts-routing'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
-import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
@@ -41,7 +40,7 @@ export const changeResearchInterestsVisibility = pipe(
       >()
       .with(
         'not-found',
-        fromMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
+        RM.fromMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
       )
       .with('no-session', () => logInAndRedirect(myDetailsMatch.formatter, {}))
       .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
@@ -134,11 +133,4 @@ function createFormPage(user: User, researchInterests: ResearchInterests) {
     skipLinks: [[html`Skip to form`, '#form']],
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-function fromMiddlewareK<R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-  f: (...a: A) => M.Middleware<I, O, E, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, O, E, B> {
-  return (...a) => RM.fromMiddleware(f(...a))
 }

@@ -4,16 +4,13 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import type { IO } from 'fp-ts/IO'
 import type * as O from 'fp-ts/Option'
-import type { Option } from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
-import type { Reader } from 'fp-ts/Reader'
 import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RR from 'fp-ts/ReadonlyRecord'
-import { type Lazy, flow, pipe } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, exchangeAuthorizationCode } from 'hyper-ts-oauth'
-import * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import jwtDecode from 'jwt-decode'
@@ -78,7 +75,7 @@ export const connectSlack = pipe(
   RM.bindW(
     'canConnectSlack',
     flow(
-      fromReaderK(({ user }) => canConnectSlack(user)),
+      RM.fromReaderK(({ user }) => canConnectSlack(user)),
       RM.filterOrElse(
         canConnectSlack => canConnectSlack,
         () => 'not-found' as const,
@@ -93,7 +90,7 @@ export const connectSlack = pipe(
     match(state)
       .with(
         { isSlackUser: true },
-        fromMiddlewareK(() => seeOther(format(connectSlackStartMatch.formatter, {}))),
+        RM.fromMiddlewareK(() => seeOther(format(connectSlackStartMatch.formatter, {}))),
       )
       .with({ isSlackUser: false }, showConnectSlackPage)
       .exhaustive(),
@@ -122,21 +119,21 @@ export const connectSlackStart = pipe(
   RM.bindW(
     'canConnectSlack',
     flow(
-      fromReaderK(({ user }) => canConnectSlack(user)),
+      RM.fromReaderK(({ user }) => canConnectSlack(user)),
       RM.filterOrElse(
         canConnectSlack => canConnectSlack,
         () => 'not-found' as const,
       ),
     ),
   ),
-  RM.apSW('state', fromReaderIO(generateUuid)),
+  RM.apSW('state', RM.fromReaderIO(generateUuid)),
   RM.bindW(
     'signedState',
-    fromReaderK(({ state }) => signValue(state)),
+    RM.fromReaderK(({ state }) => signValue(state)),
   ),
   RM.bindW(
     'authorizationRequestUrl',
-    fromReaderK(({ state }) => authorizationRequestUrl(state)),
+    RM.fromReaderK(({ state }) => authorizationRequestUrl(state)),
   ),
   RM.ichainFirst(() => RM.status(Status.SeeOther)),
   RM.ichainFirst(({ authorizationRequestUrl }) => RM.header('Location', authorizationRequestUrl.href)),
@@ -189,8 +186,8 @@ export const connectSlackCode = flow(
     pipe(
       RM.decodeHeader('Cookie', D.string.decode),
       RM.mapLeft(() => 'no-cookie' as const),
-      chainOptionK(() => 'no-cookie' as const)(flow(cookie.parse, RR.lookup('slack-state'))),
-      chainReaderKW(unsignValue),
+      RM.chainOptionK(() => 'no-cookie' as const)(flow(cookie.parse, RR.lookup('slack-state'))),
+      RM.chainReaderKW(unsignValue),
       RM.chainEitherK(E.fromOption(() => 'no-cookie' as const)),
       RM.filterOrElseW(
         expectedState => state === expectedState,
@@ -226,14 +223,14 @@ export const connectSlackError = (error: string) =>
     .otherwise(() => showFailureMessage)
 
 const showConnectSlackPage = flow(
-  fromReaderK(connectSlackPage),
+  RM.fromReaderK(connectSlackPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
 )
 
 const showAccessDeniedMessage = pipe(
   maybeGetUser,
-  chainReaderKW(accessDeniedMessage),
+  RM.chainReaderKW(accessDeniedMessage),
   RM.ichainFirst(() => RM.status(Status.Forbidden)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
   RM.ichainFirst(() => RM.clearCookie('slack-state', { httpOnly: true })),
@@ -242,7 +239,7 @@ const showAccessDeniedMessage = pipe(
 
 const showFailureMessage = pipe(
   maybeGetUser,
-  chainReaderKW(failureMessage),
+  RM.chainReaderKW(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
   RM.ichainFirst(() => RM.clearCookie('slack-state', { httpOnly: true })),
@@ -311,40 +308,4 @@ function failureMessage(user?: User) {
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/80
-function chainOptionK<E>(
-  onNone: Lazy<E>,
-): <A, B>(
-  f: (a: A) => Option<B>,
-) => <R, I>(ma: RM.ReaderMiddleware<R, I, I, E, A>) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return f => RM.ichainMiddlewareK((...a) => M.fromOption(onNone)(f(...a)))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function chainReaderKW<R2, A, B>(
-  f: (a: A) => Reader<R2, B>,
-): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
-  return RM.chainW(fromReaderK(f))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/93
-function fromReaderIO<R, I = StatusOpen, A = never>(fa: RIO.ReaderIO<R, A>): RM.ReaderMiddleware<R, I, I, never, A> {
-  return r => M.fromIO(fa(r))
 }

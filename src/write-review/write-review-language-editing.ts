@@ -1,9 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import type { Reader } from 'fp-ts/Reader'
 import { flow, identity, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import type * as M from 'hyper-ts/lib/Middleware'
+import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
@@ -46,7 +44,7 @@ export const writeReviewLanguageEditing = flow(
         match(state)
           .with(
             { form: P.union({ alreadyWritten: P.optional('yes') }, { reviewType: P.optional('freeform') }) },
-            fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
           )
           .with({ method: 'POST' }, handleLanguageEditingForm)
           .otherwise(showLanguageEditingForm),
@@ -56,7 +54,7 @@ export const writeReviewLanguageEditing = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -72,7 +70,7 @@ export const writeReviewLanguageEditing = flow(
 )
 
 const showLanguageEditingForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     languageEditingForm(preprint, FormToFieldsE.encode(form), user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
@@ -81,7 +79,7 @@ const showLanguageEditingForm = flow(
 
 const showLanguageEditingErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    fromReaderK((form: LanguageEditingForm) => languageEditingForm(preprint, form, user)),
+    RM.fromReaderK((form: LanguageEditingForm) => languageEditingForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -269,19 +267,4 @@ ${match(form.languageEditingYesDetails)
     type: 'streamline',
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

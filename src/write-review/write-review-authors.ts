@@ -1,10 +1,8 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as I from 'fp-ts/Identity'
-import type { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import type * as M from 'hyper-ts/lib/Middleware'
+import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
@@ -40,7 +38,7 @@ export const writeReviewAuthors = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -56,7 +54,7 @@ export const writeReviewAuthors = flow(
 )
 
 const showAuthorsForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     authorsForm(
       preprint,
       {
@@ -72,7 +70,7 @@ const showAuthorsForm = flow(
 
 const showAuthorsErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    fromReaderK((form: AuthorsForm) => authorsForm(preprint, form, user)),
+    RM.fromReaderK((form: AuthorsForm) => authorsForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -307,19 +305,4 @@ function authorsForm(preprint: PreprintTitle, form: AuthorsForm, user: User) {
     type: 'streamline',
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

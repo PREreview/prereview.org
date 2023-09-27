@@ -1,14 +1,13 @@
 import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as I from 'fp-ts/Identity'
-import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
+import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
@@ -109,7 +108,7 @@ export const preprintReviews = flow(
 )
 
 const showFailureMessage = flow(
-  fromReaderK(failureMessage),
+  RM.fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -458,11 +457,4 @@ function countRapidPrereviewResponses<Q extends keyof RapidPrereview['questions'
     (total, rapidPrereview) => total + (rapidPrereview.questions[question] === response ? 1 : 0),
     0,
   )
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

@@ -4,7 +4,6 @@ import * as E from 'fp-ts/Either'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
@@ -38,7 +37,7 @@ export const writeReview = flow(
         match(state)
           .with(
             { form: P.when(E.isRight) },
-            fromMiddlewareK(() => seeOther(format(writeReviewStartMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewStartMatch.formatter, { id: preprint.id }))),
           )
           .with({ form: P.when(E.isLeft) }, ({ user }) => showStartPage(preprint, user))
           .exhaustive(),
@@ -215,11 +214,3 @@ function formatList(
     rawHtml,
   )
 }
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))

@@ -1,9 +1,7 @@
 import { format } from 'fp-ts-routing'
-import type { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
-import type * as M from 'hyper-ts/lib/Middleware'
 import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
@@ -41,7 +39,7 @@ export const writeReviewStart = flow(
           >()
           .with(
             'no-form',
-            fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
           )
           .with('no-session', () => logInAndRedirect(writeReviewStartMatch.formatter, { id: preprint.id }))
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
@@ -58,7 +56,7 @@ export const writeReviewStart = flow(
 )
 
 const showCarryOnPage = flow(
-  fromReaderK(carryOnPage),
+  RM.fromReaderK(carryOnPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -89,19 +87,4 @@ function carryOnPage(preprint: PreprintTitle, form: Form, user: User) {
     type: 'streamline',
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }
