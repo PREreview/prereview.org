@@ -41,7 +41,7 @@ describe('home', () => {
       expect(templatePage).toHaveBeenCalledWith(
         expect.objectContaining({
           current: 'home',
-          title: 'PREreview',
+          title: 'PREreview: Open preprint reviews. For all researchers.',
           user,
         }),
       )
@@ -99,7 +99,7 @@ describe('home', () => {
       expect(templatePage).toHaveBeenCalledWith(
         expect.objectContaining({
           current: 'home',
-          title: 'PREreview',
+          title: 'PREreview: Open preprint reviews. For all researchers.',
           user: undefined,
         }),
       )

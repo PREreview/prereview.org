@@ -73,7 +73,7 @@ function createPage(
   message?: 'logged-out' | 'logged-in',
 ) {
   return templatePage({
-    title: plainText`PREreview`,
+    title: plainText`PREreview: Open preprint reviews. For all researchers.`,
     content: html`
       <main id="main-content">
         ${match(message)
