@@ -33,6 +33,7 @@ function renderContentForOrcid({
   careerStage,
   researchInterests,
   location,
+  languages,
   clubs,
   avatar,
   isOpenForRequests,
@@ -89,6 +90,14 @@ function renderContentForOrcid({
                 <div>
                   <dt>Location</dt>
                   <dd>${location}</dd>
+                </div>
+              `
+            : ''}
+          ${languages
+            ? html`
+                <div>
+                  <dt>Languages</dt>
+                  <dd>${languages}</dd>
                 </div>
               `
             : ''}

@@ -216,6 +216,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     await page.getByRole('link', { name: 'Set location visibility' }).click()
     await page.getByLabel('Everyone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.goto('/my-details/change-languages')
+    await page.getByLabel('What languages can you review in?').fill('English and Spanish')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.goto('/my-details/change-languages-visibility')
+    await page.getByLabel('Everyone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-1825-0097/personal-details', {
       body: { name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' } } },
@@ -245,6 +251,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
       'Research interests Nunc vestibulum sapien eu magna elementum consectetur.',
     )
     await expect(page.getByRole('main')).toContainText('Location Vivamus in convallis urna.')
+    await expect(page.getByRole('main')).toContainText('Languages English and Spanish')
     await expect(page.getByRole('main')).toContainText('Josiah Carberry is happy to take requests for a PREreview.')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()

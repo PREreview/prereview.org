@@ -6,6 +6,7 @@ import { getCareerStage } from '../career-stage'
 import { isLeadFor } from '../club-details'
 import type { ClubId } from '../club-id'
 import { isOpenForRequests } from '../is-open-for-requests'
+import { getLanguages } from '../languages'
 import { getLocation } from '../location'
 import type { OrcidProfileId } from '../profile-id'
 import { getResearchInterests } from '../research-interests'
@@ -23,6 +24,7 @@ export interface OrcidProfile {
   careerStage: 'early' | 'mid' | 'late' | undefined
   researchInterests: NonEmptyString | undefined
   location: NonEmptyString | undefined
+  languages: NonEmptyString | undefined
   clubs: ReadonlyArray<ClubId>
   avatar: URL | undefined
   isOpenForRequests: boolean
@@ -38,6 +40,7 @@ export function getOrcidProfile(profileId: OrcidProfileId) {
     RTE.apSW('careerStage', maybeGetPublicCareerStage(profileId.value)),
     RTE.apSW('researchInterests', maybeGetPublicResearchInterests(profileId.value)),
     RTE.apSW('location', maybeGetPublicLocation(profileId.value)),
+    RTE.apSW('languages', maybeGetPublicLanguages(profileId.value)),
     RTE.apSW('avatar', maybeGetAvatar(profileId.value)),
     RTE.let('orcid', () => profileId.value),
     RTE.let('clubs', () => isLeadFor(profileId.value)),
@@ -50,6 +53,21 @@ const maybeGetPublicCareerStage = flow(
   getCareerStage,
   RTE.map(careerStage =>
     match(careerStage)
+      .with({ visibility: 'public', value: P.select() }, identity)
+      .with({ visibility: 'restricted' }, () => undefined)
+      .exhaustive(),
+  ),
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.of(undefined))
+      .otherwise(RTE.left),
+  ),
+)
+
+const maybeGetPublicLanguages = flow(
+  getLanguages,
+  RTE.map(languages =>
+    match(languages)
       .with({ visibility: 'public', value: P.select() }, identity)
       .with({ visibility: 'restricted' }, () => undefined)
       .exhaustive(),

@@ -28,6 +28,7 @@ describe('profile', () => {
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.location()),
+      fc.either(fc.constant('not-found' as const), fc.languages()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
     ])(
@@ -42,6 +43,7 @@ describe('profile', () => {
         careerStage,
         researchInterests,
         location,
+        languages,
         slackUser,
         openForRequests,
       ) => {
@@ -51,6 +53,7 @@ describe('profile', () => {
         const getCareerStage = jest.fn<_.Env['getCareerStage']>(_ => TE.fromEither(careerStage))
         const getResearchInterests = jest.fn<_.Env['getResearchInterests']>(_ => TE.fromEither(researchInterests))
         const getLocation = jest.fn<_.Env['getLocation']>(_ => TE.fromEither(location))
+        const getLanguages = jest.fn<_.Env['getLanguages']>(_ => TE.fromEither(languages))
         const getSlackUser = jest.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
         const isOpenForRequests = jest.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
 
@@ -58,6 +61,7 @@ describe('profile', () => {
           _.profile(profile)({
             getAvatar,
             getCareerStage,
+            getLanguages,
             getLocation,
             getName,
             getPrereviews,
@@ -78,6 +82,7 @@ describe('profile', () => {
         )
         expect(getAvatar).toHaveBeenCalledWith(profile.value)
         expect(getCareerStage).toHaveBeenCalledWith(profile.value)
+        expect(getLanguages).toHaveBeenCalledWith(profile.value)
         expect(getLocation).toHaveBeenCalledWith(profile.value)
         expect(getName).toHaveBeenCalledWith(profile.value)
         expect(getPrereviews).toHaveBeenCalledWith(profile)
@@ -105,6 +110,7 @@ describe('profile', () => {
         _.profile(profile)({
           getAvatar: () => TE.of(avatar),
           getCareerStage: () => TE.left('not-found'),
+          getLanguages: () => TE.left('not-found'),
           getLocation: () => TE.left('not-found'),
           getName: () => TE.left('not-found'),
           getPrereviews: () => TE.of(prereviews),
@@ -144,6 +150,7 @@ describe('profile', () => {
         _.profile(profile)({
           getAvatar: () => TE.of(avatar),
           getCareerStage: () => TE.left('not-found'),
+          getLanguages: () => TE.left('not-found'),
           getLocation: () => TE.left('not-found'),
           getName: () => TE.left('unavailable'),
           getPrereviews: () => TE.of(prereviews),
@@ -182,6 +189,7 @@ describe('profile', () => {
         _.profile(profile)({
           getAvatar: () => TE.left('not-found'),
           getCareerStage: () => TE.left('not-found'),
+          getLanguages: () => TE.left('not-found'),
           getLocation: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
@@ -220,6 +228,7 @@ describe('profile', () => {
         _.profile(profile)({
           getAvatar: () => TE.left('unavailable'),
           getCareerStage: () => TE.left('not-found'),
+          getLanguages: () => TE.left('not-found'),
           getLocation: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
@@ -259,6 +268,7 @@ describe('profile', () => {
         _.profile(profile)({
           getAvatar: () => TE.left('not-found'),
           getCareerStage: () => TE.left('unavailable'),
+          getLanguages: () => TE.left('not-found'),
           getLocation: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
@@ -298,6 +308,7 @@ describe('profile', () => {
         _.profile(profile)({
           getAvatar: () => TE.left('not-found'),
           getCareerStage: () => TE.left('not-found'),
+          getLanguages: () => TE.left('not-found'),
           getLocation: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
@@ -337,7 +348,48 @@ describe('profile', () => {
         _.profile(profile)({
           getAvatar: () => TE.left('not-found'),
           getCareerStage: () => TE.left('not-found'),
+          getLanguages: () => TE.left('not-found'),
           getLocation: () => TE.left('unavailable'),
+          getName: () => TE.of(name),
+          getPrereviews: () => TE.of(prereviews),
+          getResearchInterests: () => TE.left('not-found'),
+          getSlackUser: () => TE.left('not-found'),
+          getUser: () => M.fromEither(user),
+          isOpenForRequests: () => TE.left('not-found'),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.connection({ method: fc.requestMethod() }),
+      fc.orcidProfileId(),
+      fc.nonEmptyString(),
+      fc.array(
+        fc.record({
+          id: fc.integer(),
+          reviewers: fc.nonEmptyArray(fc.string()),
+          published: fc.plainDate(),
+          preprint: fc.preprintTitle(),
+        }),
+      ),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('when languages are available', async (connection, profile, name, prereviews, user) => {
+      const actual = await runMiddleware(
+        _.profile(profile)({
+          getAvatar: () => TE.left('not-found'),
+          getCareerStage: () => TE.left('not-found'),
+          getLanguages: () => TE.left('unavailable'),
+          getLocation: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
           getResearchInterests: () => TE.left('not-found'),
@@ -376,6 +428,7 @@ describe('profile', () => {
         _.profile(profile)({
           getAvatar: () => TE.left('not-found'),
           getCareerStage: () => TE.left('not-found'),
+          getLanguages: () => TE.left('not-found'),
           getLocation: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
@@ -415,6 +468,7 @@ describe('profile', () => {
         _.profile(profile)({
           getAvatar: () => TE.left('not-found'),
           getCareerStage: () => TE.left('not-found'),
+          getLanguages: () => TE.left('not-found'),
           getLocation: () => TE.left('not-found'),
           getName: () => TE.of(name),
           getPrereviews: () => TE.of(prereviews),
@@ -457,6 +511,7 @@ describe('profile', () => {
         _.profile(profile)({
           getAvatar: shouldNotBeCalled,
           getCareerStage: shouldNotBeCalled,
+          getLanguages: () => TE.left('not-found'),
           getLocation: shouldNotBeCalled,
           getName: shouldNotBeCalled,
           getPrereviews,
@@ -491,6 +546,7 @@ test.prop([
     _.profile(profile)({
       getAvatar: () => TE.of(avatar),
       getCareerStage: () => TE.left('not-found'),
+      getLanguages: () => TE.left('not-found'),
       getLocation: () => TE.left('not-found'),
       getName: () => TE.of(name),
       getPrereviews: () => TE.left('unavailable'),
