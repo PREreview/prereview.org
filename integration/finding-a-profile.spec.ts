@@ -210,10 +210,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     await page.getByRole('link', { name: 'Set research-interests visibility' }).click()
     await page.getByLabel('Everyone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/my-details/change-location')
+    await page.getByRole('link', { name: 'Enter location' }).click()
     await page.getByLabel('Where are you based?').fill('Vivamus in convallis urna.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/my-details/change-location-visibility')
+    await page.getByRole('link', { name: 'Set location visibility' }).click()
     await page.getByLabel('Everyone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 

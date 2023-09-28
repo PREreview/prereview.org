@@ -9,6 +9,7 @@ import { type CareerStage, getCareerStage } from './career-stage'
 import { canConnectSlack } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
 import { type IsOpenForRequests, isOpenForRequests } from './is-open-for-requests'
+import { type Location, getLocation } from './location'
 import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
@@ -17,6 +18,8 @@ import { type ResearchInterests, getResearchInterests } from './research-interes
 import {
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
+  changeLocationMatch,
+  changeLocationVisibilityMatch,
   changeOpenForRequestsMatch,
   changeOpenForRequestsVisibilityMatch,
   changeResearchInterestsMatch,
@@ -85,8 +88,20 @@ export const myDetails = pipe(
       ),
     ),
   ),
-  RM.chainReaderKW(({ user, canConnectSlack, slackUser, openForRequests, careerStage, researchInterests }) =>
-    createPage(user, canConnectSlack, slackUser, openForRequests, careerStage, researchInterests),
+  RM.bindW(
+    'location',
+    flow(
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => getLocation(orcid)),
+      RM.map(O.some),
+      RM.orElseW(error =>
+        match(error)
+          .with('not-found', () => RM.of(O.none))
+          .otherwise(RM.left),
+      ),
+    ),
+  ),
+  RM.chainReaderKW(({ user, canConnectSlack, slackUser, openForRequests, careerStage, researchInterests, location }) =>
+    createPage(user, canConnectSlack, slackUser, openForRequests, careerStage, researchInterests, location),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
@@ -115,6 +130,7 @@ function createPage(
   openForRequests: O.Option<IsOpenForRequests>,
   careerStage: O.Option<CareerStage>,
   researchInterests: O.Option<ResearchInterests>,
+  location: O.Option<Location>,
 ) {
   return page({
     title: plainText`My details`,
@@ -311,6 +327,44 @@ function createPage(
                   <dd>
                     <a href="${format(changeResearchInterestsVisibilityMatch.formatter, {})}"
                       >Set <span class="visually-hidden">research-interests</span> visibility</a
+                    >
+                  </dd>
+                `,
+              )
+              .exhaustive()}
+          </div>
+
+          <div>
+            <dt>Location</dt>
+            ${match(location)
+              .when(
+                O.isNone,
+                () => html`
+                  <dd>
+                    <a href="${format(changeLocationMatch.formatter, {})}">Enter location</a>
+                  </dd>
+                `,
+              )
+              .with(
+                { value: P.select() },
+                location => html`
+                  <dd>
+                    ${location.value}
+                    <small
+                      >${match(location.visibility)
+                        .with('public', () => 'Shown on your public profile')
+                        .with('restricted', () => 'Only visible to PREreview')
+                        .exhaustive()}</small
+                    >
+                  </dd>
+                  <dd>
+                    <a href="${format(changeLocationMatch.formatter, {})}"
+                      >Change <span class="visually-hidden">location</span></a
+                    >
+                  </dd>
+                  <dd>
+                    <a href="${format(changeLocationVisibilityMatch.formatter, {})}"
+                      >Set <span class="visually-hidden">location</span> visibility</a
                     >
                   </dd>
                 `,

@@ -200,7 +200,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
 test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
 
-  await page.goto('/my-details/change-location')
+  await page.getByRole('link', { name: 'Enter location' }).click()
   await page.getByLabel('Where are you based?').fill('Vivamus in convallis urna.')
 
   await page.mouse.move(0, 0)
@@ -208,7 +208,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await page.goto('/my-details/change-location')
+  await page.getByRole('link', { name: 'Change location' }).click()
 
   await expect(page.getByLabel('Where are you based?')).toHaveValue('Vivamus in convallis urna.')
 
@@ -217,7 +217,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
-  await page.goto('/my-details/change-location-visibility')
+  await page.getByRole('link', { name: 'Set location visibility' }).click()
 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
