@@ -50,19 +50,7 @@ export const myDetails = pipe(
       RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(O.fromNullable))),
     ),
   ),
-  RM.chainReaderKW(
-    ({ user, canConnectSlack, slackUser, openForRequests, careerStage, researchInterests, location, languages }) =>
-      createPage(
-        user,
-        canConnectSlack,
-        slackUser,
-        openForRequests,
-        careerStage,
-        researchInterests,
-        location,
-        languages,
-      ),
-  ),
+  RM.chainReaderKW(createPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(error =>
@@ -83,16 +71,25 @@ export const myDetails = pipe(
   ),
 )
 
-function createPage(
-  user: User,
-  canConnectSlack: boolean,
-  slackUser: O.Option<SlackUser>,
-  openForRequests: O.Option<IsOpenForRequests>,
-  careerStage: O.Option<CareerStage>,
-  researchInterests: O.Option<ResearchInterests>,
-  location: O.Option<Location>,
-  languages: O.Option<Languages>,
-) {
+function createPage({
+  user,
+  canConnectSlack,
+  slackUser,
+  openForRequests,
+  careerStage,
+  researchInterests,
+  location,
+  languages,
+}: {
+  user: User
+  canConnectSlack: boolean
+  slackUser: O.Option<SlackUser>
+  openForRequests: O.Option<IsOpenForRequests>
+  careerStage: O.Option<CareerStage>
+  researchInterests: O.Option<ResearchInterests>
+  location: O.Option<Location>
+  languages: O.Option<Languages>
+}) {
   return page({
     title: plainText`My details`,
     content: html`
