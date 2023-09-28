@@ -512,6 +512,7 @@ article {
 
 h1 {
   font-size: var(--step-5);
+  letter-spacing: -0.015em;
 
   form & {
     font-size: var(--step-4);
@@ -520,6 +521,7 @@ h1 {
 
 h2 {
   font-size: var(--step-4);
+  letter-spacing: -0.015em;
 
   :is(aside, form) & {
     font-size: var(--step-3);
@@ -531,14 +533,17 @@ h2 {
 
   :is(error-summary, notification-banner) & {
     font-size: var(--step-1);
+    letter-spacing: unset;
   }
 }
 
 h3 {
   font-size: var(--step-2);
+  letter-spacing: -0.015em;
 
   .preview & {
     font-size: var(--step-1);
+    letter-spacing: unset;
   }
 }
 
@@ -2169,6 +2174,7 @@ skip-link {
     font-size: var(--step-5);
     font-weight: 700;
     line-height: 1;
+    letter-spacing: -0.015em;
   }
 }
 
