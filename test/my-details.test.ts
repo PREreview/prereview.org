@@ -210,7 +210,7 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.location()),
     ])(
-      'when the career stage cannot be loaded',
+      'when the research interests cannot be loaded',
       async (
         oauth,
         publicUrl,
