@@ -207,6 +207,12 @@ export const changeLocationVisibilityMatch = pipe(
 
 export const changeLanguagesMatch = pipe(P.lit('my-details'), P.then(P.lit('change-languages')), P.then(P.end))
 
+export const changeLanguagesVisibilityMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-languages-visibility')),
+  P.then(P.end),
+)
+
 export const clubProfileMatch = pipe(P.lit('clubs'), P.then(type('id', ClubIdC)), P.then(P.end))
 
 export const profileMatch = pipe(P.lit('profiles'), P.then(type('profile', ProfileIdC)), P.then(P.end))

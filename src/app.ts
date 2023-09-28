@@ -29,6 +29,7 @@ import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
 import { changeCareerStageVisibility } from './change-career-stage-visibility'
 import { changeLanguages } from './change-languages'
+import { changeLanguagesVisibility } from './change-languages-visibility'
 import { changeLocation } from './change-location'
 import { changeLocationVisibility } from './change-location-visibility'
 import { changeOpenForRequests } from './change-open-for-requests'
@@ -111,6 +112,7 @@ import {
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
   changeLanguagesMatch,
+  changeLanguagesVisibilityMatch,
   changeLocationMatch,
   changeLocationVisibilityMatch,
   changeOpenForRequestsMatch,
@@ -490,6 +492,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           deleteLocation: withEnv(deleteLocation, env),
           getLocation: withEnv(getLocation, env),
           saveLocation: withEnv(saveLocation, env),
+        })),
+      ),
+    ),
+    pipe(
+      changeLanguagesVisibilityMatch.parser,
+      P.map(() => changeLanguagesVisibility),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteLanguages: withEnv(deleteLanguages, env),
+          getLanguages: withEnv(getLanguages, env),
+          saveLanguages: withEnv(saveLanguages, env),
         })),
       ),
     ),
