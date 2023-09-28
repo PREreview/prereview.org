@@ -82,7 +82,7 @@
     "@types/http-errors": "^2.0.2",
     "@types/jsonwebtoken": "^9.0.3",
     "@types/katex": "^0.16.3",
-    "@types/make-fetch-happen": "^10.0.1",
+    "@types/make-fetch-happen": "^10.0.2",
     "@types/markdown-it": "^13.0.1",
     "@types/node": "^18.18.0",
     "@types/rtl-detect": "^1.0.0",
