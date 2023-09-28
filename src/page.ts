@@ -79,7 +79,7 @@ export function page({
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <title>${title}</title>
+        <title>${title}${current !== 'home' ? ' | PREreview' : ''}</title>
 
         ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
 
