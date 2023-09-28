@@ -9,6 +9,7 @@ import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
 import { IsOpenForRequestsC } from './is-open-for-requests'
+import { LanguagesC } from './languages'
 import { LocationC } from './location'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { NonEmptyStringC } from './string'
@@ -19,6 +20,10 @@ export interface CareerStageStoreEnv {
 
 export interface IsOpenForRequestsStoreEnv {
   isOpenForRequestsStore: Keyv<unknown>
+}
+
+export interface LanguagesStoreEnv {
+  languagesStore: Keyv<unknown>
 }
 
 export interface LocationStoreEnv {
@@ -156,4 +161,19 @@ export const getLocation = flow(
 export const saveLocation = flow(
   setKey(OrcidE, LocationC),
   RTE.local((env: LocationStoreEnv) => env.locationStore),
+)
+
+export const deleteLanguages = flow(
+  deleteKey(OrcidE),
+  RTE.local((env: LanguagesStoreEnv) => env.languagesStore),
+)
+
+export const getLanguages = flow(
+  getKey(OrcidE, LanguagesC),
+  RTE.local((env: LanguagesStoreEnv) => env.languagesStore),
+)
+
+export const saveLanguages = flow(
+  setKey(OrcidE, LanguagesC),
+  RTE.local((env: LanguagesStoreEnv) => env.languagesStore),
 )

@@ -229,6 +229,18 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }
   await page.getByRole('button', { name: 'Save and continue' }).click()
 })
 
+test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page }) => {
+  await page.getByRole('link', { name: 'My details' }).click()
+
+  await page.goto('/my-details/change-languages')
+  await page.getByLabel('What languages can you review in?').fill('English and Spanish')
+
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+})
+
 test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaScriptEnabled, page }) => {
   await page.goto('/my-details/change-career-stage')
   await page.keyboard.press('Tab')
@@ -336,6 +348,19 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaS
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await page.goto('/my-details/change-location-visibility')
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+
+  await page.goto('/my-details/change-languages')
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()

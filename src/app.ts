@@ -28,6 +28,7 @@ import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
 import { changeCareerStage } from './change-career-stage'
 import { changeCareerStageVisibility } from './change-career-stage-visibility'
+import { changeLanguages } from './change-languages'
 import { changeLocation } from './change-location'
 import { changeLocationVisibility } from './change-location-visibility'
 import { changeOpenForRequests } from './change-open-for-requests'
@@ -57,18 +58,22 @@ import { handleError } from './http-error'
 import {
   type CareerStageStoreEnv,
   type IsOpenForRequestsStoreEnv,
+  type LanguagesStoreEnv,
   type LocationStoreEnv,
   type ResearchInterestsStoreEnv,
   type SlackUserIdStoreEnv,
   deleteCareerStage,
+  deleteLanguages,
   deleteLocation,
   deleteResearchInterests,
   getCareerStage,
+  getLanguages,
   getLocation,
   getResearchInterests,
   getSlackUserId,
   isOpenForRequests,
   saveCareerStage,
+  saveLanguages,
   saveLocation,
   saveOpenForRequests,
   saveResearchInterests,
@@ -105,6 +110,7 @@ import {
   aboutUsMatch,
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
+  changeLanguagesMatch,
   changeLocationMatch,
   changeLocationVisibilityMatch,
   changeOpenForRequestsMatch,
@@ -198,6 +204,7 @@ export type AppEnv = CareerStageStoreEnv &
   FormStoreEnv &
   GhostApiEnv &
   IsOpenForRequestsStoreEnv &
+  LanguagesStoreEnv &
   LegacyPrereviewApiEnv &
   LocationStoreEnv &
   L.LoggerEnv &
@@ -459,6 +466,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           deleteLocation: withEnv(deleteLocation, env),
           getLocation: withEnv(getLocation, env),
           saveLocation: withEnv(saveLocation, env),
+        })),
+      ),
+    ),
+    pipe(
+      changeLanguagesMatch.parser,
+      P.map(() => changeLanguages),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteLanguages: withEnv(deleteLanguages, env),
+          getLanguages: withEnv(getLanguages, env),
+          saveLanguages: withEnv(saveLanguages, env),
         })),
       ),
     ),

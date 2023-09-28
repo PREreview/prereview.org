@@ -627,3 +627,135 @@ describe('saveLocation', () => {
     },
   )
 })
+
+describe('deleteLanguages', () => {
+  test.prop([fc.orcid(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
+    const store = new Keyv()
+    await store.set(orcid, languages)
+
+    const actual = await _.deleteLanguages(orcid)({ languagesStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
+  })
+
+  test.prop([fc.orcid(), fc.anything()])(
+    'when the key contains something other than languages',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.deleteLanguages(orcid)({ languagesStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.has(orcid)).toBeFalsy()
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.deleteLanguages(orcid)({ languagesStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.delete = () => Promise.reject(error)
+
+    const actual = await _.deleteLanguages(orcid)({ languagesStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
+describe('getLanguages', () => {
+  test.prop([fc.orcid(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
+    const store = new Keyv()
+    await store.set(orcid, languages)
+
+    const actual = await _.getLanguages(orcid)({ languagesStore: store })()
+
+    expect(actual).toStrictEqual(E.right(languages))
+  })
+
+  test.prop([
+    fc.orcid(),
+    fc.oneof(
+      fc.constant(''),
+      fc.anything().filter(value => typeof value !== 'string'),
+    ),
+  ])('when the key contains something other than languages', async (orcid, value) => {
+    const store = new Keyv()
+    await store.set(orcid, value)
+
+    const actual = await _.getLanguages(orcid)({ languagesStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.getLanguages(orcid)({ languagesStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.get = (): Promise<never> => Promise.reject(error)
+
+    const actual = await _.getLanguages(orcid)({ languagesStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
+describe('saveLanguages', () => {
+  test.prop([fc.orcid(), fc.languages()])('when the key contains languages', async (orcid, languages) => {
+    const store = new Keyv()
+    await store.set(orcid, languages)
+
+    const actual = await _.saveLanguages(orcid, languages)({ languagesStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(languages)
+  })
+
+  test.prop([fc.orcid(), fc.anything(), fc.languages()])(
+    'when the key already contains something other than languages',
+    async (orcid, value, languages) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveLanguages(orcid, languages)({ languagesStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(languages)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.languages()])('when the key is not set', async (orcid, languages) => {
+    const store = new Keyv()
+
+    const actual = await _.saveLanguages(orcid, languages)({ languagesStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(languages)
+  })
+
+  test.prop([fc.orcid(), fc.languages(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, languages, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveLanguages(orcid, languages)({ languagesStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
