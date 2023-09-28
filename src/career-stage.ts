@@ -1,7 +1,9 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
+import { flow } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
+import { match } from 'ts-pattern'
 
 export interface CareerStage {
   readonly value: 'early' | 'mid' | 'late'
@@ -24,6 +26,16 @@ export const CareerStageC = C.struct({
 
 export const getCareerStage = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }: GetCareerStageEnv) => getCareerStage(orcid)))
+
+export const maybeGetCareerStage = flow(
+  getCareerStage,
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.right(undefined))
+      .with('unavailable', RTE.left)
+      .exhaustive(),
+  ),
+)
 
 export const deleteCareerStage = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ deleteCareerStage }: EditCareerStageEnv) => deleteCareerStage(orcid)))

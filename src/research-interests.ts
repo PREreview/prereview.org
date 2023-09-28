@@ -1,7 +1,9 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
+import { flow } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
+import { match } from 'ts-pattern'
 import { type NonEmptyString, NonEmptyStringC } from './string'
 
 export interface ResearchInterests {
@@ -27,6 +29,16 @@ export const getResearchInterests = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ getResearchInterests }: GetResearchInterestsEnv) => getResearchInterests(orcid)),
   )
+
+export const maybeGetResearchInterests = flow(
+  getResearchInterests,
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.right(undefined))
+      .with('unavailable', RTE.left)
+      .exhaustive(),
+  ),
+)
 
 export const deleteResearchInterests = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(

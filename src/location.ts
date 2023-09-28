@@ -1,7 +1,9 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
+import { flow } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
+import { match } from 'ts-pattern'
 import { type NonEmptyString, NonEmptyStringC } from './string'
 
 export interface Location {
@@ -25,6 +27,16 @@ export const LocationC = C.struct({
 
 export const getLocation = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getLocation }: GetLocationEnv) => getLocation(orcid)))
+
+export const maybeGetLocation = flow(
+  getLocation,
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.right(undefined))
+      .with('unavailable', RTE.left)
+      .exhaustive(),
+  ),
+)
 
 export const deleteLocation = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ deleteLocation }: EditLocationEnv) => deleteLocation(orcid)))

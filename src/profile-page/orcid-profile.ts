@@ -2,14 +2,14 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import { getCareerStage } from '../career-stage'
+import { maybeGetCareerStage } from '../career-stage'
 import { isLeadFor } from '../club-details'
 import type { ClubId } from '../club-id'
-import { isOpenForRequests } from '../is-open-for-requests'
-import { getLanguages } from '../languages'
-import { getLocation } from '../location'
+import { maybeIsOpenForRequests } from '../is-open-for-requests'
+import { maybeGetLanguages } from '../languages'
+import { maybeGetLocation } from '../location'
 import type { OrcidProfileId } from '../profile-id'
-import { getResearchInterests } from '../research-interests'
+import { maybeGetResearchInterests } from '../research-interests'
 import { type SlackUser, maybeGetSlackUser } from '../slack-user'
 import type { NonEmptyString } from '../string'
 import { maybeGetAvatar } from './avatar'
@@ -45,81 +45,56 @@ export function getOrcidProfile(profileId: OrcidProfileId) {
     RTE.let('orcid', () => profileId.value),
     RTE.let('clubs', () => isLeadFor(profileId.value)),
     RTE.apSW('slackUser', maybeGetSlackUser(profileId.value)),
-    RTE.apSW('isOpenForRequests', maybeIsOpenForRequests(profileId.value)),
+    RTE.apSW('isOpenForRequests', maybeIsPublicallyOpenForRequests(profileId.value)),
   ) satisfies RTE.ReaderTaskEither<any, any, OrcidProfile> // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 const maybeGetPublicCareerStage = flow(
-  getCareerStage,
+  maybeGetCareerStage,
   RTE.map(careerStage =>
     match(careerStage)
       .with({ visibility: 'public', value: P.select() }, identity)
-      .with({ visibility: 'restricted' }, () => undefined)
+      .with({ visibility: 'restricted' }, undefined, () => undefined)
       .exhaustive(),
-  ),
-  RTE.orElseW(error =>
-    match(error)
-      .with('not-found', () => RTE.of(undefined))
-      .otherwise(RTE.left),
   ),
 )
 
 const maybeGetPublicLanguages = flow(
-  getLanguages,
+  maybeGetLanguages,
   RTE.map(languages =>
     match(languages)
       .with({ visibility: 'public', value: P.select() }, identity)
-      .with({ visibility: 'restricted' }, () => undefined)
+      .with({ visibility: 'restricted' }, undefined, () => undefined)
       .exhaustive(),
-  ),
-  RTE.orElseW(error =>
-    match(error)
-      .with('not-found', () => RTE.of(undefined))
-      .otherwise(RTE.left),
   ),
 )
 
 const maybeGetPublicLocation = flow(
-  getLocation,
+  maybeGetLocation,
   RTE.map(location =>
     match(location)
       .with({ visibility: 'public', value: P.select() }, identity)
-      .with({ visibility: 'restricted' }, () => undefined)
+      .with({ visibility: 'restricted' }, undefined, () => undefined)
       .exhaustive(),
-  ),
-  RTE.orElseW(error =>
-    match(error)
-      .with('not-found', () => RTE.of(undefined))
-      .otherwise(RTE.left),
   ),
 )
 
 const maybeGetPublicResearchInterests = flow(
-  getResearchInterests,
+  maybeGetResearchInterests,
   RTE.map(researchInterests =>
     match(researchInterests)
       .with({ visibility: 'public', value: P.select() }, identity)
-      .with({ visibility: 'restricted' }, () => undefined)
+      .with({ visibility: 'restricted' }, undefined, () => undefined)
       .exhaustive(),
-  ),
-  RTE.orElseW(error =>
-    match(error)
-      .with('not-found', () => RTE.of(undefined))
-      .otherwise(RTE.left),
   ),
 )
 
-const maybeIsOpenForRequests = flow(
-  isOpenForRequests,
+const maybeIsPublicallyOpenForRequests = flow(
+  maybeIsOpenForRequests,
   RTE.map(openForRequests =>
     match(openForRequests)
       .with({ visibility: 'public', value: true }, () => true)
-      .with({ visibility: 'restricted' }, { value: false }, () => false)
+      .with({ visibility: 'restricted' }, { value: false }, undefined, () => false)
       .exhaustive(),
-  ),
-  RTE.orElseW(error =>
-    match(error)
-      .with('not-found', () => RTE.of(false))
-      .otherwise(RTE.left),
   ),
 )

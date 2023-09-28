@@ -1,10 +1,11 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
-import { pipe } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import * as E from 'io-ts/Encoder'
 import type { Orcid } from 'orcid-id-ts'
+import { match } from 'ts-pattern'
 
 export type IsOpenForRequests =
   | {
@@ -43,6 +44,16 @@ export const isOpenForRequests = (orcid: Orcid) =>
     RTE.ask<IsOpenForRequestsEnv>(),
     RTE.chainTaskEitherK(({ isOpenForRequests }) => isOpenForRequests(orcid)),
   )
+
+export const maybeIsOpenForRequests = flow(
+  isOpenForRequests,
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.right(undefined))
+      .with('unavailable', RTE.left)
+      .exhaustive(),
+  ),
+)
 
 export const saveOpenForRequests = (
   orcid: Orcid,

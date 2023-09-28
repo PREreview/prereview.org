@@ -1,7 +1,9 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
+import { flow } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
+import { match } from 'ts-pattern'
 import { type NonEmptyString, NonEmptyStringC } from './string'
 
 export interface Languages {
@@ -25,6 +27,16 @@ export const LanguagesC = C.struct({
 
 export const getLanguages = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getLanguages }: GetLanguagesEnv) => getLanguages(orcid)))
+
+export const maybeGetLanguages = flow(
+  getLanguages,
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.right(undefined))
+      .with('unavailable', RTE.left)
+      .exhaustive(),
+  ),
+)
 
 export const deleteLanguages = (orcid: Orcid) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ deleteLanguages }: EditLanguagesEnv) => deleteLanguages(orcid)))

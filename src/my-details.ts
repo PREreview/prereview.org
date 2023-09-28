@@ -5,17 +5,17 @@ import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
-import { type CareerStage, getCareerStage } from './career-stage'
+import { type CareerStage, maybeGetCareerStage } from './career-stage'
 import { canConnectSlack } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
-import { type IsOpenForRequests, isOpenForRequests } from './is-open-for-requests'
-import { type Languages, getLanguages } from './languages'
-import { type Location, getLocation } from './location'
+import { type IsOpenForRequests, maybeIsOpenForRequests } from './is-open-for-requests'
+import { type Languages, maybeGetLanguages } from './languages'
+import { type Location, maybeGetLocation } from './location'
 import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
-import { type ResearchInterests, getResearchInterests } from './research-interests'
+import { type ResearchInterests, maybeGetResearchInterests } from './research-interests'
 import {
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
@@ -31,7 +31,7 @@ import {
   myDetailsMatch,
   profileMatch,
 } from './routes'
-import { type SlackUser, getSlackUser } from './slack-user'
+import { type SlackUser, maybeGetSlackUser } from './slack-user'
 import { type GetUserEnv, type User, getUser } from './user'
 
 export const myDetails = pipe(
@@ -44,75 +44,43 @@ export const myDetails = pipe(
   RM.bindW(
     'slackUser',
     flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => getSlackUser(orcid)),
-      RM.map(O.some),
-      RM.orElseW(error =>
-        match(error)
-          .with('not-found', () => RM.of(O.none))
-          .with('unavailable', RM.left)
-          .exhaustive(),
-      ),
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeGetSlackUser(orcid)),
+      RM.map(O.fromNullable),
     ),
   ),
   RM.bindW(
     'openForRequests',
     flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => isOpenForRequests(orcid)),
-      RM.map(O.some),
-      RM.orElseW(error =>
-        match(error)
-          .with('not-found', () => RM.of(O.none))
-          .with('unavailable', RM.left)
-          .exhaustive(),
-      ),
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeIsOpenForRequests(orcid)),
+      RM.map(O.fromNullable),
     ),
   ),
   RM.bindW(
     'careerStage',
     flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => getCareerStage(orcid)),
-      RM.map(O.some),
-      RM.orElseW(error =>
-        match(error)
-          .with('not-found', () => RM.of(O.none))
-          .otherwise(RM.left),
-      ),
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeGetCareerStage(orcid)),
+      RM.map(O.fromNullable),
     ),
   ),
   RM.bindW(
     'researchInterests',
     flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => getResearchInterests(orcid)),
-      RM.map(O.some),
-      RM.orElseW(error =>
-        match(error)
-          .with('not-found', () => RM.of(O.none))
-          .otherwise(RM.left),
-      ),
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeGetResearchInterests(orcid)),
+      RM.map(O.fromNullable),
     ),
   ),
   RM.bindW(
     'location',
     flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => getLocation(orcid)),
-      RM.map(O.some),
-      RM.orElseW(error =>
-        match(error)
-          .with('not-found', () => RM.of(O.none))
-          .otherwise(RM.left),
-      ),
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeGetLocation(orcid)),
+      RM.map(O.fromNullable),
     ),
   ),
   RM.bindW(
     'languages',
     flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => getLanguages(orcid)),
-      RM.map(O.some),
-      RM.orElseW(error =>
-        match(error)
-          .with('not-found', () => RM.of(O.none))
-          .otherwise(RM.left),
-      ),
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeGetLanguages(orcid)),
+      RM.map(O.fromNullable),
     ),
   ),
   RM.chainReaderKW(
