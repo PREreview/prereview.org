@@ -93,7 +93,7 @@ import {
 import { legacyRoutes } from './legacy-routes'
 import { liveReviews } from './live-reviews'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
-import { myDetails } from './my-details'
+import { myDetails } from './my-details-page'
 import { getNameFromOrcid } from './orcid'
 import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page } from './page'
 import { partners } from './partners'

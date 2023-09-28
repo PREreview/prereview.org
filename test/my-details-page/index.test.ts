@@ -5,11 +5,11 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import * as _ from '../src/my-details'
-import { myDetailsMatch } from '../src/routes'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
-import { shouldNotBeCalled } from './should-not-be-called'
+import * as _ from '../../src/my-details-page'
+import { myDetailsMatch } from '../../src/routes'
+import * as fc from '../fc'
+import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('myDetails', () => {
   describe('when the user is logged in', () => {

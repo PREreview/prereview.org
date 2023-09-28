@@ -6,17 +6,17 @@ import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
-import { type CareerStage, maybeGetCareerStage } from './career-stage'
-import { canConnectSlack } from './feature-flags'
-import { html, plainText, sendHtml } from './html'
-import { type IsOpenForRequests, maybeIsOpenForRequests } from './is-open-for-requests'
-import { type Languages, maybeGetLanguages } from './languages'
-import { type Location, maybeGetLocation } from './location'
-import { logInAndRedirect } from './log-in'
-import { serviceUnavailable } from './middleware'
-import { type FathomEnv, type PhaseEnv, page } from './page'
-import type { PublicUrlEnv } from './public-url'
-import { type ResearchInterests, maybeGetResearchInterests } from './research-interests'
+import { type CareerStage, maybeGetCareerStage } from '../career-stage'
+import { canConnectSlack } from '../feature-flags'
+import { html, plainText, sendHtml } from '../html'
+import { type IsOpenForRequests, maybeIsOpenForRequests } from '../is-open-for-requests'
+import { type Languages, maybeGetLanguages } from '../languages'
+import { type Location, maybeGetLocation } from '../location'
+import { logInAndRedirect } from '../log-in'
+import { serviceUnavailable } from '../middleware'
+import { type FathomEnv, type PhaseEnv, page } from '../page'
+import type { PublicUrlEnv } from '../public-url'
+import { type ResearchInterests, maybeGetResearchInterests } from '../research-interests'
 import {
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
@@ -31,9 +31,9 @@ import {
   connectSlackMatch,
   myDetailsMatch,
   profileMatch,
-} from './routes'
-import { type SlackUser, maybeGetSlackUser } from './slack-user'
-import { type GetUserEnv, type User, getUser } from './user'
+} from '../routes'
+import { type SlackUser, maybeGetSlackUser } from '../slack-user'
+import { type GetUserEnv, type User, getUser } from '../user'
 
 export const myDetails = pipe(
   getUser,
