@@ -304,6 +304,7 @@ body > footer {
   & small {
     flex-basis: 100%;
     font-size: var(--step--2);
+    text-wrap: pretty;
   }
 
   & img {
@@ -487,6 +488,7 @@ article {
 :--heading {
   font-weight: 700;
   line-height: 1.2;
+  text-wrap: pretty;
 
   :where(:not(caption, legend)) > & {
     margin-block-start: var(--space-s-m);
@@ -574,6 +576,7 @@ h6 {
 :--list {
   margin-block-start: var(--space-s);
   padding-inline-start: var(--space-m);
+  text-wrap: pretty;
 
   nav > & {
     display: flex;
@@ -617,6 +620,7 @@ h6 {
 
 dl {
   max-inline-size: 64ch;
+  text-wrap: pretty;
 
   * + & {
     margin-block-start: var(--space-m);
@@ -774,6 +778,7 @@ math {
 
 table {
   font-size: var(--step--1);
+  text-wrap: pretty;
   margin-block-start: var(--space-s-m);
   border-spacing: 0;
   inline-size: 100%;
@@ -820,6 +825,7 @@ td {
 
 p {
   hyphens: auto;
+  text-wrap: pretty;
   margin-block-start: var(--space-xs);
   max-inline-size: 64ch;
 
@@ -1534,6 +1540,7 @@ html-editor {
   margin-block-start: var(--space-2xs);
   font-size: var(--step--1);
   font-style: italic;
+  text-wrap: pretty;
 
   & :any-link {
     color: inherit;
