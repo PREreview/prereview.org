@@ -1,5 +1,6 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
+import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
@@ -34,6 +35,8 @@ import {
 } from '../routes'
 import { type SlackUser, maybeGetSlackUser } from '../slack-user'
 import { type GetUserEnv, type User, getUser } from '../user'
+
+export type Env = EnvFor<typeof myDetails>
 
 export const myDetails = pipe(
   getUser,
@@ -375,3 +378,5 @@ function createPage({
     user,
   })
 }
+
+type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

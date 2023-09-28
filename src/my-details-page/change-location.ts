@@ -1,5 +1,6 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
+import type { Reader } from 'fp-ts/Reader'
 import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -16,6 +17,8 @@ import type { PublicUrlEnv } from '../public-url'
 import { changeLocationMatch, myDetailsMatch } from '../routes'
 import { NonEmptyStringC } from '../string'
 import { type GetUserEnv, type User, getUser } from '../user'
+
+export type Env = EnvFor<typeof changeLocation>
 
 export const changeLocation = pipe(
   getUser,
@@ -123,3 +126,5 @@ function createFormPage(user: User, location: O.Option<Location>) {
     user,
   })
 }
+
+type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

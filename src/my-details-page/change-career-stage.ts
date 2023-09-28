@@ -1,5 +1,6 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
+import type { Reader } from 'fp-ts/Reader'
 import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -15,6 +16,8 @@ import { type FathomEnv, type PhaseEnv, page } from '../page'
 import type { PublicUrlEnv } from '../public-url'
 import { changeCareerStageMatch, myDetailsMatch } from '../routes'
 import { type GetUserEnv, type User, getUser } from '../user'
+
+export type Env = EnvFor<typeof changeCareerStage>
 
 export const changeCareerStage = pipe(
   getUser,
@@ -201,3 +204,5 @@ function createFormPage(user: User, careerStage: O.Option<CareerStage>, error = 
     user,
   })
 }
+
+type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

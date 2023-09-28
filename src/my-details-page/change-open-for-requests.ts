@@ -1,5 +1,6 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
+import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
@@ -20,6 +21,8 @@ import { type FathomEnv, type PhaseEnv, page } from '../page'
 import type { PublicUrlEnv } from '../public-url'
 import { changeOpenForRequestsMatch, myDetailsMatch } from '../routes'
 import { type GetUserEnv, type User, getUser } from '../user'
+
+export type Env = EnvFor<typeof changeOpenForRequests>
 
 export const changeOpenForRequests = pipe(
   getUser,
@@ -190,3 +193,5 @@ function createFormPage(user: User, openForRequests: O.Option<IsOpenForRequests>
     user,
   })
 }
+
+type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

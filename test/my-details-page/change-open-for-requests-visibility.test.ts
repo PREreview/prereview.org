@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import type { EditOpenForRequestsEnv } from '../../src/is-open-for-requests'
 import * as _ from '../../src/my-details-page/change-open-for-requests-visibility'
 import { myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -58,7 +57,7 @@ describe('changeOpenForRequestsVisibility', () => {
     ])(
       'when the form has been submitted',
       async (oauth, publicUrl, [visibility, connection], user, existingVisibility) => {
-        const saveOpenForRequests = jest.fn<EditOpenForRequestsEnv['saveOpenForRequests']>(_ => TE.right(undefined))
+        const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
         const actual = await runMiddleware(
           _.changeOpenForRequestsVisibility({
@@ -128,7 +127,7 @@ describe('changeOpenForRequestsVisibility', () => {
     ])(
       'when the form has been submitted without setting visibility',
       async (oauth, publicUrl, connection, user, visibility) => {
-        const saveOpenForRequests = jest.fn<EditOpenForRequestsEnv['saveOpenForRequests']>(_ => TE.right(undefined))
+        const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
         const actual = await runMiddleware(
           _.changeOpenForRequestsVisibility({

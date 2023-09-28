@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import type { EditOpenForRequestsEnv } from '../../src/is-open-for-requests'
 import * as _ from '../../src/my-details-page/change-open-for-requests'
 import { myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -58,7 +57,7 @@ describe('changeOpenForRequests', () => {
     ])(
       'there is open for requests already',
       async (oauth, publicUrl, [openForRequests, connection], user, existingOpenForRequests) => {
-        const saveOpenForRequests = jest.fn<EditOpenForRequestsEnv['saveOpenForRequests']>(_ => TE.right(undefined))
+        const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
         const actual = await runMiddleware(
           _.changeOpenForRequests({
@@ -104,7 +103,7 @@ describe('changeOpenForRequests', () => {
       ),
       fc.user(),
     ])("there isn't open for requests already", async (oauth, publicUrl, [openForRequests, connection], user) => {
-      const saveOpenForRequests = jest.fn<EditOpenForRequestsEnv['saveOpenForRequests']>(_ => TE.right(undefined))
+      const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeOpenForRequests({

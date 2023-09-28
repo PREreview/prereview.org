@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import type { EditCareerStageEnv } from '../../src/career-stage'
 import * as _ from '../../src/my-details-page/change-career-stage-visibility'
 import { myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -58,7 +57,7 @@ describe('changeCareerStageVisibility', () => {
   ])(
     'when the form has been submitted',
     async (oauth, publicUrl, [visibility, connection], user, existingCareerStage) => {
-      const saveCareerStage = jest.fn<EditCareerStageEnv['saveCareerStage']>(_ => TE.right(undefined))
+      const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeCareerStageVisibility({
@@ -133,7 +132,7 @@ describe('changeCareerStageVisibility', () => {
   ])(
     'when the form has been submitted without setting visibility',
     async (oauth, publicUrl, connection, user, careerStage) => {
-      const saveCareerStage = jest.fn<EditCareerStageEnv['saveCareerStage']>(_ => TE.right(undefined))
+      const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeCareerStageVisibility({

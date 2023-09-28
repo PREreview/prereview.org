@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import type { EditCareerStageEnv } from '../../src/career-stage'
 import * as _ from '../../src/my-details-page/change-career-stage'
 import { myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -59,7 +58,7 @@ describe('changeCareerStage', () => {
     ])(
       'there is a career stage already',
       async (oauth, publicUrl, [careerStage, connection], user, existingCareerStage) => {
-        const saveCareerStage = jest.fn<EditCareerStageEnv['saveCareerStage']>(_ => TE.right(undefined))
+        const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
         const actual = await runMiddleware(
           _.changeCareerStage({
@@ -101,7 +100,7 @@ describe('changeCareerStage', () => {
       ),
       fc.user(),
     ])("when there isn't a career stage already", async (oauth, publicUrl, [careerStage, connection], user) => {
-      const saveCareerStage = jest.fn<EditCareerStageEnv['saveCareerStage']>(_ => TE.right(undefined))
+      const saveCareerStage = jest.fn<_.Env['saveCareerStage']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeCareerStage({
@@ -170,7 +169,7 @@ describe('changeCareerStage', () => {
     }),
     fc.user(),
   ])('when the form has been skipped', async (oauth, publicUrl, connection, user) => {
-    const deleteCareerStage = jest.fn<EditCareerStageEnv['deleteCareerStage']>(_ => TE.right(undefined))
+    const deleteCareerStage = jest.fn<_.Env['deleteCareerStage']>(_ => TE.right(undefined))
 
     const actual = await runMiddleware(
       _.changeCareerStage({

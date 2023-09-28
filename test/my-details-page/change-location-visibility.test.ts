@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import type { EditLocationEnv } from '../../src/location'
 import * as _ from '../../src/my-details-page/change-location-visibility'
 import { myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -56,7 +55,7 @@ describe('changeLocationVisibility', () => {
     fc.user(),
     fc.location(),
   ])('when the form has been submitted', async (oauth, publicUrl, [visibility, connection], user, existingLocation) => {
-    const saveLocation = jest.fn<EditLocationEnv['saveLocation']>(_ => TE.right(undefined))
+    const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
 
     const actual = await runMiddleware(
       _.changeLocationVisibility({
@@ -130,7 +129,7 @@ describe('changeLocationVisibility', () => {
   ])(
     'when the form has been submitted without setting visibility',
     async (oauth, publicUrl, connection, user, location) => {
-      const saveLocation = jest.fn<EditLocationEnv['saveLocation']>(_ => TE.right(undefined))
+      const saveLocation = jest.fn<_.Env['saveLocation']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeLocationVisibility({

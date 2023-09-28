@@ -1,4 +1,5 @@
 import { format } from 'fp-ts-routing'
+import type { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -13,6 +14,8 @@ import type { PublicUrlEnv } from '../public-url'
 import { type ResearchInterests, getResearchInterests, saveResearchInterests } from '../research-interests'
 import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../routes'
 import { type GetUserEnv, type User, getUser } from '../user'
+
+export type Env = EnvFor<typeof changeResearchInterestsVisibility>
 
 export const changeResearchInterestsVisibility = pipe(
   getUser,
@@ -134,3 +137,5 @@ function createFormPage(user: User, researchInterests: ResearchInterests) {
     user,
   })
 }
+
+type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

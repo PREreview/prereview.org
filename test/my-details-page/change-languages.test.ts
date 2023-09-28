@@ -5,7 +5,6 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import type { EditLanguagesEnv } from '../../src/languages'
 import * as _ from '../../src/my-details-page/change-languages'
 import { myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -57,7 +56,7 @@ describe('changeLanguages', () => {
       fc.user(),
       fc.languages(),
     ])('there are languages already', async (oauth, publicUrl, [languages, connection], user, existingLanguages) => {
-      const saveLanguages = jest.fn<EditLanguagesEnv['saveLanguages']>(_ => TE.right(undefined))
+      const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeLanguages({
@@ -98,7 +97,7 @@ describe('changeLanguages', () => {
       ),
       fc.user(),
     ])("when there aren't languages already", async (oauth, publicUrl, [languages, connection], user) => {
-      const saveLanguages = jest.fn<EditLanguagesEnv['saveLanguages']>(_ => TE.right(undefined))
+      const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
         _.changeLanguages({
@@ -167,7 +166,7 @@ describe('changeLanguages', () => {
     }),
     fc.user(),
   ])('when the form has been submitted without setting languages', async (oauth, publicUrl, connection, user) => {
-    const deleteLanguages = jest.fn<EditLanguagesEnv['deleteLanguages']>(_ => TE.right(undefined))
+    const deleteLanguages = jest.fn<_.Env['deleteLanguages']>(_ => TE.right(undefined))
 
     const actual = await runMiddleware(
       _.changeLanguages({
