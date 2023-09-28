@@ -9,6 +9,7 @@ import { type CareerStage, getCareerStage } from './career-stage'
 import { canConnectSlack } from './feature-flags'
 import { html, plainText, sendHtml } from './html'
 import { type IsOpenForRequests, isOpenForRequests } from './is-open-for-requests'
+import { type Languages, getLanguages } from './languages'
 import { type Location, getLocation } from './location'
 import { logInAndRedirect } from './log-in'
 import { serviceUnavailable } from './middleware'
@@ -18,6 +19,8 @@ import { type ResearchInterests, getResearchInterests } from './research-interes
 import {
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
+  changeLanguagesMatch,
+  changeLanguagesVisibilityMatch,
   changeLocationMatch,
   changeLocationVisibilityMatch,
   changeOpenForRequestsMatch,
@@ -100,8 +103,30 @@ export const myDetails = pipe(
       ),
     ),
   ),
-  RM.chainReaderKW(({ user, canConnectSlack, slackUser, openForRequests, careerStage, researchInterests, location }) =>
-    createPage(user, canConnectSlack, slackUser, openForRequests, careerStage, researchInterests, location),
+  RM.bindW(
+    'languages',
+    flow(
+      RM.fromReaderTaskEitherK(({ user: { orcid } }) => getLanguages(orcid)),
+      RM.map(O.some),
+      RM.orElseW(error =>
+        match(error)
+          .with('not-found', () => RM.of(O.none))
+          .otherwise(RM.left),
+      ),
+    ),
+  ),
+  RM.chainReaderKW(
+    ({ user, canConnectSlack, slackUser, openForRequests, careerStage, researchInterests, location, languages }) =>
+      createPage(
+        user,
+        canConnectSlack,
+        slackUser,
+        openForRequests,
+        careerStage,
+        researchInterests,
+        location,
+        languages,
+      ),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
@@ -131,6 +156,7 @@ function createPage(
   careerStage: O.Option<CareerStage>,
   researchInterests: O.Option<ResearchInterests>,
   location: O.Option<Location>,
+  languages: O.Option<Languages>,
 ) {
   return page({
     title: plainText`My details`,
@@ -365,6 +391,44 @@ function createPage(
                   <dd>
                     <a href="${format(changeLocationVisibilityMatch.formatter, {})}"
                       >Set <span class="visually-hidden">location</span> visibility</a
+                    >
+                  </dd>
+                `,
+              )
+              .exhaustive()}
+          </div>
+
+          <div>
+            <dt>Languages</dt>
+            ${match(languages)
+              .when(
+                O.isNone,
+                () => html`
+                  <dd>
+                    <a href="${format(changeLanguagesMatch.formatter, {})}">Enter languages</a>
+                  </dd>
+                `,
+              )
+              .with(
+                { value: P.select() },
+                languages => html`
+                  <dd>
+                    ${languages.value}
+                    <small
+                      >${match(languages.visibility)
+                        .with('public', () => 'Shown on your public profile')
+                        .with('restricted', () => 'Only visible to PREreview')
+                        .exhaustive()}</small
+                    >
+                  </dd>
+                  <dd>
+                    <a href="${format(changeLanguagesMatch.formatter, {})}"
+                      >Change <span class="visually-hidden">languages</span></a
+                    >
+                  </dd>
+                  <dd>
+                    <a href="${format(changeLanguagesVisibilityMatch.formatter, {})}"
+                      >Set <span class="visually-hidden">languages</span> visibility</a
                     >
                   </dd>
                 `,

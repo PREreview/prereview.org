@@ -232,14 +232,14 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }
 test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
 
-  await page.goto('/my-details/change-languages')
+  await page.getByRole('link', { name: 'Enter languages' }).click()
   await page.getByLabel('What languages can you review in?').fill('English and Spanish')
 
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.goto('/my-details/change-languages')
+  await page.getByRole('link', { name: 'Change languages' }).click()
 
   await expect(page.getByLabel('What languages can you review in?')).toHaveValue('English and Spanish')
 
@@ -248,7 +248,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page 
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
-  await page.goto('/my-details/change-languages-visibility')
+  await page.getByRole('link', { name: 'Set languages visibility' }).click()
 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 

@@ -382,6 +382,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getCareerStage: withEnv(getCareerStage, env),
+          getLanguages: withEnv(getLanguages, env),
           getLocation: withEnv(getLocation, env),
           getResearchInterests: withEnv(getResearchInterests, env),
           getSlackUser: withEnv(getSlackUser, env),

@@ -216,10 +216,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     await page.getByRole('link', { name: 'Set location visibility' }).click()
     await page.getByLabel('Everyone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/my-details/change-languages')
+    await page.getByRole('link', { name: 'Enter languages' }).click()
     await page.getByLabel('What languages can you review in?').fill('English and Spanish')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/my-details/change-languages-visibility')
+    await page.getByRole('link', { name: 'Set languages visibility' }).click()
     await page.getByLabel('Everyone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 

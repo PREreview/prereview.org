@@ -24,6 +24,7 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.location()),
+      fc.either(fc.constant('not-found' as const), fc.languages()),
     ])(
       'when the details can be loaded',
       async (
@@ -37,6 +38,7 @@ describe('myDetails', () => {
         careerStage,
         researchInterests,
         location,
+        languages,
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
@@ -45,6 +47,7 @@ describe('myDetails', () => {
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.fromEither(slackUser),
@@ -72,9 +75,20 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.location()),
+      fc.either(fc.constant('not-found' as const), fc.languages()),
     ])(
       'when the Slack user cannot be loaded',
-      async (oauth, publicUrl, connection, user, canConnectSlack, careerStage, researchInterests, location) => {
+      async (
+        oauth,
+        publicUrl,
+        connection,
+        user,
+        canConnectSlack,
+        careerStage,
+        researchInterests,
+        location,
+        languages,
+      ) => {
         const actual = await runMiddleware(
           _.myDetails({
             canConnectSlack: () => canConnectSlack,
@@ -82,6 +96,7 @@ describe('myDetails', () => {
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.left('unavailable'),
@@ -111,6 +126,7 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.location()),
+      fc.either(fc.constant('not-found' as const), fc.languages()),
     ])(
       'when being open for requests is unavailable',
       async (
@@ -123,6 +139,7 @@ describe('myDetails', () => {
         careerStage,
         researchInterests,
         location,
+        languages,
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
@@ -131,6 +148,7 @@ describe('myDetails', () => {
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.right(slackUser),
@@ -160,6 +178,7 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.location()),
+      fc.either(fc.constant('not-found' as const), fc.languages()),
     ])(
       'when the career stage cannot be loaded',
       async (
@@ -172,6 +191,7 @@ describe('myDetails', () => {
         isOpenForRequests,
         researchInterests,
         location,
+        languages,
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
@@ -180,6 +200,7 @@ describe('myDetails', () => {
             oauth,
             publicUrl,
             getCareerStage: () => TE.left('unavailable'),
+            getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.fromEither(slackUser),
@@ -209,6 +230,7 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.location()),
+      fc.either(fc.constant('not-found' as const), fc.languages()),
     ])(
       'when the research interests cannot be loaded',
       async (
@@ -221,6 +243,7 @@ describe('myDetails', () => {
         isOpenForRequests,
         careerStage,
         location,
+        languages,
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
@@ -229,6 +252,7 @@ describe('myDetails', () => {
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.left('unavailable'),
             getSlackUser: () => TE.fromEither(slackUser),
@@ -258,6 +282,7 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
+      fc.either(fc.constant('not-found' as const), fc.languages()),
     ])(
       'when the location cannot be loaded',
       async (
@@ -270,6 +295,7 @@ describe('myDetails', () => {
         isOpenForRequests,
         careerStage,
         researchInterests,
+        languages,
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
@@ -278,7 +304,60 @@ describe('myDetails', () => {
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.left('unavailable'),
+            getResearchInterests: () => TE.fromEither(researchInterests),
+            getSlackUser: () => TE.fromEither(slackUser),
+            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
+
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.connection({ method: fc.requestMethod() }),
+      fc.user(),
+      fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.slackUser()),
+      fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
+      fc.either(fc.constant('not-found' as const), fc.careerStage()),
+      fc.either(fc.constant('not-found' as const), fc.researchInterests()),
+      fc.either(fc.constant('not-found' as const), fc.location()),
+    ])(
+      'when the languages cannot be loaded',
+      async (
+        oauth,
+        publicUrl,
+        connection,
+        user,
+        canConnectSlack,
+        slackUser,
+        isOpenForRequests,
+        careerStage,
+        researchInterests,
+        location,
+      ) => {
+        const actual = await runMiddleware(
+          _.myDetails({
+            canConnectSlack: () => canConnectSlack,
+            getUser: () => M.right(user),
+            oauth,
+            publicUrl,
+            getCareerStage: () => TE.fromEither(careerStage),
+            getLanguages: () => TE.left('unavailable'),
+            getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.fromEither(slackUser),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
@@ -308,6 +387,7 @@ describe('myDetails', () => {
           oauth,
           publicUrl,
           getCareerStage: shouldNotBeCalled,
+          getLanguages: shouldNotBeCalled,
           getLocation: shouldNotBeCalled,
           getResearchInterests: shouldNotBeCalled,
           getSlackUser: shouldNotBeCalled,
@@ -349,6 +429,7 @@ describe('myDetails', () => {
           oauth,
           publicUrl,
           getCareerStage: shouldNotBeCalled,
+          getLanguages: shouldNotBeCalled,
           getLocation: shouldNotBeCalled,
           getResearchInterests: shouldNotBeCalled,
           getSlackUser: shouldNotBeCalled,
