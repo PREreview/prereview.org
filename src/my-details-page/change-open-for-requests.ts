@@ -7,19 +7,19 @@ import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
-import { html, plainText, rawHtml, sendHtml } from './html'
+import { html, plainText, rawHtml, sendHtml } from '../html'
 import {
   type IsOpenForRequests,
   type IsOpenForRequestsEnv,
   isOpenForRequests,
   saveOpenForRequests,
-} from './is-open-for-requests'
-import { logInAndRedirect } from './log-in'
-import { getMethod, seeOther, serviceUnavailable } from './middleware'
-import { type FathomEnv, type PhaseEnv, page } from './page'
-import type { PublicUrlEnv } from './public-url'
-import { changeOpenForRequestsMatch, myDetailsMatch } from './routes'
-import { type GetUserEnv, type User, getUser } from './user'
+} from '../is-open-for-requests'
+import { logInAndRedirect } from '../log-in'
+import { getMethod, seeOther, serviceUnavailable } from '../middleware'
+import { type FathomEnv, type PhaseEnv, page } from '../page'
+import type { PublicUrlEnv } from '../public-url'
+import { changeOpenForRequestsMatch, myDetailsMatch } from '../routes'
+import { type GetUserEnv, type User, getUser } from '../user'
 
 export const changeOpenForRequests = pipe(
   getUser,

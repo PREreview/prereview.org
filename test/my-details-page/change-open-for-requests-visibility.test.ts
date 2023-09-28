@@ -5,12 +5,12 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import * as _ from '../src/change-open-for-requests-visibility'
-import type { EditOpenForRequestsEnv } from '../src/is-open-for-requests'
-import { myDetailsMatch } from '../src/routes'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
-import { shouldNotBeCalled } from './should-not-be-called'
+import type { EditOpenForRequestsEnv } from '../../src/is-open-for-requests'
+import * as _ from '../../src/my-details-page/change-open-for-requests-visibility'
+import { myDetailsMatch } from '../../src/routes'
+import * as fc from '../fc'
+import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('changeOpenForRequestsVisibility', () => {
   describe('when open for requests', () => {

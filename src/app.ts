@@ -26,16 +26,6 @@ import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
-import { changeCareerStage } from './change-career-stage'
-import { changeCareerStageVisibility } from './change-career-stage-visibility'
-import { changeLanguages } from './change-languages'
-import { changeLanguagesVisibility } from './change-languages-visibility'
-import { changeLocation } from './change-location'
-import { changeLocationVisibility } from './change-location-visibility'
-import { changeOpenForRequests } from './change-open-for-requests'
-import { changeOpenForRequestsVisibility } from './change-open-for-requests-visibility'
-import { changeResearchInterests } from './change-research-interests'
-import { changeResearchInterestsVisibility } from './change-research-interests-visibility'
 import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
@@ -93,7 +83,19 @@ import {
 import { legacyRoutes } from './legacy-routes'
 import { liveReviews } from './live-reviews'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
-import { myDetails } from './my-details-page'
+import {
+  changeCareerStage,
+  changeCareerStageVisibility,
+  changeLanguages,
+  changeLanguagesVisibility,
+  changeLocation,
+  changeLocationVisibility,
+  changeOpenForRequests,
+  changeOpenForRequestsVisibility,
+  changeResearchInterests,
+  changeResearchInterestsVisibility,
+  myDetails,
+} from './my-details-page'
 import { getNameFromOrcid } from './orcid'
 import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page } from './page'
 import { partners } from './partners'

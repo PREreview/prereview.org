@@ -7,20 +7,20 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { html, plainText, rawHtml, sendHtml } from './html'
-import { logInAndRedirect } from './log-in'
-import { getMethod, seeOther, serviceUnavailable } from './middleware'
-import { type FathomEnv, type PhaseEnv, page } from './page'
-import type { PublicUrlEnv } from './public-url'
+import { html, plainText, rawHtml, sendHtml } from '../html'
+import { logInAndRedirect } from '../log-in'
+import { getMethod, seeOther, serviceUnavailable } from '../middleware'
+import { type FathomEnv, type PhaseEnv, page } from '../page'
+import type { PublicUrlEnv } from '../public-url'
 import {
   type ResearchInterests,
   deleteResearchInterests,
   getResearchInterests,
   saveResearchInterests,
-} from './research-interests'
-import { changeResearchInterestsMatch, myDetailsMatch } from './routes'
-import { NonEmptyStringC } from './string'
-import { type GetUserEnv, type User, getUser } from './user'
+} from '../research-interests'
+import { changeResearchInterestsMatch, myDetailsMatch } from '../routes'
+import { NonEmptyStringC } from '../string'
+import { type GetUserEnv, type User, getUser } from '../user'
 
 export const changeResearchInterests = pipe(
   getUser,

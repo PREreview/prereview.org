@@ -7,24 +7,24 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { html, plainText, sendHtml } from './html'
-import { type Location, deleteLocation, getLocation, saveLocation } from './location'
-import { logInAndRedirect } from './log-in'
-import { getMethod, seeOther, serviceUnavailable } from './middleware'
-import { type FathomEnv, type PhaseEnv, page } from './page'
-import type { PublicUrlEnv } from './public-url'
-import { changeLocationMatch, myDetailsMatch } from './routes'
-import { NonEmptyStringC } from './string'
-import { type GetUserEnv, type User, getUser } from './user'
+import { html, plainText, sendHtml } from '../html'
+import { type Languages, deleteLanguages, getLanguages, saveLanguages } from '../languages'
+import { logInAndRedirect } from '../log-in'
+import { getMethod, seeOther, serviceUnavailable } from '../middleware'
+import { type FathomEnv, type PhaseEnv, page } from '../page'
+import type { PublicUrlEnv } from '../public-url'
+import { changeLanguagesMatch, myDetailsMatch } from '../routes'
+import { NonEmptyStringC } from '../string'
+import { type GetUserEnv, type User, getUser } from '../user'
 
-export const changeLocation = pipe(
+export const changeLanguages = pipe(
   getUser,
   RM.bindTo('user'),
   RM.apSW('method', RM.fromMiddleware(getMethod)),
   RM.ichainW(state =>
     match(state.method)
-      .with('POST', () => handleChangeLocationForm(state.user))
-      .otherwise(() => showChangeLocationForm(state.user)),
+      .with('POST', () => handleChangeLanguagesForm(state.user))
+      .otherwise(() => showChangeLanguagesForm(state.user)),
   ),
   RM.orElseW(error =>
     match(error)
@@ -43,32 +43,32 @@ export const changeLocation = pipe(
   ),
 )
 
-const showChangeLocationForm = (user: User) =>
+const showChangeLanguagesForm = (user: User) =>
   pipe(
-    RM.fromReaderTaskEither(getLocation(user.orcid)),
+    RM.fromReaderTaskEither(getLanguages(user.orcid)),
     RM.map(O.some),
     RM.orElseW(() => RM.of(O.none)),
-    RM.chainReaderKW(location => createFormPage(user, location)),
+    RM.chainReaderKW(languages => createFormPage(user, languages)),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const ChangeLocationFormD = pipe(D.struct({ location: NonEmptyStringC }))
+const ChangeLanguagesFormD = pipe(D.struct({ languages: NonEmptyStringC }))
 
-const handleChangeLocationForm = (user: User) =>
+const handleChangeLanguagesForm = (user: User) =>
   pipe(
-    RM.decodeBody(body => ChangeLocationFormD.decode(body)),
-    RM.orElseW(() => RM.of({ location: undefined })),
-    RM.ichainW(({ location }) =>
-      match(location)
-        .with(P.string, location =>
+    RM.decodeBody(body => ChangeLanguagesFormD.decode(body)),
+    RM.orElseW(() => RM.of({ languages: undefined })),
+    RM.ichainW(({ languages }) =>
+      match(languages)
+        .with(P.string, languages =>
           pipe(
             RM.of({}),
-            RM.apS('value', RM.of(location)),
+            RM.apS('value', RM.of(languages)),
             RM.apS(
               'visibility',
               pipe(
-                RM.fromReaderTaskEither(getLocation(user.orcid)),
+                RM.fromReaderTaskEither(getLanguages(user.orcid)),
                 RM.map(get('visibility')),
                 RM.orElseW(error =>
                   match(error)
@@ -77,14 +77,14 @@ const handleChangeLocationForm = (user: User) =>
                 ),
               ),
             ),
-            RM.chainReaderTaskEitherKW(location => saveLocation(user.orcid, location)),
+            RM.chainReaderTaskEitherKW(languages => saveLanguages(user.orcid, languages)),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),
           ),
         )
         .with(undefined, () =>
           pipe(
-            RM.fromReaderTaskEither(deleteLocation(user.orcid)),
+            RM.fromReaderTaskEither(deleteLanguages(user.orcid)),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),
           ),
@@ -93,24 +93,24 @@ const handleChangeLocationForm = (user: User) =>
     ),
   )
 
-function createFormPage(user: User, location: O.Option<Location>) {
+function createFormPage(user: User, languages: O.Option<Languages>) {
   return page({
-    title: plainText`Where are you based?`,
+    title: plainText`What languages can you review in?`,
     content: html`
       <nav>
         <a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(changeLocationMatch.formatter, {})}" novalidate>
-          <h1><label for="location">Where are you based?</label></h1>
+        <form method="post" action="${format(changeLanguagesMatch.formatter, {})}" novalidate>
+          <h1><label for="languages">What languages can you review in?</label></h1>
 
           <input
-            name="location"
-            id="location"
+            name="languages"
+            id="languages"
             type="text"
-            ${match(location)
-              .with({ value: { value: P.select() } }, location => html`value="${location}"`)
+            ${match(languages)
+              .with({ value: { value: P.select() } }, languages => html`value="${languages}"`)
               .when(O.isNone, () => '')
               .exhaustive()}
           />

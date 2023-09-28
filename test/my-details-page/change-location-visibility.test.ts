@@ -5,29 +5,29 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import type { EditCareerStageEnv } from '../src/career-stage'
-import * as _ from '../src/change-career-stage-visibility'
-import { myDetailsMatch } from '../src/routes'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
-import { shouldNotBeCalled } from './should-not-be-called'
+import type { EditLocationEnv } from '../../src/location'
+import * as _ from '../../src/my-details-page/change-location-visibility'
+import { myDetailsMatch } from '../../src/routes'
+import * as fc from '../fc'
+import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
-describe('changeCareerStageVisibility', () => {
+describe('changeLocationVisibility', () => {
   test.prop([
     fc.oauth(),
     fc.origin(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.user(),
-    fc.careerStage(),
-  ])('when there is a logged in user', async (oauth, publicUrl, connection, user, careerStage) => {
+    fc.location(),
+  ])('when there is a logged in user', async (oauth, publicUrl, connection, user, location) => {
     const actual = await runMiddleware(
-      _.changeCareerStageVisibility({
+      _.changeLocationVisibility({
         getUser: () => M.fromEither(E.right(user)),
         publicUrl,
         oauth,
-        deleteCareerStage: shouldNotBeCalled,
-        getCareerStage: () => TE.of(careerStage),
-        saveCareerStage: shouldNotBeCalled,
+        deleteLocation: shouldNotBeCalled,
+        getLocation: () => TE.of(location),
+        saveLocation: shouldNotBeCalled,
       }),
       connection,
     )()
@@ -44,68 +44,65 @@ describe('changeCareerStageVisibility', () => {
   test.prop([
     fc.oauth(),
     fc.origin(),
-    fc.careerStageVisibility().chain(visibility =>
+    fc.locationVisibility().chain(visibility =>
       fc.tuple(
         fc.constant(visibility),
         fc.connection({
-          body: fc.constant({ careerStageVisibility: visibility }),
+          body: fc.constant({ locationVisibility: visibility }),
           method: fc.constant('POST'),
         }),
       ),
     ),
     fc.user(),
-    fc.careerStage(),
-  ])(
-    'when the form has been submitted',
-    async (oauth, publicUrl, [visibility, connection], user, existingCareerStage) => {
-      const saveCareerStage = jest.fn<EditCareerStageEnv['saveCareerStage']>(_ => TE.right(undefined))
+    fc.location(),
+  ])('when the form has been submitted', async (oauth, publicUrl, [visibility, connection], user, existingLocation) => {
+    const saveLocation = jest.fn<EditLocationEnv['saveLocation']>(_ => TE.right(undefined))
 
-      const actual = await runMiddleware(
-        _.changeCareerStageVisibility({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          deleteCareerStage: shouldNotBeCalled,
-          getCareerStage: () => TE.right(existingCareerStage),
-          saveCareerStage,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.changeLocationVisibility({
+        getUser: () => M.right(user),
+        publicUrl,
+        oauth,
+        deleteLocation: shouldNotBeCalled,
+        getLocation: () => TE.right(existingLocation),
+        saveLocation,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-          { type: 'endResponse' },
-        ]),
-      )
-      expect(saveCareerStage).toHaveBeenCalledWith(user.orcid, {
-        value: existingCareerStage.value,
-        visibility,
-      })
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.SeeOther },
+        { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+        { type: 'endResponse' },
+      ]),
+    )
+    expect(saveLocation).toHaveBeenCalledWith(user.orcid, {
+      value: existingLocation.value,
+      visibility,
+    })
+  })
 
   test.prop([
     fc.oauth(),
     fc.origin(),
     fc.connection({
-      body: fc.record({ careerStageVisibility: fc.careerStageVisibility() }),
+      body: fc.record({ locationVisibility: fc.locationVisibility() }),
       method: fc.constant('POST'),
     }),
     fc.user(),
-    fc.careerStage(),
+    fc.location(),
   ])(
     'when the form has been submitted but the visibility cannot be saved',
-    async (oauth, publicUrl, connection, user, careerStage) => {
+    async (oauth, publicUrl, connection, user, location) => {
       const actual = await runMiddleware(
-        _.changeCareerStageVisibility({
+        _.changeLocationVisibility({
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteCareerStage: shouldNotBeCalled,
-          getCareerStage: () => TE.of(careerStage),
-          saveCareerStage: () => TE.left('unavailable'),
+          deleteLocation: shouldNotBeCalled,
+          getLocation: () => TE.of(location),
+          saveLocation: () => TE.left('unavailable'),
         }),
         connection,
       )()
@@ -125,24 +122,24 @@ describe('changeCareerStageVisibility', () => {
     fc.oauth(),
     fc.origin(),
     fc.connection({
-      body: fc.record({ careerStageVisibility: fc.string() }, { withDeletedKeys: true }),
+      body: fc.record({ locationVisibility: fc.string() }, { withDeletedKeys: true }),
       method: fc.constant('POST'),
     }),
     fc.user(),
-    fc.careerStage(),
+    fc.location(),
   ])(
     'when the form has been submitted without setting visibility',
-    async (oauth, publicUrl, connection, user, careerStage) => {
-      const saveCareerStage = jest.fn<EditCareerStageEnv['saveCareerStage']>(_ => TE.right(undefined))
+    async (oauth, publicUrl, connection, user, location) => {
+      const saveLocation = jest.fn<EditLocationEnv['saveLocation']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
-        _.changeCareerStageVisibility({
+        _.changeLocationVisibility({
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteCareerStage: shouldNotBeCalled,
-          getCareerStage: () => TE.of(careerStage),
-          saveCareerStage,
+          deleteLocation: shouldNotBeCalled,
+          getLocation: () => TE.of(location),
+          saveLocation,
         }),
         connection,
       )()
@@ -154,24 +151,24 @@ describe('changeCareerStageVisibility', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(saveCareerStage).toHaveBeenCalledWith(user.orcid, {
-        value: careerStage.value,
+      expect(saveLocation).toHaveBeenCalledWith(user.orcid, {
+        value: location.value,
         visibility: 'restricted',
       })
     },
   )
 
   test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.user()])(
-    "there isn't a career stage",
+    "there isn't a location",
     async (oauth, publicUrl, connection, user) => {
       const actual = await runMiddleware(
-        _.changeCareerStageVisibility({
+        _.changeLocationVisibility({
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteCareerStage: shouldNotBeCalled,
-          getCareerStage: () => TE.left('not-found'),
-          saveCareerStage: shouldNotBeCalled,
+          deleteLocation: shouldNotBeCalled,
+          getLocation: () => TE.left('not-found'),
+          saveLocation: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -190,13 +187,13 @@ describe('changeCareerStageVisibility', () => {
     'when the user is not logged in',
     async (oauth, publicUrl, connection) => {
       const actual = await runMiddleware(
-        _.changeCareerStageVisibility({
+        _.changeLocationVisibility({
           getUser: () => M.left('no-session'),
           publicUrl,
           oauth,
-          deleteCareerStage: shouldNotBeCalled,
-          getCareerStage: shouldNotBeCalled,
-          saveCareerStage: shouldNotBeCalled,
+          deleteLocation: shouldNotBeCalled,
+          getLocation: shouldNotBeCalled,
+          saveLocation: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -228,13 +225,13 @@ describe('changeCareerStageVisibility', () => {
     "when the user can't be loaded",
     async (oauth, publicUrl, connection, error) => {
       const actual = await runMiddleware(
-        _.changeCareerStageVisibility({
+        _.changeLocationVisibility({
           getUser: () => M.left(error),
           oauth,
           publicUrl,
-          deleteCareerStage: shouldNotBeCalled,
-          getCareerStage: shouldNotBeCalled,
-          saveCareerStage: shouldNotBeCalled,
+          deleteLocation: shouldNotBeCalled,
+          getLocation: shouldNotBeCalled,
+          saveLocation: shouldNotBeCalled,
         }),
         connection,
       )()

@@ -5,28 +5,28 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import * as _ from '../src/change-languages'
-import type { EditLanguagesEnv } from '../src/languages'
-import { myDetailsMatch } from '../src/routes'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
-import { shouldNotBeCalled } from './should-not-be-called'
+import type { EditLanguagesEnv } from '../../src/languages'
+import * as _ from '../../src/my-details-page/change-languages-visibility'
+import { myDetailsMatch } from '../../src/routes'
+import * as fc from '../fc'
+import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
-describe('changeLanguages', () => {
+describe('changeLanguagesVisibility', () => {
   test.prop([
     fc.oauth(),
     fc.origin(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.languages()),
+    fc.languages(),
   ])('when there is a logged in user', async (oauth, publicUrl, connection, user, languages) => {
     const actual = await runMiddleware(
-      _.changeLanguages({
+      _.changeLanguagesVisibility({
         getUser: () => M.fromEither(E.right(user)),
         publicUrl,
         oauth,
         deleteLanguages: shouldNotBeCalled,
-        getLanguages: () => TE.fromEither(languages),
+        getLanguages: () => TE.of(languages),
         saveLanguages: shouldNotBeCalled,
       }),
       connection,
@@ -41,26 +41,27 @@ describe('changeLanguages', () => {
     )
   })
 
-  describe('when the form has been submitted', () => {
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.nonEmptyString().chain(languages =>
-        fc.tuple(
-          fc.constant(languages),
-          fc.connection({
-            body: fc.constant({ languages }),
-            method: fc.constant('POST'),
-          }),
-        ),
+  test.prop([
+    fc.oauth(),
+    fc.origin(),
+    fc.languagesVisibility().chain(visibility =>
+      fc.tuple(
+        fc.constant(visibility),
+        fc.connection({
+          body: fc.constant({ languagesVisibility: visibility }),
+          method: fc.constant('POST'),
+        }),
       ),
-      fc.user(),
-      fc.languages(),
-    ])('there are languages already', async (oauth, publicUrl, [languages, connection], user, existingLanguages) => {
+    ),
+    fc.user(),
+    fc.languages(),
+  ])(
+    'when the form has been submitted',
+    async (oauth, publicUrl, [visibility, connection], user, existingLanguages) => {
       const saveLanguages = jest.fn<EditLanguagesEnv['saveLanguages']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
-        _.changeLanguages({
+        _.changeLanguagesVisibility({
           getUser: () => M.right(user),
           publicUrl,
           oauth,
@@ -79,69 +80,31 @@ describe('changeLanguages', () => {
         ]),
       )
       expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
-        value: languages,
-        visibility: existingLanguages.visibility,
+        value: existingLanguages.value,
+        visibility,
       })
-    })
-
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.nonEmptyString().chain(languages =>
-        fc.tuple(
-          fc.constant(languages),
-          fc.connection({
-            body: fc.constant({ languages }),
-            method: fc.constant('POST'),
-          }),
-        ),
-      ),
-      fc.user(),
-    ])("when there aren't languages already", async (oauth, publicUrl, [languages, connection], user) => {
-      const saveLanguages = jest.fn<EditLanguagesEnv['saveLanguages']>(_ => TE.right(undefined))
-
-      const actual = await runMiddleware(
-        _.changeLanguages({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          deleteLanguages: shouldNotBeCalled,
-          getLanguages: () => TE.left('not-found'),
-          saveLanguages,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-          { type: 'endResponse' },
-        ]),
-      )
-      expect(saveLanguages).toHaveBeenCalledWith(user.orcid, { value: languages, visibility: 'restricted' })
-    })
-  })
+    },
+  )
 
   test.prop([
     fc.oauth(),
     fc.origin(),
     fc.connection({
-      body: fc.record({ languages: fc.oneof(fc.nonEmptyString(), fc.constant('skip')) }),
+      body: fc.record({ languagesVisibility: fc.languagesVisibility() }),
       method: fc.constant('POST'),
     }),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.languages()),
+    fc.languages(),
   ])(
-    'when the form has been submitted but languages cannot be saved',
-    async (oauth, publicUrl, connection, user, existingLanguages) => {
+    'when the form has been submitted but the visibility cannot be saved',
+    async (oauth, publicUrl, connection, user, languages) => {
       const actual = await runMiddleware(
-        _.changeLanguages({
+        _.changeLanguagesVisibility({
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteLanguages: () => TE.left('unavailable'),
-          getLanguages: () => TE.fromEither(existingLanguages),
+          deleteLanguages: shouldNotBeCalled,
+          getLanguages: () => TE.of(languages),
           saveLanguages: () => TE.left('unavailable'),
         }),
         connection,
@@ -162,40 +125,72 @@ describe('changeLanguages', () => {
     fc.oauth(),
     fc.origin(),
     fc.connection({
-      body: fc.record({ languages: fc.constant('') }, { withDeletedKeys: true }),
+      body: fc.record({ languagesVisibility: fc.string() }, { withDeletedKeys: true }),
       method: fc.constant('POST'),
     }),
     fc.user(),
-  ])('when the form has been submitted without setting languages', async (oauth, publicUrl, connection, user) => {
-    const deleteLanguages = jest.fn<EditLanguagesEnv['deleteLanguages']>(_ => TE.right(undefined))
+    fc.languages(),
+  ])(
+    'when the form has been submitted without setting visibility',
+    async (oauth, publicUrl, connection, user, languages) => {
+      const saveLanguages = jest.fn<EditLanguagesEnv['saveLanguages']>(_ => TE.right(undefined))
 
-    const actual = await runMiddleware(
-      _.changeLanguages({
-        getUser: () => M.right(user),
-        publicUrl,
-        oauth,
-        deleteLanguages,
-        getLanguages: shouldNotBeCalled,
-        saveLanguages: shouldNotBeCalled,
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.changeLanguagesVisibility({
+          getUser: () => M.right(user),
+          publicUrl,
+          oauth,
+          deleteLanguages: shouldNotBeCalled,
+          getLanguages: () => TE.of(languages),
+          saveLanguages,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-        { type: 'endResponse' },
-      ]),
-    )
-    expect(deleteLanguages).toHaveBeenCalledWith(user.orcid)
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
+        value: languages.value,
+        visibility: 'restricted',
+      })
+    },
+  )
+
+  test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.user()])(
+    "there aren't languages",
+    async (oauth, publicUrl, connection, user) => {
+      const actual = await runMiddleware(
+        _.changeLanguagesVisibility({
+          getUser: () => M.right(user),
+          publicUrl,
+          oauth,
+          deleteLanguages: shouldNotBeCalled,
+          getLanguages: () => TE.left('not-found'),
+          saveLanguages: shouldNotBeCalled,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
 
   test.prop([fc.oauth(), fc.origin(), fc.connection()])(
     'when the user is not logged in',
     async (oauth, publicUrl, connection) => {
       const actual = await runMiddleware(
-        _.changeLanguages({
+        _.changeLanguagesVisibility({
           getUser: () => M.left('no-session'),
           publicUrl,
           oauth,
@@ -229,11 +224,11 @@ describe('changeLanguages', () => {
     },
   )
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error()])(
+  test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.error()])(
     "when the user can't be loaded",
     async (oauth, publicUrl, connection, error) => {
       const actual = await runMiddleware(
-        _.changeLanguages({
+        _.changeLanguagesVisibility({
           getUser: () => M.left(error),
           oauth,
           publicUrl,

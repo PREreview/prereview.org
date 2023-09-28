@@ -5,29 +5,29 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import * as _ from '../src/change-location-visibility'
-import type { EditLocationEnv } from '../src/location'
-import { myDetailsMatch } from '../src/routes'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
-import { shouldNotBeCalled } from './should-not-be-called'
+import * as _ from '../../src/my-details-page/change-research-interests-visibility'
+import type { EditResearchInterestsEnv } from '../../src/research-interests'
+import { myDetailsMatch } from '../../src/routes'
+import * as fc from '../fc'
+import { runMiddleware } from '../middleware'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
-describe('changeLocationVisibility', () => {
+describe('changeResearchInterestsVisibility', () => {
   test.prop([
     fc.oauth(),
     fc.origin(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.user(),
-    fc.location(),
-  ])('when there is a logged in user', async (oauth, publicUrl, connection, user, location) => {
+    fc.researchInterests(),
+  ])('when there is a logged in user', async (oauth, publicUrl, connection, user, researchInterests) => {
     const actual = await runMiddleware(
-      _.changeLocationVisibility({
+      _.changeResearchInterestsVisibility({
         getUser: () => M.fromEither(E.right(user)),
         publicUrl,
         oauth,
-        deleteLocation: shouldNotBeCalled,
-        getLocation: () => TE.of(location),
-        saveLocation: shouldNotBeCalled,
+        deleteResearchInterests: shouldNotBeCalled,
+        getResearchInterests: () => TE.of(researchInterests),
+        saveResearchInterests: shouldNotBeCalled,
       }),
       connection,
     )()
@@ -44,65 +44,68 @@ describe('changeLocationVisibility', () => {
   test.prop([
     fc.oauth(),
     fc.origin(),
-    fc.locationVisibility().chain(visibility =>
+    fc.researchInterestsVisibility().chain(visibility =>
       fc.tuple(
         fc.constant(visibility),
         fc.connection({
-          body: fc.constant({ locationVisibility: visibility }),
+          body: fc.constant({ researchInterestsVisibility: visibility }),
           method: fc.constant('POST'),
         }),
       ),
     ),
     fc.user(),
-    fc.location(),
-  ])('when the form has been submitted', async (oauth, publicUrl, [visibility, connection], user, existingLocation) => {
-    const saveLocation = jest.fn<EditLocationEnv['saveLocation']>(_ => TE.right(undefined))
+    fc.researchInterests(),
+  ])(
+    'when the form has been submitted',
+    async (oauth, publicUrl, [visibility, connection], user, existingResearchInterests) => {
+      const saveResearchInterests = jest.fn<EditResearchInterestsEnv['saveResearchInterests']>(_ => TE.right(undefined))
 
-    const actual = await runMiddleware(
-      _.changeLocationVisibility({
-        getUser: () => M.right(user),
-        publicUrl,
-        oauth,
-        deleteLocation: shouldNotBeCalled,
-        getLocation: () => TE.right(existingLocation),
-        saveLocation,
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.changeResearchInterestsVisibility({
+          getUser: () => M.right(user),
+          publicUrl,
+          oauth,
+          deleteResearchInterests: shouldNotBeCalled,
+          getResearchInterests: () => TE.right(existingResearchInterests),
+          saveResearchInterests,
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-        { type: 'endResponse' },
-      ]),
-    )
-    expect(saveLocation).toHaveBeenCalledWith(user.orcid, {
-      value: existingLocation.value,
-      visibility,
-    })
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, {
+        value: existingResearchInterests.value,
+        visibility,
+      })
+    },
+  )
 
   test.prop([
     fc.oauth(),
     fc.origin(),
     fc.connection({
-      body: fc.record({ locationVisibility: fc.locationVisibility() }),
+      body: fc.record({ researchInterestsVisibility: fc.researchInterestsVisibility() }),
       method: fc.constant('POST'),
     }),
     fc.user(),
-    fc.location(),
+    fc.researchInterests(),
   ])(
     'when the form has been submitted but the visibility cannot be saved',
-    async (oauth, publicUrl, connection, user, location) => {
+    async (oauth, publicUrl, connection, user, researchInterests) => {
       const actual = await runMiddleware(
-        _.changeLocationVisibility({
+        _.changeResearchInterestsVisibility({
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteLocation: shouldNotBeCalled,
-          getLocation: () => TE.of(location),
-          saveLocation: () => TE.left('unavailable'),
+          deleteResearchInterests: shouldNotBeCalled,
+          getResearchInterests: () => TE.of(researchInterests),
+          saveResearchInterests: () => TE.left('unavailable'),
         }),
         connection,
       )()
@@ -122,24 +125,24 @@ describe('changeLocationVisibility', () => {
     fc.oauth(),
     fc.origin(),
     fc.connection({
-      body: fc.record({ locationVisibility: fc.string() }, { withDeletedKeys: true }),
+      body: fc.record({ researchInterestsVisibility: fc.string() }, { withDeletedKeys: true }),
       method: fc.constant('POST'),
     }),
     fc.user(),
-    fc.location(),
+    fc.researchInterests(),
   ])(
     'when the form has been submitted without setting visibility',
-    async (oauth, publicUrl, connection, user, location) => {
-      const saveLocation = jest.fn<EditLocationEnv['saveLocation']>(_ => TE.right(undefined))
+    async (oauth, publicUrl, connection, user, researchInterests) => {
+      const saveResearchInterests = jest.fn<EditResearchInterestsEnv['saveResearchInterests']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
-        _.changeLocationVisibility({
+        _.changeResearchInterestsVisibility({
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteLocation: shouldNotBeCalled,
-          getLocation: () => TE.of(location),
-          saveLocation,
+          deleteResearchInterests: shouldNotBeCalled,
+          getResearchInterests: () => TE.of(researchInterests),
+          saveResearchInterests,
         }),
         connection,
       )()
@@ -151,24 +154,24 @@ describe('changeLocationVisibility', () => {
           { type: 'endResponse' },
         ]),
       )
-      expect(saveLocation).toHaveBeenCalledWith(user.orcid, {
-        value: location.value,
+      expect(saveResearchInterests).toHaveBeenCalledWith(user.orcid, {
+        value: researchInterests.value,
         visibility: 'restricted',
       })
     },
   )
 
   test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.user()])(
-    "there isn't a location",
+    "there aren't research interests",
     async (oauth, publicUrl, connection, user) => {
       const actual = await runMiddleware(
-        _.changeLocationVisibility({
+        _.changeResearchInterestsVisibility({
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteLocation: shouldNotBeCalled,
-          getLocation: () => TE.left('not-found'),
-          saveLocation: shouldNotBeCalled,
+          deleteResearchInterests: shouldNotBeCalled,
+          getResearchInterests: () => TE.left('not-found'),
+          saveResearchInterests: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -187,13 +190,13 @@ describe('changeLocationVisibility', () => {
     'when the user is not logged in',
     async (oauth, publicUrl, connection) => {
       const actual = await runMiddleware(
-        _.changeLocationVisibility({
+        _.changeResearchInterestsVisibility({
           getUser: () => M.left('no-session'),
           publicUrl,
           oauth,
-          deleteLocation: shouldNotBeCalled,
-          getLocation: shouldNotBeCalled,
-          saveLocation: shouldNotBeCalled,
+          deleteResearchInterests: shouldNotBeCalled,
+          getResearchInterests: shouldNotBeCalled,
+          saveResearchInterests: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -225,13 +228,13 @@ describe('changeLocationVisibility', () => {
     "when the user can't be loaded",
     async (oauth, publicUrl, connection, error) => {
       const actual = await runMiddleware(
-        _.changeLocationVisibility({
+        _.changeResearchInterestsVisibility({
           getUser: () => M.left(error),
           oauth,
           publicUrl,
-          deleteLocation: shouldNotBeCalled,
-          getLocation: shouldNotBeCalled,
-          saveLocation: shouldNotBeCalled,
+          deleteResearchInterests: shouldNotBeCalled,
+          getResearchInterests: shouldNotBeCalled,
+          saveResearchInterests: shouldNotBeCalled,
         }),
         connection,
       )()
