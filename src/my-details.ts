@@ -1,6 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
-import { flow, pipe } from 'fp-ts/function'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
@@ -36,51 +37,17 @@ import { type GetUserEnv, type User, getUser } from './user'
 
 export const myDetails = pipe(
   getUser,
-  RM.bindTo('user'),
-  RM.bindW(
-    'canConnectSlack',
-    RM.fromReaderK(({ user }) => canConnectSlack(user)),
-  ),
-  RM.bindW(
-    'slackUser',
-    flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeGetSlackUser(orcid)),
-      RM.map(O.fromNullable),
-    ),
-  ),
-  RM.bindW(
-    'openForRequests',
-    flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeIsOpenForRequests(orcid)),
-      RM.map(O.fromNullable),
-    ),
-  ),
-  RM.bindW(
-    'careerStage',
-    flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeGetCareerStage(orcid)),
-      RM.map(O.fromNullable),
-    ),
-  ),
-  RM.bindW(
-    'researchInterests',
-    flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeGetResearchInterests(orcid)),
-      RM.map(O.fromNullable),
-    ),
-  ),
-  RM.bindW(
-    'location',
-    flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeGetLocation(orcid)),
-      RM.map(O.fromNullable),
-    ),
-  ),
-  RM.bindW(
-    'languages',
-    flow(
-      RM.fromReaderTaskEitherK(({ user: { orcid } }) => maybeGetLanguages(orcid)),
-      RM.map(O.fromNullable),
+  RM.chainReaderTaskEitherKW(user =>
+    pipe(
+      RTE.Do,
+      RTE.let('user', () => user),
+      RTE.apS('canConnectSlack', RTE.fromReader(canConnectSlack(user))),
+      RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(O.fromNullable))),
+      RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(O.fromNullable))),
+      RTE.apSW('careerStage', pipe(maybeGetCareerStage(user.orcid), RTE.map(O.fromNullable))),
+      RTE.apSW('researchInterests', pipe(maybeGetResearchInterests(user.orcid), RTE.map(O.fromNullable))),
+      RTE.apSW('location', pipe(maybeGetLocation(user.orcid), RTE.map(O.fromNullable))),
+      RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(O.fromNullable))),
     ),
   ),
   RM.chainReaderKW(
