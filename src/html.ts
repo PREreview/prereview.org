@@ -34,7 +34,7 @@ export function rawHtml(html: string): Html {
   return raw(texToMathml(html)) as unknown as Html
 }
 
-export function sanitizeHtml(html: string, allowButtons = false): Html {
+export function sanitizeHtml(html: string, trusted = false): Html {
   const sanitized = sanitize(html, {
     allowedTags: [
       'dd',
@@ -82,11 +82,13 @@ export function sanitizeHtml(html: string, allowButtons = false): Html {
       'mtr',
       'annotation',
       'semantics',
+      ...(trusted ? ['img'] : []),
     ],
     allowedAttributes: {
       '*': ['dir', 'displaystyle', 'lang', 'mathvariant'],
       a: ['href'],
       annotation: ['encoding'],
+      img: ['alt', 'height', 'src', 'width'],
       math: ['display'],
       mo: [
         'fence',
@@ -109,7 +111,7 @@ export function sanitizeHtml(html: string, allowButtons = false): Html {
       mtd: ['columnspan', 'rowspan'],
     },
     allowedClasses: {
-      a: allowButtons ? ['button'] : [],
+      a: trusted ? ['button'] : [],
     },
     transformTags: {
       a: (tagName, attribs) => {
@@ -117,7 +119,7 @@ export function sanitizeHtml(html: string, allowButtons = false): Html {
           attribs['href'] = ''
         }
 
-        if (allowButtons && typeof attribs['class'] === 'string' && attribs['class'].includes('kg-btn')) {
+        if (trusted && typeof attribs['class'] === 'string' && attribs['class'].includes('kg-btn')) {
           attribs['class'] = 'button'
         }
 

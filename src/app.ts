@@ -780,6 +780,7 @@ export const app = (deps: AppEnv) => {
               'data:',
               'avatars.slack-edge.com',
               'cdn.usefathom.com',
+              'content.prereview.org',
               'res.cloudinary.com',
               'secure.gravatar.com',
               '*.wp.com',
