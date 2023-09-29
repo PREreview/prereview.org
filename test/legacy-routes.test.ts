@@ -51,6 +51,7 @@ describe('legacyRoutes', () => {
     ['/PREreview.org', '/'],
     ['/reviews', '/reviews?page=1'],
     ['/reviews/new', '/review-a-preprint'],
+    ['/signup', '/log-in'],
     ['/users/61782', 'https://www.authorea.com/users/61782'],
     ['/users/161073', 'https://www.authorea.com/users/161073'],
     ['/users/173578?articles_format=list&direction=desc&sort=created_at', 'https://www.authorea.com/users/173578'],
@@ -422,7 +423,9 @@ describe('legacyRoutes', () => {
 
   test.each([
     ['/admin'],
+    ['/api'],
     ['/api/docs'],
+    ['/api/openapi.json'],
     ['/communities/africarxiv'],
     ['/communities/africarxiv?page=2'],
     ['/communities/africarxiv?page=2&limit=10&offset=0&search='],
@@ -467,6 +470,7 @@ describe('legacyRoutes', () => {
     ['/dashboard/new'],
     ['/dashboard/new?page=2'],
     ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
+    ['/extension'],
   ])('removed page for %s', async path => {
     const actual = await runMiddleware(
       _.legacyRoutes({

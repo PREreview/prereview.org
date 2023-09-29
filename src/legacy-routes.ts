@@ -182,7 +182,15 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
+      pipe(P.lit('api'), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
       pipe(P.lit('api'), P.then(P.lit('docs')), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
+      pipe(P.lit('api'), P.then(P.lit('openapi.json')), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
@@ -237,6 +245,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('events'), P.then(type('eventUuid', UuidC)), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
+      pipe(P.lit('extension'), P.then(P.end)).parser,
+      P.map(() => showRemovedPermanentlyMessage),
     ),
     pipe(
       pipe(P.lit('inst'), P.then(P.str('instId')), P.then(query(C.partial({}))), P.then(P.end)).parser,
@@ -317,6 +329,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('settings'), P.then(P.lit('drafts')), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
+      pipe(P.lit('signup'), P.then(P.end)).parser,
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
     ),
     pipe(
       pipe(
