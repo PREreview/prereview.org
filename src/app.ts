@@ -39,6 +39,7 @@ import {
 } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
+import { ediStatement } from './edi-statement'
 import type { CanConnectSlackEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
@@ -129,6 +130,7 @@ import {
   connectSlackErrorMatch,
   connectSlackMatch,
   connectSlackStartMatch,
+  ediStatementMatch,
   findAPreprintMatch,
   fundingMatch,
   homeMatch,
@@ -271,6 +273,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       codeOfConductMatch.parser,
       P.map(() => codeOfConduct),
+    ),
+    pipe(
+      ediStatementMatch.parser,
+      P.map(() => ediStatement),
     ),
     pipe(
       clubsMatch.parser,
