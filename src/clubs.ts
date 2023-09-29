@@ -2,7 +2,7 @@ import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { getPage } from './ghost'
-import { type Html, html, plainText, sendHtml } from './html'
+import { type Html, fixHeadingLevels, html, plainText, sendHtml } from './html'
 import { serviceUnavailable } from './middleware'
 import { page } from './page'
 import { type User, maybeGetUser } from './user'
@@ -24,7 +24,7 @@ function createPage({ content, user }: { content: Html; user?: User }) {
       <main id="main-content">
         <h1>Clubs</h1>
 
-        ${content}
+        ${fixHeadingLevels(1, content)}
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
