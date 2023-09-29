@@ -17,6 +17,7 @@ import {
   logOutMatch,
   myDetailsMatch,
   partnersMatch,
+  peopleMatch,
   privacyPolicyMatch,
   reviewsMatch,
   trainingsMatch,
@@ -48,6 +49,7 @@ export interface Page {
     | 'live-reviews'
     | 'my-details'
     | 'partners'
+    | 'people'
     | 'privacy-policy'
     | 'reviews'
     | 'trainings'
@@ -226,7 +228,13 @@ export function page({
 
                   <ul aria-label="Support links">
                     <li><a href="https://donorbox.org/prereview">Donate</a></li>
-                    <li><a href="https://content.prereview.org/people/">People</a></li>
+                    <li>
+                      <a
+                        href="${format(peopleMatch.formatter, {})}"
+                        ${current === 'people' ? html`aria-current="page"` : ''}
+                        >People</a
+                      >
+                    </li>
                     <li>
                       <a
                         href="${format(fundingMatch.formatter, {})}"
