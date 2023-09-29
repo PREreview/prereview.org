@@ -99,6 +99,7 @@ import {
 import { getNameFromOrcid } from './orcid'
 import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page } from './page'
 import { partners } from './partners'
+import { people } from './people'
 import { getPreprintFromPhilsci } from './philsci'
 import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv } from './preprint'
 import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
@@ -138,6 +139,7 @@ import {
   orcidCodeMatch,
   orcidErrorMatch,
   partnersMatch,
+  peopleMatch,
   preprintReviewsMatch,
   privacyPolicyMatch,
   profileMatch,
@@ -261,6 +263,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       aboutUsMatch.parser,
       P.map(() => aboutUs),
+    ),
+    pipe(
+      peopleMatch.parser,
+      P.map(() => people),
     ),
     pipe(
       codeOfConductMatch.parser,

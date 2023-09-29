@@ -115,6 +115,8 @@ export const homeMatch = pipe(query(C.partial({ message: C.literal('logged-out',
 
 export const aboutUsMatch = pipe(P.lit('about'), P.then(P.end))
 
+export const peopleMatch = pipe(P.lit('people'), P.then(P.end))
+
 export const codeOfConductMatch = pipe(P.lit('code-of-conduct'), P.then(P.end))
 
 export const clubsMatch = pipe(P.lit('clubs'), P.then(P.end))
