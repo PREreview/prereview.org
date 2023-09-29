@@ -10,6 +10,7 @@ import {
   aboutUsMatch,
   clubsMatch,
   codeOfConductMatch,
+  ediStatementMatch,
   fundingMatch,
   homeMatch,
   liveReviewsMatch,
@@ -44,6 +45,7 @@ export interface Page {
     | 'about-us'
     | 'clubs'
     | 'code-of-conduct'
+    | 'edi-statement'
     | 'funding'
     | 'home'
     | 'live-reviews'
@@ -250,7 +252,11 @@ export function page({
                       >
                     </li>
                     <li>
-                      <a href="https://content.prereview.org/edi/">EDI Statement</a>
+                      <a
+                        href="${format(ediStatementMatch.formatter, {})}"
+                        ${current === 'edi-statement' ? html`aria-current="page"` : ''}
+                        >EDI Statement</a
+                      >
                     </li>
                     <li>
                       <a
