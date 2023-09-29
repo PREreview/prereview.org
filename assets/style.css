@@ -384,6 +384,10 @@ img {
   max-block-size: 100%;
   inline-size: auto;
   max-inline-size: 100%;
+
+  :--heading + & {
+    margin-block-start: var(--space-xs);
+  }
 }
 
 nav {
