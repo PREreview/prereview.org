@@ -759,22 +759,24 @@ export const user = (): fc.Arbitrary<User> =>
     pseudonym: pseudonym(),
   })
 
-export const preprint = (): fc.Arbitrary<Preprint> =>
+export const preprint = ({ authors }: { authors?: Arbitrary<Preprint['authors']> } = {}): fc.Arbitrary<Preprint> =>
   fc.record(
     {
       abstract: fc.record({
         language: languageCode(),
         text: html(),
       }),
-      authors: nonEmptyArray(
-        fc.record(
-          {
-            name: fc.string(),
-            orcid: orcid(),
-          },
-          { requiredKeys: ['name'] },
+      authors:
+        authors ??
+        nonEmptyArray(
+          fc.record(
+            {
+              name: fc.string(),
+              orcid: orcid(),
+            },
+            { requiredKeys: ['name'] },
+          ),
         ),
-      ),
       id: preprintId(),
       posted: plainDate(),
       title: fc.record({

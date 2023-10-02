@@ -664,6 +664,82 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
     })
 
+    fetch.get('https://api.crossref.org/works/10.1101%2F12345678', {
+      body: {
+        status: 'ok',
+        'message-type': 'work',
+        'message-version': '1.0.0',
+        message: {
+          indexed: { 'date-parts': [[2023, 4, 21]], 'date-time': '2023-04-21T05:37:01Z', timestamp: 1682055421220 },
+          publisher: 'Cold Spring Harbor Laboratory',
+          institution: [{ name: 'bioRxiv' }],
+          'content-domain': { domain: ['psychoceramics.labs.crossref.org'], 'crossmark-restriction': false },
+          'published-print': { 'date-parts': [[2008, 8, 14]] },
+          abstract:
+            '<jats:p>The characteristic theme of the works of Stone is the bridge between culture and society. Several narratives concerning the fatal !aw, and subsequent dialectic, of semioticist class may be found. Thus, Debord uses the term \u2018the subtextual paradigm of consensus\u2019 to denote a cultural paradox. The subject is interpolated into a neocultural discourse that includes sexuality as a totality. But Marx\u2019s critique of prepatriarchialist nihilism states that consciousness is capable of signi"cance. The main theme of Dietrich\u2019s[1]model of cultural discourse is not construction, but neoconstruction. Thus, any number of narratives concerning the textual paradigm of narrative exist. Pretextual cultural theory suggests that context must come from the collective unconscious.</jats:p>',
+          DOI: '10.1101/12345678',
+          type: 'posted-content',
+          subtype: 'preprint',
+          created: { 'date-parts': [[2011, 11, 9]], 'date-time': '2011-11-09T14:42:05Z', timestamp: 1320849725000 },
+          page: '1-3',
+          'update-policy': 'http://dx.doi.org/10.5555/something',
+          source: 'Crossref',
+          'is-referenced-by-count': 3,
+          title: ['Toward a Unified Theory of High-Energy Metaphysics: Silly String Theory'],
+          prefix: '10.5555',
+          volume: '5',
+          'clinical-trial-number': [{ 'clinical-trial-number': 'isrctn12345', registry: '10.18810/isrctn' }],
+          author: [
+            {
+              ORCID: 'http://orcid.org/0000-0002-1825-0097',
+              'authenticated-orcid': false,
+              suffix: 'Jr.',
+              given: 'Josiah',
+              family: 'Carberry',
+              sequence: 'first',
+              affiliation: [{ name: 'Department of Psychoceramics, Brown University' }],
+            },
+          ],
+          member: '7822',
+          'container-title': ['Journal of Psychoceramics'],
+          'original-title': [],
+          language: 'en',
+          link: [
+            {
+              URL: 'http://psychoceramics.labs.crossref.org/10.5555-12345678.html',
+              'content-type': 'unspecified',
+              'content-version': 'vor',
+              'intended-application': 'similarity-checking',
+            },
+          ],
+          deposited: { 'date-parts': [[2023, 4, 20]], 'date-time': '2023-04-20T12:29:52Z', timestamp: 1681993792000 },
+          score: 1,
+          resource: {
+            primary: { URL: 'https://ojs33.crossref.publicknowledgeproject.org/index.php/test/article/view/2' },
+          },
+          subtitle: [],
+          'short-title': [],
+          issued: { 'date-parts': [[2008, 8, 13]] },
+          URL: 'http://dx.doi.org/10.1101/12345678',
+          ISSN: ['0264-3561'],
+          'issn-type': [{ value: '0264-3561', type: 'electronic' }],
+          published: { 'date-parts': [[2008, 8, 13]] },
+        },
+      },
+    })
+
+    fetch.get(
+      {
+        url: 'http://zenodo.test/api/records/',
+        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/12345678"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    )
+
+    fetch.get('http://prereview.test/api/v2/preprints/doi-10.1101-12345678/rapid-reviews', {
+      body: { data: [] },
+    })
+
     fetch.get('begin:https://res.cloudinary.com/prereview/search/', { body: { resources: [] } })
 
     await use(fetch)

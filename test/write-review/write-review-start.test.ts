@@ -18,18 +18,18 @@ describe('writeReviewStart', () => {
       fc.oauth(),
       fc.origin(),
       fc.indeterminatePreprintId(),
-      fc.preprintTitle(),
+      fc.preprint(),
       fc.connection(),
       fc.form(),
       fc.user(),
-    ])('there is a form', async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user) => {
+    ])('there is a form', async (oauth, publicUrl, preprintId, preprint, connection, newReview, user) => {
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
           formStore,
-          getPreprintTitle: () => TE.right(preprintTitle),
+          getPreprint: () => TE.right(preprint),
           getUser: () => M.of(user),
           oauth,
           publicUrl,
@@ -46,13 +46,13 @@ describe('writeReviewStart', () => {
       )
     })
 
-    test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user()])(
+    test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.preprint(), fc.connection(), fc.user()])(
       "there isn't a form",
-      async (oauth, publicUrl, preprintId, preprintTitle, connection, user) => {
+      async (oauth, publicUrl, preprintId, preprint, connection, user) => {
         const actual = await runMiddleware(
           _.writeReviewStart(preprintId)({
             formStore: new Keyv(),
-            getPreprintTitle: () => TE.right(preprintTitle),
+            getPreprint: () => TE.right(preprint),
             getUser: () => M.of(user),
             oauth,
             publicUrl,
@@ -66,7 +66,7 @@ describe('writeReviewStart', () => {
             {
               type: 'setHeader',
               name: 'Location',
-              value: format(writeReviewReviewTypeMatch.formatter, { id: preprintTitle.id }),
+              value: format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }),
             },
             { type: 'endResponse' },
           ]),
@@ -75,13 +75,13 @@ describe('writeReviewStart', () => {
     )
   })
 
-  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection()])(
+  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.preprint(), fc.connection()])(
     "when there isn't a session",
-    async (oauth, publicUrl, preprintId, preprintTitle, connection) => {
+    async (oauth, publicUrl, preprintId, preprint, connection) => {
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.right(preprintTitle),
+          getPreprint: () => TE.right(preprint),
           getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
@@ -101,7 +101,7 @@ describe('writeReviewStart', () => {
                 response_type: 'code',
                 redirect_uri: oauth.redirectUri.href,
                 scope: '/authenticate',
-                state: new URL(format(writeReviewStartMatch.formatter, { id: preprintTitle.id }), publicUrl).href,
+                state: new URL(format(writeReviewStartMatch.formatter, { id: preprint.id }), publicUrl).href,
               }).toString()}`,
               oauth.authorizeUrl,
             ).href,
@@ -118,7 +118,7 @@ describe('writeReviewStart', () => {
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.left('unavailable'),
+          getPreprint: () => TE.left('unavailable'),
           getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
@@ -151,7 +151,7 @@ describe('writeReviewStart', () => {
       const actual = await runMiddleware(
         _.writeReviewStart(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.left('not-found'),
+          getPreprint: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
           oauth,
           publicUrl,

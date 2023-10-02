@@ -2756,3 +2756,25 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page).toHaveScreenshot()
   },
 )
+
+test.extend(canLogIn)("can't review my own preprint", async ({ javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-12345678')
+  await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  await page.getByRole('button', { name: 'Start now' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
