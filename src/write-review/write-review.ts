@@ -1,15 +1,10 @@
 import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import * as Eq from 'fp-ts/Eq'
-import * as O from 'fp-ts/Option'
-import { not } from 'fp-ts/Predicate'
-import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
-import { Eq as eqOrcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from '../html'
@@ -21,16 +16,14 @@ import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '.
 import { renderDate } from '../time'
 import { type GetUserEnv, type User, getUser } from '../user'
 import { getForm } from './form'
+import { ensureUserIsNotAnAuthor } from './user-is-author'
 
 export const writeReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
       getUser,
-      RM.filterOrElseW(
-        not(user => RA.elem(eqAuthorByOrcid)(user, preprint.authors)),
-        user => ({ type: 'is-author' as const, user }),
-      ),
+      RM.chainEitherKW(ensureUserIsNotAnAuthor(preprint)),
       RM.bindTo('user'),
       RM.bindW(
         'form',
@@ -92,10 +85,6 @@ const showOwnPreprintPage = (preprint: Preprint, user: User) =>
     RM.ichainFirstW(() => addCanonicalLinkHeader(writeReviewMatch.formatter, { id: preprint.id })),
     RM.ichainMiddlewareK(sendHtml),
   )
-
-const eqAuthorByOrcid = Eq.contramap(O.fromNullableK((author: Preprint['authors'][number]) => author.orcid))(
-  O.getEq(eqOrcid),
-)
 
 function startPage(preprint: Preprint, user?: User) {
   return page({

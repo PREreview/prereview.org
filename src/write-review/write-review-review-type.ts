@@ -1,14 +1,9 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import * as Eq from 'fp-ts/Eq'
-import * as O from 'fp-ts/Option'
-import { not } from 'fp-ts/Predicate'
-import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { Eq as eqOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form'
@@ -19,22 +14,14 @@ import { type Preprint, type PreprintTitle, getPreprint } from '../preprint'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, createForm, getForm, redirectToNextForm, saveForm, updateForm } from './form'
+import { ensureUserIsNotAnAuthor } from './user-is-author'
 
 export const writeReviewReviewType = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
       RM.right({ preprint: { id: preprint.id, language: preprint.title.language, title: preprint.title.text } }),
-      RM.apS(
-        'user',
-        pipe(
-          getUser,
-          RM.filterOrElseW(
-            not(user => RA.elem(eqAuthorByOrcid)(user, preprint.authors)),
-            user => ({ type: 'is-author' as const, user }),
-          ),
-        ),
-      ),
+      RM.apS('user', pipe(getUser, RM.chainEitherKW(ensureUserIsNotAnAuthor(preprint)))),
       RM.bindW(
         'form',
         flow(
@@ -132,10 +119,6 @@ const ReviewTypeFieldD = pipe(
 interface ReviewTypeForm {
   readonly reviewType: E.Either<MissingE, 'questions' | 'freeform' | 'already-written' | undefined>
 }
-
-const eqAuthorByOrcid = Eq.contramap(O.fromNullableK((author: Preprint['authors'][number]) => author.orcid))(
-  O.getEq(eqOrcid),
-)
 
 function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: User) {
   const error = hasAnError(form)

@@ -1,13 +1,8 @@
 import { format } from 'fp-ts-routing'
-import * as Eq from 'fp-ts/Eq'
-import * as O from 'fp-ts/Option'
-import { not } from 'fp-ts/Predicate'
-import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
-import { Eq as eqOrcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
@@ -19,16 +14,14 @@ import type { PublicUrlEnv } from '../public-url'
 import { preprintReviewsMatch, writeReviewReviewTypeMatch, writeReviewStartMatch } from '../routes'
 import { type GetUserEnv, type User, getUser } from '../user'
 import { type Form, getForm, nextFormMatch } from './form'
+import { ensureUserIsNotAnAuthor } from './user-is-author'
 
 export const writeReviewStart = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
       getUser,
-      RM.filterOrElseW(
-        not(user => RA.elem(eqAuthorByOrcid)(user, preprint.authors)),
-        user => ({ type: 'is-author' as const, user }),
-      ),
+      RM.chainEitherKW(ensureUserIsNotAnAuthor(preprint)),
       RM.bindTo('user'),
       RM.bindW(
         'form',
@@ -79,10 +72,6 @@ const showOwnPreprintPage = (preprint: Preprint, user: User) =>
     RM.ichainFirst(() => RM.status(Status.Forbidden)),
     RM.ichainMiddlewareK(sendHtml),
   )
-
-const eqAuthorByOrcid = Eq.contramap(O.fromNullableK((author: Preprint['authors'][number]) => author.orcid))(
-  O.getEq(eqOrcid),
-)
 
 function carryOnPage(preprint: PreprintTitle, form: Form, user: User) {
   return page({
