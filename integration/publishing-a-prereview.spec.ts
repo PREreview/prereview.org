@@ -2786,5 +2786,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Write a PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
+
+    await page.goto('/preprints/doi-10.1101-12345678/write-a-prereview/review-type')
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
   },
 )

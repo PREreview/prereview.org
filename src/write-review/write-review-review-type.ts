@@ -1,26 +1,40 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as Eq from 'fp-ts/Eq'
+import * as O from 'fp-ts/Option'
+import { not } from 'fp-ts/Predicate'
+import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
+import { Eq as eqOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import { type PreprintTitle, getPreprintTitle } from '../preprint'
+import { type Preprint, type PreprintTitle, getPreprint } from '../preprint'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
 import { type User, getUser } from '../user'
 import { type Form, createForm, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
 export const writeReviewReviewType = flow(
-  RM.fromReaderTaskEitherK(getPreprintTitle),
+  RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
-      RM.right({ preprint }),
-      RM.apS('user', getUser),
+      RM.right({ preprint: { id: preprint.id, language: preprint.title.language, title: preprint.title.text } }),
+      RM.apS(
+        'user',
+        pipe(
+          getUser,
+          RM.filterOrElseW(
+            not(user => RA.elem(eqAuthorByOrcid)(user, preprint.authors)),
+            user => ({ type: 'is-author' as const, user }),
+          ),
+        ),
+      ),
       RM.bindW(
         'form',
         flow(
@@ -32,6 +46,7 @@ export const writeReviewReviewType = flow(
       RM.ichainW(state => match(state).with({ method: 'POST' }, handleReviewTypeForm).otherwise(showReviewTypeForm)),
       RM.orElseW(error =>
         match(error)
+          .with({ type: 'is-author', user: P.select() }, user => showOwnPreprintPage(preprint, user))
           .with(
             'no-session',
             RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
@@ -65,6 +80,13 @@ const showReviewTypeErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
     RM.fromReaderK((form: ReviewTypeForm) => reviewTypeForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
+
+const showOwnPreprintPage = (preprint: Preprint, user: User) =>
+  pipe(
+    RM.rightReader(ownPreprintPage(preprint, user)),
+    RM.ichainFirst(() => RM.status(Status.Forbidden)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
@@ -110,6 +132,10 @@ const ReviewTypeFieldD = pipe(
 interface ReviewTypeForm {
   readonly reviewType: E.Either<MissingE, 'questions' | 'freeform' | 'already-written' | undefined>
 }
+
+const eqAuthorByOrcid = Eq.contramap(O.fromNullableK((author: Preprint['authors'][number]) => author.orcid))(
+  O.getEq(eqOrcid),
+)
 
 function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: User) {
   const error = hasAnError(form)
@@ -227,6 +253,25 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
     js: ['error-summary.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
+    user,
+  })
+}
+
+function ownPreprintPage(preprint: Preprint, user: User) {
+  return page({
+    title: plainText`Sorry, you can’t review your own preprint`,
+    content: html`
+      <nav>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+      </nav>
+
+      <main id="main-content">
+        <h1>Sorry, you can’t review your own preprint</h1>
+
+        <p>If you’re not an author, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
 }

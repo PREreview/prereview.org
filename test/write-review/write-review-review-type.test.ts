@@ -17,7 +17,7 @@ import * as fc from './fc'
 describe('writeReviewReviewType', () => {
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
+    fc.preprint(),
     fc
       .reviewType()
       .chain(reviewType =>
@@ -33,27 +33,27 @@ describe('writeReviewReviewType', () => {
         fc.completedQuestionsForm().map(CompletedFormC.encode),
       )
       .map(parts => merge(...parts)),
-  ])('when the form is completed', async (preprintId, preprintTitle, [reviewType, connection], user, newReview) => {
+  ])('when the form is completed', async (preprintId, preprint, [reviewType, connection], user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
     const actual = await runMiddleware(
       _.writeReviewReviewType(preprintId)({
         formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
+        getPreprint: () => TE.right(preprint),
         getUser: () => M.of(user),
       }),
       connection,
     )()
 
-    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ reviewType })
+    expect(await formStore.get(formKey(user.orcid, preprint.id))).toMatchObject({ reviewType })
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.SeeOther },
         {
           type: 'setHeader',
           name: 'Location',
-          value: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+          value: format(writeReviewPublishMatch.formatter, { id: preprint.id }),
         },
         { type: 'endResponse' },
       ]),
@@ -62,7 +62,7 @@ describe('writeReviewReviewType', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
+    fc.preprint(),
     fc
       .reviewType()
       .chain(reviewType =>
@@ -73,27 +73,27 @@ describe('writeReviewReviewType', () => {
       ),
     fc.user(),
     fc.incompleteForm(),
-  ])('when the form is incomplete', async (preprintId, preprintTitle, [reviewType, connection], user, newReview) => {
+  ])('when the form is incomplete', async (preprintId, preprint, [reviewType, connection], user, newReview) => {
     const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+    await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
     const actual = await runMiddleware(
       _.writeReviewReviewType(preprintId)({
         formStore,
-        getPreprintTitle: () => TE.right(preprintTitle),
+        getPreprint: () => TE.right(preprint),
         getUser: () => M.of(user),
       }),
       connection,
     )()
 
-    expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ reviewType })
+    expect(await formStore.get(formKey(user.orcid, preprint.id))).toMatchObject({ reviewType })
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.SeeOther },
         {
           type: 'setHeader',
           name: 'Location',
-          value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+          value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprint.id })}/`),
         },
         { type: 'endResponse' },
       ]),
@@ -102,14 +102,14 @@ describe('writeReviewReviewType', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
+    fc.preprint(),
     fc.connection({ body: fc.record({ reviewType: fc.reviewType() }), method: fc.constant('POST') }),
     fc.user(),
-  ])('when there is no form', async (preprintId, preprintTitle, connection, user) => {
+  ])('when there is no form', async (preprintId, preprint, connection, user) => {
     const actual = await runMiddleware(
       _.writeReviewReviewType(preprintId)({
         formStore: new Keyv(),
-        getPreprintTitle: () => TE.right(preprintTitle),
+        getPreprint: () => TE.right(preprint),
         getUser: () => M.of(user),
       }),
       connection,
@@ -121,9 +121,38 @@ describe('writeReviewReviewType', () => {
         {
           type: 'setHeader',
           name: 'Location',
-          value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+          value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprint.id })}/`),
         },
         { type: 'endResponse' },
+      ]),
+    )
+  })
+
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.user().chain(user => fc.tuple(fc.constant(user), fc.preprint({ authors: fc.constant([user]) }))),
+    fc.connection(),
+    fc.option(fc.form(), { nil: undefined }),
+  ])('the user is an author', async (preprintId, [user, preprint], connection, newReview) => {
+    const formStore = new Keyv()
+    if (newReview) {
+      await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
+    }
+
+    const actual = await runMiddleware(
+      _.writeReviewReviewType(preprintId)({
+        formStore: new Keyv(),
+        getPreprint: () => TE.right(preprint),
+        getUser: () => M.of(user),
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.Forbidden },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
       ]),
     )
   })
@@ -134,7 +163,7 @@ describe('writeReviewReviewType', () => {
       const actual = await runMiddleware(
         _.writeReviewReviewType(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.left('unavailable'),
+          getPreprint: () => TE.left('unavailable'),
           getUser: () => M.of(user),
         }),
         connection,
@@ -157,7 +186,7 @@ describe('writeReviewReviewType', () => {
       const actual = await runMiddleware(
         _.writeReviewReviewType(preprintId)({
           formStore: new Keyv(),
-          getPreprintTitle: () => TE.left('not-found'),
+          getPreprint: () => TE.left('not-found'),
           getUser: () => M.of(user),
         }),
         connection,
@@ -176,7 +205,7 @@ describe('writeReviewReviewType', () => {
 
   test.prop([
     fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
+    fc.preprint(),
     fc.connection({
       body: fc.record({ reviewType: fc.lorem() }, { withDeletedKeys: true }),
       method: fc.constant('POST'),
@@ -185,14 +214,14 @@ describe('writeReviewReviewType', () => {
     fc.form(),
   ])(
     'without saying how you would like to write your PREreview',
-    async (preprintId, preprintTitle, connection, user, newReview) => {
+    async (preprintId, preprint, connection, user, newReview) => {
       const formStore = new Keyv()
-      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+      await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
 
       const actual = await runMiddleware(
         _.writeReviewReviewType(preprintId)({
           formStore,
-          getPreprintTitle: () => TE.right(preprintTitle),
+          getPreprint: () => TE.right(preprint),
           getUser: () => M.of(user),
         }),
         connection,
@@ -208,15 +237,15 @@ describe('writeReviewReviewType', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprint(), fc.connection()])(
     "when there isn't a session",
-    async (preprintId, preprintTitle, connection) => {
+    async (preprintId, preprint, connection) => {
       const formStore = new Keyv()
 
       const actual = await runMiddleware(
         _.writeReviewReviewType(preprintId)({
           formStore,
-          getPreprintTitle: () => TE.right(preprintTitle),
+          getPreprint: () => TE.right(preprint),
           getUser: () => M.left('no-session'),
         }),
         connection,
@@ -228,7 +257,7 @@ describe('writeReviewReviewType', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+            value: format(writeReviewMatch.formatter, { id: preprint.id }),
           },
           { type: 'endResponse' },
         ]),
