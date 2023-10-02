@@ -730,6 +730,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     fetch.get(
       {
+        name: '10.1101/12345678 reviews',
         url: 'http://zenodo.test/api/records/',
         query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/12345678"' },
       },
