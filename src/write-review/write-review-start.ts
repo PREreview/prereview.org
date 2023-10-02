@@ -12,11 +12,11 @@ import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { logInAndRedirect } from '../log-in'
-import { addCanonicalLinkHeader, notFound, seeOther, serviceUnavailable } from '../middleware'
+import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { type FathomEnv, type PhaseEnv, page } from '../page'
 import { type Preprint, type PreprintTitle, getPreprint } from '../preprint'
 import type { PublicUrlEnv } from '../public-url'
-import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch, writeReviewStartMatch } from '../routes'
+import { preprintReviewsMatch, writeReviewReviewTypeMatch, writeReviewStartMatch } from '../routes'
 import { type GetUserEnv, type User, getUser } from '../user'
 import { type Form, getForm, nextFormMatch } from './form'
 
@@ -77,7 +77,6 @@ const showOwnPreprintPage = (preprint: Preprint, user: User) =>
   pipe(
     RM.rightReader(ownPreprintPage(preprint, user)),
     RM.ichainFirst(() => RM.status(Status.Forbidden)),
-    RM.ichainFirstW(() => addCanonicalLinkHeader(writeReviewMatch.formatter, { id: preprint.id })),
     RM.ichainMiddlewareK(sendHtml),
   )
 

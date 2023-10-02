@@ -73,6 +73,39 @@ describe('writeReviewStart', () => {
         )
       },
     )
+
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.indeterminatePreprintId(),
+      fc.user().chain(user => fc.tuple(fc.constant(user), fc.preprint({ authors: fc.constant([user]) }))),
+      fc.connection(),
+      fc.option(fc.form(), { nil: undefined }),
+    ])('the user is an author', async (oauth, publicUrl, preprintId, [user, preprint], connection, newReview) => {
+      const formStore = new Keyv()
+      if (newReview) {
+        await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
+      }
+
+      const actual = await runMiddleware(
+        _.writeReviewStart(preprintId)({
+          formStore,
+          getPreprint: () => TE.right(preprint),
+          getUser: () => M.of(user),
+          oauth,
+          publicUrl,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Forbidden },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
   })
 
   test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.preprint(), fc.connection()])(
