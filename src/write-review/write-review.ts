@@ -1,10 +1,15 @@
 import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as Eq from 'fp-ts/Eq'
+import * as O from 'fp-ts/Option'
+import { not } from 'fp-ts/Predicate'
+import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
+import { Eq as eqOrcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from '../html'
@@ -22,6 +27,10 @@ export const writeReview = flow(
   RM.ichainW(preprint =>
     pipe(
       getUser,
+      RM.filterOrElseW(
+        not(user => RA.elem(eqAuthorByOrcid)(user, preprint.authors)),
+        user => ({ type: 'is-author' as const, user }),
+      ),
       RM.bindTo('user'),
       RM.bindW(
         'form',
@@ -53,6 +62,7 @@ export const writeReview = flow(
               void
             >
           >()
+          .with({ type: 'is-author', user: P.select() }, user => showOwnPreprintPage(preprint, user))
           .with('no-session', () => showStartPage(preprint))
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -74,6 +84,18 @@ const showStartPage = (preprint: Preprint, user?: User) =>
     RM.ichainFirstW(() => addCanonicalLinkHeader(writeReviewMatch.formatter, { id: preprint.id })),
     RM.ichainMiddlewareK(sendHtml),
   )
+
+const showOwnPreprintPage = (preprint: Preprint, user: User) =>
+  pipe(
+    RM.rightReader(ownPreprintPage(preprint, user)),
+    RM.ichainFirst(() => RM.status(Status.Forbidden)),
+    RM.ichainFirstW(() => addCanonicalLinkHeader(writeReviewMatch.formatter, { id: preprint.id })),
+    RM.ichainMiddlewareK(sendHtml),
+  )
+
+const eqAuthorByOrcid = Eq.contramap(O.fromNullableK((author: Preprint['authors'][number]) => author.orcid))(
+  O.getEq(eqOrcid),
+)
 
 function startPage(preprint: Preprint, user?: User) {
   return page({
@@ -199,6 +221,25 @@ function startPage(preprint: Preprint, user?: User) {
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
     type: 'streamline',
+    user,
+  })
+}
+
+function ownPreprintPage(preprint: Preprint, user: User) {
+  return page({
+    title: plainText`Sorry, you can’t review your own preprint`,
+    content: html`
+      <nav>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+      </nav>
+
+      <main id="main-content">
+        <h1>Sorry, you can’t review your own preprint</h1>
+
+        <p>If you’re not an author, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
 }

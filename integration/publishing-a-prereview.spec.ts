@@ -2778,3 +2778,13 @@ test.extend(canLogIn)("can't review my own preprint", async ({ javaScriptEnabled
   }
   await expect(page).toHaveScreenshot()
 })
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  "can't review my own preprint when I'm already logged in",
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-12345678')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
+  },
+)

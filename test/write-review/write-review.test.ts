@@ -73,6 +73,38 @@ describe('writeReview', () => {
         )
       },
     )
+
+    test.prop([
+      fc.origin(),
+      fc.indeterminatePreprintId(),
+      fc.user().chain(user => fc.tuple(fc.constant(user), fc.preprint({ authors: fc.constant([user]) }))),
+      fc.connection(),
+    ])('the user is an author', async (publicUrl, preprintId, [user, preprint], connection) => {
+      const actual = await runMiddleware(
+        _.writeReview(preprintId)({
+          formStore: new Keyv(),
+          getPreprint: () => TE.right(preprint),
+          getUser: () => M.of(user),
+          publicUrl,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Forbidden },
+          {
+            type: 'setHeader',
+            name: 'Link',
+            value: `<${publicUrl.href.slice(0, -1)}${format(writeReviewMatch.formatter, {
+              id: preprint.id,
+            })}>; rel="canonical"`,
+          },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
   })
 
   test.prop([fc.origin(), fc.indeterminatePreprintId(), fc.preprint(), fc.connection(), fc.cookieName(), fc.string()])(
