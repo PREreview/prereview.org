@@ -125,7 +125,7 @@ function createPage({
 
           <div>
             <dt>ORCID iD</dt>
-            <dd><a href="https://orcid.org/${user.orcid}" class="orcid">${user.orcid}</a></dd>
+            <dd><span class="orcid">${user.orcid}</span></dd>
           </div>
 
           <div>
@@ -156,11 +156,6 @@ function createPage({
                       <img src="${slackUser.image.href}" alt="" width="48" height="48" />
                       <span>${slackUser.name}</span>
                     </span>
-                  </dd>
-                  <dd>
-                    <a href="${slackUser.profile.href}"
-                      >View <span class="visually-hidden">Slack Community profile</span></a
-                    >
                   </dd>
                 </div>
               `,
