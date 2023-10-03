@@ -99,6 +99,24 @@ function createPage({
       <main id="main-content">
         <h1>My details</h1>
 
+        <div class="inset">
+          <p>Only you can see this page. You have two profile pages that everyone can see:</p>
+
+          <div class="forward-group">
+            <a
+              href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: user.orcid } })}"
+              class="forward"
+              >View public profile</a
+            >
+
+            <a
+              href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: user.pseudonym } })}"
+              class="forward"
+              >View pseudonym profile</a
+            >
+          </div>
+        </div>
+
         <dl class="summary-list">
           <div>
             <dt>Name</dt>
@@ -108,21 +126,11 @@ function createPage({
           <div>
             <dt>ORCID iD</dt>
             <dd><a href="https://orcid.org/${user.orcid}" class="orcid">${user.orcid}</a></dd>
-            <dd>
-              <a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: user.orcid } })}"
-                >View <span class="visually-hidden">public profile</span></a
-              >
-            </dd>
           </div>
 
           <div>
             <dt>PREreview pseudonym</dt>
             <dd>${user.pseudonym}</dd>
-            <dd>
-              <a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: user.pseudonym } })}"
-                >View <span class="visually-hidden">pseudonym profile</span></a
-              >
-            </dd>
           </div>
 
           ${match({ canConnectSlack, slackUser })
