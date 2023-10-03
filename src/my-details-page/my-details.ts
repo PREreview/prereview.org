@@ -155,7 +155,14 @@ function createPage({
                     >
                   </dd>
                 </div>
-
+              `,
+            )
+            .exhaustive()}
+          ${match({ canConnectSlack, slackUser })
+            .with({ canConnectSlack: false }, { canConnectSlack: true, slackUser: P.when(O.isNone) }, () => '')
+            .with(
+              { canConnectSlack: true, slackUser: P.when(O.isSome) },
+              () => html`
                 <div>
                   <dt>Open for review requests</dt>
                   ${match(openForRequests)
