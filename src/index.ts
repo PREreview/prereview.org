@@ -62,6 +62,7 @@ const server = app({
     key: env.GHOST_API_KEY,
   },
   isOpenForRequestsStore: new Keyv({ namespace: 'is-open-for-requests', store: keyvStore }),
+  isUserBlocked: user => env.BLOCKED_USERS.includes(user),
   legacyPrereviewApi: {
     app: env.LEGACY_PREREVIEW_API_APP,
     key: env.LEGACY_PREREVIEW_API_KEY,

@@ -1,5 +1,5 @@
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import { areLoggedIn, canConnectSlack, canLogIn, expect, isASlackUser, test } from './base'
+import { areLoggedIn, canConnectSlack, canLogIn, expect, isASlackUser, test, userIsBlocked } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
@@ -432,6 +432,16 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
   testInfo.fail(!javaScriptEnabled)
 
   await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+})
+
+test.extend(canLogIn).extend(userIsBlocked)("can't log in when blocked", async ({ page }) => {
+  await page.goto('/')
+
+  await page.getByRole('link', { name: 'Log in' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(

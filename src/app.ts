@@ -83,7 +83,7 @@ import {
 } from './legacy-prereview'
 import { legacyRoutes } from './legacy-routes'
 import { liveReviews } from './live-reviews'
-import { authenticate, authenticateError, logIn, logOut } from './log-in'
+import { type IsUserBlockedEnv, authenticate, authenticateError, logIn, logOut } from './log-in'
 import {
   changeCareerStage,
   changeCareerStageVisibility,
@@ -214,6 +214,7 @@ export type AppEnv = CareerStageStoreEnv &
   FormStoreEnv &
   GhostApiEnv &
   IsOpenForRequestsStoreEnv &
+  IsUserBlockedEnv &
   LanguagesStoreEnv &
   LegacyPrereviewApiEnv &
   LocationStoreEnv &

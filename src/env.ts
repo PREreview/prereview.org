@@ -2,7 +2,9 @@ import * as C from 'fp-ts/Console'
 import * as E from 'fp-ts/Either'
 import * as IOE from 'fp-ts/IOEither'
 import { flow, pipe } from 'fp-ts/function'
+import { split } from 'fp-ts/string'
 import * as D from 'io-ts/Decoder'
+import { isOrcid } from 'orcid-id-ts'
 import { v4 } from 'uuid-ts'
 import { rawHtml } from './html'
 import { type NonEmptyString, NonEmptyStringC } from './string'
@@ -20,6 +22,8 @@ const BooleanD = pipe(
   D.literal('true', 'false'),
   D.map(value => value === 'true'),
 )
+
+const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
 
 const UrlD = pipe(
   D.string,
@@ -40,6 +44,7 @@ const UndefinedD: D.Decoder<unknown, undefined> = {
 const EnvD = pipe(
   D.struct({
     ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
+    BLOCKED_USERS: withDefault(pipe(D.string, D.map(split(',')), D.compose(D.array(OrcidD))), []),
     CLOUDINARY_API_KEY: D.string,
     CLOUDINARY_API_SECRET: D.string,
     GHOST_API_KEY: D.string,

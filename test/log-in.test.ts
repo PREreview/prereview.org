@@ -1,5 +1,5 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
 import cookieSignature from 'cookie-signature'
 import fetchMock from 'fetch-mock'
@@ -15,6 +15,7 @@ import { homeMatch, writeReviewMatch } from '../src/routes'
 import { UserC } from '../src/user'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('logIn', () => {
   test.prop([
@@ -186,6 +187,7 @@ describe('authenticate', () => {
             body: accessToken,
           }),
           getPseudonym: () => TE.right(pseudonym),
+          isUserBlocked: () => false,
           logger: () => IO.of(undefined),
           oauth,
           publicUrl: new URL('/', referer),
@@ -229,6 +231,58 @@ describe('authenticate', () => {
     fc.string(),
     fc.cookieName(),
     fc.connection(),
+  ])('when the user is blocked', async (code, [referer], oauth, accessToken, secret, sessionCookie, connection) => {
+    const sessionStore = new Keyv()
+    const isUserBlocked = jest.fn<_.IsUserBlockedEnv['isUserBlocked']>(_ => true)
+
+    const actual = await runMiddleware(
+      _.authenticate(
+        code,
+        referer.href,
+      )({
+        clock: SystemClock,
+        fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+          status: Status.OK,
+          body: accessToken,
+        }),
+        getPseudonym: shouldNotBeCalled,
+        isUserBlocked,
+        logger: () => IO.of(undefined),
+        oauth,
+        publicUrl: new URL('/', referer),
+        secret,
+        sessionCookie,
+        sessionStore,
+      }),
+      connection,
+    )()
+    const sessions = await all(sessionStore.iterator(undefined))
+
+    expect(sessions).toStrictEqual([])
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+    expect(isUserBlocked).toHaveBeenCalledWith(accessToken.orcid)
+  })
+
+  test.prop([
+    fc.string(),
+    fc.url().chain(url => fc.tuple(fc.constant(url))),
+    fc.oauth(),
+    fc.record({
+      access_token: fc.string(),
+      token_type: fc.string(),
+      name: fc.string(),
+      orcid: fc.orcid(),
+    }),
+    fc.string(),
+    fc.cookieName(),
+    fc.connection(),
   ])(
     'when a pseudonym cannot be retrieved',
     async (code, [referer], oauth, accessToken, secret, sessionCookie, connection) => {
@@ -246,6 +300,7 @@ describe('authenticate', () => {
           clock: SystemClock,
           fetch,
           getPseudonym: () => TE.left('unavailable'),
+          isUserBlocked: () => false,
           logger: () => IO.of(undefined),
           oauth,
           publicUrl: new URL('/', referer),
@@ -301,6 +356,7 @@ describe('authenticate', () => {
             body: accessToken,
           }),
           getPseudonym: () => TE.right(pseudonym),
+          isUserBlocked: () => false,
           logger: () => IO.of(undefined),
           oauth,
           publicUrl,

@@ -33,6 +33,7 @@ import type {
   ResearchInterestsStoreEnv,
 } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
+import type { IsUserBlockedEnv } from '../src/log-in'
 import type { NonEmptyString } from '../src/string'
 
 import Logger = L.Logger
@@ -54,6 +55,7 @@ interface AppFixtures {
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: AppEnv['slackUserIdStore']
   canConnectSlack: CanConnectSlackEnv['canConnectSlack']
+  isUserBlocked: IsUserBlockedEnv['isUserBlocked']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -749,6 +751,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   isOpenForRequestsStore: async ({}, use) => {
     await use(new Keyv())
   },
+  isUserBlocked: async ({}, use) => {
+    await use(() => false)
+  },
   languagesStore: async ({}, use) => {
     await use(new Keyv())
   },
@@ -793,6 +798,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       updatesLegacyPrereview,
       careerStageStore,
       isOpenForRequestsStore,
+      isUserBlocked,
       languagesStore,
       locationStore,
       researchInterestsStore,
@@ -812,6 +818,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         key: 'key',
       },
       isOpenForRequestsStore,
+      isUserBlocked,
       languagesStore,
       legacyPrereviewApi: {
         app: 'app',
@@ -888,6 +895,12 @@ export const canLogIn: Fixtures<
     })
 
     await use(page)
+  },
+}
+
+export const userIsBlocked: Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'isUserBlocked'>> = {
+  isUserBlocked: async ({}, use) => {
+    await use(() => true)
   },
 }
 

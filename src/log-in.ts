@@ -1,6 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
+import * as R from 'fp-ts/Reader'
 import * as RE from 'fp-ts/ReaderEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
@@ -12,7 +13,7 @@ import { endSession as _endSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
-import { isOrcid } from 'orcid-id-ts'
+import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { timeoutRequest } from './fetch'
@@ -25,6 +26,10 @@ import { newSessionForUser } from './user'
 
 export interface GetPseudonymEnv {
   getPseudonym: (user: OrcidUser) => TE.TaskEither<'unavailable', Pseudonym>
+}
+
+export interface IsUserBlockedEnv {
+  isUserBlocked: (user: Orcid) => boolean
 }
 
 export const logIn = pipe(
@@ -62,6 +67,9 @@ type OrcidUser = D.TypeOf<typeof OrcidUserD>
 const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'unavailable', Pseudonym> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPseudonym }: GetPseudonymEnv) => getPseudonym(user)))
 
+const isUserBlocked = (user: Orcid): R.Reader<IsUserBlockedEnv, boolean> =>
+  R.asks(({ isUserBlocked }) => isUserBlocked(user))
+
 export const authenticate = flow(
   (code: string, state: string) => RM.of({ code, state }),
   RM.bind('referer', RM.fromReaderK(flow(get('state'), getReferer))),
@@ -76,6 +84,15 @@ export const authenticate = flow(
       ),
     ),
   ),
+  RM.chainFirstW(
+    flow(
+      RM.fromReaderK(({ user }) => isUserBlocked(user.orcid)),
+      RM.filterOrElse(
+        isBlocked => !isBlocked,
+        () => 'blocked' as const,
+      ),
+    ),
+  ),
   RM.bindW(
     'pseudonym',
     RM.fromReaderTaskEitherK(
@@ -85,8 +102,10 @@ export const authenticate = flow(
   RM.ichainFirstW(flow(get('referer'), RM.redirect)),
   RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), newSessionForUser, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
-  RM.ichainFirst(() => RM.end()),
-  RM.orElseW(() => showFailureMessage),
+  flow(
+    RM.ichainFirst(() => RM.end()),
+    RM.orElseW(() => showFailureMessage),
+  ),
 )
 
 export const authenticateError = (error: string) =>
