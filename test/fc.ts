@@ -628,6 +628,7 @@ export const clubId = (): fc.Arbitrary<ClubId> =>
     'asapbio-metabolism',
     'asapbio-neurobiology',
     'language-club',
+    'rr-id-student-reviewer-club',
   )
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>

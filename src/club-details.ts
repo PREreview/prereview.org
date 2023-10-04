@@ -116,4 +116,26 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       'https://docs.google.com/forms/d/e/1FAIpQLScamu28Lkm2pBS1n-g0UpMmp8trCeGPVVdAxJ8MIauhlwx7Dw/viewform',
     ),
   },
+  'rr-id-student-reviewer-club': {
+    name: 'RR\\ID Student Reviewer Club',
+    description: html`
+      <p>
+        RR\\ID is an open-access overlay journal that accelerates peer review of important infectious disease-related
+        research preprints. RR\\ID aims to prevent the dissemination of false/misleading scientific information and
+        accelerate the validation and diffusion of robust findings. RR\\ID aims to increase the application of science
+        for the common good, responding to infectious disease challenges throughout the world.
+      </p>
+      <p>
+        As a part of the RR\\ID mentorship and training program in scientific publishing, the RR\\ID Student Reviewer
+        Club is a platform for our student community to publish their own reviews of RR\\ID selected preprints. Our
+        purpose is to give students the opportunity to analyze and publish reviews of the same preprints that we are
+        seeking formal reviews for in the academic community–which enhances the potential for mentorship and
+        collaboration.
+      </p>
+    `,
+    leads: [{ name: 'Makayla True', orcid: '0000-0003-3130-7593' as Orcid }],
+    joinLink: new URL(
+      'https://docs.google.com/forms/d/e/1FAIpQLSdDfGS5BDYvHPX-UB20Z7CVC3uKmmBG0gKZVT2nqI1wxEmLXg/viewform',
+    ),
+  },
 }
