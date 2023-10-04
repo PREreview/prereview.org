@@ -65,6 +65,7 @@ export const review = (id: number) =>
     RM.orElseW(error =>
       match(error)
         .with({ status: Status.NotFound }, () => notFound)
+        .with('removed', () => pipe(maybeGetUser, RM.ichainW(showRemovedMessage)))
         .otherwise(() => pipe(maybeGetUser, RM.ichainW(showFailureMessage))),
     ),
   )
@@ -72,6 +73,12 @@ export const review = (id: number) =>
 const showFailureMessage = flow(
   RM.fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+const showRemovedMessage = flow(
+  RM.fromReaderK(removedMessage),
+  RM.ichainFirst(() => RM.status(Status.Gone)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
@@ -85,6 +92,21 @@ function failureMessage(user?: User) {
         <p>We’re unable to show the PREreview now.</p>
 
         <p>Please try again later.</p>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
+  })
+}
+
+function removedMessage(user?: User) {
+  return page({
+    title: plainText`PREreview removed`,
+    content: html`
+      <main id="main-content">
+        <h1>PREreview removed</h1>
+
+        <p>We’ve removed this PREreview.</p>
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],

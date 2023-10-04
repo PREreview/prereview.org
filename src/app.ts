@@ -200,6 +200,7 @@ import {
   writeReviewStart,
 } from './write-review'
 import {
+  type WasPrereviewRemovedEnv,
   createRecordOnZenodo,
   getPrereviewFromZenodo,
   getPrereviewsForClubFromZenodo,
@@ -228,6 +229,7 @@ export type AppEnv = CareerStageStoreEnv &
   SlackApiEnv &
   SlackOAuthEnv &
   SlackUserIdStoreEnv &
+  WasPrereviewRemovedEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean
   } & CanConnectSlackEnv

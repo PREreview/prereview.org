@@ -83,6 +83,30 @@ describe('review', () => {
     fc.origin(),
     fc.integer(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+    fc.either(fc.constant('no-session' as const), fc.user()),
+  ])('when the review was removed', async (publicUrl, id, connection, user) => {
+    const actual = await runMiddleware(
+      _.review(id)({
+        getPrereview: () => TE.left('removed'),
+        getUser: () => M.fromEither(user),
+        publicUrl,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.Gone },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
+
+  test.prop([
+    fc.origin(),
+    fc.integer(),
+    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.anything(),
     fc.either(fc.constant('no-session' as const), fc.user()),
   ])('when the review cannot be loaded', async (publicUrl, id, connection, error, user) => {

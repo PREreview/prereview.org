@@ -35,6 +35,7 @@ import type {
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 import type { IsUserBlockedEnv } from '../src/log-in'
 import type { NonEmptyString } from '../src/string'
+import type { WasPrereviewRemovedEnv } from '../src/zenodo'
 
 import Logger = L.Logger
 import LogEntry = L.LogEntry
@@ -56,6 +57,7 @@ interface AppFixtures {
   slackUserIdStore: AppEnv['slackUserIdStore']
   canConnectSlack: CanConnectSlackEnv['canConnectSlack']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
+  wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -803,6 +805,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       locationStore,
       researchInterestsStore,
       slackUserIdStore,
+      wasPrereviewRemoved,
     },
     use,
   ) => {
@@ -850,6 +853,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         tokenUrl: new URL('http://slack.test/token'),
       },
       slackUserIdStore,
+      wasPrereviewRemoved,
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
     })
@@ -865,6 +869,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   updatesLegacyPrereview: async ({}, use) => {
     await use(false)
+  },
+  wasPrereviewRemoved: async ({}, use) => {
+    await use(() => false)
   },
 }
 
@@ -900,6 +907,16 @@ export const canLogIn: Fixtures<
 
 export const userIsBlocked: Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'isUserBlocked'>> = {
   isUserBlocked: async ({}, use) => {
+    await use(() => true)
+  },
+}
+
+export const prereviewWasRemoved: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'wasPrereviewRemoved'>
+> = {
+  wasPrereviewRemoved: async ({}, use) => {
     await use(() => true)
   },
 }

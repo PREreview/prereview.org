@@ -48,6 +48,13 @@ import type { Prereview } from './review'
 import { reviewMatch } from './routes'
 import type { NewPrereview } from './write-review'
 
+export interface WasPrereviewRemovedEnv {
+  wasPrereviewRemoved: (id: number) => boolean
+}
+
+const wasPrereviewRemoved = (id: number): R.Reader<WasPrereviewRemovedEnv, boolean> =>
+  R.asks(({ wasPrereviewRemoved }) => wasPrereviewRemoved(id))
+
 export const getRecentPrereviewsFromZenodo = flow(
   RTE.fromPredicate(
     (currentPage: number) => currentPage > 0,
@@ -99,14 +106,16 @@ export const getRecentPrereviewsFromZenodo = flow(
   ),
 )
 
-export const getPrereviewFromZenodo = flow(
-  getRecord,
-  RTE.local(revalidateIfStale()),
-  RTE.local(useStaleCache()),
-  RTE.local(timeoutRequest(2000)),
-  RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview)), () => new NotFound()),
-  RTE.chain(recordToPrereview),
-)
+export const getPrereviewFromZenodo = (id: number) =>
+  pipe(
+    RTE.fromReader(wasPrereviewRemoved(id)),
+    RTE.chainW(wasRemoved => (wasRemoved ? RTE.left('removed') : getRecord(id))),
+    RTE.local(revalidateIfStale()),
+    RTE.local(useStaleCache()),
+    RTE.local(timeoutRequest(2000)),
+    RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview)), () => new NotFound()),
+    RTE.chainW(recordToPrereview),
+  )
 
 export const getPrereviewsForProfileFromZenodo = flow(
   (profile: ProfileId) =>

@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from 'zenodo-ts'
-import { expect, test } from './base'
+import { expect, prereviewWasRemoved, test } from './base'
 
 test('can find and view a review', async ({ fetch, page }) => {
   const record: Record = {
@@ -941,6 +941,25 @@ test('might not load the PREreview in time', async ({ fetch, javaScriptEnabled, 
   await page.goto('/reviews/1061864')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
+
+test.extend(prereviewWasRemoved)('when the PREreview was removed', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/reviews/12345678')
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('PREreview removed')
   await expect(page).toHaveScreenshot()
 
   await page.keyboard.press('Tab')

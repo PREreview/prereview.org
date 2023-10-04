@@ -700,6 +700,7 @@ describe('getPrereviewFromZenodo', () => {
           ),
         getPreprint,
         logger: () => IO.of(undefined),
+        wasPrereviewRemoved: () => false,
       })()
 
       expect(actual).toStrictEqual(
@@ -783,6 +784,7 @@ describe('getPrereviewFromZenodo', () => {
       fetch,
       getPreprint: () => TE.right(preprint),
       logger: () => IO.of(undefined),
+      wasPrereviewRemoved: () => false,
     })()
 
     expect(actual).toStrictEqual(
@@ -806,6 +808,20 @@ describe('getPrereviewFromZenodo', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
+  test.prop([fc.integer()])('when the review was removed', async id => {
+    const wasPrereviewRemoved = jest.fn<_.WasPrereviewRemovedEnv['wasPrereviewRemoved']>(_ => true)
+
+    const actual = await _.getPrereviewFromZenodo(id)({
+      clock: SystemClock,
+      fetch: shouldNotBeCalled,
+      getPreprint: shouldNotBeCalled,
+      logger: () => IO.of(undefined),
+      wasPrereviewRemoved,
+    })()
+
+    expect(actual).toStrictEqual(E.left('removed'))
+  })
+
   test.prop([fc.integer()])('when the review is not found', async id => {
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
@@ -815,6 +831,7 @@ describe('getPrereviewFromZenodo', () => {
       }),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      wasPrereviewRemoved: () => false,
     })()
 
     expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
@@ -877,6 +894,7 @@ describe('getPrereviewFromZenodo', () => {
         fetch,
         getPreprint: () => TE.right(preprint),
         logger: () => IO.of(undefined),
+        wasPrereviewRemoved: () => false,
       })()
 
       expect(actual).toStrictEqual(E.left(expect.anything()))
@@ -895,6 +913,7 @@ describe('getPrereviewFromZenodo', () => {
       fetch,
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      wasPrereviewRemoved: () => false,
     })()
 
     expect(actual).toStrictEqual(E.left(expect.anything()))
@@ -960,6 +979,7 @@ describe('getPrereviewFromZenodo', () => {
         fetch,
         getPreprint: () => TE.left(error),
         logger: () => IO.of(undefined),
+        wasPrereviewRemoved: () => false,
       })()
 
       expect(actual).toStrictEqual(E.left(error))
@@ -1018,6 +1038,7 @@ describe('getPrereviewFromZenodo', () => {
       }),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      wasPrereviewRemoved: () => false,
     })()
 
     expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
@@ -1098,6 +1119,7 @@ describe('getPrereviewFromZenodo', () => {
       }),
       getPreprint: shouldNotBeCalled,
       logger: () => IO.of(undefined),
+      wasPrereviewRemoved: () => false,
     })()
 
     expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
@@ -1159,6 +1181,7 @@ describe('getPrereviewFromZenodo', () => {
         fetch,
         getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
+        wasPrereviewRemoved: () => false,
       })()
 
       expect(actual).toStrictEqual(E.left(expect.anything()))
@@ -1220,6 +1243,7 @@ describe('getPrereviewFromZenodo', () => {
         }),
         getPreprint: shouldNotBeCalled,
         logger: () => IO.of(undefined),
+        wasPrereviewRemoved: () => false,
       })()
 
       expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
@@ -1284,6 +1308,7 @@ describe('getPrereviewFromZenodo', () => {
       fetch,
       getPreprint: () => TE.right(preprint),
       logger: () => IO.of(undefined),
+      wasPrereviewRemoved: () => false,
     })()
 
     expect(actual).toStrictEqual(E.left(expect.anything()))

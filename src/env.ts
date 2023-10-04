@@ -23,6 +23,15 @@ const BooleanD = pipe(
   D.map(value => value === 'true'),
 )
 
+const IntD = pipe(
+  D.string,
+  D.parse(s => {
+    const n = +s
+
+    return isNaN(n) || s.trim() === '' ? D.failure(s, 'Integer') : D.success(n)
+  }),
+)
+
 const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
 
 const UrlD = pipe(
@@ -55,6 +64,7 @@ const EnvD = pipe(
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
     PUBLIC_URL: UrlD,
+    REMOVED_PREREVIEWS: withDefault(pipe(D.string, D.map(split(',')), D.compose(D.array(IntD))), []),
     SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, v4()() as unknown as NonEmptyString),
     SECRET: D.string,
     SLACK_API_TOKEN: D.string,

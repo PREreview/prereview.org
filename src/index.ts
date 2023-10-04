@@ -100,6 +100,7 @@ const server = app({
   },
   slackApiToken: env.SLACK_API_TOKEN,
   slackUserIdStore: new Keyv({ namespace: 'slack-user-id', store: keyvStore }),
+  wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
 })
