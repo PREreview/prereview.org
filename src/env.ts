@@ -3,7 +3,9 @@ import * as E from 'fp-ts/Either'
 import * as IOE from 'fp-ts/IOEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
+import { v4 } from 'uuid-ts'
 import { rawHtml } from './html'
+import { type NonEmptyString, NonEmptyStringC } from './string'
 
 export function decodeEnv(process: NodeJS.Process) {
   return pipe(
@@ -48,6 +50,7 @@ const EnvD = pipe(
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
     PUBLIC_URL: UrlD,
+    SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, v4()() as unknown as NonEmptyString),
     SECRET: D.string,
     SLACK_API_TOKEN: D.string,
     SLACK_CLIENT_ID: D.string,

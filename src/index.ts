@@ -11,7 +11,6 @@ import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
 import { app } from './app'
 import { decodeEnv } from './env'
-import type { NonEmptyString } from './string'
 
 const env = decodeEnv(process)()
 
@@ -87,7 +86,7 @@ const server = app({
       : undefined,
   publicUrl: env.PUBLIC_URL,
   researchInterestsStore: new Keyv({ namespace: 'research-interests', store: keyvStore }),
-  scietyListToken: 'secret' as NonEmptyString,
+  scietyListToken: env.SCIETY_LIST_TOKEN,
   secret: env.SECRET,
   sessionCookie: 'session',
   sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),
