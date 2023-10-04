@@ -1,3 +1,4 @@
+import * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
@@ -8,6 +9,8 @@ import type { NonEmptyString } from '../string'
 export interface ScietyListEnv {
   scietyListToken: NonEmptyString
 }
+
+const getAllPrereviews = () => TE.of(hardcoded)
 
 const hardcoded = [
   {
@@ -43,10 +46,11 @@ export const scietyList = pipe(
   RM.ichainW(isAllowed =>
     isAllowed
       ? pipe(
-          RM.status(Status.OK),
-          RM.ichain(() => RM.contentType('application/json')),
-          RM.ichain(RM.closeHeaders),
-          RM.ichain(() => RM.send(JSON.stringify(hardcoded))),
+          RM.fromTaskEither(getAllPrereviews()),
+          RM.ichainFirst(() => RM.status(Status.OK)),
+          RM.ichainFirst(() => RM.contentType('application/json')),
+          RM.ichainFirst(RM.closeHeaders),
+          RM.ichain(prereviews => RM.send(JSON.stringify(prereviews))),
         )
       : pipe(notFound),
   ),
