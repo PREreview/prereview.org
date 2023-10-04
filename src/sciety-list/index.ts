@@ -1,6 +1,7 @@
 import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import { notFound } from '../middleware'
 
 const hardcoded = [
@@ -25,7 +26,11 @@ const hardcoded = [
   },
 ]
 
-const isAllowed = RM.of(true)
+const isAllowed = pipe(
+  RM.decodeHeader('Authorization', D.string.decode),
+  RM.map(() => true),
+  RM.orElse(() => RM.of(false)),
+)
 
 export const scietyList = pipe(
   isAllowed,
