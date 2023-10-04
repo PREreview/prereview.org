@@ -1,6 +1,7 @@
 import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
+import { notFound } from '../middleware'
 
 const hardcoded = [
   {
@@ -24,9 +25,18 @@ const hardcoded = [
   },
 ]
 
+const isAllowed = RM.of(true)
+
 export const scietyList = pipe(
-  RM.status(Status.OK),
-  RM.ichain(() => RM.contentType('application/json')),
-  RM.ichain(RM.closeHeaders),
-  RM.ichain(() => RM.send(JSON.stringify(hardcoded))),
+  isAllowed,
+  RM.ichain(isAllowed =>
+    isAllowed
+      ? pipe(
+          RM.status(Status.OK),
+          RM.ichain(() => RM.contentType('application/json')),
+          RM.ichain(RM.closeHeaders),
+          RM.ichain(() => RM.send(JSON.stringify(hardcoded))),
+        )
+      : pipe(notFound),
+  ),
 )
