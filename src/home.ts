@@ -45,16 +45,16 @@ const getRecentPrereviews = () =>
     RT.chainTaskK(({ getRecentPrereviews }) => getRecentPrereviews()),
   )
 
-export const home = (message?: 'logged-out' | 'logged-in') =>
+export const home = (message?: 'logged-out' | 'logged-in' | 'blocked') =>
   pipe(
     maybeGetUser,
     RM.filterOrElse(
       user =>
         match([user, message])
           .with([P.not(undefined), P.union(undefined, 'logged-in')], () => true)
-          .with([undefined, P.union(undefined, 'logged-out')], () => true)
+          .with([undefined, P.union(undefined, 'logged-out', 'blocked')], () => true)
           .with([undefined, P.union('logged-in')], () => false)
-          .with([P.not(undefined), P.union('logged-out')], () => false)
+          .with([P.not(undefined), P.union('logged-out', 'blocked')], () => false)
           .exhaustive(),
       () => 'redirect' as const,
     ),
@@ -70,7 +70,7 @@ export const home = (message?: 'logged-out' | 'logged-in') =>
 function createPage(
   recentPrereviews: ReadonlyArray<RecentPrereview>,
   user?: User,
-  message?: 'logged-out' | 'logged-in',
+  message?: 'logged-out' | 'logged-in' | 'blocked',
 ) {
   return templatePage({
     title: plainText`PREreview: Open preprint reviews. For all researchers.`,
@@ -94,6 +94,16 @@ function createPage(
                 <h2 id="notification-banner-title">Success</h2>
 
                 <p>You have been logged in.</p>
+              </notification-banner>
+            `,
+          )
+          .with(
+            'blocked',
+            () => html`
+              <notification-banner aria-labelledby="notification-banner-title" type="failure" role="alert">
+                <h2 id="notification-banner-title">Access denied</h2>
+
+                <p>You are not allowed to log in.</p>
               </notification-banner>
             `,
           )

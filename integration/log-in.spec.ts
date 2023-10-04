@@ -434,15 +434,29 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
   await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 })
 
-test.extend(canLogIn).extend(userIsBlocked)("can't log in when blocked", async ({ page }) => {
-  await page.goto('/')
+test.extend(canLogIn).extend(userIsBlocked)(
+  "can't log in when blocked",
+  async ({ javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/')
 
-  await page.getByRole('link', { name: 'Log in' }).click()
+    await page.getByRole('link', { name: 'Log in' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-})
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Access denied' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Access denied' })).toBeInViewport()
+    }
+    await expect(page.getByRole('link', { name: 'Log in' })).toBeVisible()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.reload()
+
+    testInfo.fail(!javaScriptEnabled)
+
+    await expect(page.getByRole('alert', { name: 'Access denied' })).toBeHidden()
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you are open for requests',

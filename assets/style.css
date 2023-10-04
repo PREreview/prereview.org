@@ -1209,16 +1209,22 @@ error-summary {
 }
 
 notification-banner {
+  --outside-color: var(--color-success);
+
   display: block;
   margin-block-start: var(--space-s-l);
   padding-block: var(--space-2xs-xs);
-  border: var(--width-divider-wide) solid var(--color-success);
+  border: var(--width-divider-wide) solid var(--outside-color);
 
   &:focus {
     @media screen {
       outline: var(--color-focus) solid var(--width-divider);
       outline-offset: 0;
     }
+  }
+
+  &[type='failure'] {
+    --outside-color: var(--color-error);
   }
 
   & > * {
@@ -1234,7 +1240,7 @@ notification-banner {
         padding-block: var(--space-2xs);
         font-size: var(--step-0);
         color: var(--color-background);
-        background-color: var(--color-success);
+        background-color: var(--outside-color);
       }
     }
   }

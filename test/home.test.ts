@@ -69,13 +69,36 @@ describe('home', () => {
         )
       },
     )
+
+    test.prop([fc.connection({ method: fc.requestMethod() }), fc.user()])(
+      "when the message is 'blocked'",
+      async (connection, user) => {
+        const actual = await runMiddleware(
+          _.home('blocked')({
+            getRecentPrereviews: shouldNotBeCalled,
+            getUser: () => M.right(user),
+            publicUrl: new URL('http://example.com'),
+            templatePage: shouldNotBeCalled,
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
   })
 
   describe('when the user is logged out', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod() }),
       fc.html(),
-      fc.option(fc.constantFrom('logged-out' as const), { nil: undefined }),
+      fc.option(fc.constantFrom('logged-out' as const, 'blocked' as const), { nil: undefined }),
     ])('when the message is ok', async (connection, page, message) => {
       const templatePage = jest.fn(_ => page)
       const actual = await runMiddleware(

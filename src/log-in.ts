@@ -104,7 +104,17 @@ export const authenticate = flow(
   RM.ichainFirst(() => RM.closeHeaders()),
   flow(
     RM.ichainFirst(() => RM.end()),
-    RM.orElseW(() => showFailureMessage),
+    RM.orElseW(error =>
+      match(error)
+        .with('blocked', () =>
+          pipe(
+            RM.redirect(format(homeMatch.formatter, { message: 'blocked' })),
+            RM.ichain(() => RM.closeHeaders()),
+            RM.ichain(() => RM.end()),
+          ),
+        )
+        .otherwise(() => showFailureMessage),
+    ),
   ),
 )
 
