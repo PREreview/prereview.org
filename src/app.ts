@@ -14,7 +14,7 @@ import helmet from 'helmet'
 import http from 'http'
 import { NotFound } from 'http-errors'
 import { createProxyMiddleware } from 'http-proxy-middleware'
-import type { ResponseEnded, StatusOpen } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import { route } from 'hyper-ts-routing'
 import { type SessionEnv, getSession } from 'hyper-ts-session'
@@ -148,6 +148,7 @@ import {
   reviewAPreprintMatch,
   reviewMatch,
   reviewsMatch,
+  scietyListMatch,
   trainingsMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
@@ -635,6 +636,16 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       writeReviewPublishedMatch.parser,
       P.map(({ id }) => writeReviewPublished(id)),
+    ),
+    pipe(
+      scietyListMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.status(Status.Forbidden),
+          RM.ichain(RM.closeHeaders),
+          RM.ichain(() => RM.send('forbidden')),
+        ),
+      ),
     ),
   ],
   concatAll(P.getParserMonoid()),

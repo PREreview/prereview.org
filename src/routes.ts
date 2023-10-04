@@ -307,6 +307,8 @@ export const writeReviewPublishMatch = pipe(writeReviewBaseMatch, P.then(P.lit('
 
 export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit('prereview-published')), P.then(P.end))
 
+export const scietyListMatch = pipe(P.lit('sciety-list'), P.then(P.end))
+
 // https://github.com/gcanti/fp-ts-routing/pull/64
 function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
   return new P.Match(
