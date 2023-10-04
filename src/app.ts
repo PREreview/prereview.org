@@ -208,6 +208,7 @@ import {
   getPrereviewsForProfileFromZenodo,
   getRecentPrereviewsFromZenodo,
 } from './zenodo'
+import { ScietyListEnv } from './sciety-list'
 
 export type AppEnv = CareerStageStoreEnv &
   CloudinaryApiEnv &
@@ -223,6 +224,7 @@ export type AppEnv = CareerStageStoreEnv &
   PhaseEnv &
   PublicUrlEnv &
   ResearchInterestsStoreEnv &
+  ScietyListEnv &
   SessionEnv &
   SlackApiEnv &
   SlackOAuthEnv &
@@ -642,12 +644,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       scietyListMatch.parser,
       P.map(() => scietyList),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          scietyListToken: 'secret' as NonEmptyString,
-        })),
-      ),
     ),
   ],
   concatAll(P.getParserMonoid()),

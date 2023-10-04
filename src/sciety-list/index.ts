@@ -5,7 +5,7 @@ import * as D from 'io-ts/Decoder'
 import { notFound } from '../middleware'
 import type { NonEmptyString } from '../string'
 
-interface ScietyListEnv {
+export interface ScietyListEnv {
   scietyListToken: NonEmptyString
 }
 

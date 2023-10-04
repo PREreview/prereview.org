@@ -33,6 +33,7 @@ import type {
   ResearchInterestsStoreEnv,
 } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
+import type { NonEmptyString } from '../src/string'
 
 import Logger = L.Logger
 import LogEntry = L.LogEntry
@@ -829,6 +830,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
       publicUrl: new URL(`http://localhost:${port}`),
       researchInterestsStore,
+      scietyListToken: 'secret' as NonEmptyString,
       secret: '',
       sessionCookie: 'session',
       sessionStore: new Keyv(),
