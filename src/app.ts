@@ -171,9 +171,8 @@ import {
   writeReviewShouldReadMatch,
   writeReviewStartMatch,
 } from './routes'
-import { scietyList } from './sciety-list'
+import { type ScietyListEnv, scietyList } from './sciety-list'
 import { type SlackApiEnv, getUserFromSlack } from './slack'
-import type { NonEmptyString } from './string'
 import { trainings } from './trainings'
 import { type GetUserEnv, getUserFromSession } from './user'
 import {
@@ -208,7 +207,6 @@ import {
   getPrereviewsForProfileFromZenodo,
   getRecentPrereviewsFromZenodo,
 } from './zenodo'
-import { ScietyListEnv } from './sciety-list'
 
 export type AppEnv = CareerStageStoreEnv &
   CloudinaryApiEnv &
