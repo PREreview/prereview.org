@@ -173,6 +173,7 @@ import {
 } from './routes'
 import { scietyList } from './sciety-list'
 import { type SlackApiEnv, getUserFromSlack } from './slack'
+import type { NonEmptyString } from './string'
 import { trainings } from './trainings'
 import { type GetUserEnv, getUserFromSession } from './user'
 import {
@@ -641,6 +642,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       scietyListMatch.parser,
       P.map(() => scietyList),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          scietyListToken: 'secret' as NonEmptyString,
+        })),
+      ),
     ),
   ],
   concatAll(P.getParserMonoid()),

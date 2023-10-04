@@ -3,6 +3,11 @@ import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { notFound } from '../middleware'
+import type { NonEmptyString } from '../string'
+
+interface ScietyListEnv {
+  scietyListToken: NonEmptyString
+}
 
 const hardcoded = [
   {
@@ -27,14 +32,15 @@ const hardcoded = [
 ]
 
 const isAllowed = pipe(
-  RM.decodeHeader('Authorization', D.string.decode),
+  RM.ask<ScietyListEnv>(),
+  RM.chain(env => RM.decodeHeader('Authorization', D.literal(`Bearer ${env.scietyListToken}`).decode)),
   RM.map(() => true),
   RM.orElse(() => RM.of(false)),
 )
 
 export const scietyList = pipe(
   isAllowed,
-  RM.ichain(isAllowed =>
+  RM.ichainW(isAllowed =>
     isAllowed
       ? pipe(
           RM.status(Status.OK),
