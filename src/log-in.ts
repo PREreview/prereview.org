@@ -11,6 +11,7 @@ import { Status } from 'hyper-ts'
 import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { endSession as _endSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
+import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
@@ -55,14 +56,14 @@ export const logOut = pipe(
   RM.ichain(() => RM.end()),
 )
 
-const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
+const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
-const OrcidUserD = D.struct({
-  name: D.string,
-  orcid: OrcidD,
+const OrcidUserC = C.struct({
+  name: C.string,
+  orcid: OrcidC,
 })
 
-type OrcidUser = D.TypeOf<typeof OrcidUserD>
+type OrcidUser = C.TypeOf<typeof OrcidUserC>
 
 const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'unavailable', Pseudonym> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPseudonym }: GetPseudonymEnv) => getPseudonym(user)))
@@ -78,17 +79,19 @@ export const authenticate = flow(
     RM.fromReaderTaskEitherK(
       flow(
         get('code'),
-        exchangeAuthorizationCode(OrcidUserD),
+        exchangeAuthorizationCode(OrcidUserC),
         RTE.local(timeoutRequest(2000)),
         RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
-        RTE.chainFirstW(
-          flow(
-            RTE.fromReaderK(user => isUserBlocked(user.orcid)),
+        RTE.chainFirstW(user =>
+          pipe(
+            RTE.fromReader(isUserBlocked(user.orcid)),
             RTE.filterOrElse(
               isBlocked => !isBlocked,
               () => 'blocked' as const,
             ),
-            RTE.orElseFirstW(RTE.fromReaderIOK(() => L.info('Blocked user from logging in'))),
+            RTE.orElseFirstW(
+              RTE.fromReaderIOK(() => pipe(OrcidUserC.encode(user), L.infoP('Blocked user from logging in'))),
+            ),
           ),
         ),
       ),
