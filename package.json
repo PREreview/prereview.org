@@ -65,7 +65,7 @@
     "@open-wc/testing": "^3.2.0",
     "@playwright/test": "^1.38.1",
     "@prettier/plugin-xml": "^3.2.1",
-    "@rollup/plugin-url": "^8.0.1",
+    "@rollup/plugin-url": "^8.0.2",
     "@tiptap/core": "^2.1.11",
     "@tiptap/extension-link": "^2.1.11",
     "@tiptap/extension-subscript": "^2.1.11",
