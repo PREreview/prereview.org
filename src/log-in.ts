@@ -88,6 +88,7 @@ export const authenticate = flow(
               isBlocked => !isBlocked,
               () => 'blocked' as const,
             ),
+            RTE.orElseFirstW(RTE.fromReaderIOK(() => L.info('Blocked user from logging in'))),
           ),
         ),
       ),
