@@ -98,6 +98,19 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       'https://docs.google.com/forms/d/e/1FAIpQLScOR3oM_9OOhRKxjQvupN8YLtaGImOfKskkllrveTWIqrJUVg/viewform',
     ),
   },
+  'biomass-biocatalysis': {
+    name: 'Biomass and Biocatalysis Group',
+    description: html`
+      <p>
+        We aim to foster an environment of continuous learning and knowledge-sharing. To this end, we have initiated the
+        PrePrint Review Club. The purpose of this club is to encourage the practice of reading, reviewing, and
+        formulating constructive comments on preprints. This will not only broaden our knowledge but also refine our
+        skills in reviewing subjects that are pertinent to our diverse research projects. We believe this initiative
+        will cultivate a deeper understanding and facilitate further advancements in our respective fields of study.
+      </p>
+    `,
+    leads: [{ name: 'Ayla Sant’Ana da Silva', orcid: '0000-0001-8466-9390' as Orcid }],
+  },
   'language-club': {
     name: 'Language Club',
     description: html`
