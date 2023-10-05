@@ -71,6 +71,12 @@ const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'u
 const isUserBlocked = (user: Orcid): R.Reader<IsUserBlockedEnv, boolean> =>
   R.asks(({ isUserBlocked }) => isUserBlocked(user))
 
+const filterBlockedUsers = (user: OrcidUser): RE.ReaderEither<IsUserBlockedEnv, OrcidUser, OrcidUser> =>
+  pipe(
+    isUserBlocked(user.orcid),
+    R.map(isBlocked => (isBlocked ? E.left(user) : E.right(user))),
+  )
+
 export const authenticate = flow(
   (code: string, state: string) => RM.of({ code, state }),
   RM.bind('referer', RM.fromReaderK(flow(get('state'), getReferer))),
@@ -82,16 +88,11 @@ export const authenticate = flow(
         exchangeAuthorizationCode(OrcidUserC),
         RTE.local(timeoutRequest(2000)),
         RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
-        RTE.chainFirstW(user =>
-          pipe(
-            RTE.fromReader(isUserBlocked(user.orcid)),
-            RTE.filterOrElse(
-              isBlocked => !isBlocked,
-              () => 'blocked' as const,
-            ),
-            RTE.orElseFirstW(
-              RTE.fromReaderIOK(() => pipe(OrcidUserC.encode(user), L.infoP('Blocked user from logging in'))),
-            ),
+        RTE.chainFirstW(
+          flow(
+            RTE.fromReaderEitherK(filterBlockedUsers),
+            RTE.orElseFirstW(RTE.fromReaderIOK(flow(OrcidUserC.encode, L.infoP('Blocked user from logging in')))),
+            RTE.mapLeft(() => 'blocked' as const),
           ),
         ),
       ),
