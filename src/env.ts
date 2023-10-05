@@ -46,6 +46,9 @@ const UrlD = pipe(
 
 const HtmlD = pipe(D.string, D.map(rawHtml))
 
+const CommaSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
+  pipe(D.string, D.map(split(',')), D.compose(D.array(decoder)))
+
 const UndefinedD: D.Decoder<unknown, undefined> = {
   decode: val => (val === undefined ? D.success(undefined) : D.failure(val, 'undefined')),
 }
@@ -53,7 +56,7 @@ const UndefinedD: D.Decoder<unknown, undefined> = {
 const EnvD = pipe(
   D.struct({
     ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
-    BLOCKED_USERS: withDefault(pipe(D.string, D.map(split(',')), D.compose(D.array(OrcidD))), []),
+    BLOCKED_USERS: withDefault(CommaSeparatedListD(OrcidD), []),
     CLOUDINARY_API_KEY: D.string,
     CLOUDINARY_API_SECRET: D.string,
     GHOST_API_KEY: D.string,
@@ -64,7 +67,7 @@ const EnvD = pipe(
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
     PUBLIC_URL: UrlD,
-    REMOVED_PREREVIEWS: withDefault(pipe(D.string, D.map(split(',')), D.compose(D.array(IntD))), []),
+    REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
     SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, v4()() as unknown as NonEmptyString),
     SECRET: D.string,
     SLACK_API_TOKEN: D.string,
