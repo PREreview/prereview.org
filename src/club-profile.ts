@@ -86,7 +86,7 @@ function createPage({ club, prereviews, user }: { club: Club; prereviews: Prerev
           </dd>
         </dl>
 
-        <a href="${club.joinLink.href}" class="button">Join the club</a>
+        ${club.joinLink ? html`<a href="${club.joinLink.href}" class="button">Join the club</a> ` : ''}
 
         <h2>PREreviews</h2>
 

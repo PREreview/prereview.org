@@ -13,7 +13,7 @@ export interface Club {
   readonly name: string
   readonly description: Html
   readonly leads: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid: Orcid }>
-  readonly joinLink: URL
+  readonly joinLink?: URL
 }
 
 export const getClubDetails = (id: ClubId) => clubs[id]
