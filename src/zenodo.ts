@@ -271,6 +271,7 @@ function recordToPrereview(
     RTE.bindW('license', RTE.fromEitherK(PrereviewLicenseD.decode)),
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
+        addendum: RTE.right(pipe(O.fromNullable(review.metadata.notes), O.map(sanitizeHtml), O.toUndefined)),
         authors: RTE.right<F.FetchEnv & GetPreprintEnv>(review.metadata.creators as never),
         club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         doi: RTE.right(review.metadata.doi),

@@ -464,6 +464,7 @@ test('can view an older review', async ({ fetch, page }) => {
       license: {
         id: 'CC-BY-4.0',
       },
+      notes: '<p>Some change.</p>',
       publication_date: new Date('2022-07-05'),
       related_identifiers: [
         {
@@ -516,6 +517,7 @@ test('can view an older review', async ({ fetch, page }) => {
     .click()
 
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
+  await expect(page.getByRole('main')).toContainText('Addendum Some change.')
 })
 
 test("can view an older review that's part of a club", async ({ fetch, page }) => {

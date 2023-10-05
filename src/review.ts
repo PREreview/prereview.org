@@ -25,6 +25,7 @@ import { type User, maybeGetUser } from './user'
 import PlainDate = Temporal.PlainDate
 
 export interface Prereview {
+  addendum?: Html
   authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
   club?: ClubId
   doi: Doi
@@ -175,6 +176,14 @@ function createPage(review: Prereview, user?: User) {
         <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
           ${fixHeadingLevels(1, review.text)}
         </div>
+
+        ${review.addendum
+          ? html`
+              <h2>Addendum</h2>
+
+              ${fixHeadingLevels(2, review.addendum)}
+            `
+          : ''}
       </main>
     `,
     skipLinks: [[html`Skip to PREreview`, '#prereview']],

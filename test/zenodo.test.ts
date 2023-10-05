@@ -668,6 +668,7 @@ describe('getPrereviewFromZenodo', () => {
           license: {
             id: 'CC-BY-4.0',
           },
+          notes: '<p>Some note.</p>',
           publication_date: new Date('2022-07-05'),
           related_identifiers: [
             {
@@ -705,6 +706,7 @@ describe('getPrereviewFromZenodo', () => {
 
       expect(actual).toStrictEqual(
         E.right({
+          addendum: rawHtml('<p>Some note.</p>'),
           authors: [{ name: 'PREreviewer' }],
           club,
           doi: '10.5281/zenodo.1061864' as Doi,
@@ -789,6 +791,7 @@ describe('getPrereviewFromZenodo', () => {
 
     expect(actual).toStrictEqual(
       E.right({
+        addendum: undefined,
         authors: [{ name: 'PREreviewer' }],
         club: undefined,
         doi: '10.5281/zenodo.1061864' as Doi,
