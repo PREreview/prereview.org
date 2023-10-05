@@ -81,15 +81,15 @@ export const authenticate = flow(
         exchangeAuthorizationCode(OrcidUserD),
         RTE.local(timeoutRequest(2000)),
         RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
-      ),
-    ),
-  ),
-  RM.chainFirstW(
-    flow(
-      RM.fromReaderK(({ user }) => isUserBlocked(user.orcid)),
-      RM.filterOrElse(
-        isBlocked => !isBlocked,
-        () => 'blocked' as const,
+        RTE.chainFirstW(
+          flow(
+            RTE.fromReaderK(user => isUserBlocked(user.orcid)),
+            RTE.filterOrElse(
+              isBlocked => !isBlocked,
+              () => 'blocked' as const,
+            ),
+          ),
+        ),
       ),
     ),
   ),
@@ -102,19 +102,17 @@ export const authenticate = flow(
   RM.ichainFirstW(flow(get('referer'), RM.redirect)),
   RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), newSessionForUser, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
-  flow(
-    RM.ichainFirst(() => RM.end()),
-    RM.orElseW(error =>
-      match(error)
-        .with('blocked', () =>
-          pipe(
-            RM.redirect(format(homeMatch.formatter, { message: 'blocked' })),
-            RM.ichain(() => RM.closeHeaders()),
-            RM.ichain(() => RM.end()),
-          ),
-        )
-        .otherwise(() => showFailureMessage),
-    ),
+  RM.ichainFirst(() => RM.end()),
+  RM.orElseW(error =>
+    match(error)
+      .with('blocked', () =>
+        pipe(
+          RM.redirect(format(homeMatch.formatter, { message: 'blocked' })),
+          RM.ichain(() => RM.closeHeaders()),
+          RM.ichain(() => RM.end()),
+        ),
+      )
+      .otherwise(() => showFailureMessage),
   ),
 )
 
