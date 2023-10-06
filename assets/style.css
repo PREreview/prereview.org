@@ -212,6 +212,25 @@ summary > span {
         }
       }
     }
+
+    &.sciety {
+      &::before {
+        content: '';
+        padding-inline-end: 1.1em;
+        margin-inline-end: 0.4ch;
+        background-color: currentcolor;
+        mask-image: url('icons/sciety-fill.svg');
+        mask-repeat: no-repeat;
+        mask-origin: content-box;
+        mask-position: left bottom 40%;
+        mask-size: 1.1em;
+
+        @media (forced-colors: active) {
+          forced-color-adjust: none;
+          background-color: LinkText;
+        }
+      }
+    }
   }
 }
 

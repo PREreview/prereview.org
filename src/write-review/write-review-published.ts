@@ -10,7 +10,7 @@ import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { toUrl } from '../public-url'
 import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from '../routes'
-import { isScietyPreprint } from '../sciety'
+import { isScietyPreprint, scietyUrl } from '../sciety'
 import { type User, getUser } from '../user'
 import { type PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
 
@@ -127,6 +127,15 @@ function successMessage({
                 class="linked-in"
                 >Share it on LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a
               >
+              ${isScietyPreprint(preprint.id)
+                ? html` <a
+                    href="${scietyUrl(preprint.id).href}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="sciety"
+                    >List it on Sciety<span class="visually-hidden"> (opens in a new tab)</span></a
+                  >`
+                : ''}
             </div>
 
             <h2>Let us know how it went</h2>
