@@ -46,6 +46,7 @@ import type { ProfileId } from './profile-id'
 import { type PublicUrlEnv, toUrl } from './public-url'
 import type { Prereview } from './review'
 import { reviewMatch } from './routes'
+import type { Prereview as ScietyPrereview } from './sciety-list'
 import type { NewPrereview } from './write-review'
 
 export interface WasPrereviewRemovedEnv {
@@ -54,6 +55,20 @@ export interface WasPrereviewRemovedEnv {
 
 const wasPrereviewRemoved = (id: number): R.Reader<WasPrereviewRemovedEnv, boolean> =>
   R.asks(({ wasPrereviewRemoved }) => wasPrereviewRemoved(id))
+
+export const getPrereviewsForSciety = pipe(
+  new URLSearchParams({
+    communities: 'prereview-reviews',
+    page: '1',
+    size: '5',
+    sort: '-publication_date',
+    subtype: 'peerreview',
+  }),
+  getRecords,
+  RTE.map(records => records.hits.hits),
+  RTE.chainReaderTaskKW(flow(RT.traverseArray(recordToScietyPrereview), RT.map(RA.rights))),
+  RTE.mapLeft(() => 'unavailable' as const),
+)
 
 export const getRecentPrereviewsFromZenodo = flow(
   RTE.fromPredicate(
@@ -309,6 +324,21 @@ function recordToPreprintPrereview(record: Record): RTE.ReaderTaskEither<F.Fetch
         text: getReviewText(review.reviewTextUrl),
       }),
     ),
+  )
+}
+
+function recordToScietyPrereview(
+  record: Record,
+): RTE.ReaderTaskEither<L.LoggerEnv, 'no reviewed preprint', ScietyPrereview> {
+  return pipe(
+    RTE.of(record),
+    RTE.bindW('preprintId', getReviewedPreprintId),
+    RTE.map(review => ({
+      preprint: review.preprintId,
+      createdAt: toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
+      doi: review.metadata.doi,
+      authors: review.metadata.creators,
+    })),
   )
 }
 
