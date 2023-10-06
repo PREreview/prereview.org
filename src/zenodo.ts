@@ -56,18 +56,38 @@ export interface WasPrereviewRemovedEnv {
 const wasPrereviewRemoved = (id: number): R.Reader<WasPrereviewRemovedEnv, boolean> =>
   R.asks(({ wasPrereviewRemoved }) => wasPrereviewRemoved(id))
 
-export const getPrereviewsForSciety = pipe(
-  new URLSearchParams({
-    communities: 'prereview-reviews',
-    page: '1',
-    size: '5',
-    sort: '-publication_date',
-    subtype: 'peerreview',
-  }),
+const getPrereviewsPageForSciety = flow(
+  (page: number) =>
+    new URLSearchParams({
+      communities: 'prereview-reviews',
+      page: page.toString(),
+      size: '100',
+      sort: '-mostrecent',
+      subtype: 'peerreview',
+    }),
   getRecords,
   RTE.map(records => records.hits.hits),
   RTE.chainReaderTaskKW(flow(RT.traverseArray(recordToScietyPrereview), RT.map(RA.rights))),
   RTE.mapLeft(() => 'unavailable' as const),
+)
+
+export const getPrereviewsForSciety = pipe(
+  new URLSearchParams({
+    communities: 'prereview-reviews',
+    page: '1',
+    size: '1',
+    subtype: 'peerreview',
+  }),
+  getRecords,
+  RTE.mapLeft(() => 'unavailable' as const),
+  RTE.chain(
+    flow(
+      records => Math.ceil(records.hits.total / 100),
+      RNEA.makeBy(i => getPrereviewsPageForSciety(i + 1)),
+      RTE.sequenceSeqArray,
+      RTE.map(RA.flatten),
+    ),
+  ),
 )
 
 export const getRecentPrereviewsFromZenodo = flow(
