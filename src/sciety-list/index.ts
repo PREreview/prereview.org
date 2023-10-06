@@ -24,13 +24,14 @@ interface Prereview {
 
 const getAllPrereviews = (): RTE.ReaderTaskEither<
   ZenodoEnv & GetPreprintTitleEnv & LoggerEnv,
-  never,
+  'unavailable',
   ReadonlyArray<Prereview>
 > =>
   pipe(
     getRecentPrereviewsFromZenodo(1),
     RTE.map(data => data.recentPrereviews),
-    RTE.map(
+    RTE.bimap(
+      () => 'unavailable' as const,
       RA.map(prereview => ({
         preprint: prereview.preprint.id.value.toString(),
         createdAt: prereview.published.toString(),
@@ -41,7 +42,6 @@ const getAllPrereviews = (): RTE.ReaderTaskEither<
         ),
       })),
     ),
-    RTE.orElseW(() => RTE.of([])),
   )
 
 const isAllowed = pipe(
@@ -59,6 +59,9 @@ export const scietyList = pipe(
   RM.ichain(prereviews => RM.send(JSON.stringify(prereviews))),
   RM.orElseW(error =>
     match(error)
+      .with('unavailable', () =>
+        pipe(RM.status(Status.ServiceUnavailable), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)),
+      )
       .with('forbidden', () => pipe(RM.status(Status.Forbidden), RM.ichain(RM.closeHeaders), RM.ichain(RM.end)))
       .exhaustive(),
   ),
