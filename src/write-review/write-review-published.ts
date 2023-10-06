@@ -10,6 +10,7 @@ import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { toUrl } from '../public-url'
 import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from '../routes'
+import { isScietyPreprint } from '../sciety'
 import { type User, getUser } from '../user'
 import { type PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
 
@@ -75,8 +76,17 @@ function successMessage({
 
             <h2>What happens next</h2>
 
-            <p>You’ll be able to see your PREreview shortly.</p>
-
+            <p>
+              You’ll be able to see your PREreview shortly.
+              ${isScietyPreprint(preprint.id)
+                ? html`
+                    It’ll also appear on
+                    <a href="https://sciety.org/" target="_blank" rel="noopener noreferrer"
+                      >Sciety<span class="visually-hidden"> (opens in a new tab)</span></a
+                    >.
+                  `
+                : ''}
+            </p>
             ${form.moreAuthors === 'yes'
               ? html`
                   <div class="inset">
