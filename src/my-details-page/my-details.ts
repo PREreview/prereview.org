@@ -6,9 +6,11 @@ import { pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, maybeGetCareerStage } from '../career-stage'
 import { canConnectSlack } from '../feature-flags'
+import { deleteFlashMessage, getFlashMessage } from '../flash-message'
 import { html, plainText, sendHtml } from '../html'
 import { type IsOpenForRequests, maybeIsOpenForRequests } from '../is-open-for-requests'
 import { type Languages, maybeGetLanguages } from '../languages'
@@ -39,6 +41,8 @@ import { type GetUserEnv, type User, getUser } from '../user'
 
 export type Env = EnvFor<typeof myDetails>
 
+const FlashMessageD = D.literal('slack-disconnected')
+
 export const myDetails = pipe(
   getUser,
   RM.chainReaderTaskEitherKW(user =>
@@ -54,8 +58,10 @@ export const myDetails = pipe(
       RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(O.fromNullable))),
     ),
   ),
+  RM.apSW('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
   RM.chainReaderKW(createPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainFirstW(RM.fromMiddlewareK(() => deleteFlashMessage)),
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(error =>
     match(error)
@@ -77,6 +83,7 @@ export const myDetails = pipe(
 
 function createPage({
   user,
+  message,
   canConnectSlack,
   slackUser,
   openForRequests,
@@ -86,6 +93,7 @@ function createPage({
   languages,
 }: {
   user: User
+  message?: D.TypeOf<typeof FlashMessageD>
   canConnectSlack: boolean
   slackUser: O.Option<SlackUser>
   openForRequests: O.Option<IsOpenForRequests>
@@ -98,6 +106,20 @@ function createPage({
     title: plainText`My details`,
     content: html`
       <main id="main-content">
+        ${match(message)
+          .with(
+            'slack-disconnected',
+            () => html`
+              <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                <h2 id="notification-banner-title">Success</h2>
+
+                <p>Your Community Slack account has been disconnected.</p>
+              </notification-banner>
+            `,
+          )
+          .with(undefined, () => '')
+          .exhaustive()}
+
         <h1>My details</h1>
 
         <div class="inset">
@@ -389,6 +411,7 @@ function createPage({
       </main>
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
+    js: message ? ['notification-banner.js'] : [],
     current: 'my-details',
     user,
   })

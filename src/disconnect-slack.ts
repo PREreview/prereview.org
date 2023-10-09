@@ -5,6 +5,7 @@ import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { canConnectSlack } from './feature-flags'
+import { setFlashMessage } from './flash-message'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
 import { getMethod, notFound, seeOther, serviceUnavailable } from './middleware'
@@ -69,7 +70,11 @@ const showDisconnectSlackPage = flow(
 
 const handleDisconnectSlack = flow(
   RM.fromReaderTaskEitherK(deleteSlackUserId),
-  RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
+  RM.ichain(() => RM.status(Status.SeeOther)),
+  RM.ichain(() => RM.header('Location', format(myDetailsMatch.formatter, {}))),
+  RM.ichainMiddlewareKW(() => setFlashMessage('slack-disconnected')),
+  RM.ichain(() => RM.closeHeaders()),
+  RM.ichain(() => RM.end()),
   RM.orElseW(() => showFailureMessage),
 )
 

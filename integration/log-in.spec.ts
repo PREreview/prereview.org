@@ -24,7 +24,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlackUser)(
   'can connect my Slack Community account',
-  async ({ page }) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
     await page.getByRole('link', { name: 'Connect Slack account' }).click()
 
@@ -44,7 +44,18 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
 
     await page.getByRole('button', { name: 'Disconnect account' }).click()
 
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+    }
     await expect(page.getByRole('link', { name: 'Connect Slack account' })).toBeVisible()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
   },
 )
 
