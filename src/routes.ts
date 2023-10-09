@@ -170,6 +170,8 @@ export const connectSlackErrorMatch = pipe(
   P.then(P.end),
 )
 
+export const disconnectSlackMatch = pipe(P.lit('disconnect-slack'), P.then(P.end))
+
 export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
 
 export const changeCareerStageMatch = pipe(P.lit('my-details'), P.then(P.lit('change-career-stage')), P.then(P.end))

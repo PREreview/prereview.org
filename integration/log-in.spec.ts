@@ -36,6 +36,15 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     await expect(page.getByRole('main')).toContainText('Slack Community name jcarberry')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
+
+    await page.goto('/disconnect-slack')
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Disconnect account' }).click()
+
+    await expect(page.getByRole('link', { name: 'Connect Slack account' })).toBeVisible()
   },
 )
 

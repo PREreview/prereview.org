@@ -139,6 +139,11 @@ export const saveResearchInterests = flow(
   RTE.local((env: ResearchInterestsStoreEnv) => env.researchInterestsStore),
 )
 
+export const deleteSlackUserId = flow(
+  deleteKey(OrcidE),
+  RTE.local((env: SlackUserIdStoreEnv) => env.slackUserIdStore),
+)
+
 export const getSlackUserId = flow(
   getKey(OrcidE, SlackUserIdC),
   RTE.local((env: SlackUserIdStoreEnv) => env.slackUserIdStore),

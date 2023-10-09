@@ -18,6 +18,10 @@ export interface EditSlackUserIdEnv {
   saveSlackUserId: (orcid: Orcid, slackUserId: SlackUserId) => TE.TaskEither<'unavailable', void>
 }
 
+export interface DeleteSlackUserIdEnv {
+  deleteSlackUserId: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
+}
+
 export const SlackUserIdC = C.struct({
   accessToken: NonEmptyStringC,
   userId: NonEmptyStringC,
@@ -34,3 +38,9 @@ export const saveSlackUserId = (
   slackUserId: SlackUserId,
 ): RTE.ReaderTaskEither<EditSlackUserIdEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ saveSlackUserId }) => saveSlackUserId(orcid, slackUserId)))
+
+export const deleteSlackUserId = (orcid: Orcid) =>
+  pipe(
+    RTE.ask<DeleteSlackUserIdEnv>(),
+    RTE.chainTaskEitherK(({ deleteSlackUserId }) => deleteSlackUserId(orcid)),
+  )

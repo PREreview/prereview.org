@@ -39,6 +39,7 @@ import {
 } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
+import { disconnectSlack } from './disconnect-slack'
 import { ediStatement } from './edi-statement'
 import type { CanConnectSlackEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
@@ -58,6 +59,7 @@ import {
   deleteLanguages,
   deleteLocation,
   deleteResearchInterests,
+  deleteSlackUserId,
   getCareerStage,
   getLanguages,
   getLocation,
@@ -130,6 +132,7 @@ import {
   connectSlackErrorMatch,
   connectSlackMatch,
   connectSlackStartMatch,
+  disconnectSlackMatch,
   ediStatementMatch,
   findAPreprintMatch,
   fundingMatch,
@@ -373,6 +376,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       connectSlackErrorMatch.parser,
       P.map(({ error }) => connectSlackError(error)),
+    ),
+    pipe(
+      disconnectSlackMatch.parser,
+      P.map(() => disconnectSlack),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteSlackUserId: withEnv(deleteSlackUserId, env),
+          isSlackUser: withEnv(isSlackUser, env),
+        })),
+      ),
     ),
     pipe(
       preprintReviewsMatch.parser,

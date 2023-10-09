@@ -404,6 +404,49 @@ describe('saveResearchInterests', () => {
   )
 })
 
+describe('deleteSlackUserId', () => {
+  test.prop([fc.orcid(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, slackUserId) => {
+    const store = new Keyv()
+    await store.set(orcid, slackUserId)
+
+    const actual = await _.deleteSlackUserId(orcid)({ slackUserIdStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
+  })
+
+  test.prop([fc.orcid(), fc.anything()])(
+    'when the key contains something other than a Slack user ID',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.deleteSlackUserId(orcid)({ slackUserIdStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.has(orcid)).toBeFalsy()
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.deleteSlackUserId(orcid)({ slackUserIdStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.delete = () => Promise.reject(error)
+
+    const actual = await _.deleteSlackUserId(orcid)({ slackUserIdStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
 describe('getSlackUserId', () => {
   test.prop([fc.orcid(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, getSlackUserId) => {
     const store = new Keyv()
