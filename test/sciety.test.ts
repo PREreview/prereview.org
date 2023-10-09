@@ -1,6 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
-import type { Doi } from 'doi-ts'
+import { type Doi, toUrl } from 'doi-ts'
 import * as _ from '../src/sciety'
 import * as fc from './fc'
 
@@ -57,7 +57,7 @@ test.prop(
         fc.scieloPreprintId(),
         fc.socarxivPreprintId(),
       )
-      .map(preprint => [preprint, new URL(`https://sciety.org/articles/activity/${preprint.value}`).href] as const),
+      .map(preprint => [preprint, `https://sciety.org/articles/activity${toUrl(preprint.value).pathname}`] as const),
   ],
   {
     examples: [
