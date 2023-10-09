@@ -248,7 +248,7 @@ const showFailureMessage = pipe(
 
 function connectSlackPage({ user }: { user: User }) {
   return page({
-    title: plainText`My details`,
+    title: plainText`Connect your Community Slack Account`,
     content: html`
       <main id="main-content">
         <h1>Connect your Community Slack Account</h1>
