@@ -12,7 +12,6 @@ import Keyv from 'keyv'
 import * as _ from '../src/connect-slack'
 import type { CanConnectSlackEnv } from '../src/feature-flags'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../src/routes'
-import type { SaveSlackUserAccessTokenEnv } from '../src/slack-user-access-token'
 import type { EditSlackUserIdEnv } from '../src/slack-user-id'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -304,9 +303,6 @@ describe('connectSlackCode', () => {
   ])(
     'when the access token can be decoded',
     async (code, user, oauth, [userId, accessToken], state, [signedState, connection]) => {
-      const saveSlackUserAccessToken = jest.fn<SaveSlackUserAccessTokenEnv['saveSlackUserAccessToken']>(_ =>
-        TE.right(undefined),
-      )
       const saveSlackUserId = jest.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
       const unsignValue = jest.fn<_.UnsignValueEnv['unsignValue']>(_ => O.some(state))
 
@@ -320,7 +316,6 @@ describe('connectSlackCode', () => {
             body: accessToken,
           }),
           getUser: () => M.of(user),
-          saveSlackUserAccessToken,
           saveSlackUserId,
           slackOauth: oauth,
           unsignValue,
@@ -337,8 +332,7 @@ describe('connectSlackCode', () => {
         ]),
       )
       expect(unsignValue).toHaveBeenCalledWith(signedState)
-      expect(saveSlackUserAccessToken).toHaveBeenCalledWith(user.orcid, accessToken.access_token)
-      expect(saveSlackUserId).toHaveBeenCalledWith(user.orcid, userId)
+      expect(saveSlackUserId).toHaveBeenCalledWith(user.orcid, { accessToken: accessToken.access_token, userId })
     },
   )
 
@@ -373,7 +367,6 @@ describe('connectSlackCode', () => {
       )({
         fetch,
         getUser: () => M.of(user),
-        saveSlackUserAccessToken: shouldNotBeCalled,
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
         unsignValue: () => O.some(state),
@@ -411,7 +404,6 @@ describe('connectSlackCode', () => {
       )({
         fetch: shouldNotBeCalled,
         getUser: () => M.of(user),
-        saveSlackUserAccessToken: shouldNotBeCalled,
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
         unsignValue: () => O.some(unsignedState),
@@ -444,7 +436,6 @@ describe('connectSlackCode', () => {
       )({
         fetch: shouldNotBeCalled,
         getUser: () => M.of(user),
-        saveSlackUserAccessToken: shouldNotBeCalled,
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
         unsignValue: () => O.none,
@@ -487,7 +478,6 @@ describe('connectSlackCode', () => {
       )({
         fetch,
         getUser: () => M.of(user),
-        saveSlackUserAccessToken: shouldNotBeCalled,
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
         unsignValue: () => O.some(state),
@@ -525,7 +515,6 @@ describe('connectSlackCode', () => {
       )({
         fetch: () => Promise.reject(error),
         getUser: () => M.of(user),
-        saveSlackUserAccessToken: shouldNotBeCalled,
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
         unsignValue: () => O.some(state),

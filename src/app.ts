@@ -53,7 +53,6 @@ import {
   type LanguagesStoreEnv,
   type LocationStoreEnv,
   type ResearchInterestsStoreEnv,
-  type SlackUserAccessTokenStoreEnv,
   type SlackUserIdStoreEnv,
   deleteCareerStage,
   deleteLanguages,
@@ -70,7 +69,6 @@ import {
   saveLocation,
   saveOpenForRequests,
   saveResearchInterests,
-  saveSlackUserAccessToken,
   saveSlackUserId,
 } from './keyv'
 import {
@@ -230,7 +228,6 @@ export type AppEnv = CareerStageStoreEnv &
   SessionEnv &
   SlackApiEnv &
   SlackOAuthEnv &
-  SlackUserAccessTokenStoreEnv &
   SlackUserIdStoreEnv &
   WasPrereviewRemovedEnv &
   ZenodoAuthenticatedEnv & {
@@ -368,7 +365,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          saveSlackUserAccessToken: withEnv(saveSlackUserAccessToken, env),
           saveSlackUserId: withEnv(saveSlackUserId, env),
           unsignValue: value => O.fromPredicate(isString)(cookieSignature.unsign(value, env.secret)),
         })),
@@ -717,7 +713,10 @@ const isSlackUser = flow(
   ),
 )
 
-const getSlackUser = flow(getSlackUserId, RTE.chainW(getUserFromSlack))
+const getSlackUser = flow(
+  getSlackUserId,
+  RTE.chainW(({ userId }) => getUserFromSlack(userId)),
+)
 
 const getUser = pipe(getSession(), RM.chainOptionKW(() => 'no-session' as const)(getUserFromSession))
 

@@ -12,6 +12,7 @@ import { IsOpenForRequestsC } from './is-open-for-requests'
 import { LanguagesC } from './languages'
 import { LocationC } from './location'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
+import { SlackUserIdC } from './slack-user-id'
 import { NonEmptyStringC } from './string'
 
 export interface CareerStageStoreEnv {
@@ -36,10 +37,6 @@ export interface ResearchInterestsStoreEnv {
 
 export interface SlackUserIdStoreEnv {
   slackUserIdStore: Keyv<unknown>
-}
-
-export interface SlackUserAccessTokenStoreEnv {
-  slackUserAccessTokenStore: Keyv<unknown>
 }
 
 const OrcidE: Encoder<string, Orcid> = { encode: identity }
@@ -143,18 +140,13 @@ export const saveResearchInterests = flow(
 )
 
 export const getSlackUserId = flow(
-  getKey(OrcidE, NonEmptyStringC),
+  getKey(OrcidE, SlackUserIdC),
   RTE.local((env: SlackUserIdStoreEnv) => env.slackUserIdStore),
 )
 
 export const saveSlackUserId = flow(
-  setKey(OrcidE, NonEmptyStringC),
+  setKey(OrcidE, SlackUserIdC),
   RTE.local((env: SlackUserIdStoreEnv) => env.slackUserIdStore),
-)
-
-export const saveSlackUserAccessToken = flow(
-  setKey(OrcidE, NonEmptyStringC),
-  RTE.local((env: SlackUserAccessTokenStoreEnv) => env.slackUserAccessTokenStore),
 )
 
 export const deleteLocation = flow(

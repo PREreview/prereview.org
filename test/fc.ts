@@ -66,6 +66,7 @@ import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/profi
 import type { Pseudonym } from '../src/pseudonym'
 import type { ResearchInterests } from '../src/research-interests'
 import type { SlackUser } from '../src/slack-user'
+import type { SlackUserId } from '../src/slack-user-id'
 import { type NonEmptyString, isNonEmptyString } from '../src/string'
 import type { User } from '../src/user'
 import { shouldNotBeCalled } from './should-not-be-called'
@@ -620,6 +621,9 @@ export const isOpenForRequestsVisibility = (): fc.Arbitrary<
 > => fc.constantFrom('public', 'restricted')
 
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
+
+export const slackUserId = (): fc.Arbitrary<SlackUserId> =>
+  fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString() })
 
 export const clubId = (): fc.Arbitrary<ClubId> =>
   fc.constantFrom(

@@ -99,7 +99,6 @@ const server = app({
     tokenUrl: new URL('https://slack.com/api/openid.connect.token'),
   },
   slackApiToken: env.SLACK_API_TOKEN,
-  slackUserAccessTokenStore: new Keyv({ namespace: 'slack-user-access-token', store: keyvStore }),
   slackUserIdStore: new Keyv({ namespace: 'slack-user-id', store: keyvStore }),
   wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
   zenodoApiKey: env.ZENODO_API_KEY,

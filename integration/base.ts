@@ -54,7 +54,6 @@ interface AppFixtures {
   languagesStore: LanguagesStoreEnv['languagesStore']
   locationStore: LocationStoreEnv['locationStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
-  slackUserAccessTokenStore: AppEnv['slackUserAccessTokenStore']
   slackUserIdStore: AppEnv['slackUserIdStore']
   canConnectSlack: CanConnectSlackEnv['canConnectSlack']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
@@ -805,7 +804,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       languagesStore,
       locationStore,
       researchInterestsStore,
-      slackUserAccessTokenStore,
       slackUserIdStore,
       wasPrereviewRemoved,
     },
@@ -854,7 +852,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         redirectUri: new URL(`http://localhost:${port}/connect-slack`),
         tokenUrl: new URL('http://slack.test/token'),
       },
-      slackUserAccessTokenStore,
       slackUserIdStore,
       wasPrereviewRemoved,
       zenodoApiKey: '',
@@ -866,9 +863,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(server)
 
     server.close()
-  },
-  slackUserAccessTokenStore: async ({}, use) => {
-    await use(new Keyv())
   },
   slackUserIdStore: async ({}, use) => {
     await use(new Keyv())
