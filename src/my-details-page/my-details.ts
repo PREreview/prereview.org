@@ -30,6 +30,7 @@ import {
   changeResearchInterestsMatch,
   changeResearchInterestsVisibilityMatch,
   connectSlackMatch,
+  disconnectSlackMatch,
   myDetailsMatch,
   profileMatch,
 } from '../routes'
@@ -156,6 +157,11 @@ function createPage({
                       <img src="${slackUser.image.href}" alt="" width="48" height="48" />
                       <span>${slackUser.name}</span>
                     </span>
+                  </dd>
+                  <dd>
+                    <a href="${format(disconnectSlackMatch.formatter, {})}"
+                      >Disconnect <span class="visually-hidden">Slack account</span></a
+                    >
                   </dd>
                 </div>
               `,

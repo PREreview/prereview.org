@@ -37,7 +37,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await page.goto('/disconnect-slack')
+    await page.getByRole('link', { name: 'Disconnect Slack account' }).click()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
