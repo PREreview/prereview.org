@@ -61,13 +61,13 @@ export const disconnectSlack = pipe(
   ),
 )
 
-export const showDisconnectSlackPage = flow(
+const showDisconnectSlackPage = flow(
   RM.fromReaderK(disconnectSlackPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareKW(sendHtml),
 )
 
-export const handleDisconnectSlack = flow(
+const handleDisconnectSlack = flow(
   RM.fromReaderTaskEitherK(deleteSlackUserId),
   RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
   RM.orElseW(() => showFailureMessage),
