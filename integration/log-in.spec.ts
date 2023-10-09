@@ -33,9 +33,18 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
 
     await page.getByRole('button', { name: 'Start now' }).click()
 
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+    }
     await expect(page.getByRole('main')).toContainText('Slack Community name jcarberry')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 
     await page.getByRole('link', { name: 'Disconnect Slack account' }).click()
 

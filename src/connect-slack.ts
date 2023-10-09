@@ -18,6 +18,7 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { canConnectSlack } from './feature-flags'
+import { setFlashMessage } from './flash-message'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
 import { notFound, seeOther, serviceUnavailable } from './middleware'
@@ -215,6 +216,7 @@ export const connectSlackCode = flow(
   RM.ichain(() => RM.redirect(format(myDetailsMatch.formatter, {}))),
   RM.ichainFirst(() => RM.clearCookie('slack-state', { httpOnly: true })),
   flow(
+    RM.ichainMiddlewareKW(() => setFlashMessage('slack-connected')),
     RM.ichainFirst(() => RM.closeHeaders()),
     RM.ichainFirst(() => RM.end()),
   ),

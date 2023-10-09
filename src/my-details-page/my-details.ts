@@ -41,7 +41,7 @@ import { type GetUserEnv, type User, getUser } from '../user'
 
 export type Env = EnvFor<typeof myDetails>
 
-const FlashMessageD = D.literal('slack-disconnected')
+const FlashMessageD = D.literal('slack-connected', 'slack-disconnected')
 
 export const myDetails = pipe(
   getUser,
@@ -107,6 +107,16 @@ function createPage({
     content: html`
       <main id="main-content">
         ${match(message)
+          .with(
+            'slack-connected',
+            () => html`
+              <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                <h2 id="notification-banner-title">Success</h2>
+
+                <p>Your Community Slack account has been connected.</p>
+              </notification-banner>
+            `,
+          )
           .with(
             'slack-disconnected',
             () => html`

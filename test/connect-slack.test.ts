@@ -328,6 +328,7 @@ describe('connectSlackCode', () => {
           { type: 'setStatus', status: Status.Found },
           { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
           { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
+          { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'slack-connected' },
           { type: 'endResponse' },
         ]),
       )
