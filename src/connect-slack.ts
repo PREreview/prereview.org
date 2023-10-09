@@ -25,6 +25,7 @@ import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from './routes'
 import { isSlackUser } from './slack-user'
+import { saveSlackUserAccessToken } from './slack-user-access-token'
 import { saveSlackUserId } from './slack-user-id'
 import { NonEmptyStringC } from './string'
 import { type GetUserEnv, type User, getUser, maybeGetUser } from './user'
@@ -169,6 +170,7 @@ const JwtD = pipe(
 )
 
 const SlackD = D.struct({
+  access_token: NonEmptyStringC,
   id_token: pipe(
     JwtD,
     D.compose(
@@ -206,7 +208,11 @@ export const connectSlackCode = flow(
     ),
   ),
   RM.chainFirstReaderTaskEitherKW(({ user, slackUser }) =>
-    saveSlackUserId(user.orcid, slackUser.id_token['https://slack.com/user_id']),
+    pipe(
+      RTE.Do,
+      RTE.apS('id', saveSlackUserId(user.orcid, slackUser.id_token['https://slack.com/user_id'])),
+      RTE.apSW('accessToken', saveSlackUserAccessToken(user.orcid, slackUser.access_token)),
+    ),
   ),
   RM.ichain(() => RM.redirect(format(myDetailsMatch.formatter, {}))),
   RM.ichainFirst(() => RM.clearCookie('slack-state', { httpOnly: true })),

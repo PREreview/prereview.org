@@ -496,6 +496,64 @@ describe('saveSlackUserId', () => {
   )
 })
 
+describe('saveSlackUserAccessToken', () => {
+  test.prop([fc.orcid(), fc.nonEmptyString()])(
+    'when the key contains a Slack user access token',
+    async (orcid, slackUserAccessToken) => {
+      const store = new Keyv()
+      await store.set(orcid, slackUserAccessToken)
+
+      const actual = await _.saveSlackUserAccessToken(
+        orcid,
+        slackUserAccessToken,
+      )({ slackUserAccessTokenStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(slackUserAccessToken)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.anything(), fc.nonEmptyString()])(
+    'when the key already contains something other than a Slack user access token',
+    async (orcid, value, slackUserAccessToken) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveSlackUserAccessToken(
+        orcid,
+        slackUserAccessToken,
+      )({ slackUserAccessTokenStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(slackUserAccessToken)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key is not set', async (orcid, slackUserAccessToken) => {
+    const store = new Keyv()
+
+    const actual = await _.saveSlackUserAccessToken(orcid, slackUserAccessToken)({ slackUserAccessTokenStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(slackUserAccessToken)
+  })
+
+  test.prop([fc.orcid(), fc.nonEmptyString(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, slackUserAccessToken, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveSlackUserAccessToken(
+        orcid,
+        slackUserAccessToken,
+      )({ slackUserAccessTokenStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
+
 describe('deleteLocation', () => {
   test.prop([fc.orcid(), fc.location()])('when the key contains a location', async (orcid, location) => {
     const store = new Keyv()

@@ -38,6 +38,10 @@ export interface SlackUserIdStoreEnv {
   slackUserIdStore: Keyv<unknown>
 }
 
+export interface SlackUserAccessTokenStoreEnv {
+  slackUserAccessTokenStore: Keyv<unknown>
+}
+
 const OrcidE: Encoder<string, Orcid> = { encode: identity }
 
 const deleteKey =
@@ -146,6 +150,11 @@ export const getSlackUserId = flow(
 export const saveSlackUserId = flow(
   setKey(OrcidE, NonEmptyStringC),
   RTE.local((env: SlackUserIdStoreEnv) => env.slackUserIdStore),
+)
+
+export const saveSlackUserAccessToken = flow(
+  setKey(OrcidE, NonEmptyStringC),
+  RTE.local((env: SlackUserAccessTokenStoreEnv) => env.slackUserAccessTokenStore),
 )
 
 export const deleteLocation = flow(
