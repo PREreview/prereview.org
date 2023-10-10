@@ -4,6 +4,7 @@ import * as E from 'fp-ts/Either'
 import Keyv from 'keyv'
 import { get } from 'spectacles-ts'
 import * as _ from '../src/keyv'
+import { SlackUserIdC } from '../src/slack-user-id'
 import * as fc from './fc'
 
 describe('deleteCareerStage', () => {
@@ -407,7 +408,7 @@ describe('saveResearchInterests', () => {
 describe('deleteSlackUserId', () => {
   test.prop([fc.orcid(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, slackUserId) => {
     const store = new Keyv()
-    await store.set(orcid, slackUserId)
+    await store.set(orcid, SlackUserIdC.encode(slackUserId))
 
     const actual = await _.deleteSlackUserId(orcid)({ slackUserIdStore: store })()
 
@@ -450,7 +451,7 @@ describe('deleteSlackUserId', () => {
 describe('getSlackUserId', () => {
   test.prop([fc.orcid(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, getSlackUserId) => {
     const store = new Keyv()
-    await store.set(orcid, getSlackUserId)
+    await store.set(orcid, SlackUserIdC.encode(getSlackUserId))
 
     const actual = await _.getSlackUserId(orcid)({ slackUserIdStore: store })()
 
@@ -490,12 +491,12 @@ describe('getSlackUserId', () => {
 describe('saveSlackUserId', () => {
   test.prop([fc.orcid(), fc.slackUserId()])('when the key contains a Slack user ID', async (orcid, slackUserId) => {
     const store = new Keyv()
-    await store.set(orcid, slackUserId)
+    await store.set(orcid, SlackUserIdC.encode(slackUserId))
 
     const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
 
     expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(slackUserId)
+    expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
   })
 
   test.prop([fc.orcid(), fc.anything(), fc.slackUserId()])(
@@ -507,7 +508,7 @@ describe('saveSlackUserId', () => {
       const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(slackUserId)
+      expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
     },
   )
 
@@ -517,7 +518,7 @@ describe('saveSlackUserId', () => {
     const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
 
     expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(slackUserId)
+    expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
   })
 
   test.prop([fc.orcid(), fc.slackUserId(), fc.anything()])(
