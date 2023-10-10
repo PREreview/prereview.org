@@ -12,6 +12,7 @@ import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import { timeoutRequest } from './fetch'
 import type { SlackUser } from './slack-user'
+import type { SlackUserId } from './slack-user-id'
 import { NonEmptyStringC } from './string'
 
 export interface SlackApiEnv {
@@ -59,9 +60,9 @@ const SlackProfileD = pipe(
   ),
 )
 
-export const getUserFromSlack = (slackId: string) =>
+export const getUserFromSlack = (slackId: SlackUserId) =>
   pipe(
-    `https://slack.com/api/users.profile.get?user=${slackId}`,
+    `https://slack.com/api/users.profile.get?user=${slackId.userId}`,
     F.Request('GET'),
     RTE.fromReaderK(addSlackApiHeaders),
     RTE.chainW(F.send),
@@ -79,7 +80,7 @@ export const getUserFromSlack = (slackId: string) =>
         ({
           name: profile.real_name,
           image: profile.image_48,
-          profile: new URL(`https://prereviewcommunity.slack.com/team/${slackId}`),
+          profile: new URL(`https://prereviewcommunity.slack.com/team/${slackId.userId}`),
         }) satisfies SlackUser,
     ),
   )
