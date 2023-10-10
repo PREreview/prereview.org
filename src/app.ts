@@ -176,7 +176,13 @@ import {
   writeReviewStartMatch,
 } from './routes'
 import { type ScietyListEnv, scietyList } from './sciety-list'
-import { type SlackApiEnv, addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from './slack'
+import {
+  type SlackApiEnv,
+  type SlackApiUpdateEnv,
+  addOrcidToSlackProfile,
+  getUserFromSlack,
+  removeOrcidFromSlackProfile,
+} from './slack'
 import type { SlackUserId } from './slack-user-id'
 import { trainings } from './trainings'
 import { type GetUserEnv, getUserFromSession } from './user'
@@ -232,6 +238,7 @@ export type AppEnv = CareerStageStoreEnv &
   ScietyListEnv &
   SessionEnv &
   SlackApiEnv &
+  SlackApiUpdateEnv &
   SlackOAuthEnv &
   SlackUserIdStoreEnv &
   WasPrereviewRemovedEnv &

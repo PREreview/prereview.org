@@ -844,6 +844,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       sessionCookie: 'session',
       sessionStore: new Keyv(),
       slackApiToken: '',
+      slackApiUpdate: true,
       slackOauth: {
         authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
         clientId: 'client-id',

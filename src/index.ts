@@ -99,6 +99,7 @@ const server = app({
     tokenUrl: new URL('https://slack.com/api/oauth.v2.access'),
   },
   slackApiToken: env.SLACK_API_TOKEN,
+  slackApiUpdate: env.SLACK_UPDATE,
   slackUserIdStore: new Keyv({ namespace: 'slack-user-id', store: keyvStore }),
   wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
   zenodoApiKey: env.ZENODO_API_KEY,

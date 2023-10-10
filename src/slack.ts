@@ -4,6 +4,7 @@ import * as J from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
+import * as b from 'fp-ts/boolean'
 import { constVoid, flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
@@ -18,6 +19,10 @@ import { NonEmptyStringC } from './string'
 
 export interface SlackApiEnv {
   slackApiToken: string
+}
+
+export interface SlackApiUpdateEnv {
+  slackApiUpdate: boolean
 }
 
 const JsonD = {
@@ -97,39 +102,60 @@ export const getUserFromSlack = (slackId: string) =>
 
 export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
   pipe(
-    'https://slack.com/api/users.profile.set',
-    F.Request('POST'),
-    F.setBody(
-      JSON.stringify({ profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } }),
-      'application/json',
+    shouldUpdate,
+    R.chainW(
+      b.match(
+        () => RTE.of(undefined),
+        () =>
+          pipe(
+            'https://slack.com/api/users.profile.set',
+            F.Request('POST'),
+            F.setBody(
+              JSON.stringify({ profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } }),
+              'application/json',
+            ),
+            F.setHeader('Authorization', `Bearer ${userId.accessToken}`),
+            F.send,
+            RTE.mapLeft(() => 'network-error' as const),
+            RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+            RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackSuccessD, SlackErrorD))), TE.mapLeft(D.draw))),
+            RTE.chainEitherKW(response =>
+              match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
+            ),
+            RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to update Slack profile')))),
+            RTE.bimap(() => 'unavailable' as const, constVoid),
+          ),
+      ),
     ),
-    F.setHeader('Authorization', `Bearer ${userId.accessToken}`),
-    F.send,
-    RTE.mapLeft(() => 'network-error' as const),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
-    RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackSuccessD, SlackErrorD))), TE.mapLeft(D.draw))),
-    RTE.chainEitherKW(response =>
-      match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
-    ),
-    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to update Slack profile')))),
-    RTE.bimap(() => 'unavailable' as const, constVoid),
   )
 
 export const removeOrcidFromSlackProfile = (userId: SlackUserId) =>
   pipe(
-    'https://slack.com/api/users.profile.set',
-    F.Request('POST'),
-    F.setBody(JSON.stringify({ profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } }), 'application/json'),
-    F.setHeader('Authorization', `Bearer ${userId.accessToken}`),
-    F.send,
-    RTE.mapLeft(() => 'network-error' as const),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
-    RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackSuccessD, SlackErrorD))), TE.mapLeft(D.draw))),
-    RTE.chainEitherKW(response =>
-      match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
+    shouldUpdate,
+    R.chainW(
+      b.match(
+        () => RTE.of(undefined),
+        () =>
+          pipe(
+            'https://slack.com/api/users.profile.set',
+            F.Request('POST'),
+            F.setBody(
+              JSON.stringify({ profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } }),
+              'application/json',
+            ),
+            F.setHeader('Authorization', `Bearer ${userId.accessToken}`),
+            F.send,
+            RTE.mapLeft(() => 'network-error' as const),
+            RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+            RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackSuccessD, SlackErrorD))), TE.mapLeft(D.draw))),
+            RTE.chainEitherKW(response =>
+              match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
+            ),
+            RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to update Slack profile')))),
+            RTE.bimap(() => 'unavailable' as const, constVoid),
+          ),
+      ),
     ),
-    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to update Slack profile')))),
-    RTE.bimap(() => 'unavailable' as const, constVoid),
   )
 
 function addSlackApiHeaders(request: F.Request) {
@@ -137,3 +163,5 @@ function addSlackApiHeaders(request: F.Request) {
     pipe(request, F.setHeader('Authorization', `Bearer ${slackApiToken}`)),
   )
 }
+
+const shouldUpdate = R.asks(({ slackApiUpdate }: SlackApiUpdateEnv) => slackApiUpdate)
