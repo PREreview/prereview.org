@@ -11,7 +11,6 @@ import fetchMock, { type FetchMockSandbox } from 'fetch-mock'
 import * as fs from 'fs/promises'
 import type { Server } from 'http'
 import { Status } from 'hyper-ts'
-import jwt from 'jsonwebtoken'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
@@ -943,9 +942,7 @@ export const canConnectSlack: Fixtures<
     fetch.post('http://slack.test/token', {
       status: Status.OK,
       body: {
-        access_token: 'access-token',
-        token_type: 'Bearer',
-        id_token: jwt.sign({ 'https://slack.com/user_id': 'U0JM' }, 'secret'),
+        authed_user: { id: 'U0JM', access_token: 'access-token', token_type: 'user', scope: 'users.profile:read' },
       },
     })
 

@@ -95,7 +95,8 @@ export const {
   webUrl,
 } = fc
 
-const set = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Set<A>> => fc.uniqueArray(arb).map(values => new Set(values))
+export const set = <A>(arb: fc.Arbitrary<A>, constraints?: fc.UniqueArraySharedConstraints): fc.Arbitrary<Set<A>> =>
+  fc.uniqueArray(arb, constraints).map(values => new Set(values))
 
 const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<E.Either<E, never>> => arb.map(E.left)
 

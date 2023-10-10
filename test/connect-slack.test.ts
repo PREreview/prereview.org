@@ -7,7 +7,6 @@ import * as O from 'fp-ts/Option'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import jwt from 'jsonwebtoken'
 import Keyv from 'keyv'
 import * as _ from '../src/connect-slack'
 import type { CanConnectSlackEnv } from '../src/feature-flags'
@@ -196,7 +195,7 @@ describe('connectSlackStart', () => {
                 client_id: slackOauth.clientId,
                 response_type: 'code',
                 redirect_uri: slackOauth.redirectUri.href,
-                scope: 'openid profile',
+                user_scope: 'users.profile:read',
                 state: uuid,
                 team: 'T057XMB3EGH',
               }).toString()}`,
@@ -284,16 +283,9 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.oauth(),
-    fc.nonEmptyString().chain(slackUserId =>
-      fc.tuple(
-        fc.constant(slackUserId),
-        fc.record({
-          access_token: fc.nonEmptyString(),
-          token_type: fc.string(),
-          id_token: fc.constant(jwt.sign({ 'https://slack.com/user_id': slackUserId }, 'secret')),
-        }),
-      ),
-    ),
+    fc.nonEmptyString(),
+    fc.set(fc.lorem(), { minLength: 1 }),
+    fc.nonEmptyString(),
     fc.lorem(),
     fc
       .lorem()
@@ -302,7 +294,7 @@ describe('connectSlackCode', () => {
       ),
   ])(
     'when the access token can be decoded',
-    async (code, user, oauth, [userId, accessToken], state, [signedState, connection]) => {
+    async (code, user, oauth, userId, scopes, accessToken, state, [signedState, connection]) => {
       const saveSlackUserId = jest.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
       const unsignValue = jest.fn<_.UnsignValueEnv['unsignValue']>(_ => O.some(state))
 
@@ -311,10 +303,34 @@ describe('connectSlackCode', () => {
           code,
           state,
         )({
-          fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-            status: Status.OK,
-            body: accessToken,
-          }),
+          fetch: fetchMock.sandbox().postOnce(
+            {
+              url: oauth.tokenUrl.href,
+              functionMatcher: (_, req: RequestInit) =>
+                req.body ===
+                new URLSearchParams({
+                  client_id: oauth.clientId,
+                  client_secret: oauth.clientSecret,
+                  grant_type: 'authorization_code',
+                  redirect_uri: oauth.redirectUri.href,
+                  code,
+                }).toString(),
+              headers: {
+                'Content-Type': MediaType.applicationFormURLEncoded,
+              },
+            },
+            {
+              status: Status.OK,
+              body: {
+                authed_user: {
+                  id: userId,
+                  access_token: accessToken,
+                  token_type: 'user',
+                  scope: [...scopes].join(','),
+                },
+              },
+            },
+          ),
           getUser: () => M.of(user),
           saveSlackUserId,
           slackOauth: oauth,
@@ -333,11 +349,7 @@ describe('connectSlackCode', () => {
         ]),
       )
       expect(unsignValue).toHaveBeenCalledWith(signedState)
-      expect(saveSlackUserId).toHaveBeenCalledWith(user.orcid, {
-        accessToken: accessToken.access_token,
-        scopes: new Set(['openid', 'profile']),
-        userId,
-      })
+      expect(saveSlackUserId).toHaveBeenCalledWith(user.orcid, { accessToken, scopes, userId })
     },
   )
 
@@ -345,17 +357,7 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.oauth(),
-    fc.record(
-      {
-        access_token: fc.string(),
-        token_type: fc.string(),
-        id_token: fc.oneof(
-          fc.dictionary(fc.lorem(), fc.string()).map(record => jwt.sign(record, 'secret')),
-          fc.string(),
-        ),
-      },
-      { withDeletedKeys: true },
-    ),
+    fc.string(),
     fc.string(),
     fc.lorem().chain(state => fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
   ])('when the access token cannot be decoded', async (code, user, oauth, accessToken, state, connection) => {

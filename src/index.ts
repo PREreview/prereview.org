@@ -92,11 +92,11 @@ const server = app({
   sessionCookie: 'session',
   sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),
   slackOauth: {
-    authorizeUrl: new URL('https://slack.com/openid/connect/authorize'),
+    authorizeUrl: new URL('https://slack.com/oauth/v2/authorize'),
     clientId: env.SLACK_CLIENT_ID,
     clientSecret: env.SLACK_CLIENT_SECRET,
     redirectUri: new URL('/connect-slack', env.PUBLIC_URL),
-    tokenUrl: new URL('https://slack.com/api/openid.connect.token'),
+    tokenUrl: new URL('https://slack.com/api/oauth.v2.access'),
   },
   slackApiToken: env.SLACK_API_TOKEN,
   slackUserIdStore: new Keyv({ namespace: 'slack-user-id', store: keyvStore }),
