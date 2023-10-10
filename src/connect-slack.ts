@@ -284,6 +284,8 @@ function connectSlackPage({ user }: { user: User }) {
 
         <p>You can connect your PREreview profile to your account on the PREreview Community Slack.</p>
 
+        <p>We’ll show your ORCID iD on your Slack profile.</p>
+
         <h2>Before you start</h2>
 
         <p>

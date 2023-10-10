@@ -96,6 +96,8 @@ function disconnectSlackPage({ user }: { user: User }) {
 
           <p>You can disconnect your PREreview profile from your account on the PREreview Community Slack.</p>
 
+          <p>We’ll remove your ORCID iD from your Slack profile.</p>
+
           <p>You will be able to reconnect it at any time.</p>
 
           <button>Disconnect account</button>
