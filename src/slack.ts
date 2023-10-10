@@ -124,6 +124,12 @@ export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
             ),
             RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to update Slack profile')))),
             RTE.bimap(() => 'unavailable' as const, constVoid),
+            RTE.chain(() =>
+              sendUserAMessage(
+                userId,
+                'Thanks for connecting your PREreview profile to your Community Slack Account. I’ve added your ORCID iD to your Slack profile.',
+              ),
+            ),
           ),
       ),
     ),
@@ -153,9 +159,32 @@ export const removeOrcidFromSlackProfile = (userId: SlackUserId) =>
             ),
             RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to update Slack profile')))),
             RTE.bimap(() => 'unavailable' as const, constVoid),
+            RTE.chain(() =>
+              sendUserAMessage(
+                userId,
+                'As you’ve disconnected your PREreview profile from your Community Slack account, I’ve removed your ORCID iD from your Slack profile.',
+              ),
+            ),
           ),
       ),
     ),
+  )
+
+const sendUserAMessage = (userId: SlackUserId, text: string) =>
+  pipe(
+    'https://slack.com/api/chat.postMessage',
+    F.Request('POST'),
+    F.setBody(JSON.stringify({ channel: userId.userId, text }), 'application/json'),
+    RTE.fromReaderK(addSlackApiHeaders),
+    RTE.chainW(F.send),
+    RTE.mapLeft(() => 'network-error' as const),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+    RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackSuccessD, SlackErrorD))), TE.mapLeft(D.draw))),
+    RTE.chainEitherKW(response =>
+      match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
+    ),
+    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to send Slack message')))),
+    RTE.bimap(() => 'unavailable' as const, constVoid),
   )
 
 function addSlackApiHeaders(request: F.Request) {
