@@ -4,14 +4,16 @@ import * as J from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { flow, pipe } from 'fp-ts/function'
+import { constVoid, flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
+import { type Orcid, toUrl } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import { timeoutRequest } from './fetch'
 import type { SlackUser } from './slack-user'
+import type { SlackUserId } from './slack-user-id'
 import { NonEmptyStringC } from './string'
 
 export interface SlackApiEnv {
@@ -42,6 +44,15 @@ const SlackErrorD = pipe(
     D.struct({
       ok: D.literal(false),
       error: NonEmptyStringC,
+    }),
+  ),
+)
+
+const SlackSuccessD = pipe(
+  JsonD,
+  D.compose(
+    D.struct({
+      ok: D.literal(true),
     }),
   ),
 )
@@ -82,6 +93,26 @@ export const getUserFromSlack = (slackId: string) =>
           profile: new URL(`https://prereviewcommunity.slack.com/team/${slackId}`),
         }) satisfies SlackUser,
     ),
+  )
+
+export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
+  pipe(
+    'https://slack.com/api/users.profile.set',
+    F.Request('POST'),
+    F.setBody(
+      JSON.stringify({ profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } }),
+      'application/json',
+    ),
+    F.setHeader('Authorization', `Bearer ${userId.accessToken}`),
+    F.send,
+    RTE.mapLeft(() => 'network-error' as const),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+    RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackSuccessD, SlackErrorD))), TE.mapLeft(D.draw))),
+    RTE.chainEitherKW(response =>
+      match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
+    ),
+    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to update Slack profile')))),
+    RTE.bimap(() => 'unavailable' as const, constVoid),
   )
 
 function addSlackApiHeaders(request: F.Request) {

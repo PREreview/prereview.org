@@ -22,6 +22,7 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
+import type { Orcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
@@ -175,7 +176,8 @@ import {
   writeReviewStartMatch,
 } from './routes'
 import { type ScietyListEnv, scietyList } from './sciety-list'
-import { type SlackApiEnv, getUserFromSlack } from './slack'
+import { type SlackApiEnv, addOrcidToSlackProfile, getUserFromSlack } from './slack'
+import type { SlackUserId } from './slack-user-id'
 import { trainings } from './trainings'
 import { type GetUserEnv, getUserFromSession } from './user'
 import {
@@ -368,7 +370,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          saveSlackUserId: withEnv(saveSlackUserId, env),
+          saveSlackUserId: withEnv(
+            (orcid: Orcid, slackUser: SlackUserId) =>
+              pipe(
+                saveSlackUserId(orcid, slackUser),
+                RTE.chainFirstW(() => addOrcidToSlackProfile(slackUser, orcid)),
+              ),
+            env,
+          ),
           unsignValue: value => O.fromPredicate(isString)(cookieSignature.unsign(value, env.secret)),
         })),
       ),

@@ -951,6 +951,8 @@ export const canConnectSlack: Fixtures<
       },
     })
 
+    fetch.post('https://slack.com/api/users.profile.set', { status: Status.OK, body: { ok: true } })
+
     await use(page)
   },
 }

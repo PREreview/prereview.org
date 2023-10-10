@@ -5,6 +5,7 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
+import { toUrl } from 'orcid-id-ts'
 import { URL } from 'url'
 import * as _ from '../src/slack'
 import * as fc from './fc'
@@ -127,4 +128,120 @@ describe('getUserFromSlack', () => {
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
   )
+})
+
+describe('addOrcidToSlackProfile', () => {
+  test.prop([fc.slackUserId(), fc.orcid()])('when the request is successful', async (userId, orcid) => {
+    const fetch = fetchMock.sandbox().postOnce(
+      {
+        url: 'https://slack.com/api/users.profile.set',
+        body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
+        headers: { Authorization: `Bearer ${userId.accessToken}` },
+      },
+      { body: { ok: true } },
+    )
+
+    const actual = await _.addOrcidToSlackProfile(
+      userId,
+      orcid,
+    )({
+      fetch,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(fetch.done()).toBeTruthy()
+  })
+
+  test.prop([fc.slackUserId(), fc.orcid(), fc.fetchResponse({ status: fc.constant(Status.OK) })])(
+    "when the response can't be decoded",
+    async (userId, orcid, response) => {
+      const fetch = fetchMock.sandbox().postOnce(
+        {
+          url: 'https://slack.com/api/users.profile.set',
+          body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
+          headers: { Authorization: `Bearer ${userId.accessToken}` },
+        },
+        response,
+      )
+
+      const actual = await _.addOrcidToSlackProfile(
+        userId,
+        orcid,
+      )({
+        fetch,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
+
+  test.prop([fc.slackUserId(), fc.orcid(), fc.nonEmptyString()])(
+    'when the response has a Slack error',
+    async (userId, orcid, error) => {
+      const fetch = fetchMock.sandbox().postOnce(
+        {
+          url: 'https://slack.com/api/users.profile.set',
+          body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
+          headers: { Authorization: `Bearer ${userId.accessToken}` },
+        },
+        { body: { ok: false, error } },
+      )
+
+      const actual = await _.addOrcidToSlackProfile(
+        userId,
+        orcid,
+      )({
+        fetch,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
+
+  test.prop([fc.slackUserId(), fc.orcid(), fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK)])(
+    'when the response has a non-200 status code',
+    async (userId, orcid, status) => {
+      const fetch = fetchMock.sandbox().postOnce(
+        {
+          url: 'https://slack.com/api/users.profile.set',
+          body: { profile: { fields: { Xf060GTQCKMG: { value: toUrl(orcid).href, alt: orcid } } } },
+          headers: { Authorization: `Bearer ${userId.accessToken}` },
+        },
+        { status },
+      )
+
+      const actual = await _.addOrcidToSlackProfile(
+        userId,
+        orcid,
+      )({
+        fetch,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
+
+  test.prop([fc.slackUserId(), fc.orcid(), fc.error()])('when fetch throws an error', async (userId, orcid, error) => {
+    const actual = await _.addOrcidToSlackProfile(
+      userId,
+      orcid,
+    )({
+      fetch: () => Promise.reject(error),
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
 })
