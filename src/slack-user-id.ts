@@ -25,7 +25,7 @@ export interface DeleteSlackUserIdEnv {
 export const SlackUserIdC = C.struct({
   accessToken: NonEmptyStringC,
   userId: NonEmptyStringC,
-})
+}) satisfies C.Codec<unknown, unknown, SlackUserId>
 
 export const getSlackUserId = (orcid: Orcid) =>
   pipe(
