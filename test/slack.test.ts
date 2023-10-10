@@ -245,3 +245,101 @@ describe('addOrcidToSlackProfile', () => {
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
 })
+
+describe('removeOrcidFromSlackProfile', () => {
+  test.prop([fc.slackUserId()])('when the request is successful', async userId => {
+    const fetch = fetchMock.sandbox().postOnce(
+      {
+        url: 'https://slack.com/api/users.profile.set',
+        body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
+        headers: { Authorization: `Bearer ${userId.accessToken}` },
+      },
+      { body: { ok: true } },
+    )
+
+    const actual = await _.removeOrcidFromSlackProfile(userId)({
+      fetch,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(fetch.done()).toBeTruthy()
+  })
+
+  test.prop([fc.slackUserId(), fc.fetchResponse({ status: fc.constant(Status.OK) })])(
+    "when the response can't be decoded",
+    async (userId, response) => {
+      const fetch = fetchMock.sandbox().postOnce(
+        {
+          url: 'https://slack.com/api/users.profile.set',
+          body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
+          headers: { Authorization: `Bearer ${userId.accessToken}` },
+        },
+        response,
+      )
+
+      const actual = await _.removeOrcidFromSlackProfile(userId)({
+        fetch,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
+
+  test.prop([fc.slackUserId(), fc.nonEmptyString()])('when the response has a Slack error', async (userId, error) => {
+    const fetch = fetchMock.sandbox().postOnce(
+      {
+        url: 'https://slack.com/api/users.profile.set',
+        body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
+        headers: { Authorization: `Bearer ${userId.accessToken}` },
+      },
+      { body: { ok: false, error } },
+    )
+
+    const actual = await _.removeOrcidFromSlackProfile(userId)({
+      fetch,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
+  })
+
+  test.prop([fc.slackUserId(), fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK)])(
+    'when the response has a non-200 status code',
+    async (userId, status) => {
+      const fetch = fetchMock.sandbox().postOnce(
+        {
+          url: 'https://slack.com/api/users.profile.set',
+          body: { profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } },
+          headers: { Authorization: `Bearer ${userId.accessToken}` },
+        },
+        { status },
+      )
+
+      const actual = await _.removeOrcidFromSlackProfile(userId)({
+        fetch,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
+
+  test.prop([fc.slackUserId(), fc.error()])('when fetch throws an error', async (userId, error) => {
+    const actual = await _.removeOrcidFromSlackProfile(userId)({
+      fetch: () => Promise.reject(error),
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})

@@ -115,6 +115,23 @@ export const addOrcidToSlackProfile = (userId: SlackUserId, orcid: Orcid) =>
     RTE.bimap(() => 'unavailable' as const, constVoid),
   )
 
+export const removeOrcidFromSlackProfile = (userId: SlackUserId) =>
+  pipe(
+    'https://slack.com/api/users.profile.set',
+    F.Request('POST'),
+    F.setBody(JSON.stringify({ profile: { fields: { Xf060GTQCKMG: { value: '', alt: '' } } } }), 'application/json'),
+    F.setHeader('Authorization', `Bearer ${userId.accessToken}`),
+    F.send,
+    RTE.mapLeft(() => 'network-error' as const),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+    RTE.chainTaskEitherKW(flow(F.decode(pipe(D.union(SlackSuccessD, SlackErrorD))), TE.mapLeft(D.draw))),
+    RTE.chainEitherKW(response =>
+      match(response).with({ ok: true }, E.right).with({ ok: false, error: P.select() }, E.left).exhaustive(),
+    ),
+    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to update Slack profile')))),
+    RTE.bimap(() => 'unavailable' as const, constVoid),
+  )
+
 function addSlackApiHeaders(request: F.Request) {
   return R.asks(({ slackApiToken }: SlackApiEnv) =>
     pipe(request, F.setHeader('Authorization', `Bearer ${slackApiToken}`)),

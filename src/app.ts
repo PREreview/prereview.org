@@ -176,7 +176,7 @@ import {
   writeReviewStartMatch,
 } from './routes'
 import { type ScietyListEnv, scietyList } from './sciety-list'
-import { type SlackApiEnv, addOrcidToSlackProfile, getUserFromSlack } from './slack'
+import { type SlackApiEnv, addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from './slack'
 import type { SlackUserId } from './slack-user-id'
 import { trainings } from './trainings'
 import { type GetUserEnv, getUserFromSession } from './user'
@@ -392,7 +392,26 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteSlackUserId: withEnv(deleteSlackUserId, env),
+          deleteSlackUserId: withEnv(
+            (orcid: Orcid) =>
+              pipe(
+                RTE.of(orcid),
+                RTE.chainFirst(
+                  flow(
+                    getSlackUserId,
+                    RTE.chainW(removeOrcidFromSlackProfile),
+                    RTE.orElseW(error =>
+                      match(error)
+                        .with('not-found', () => RTE.right(undefined))
+                        .with('unavailable', RTE.left)
+                        .exhaustive(),
+                    ),
+                  ),
+                ),
+                RTE.chainW(deleteSlackUserId),
+              ),
+            env,
+          ),
           isSlackUser: withEnv(isSlackUser, env),
         })),
       ),
