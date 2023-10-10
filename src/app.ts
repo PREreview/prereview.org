@@ -407,12 +407,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                   flow(
                     getSlackUserId,
                     RTE.chainW(removeOrcidFromSlackProfile),
-                    RTE.orElseW(error =>
-                      match(error)
-                        .with('not-found', () => RTE.right(undefined))
-                        .with('unavailable', RTE.left)
-                        .exhaustive(),
-                    ),
+                    RTE.orElseW(() => RTE.right(undefined)),
                   ),
                 ),
                 RTE.chainW(deleteSlackUserId),
