@@ -65,7 +65,7 @@ const authorizationRequestUrl = (state: string) =>
         client_id: clientId,
         response_type: 'code',
         redirect_uri: redirectUri.href,
-        user_scope: 'users.profile:read',
+        user_scope: 'users.profile:read,users.profile:write',
         state,
         team: 'T057XMB3EGH',
       }).toString()}`,

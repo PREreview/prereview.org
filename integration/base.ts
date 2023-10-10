@@ -942,7 +942,12 @@ export const canConnectSlack: Fixtures<
     fetch.post('http://slack.test/token', {
       status: Status.OK,
       body: {
-        authed_user: { id: 'U0JM', access_token: 'access-token', token_type: 'user', scope: 'users.profile:read' },
+        authed_user: {
+          id: 'U0JM',
+          access_token: 'access-token',
+          token_type: 'user',
+          scope: 'users.profile:read,users.profile:write',
+        },
       },
     })
 

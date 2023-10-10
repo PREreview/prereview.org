@@ -195,7 +195,7 @@ describe('connectSlackStart', () => {
                 client_id: slackOauth.clientId,
                 response_type: 'code',
                 redirect_uri: slackOauth.redirectUri.href,
-                user_scope: 'users.profile:read',
+                user_scope: 'users.profile:read,users.profile:write',
                 state: uuid,
                 team: 'T057XMB3EGH',
               }).toString()}`,
