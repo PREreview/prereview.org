@@ -95,6 +95,8 @@ export const {
   webUrl,
 } = fc
 
+const set = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<Set<A>> => fc.uniqueArray(arb).map(values => new Set(values))
+
 const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<E.Either<E, never>> => arb.map(E.left)
 
 const right = <A>(arb: fc.Arbitrary<A>): fc.Arbitrary<E.Either<never, A>> => arb.map(E.right)
@@ -623,7 +625,7 @@ export const isOpenForRequestsVisibility = (): fc.Arbitrary<
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
 
 export const slackUserId = (): fc.Arbitrary<SlackUserId> =>
-  fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString() })
+  fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString(), scopes: set(nonEmptyString()) })
 
 export const clubId = (): fc.Arbitrary<ClubId> =>
   fc.constantFrom(

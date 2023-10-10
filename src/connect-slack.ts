@@ -8,6 +8,7 @@ import * as R from 'fp-ts/Reader'
 import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RR from 'fp-ts/ReadonlyRecord'
+import * as RS from 'fp-ts/ReadonlySet'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { type OAuthEnv, exchangeAuthorizationCode } from 'hyper-ts-oauth'
@@ -27,7 +28,7 @@ import type { PublicUrlEnv } from './public-url'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from './routes'
 import { isSlackUser } from './slack-user'
 import { saveSlackUserId } from './slack-user-id'
-import { NonEmptyStringC } from './string'
+import { type NonEmptyString, NonEmptyStringC, eqNonEmptyString } from './string'
 import { type GetUserEnv, type User, getUser, maybeGetUser } from './user'
 
 export interface SlackOAuthEnv {
@@ -211,6 +212,7 @@ export const connectSlackCode = flow(
     saveSlackUserId(user.orcid, {
       userId: slackUser.id_token['https://slack.com/user_id'],
       accessToken: slackUser.access_token,
+      scopes: RS.fromReadonlyArray(eqNonEmptyString)(['openid' as NonEmptyString, 'profile' as NonEmptyString]),
     }),
   ),
   RM.ichain(() => RM.redirect(format(myDetailsMatch.formatter, {}))),

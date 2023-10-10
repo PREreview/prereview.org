@@ -333,7 +333,11 @@ describe('connectSlackCode', () => {
         ]),
       )
       expect(unsignValue).toHaveBeenCalledWith(signedState)
-      expect(saveSlackUserId).toHaveBeenCalledWith(user.orcid, { accessToken: accessToken.access_token, userId })
+      expect(saveSlackUserId).toHaveBeenCalledWith(user.orcid, {
+        accessToken: accessToken.access_token,
+        scopes: new Set(['openid', 'profile']),
+        userId,
+      })
     },
   )
 
