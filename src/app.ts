@@ -727,7 +727,10 @@ const isSlackUser = flow(
   ),
 )
 
-const getSlackUser = flow(getSlackUserId, RTE.chainW(getUserFromSlack))
+const getSlackUser = flow(
+  getSlackUserId,
+  RTE.chainW(({ userId }) => getUserFromSlack(userId)),
+)
 
 const getUser = pipe(getSession(), RM.chainOptionKW(() => 'no-session' as const)(getUserFromSession))
 

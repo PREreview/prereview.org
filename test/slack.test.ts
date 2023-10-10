@@ -10,19 +10,19 @@ import * as _ from '../src/slack'
 import * as fc from './fc'
 
 describe('getUserFromSlack', () => {
-  test.prop([fc.string(), fc.slackUserId(), fc.nonEmptyString(), fc.url()])(
+  test.prop([fc.string(), fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.nonEmptyString(), fc.url()])(
     'when the user can be decoded',
-    async (slackApiToken, slackUserId, name, image) => {
+    async (slackApiToken, user, name, image) => {
       const fetch = fetchMock.sandbox().getOnce(
         {
           url: 'begin:https://slack.com/api/users.profile.get?',
-          query: { user: slackUserId.userId },
+          query: { user },
           headers: { Authorization: `Bearer ${slackApiToken}` },
         },
         { body: { ok: true, profile: { real_name: name, image_48: image } } },
       )
 
-      const actual = await _.getUserFromSlack(slackUserId)({
+      const actual = await _.getUserFromSlack(user)({
         fetch,
         slackApiToken,
         clock: SystemClock,
@@ -33,50 +33,51 @@ describe('getUserFromSlack', () => {
         E.right({
           name,
           image,
-          profile: new URL(`https://prereviewcommunity.slack.com/team/${slackUserId.userId}`),
+          profile: new URL(`https://prereviewcommunity.slack.com/team/${user}`),
         }),
       )
       expect(fetch.done()).toBeTruthy()
     },
   )
 
-  test.prop([fc.string(), fc.slackUserId(), fc.fetchResponse({ status: fc.constant(Status.OK) })])(
-    "when the user can't be decoded",
-    async (slackApiToken, slackUserId, response) => {
-      const fetch = fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://slack.com/api/users.profile.get?',
-          query: { user: slackUserId.userId },
-          headers: { Authorization: `Bearer ${slackApiToken}` },
-        },
-        response,
-      )
+  test.prop([
+    fc.string(),
+    fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    fc.fetchResponse({ status: fc.constant(Status.OK) }),
+  ])("when the user can't be decoded", async (slackApiToken, user, response) => {
+    const fetch = fetchMock.sandbox().getOnce(
+      {
+        url: 'begin:https://slack.com/api/users.profile.get?',
+        query: { user },
+        headers: { Authorization: `Bearer ${slackApiToken}` },
+      },
+      response,
+    )
 
-      const actual = await _.getUserFromSlack(slackUserId)({
-        fetch,
-        slackApiToken,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+    const actual = await _.getUserFromSlack(user)({
+      fetch,
+      slackApiToken,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
-    },
-  )
+    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
+  })
 
-  test.prop([fc.string(), fc.slackUserId(), fc.nonEmptyString()])(
+  test.prop([fc.string(), fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.nonEmptyString()])(
     'when the response has a Slack error',
-    async (slackApiToken, slackUserId, error) => {
+    async (slackApiToken, user, error) => {
       const fetch = fetchMock.sandbox().getOnce(
         {
           url: 'begin:https://slack.com/api/users.profile.get?',
-          query: { user: slackUserId.userId },
+          query: { user },
           headers: { Authorization: `Bearer ${slackApiToken}` },
         },
         { body: { ok: false, error } },
       )
 
-      const actual = await _.getUserFromSlack(slackUserId)({
+      const actual = await _.getUserFromSlack(user)({
         fetch,
         slackApiToken,
         clock: SystemClock,
@@ -88,31 +89,32 @@ describe('getUserFromSlack', () => {
     },
   )
 
-  test.prop([fc.string(), fc.slackUserId(), fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK)])(
-    'when the response has a non-200 status code',
-    async (slackApiToken, slackUserId, status) => {
-      const fetch = fetchMock.sandbox().getOnce(
-        {
-          url: 'begin:https://slack.com/api/users.profile.get?',
-          query: { user: slackUserId.userId },
-          headers: { Authorization: `Bearer ${slackApiToken}` },
-        },
-        { status },
-      )
+  test.prop([
+    fc.string(),
+    fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK),
+  ])('when the response has a non-200 status code', async (slackApiToken, user, status) => {
+    const fetch = fetchMock.sandbox().getOnce(
+      {
+        url: 'begin:https://slack.com/api/users.profile.get?',
+        query: { user },
+        headers: { Authorization: `Bearer ${slackApiToken}` },
+      },
+      { status },
+    )
 
-      const actual = await _.getUserFromSlack(slackUserId)({
-        fetch,
-        slackApiToken,
-        clock: SystemClock,
-        logger: () => IO.of(undefined),
-      })()
+    const actual = await _.getUserFromSlack(user)({
+      fetch,
+      slackApiToken,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
-    },
-  )
+    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
+  })
 
-  test.prop([fc.string(), fc.slackUserId(), fc.error()])(
+  test.prop([fc.string(), fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.error()])(
     'when fetch throws an error',
     async (slackApiToken, user, error) => {
       const actual = await _.getUserFromSlack(user)({
