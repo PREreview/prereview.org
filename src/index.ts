@@ -39,6 +39,7 @@ const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
+  emailAddressStore: new Keyv({ namespace: 'email-address', store: keyvStore }),
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: 'data/cache',

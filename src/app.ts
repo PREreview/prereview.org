@@ -26,6 +26,7 @@ import type { GhostApiEnv } from './ghost'
 import { handleError } from './http-error'
 import type {
   CareerStageStoreEnv,
+  EmailAddressStoreEnv,
   IsOpenForRequestsStoreEnv,
   LanguagesStoreEnv,
   LocationStoreEnv,
@@ -52,6 +53,7 @@ import type { WasPrereviewRemovedEnv } from './zenodo'
 
 export type ConfigEnv = CareerStageStoreEnv &
   CloudinaryApiEnv &
+  EmailAddressStoreEnv &
   FathomEnv &
   FormStoreEnv &
   GhostApiEnv &

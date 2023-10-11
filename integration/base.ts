@@ -822,6 +822,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       fetch,
       formStore: new Keyv(),
       careerStageStore,
+      emailAddressStore: new Keyv(),
       ghostApi: {
         key: 'key',
       },

@@ -5,7 +5,6 @@ import * as O from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
@@ -29,17 +28,20 @@ import { funding } from './funding'
 import { home } from './home'
 import {
   deleteCareerStage,
+  deleteEmailAddress,
   deleteLanguages,
   deleteLocation,
   deleteResearchInterests,
   deleteSlackUserId,
   getCareerStage,
+  getEmailAddress,
   getLanguages,
   getLocation,
   getResearchInterests,
   getSlackUserId,
   isOpenForRequests,
   saveCareerStage,
+  saveEmailAddress,
   saveLanguages,
   saveLocation,
   saveOpenForRequests,
@@ -551,9 +553,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteEmailAddress: () => TE.left('unavailable'),
-          getEmailAddress: () => TE.left('not-found'),
-          saveEmailAddress: () => TE.left('unavailable'),
+          deleteEmailAddress: withEnv(deleteEmailAddress, env),
+          getEmailAddress: withEnv(getEmailAddress, env),
+          saveEmailAddress: withEnv(saveEmailAddress, env),
         })),
       ),
     ),

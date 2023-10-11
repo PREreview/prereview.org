@@ -8,6 +8,7 @@ import type { Encoder } from 'io-ts/Encoder'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
+import { EmailAddressC } from './email-address'
 import { IsOpenForRequestsC } from './is-open-for-requests'
 import { LanguagesC } from './languages'
 import { LocationC } from './location'
@@ -17,6 +18,10 @@ import { NonEmptyStringC } from './string'
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<unknown>
+}
+
+export interface EmailAddressStoreEnv {
+  emailAddressStore: Keyv<unknown>
 }
 
 export interface IsOpenForRequestsStoreEnv {
@@ -182,4 +187,19 @@ export const getLanguages = flow(
 export const saveLanguages = flow(
   setKey(OrcidE, LanguagesC),
   RTE.local((env: LanguagesStoreEnv) => env.languagesStore),
+)
+
+export const deleteEmailAddress = flow(
+  deleteKey(OrcidE),
+  RTE.local((env: EmailAddressStoreEnv) => env.emailAddressStore),
+)
+
+export const getEmailAddress = flow(
+  getKey(OrcidE, EmailAddressC),
+  RTE.local((env: EmailAddressStoreEnv) => env.emailAddressStore),
+)
+
+export const saveEmailAddress = flow(
+  setKey(OrcidE, EmailAddressC),
+  RTE.local((env: EmailAddressStoreEnv) => env.emailAddressStore),
 )

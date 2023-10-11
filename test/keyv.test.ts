@@ -3,6 +3,7 @@ import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import Keyv from 'keyv'
 import { get } from 'spectacles-ts'
+import { EmailAddressC } from '../src/email-address'
 import * as _ from '../src/keyv'
 import { SlackUserIdC } from '../src/slack-user-id'
 import * as fc from './fc'
@@ -792,6 +793,138 @@ describe('saveLanguages', () => {
       store.set = () => Promise.reject(error)
 
       const actual = await _.saveLanguages(orcid, languages)({ languagesStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
+
+describe('deleteEmailAddress', () => {
+  test.prop([fc.orcid(), fc.emailAddress()])('when the key contains an email address', async (orcid, emailAddress) => {
+    const store = new Keyv()
+    await store.set(orcid, EmailAddressC.encode(emailAddress))
+
+    const actual = await _.deleteEmailAddress(orcid)({ emailAddressStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
+  })
+
+  test.prop([fc.orcid(), fc.anything()])(
+    'when the key contains something other than an email address',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.deleteEmailAddress(orcid)({ emailAddressStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.has(orcid)).toBeFalsy()
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not set', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.deleteEmailAddress(orcid)({ emailAddressStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.has(orcid)).toBeFalsy()
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.delete = () => Promise.reject(error)
+
+    const actual = await _.deleteEmailAddress(orcid)({ emailAddressStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
+describe('getEmailAddress', () => {
+  test.prop([fc.orcid(), fc.emailAddress()])(
+    'when the key contains an email address',
+    async (orcid, getEmailAddress) => {
+      const store = new Keyv()
+      await store.set(orcid, EmailAddressC.encode(getEmailAddress))
+
+      const actual = await _.getEmailAddress(orcid)({ emailAddressStore: store })()
+
+      expect(actual).toStrictEqual(E.right(getEmailAddress))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.anything()])(
+    'when the key contains something other than an email address',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.getEmailAddress(orcid)({ emailAddressStore: store })()
+
+      expect(actual).toStrictEqual(E.left('not-found'))
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.getEmailAddress(orcid)({ emailAddressStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.get = (): Promise<never> => Promise.reject(error)
+
+    const actual = await _.getEmailAddress(orcid)({ emailAddressStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
+describe('saveEmailAddress', () => {
+  test.prop([fc.orcid(), fc.emailAddress()])('when the key contains an email address', async (orcid, emailAddress) => {
+    const store = new Keyv()
+    await store.set(orcid, EmailAddressC.encode(emailAddress))
+
+    const actual = await _.saveEmailAddress(orcid, emailAddress)({ emailAddressStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(EmailAddressC.encode(emailAddress))
+  })
+
+  test.prop([fc.orcid(), fc.anything(), fc.emailAddress()])(
+    'when the key already contains something other than an email address',
+    async (orcid, value, emailAddress) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveEmailAddress(orcid, emailAddress)({ emailAddressStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(EmailAddressC.encode(emailAddress))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.emailAddress()])('when the key is not set', async (orcid, emailAddress) => {
+    const store = new Keyv()
+
+    const actual = await _.saveEmailAddress(orcid, emailAddress)({ emailAddressStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(EmailAddressC.encode(emailAddress))
+  })
+
+  test.prop([fc.orcid(), fc.emailAddress(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, emailAddress, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveEmailAddress(orcid, emailAddress)({ emailAddressStore: store })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
