@@ -3,14 +3,12 @@ import express from 'express'
 import type { Json } from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { constant, flow, identity, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
-import { NotFound } from 'http-errors'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
-import { route } from 'hyper-ts-routing'
 import { type SessionEnv, getSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/express'
@@ -39,13 +37,13 @@ import {
   getPreprintIdFromLegacyPreviewUuid,
   getProfileIdFromLegacyPreviewUuid,
 } from './legacy-prereview'
-import { legacyRoutes } from './legacy-routes'
+import { type LegacyEnv, legacyRoutes } from './legacy-routes'
 import type { IsUserBlockedEnv } from './log-in'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import { getPreprintFromPhilsci } from './philsci'
 import type { IndeterminatePreprintId } from './preprint-id'
 import type { PublicUrlEnv } from './public-url'
-import { type RouterEnv, router } from './router'
+import { type RouterEnv, routes } from './router'
 import type { ScietyListEnv } from './sciety-list'
 import type { SlackApiEnv, SlackApiUpdateEnv } from './slack'
 import { getUserFromSession } from './user'
@@ -120,31 +118,20 @@ const doesPreprintExist = flow(
 
 const getUser = pipe(getSession(), RM.chainOptionKW(() => 'no-session' as const)(getUserFromSession))
 
-const routerMiddleware = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
-
 const appMiddleware: RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void> = pipe(
-  routerMiddleware,
-  RM.orElseW(() =>
-    pipe(
-      legacyRoutes,
-      R.local((env: RouterEnv) => ({
-        ...env,
-        getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
-        getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
-      })),
-    ),
-  ),
+  routes,
+  RM.orElseW(() => legacyRoutes),
   RM.orElseW(handleError),
-  R.local(
-    (env: AppEnv): RouterEnv => ({
-      ...env,
-      doesPreprintExist: withEnv(doesPreprintExist, env),
-      getUser: withEnv(() => getUser, env),
-      getPreprint: withEnv(getPreprint, env),
-      getPreprintTitle: withEnv(getPreprintTitle, env),
-      templatePage: withEnv(page, env),
-    }),
-  ),
+  R.local((env: AppEnv): RouterEnv & LegacyEnv => ({
+    ...env,
+    doesPreprintExist: withEnv(doesPreprintExist, env),
+    getUser: withEnv(() => getUser, env),
+    getPreprint: withEnv(getPreprint, env),
+    getPreprintTitle: withEnv(getPreprintTitle, env),
+    templatePage: withEnv(page, env),
+    getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
+    getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
+  })),
   R.local(collapseRequests()),
   R.local(logFetch),
 )

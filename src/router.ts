@@ -5,10 +5,12 @@ import * as O from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import { flow, pipe } from 'fp-ts/function'
+import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
+import { NotFound } from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
-import type * as RM from 'hyper-ts/ReaderMiddleware'
+import { route } from 'hyper-ts-routing'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
@@ -218,7 +220,7 @@ const publishPrereview = (newPrereview: NewPrereview) =>
     ),
   )
 
-export const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
+const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       homeMatch.parser,
@@ -675,3 +677,5 @@ export const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, Respons
   ],
   concatAll(P.getParserMonoid()),
 )
+
+export const routes = pipe(route(router, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
