@@ -47,6 +47,7 @@ const server = app({
     },
   }),
   formStore: new Keyv({ namespace: 'forms', store: keyvStore }),
+  canChangeEmailAddress: env.CAN_CHANGE_EMAIL_ADDRESS,
   canConnectSlack: user =>
     [
       '0000-0001-8511-8689',

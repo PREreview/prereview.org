@@ -222,6 +222,8 @@ export const changeLanguagesVisibilityMatch = pipe(
   P.then(P.end),
 )
 
+export const changeEmailAddressMatch = pipe(P.lit('my-details'), P.then(P.lit('change-email-address')), P.then(P.end))
+
 export const clubProfileMatch = pipe(P.lit('clubs'), P.then(type('id', ClubIdC)), P.then(P.end))
 
 export const profileMatch = pipe(P.lit('profiles'), P.then(type('profile', ProfileIdC)), P.then(P.end))

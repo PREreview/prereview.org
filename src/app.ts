@@ -42,7 +42,7 @@ import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import { disconnectSlack } from './disconnect-slack'
 import { ediStatement } from './edi-statement'
-import type { CanConnectSlackEnv } from './feature-flags'
+import type { CanChangeEmailAddressEnv, CanConnectSlackEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
@@ -90,6 +90,7 @@ import { type IsUserBlockedEnv, authenticate, authenticateError, logIn, logOut }
 import {
   changeCareerStage,
   changeCareerStageVisibility,
+  changeEmailAddress,
   changeLanguages,
   changeLanguagesVisibility,
   changeLocation,
@@ -118,6 +119,7 @@ import {
   aboutUsMatch,
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
+  changeEmailAddressMatch,
   changeLanguagesMatch,
   changeLanguagesVisibilityMatch,
   changeLocationMatch,
@@ -244,7 +246,8 @@ export type AppEnv = CareerStageStoreEnv &
   WasPrereviewRemovedEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean
-  } & CanConnectSlackEnv
+  } & CanConnectSlackEnv &
+  CanChangeEmailAddressEnv
 
 type RouterEnv = AppEnv & DoesPreprintExistEnv & GetPreprintEnv & GetPreprintTitleEnv & GetUserEnv & TemplatePageEnv
 
@@ -563,6 +566,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       changeLanguagesVisibilityMatch.parser,
       P.map(() => changeLanguagesVisibility),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteLanguages: withEnv(deleteLanguages, env),
+          getLanguages: withEnv(getLanguages, env),
+          saveLanguages: withEnv(saveLanguages, env),
+        })),
+      ),
+    ),
+    pipe(
+      changeEmailAddressMatch.parser,
+      P.map(() => changeEmailAddress),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,

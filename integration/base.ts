@@ -810,6 +810,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   ) => {
     const server = app({
       allowSiteCrawlers: true,
+      canChangeEmailAddress: false,
       canConnectSlack,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
