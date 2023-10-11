@@ -1,5 +1,14 @@
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import { areLoggedIn, canConnectSlack, canLogIn, expect, isASlackUser, test, userIsBlocked } from './base'
+import {
+  areLoggedIn,
+  canChangeEmailAddress,
+  canConnectSlack,
+  canLogIn,
+  expect,
+  isASlackUser,
+  test,
+  userIsBlocked,
+} from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
@@ -21,6 +30,26 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   }
   await expect(page).toHaveScreenshot()
 })
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canChangeEmailAddress)(
+  'can give my email address',
+  async ({ page }, testInfo) => {
+    await page.getByRole('link', { name: 'My details' }).click()
+    await page.goto('/my-details/change-email-address')
+    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.goto('/my-details/change-email-address')
+
+    testInfo.fail()
+
+    await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlackUser)(
   'can connect my Slack Community account',

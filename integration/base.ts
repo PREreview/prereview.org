@@ -24,7 +24,7 @@ import {
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { type ConfigEnv, app } from '../src/app'
-import type { CanConnectSlackEnv } from '../src/feature-flags'
+import type { CanChangeEmailAddressEnv, CanConnectSlackEnv } from '../src/feature-flags'
 import type {
   IsOpenForRequestsStoreEnv,
   LanguagesStoreEnv,
@@ -55,6 +55,7 @@ interface AppFixtures {
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: ConfigEnv['slackUserIdStore']
   canConnectSlack: CanConnectSlackEnv['canConnectSlack']
+  canChangeEmailAddress: CanChangeEmailAddressEnv['canChangeEmailAddress']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
 }
@@ -74,6 +75,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
+  },
+  canChangeEmailAddress: async ({}, use) => {
+    await use(false)
   },
   fetch: async ({}, use) => {
     const fetch = fetchMock.sandbox()
@@ -791,6 +795,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   server: async (
     {
+      canChangeEmailAddress,
       canConnectSlack,
       fetch,
       logger,
@@ -810,7 +815,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   ) => {
     const server = app({
       allowSiteCrawlers: true,
-      canChangeEmailAddress: false,
+      canChangeEmailAddress,
       canConnectSlack,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
@@ -929,6 +934,16 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
     await expect(page).toHaveTitle(/PREreview/)
 
     await use(page)
+  },
+}
+
+export const canChangeEmailAddress: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canChangeEmailAddress'>
+> = {
+  canChangeEmailAddress: async ({}, use) => {
+    await use(true)
   },
 }
 
