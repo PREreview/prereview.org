@@ -15,7 +15,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
 import { aboutUs } from './about-us'
-import type { AppEnv } from './app'
+import type { ConfigEnv } from './app'
 import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
@@ -200,7 +200,7 @@ const withEnv =
   (...a: A) =>
     f(...a)(env)
 
-export type RouterEnv = AppEnv &
+export type RouterEnv = ConfigEnv &
   DoesPreprintExistEnv &
   GetPreprintEnv &
   GetPreprintTitleEnv &
@@ -312,7 +312,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       orcidCodeMatch.parser,
       P.map(({ code, state }) => authenticate(code, state)),
       P.map(
-        R.local((env: AppEnv) => ({
+        R.local((env: ConfigEnv) => ({
           ...env,
           getPseudonym: withEnv(getPseudonymFromLegacyPrereview, env),
         })),

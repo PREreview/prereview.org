@@ -23,7 +23,7 @@ import {
   UnsubmittedDepositionC,
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
-import { type AppEnv, app } from '../src/app'
+import { type ConfigEnv, app } from '../src/app'
 import type { CanConnectSlackEnv } from '../src/feature-flags'
 import type {
   IsOpenForRequestsStoreEnv,
@@ -53,7 +53,7 @@ interface AppFixtures {
   languagesStore: LanguagesStoreEnv['languagesStore']
   locationStore: LocationStoreEnv['locationStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
-  slackUserIdStore: AppEnv['slackUserIdStore']
+  slackUserIdStore: ConfigEnv['slackUserIdStore']
   canConnectSlack: CanConnectSlackEnv['canConnectSlack']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']

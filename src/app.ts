@@ -50,7 +50,7 @@ import { getUserFromSession } from './user'
 import type { FormStoreEnv } from './write-review'
 import type { WasPrereviewRemovedEnv } from './zenodo'
 
-export type AppEnv = CareerStageStoreEnv &
+export type ConfigEnv = CareerStageStoreEnv &
   CloudinaryApiEnv &
   FathomEnv &
   FormStoreEnv &
@@ -129,7 +129,7 @@ const withEnv =
   (...a: A) =>
     f(...a)(env)
 
-export const app = (deps: AppEnv) => {
+export const app = (config: ConfigEnv) => {
   const app = express()
     .disable('x-powered-by')
     .use((req, res, next) => {
@@ -144,10 +144,10 @@ export const app = (deps: AppEnv) => {
           requestId,
         },
         L.infoP('Received HTTP request'),
-      )(deps)()
+      )(config)()
 
       res.once('finish', () => {
-        pipe({ status: res.statusCode, requestId }, L.infoP('Sent HTTP response'))(deps)()
+        pipe({ status: res.statusCode, requestId }, L.infoP('Sent HTTP response'))(config)()
       })
 
       res.once('close', () => {
@@ -155,10 +155,13 @@ export const app = (deps: AppEnv) => {
           return
         }
 
-        pipe({ status: res.statusCode, requestId }, L.warnP('HTTP response may not have been completely sent'))(deps)()
+        pipe(
+          { status: res.statusCode, requestId },
+          L.warnP('HTTP response may not have been completely sent'),
+        )(config)()
       })
 
-      if (!deps.allowSiteCrawlers) {
+      if (!config.allowSiteCrawlers) {
         res.header('X-Robots-Tag', 'none, noarchive')
       }
 
@@ -179,13 +182,13 @@ export const app = (deps: AppEnv) => {
               'secure.gravatar.com',
               '*.wp.com',
             ],
-            upgradeInsecureRequests: deps.publicUrl.protocol === 'https:' ? [] : null,
+            upgradeInsecureRequests: config.publicUrl.protocol === 'https:' ? [] : null,
           },
         },
         crossOriginEmbedderPolicy: {
           policy: 'credentialless',
         },
-        strictTransportSecurity: deps.publicUrl.protocol === 'https:',
+        strictTransportSecurity: config.publicUrl.protocol === 'https:',
       }),
     )
     .get('/robots.txt', (req, res) => {
@@ -206,7 +209,7 @@ export const app = (deps: AppEnv) => {
     .use(
       '/api/v2',
       createProxyMiddleware({
-        target: deps.legacyPrereviewApi.url.href,
+        target: config.legacyPrereviewApi.url.href,
         changeOrigin: true,
         logLevel: 'silent',
         onProxyReq: (proxyReq, req) => {
@@ -216,21 +219,21 @@ export const app = (deps: AppEnv) => {
             requestId: req.header('Fly-Request-Id') ?? null,
           }
 
-          L.debugP('Sending proxy HTTP request')(payload)(deps)()
+          L.debugP('Sending proxy HTTP request')(payload)(config)()
 
           proxyReq.once('response', response => {
             L.debugP('Received proxy HTTP response')({
               ...payload,
               status: response.statusCode as Json,
               headers: response.headers as Json,
-            })(deps)()
+            })(config)()
           })
 
           proxyReq.once('error', error => {
             L.warnP('Did not receive a proxy HTTP response')({
               ...payload,
               error: error.message,
-            })(deps)()
+            })(config)()
           })
         },
       }),
@@ -246,7 +249,7 @@ export const app = (deps: AppEnv) => {
     .use((req, res, next) => {
       return pipe(
         appMiddleware,
-        R.local((env: AppEnv): RouterEnv & LegacyEnv => ({
+        R.local((env: ConfigEnv): RouterEnv & LegacyEnv => ({
           ...env,
           doesPreprintExist: withEnv(doesPreprintExist, env),
           getUser: withEnv(() => getUser, env),
@@ -259,7 +262,7 @@ export const app = (deps: AppEnv) => {
         R.local(collapseRequests()),
         R.local(logFetch()),
         R.local(
-          (appEnv: AppEnv): AppEnv => ({
+          (appEnv: ConfigEnv): ConfigEnv => ({
             ...appEnv,
             logger: pipe(
               appEnv.logger,
@@ -270,7 +273,7 @@ export const app = (deps: AppEnv) => {
             ),
           }),
         ),
-        apply(deps),
+        apply(config),
         toRequestHandler,
       )(req, res, next)
     })
