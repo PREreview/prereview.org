@@ -26,6 +26,7 @@ import { ediStatement } from './edi-statement'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
 import { home } from './home'
+import { howToUse } from './how-to-use'
 import {
   deleteCareerStage,
   deleteEmailAddress,
@@ -108,6 +109,7 @@ import {
   findAPreprintMatch,
   fundingMatch,
   homeMatch,
+  howToUseMatch,
   liveReviewsMatch,
   logInMatch,
   logOutMatch,
@@ -258,6 +260,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       aboutUsMatch.parser,
       P.map(() => aboutUs),
+    ),
+    pipe(
+      howToUseMatch.parser,
+      P.map(() => howToUse),
     ),
     pipe(
       peopleMatch.parser,

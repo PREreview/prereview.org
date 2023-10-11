@@ -120,6 +120,8 @@ export const aboutUsMatch = pipe(P.lit('about'), P.then(P.end))
 
 export const peopleMatch = pipe(P.lit('people'), P.then(P.end))
 
+export const howToUseMatch = pipe(P.lit('how-to-use'), P.then(P.end))
+
 export const codeOfConductMatch = pipe(P.lit('code-of-conduct'), P.then(P.end))
 
 export const ediStatementMatch = pipe(P.lit('edi-statement'), P.then(P.end))
