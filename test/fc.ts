@@ -28,6 +28,7 @@ import type { CareerStage } from '../src/career-stage'
 import type { ClubId } from '../src/club-id'
 import type { CrossrefPreprintId } from '../src/crossref'
 import type { DatacitePreprintId } from '../src/datacite'
+import type { EmailAddress } from '../src/email-address'
 import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
 import type { IsOpenForRequests } from '../src/is-open-for-requests'
 import type { Languages } from '../src/languages'
@@ -164,6 +165,8 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
     )
 
 export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
+
+export const emailAddress = (): fc.Arbitrary<EmailAddress> => fc.emailAddress() as fc.Arbitrary<EmailAddress>
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
 

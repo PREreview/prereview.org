@@ -18,7 +18,7 @@ describe('changeEmailAddress', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.user(),
-      fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.nonEmptyString()),
+      fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.emailAddress()),
     ])('when there is a logged in user', async (oauth, publicUrl, connection, user, emailAddress) => {
       const actual = await runMiddleware(
         _.changeEmailAddress({
@@ -46,7 +46,7 @@ describe('changeEmailAddress', () => {
       test.prop([
         fc.oauth(),
         fc.origin(),
-        fc.nonEmptyString().chain(emailAddress =>
+        fc.emailAddress().chain(emailAddress =>
           fc.tuple(
             fc.constant(emailAddress),
             fc.connection({
@@ -56,7 +56,7 @@ describe('changeEmailAddress', () => {
           ),
         ),
         fc.user(),
-        fc.nonEmptyString(),
+        fc.emailAddress(),
       ])(
         'there is an email address already',
         async (oauth, publicUrl, [emailAddress, connection], user, existingEmailAddress) => {
@@ -89,7 +89,7 @@ describe('changeEmailAddress', () => {
       test.prop([
         fc.oauth(),
         fc.origin(),
-        fc.nonEmptyString().chain(emailAddress =>
+        fc.emailAddress().chain(emailAddress =>
           fc.tuple(
             fc.constant(emailAddress),
             fc.connection({
@@ -130,11 +130,43 @@ describe('changeEmailAddress', () => {
       fc.oauth(),
       fc.origin(),
       fc.connection({
-        body: fc.record({ emailAddress: fc.string() }),
+        body: fc.record({ emailAddress: fc.nonEmptyString() }),
         method: fc.constant('POST'),
       }),
       fc.user(),
-      fc.either(fc.constant('not-found' as const), fc.nonEmptyString()),
+      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
+    ])('it is not an email address', async (oauth, publicUrl, connection, user, emailAddress) => {
+      const actual = await runMiddleware(
+        _.changeEmailAddress({
+          canChangeEmailAddress: true,
+          getUser: () => M.right(user),
+          publicUrl,
+          oauth,
+          deleteEmailAddress: shouldNotBeCalled,
+          getEmailAddress: () => TE.fromEither(emailAddress),
+          saveEmailAddress: shouldNotBeCalled,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.BadRequest },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.connection({
+        body: fc.record({ emailAddress: fc.emailAddress() }),
+        method: fc.constant('POST'),
+      }),
+      fc.user(),
+      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
     ])(
       'when the form has been submitted but the email address cannot be saved',
       async (oauth, publicUrl, connection, user, emailAddress) => {

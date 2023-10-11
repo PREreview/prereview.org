@@ -516,6 +516,33 @@ test.extend(canLogIn).extend(userIsBlocked)(
   },
 )
 
+test.extend(canLogIn).extend(areLoggedIn).extend(canChangeEmailAddress)(
+  'have to give a valid email address',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/my-details/change-email-address')
+    await page.getByLabel('What is your email address?').fill('not an email address')
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', { name: 'Enter an email address in the correct format, like name@example.com' })
+      .click()
+
+    await expect(page.getByLabel('What is your email address?')).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you are open for requests',
   async ({ javaScriptEnabled, page }) => {
