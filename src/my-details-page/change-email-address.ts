@@ -205,6 +205,9 @@ function createFormPage(user: User, form: ChangeEmailAddressForm) {
               name="emailAddress"
               id="email-address"
               type="text"
+              inputmode="email"
+              spellcheck="false"
+              autocomplete="email"
               ${match(form.emailAddress)
                 .with({ right: undefined }, () => '')
                 .with({ right: P.select(P.string) }, value => html`value="${value}"`)
