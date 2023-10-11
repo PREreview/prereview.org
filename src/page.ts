@@ -13,6 +13,7 @@ import {
   ediStatementMatch,
   fundingMatch,
   homeMatch,
+  howToUseMatch,
   liveReviewsMatch,
   logInMatch,
   logOutMatch,
@@ -48,6 +49,7 @@ export interface Page {
     | 'edi-statement'
     | 'funding'
     | 'home'
+    | 'how-to-use'
     | 'live-reviews'
     | 'my-details'
     | 'partners'
@@ -266,6 +268,13 @@ export function page({
                       >
                     </li>
                     <li><a href="https://content.prereview.org/">Blog</a></li>
+                    <li>
+                      <a
+                        href="${format(howToUseMatch.formatter, {})}"
+                        ${current === 'how-to-use' ? html`aria-current="page"` : ''}
+                        >How to use</a
+                      >
+                    </li>
                   </ul>
 
                   <ul class="contacts" aria-label="Contact us">
