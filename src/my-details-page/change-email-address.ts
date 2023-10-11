@@ -98,7 +98,7 @@ function createFormPage(user: User, emailAddress: O.Option<NonEmptyString>) {
 
       <main id="form">
         <form method="post" action="${format(changeEmailAddressMatch.formatter, {})}" novalidate>
-          <h1><label for="emailAddress">What is your email address?</label></h1>
+          <h1><label for="email-address">What is your email address?</label></h1>
 
           <input
             name="emailAddress"
