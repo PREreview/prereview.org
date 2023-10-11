@@ -3,7 +3,7 @@ import express from 'express'
 import type { Json } from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { flow, identity, pipe } from 'fp-ts/function'
+import { apply, flow, identity, pipe } from 'fp-ts/function'
 import helmet from 'helmet'
 import http from 'http'
 import { createProxyMiddleware } from 'http-proxy-middleware'
@@ -118,22 +118,10 @@ const doesPreprintExist = flow(
 
 const getUser = pipe(getSession(), RM.chainOptionKW(() => 'no-session' as const)(getUserFromSession))
 
-const appMiddleware: RM.ReaderMiddleware<AppEnv, StatusOpen, ResponseEnded, never, void> = pipe(
+const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, ResponseEnded, never, void> = pipe(
   routes,
   RM.orElseW(() => legacyRoutes),
   RM.orElseW(handleError),
-  R.local((env: AppEnv): RouterEnv & LegacyEnv => ({
-    ...env,
-    doesPreprintExist: withEnv(doesPreprintExist, env),
-    getUser: withEnv(() => getUser, env),
-    getPreprint: withEnv(getPreprint, env),
-    getPreprintTitle: withEnv(getPreprintTitle, env),
-    templatePage: withEnv(page, env),
-    getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
-    getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
-  })),
-  R.local(collapseRequests()),
-  R.local(logFetch),
 )
 
 const withEnv =
@@ -257,16 +245,32 @@ export const app = (deps: AppEnv) => {
     })
     .use((req, res, next) => {
       return pipe(
-        appMiddleware({
-          ...deps,
-          logger: pipe(
-            deps.logger,
-            l.contramap(entry => ({
-              ...entry,
-              payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
-            })),
-          ),
-        }),
+        appMiddleware,
+        R.local((env: AppEnv): RouterEnv & LegacyEnv => ({
+          ...env,
+          doesPreprintExist: withEnv(doesPreprintExist, env),
+          getUser: withEnv(() => getUser, env),
+          getPreprint: withEnv(getPreprint, env),
+          getPreprintTitle: withEnv(getPreprintTitle, env),
+          templatePage: withEnv(page, env),
+          getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
+          getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
+        })),
+        R.local(collapseRequests()),
+        R.local(logFetch()),
+        R.local(
+          (appEnv: AppEnv): AppEnv => ({
+            ...appEnv,
+            logger: pipe(
+              appEnv.logger,
+              l.contramap(entry => ({
+                ...entry,
+                payload: { requestId: req.header('Fly-Request-Id') ?? null, ...entry.payload },
+              })),
+            ),
+          }),
+        ),
+        apply(deps),
         toRequestHandler,
       )(req, res, next)
     })

@@ -69,8 +69,8 @@ export function collapseRequests<E extends F.FetchEnv & L.LoggerEnv>(): (env: E)
   })
 }
 
-export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(env: E): E {
-  return {
+export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(): (env: E) => E {
+  return env => ({
     ...env,
     fetch: async (url, init) => {
       L.debugP('Sending HTTP request')({
@@ -107,5 +107,5 @@ export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(env: E): E {
           throw error
         })
     },
-  }
+  })
 }
