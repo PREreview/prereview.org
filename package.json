@@ -124,7 +124,7 @@
     "postcss": "^8.4.31",
     "postcss-font-display": "^0.3.0",
     "postcss-loader": "^7.3.3",
-    "postcss-preset-env": "^9.1.4",
+    "postcss-preset-env": "^9.2.0",
     "prettier": "^3.0.3",
     "prettier-plugin-sh": "^0.13.1",
     "purgecss-webpack-plugin": "^5.0.0",
