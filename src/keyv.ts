@@ -8,13 +8,13 @@ import type { Encoder } from 'io-ts/Encoder'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
-import { EmailAddressC } from './email-address'
 import { IsOpenForRequestsC } from './is-open-for-requests'
 import { LanguagesC } from './languages'
 import { LocationC } from './location'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { SlackUserIdC } from './slack-user-id'
 import { NonEmptyStringC } from './string'
+import { EmailAddressC } from './types/email-address'
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<unknown>

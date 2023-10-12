@@ -66,7 +66,8 @@
           "logging-ts/lib/*",
           "nanohtml/*",
           "remixicon/**/*.svg",
-          "tinyld/heavy"
+          "tinyld/heavy",
+          "types/*"
         ]
       }
     ],

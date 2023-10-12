@@ -12,7 +12,6 @@ import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { deleteContactEmailAddress, getContactEmailAddress, saveContactEmailAddress } from '../contact-email-address'
-import { type EmailAddress, EmailAddressC } from '../email-address'
 import { canChangeContactEmailAddress } from '../feature-flags'
 import { type InvalidE, getInput, hasAnError, invalidE } from '../form'
 import { html, plainText, sendHtml } from '../html'
@@ -21,6 +20,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { type FathomEnv, type PhaseEnv, page } from '../page'
 import type { PublicUrlEnv } from '../public-url'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes'
+import { type EmailAddress, EmailAddressC } from '../types/email-address'
 import { type GetUserEnv, type User, getUser } from '../user'
 
 export type Env = EnvFor<typeof changeContactEmailAddress>

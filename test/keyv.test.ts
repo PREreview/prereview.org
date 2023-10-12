@@ -3,9 +3,9 @@ import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import Keyv from 'keyv'
 import { get } from 'spectacles-ts'
-import { EmailAddressC } from '../src/email-address'
 import * as _ from '../src/keyv'
 import { SlackUserIdC } from '../src/slack-user-id'
+import { EmailAddressC } from '../src/types/email-address'
 import * as fc from './fc'
 
 describe('deleteCareerStage', () => {

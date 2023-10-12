@@ -1,7 +1,7 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import type { Orcid } from 'orcid-id-ts'
-import type { EmailAddress } from './email-address'
+import type { EmailAddress } from './types/email-address'
 
 export interface GetContactEmailAddressEnv {
   getContactEmailAddress: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', EmailAddress>
