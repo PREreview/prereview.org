@@ -3,6 +3,7 @@ import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import Keyv from 'keyv'
 import { get } from 'spectacles-ts'
+import { ContactEmailAddressC } from '../src/contact-email-address'
 import * as _ from '../src/keyv'
 import { SlackUserIdC } from '../src/slack-user-id'
 import { EmailAddressC } from '../src/types/email-address'
@@ -800,15 +801,18 @@ describe('saveLanguages', () => {
 })
 
 describe('deleteContactEmailAddress', () => {
-  test.prop([fc.orcid(), fc.emailAddress()])('when the key contains an email address', async (orcid, emailAddress) => {
-    const store = new Keyv()
-    await store.set(orcid, EmailAddressC.encode(emailAddress))
+  test.prop([fc.orcid(), fc.contactEmailAddress()])(
+    'when the key contains an email address',
+    async (orcid, emailAddress) => {
+      const store = new Keyv()
+      await store.set(orcid, ContactEmailAddressC.encode(emailAddress))
 
-    const actual = await _.deleteContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
+      const actual = await _.deleteContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.has(orcid)).toBeFalsy()
+    },
+  )
 
   test.prop([fc.orcid(), fc.anything()])(
     'when the key contains something other than an email address',
@@ -843,14 +847,29 @@ describe('deleteContactEmailAddress', () => {
 })
 
 describe('getContactEmailAddress', () => {
-  test.prop([fc.orcid(), fc.emailAddress()])('when the key contains an email address', async (orcid, emailAddress) => {
-    const store = new Keyv()
-    await store.set(orcid, EmailAddressC.encode(emailAddress))
+  test.prop([fc.orcid(), fc.contactEmailAddress()])(
+    'when the key contains an email address',
+    async (orcid, emailAddress) => {
+      const store = new Keyv()
+      await store.set(orcid, ContactEmailAddressC.encode(emailAddress))
 
-    const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
+      const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
-    expect(actual).toStrictEqual(E.right(emailAddress))
-  })
+      expect(actual).toStrictEqual(E.right(emailAddress))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.emailAddress()])(
+    'when the key contains a plain email address',
+    async (orcid, emailAddress) => {
+      const store = new Keyv()
+      await store.set(orcid, EmailAddressC.encode(emailAddress))
+
+      const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
+
+      expect(actual).toStrictEqual(E.right({ type: 'unverified', value: emailAddress }))
+    },
+  )
 
   test.prop([fc.orcid(), fc.anything()])(
     'when the key contains something other than an email address',
@@ -883,17 +902,20 @@ describe('getContactEmailAddress', () => {
 })
 
 describe('saveContactEmailAddress', () => {
-  test.prop([fc.orcid(), fc.emailAddress()])('when the key contains an email address', async (orcid, emailAddress) => {
-    const store = new Keyv()
-    await store.set(orcid, EmailAddressC.encode(emailAddress))
+  test.prop([fc.orcid(), fc.contactEmailAddress()])(
+    'when the key contains an email address',
+    async (orcid, emailAddress) => {
+      const store = new Keyv()
+      await store.set(orcid, ContactEmailAddressC.encode(emailAddress))
 
-    const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
+      const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(EmailAddressC.encode(emailAddress))
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
+    },
+  )
 
-  test.prop([fc.orcid(), fc.anything(), fc.emailAddress()])(
+  test.prop([fc.orcid(), fc.anything(), fc.contactEmailAddress()])(
     'when the key already contains something other than an email address',
     async (orcid, value, emailAddress) => {
       const store = new Keyv()
@@ -902,20 +924,20 @@ describe('saveContactEmailAddress', () => {
       const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(EmailAddressC.encode(emailAddress))
+      expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
     },
   )
 
-  test.prop([fc.orcid(), fc.emailAddress()])('when the key is not set', async (orcid, emailAddress) => {
+  test.prop([fc.orcid(), fc.contactEmailAddress()])('when the key is not set', async (orcid, emailAddress) => {
     const store = new Keyv()
 
     const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
 
     expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(EmailAddressC.encode(emailAddress))
+    expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
   })
 
-  test.prop([fc.orcid(), fc.emailAddress(), fc.anything()])(
+  test.prop([fc.orcid(), fc.contactEmailAddress(), fc.anything()])(
     'when the key cannot be accessed',
     async (orcid, emailAddress, error) => {
       const store = new Keyv()

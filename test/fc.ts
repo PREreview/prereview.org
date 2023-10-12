@@ -25,6 +25,11 @@ import {
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
 import type { CareerStage } from '../src/career-stage'
+import type {
+  ContactEmailAddress,
+  UnverifiedContactEmailAddress,
+  VerifiedContactEmailAddress,
+} from '../src/contact-email-address'
 import type { CrossrefPreprintId } from '../src/crossref'
 import type { DatacitePreprintId } from '../src/datacite'
 import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
@@ -167,6 +172,21 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
 export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
 
 export const emailAddress = (): fc.Arbitrary<EmailAddress> => fc.emailAddress() as fc.Arbitrary<EmailAddress>
+
+export const contactEmailAddress = (): fc.Arbitrary<ContactEmailAddress> =>
+  fc.oneof(unverifiedContactEmailAddress(), verifiedContactEmailAddress())
+
+export const unverifiedContactEmailAddress = (): fc.Arbitrary<UnverifiedContactEmailAddress> =>
+  fc.record({
+    type: fc.constant('unverified'),
+    value: emailAddress(),
+  })
+
+export const verifiedContactEmailAddress = (): fc.Arbitrary<VerifiedContactEmailAddress> =>
+  fc.record({
+    type: fc.constant('verified'),
+    value: emailAddress(),
+  })
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
 

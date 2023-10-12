@@ -66,7 +66,9 @@ const showChangeContactEmailAddressForm = (user: User) =>
   pipe(
     RM.fromReaderTaskEither(getContactEmailAddress(user.orcid)),
     RM.orElseW(() => RM.of(undefined)),
-    RM.chainReaderKW(contactEmailAddress => createFormPage(user, { emailAddress: E.right(contactEmailAddress) })),
+    RM.chainReaderKW(contactEmailAddress =>
+      createFormPage(user, { emailAddress: E.right(contactEmailAddress?.value) }),
+    ),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -108,7 +110,7 @@ const handleChangeContactEmailAddressForm = (user: User) =>
       match(emailAddress)
         .with(P.string, emailAddress =>
           pipe(
-            RM.fromReaderTaskEither(saveContactEmailAddress(user.orcid, emailAddress)),
+            RM.fromReaderTaskEither(saveContactEmailAddress(user.orcid, { type: 'unverified', value: emailAddress })),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),
           ),

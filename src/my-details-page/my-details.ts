@@ -9,7 +9,7 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, maybeGetCareerStage } from '../career-stage'
-import { maybeGetContactEmailAddress } from '../contact-email-address'
+import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../contact-email-address'
 import { canChangeContactEmailAddress, canConnectSlack } from '../feature-flags'
 import { deleteFlashMessage, getFlashMessage } from '../flash-message'
 import { html, plainText, sendHtml } from '../html'
@@ -39,7 +39,6 @@ import {
   profileMatch,
 } from '../routes'
 import { type SlackUser, maybeGetSlackUser } from '../slack-user'
-import type { EmailAddress } from '../types/email-address'
 import { type GetUserEnv, type User, getUser } from '../user'
 
 export type Env = EnvFor<typeof myDetails>
@@ -104,7 +103,7 @@ function createPage({
   canConnectSlack: boolean
   slackUser: O.Option<SlackUser>
   canChangeContactEmailAddress: boolean
-  contactEmailAddress: O.Option<EmailAddress>
+  contactEmailAddress: O.Option<ContactEmailAddress>
   openForRequests: O.Option<IsOpenForRequests>
   careerStage: O.Option<CareerStage>
   researchInterests: O.Option<ResearchInterests>
@@ -226,7 +225,7 @@ function createPage({
               contactEmailAddress => html`
                 <div>
                   <dt>Email address</dt>
-                  <dd>${contactEmailAddress}</dd>
+                  <dd>${contactEmailAddress.value}</dd>
                   <dd>
                     <a href="${format(changeContactEmailAddressMatch.formatter, {})}"
                       >Change <span class="visually-hidden">email address</span></a

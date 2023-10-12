@@ -19,7 +19,7 @@ describe('changeContactEmailAddress', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.user(),
-      fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.emailAddress()),
+      fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.contactEmailAddress()),
     ])('when there is a logged in user', async (oauth, publicUrl, connection, user, emailAddress) => {
       const canChangeContactEmailAddress = jest.fn<CanChangeContactEmailAddressEnv['canChangeContactEmailAddress']>(
         _ => true,
@@ -61,7 +61,7 @@ describe('changeContactEmailAddress', () => {
           ),
         ),
         fc.user(),
-        fc.emailAddress(),
+        fc.contactEmailAddress(),
       ])(
         'there is an email address already',
         async (oauth, publicUrl, [emailAddress, connection], user, existingEmailAddress) => {
@@ -87,7 +87,7 @@ describe('changeContactEmailAddress', () => {
               { type: 'endResponse' },
             ]),
           )
-          expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, emailAddress)
+          expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, { type: 'unverified', value: emailAddress })
         },
       )
 
@@ -127,7 +127,7 @@ describe('changeContactEmailAddress', () => {
             { type: 'endResponse' },
           ]),
         )
-        expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, emailAddress)
+        expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, { type: 'unverified', value: emailAddress })
       })
     })
 
@@ -139,7 +139,7 @@ describe('changeContactEmailAddress', () => {
         method: fc.constant('POST'),
       }),
       fc.user(),
-      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
+      fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
     ])('it is not an email address', async (oauth, publicUrl, connection, user, emailAddress) => {
       const actual = await runMiddleware(
         _.changeContactEmailAddress({
@@ -171,7 +171,7 @@ describe('changeContactEmailAddress', () => {
         method: fc.constant('POST'),
       }),
       fc.user(),
-      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
+      fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
     ])(
       'when the form has been submitted but the email address cannot be saved',
       async (oauth, publicUrl, connection, user, emailAddress) => {
