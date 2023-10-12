@@ -11,6 +11,7 @@ import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
 import { app } from './app'
 import { decodeEnv } from './env'
+import type { User } from './user'
 
 const env = decodeEnv(process)()
 
@@ -35,6 +36,17 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
   dns.setDefaultResultOrder('ipv4first')
 }
 
+const isPrereviewTeam = (user: User) =>
+  [
+    '0000-0001-8511-8689',
+    '0000-0002-1472-1824',
+    '0000-0002-3708-3546',
+    '0000-0002-6109-0367',
+    '0000-0002-6750-9341',
+    '0000-0003-4921-6155',
+    '0000-0002-5753-2556',
+  ].includes(user.orcid)
+
 const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
@@ -49,16 +61,7 @@ const server = app({
   }),
   formStore: new Keyv({ namespace: 'forms', store: keyvStore }),
   canChangeContactEmailAddress: env.CAN_CHANGE_EMAIL_ADDRESS,
-  canConnectSlack: user =>
-    [
-      '0000-0001-8511-8689',
-      '0000-0002-1472-1824',
-      '0000-0002-3708-3546',
-      '0000-0002-6109-0367',
-      '0000-0002-6750-9341',
-      '0000-0003-4921-6155',
-      '0000-0002-5753-2556',
-    ].includes(user.orcid),
+  canConnectSlack: isPrereviewTeam,
   careerStageStore: new Keyv({ namespace: 'career-stage', store: keyvStore }),
   ghostApi: {
     key: env.GHOST_API_KEY,
