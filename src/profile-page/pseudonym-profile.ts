@@ -1,7 +1,7 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { pipe } from 'fp-ts/function'
-import type { PseudonymProfileId } from '../profile-id'
-import type { Pseudonym } from '../pseudonym'
+import type { PseudonymProfileId } from '../types/profile-id'
+import type { Pseudonym } from '../types/pseudonym'
 import { type Prereviews, getPrereviews } from './prereviews'
 
 export interface PseudonymProfile {

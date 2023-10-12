@@ -7,7 +7,7 @@ import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
 import { v4 } from 'uuid-ts'
 import { rawHtml } from './html'
-import { type NonEmptyString, NonEmptyStringC } from './string'
+import { type NonEmptyString, NonEmptyStringC } from './types/string'
 
 export function decodeEnv(process: NodeJS.Process) {
   return pipe(

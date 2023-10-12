@@ -11,7 +11,7 @@ import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { type NonEmptyString, NonEmptyStringC } from './string'
+import { type NonEmptyString, NonEmptyStringC } from './types/string'
 
 const JsonD = {
   decode: (s: string) =>

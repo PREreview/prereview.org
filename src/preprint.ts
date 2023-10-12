@@ -4,8 +4,8 @@ import type * as TE from 'fp-ts/TaskEither'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import type { Html } from './html'
-import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import type { PartialDate } from './time'
+import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id'
 
 export interface Preprint {
   abstract?: {

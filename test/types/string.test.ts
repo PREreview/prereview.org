@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as D from 'io-ts/Decoder'
-import * as _ from '../src/string'
-import * as fc from './fc'
+import * as _ from '../../src/types/string'
+import * as fc from '../fc'
 
 describe('NonEmptyStringC', () => {
   describe('decode', () => {

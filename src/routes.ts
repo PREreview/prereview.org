@@ -7,10 +7,10 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
-import { ClubIdC } from './club-id'
-import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './preprint-id'
-import type { OrcidProfileId, PseudonymProfileId } from './profile-id'
-import { PseudonymC } from './pseudonym'
+import { ClubIdC } from './types/club-id'
+import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './types/preprint-id'
+import type { OrcidProfileId, PseudonymProfileId } from './types/profile-id'
+import { PseudonymC } from './types/pseudonym'
 
 const IntegerFromStringC = C.make(
   pipe(

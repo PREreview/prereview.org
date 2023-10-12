@@ -20,7 +20,7 @@ import {
   saveResearchInterests,
 } from '../research-interests'
 import { changeResearchInterestsMatch, myDetailsMatch } from '../routes'
-import { NonEmptyStringC } from '../string'
+import { NonEmptyStringC } from '../types/string'
 import { type GetUserEnv, type User, getUser } from '../user'
 
 export type Env = EnvFor<typeof changeResearchInterests>

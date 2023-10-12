@@ -18,14 +18,6 @@ import { html, plainText, sendHtml } from './html'
 import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import {
-  type ArxivPreprintId,
-  type IndeterminatePreprintId,
-  type PhilsciPreprintId,
-  PreprintDoiD,
-  fromPreprintDoi,
-} from './preprint-id'
-import type { ProfileId } from './profile-id'
-import {
   aboutUsMatch,
   clubsMatch,
   codeOfConductMatch,
@@ -39,6 +31,14 @@ import {
   reviewsMatch,
   writeReviewReviewTypeMatch,
 } from './routes'
+import {
+  type ArxivPreprintId,
+  type IndeterminatePreprintId,
+  type PhilsciPreprintId,
+  PreprintDoiD,
+  fromPreprintDoi,
+} from './types/preprint-id'
+import type { ProfileId } from './types/profile-id'
 import { type GetUserEnv, type User, maybeGetUser } from './user'
 
 export type LegacyEnv = FathomEnv & GetPreprintIdFromUuidEnv & GetProfileIdFromUuidEnv & GetUserEnv & PhaseEnv

@@ -20,7 +20,7 @@ import type {
   AfricarxivZenodoPreprintId,
   ArxivPreprintId,
   ZenodoPreprintId,
-} from './preprint-id'
+} from './types/preprint-id'
 
 import Instant = Temporal.Instant
 import PlainDate = Temporal.PlainDate

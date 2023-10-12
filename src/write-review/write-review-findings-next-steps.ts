@@ -25,7 +25,7 @@ import {
   writeReviewMatch,
   writeReviewReviewTypeMatch,
 } from '../routes'
-import { NonEmptyStringC } from '../string'
+import { NonEmptyStringC } from '../types/string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 

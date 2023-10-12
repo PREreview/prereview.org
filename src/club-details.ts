@@ -6,8 +6,8 @@ import { flow, pipe } from 'fp-ts/function'
 import { Eq as stringEq } from 'fp-ts/string'
 import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
-import type { ClubId } from './club-id'
 import { type Html, html } from './html'
+import type { ClubId } from './types/club-id'
 
 export interface Club {
   readonly name: string

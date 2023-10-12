@@ -13,7 +13,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
-import { type NonEmptyString, NonEmptyStringC } from '../string'
+import { type NonEmptyString, NonEmptyStringC } from '../types/string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 

@@ -33,7 +33,7 @@ import type {
 } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 import type { IsUserBlockedEnv } from '../src/log-in'
-import type { NonEmptyString } from '../src/string'
+import type { NonEmptyString } from '../src/types/string'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo'
 
 import Logger = L.Logger

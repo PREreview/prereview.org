@@ -13,7 +13,6 @@ import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from 
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import { isPseudonym } from '../pseudonym'
 import {
   profileMatch,
   writeReviewCompetingInterestsMatch,
@@ -33,6 +32,7 @@ import {
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
 } from '../routes'
+import { isPseudonym } from '../types/pseudonym'
 import { type User, getUser } from '../user'
 import { type CompletedForm, CompletedFormC } from './completed-form'
 import { type Form, deleteForm, getForm, redirectToNextForm, saveForm } from './form'

@@ -2,7 +2,7 @@ import { pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as E from 'io-ts/Encoder'
 import { RawHtmlC } from '../html'
-import { NonEmptyStringC } from '../string'
+import { NonEmptyStringC } from '../types/string'
 import type { Form } from './form'
 
 export type CompletedForm = C.TypeOf<typeof CompletedFormC>

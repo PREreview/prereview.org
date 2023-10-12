@@ -12,7 +12,6 @@ import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { RawHtmlC } from '../html'
 import { seeOther } from '../middleware'
-import type { PreprintId } from '../preprint-id'
 import {
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
@@ -31,7 +30,8 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
 } from '../routes'
-import { NonEmptyStringC } from '../string'
+import type { PreprintId } from '../types/preprint-id'
+import { NonEmptyStringC } from '../types/string'
 
 export type Form = C.TypeOf<typeof FormC>
 

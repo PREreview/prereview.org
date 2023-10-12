@@ -33,7 +33,7 @@ import type {
   ScieloPreprintId,
   ScienceOpenPreprintId,
   SocarxivPreprintId,
-} from './preprint-id'
+} from './types/preprint-id'
 
 export type CrossrefPreprintId =
   | AfricarxivOsfPreprintId

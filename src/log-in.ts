@@ -20,9 +20,9 @@ import { match } from 'ts-pattern'
 import { timeoutRequest } from './fetch'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
-import type { Pseudonym } from './pseudonym'
 import { ifHasSameOrigin, toUrl } from './public-url'
 import { homeMatch } from './routes'
+import type { Pseudonym } from './types/pseudonym'
 import { newSessionForUser } from './user'
 
 export interface GetPseudonymEnv {

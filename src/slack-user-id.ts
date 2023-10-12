@@ -6,7 +6,7 @@ import { pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import type { Codec } from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
-import { type NonEmptyString, NonEmptyStringC, ordNonEmptyString } from './string'
+import { type NonEmptyString, NonEmptyStringC, ordNonEmptyString } from './types/string'
 
 export interface SlackUserId {
   readonly accessToken: NonEmptyString

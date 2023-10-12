@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as D from 'io-ts/Decoder'
-import * as _ from '../src/pseudonym'
-import * as fc from './fc'
+import * as _ from '../../src/types/pseudonym'
+import * as fc from '../fc'
 
 describe('PseudonymC', () => {
   describe('decode', () => {

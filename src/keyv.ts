@@ -13,8 +13,8 @@ import { LanguagesC } from './languages'
 import { LocationC } from './location'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { SlackUserIdC } from './slack-user-id'
-import { NonEmptyStringC } from './string'
 import { EmailAddressC } from './types/email-address'
+import { NonEmptyStringC } from './types/string'
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<unknown>

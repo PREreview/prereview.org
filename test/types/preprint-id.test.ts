@@ -2,8 +2,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import { type Doi, toUrl } from 'doi-ts'
 import * as O from 'fp-ts/Option'
-import * as _ from '../src/preprint-id'
-import * as fc from './fc'
+import * as _ from '../../src/types/preprint-id'
+import * as fc from '../fc'
 
 describe('isPreprintDoi', () => {
   test.prop([fc.preprintDoi()])('with a preprint DOI', doi => {

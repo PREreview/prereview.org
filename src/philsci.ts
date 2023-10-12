@@ -13,7 +13,7 @@ import { P, match } from 'ts-pattern'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { sanitizeHtml } from './html'
 import type { Preprint } from './preprint'
-import type { PhilsciPreprintId } from './preprint-id'
+import type { PhilsciPreprintId } from './types/preprint-id'
 
 import PlainDate = Temporal.PlainDate
 import PlainYearMonth = Temporal.PlainYearMonth

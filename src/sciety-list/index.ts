@@ -8,8 +8,8 @@ import * as D from 'io-ts/Decoder'
 import * as E from 'io-ts/Encoder'
 import safeStableStringify from 'safe-stable-stringify'
 import { P, match } from 'ts-pattern'
-import type { IndeterminatePreprintId } from '../preprint-id'
-import type { NonEmptyString } from '../string'
+import type { IndeterminatePreprintId } from '../types/preprint-id'
+import type { NonEmptyString } from '../types/string'
 import { getPrereviewsForSciety } from '../zenodo'
 
 import PlainDate = Temporal.PlainDate

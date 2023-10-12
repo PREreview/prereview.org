@@ -15,7 +15,7 @@ import { getMethod, seeOther, serviceUnavailable } from '../middleware'
 import { type FathomEnv, type PhaseEnv, page } from '../page'
 import type { PublicUrlEnv } from '../public-url'
 import { changeLanguagesMatch, myDetailsMatch } from '../routes'
-import { NonEmptyStringC } from '../string'
+import { NonEmptyStringC } from '../types/string'
 import { type GetUserEnv, type User, getUser } from '../user'
 
 export type Env = EnvFor<typeof changeLanguages>

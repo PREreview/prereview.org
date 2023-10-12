@@ -15,7 +15,7 @@ import { URL } from 'url'
 import { timeoutRequest } from './fetch'
 import type { SlackUser } from './slack-user'
 import type { SlackUserId } from './slack-user-id'
-import { NonEmptyStringC } from './string'
+import { NonEmptyStringC } from './types/string'
 
 export interface SlackApiEnv {
   slackApiToken: string

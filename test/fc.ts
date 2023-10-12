@@ -25,7 +25,6 @@ import {
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
 import type { CareerStage } from '../src/career-stage'
-import type { ClubId } from '../src/club-id'
 import type { CrossrefPreprintId } from '../src/crossref'
 import type { DatacitePreprintId } from '../src/datacite'
 import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
@@ -33,6 +32,11 @@ import type { IsOpenForRequests } from '../src/is-open-for-requests'
 import type { Languages } from '../src/languages'
 import type { Location } from '../src/location'
 import type { Preprint, PreprintTitle } from '../src/preprint'
+import type { ResearchInterests } from '../src/research-interests'
+import type { SlackUser } from '../src/slack-user'
+import type { SlackUserId } from '../src/slack-user-id'
+import type { ClubId } from '../src/types/club-id'
+import type { EmailAddress } from '../src/types/email-address'
 import type {
   AfricarxivFigsharePreprintId,
   AfricarxivOsfPreprintId,
@@ -61,14 +65,10 @@ import type {
   SocarxivPreprintId,
   ZenodoOrAfricarxivPreprintId,
   ZenodoPreprintId,
-} from '../src/preprint-id'
-import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/profile-id'
-import type { Pseudonym } from '../src/pseudonym'
-import type { ResearchInterests } from '../src/research-interests'
-import type { SlackUser } from '../src/slack-user'
-import type { SlackUserId } from '../src/slack-user-id'
-import { type NonEmptyString, isNonEmptyString } from '../src/string'
-import type { EmailAddress } from '../src/types/email-address'
+} from '../src/types/preprint-id'
+import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/types/profile-id'
+import type { Pseudonym } from '../src/types/pseudonym'
+import { type NonEmptyString, isNonEmptyString } from '../src/types/string'
 import type { User } from '../src/user'
 import { shouldNotBeCalled } from './should-not-be-called'
 

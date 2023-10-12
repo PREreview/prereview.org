@@ -7,8 +7,8 @@ import { match } from 'ts-pattern'
 import { getClubName } from '../club-details'
 import { type Html, html, rawHtml } from '../html'
 import { reviewMatch } from '../routes'
-import type { NonEmptyString } from '../string'
 import { renderDate } from '../time'
+import type { NonEmptyString } from '../types/string'
 import type { Prereviews } from './prereviews'
 
 export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyString) {

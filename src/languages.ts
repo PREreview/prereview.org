@@ -4,7 +4,7 @@ import { flow } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import { type NonEmptyString, NonEmptyStringC } from './string'
+import { type NonEmptyString, NonEmptyStringC } from './types/string'
 
 export interface Languages {
   readonly value: NonEmptyString

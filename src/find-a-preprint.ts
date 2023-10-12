@@ -12,8 +12,8 @@ import { html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
 import { doesPreprintExist } from './preprint'
-import { type IndeterminatePreprintId, type PhilsciPreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
 import { findAPreprintMatch, preprintReviewsMatch, reviewAPreprintMatch } from './routes'
+import { type IndeterminatePreprintId, type PhilsciPreprintId, fromUrl, parsePreprintDoi } from './types/preprint-id'
 import { type User, maybeGetUser } from './user'
 
 export const findAPreprint = pipe(

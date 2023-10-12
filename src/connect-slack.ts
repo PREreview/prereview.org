@@ -30,7 +30,7 @@ import type { PublicUrlEnv } from './public-url'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from './routes'
 import { isSlackUser } from './slack-user'
 import { saveSlackUserId } from './slack-user-id'
-import { NonEmptyStringC, ordNonEmptyString } from './string'
+import { NonEmptyStringC, ordNonEmptyString } from './types/string'
 import { type GetUserEnv, type User, getUser, maybeGetUser } from './user'
 
 export interface SlackOAuthEnv {
