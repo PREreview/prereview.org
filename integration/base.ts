@@ -77,7 +77,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(new Keyv())
   },
   canChangeContactEmailAddress: async ({}, use) => {
-    await use(false)
+    await use(() => false)
   },
   fetch: async ({}, use) => {
     const fetch = fetchMock.sandbox()
@@ -944,7 +944,7 @@ export const canChangeContactEmailAddress: Fixtures<
   Pick<AppFixtures, 'canChangeContactEmailAddress'>
 > = {
   canChangeContactEmailAddress: async ({}, use) => {
-    await use(true)
+    await use(() => true)
   },
 }
 

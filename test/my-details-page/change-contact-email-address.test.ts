@@ -235,81 +235,81 @@ describe('changeContactEmailAddress', () => {
         expect(deleteContactEmailAddress).toHaveBeenCalledWith(user.orcid)
       },
     )
-
-    test.prop([fc.oauth(), fc.origin(), fc.connection()])(
-      'when the user is not logged in',
-      async (oauth, publicUrl, connection) => {
-        const actual = await runMiddleware(
-          _.changeContactEmailAddress({
-            canChangeContactEmailAddress: () => true,
-            getUser: () => M.left('no-session'),
-            publicUrl,
-            oauth,
-            deleteContactEmailAddress: shouldNotBeCalled,
-            getContactEmailAddress: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
-          }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.Found },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: new URL(
-                `?${new URLSearchParams({
-                  client_id: oauth.clientId,
-                  response_type: 'code',
-                  redirect_uri: oauth.redirectUri.href,
-                  scope: '/authenticate',
-                  state: new URL(format(myDetailsMatch.formatter, {}), publicUrl).toString(),
-                }).toString()}`,
-                oauth.authorizeUrl,
-              ).href,
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
-
-    test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error()])(
-      "when the user can't be loaded",
-      async (oauth, publicUrl, connection, error) => {
-        const actual = await runMiddleware(
-          _.changeContactEmailAddress({
-            canChangeContactEmailAddress: () => true,
-            getUser: () => M.left(error),
-            oauth,
-            publicUrl,
-            deleteContactEmailAddress: shouldNotBeCalled,
-            getContactEmailAddress: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
-          }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
   })
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.either(fc.constant('no-session' as const), fc.user())])(
+  test.prop([fc.oauth(), fc.origin(), fc.connection()])(
+    'when the user is not logged in',
+    async (oauth, publicUrl, connection) => {
+      const actual = await runMiddleware(
+        _.changeContactEmailAddress({
+          canChangeContactEmailAddress: shouldNotBeCalled,
+          getUser: () => M.left('no-session'),
+          publicUrl,
+          oauth,
+          deleteContactEmailAddress: shouldNotBeCalled,
+          getContactEmailAddress: shouldNotBeCalled,
+          saveContactEmailAddress: shouldNotBeCalled,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: new URL(
+              `?${new URLSearchParams({
+                client_id: oauth.clientId,
+                response_type: 'code',
+                redirect_uri: oauth.redirectUri.href,
+                scope: '/authenticate',
+                state: new URL(format(myDetailsMatch.formatter, {}), publicUrl).toString(),
+              }).toString()}`,
+              oauth.authorizeUrl,
+            ).href,
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
+
+  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error()])(
+    "when the user can't be loaded",
+    async (oauth, publicUrl, connection, error) => {
+      const actual = await runMiddleware(
+        _.changeContactEmailAddress({
+          canChangeContactEmailAddress: shouldNotBeCalled,
+          getUser: () => M.left(error),
+          oauth,
+          publicUrl,
+          deleteContactEmailAddress: shouldNotBeCalled,
+          getContactEmailAddress: shouldNotBeCalled,
+          saveContactEmailAddress: shouldNotBeCalled,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
+
+  test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.user()])(
     "when email addresses can't be changed",
     async (oauth, publicUrl, connection, user) => {
       const actual = await runMiddleware(
         _.changeContactEmailAddress({
           canChangeContactEmailAddress: () => false,
-          getUser: () => M.fromEither(user),
+          getUser: () => M.right(user),
           publicUrl,
           oauth,
           deleteContactEmailAddress: shouldNotBeCalled,
