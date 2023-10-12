@@ -427,6 +427,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getCareerStage: withEnv(getCareerStage, env),
+          getContactEmailAddress: withEnv(getContactEmailAddress, env),
           getLanguages: withEnv(getLanguages, env),
           getLocation: withEnv(getLocation, env),
           getResearchInterests: withEnv(getResearchInterests, env),

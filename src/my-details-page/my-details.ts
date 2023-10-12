@@ -9,7 +9,8 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, maybeGetCareerStage } from '../career-stage'
-import { canConnectSlack } from '../feature-flags'
+import { maybeGetContactEmailAddress } from '../contact-email-address'
+import { canChangeContactEmailAddress, canConnectSlack } from '../feature-flags'
 import { deleteFlashMessage, getFlashMessage } from '../flash-message'
 import { html, plainText, sendHtml } from '../html'
 import { type IsOpenForRequests, maybeIsOpenForRequests } from '../is-open-for-requests'
@@ -23,6 +24,7 @@ import { type ResearchInterests, maybeGetResearchInterests } from '../research-i
 import {
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
+  changeContactEmailAddressMatch,
   changeLanguagesMatch,
   changeLanguagesVisibilityMatch,
   changeLocationMatch,
@@ -37,6 +39,7 @@ import {
   profileMatch,
 } from '../routes'
 import { type SlackUser, maybeGetSlackUser } from '../slack-user'
+import type { EmailAddress } from '../types/email-address'
 import { type GetUserEnv, type User, getUser } from '../user'
 
 export type Env = EnvFor<typeof myDetails>
@@ -51,6 +54,8 @@ export const myDetails = pipe(
       RTE.let('user', () => user),
       RTE.apS('canConnectSlack', RTE.fromReader(canConnectSlack(user))),
       RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(O.fromNullable))),
+      RTE.apSW('canChangeContactEmailAddress', RTE.fromReader(canChangeContactEmailAddress)),
+      RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('careerStage', pipe(maybeGetCareerStage(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('researchInterests', pipe(maybeGetResearchInterests(user.orcid), RTE.map(O.fromNullable))),
@@ -86,6 +91,8 @@ function createPage({
   message,
   canConnectSlack,
   slackUser,
+  canChangeContactEmailAddress,
+  contactEmailAddress,
   openForRequests,
   careerStage,
   researchInterests,
@@ -96,6 +103,8 @@ function createPage({
   message?: D.TypeOf<typeof FlashMessageD>
   canConnectSlack: boolean
   slackUser: O.Option<SlackUser>
+  canChangeContactEmailAddress: boolean
+  contactEmailAddress: O.Option<EmailAddress>
   openForRequests: O.Option<IsOpenForRequests>
   careerStage: O.Option<CareerStage>
   researchInterests: O.Option<ResearchInterests>
@@ -193,6 +202,34 @@ function createPage({
                   <dd>
                     <a href="${format(disconnectSlackMatch.formatter, {})}"
                       >Disconnect <span class="visually-hidden">Slack account</span></a
+                    >
+                  </dd>
+                </div>
+              `,
+            )
+            .exhaustive()}
+          ${match({ canChangeContactEmailAddress, contactEmailAddress })
+            .with({ canChangeContactEmailAddress: false }, () => '')
+            .with(
+              { canChangeContactEmailAddress: true, contactEmailAddress: P.when(O.isNone) },
+              () => html`
+                <div>
+                  <dt>Email address</dt>
+                  <dd>
+                    <a href="${format(changeContactEmailAddressMatch.formatter, {})}">Enter email address</a>
+                  </dd>
+                </div>
+              `,
+            )
+            .with(
+              { canChangeContactEmailAddress: true, contactEmailAddress: { value: P.select() } },
+              contactEmailAddress => html`
+                <div>
+                  <dt>Email address</dt>
+                  <dd>${contactEmailAddress}</dd>
+                  <dd>
+                    <a href="${format(changeContactEmailAddressMatch.formatter, {})}"
+                      >Change <span class="visually-hidden">email address</span></a
                     >
                   </dd>
                 </div>

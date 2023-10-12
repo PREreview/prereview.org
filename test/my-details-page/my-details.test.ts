@@ -20,6 +20,8 @@ describe('myDetails', () => {
       fc.user(),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
+      fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
@@ -34,6 +36,8 @@ describe('myDetails', () => {
         user,
         canConnectSlack,
         slackUser,
+        canChangeContactEmailAddress,
+        contactEmailAddress,
         isOpenForRequests,
         careerStage,
         researchInterests,
@@ -42,11 +46,13 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
@@ -72,6 +78,8 @@ describe('myDetails', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.boolean(),
+      fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
@@ -85,6 +93,8 @@ describe('myDetails', () => {
         connection,
         user,
         canConnectSlack,
+        canChangeContactEmailAddress,
+        contactEmailAddress,
         isOpenForRequests,
         careerStage,
         researchInterests,
@@ -93,11 +103,13 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
@@ -124,7 +136,67 @@ describe('myDetails', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.slackUser()),
+      fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
+      fc.either(fc.constant('not-found' as const), fc.careerStage()),
+      fc.either(fc.constant('not-found' as const), fc.researchInterests()),
+      fc.either(fc.constant('not-found' as const), fc.location()),
+      fc.either(fc.constant('not-found' as const), fc.languages()),
+    ])(
+      'when the contact email address cannot be loaded',
+      async (
+        oauth,
+        publicUrl,
+        connection,
+        user,
+        canConnectSlack,
+        slackUser,
+        canChangeContactEmailAddress,
+        isOpenForRequests,
+        careerStage,
+        researchInterests,
+        location,
+        languages,
+      ) => {
+        const actual = await runMiddleware(
+          _.myDetails({
+            canChangeContactEmailAddress,
+            canConnectSlack: () => canConnectSlack,
+            getUser: () => M.right(user),
+            oauth,
+            publicUrl,
+            getCareerStage: () => TE.fromEither(careerStage),
+            getContactEmailAddress: () => TE.left('unavailable'),
+            getLanguages: () => TE.fromEither(languages),
+            getLocation: () => TE.fromEither(location),
+            getResearchInterests: () => TE.fromEither(researchInterests),
+            getSlackUser: () => TE.fromEither(slackUser),
+            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
+
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.connection({ method: fc.requestMethod() }),
+      fc.user(),
+      fc.boolean(),
       fc.slackUser(),
+      fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.location()),
@@ -138,6 +210,8 @@ describe('myDetails', () => {
         user,
         canConnectSlack,
         slackUser,
+        canChangeContactEmailAddress,
+        contactEmailAddress,
         careerStage,
         researchInterests,
         location,
@@ -145,11 +219,13 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
@@ -177,6 +253,8 @@ describe('myDetails', () => {
       fc.user(),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
+      fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.location()),
@@ -190,6 +268,8 @@ describe('myDetails', () => {
         user,
         canConnectSlack,
         slackUser,
+        canChangeContactEmailAddress,
+        contactEmailAddress,
         isOpenForRequests,
         researchInterests,
         location,
@@ -197,11 +277,13 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
             getCareerStage: () => TE.left('unavailable'),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
@@ -229,6 +311,8 @@ describe('myDetails', () => {
       fc.user(),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
+      fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.location()),
@@ -242,6 +326,8 @@ describe('myDetails', () => {
         user,
         canConnectSlack,
         slackUser,
+        canChangeContactEmailAddress,
+        contactEmailAddress,
         isOpenForRequests,
         careerStage,
         location,
@@ -249,11 +335,13 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.left('unavailable'),
@@ -281,6 +369,8 @@ describe('myDetails', () => {
       fc.user(),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
+      fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
@@ -294,6 +384,8 @@ describe('myDetails', () => {
         user,
         canConnectSlack,
         slackUser,
+        canChangeContactEmailAddress,
+        contactEmailAddress,
         isOpenForRequests,
         careerStage,
         researchInterests,
@@ -301,11 +393,13 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getLanguages: () => TE.fromEither(languages),
             getLocation: () => TE.left('unavailable'),
             getResearchInterests: () => TE.fromEither(researchInterests),
@@ -333,6 +427,8 @@ describe('myDetails', () => {
       fc.user(),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
+      fc.boolean(),
+      fc.either(fc.constant('not-found' as const), fc.emailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
@@ -346,6 +442,8 @@ describe('myDetails', () => {
         user,
         canConnectSlack,
         slackUser,
+        canChangeContactEmailAddress,
+        contactEmailAddress,
         isOpenForRequests,
         careerStage,
         researchInterests,
@@ -353,11 +451,13 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
+            canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
             getCareerStage: () => TE.fromEither(careerStage),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getLanguages: () => TE.left('unavailable'),
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
@@ -379,16 +479,18 @@ describe('myDetails', () => {
     )
   })
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() })])(
+  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.boolean()])(
     'when the user is not logged in',
-    async (oauth, publicUrl, connection) => {
+    async (oauth, publicUrl, connection, canChangeContactEmailAddress) => {
       const actual = await runMiddleware(
         _.myDetails({
+          canChangeContactEmailAddress,
           canConnectSlack: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
           getCareerStage: shouldNotBeCalled,
+          getContactEmailAddress: shouldNotBeCalled,
           getLanguages: shouldNotBeCalled,
           getLocation: shouldNotBeCalled,
           getResearchInterests: shouldNotBeCalled,
@@ -421,16 +523,18 @@ describe('myDetails', () => {
     },
   )
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error()])(
+  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.boolean(), fc.error()])(
     "when the user can't be loaded",
-    async (oauth, publicUrl, connection, error) => {
+    async (oauth, publicUrl, connection, canChangeContactEmailAddress, error) => {
       const actual = await runMiddleware(
         _.myDetails({
+          canChangeContactEmailAddress,
           canConnectSlack: shouldNotBeCalled,
           getUser: () => M.left(error),
           oauth,
           publicUrl,
           getCareerStage: shouldNotBeCalled,
+          getContactEmailAddress: shouldNotBeCalled,
           getLanguages: shouldNotBeCalled,
           getLocation: shouldNotBeCalled,
           getResearchInterests: shouldNotBeCalled,

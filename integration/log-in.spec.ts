@@ -35,7 +35,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
   'can give my email address',
   async ({ page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
-    await page.goto('/my-details/change-email-address')
+    await page.getByRole('link', { name: 'Enter email address' }).click()
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
 
     await page.mouse.move(0, 0)
@@ -43,7 +43,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.goto('/my-details/change-email-address')
+    await expect(page.getByRole('main')).toContainText('Email address jcarberry@example.com')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Change email address' }).click()
 
     await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
   },
