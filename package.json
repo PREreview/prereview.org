@@ -64,7 +64,7 @@
     "@fast-check/jest": "^1.7.3",
     "@ibm/plex": "^6.3.0",
     "@open-wc/testing": "^3.2.0",
-    "@playwright/test": "^1.38.1",
+    "@playwright/test": "^1.39.0",
     "@prettier/plugin-xml": "^3.2.1",
     "@rollup/plugin-url": "^8.0.2",
     "@tiptap/core": "^2.1.11",
