@@ -46,7 +46,7 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
-            canChangeContactEmailAddress,
+            canChangeContactEmailAddress: () => canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
@@ -103,7 +103,7 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
-            canChangeContactEmailAddress,
+            canChangeContactEmailAddress: () => canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
@@ -161,7 +161,7 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
-            canChangeContactEmailAddress,
+            canChangeContactEmailAddress: () => canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
@@ -219,7 +219,7 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
-            canChangeContactEmailAddress,
+            canChangeContactEmailAddress: () => canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
@@ -277,7 +277,7 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
-            canChangeContactEmailAddress,
+            canChangeContactEmailAddress: () => canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
@@ -335,7 +335,7 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
-            canChangeContactEmailAddress,
+            canChangeContactEmailAddress: () => canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
@@ -393,7 +393,7 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
-            canChangeContactEmailAddress,
+            canChangeContactEmailAddress: () => canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
@@ -451,7 +451,7 @@ describe('myDetails', () => {
       ) => {
         const actual = await runMiddleware(
           _.myDetails({
-            canChangeContactEmailAddress,
+            canChangeContactEmailAddress: () => canChangeContactEmailAddress,
             canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
@@ -484,7 +484,7 @@ describe('myDetails', () => {
     async (oauth, publicUrl, connection, canChangeContactEmailAddress) => {
       const actual = await runMiddleware(
         _.myDetails({
-          canChangeContactEmailAddress,
+          canChangeContactEmailAddress: () => canChangeContactEmailAddress,
           canConnectSlack: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
           oauth,
@@ -528,7 +528,7 @@ describe('myDetails', () => {
     async (oauth, publicUrl, connection, canChangeContactEmailAddress, error) => {
       const actual = await runMiddleware(
         _.myDetails({
-          canChangeContactEmailAddress,
+          canChangeContactEmailAddress: () => canChangeContactEmailAddress,
           canConnectSlack: shouldNotBeCalled,
           getUser: () => M.left(error),
           oauth,

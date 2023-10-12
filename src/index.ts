@@ -60,7 +60,7 @@ const server = app({
     },
   }),
   formStore: new Keyv({ namespace: 'forms', store: keyvStore }),
-  canChangeContactEmailAddress: env.CAN_CHANGE_EMAIL_ADDRESS,
+  canChangeContactEmailAddress: isPrereviewTeam,
   canConnectSlack: isPrereviewTeam,
   careerStageStore: new Keyv({ namespace: 'career-stage', store: keyvStore }),
   ghostApi: {

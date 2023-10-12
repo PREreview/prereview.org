@@ -26,13 +26,18 @@ import { type GetUserEnv, type User, getUser } from '../user'
 export type Env = EnvFor<typeof changeContactEmailAddress>
 
 export const changeContactEmailAddress = pipe(
-  RM.rightReader(canChangeContactEmailAddress),
-  RM.filterOrElse(
-    canChangeContactEmailAddress => canChangeContactEmailAddress,
-    () => 'not-found' as const,
-  ),
-  RM.chainW(() => getUser),
+  getUser,
   RM.bindTo('user'),
+  RM.bindW(
+    'canChangeContactEmailAddress',
+    flow(
+      RM.fromReaderK(({ user }) => canChangeContactEmailAddress(user)),
+      RM.filterOrElse(
+        canChangeContactEmailAddress => canChangeContactEmailAddress,
+        () => 'not-found' as const,
+      ),
+    ),
+  ),
   RM.apSW('method', RM.fromMiddleware(getMethod)),
   RM.ichainW(state =>
     match(state.method)

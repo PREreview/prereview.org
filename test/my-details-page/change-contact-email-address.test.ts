@@ -5,6 +5,7 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
+import type { CanChangeContactEmailAddressEnv } from '../../src/feature-flags'
 import * as _ from '../../src/my-details-page/change-contact-email-address'
 import { myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -20,9 +21,13 @@ describe('changeContactEmailAddress', () => {
       fc.user(),
       fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.emailAddress()),
     ])('when there is a logged in user', async (oauth, publicUrl, connection, user, emailAddress) => {
+      const canChangeContactEmailAddress = jest.fn<CanChangeContactEmailAddressEnv['canChangeContactEmailAddress']>(
+        _ => true,
+      )
+
       const actual = await runMiddleware(
         _.changeContactEmailAddress({
-          canChangeContactEmailAddress: true,
+          canChangeContactEmailAddress,
           getUser: () => M.fromEither(E.right(user)),
           publicUrl,
           oauth,
@@ -64,7 +69,7 @@ describe('changeContactEmailAddress', () => {
 
           const actual = await runMiddleware(
             _.changeContactEmailAddress({
-              canChangeContactEmailAddress: true,
+              canChangeContactEmailAddress: () => true,
               getUser: () => M.right(user),
               publicUrl,
               oauth,
@@ -104,7 +109,7 @@ describe('changeContactEmailAddress', () => {
 
         const actual = await runMiddleware(
           _.changeContactEmailAddress({
-            canChangeContactEmailAddress: true,
+            canChangeContactEmailAddress: () => true,
             getUser: () => M.right(user),
             publicUrl,
             oauth,
@@ -138,7 +143,7 @@ describe('changeContactEmailAddress', () => {
     ])('it is not an email address', async (oauth, publicUrl, connection, user, emailAddress) => {
       const actual = await runMiddleware(
         _.changeContactEmailAddress({
-          canChangeContactEmailAddress: true,
+          canChangeContactEmailAddress: () => true,
           getUser: () => M.right(user),
           publicUrl,
           oauth,
@@ -172,7 +177,7 @@ describe('changeContactEmailAddress', () => {
       async (oauth, publicUrl, connection, user, emailAddress) => {
         const actual = await runMiddleware(
           _.changeContactEmailAddress({
-            canChangeContactEmailAddress: true,
+            canChangeContactEmailAddress: () => true,
             getUser: () => M.right(user),
             publicUrl,
             oauth,
@@ -209,7 +214,7 @@ describe('changeContactEmailAddress', () => {
 
         const actual = await runMiddleware(
           _.changeContactEmailAddress({
-            canChangeContactEmailAddress: true,
+            canChangeContactEmailAddress: () => true,
             getUser: () => M.right(user),
             publicUrl,
             oauth,
@@ -236,7 +241,7 @@ describe('changeContactEmailAddress', () => {
       async (oauth, publicUrl, connection) => {
         const actual = await runMiddleware(
           _.changeContactEmailAddress({
-            canChangeContactEmailAddress: true,
+            canChangeContactEmailAddress: () => true,
             getUser: () => M.left('no-session'),
             publicUrl,
             oauth,
@@ -275,7 +280,7 @@ describe('changeContactEmailAddress', () => {
       async (oauth, publicUrl, connection, error) => {
         const actual = await runMiddleware(
           _.changeContactEmailAddress({
-            canChangeContactEmailAddress: true,
+            canChangeContactEmailAddress: () => true,
             getUser: () => M.left(error),
             oauth,
             publicUrl,
@@ -303,7 +308,7 @@ describe('changeContactEmailAddress', () => {
     async (oauth, publicUrl, connection, user) => {
       const actual = await runMiddleware(
         _.changeContactEmailAddress({
-          canChangeContactEmailAddress: false,
+          canChangeContactEmailAddress: () => false,
           getUser: () => M.fromEither(user),
           publicUrl,
           oauth,

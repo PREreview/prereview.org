@@ -54,7 +54,7 @@ export const myDetails = pipe(
       RTE.let('user', () => user),
       RTE.apS('canConnectSlack', RTE.fromReader(canConnectSlack(user))),
       RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(O.fromNullable))),
-      RTE.apSW('canChangeContactEmailAddress', RTE.fromReader(canChangeContactEmailAddress)),
+      RTE.apSW('canChangeContactEmailAddress', RTE.fromReader(canChangeContactEmailAddress(user))),
       RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('careerStage', pipe(maybeGetCareerStage(user.orcid), RTE.map(O.fromNullable))),
