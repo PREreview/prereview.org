@@ -1,6 +1,6 @@
 export { changeCareerStage } from './change-career-stage'
 export { changeCareerStageVisibility } from './change-career-stage-visibility'
-export { changeEmailAddress } from './change-email-address'
+export { changeContactEmailAddress } from './change-contact-email-address'
 export { changeLanguages } from './change-languages'
 export { changeLanguagesVisibility } from './change-languages-visibility'
 export { changeLocation } from './change-location'

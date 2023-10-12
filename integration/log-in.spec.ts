@@ -1,7 +1,7 @@
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import {
   areLoggedIn,
-  canChangeEmailAddress,
+  canChangeContactEmailAddress,
   canConnectSlack,
   canLogIn,
   expect,
@@ -31,7 +31,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canChangeEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
   'can give my email address',
   async ({ page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
@@ -514,7 +514,7 @@ test.extend(canLogIn).extend(userIsBlocked)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canChangeEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
   'have to give a valid email address',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/my-details/change-email-address')

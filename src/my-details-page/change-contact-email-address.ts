@@ -11,29 +11,24 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import {
-  type EmailAddress,
-  EmailAddressC,
-  deleteEmailAddress,
-  getEmailAddress,
-  saveEmailAddress,
-} from '../email-address'
-import { canChangeEmailAddress } from '../feature-flags'
+import { deleteContactEmailAddress, getContactEmailAddress, saveContactEmailAddress } from '../contact-email-address'
+import { type EmailAddress, EmailAddressC } from '../email-address'
+import { canChangeContactEmailAddress } from '../feature-flags'
 import { type InvalidE, getInput, hasAnError, invalidE } from '../form'
 import { html, plainText, sendHtml } from '../html'
 import { logInAndRedirect } from '../log-in'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { type FathomEnv, type PhaseEnv, page } from '../page'
 import type { PublicUrlEnv } from '../public-url'
-import { changeEmailAddressMatch, myDetailsMatch } from '../routes'
+import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes'
 import { type GetUserEnv, type User, getUser } from '../user'
 
-export type Env = EnvFor<typeof changeEmailAddress>
+export type Env = EnvFor<typeof changeContactEmailAddress>
 
-export const changeEmailAddress = pipe(
-  RM.rightReader(canChangeEmailAddress),
+export const changeContactEmailAddress = pipe(
+  RM.rightReader(canChangeContactEmailAddress),
   RM.filterOrElse(
-    canChangeEmailAddress => canChangeEmailAddress,
+    canChangeContactEmailAddress => canChangeContactEmailAddress,
     () => 'not-found' as const,
   ),
   RM.chainW(() => getUser),
@@ -41,8 +36,8 @@ export const changeEmailAddress = pipe(
   RM.apSW('method', RM.fromMiddleware(getMethod)),
   RM.ichainW(state =>
     match(state.method)
-      .with('POST', () => handleChangeEmailAddressForm(state.user))
-      .otherwise(() => showChangeEmailAddressForm(state.user)),
+      .with('POST', () => handleChangeContactEmailAddressForm(state.user))
+      .otherwise(() => showChangeContactEmailAddressForm(state.user)),
   ),
   RM.orElseW(error =>
     match(error)
@@ -62,23 +57,23 @@ export const changeEmailAddress = pipe(
   ),
 )
 
-const showChangeEmailAddressForm = (user: User) =>
+const showChangeContactEmailAddressForm = (user: User) =>
   pipe(
-    RM.fromReaderTaskEither(getEmailAddress(user.orcid)),
+    RM.fromReaderTaskEither(getContactEmailAddress(user.orcid)),
     RM.orElseW(() => RM.of(undefined)),
-    RM.chainReaderKW(emailAddress => createFormPage(user, { emailAddress: E.right(emailAddress) })),
+    RM.chainReaderKW(contactEmailAddress => createFormPage(user, { emailAddress: E.right(contactEmailAddress) })),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const showChangeEmailAddressErrorForm = (user: User) =>
+const showChangeContactEmailAddressErrorForm = (user: User) =>
   flow(
-    RM.fromReaderK((form: ChangeEmailAddressForm) => createFormPage(user, form)),
+    RM.fromReaderK((form: ChangeContactEmailAddressForm) => createFormPage(user, form)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const handleChangeEmailAddressForm = (user: User) =>
+const handleChangeContactEmailAddressForm = (user: User) =>
   pipe(
     RM.decodeBody(E.right),
     RM.map(body =>
@@ -108,21 +103,21 @@ const handleChangeEmailAddressForm = (user: User) =>
       match(emailAddress)
         .with(P.string, emailAddress =>
           pipe(
-            RM.fromReaderTaskEither(saveEmailAddress(user.orcid, emailAddress)),
+            RM.fromReaderTaskEither(saveContactEmailAddress(user.orcid, emailAddress)),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),
           ),
         )
         .with(undefined, () =>
           pipe(
-            RM.fromReaderTaskEither(deleteEmailAddress(user.orcid)),
+            RM.fromReaderTaskEither(deleteContactEmailAddress(user.orcid)),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),
           ),
         )
         .exhaustive(),
     ),
-    RM.orElseW(showChangeEmailAddressErrorForm(user)),
+    RM.orElseW(showChangeContactEmailAddressErrorForm(user)),
   )
 
 const EmailAddressFieldD = pipe(
@@ -144,11 +139,11 @@ const EmailAddressFieldD = pipe(
   D.map(get('emailAddress')),
 )
 
-interface ChangeEmailAddressForm {
+interface ChangeContactEmailAddressForm {
   readonly emailAddress: E.Either<InvalidE, EmailAddress | undefined>
 }
 
-function createFormPage(user: User, form: ChangeEmailAddressForm) {
+function createFormPage(user: User, form: ChangeContactEmailAddressForm) {
   const error = hasAnError(form)
 
   return page({
@@ -159,7 +154,7 @@ function createFormPage(user: User, form: ChangeEmailAddressForm) {
       </nav>
 
       <main id="form">
-        <form method="post" action="${format(changeEmailAddressMatch.formatter, {})}" novalidate>
+        <form method="post" action="${format(changeContactEmailAddressMatch.formatter, {})}" novalidate>
           ${error
             ? html`
                 <error-summary aria-labelledby="error-summary-title" role="alert">

@@ -24,7 +24,7 @@ import {
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { type ConfigEnv, app } from '../src/app'
-import type { CanChangeEmailAddressEnv, CanConnectSlackEnv } from '../src/feature-flags'
+import type { CanChangeContactEmailAddressEnv, CanConnectSlackEnv } from '../src/feature-flags'
 import type {
   IsOpenForRequestsStoreEnv,
   LanguagesStoreEnv,
@@ -55,7 +55,7 @@ interface AppFixtures {
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: ConfigEnv['slackUserIdStore']
   canConnectSlack: CanConnectSlackEnv['canConnectSlack']
-  canChangeEmailAddress: CanChangeEmailAddressEnv['canChangeEmailAddress']
+  canChangeContactEmailAddress: CanChangeContactEmailAddressEnv['canChangeContactEmailAddress']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
 }
@@ -76,7 +76,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
   },
-  canChangeEmailAddress: async ({}, use) => {
+  canChangeContactEmailAddress: async ({}, use) => {
     await use(false)
   },
   fetch: async ({}, use) => {
@@ -795,7 +795,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   server: async (
     {
-      canChangeEmailAddress,
+      canChangeContactEmailAddress,
       canConnectSlack,
       fetch,
       logger,
@@ -815,14 +815,14 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   ) => {
     const server = app({
       allowSiteCrawlers: true,
-      canChangeEmailAddress,
+      canChangeContactEmailAddress,
       canConnectSlack,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),
       careerStageStore,
-      emailAddressStore: new Keyv(),
+      contactEmailAddressStore: new Keyv(),
       ghostApi: {
         key: 'key',
       },
@@ -938,12 +938,12 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
   },
 }
 
-export const canChangeEmailAddress: Fixtures<
+export const canChangeContactEmailAddress: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'canChangeEmailAddress'>
+  Pick<AppFixtures, 'canChangeContactEmailAddress'>
 > = {
-  canChangeEmailAddress: async ({}, use) => {
+  canChangeContactEmailAddress: async ({}, use) => {
     await use(true)
   },
 }

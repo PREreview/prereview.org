@@ -5,13 +5,13 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import * as _ from '../../src/my-details-page/change-email-address'
+import * as _ from '../../src/my-details-page/change-contact-email-address'
 import { myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
-describe('changeEmailAddress', () => {
+describe('changeContactEmailAddress', () => {
   describe('when email addresses can be changed', () => {
     test.prop([
       fc.oauth(),
@@ -21,14 +21,14 @@ describe('changeEmailAddress', () => {
       fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.emailAddress()),
     ])('when there is a logged in user', async (oauth, publicUrl, connection, user, emailAddress) => {
       const actual = await runMiddleware(
-        _.changeEmailAddress({
-          canChangeEmailAddress: true,
+        _.changeContactEmailAddress({
+          canChangeContactEmailAddress: true,
           getUser: () => M.fromEither(E.right(user)),
           publicUrl,
           oauth,
-          deleteEmailAddress: shouldNotBeCalled,
-          getEmailAddress: () => TE.fromEither(emailAddress),
-          saveEmailAddress: shouldNotBeCalled,
+          deleteContactEmailAddress: shouldNotBeCalled,
+          getContactEmailAddress: () => TE.fromEither(emailAddress),
+          saveContactEmailAddress: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -60,17 +60,17 @@ describe('changeEmailAddress', () => {
       ])(
         'there is an email address already',
         async (oauth, publicUrl, [emailAddress, connection], user, existingEmailAddress) => {
-          const saveEmailAddress = jest.fn<_.Env['saveEmailAddress']>(_ => TE.right(undefined))
+          const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
 
           const actual = await runMiddleware(
-            _.changeEmailAddress({
-              canChangeEmailAddress: true,
+            _.changeContactEmailAddress({
+              canChangeContactEmailAddress: true,
               getUser: () => M.right(user),
               publicUrl,
               oauth,
-              deleteEmailAddress: shouldNotBeCalled,
-              getEmailAddress: () => TE.right(existingEmailAddress),
-              saveEmailAddress,
+              deleteContactEmailAddress: shouldNotBeCalled,
+              getContactEmailAddress: () => TE.right(existingEmailAddress),
+              saveContactEmailAddress,
             }),
             connection,
           )()
@@ -82,7 +82,7 @@ describe('changeEmailAddress', () => {
               { type: 'endResponse' },
             ]),
           )
-          expect(saveEmailAddress).toHaveBeenCalledWith(user.orcid, emailAddress)
+          expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, emailAddress)
         },
       )
 
@@ -100,17 +100,17 @@ describe('changeEmailAddress', () => {
         ),
         fc.user(),
       ])("there isn't an email address already", async (oauth, publicUrl, [emailAddress, connection], user) => {
-        const saveEmailAddress = jest.fn<_.Env['saveEmailAddress']>(_ => TE.right(undefined))
+        const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
 
         const actual = await runMiddleware(
-          _.changeEmailAddress({
-            canChangeEmailAddress: true,
+          _.changeContactEmailAddress({
+            canChangeContactEmailAddress: true,
             getUser: () => M.right(user),
             publicUrl,
             oauth,
-            deleteEmailAddress: shouldNotBeCalled,
-            getEmailAddress: () => TE.left('not-found'),
-            saveEmailAddress,
+            deleteContactEmailAddress: shouldNotBeCalled,
+            getContactEmailAddress: () => TE.left('not-found'),
+            saveContactEmailAddress,
           }),
           connection,
         )()
@@ -122,7 +122,7 @@ describe('changeEmailAddress', () => {
             { type: 'endResponse' },
           ]),
         )
-        expect(saveEmailAddress).toHaveBeenCalledWith(user.orcid, emailAddress)
+        expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, emailAddress)
       })
     })
 
@@ -137,14 +137,14 @@ describe('changeEmailAddress', () => {
       fc.either(fc.constant('not-found' as const), fc.emailAddress()),
     ])('it is not an email address', async (oauth, publicUrl, connection, user, emailAddress) => {
       const actual = await runMiddleware(
-        _.changeEmailAddress({
-          canChangeEmailAddress: true,
+        _.changeContactEmailAddress({
+          canChangeContactEmailAddress: true,
           getUser: () => M.right(user),
           publicUrl,
           oauth,
-          deleteEmailAddress: shouldNotBeCalled,
-          getEmailAddress: () => TE.fromEither(emailAddress),
-          saveEmailAddress: shouldNotBeCalled,
+          deleteContactEmailAddress: shouldNotBeCalled,
+          getContactEmailAddress: () => TE.fromEither(emailAddress),
+          saveContactEmailAddress: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -171,14 +171,14 @@ describe('changeEmailAddress', () => {
       'when the form has been submitted but the email address cannot be saved',
       async (oauth, publicUrl, connection, user, emailAddress) => {
         const actual = await runMiddleware(
-          _.changeEmailAddress({
-            canChangeEmailAddress: true,
+          _.changeContactEmailAddress({
+            canChangeContactEmailAddress: true,
             getUser: () => M.right(user),
             publicUrl,
             oauth,
-            deleteEmailAddress: () => TE.left('unavailable'),
-            getEmailAddress: () => TE.fromEither(emailAddress),
-            saveEmailAddress: () => TE.left('unavailable'),
+            deleteContactEmailAddress: () => TE.left('unavailable'),
+            getContactEmailAddress: () => TE.fromEither(emailAddress),
+            saveContactEmailAddress: () => TE.left('unavailable'),
           }),
           connection,
         )()
@@ -205,17 +205,17 @@ describe('changeEmailAddress', () => {
     ])(
       'when the form has been submitted without setting an email address',
       async (oauth, publicUrl, connection, user) => {
-        const deleteEmailAddress = jest.fn<_.Env['deleteEmailAddress']>(_ => TE.right(undefined))
+        const deleteContactEmailAddress = jest.fn<_.Env['deleteContactEmailAddress']>(_ => TE.right(undefined))
 
         const actual = await runMiddleware(
-          _.changeEmailAddress({
-            canChangeEmailAddress: true,
+          _.changeContactEmailAddress({
+            canChangeContactEmailAddress: true,
             getUser: () => M.right(user),
             publicUrl,
             oauth,
-            deleteEmailAddress,
-            getEmailAddress: shouldNotBeCalled,
-            saveEmailAddress: shouldNotBeCalled,
+            deleteContactEmailAddress,
+            getContactEmailAddress: shouldNotBeCalled,
+            saveContactEmailAddress: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -227,7 +227,7 @@ describe('changeEmailAddress', () => {
             { type: 'endResponse' },
           ]),
         )
-        expect(deleteEmailAddress).toHaveBeenCalledWith(user.orcid)
+        expect(deleteContactEmailAddress).toHaveBeenCalledWith(user.orcid)
       },
     )
 
@@ -235,14 +235,14 @@ describe('changeEmailAddress', () => {
       'when the user is not logged in',
       async (oauth, publicUrl, connection) => {
         const actual = await runMiddleware(
-          _.changeEmailAddress({
-            canChangeEmailAddress: true,
+          _.changeContactEmailAddress({
+            canChangeContactEmailAddress: true,
             getUser: () => M.left('no-session'),
             publicUrl,
             oauth,
-            deleteEmailAddress: shouldNotBeCalled,
-            getEmailAddress: shouldNotBeCalled,
-            saveEmailAddress: shouldNotBeCalled,
+            deleteContactEmailAddress: shouldNotBeCalled,
+            getContactEmailAddress: shouldNotBeCalled,
+            saveContactEmailAddress: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -274,14 +274,14 @@ describe('changeEmailAddress', () => {
       "when the user can't be loaded",
       async (oauth, publicUrl, connection, error) => {
         const actual = await runMiddleware(
-          _.changeEmailAddress({
-            canChangeEmailAddress: true,
+          _.changeContactEmailAddress({
+            canChangeContactEmailAddress: true,
             getUser: () => M.left(error),
             oauth,
             publicUrl,
-            deleteEmailAddress: shouldNotBeCalled,
-            getEmailAddress: shouldNotBeCalled,
-            saveEmailAddress: shouldNotBeCalled,
+            deleteContactEmailAddress: shouldNotBeCalled,
+            getContactEmailAddress: shouldNotBeCalled,
+            saveContactEmailAddress: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -302,14 +302,14 @@ describe('changeEmailAddress', () => {
     "when email addresses can't be changed",
     async (oauth, publicUrl, connection, user) => {
       const actual = await runMiddleware(
-        _.changeEmailAddress({
-          canChangeEmailAddress: false,
+        _.changeContactEmailAddress({
+          canChangeContactEmailAddress: false,
           getUser: () => M.fromEither(user),
           publicUrl,
           oauth,
-          deleteEmailAddress: shouldNotBeCalled,
-          getEmailAddress: shouldNotBeCalled,
-          saveEmailAddress: shouldNotBeCalled,
+          deleteContactEmailAddress: shouldNotBeCalled,
+          getContactEmailAddress: shouldNotBeCalled,
+          saveContactEmailAddress: shouldNotBeCalled,
         }),
         connection,
       )()

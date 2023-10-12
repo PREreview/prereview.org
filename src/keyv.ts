@@ -20,8 +20,8 @@ export interface CareerStageStoreEnv {
   careerStageStore: Keyv<unknown>
 }
 
-export interface EmailAddressStoreEnv {
-  emailAddressStore: Keyv<unknown>
+export interface ContactEmailAddressStoreEnv {
+  contactEmailAddressStore: Keyv<unknown>
 }
 
 export interface IsOpenForRequestsStoreEnv {
@@ -189,17 +189,17 @@ export const saveLanguages = flow(
   RTE.local((env: LanguagesStoreEnv) => env.languagesStore),
 )
 
-export const deleteEmailAddress = flow(
+export const deleteContactEmailAddress = flow(
   deleteKey(OrcidE),
-  RTE.local((env: EmailAddressStoreEnv) => env.emailAddressStore),
+  RTE.local((env: ContactEmailAddressStoreEnv) => env.contactEmailAddressStore),
 )
 
-export const getEmailAddress = flow(
+export const getContactEmailAddress = flow(
   getKey(OrcidE, EmailAddressC),
-  RTE.local((env: EmailAddressStoreEnv) => env.emailAddressStore),
+  RTE.local((env: ContactEmailAddressStoreEnv) => env.contactEmailAddressStore),
 )
 
-export const saveEmailAddress = flow(
+export const saveContactEmailAddress = flow(
   setKey(OrcidE, EmailAddressC),
-  RTE.local((env: EmailAddressStoreEnv) => env.emailAddressStore),
+  RTE.local((env: ContactEmailAddressStoreEnv) => env.contactEmailAddressStore),
 )

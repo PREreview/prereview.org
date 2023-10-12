@@ -20,13 +20,13 @@ import type { CloudinaryApiEnv } from './cloudinary'
 import type { SlackOAuthEnv } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
-import type { CanChangeEmailAddressEnv, CanConnectSlackEnv } from './feature-flags'
+import type { CanChangeContactEmailAddressEnv, CanConnectSlackEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import type { GhostApiEnv } from './ghost'
 import { handleError } from './http-error'
 import type {
   CareerStageStoreEnv,
-  EmailAddressStoreEnv,
+  ContactEmailAddressStoreEnv,
   IsOpenForRequestsStoreEnv,
   LanguagesStoreEnv,
   LocationStoreEnv,
@@ -53,7 +53,7 @@ import type { WasPrereviewRemovedEnv } from './zenodo'
 
 export type ConfigEnv = CareerStageStoreEnv &
   CloudinaryApiEnv &
-  EmailAddressStoreEnv &
+  ContactEmailAddressStoreEnv &
   FathomEnv &
   FormStoreEnv &
   GhostApiEnv &
@@ -77,7 +77,7 @@ export type ConfigEnv = CareerStageStoreEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean
   } & CanConnectSlackEnv &
-  CanChangeEmailAddressEnv
+  CanChangeContactEmailAddressEnv
 
 const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)

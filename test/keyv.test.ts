@@ -799,12 +799,12 @@ describe('saveLanguages', () => {
   )
 })
 
-describe('deleteEmailAddress', () => {
+describe('deleteContactEmailAddress', () => {
   test.prop([fc.orcid(), fc.emailAddress()])('when the key contains an email address', async (orcid, emailAddress) => {
     const store = new Keyv()
     await store.set(orcid, EmailAddressC.encode(emailAddress))
 
-    const actual = await _.deleteEmailAddress(orcid)({ emailAddressStore: store })()
+    const actual = await _.deleteContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -816,7 +816,7 @@ describe('deleteEmailAddress', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.deleteEmailAddress(orcid)({ emailAddressStore: store })()
+      const actual = await _.deleteContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.has(orcid)).toBeFalsy()
@@ -826,7 +826,7 @@ describe('deleteEmailAddress', () => {
   test.prop([fc.orcid()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.deleteEmailAddress(orcid)({ emailAddressStore: store })()
+    const actual = await _.deleteContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -836,24 +836,21 @@ describe('deleteEmailAddress', () => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
-    const actual = await _.deleteEmailAddress(orcid)({ emailAddressStore: store })()
+    const actual = await _.deleteContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
 })
 
-describe('getEmailAddress', () => {
-  test.prop([fc.orcid(), fc.emailAddress()])(
-    'when the key contains an email address',
-    async (orcid, getEmailAddress) => {
-      const store = new Keyv()
-      await store.set(orcid, EmailAddressC.encode(getEmailAddress))
+describe('getContactEmailAddress', () => {
+  test.prop([fc.orcid(), fc.emailAddress()])('when the key contains an email address', async (orcid, emailAddress) => {
+    const store = new Keyv()
+    await store.set(orcid, EmailAddressC.encode(emailAddress))
 
-      const actual = await _.getEmailAddress(orcid)({ emailAddressStore: store })()
+    const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
-      expect(actual).toStrictEqual(E.right(getEmailAddress))
-    },
-  )
+    expect(actual).toStrictEqual(E.right(emailAddress))
+  })
 
   test.prop([fc.orcid(), fc.anything()])(
     'when the key contains something other than an email address',
@@ -861,7 +858,7 @@ describe('getEmailAddress', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.getEmailAddress(orcid)({ emailAddressStore: store })()
+      const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
     },
@@ -870,7 +867,7 @@ describe('getEmailAddress', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.getEmailAddress(orcid)({ emailAddressStore: store })()
+    const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -879,18 +876,18 @@ describe('getEmailAddress', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getEmailAddress(orcid)({ emailAddressStore: store })()
+    const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
 })
 
-describe('saveEmailAddress', () => {
+describe('saveContactEmailAddress', () => {
   test.prop([fc.orcid(), fc.emailAddress()])('when the key contains an email address', async (orcid, emailAddress) => {
     const store = new Keyv()
     await store.set(orcid, EmailAddressC.encode(emailAddress))
 
-    const actual = await _.saveEmailAddress(orcid, emailAddress)({ emailAddressStore: store })()
+    const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(EmailAddressC.encode(emailAddress))
@@ -902,7 +899,7 @@ describe('saveEmailAddress', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveEmailAddress(orcid, emailAddress)({ emailAddressStore: store })()
+      const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(EmailAddressC.encode(emailAddress))
@@ -912,7 +909,7 @@ describe('saveEmailAddress', () => {
   test.prop([fc.orcid(), fc.emailAddress()])('when the key is not set', async (orcid, emailAddress) => {
     const store = new Keyv()
 
-    const actual = await _.saveEmailAddress(orcid, emailAddress)({ emailAddressStore: store })()
+    const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(EmailAddressC.encode(emailAddress))
@@ -924,7 +921,7 @@ describe('saveEmailAddress', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveEmailAddress(orcid, emailAddress)({ emailAddressStore: store })()
+      const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },

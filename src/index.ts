@@ -39,7 +39,7 @@ const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
-  emailAddressStore: new Keyv({ namespace: 'email-address', store: keyvStore }),
+  contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: keyvStore }),
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: 'data/cache',
@@ -48,7 +48,7 @@ const server = app({
     },
   }),
   formStore: new Keyv({ namespace: 'forms', store: keyvStore }),
-  canChangeEmailAddress: env.CAN_CHANGE_EMAIL_ADDRESS,
+  canChangeContactEmailAddress: env.CAN_CHANGE_EMAIL_ADDRESS,
   canConnectSlack: user =>
     [
       '0000-0001-8511-8689',
