@@ -2481,6 +2481,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
       }
 
       const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
+        clock: SystemClock,
         fetch: fetchMock
           .sandbox()
           .getOnce(
@@ -2499,6 +2500,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
             },
           )
           .getOnce('http://example.com/file', { body: 'Some text' }),
+        logger: () => IO.of(undefined),
       })()
 
       expect(actual).toStrictEqual(
@@ -2589,7 +2591,11 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
       )
       .getOnce('http://example.com/file', { body: 'Some text' })
 
-    const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({ fetch })()
+    const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
+      clock: SystemClock,
+      fetch,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(
       E.right([
@@ -2621,7 +2627,11 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
         { status },
       )
 
-      const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({ fetch })()
+      const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
+        clock: SystemClock,
+        fetch,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
       expect(fetch.done()).toBeTruthy()
@@ -2692,7 +2702,11 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
         )
         .getOnce('http://example.com/file', { status: textStatus })
 
-      const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({ fetch })()
+      const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
+        clock: SystemClock,
+        fetch,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left(expect.anything()))
       expect(fetch.done()).toBeTruthy()

@@ -317,7 +317,7 @@ function recordToPrereview(
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
         addendum: RTE.right(pipe(O.fromNullable(review.metadata.notes), O.map(sanitizeHtml), O.toUndefined)),
-        authors: RTE.right<F.FetchEnv & GetPreprintEnv>(review.metadata.creators as never),
+        authors: RTE.right<F.FetchEnv & GetPreprintEnv & L.LoggerEnv>(review.metadata.creators as never),
         club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         doi: RTE.right(review.metadata.doi),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
@@ -341,7 +341,9 @@ function recordToPrereview(
   )
 }
 
-function recordToPreprintPrereview(record: Record): RTE.ReaderTaskEither<F.FetchEnv, unknown, PreprintPrereview> {
+function recordToPreprintPrereview(
+  record: Record,
+): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, unknown, PreprintPrereview> {
   return pipe(
     RTE.of(record),
     RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
@@ -424,9 +426,23 @@ const getReviewText = flow(
   F.Request('GET'),
   F.send,
   RTE.local(useStaleCache()),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'no text'),
-  RTE.chainTaskEitherK(F.getText(identity)),
+  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+  RTE.chainTaskEitherKW(F.getText(E.toError)),
   RTE.map(sanitizeHtml),
+  RTE.orElseFirstW(
+    RTE.fromReaderIOK(
+      flow(
+        error => ({
+          error: match(error)
+            .with(P.instanceOf(Error), error => error.message)
+            .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+            .exhaustive(),
+        }),
+        L.errorP('Unable to get review text from Zenodo'),
+      ),
+    ),
+  ),
+  RTE.mapLeft(() => 'text-unavailable' as const),
 )
 
 const getReviewedPreprintId = (record: Record) =>
