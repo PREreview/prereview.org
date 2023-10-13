@@ -158,8 +158,14 @@ export const getPrereviewFromZenodo = (id: number) =>
     RTE.local(revalidateIfStale()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
-    RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview)), () => new NotFound()),
+    RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview)), () => 'not-found' as const),
     RTE.chainW(recordToPrereview),
+    RTE.mapLeft(error =>
+      match(error)
+        .with('removed', () => 'removed' as const)
+        .with('not-found', { status: Status.NotFound }, () => 'not-found' as const)
+        .otherwise(() => 'unavailable' as const),
+    ),
   )
 
 export const getPrereviewsForProfileFromZenodo = flow(

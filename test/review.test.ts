@@ -62,7 +62,7 @@ describe('review', () => {
   ])('when the review is not found', async (publicUrl, id, connection, user) => {
     const actual = await runMiddleware(
       _.review(id)({
-        getPrereview: () => TE.left({ status: Status.NotFound }),
+        getPrereview: () => TE.left('not-found'),
         getUser: () => M.fromEither(user),
         publicUrl,
       }),
@@ -107,11 +107,10 @@ describe('review', () => {
     fc.origin(),
     fc.integer(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-    fc.anything(),
     fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review cannot be loaded', async (publicUrl, id, connection, error, user) => {
+  ])('when the review cannot be loaded', async (publicUrl, id, connection, user) => {
     const actual = await runMiddleware(
-      _.review(id)({ getPrereview: () => TE.left(error), getUser: () => M.fromEither(user), publicUrl }),
+      _.review(id)({ getPrereview: () => TE.left('unavailable'), getUser: () => M.fromEither(user), publicUrl }),
       connection,
     )()
 

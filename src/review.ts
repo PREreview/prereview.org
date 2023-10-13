@@ -43,7 +43,7 @@ export interface Prereview {
 }
 
 export interface GetPrereviewEnv {
-  getPrereview: (id: number) => TE.TaskEither<unknown, Prereview>
+  getPrereview: (id: number) => TE.TaskEither<'unavailable' | 'not-found' | 'removed', Prereview>
 }
 
 const getPrereview = (id: number) =>
@@ -65,9 +65,10 @@ export const review = (id: number) =>
     RM.ichainW(({ prereview, user }) => sendPage(id)(prereview, user)),
     RM.orElseW(error =>
       match(error)
-        .with({ status: Status.NotFound }, () => notFound)
+        .with('not-found', () => notFound)
         .with('removed', () => pipe(maybeGetUser, RM.ichainW(showRemovedMessage)))
-        .otherwise(() => pipe(maybeGetUser, RM.ichainW(showFailureMessage))),
+        .with('unavailable', () => pipe(maybeGetUser, RM.ichainW(showFailureMessage)))
+        .exhaustive(),
     ),
   )
 

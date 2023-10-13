@@ -837,7 +837,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
+    expect(actual).toStrictEqual(E.left('not-found'))
   })
 
   test.prop([fc.integer(), fc.preprint(), fc.integer({ min: 400, max: 599 })])(
@@ -900,7 +900,7 @@ describe('getPrereviewFromZenodo', () => {
         wasPrereviewRemoved: () => false,
       })()
 
-      expect(actual).toStrictEqual(E.left('text-unavailable'))
+      expect(actual).toStrictEqual(E.left('unavailable'))
       expect(fetch.done()).toBeTruthy()
     },
   )
@@ -919,7 +919,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.ServiceUnavailable })))
+    expect(actual).toStrictEqual(E.left('unavailable'))
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -1044,7 +1044,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
+    expect(actual).toStrictEqual(E.left('not-found'))
   })
 
   test.prop([
@@ -1125,7 +1125,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
+    expect(actual).toStrictEqual(E.left('not-found'))
   })
 
   test.prop([fc.integer(), fc.preprintDoi(), fc.string()])(
@@ -1187,7 +1187,7 @@ describe('getPrereviewFromZenodo', () => {
         wasPrereviewRemoved: () => false,
       })()
 
-      expect(actual).toStrictEqual(E.left(expect.objectContaining({ _tag: expect.anything() })))
+      expect(actual).toStrictEqual(E.left('unavailable'))
       expect(fetch.done()).toBeTruthy()
     },
   )
@@ -1249,7 +1249,7 @@ describe('getPrereviewFromZenodo', () => {
         wasPrereviewRemoved: () => false,
       })()
 
-      expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
+      expect(actual).toStrictEqual(E.left('not-found'))
     },
   )
 
@@ -1314,7 +1314,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
+    expect(actual).toStrictEqual(E.left('not-found'))
     expect(fetch.done()).toBeTruthy()
   })
 })
