@@ -7,6 +7,7 @@ import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { and } from 'fp-ts/Predicate'
 import * as R from 'fp-ts/Reader'
+import * as RIO from 'fp-ts/ReaderIO'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
@@ -160,6 +161,25 @@ export const getPrereviewFromZenodo = (id: number) =>
     RTE.local(timeoutRequest(2000)),
     RTE.filterOrElseW(pipe(isInCommunity, and(isPeerReview)), () => 'not-found' as const),
     RTE.chainW(recordToPrereview),
+    RTE.orElseFirstW(
+      RTE.fromReaderIOK(
+        flow(
+          error =>
+            match(error)
+              .with(P.intersection(P.instanceOf(Error), { status: P.number }), () => O.none)
+              .with(P.instanceOf(Error), error => O.some(error.message))
+              .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
+              .with({ _tag: P.string }, error => O.some(D.draw(error)))
+              .with('text-unavailable', 'unavailable', O.some)
+              .with('removed', 'not-found', () => O.none)
+              .exhaustive(),
+          O.match(
+            () => RIO.of(undefined),
+            flow(error => ({ error }), L.errorP('Unable to get record from Zenodo')),
+          ),
+        ),
+      ),
+    ),
     RTE.mapLeft(error =>
       match(error)
         .with('removed', () => 'removed' as const)
