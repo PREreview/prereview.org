@@ -150,7 +150,11 @@ export const getRecentPrereviewsFromZenodo = flow(
 export const getPrereviewFromZenodo = (id: number) =>
   pipe(
     RTE.fromReader(wasPrereviewRemoved(id)),
-    RTE.chainW(wasRemoved => (wasRemoved ? RTE.left('removed') : getRecord(id))),
+    RTE.filterOrElse(
+      wasRemoved => !wasRemoved,
+      () => 'removed' as const,
+    ),
+    RTE.chainW(() => getRecord(id)),
     RTE.local(revalidateIfStale()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
