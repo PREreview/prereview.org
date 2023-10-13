@@ -54,7 +54,7 @@
     "ts-pattern": "^5.0.5",
     "turndown": "^7.1.2",
     "uuid-ts": "^0.1.0",
-    "zenodo-ts": "^0.1.14"
+    "zenodo-ts": "^0.1.15"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.23.2",
