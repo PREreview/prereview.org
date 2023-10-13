@@ -770,7 +770,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
           legacyPrereviewApi: { app, key, url, update: true },
         })()
 
-        expect(actual).toStrictEqual(E.left(expect.anything()))
+        expect(actual).toStrictEqual(E.left('unavailable'))
         expect(fetch.done()).toBeTruthy()
       },
     )
