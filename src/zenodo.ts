@@ -332,7 +332,20 @@ export const createRecordOnZenodo: (
       }),
     ),
     RTE.chainW(publishDeposition),
-    RTE.orElseFirstW(RTE.fromReaderIOK(() => L.error('Unable to create record on Zenodo'))),
+    RTE.orElseFirstW(
+      RTE.fromReaderIOK(
+        flow(
+          error => ({
+            error: match(error)
+              .with(P.instanceOf(Error), error => error.message)
+              .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+              .with({ _tag: P.string }, D.draw)
+              .exhaustive(),
+          }),
+          L.errorP('Unable to create record on Zenodo'),
+        ),
+      ),
+    ),
     RTE.bimap(
       () => 'unavailable',
       deposition => [deposition.metadata.doi, deposition.id],
