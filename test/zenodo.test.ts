@@ -900,7 +900,7 @@ describe('getPrereviewFromZenodo', () => {
         wasPrereviewRemoved: () => false,
       })()
 
-      expect(actual).toStrictEqual(E.left(expect.anything()))
+      expect(actual).toStrictEqual(E.left('text-unavailable'))
       expect(fetch.done()).toBeTruthy()
     },
   )
@@ -919,7 +919,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left(expect.anything()))
+    expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.ServiceUnavailable })))
     expect(fetch.done()).toBeTruthy()
   })
 
@@ -1187,7 +1187,7 @@ describe('getPrereviewFromZenodo', () => {
         wasPrereviewRemoved: () => false,
       })()
 
-      expect(actual).toStrictEqual(E.left(expect.anything()))
+      expect(actual).toStrictEqual(E.left(expect.objectContaining({ _tag: expect.anything() })))
       expect(fetch.done()).toBeTruthy()
     },
   )
@@ -1314,7 +1314,7 @@ describe('getPrereviewFromZenodo', () => {
       wasPrereviewRemoved: () => false,
     })()
 
-    expect(actual).toStrictEqual(E.left(expect.anything()))
+    expect(actual).toStrictEqual(E.left(expect.objectContaining({ status: Status.NotFound })))
     expect(fetch.done()).toBeTruthy()
   })
 })
@@ -3273,7 +3273,7 @@ ${newPrereview.review.toString()}`,
       zenodoApiKey,
     })()
 
-    expect(actual).toStrictEqual(E.left(expect.anything()))
+    expect(actual).toStrictEqual(E.left('unavailable'))
   })
 })
 

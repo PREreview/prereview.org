@@ -14,7 +14,7 @@ import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, identity, pipe } from 'fp-ts/function'
-import { NotFound } from 'http-errors'
+import { type HttpError, NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import iso6391, { type LanguageCode } from 'iso-639-1'
@@ -309,7 +309,11 @@ export function toExternalIdentifier(preprint: IndeterminatePreprintId) {
 
 function recordToPrereview(
   record: Record,
-): RTE.ReaderTaskEither<F.FetchEnv & GetPreprintEnv & L.LoggerEnv, unknown, Prereview> {
+): RTE.ReaderTaskEither<
+  F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
+  HttpError<404> | 'unavailable' | 'not-found' | 'text-unavailable' | D.DecodeError,
+  Prereview
+> {
   return pipe(
     RTE.of(record),
     RTE.bindW(
@@ -350,7 +354,7 @@ function recordToPrereview(
 
 function recordToPreprintPrereview(
   record: Record,
-): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, unknown, PreprintPrereview> {
+): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, HttpError<404> | 'text-unavailable', PreprintPrereview> {
   return pipe(
     RTE.of(record),
     RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
@@ -383,7 +387,11 @@ function recordToScietyPrereview(
 
 function recordToRecentPrereview(
   record: Record,
-): RTE.ReaderTaskEither<GetPreprintTitleEnv & L.LoggerEnv, unknown, RecentPrereview> {
+): RTE.ReaderTaskEither<
+  GetPreprintTitleEnv & L.LoggerEnv,
+  'no reviewed preprint' | 'unavailable' | 'not-found',
+  RecentPrereview
+> {
   return pipe(
     RTE.of(record),
     RTE.bindW('preprintId', getReviewedPreprintId),
