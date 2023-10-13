@@ -390,12 +390,11 @@ describe('writeReviewPublish', () => {
         fc.constant(secret),
       ),
     ),
-    fc.oneof(fc.fetchResponse({ status: fc.integer({ min: 400 }) }), fc.error()),
     fc.tuple(fc.incompleteForm(), fc.completedForm().map(CompletedFormC.encode)).map(parts => merge(...parts)),
     fc.user(),
   ])(
     'when the PREreview cannot be published',
-    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], response, newReview, user) => {
+    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newReview, user) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
@@ -406,7 +405,7 @@ describe('writeReviewPublish', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           formStore,
-          publishPrereview: () => TE.left(response),
+          publishPrereview: () => TE.left('unavailable'),
           secret,
           sessionCookie,
           sessionStore,

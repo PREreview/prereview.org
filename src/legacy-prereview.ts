@@ -326,7 +326,7 @@ export const createPrereviewOnLegacyPrereview = (newPrereview: LegacyCompatibleN
             ),
             RTE.chainW(F.send),
             RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
-            RTE.map(constVoid),
+            RTE.bimap(() => 'unavailable' as const, constVoid),
           ),
       ),
     ),

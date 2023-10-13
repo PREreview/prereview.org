@@ -48,7 +48,7 @@ export interface NewPrereview {
 }
 
 export interface PublishPrereviewEnv {
-  publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<unknown, [Doi, number]>
+  publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<'unavailable', [Doi, number]>
 }
 
 export const writeReviewPublish = flow(
@@ -124,7 +124,11 @@ const handlePublishForm = ({
     RM.chainReaderTaskEitherKW(
       flow(
         publishPrereview,
-        RTE.orElseFirstW(() => saveForm(user.orcid, preprint.id)(originalForm)),
+        RTE.orElseFirstW(error =>
+          match(error)
+            .with('unavailable', () => saveForm(user.orcid, preprint.id)(originalForm))
+            .exhaustive(),
+        ),
       ),
     ),
     RM.ichainFirst(() => RM.status(Status.SeeOther)),

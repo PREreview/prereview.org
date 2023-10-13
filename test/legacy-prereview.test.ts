@@ -735,7 +735,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
           legacyPrereviewApi: { app, key, url, update: true },
         })()
 
-        expect(actual).toStrictEqual(E.left(expect.objectContaining(response)))
+        expect(actual).toStrictEqual(E.left('unavailable'))
       },
     )
 
@@ -801,7 +801,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
         legacyPrereviewApi: { app, key, url, update: true },
       })()
 
-      expect(actual).toStrictEqual(E.left(error))
+      expect(actual).toStrictEqual(E.left('unavailable'))
     })
   })
 
