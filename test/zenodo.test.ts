@@ -2708,7 +2708,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
         logger: () => IO.of(undefined),
       })()
 
-      expect(actual).toStrictEqual(E.left(expect.anything()))
+      expect(actual).toStrictEqual(E.left('unavailable'))
       expect(fetch.done()).toBeTruthy()
     },
   )
