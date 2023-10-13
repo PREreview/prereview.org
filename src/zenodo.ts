@@ -129,22 +129,39 @@ export const getRecentPrereviewsFromZenodo = flow(
     flow(
       ({ hits }) => hits,
       RT.traverseArray(recordToRecentPrereview),
-      flow(
-        RT.map(flow(RA.rights, E.fromOptionK(() => 'unavailable' as const)(RNEA.fromReadonlyArray))),
-        RTE.orElseFirstW(RTE.fromReaderIOK(() => L.error('Unable to load any recent PREreviews'))),
-      ),
+      RT.map(flow(RA.rights, E.fromOptionK(() => 'unavailable' as const)(RNEA.fromReadonlyArray))),
     ),
   ),
-  RTE.bimap(
-    error =>
-      match(error)
-        .with('not-found', identity)
-        .otherwise(() => 'unavailable' as const),
-    ({ currentPage, recentPrereviews, records }) => ({
-      currentPage,
-      recentPrereviews,
-      totalPages: Math.ceil(records.hits.total / 5),
-    }),
+  flow(
+    RTE.orElseFirstW(
+      RTE.fromReaderIOK(
+        flow(
+          error =>
+            match(error)
+              .with(P.instanceOf(Error), error => O.some(error.message))
+              .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
+              .with({ _tag: P.string }, error => O.some(D.draw(error)))
+              .with('unavailable', O.some)
+              .with('not-found', () => O.none)
+              .exhaustive(),
+          O.match(
+            () => RIO.of(undefined),
+            flow(error => ({ error }), L.errorP('Unable to get recent records from Zenodo')),
+          ),
+        ),
+      ),
+    ),
+    RTE.bimap(
+      error =>
+        match(error)
+          .with('not-found', identity)
+          .otherwise(() => 'unavailable' as const),
+      ({ currentPage, recentPrereviews, records }) => ({
+        currentPage,
+        recentPrereviews,
+        totalPages: Math.ceil(records.hits.total / 5),
+      }),
+    ),
   ),
 )
 
@@ -207,6 +224,20 @@ export const getPrereviewsForProfileFromZenodo = flow(
   RTE.chainReaderTaskKW(
     flow(records => records.hits.hits, RT.traverseArray(recordToRecentPrereview), RT.map(RA.rights)),
   ),
+  RTE.orElseFirstW(
+    RTE.fromReaderIOK(
+      flow(
+        error => ({
+          error: match(error)
+            .with(P.instanceOf(Error), error => error.message)
+            .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+            .with({ _tag: P.string }, D.draw)
+            .exhaustive(),
+        }),
+        L.errorP('Unable to get records for profile from Zenodo'),
+      ),
+    ),
+  ),
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
@@ -223,6 +254,20 @@ export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
     RTE.local(revalidateIfStale()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
+    RTE.orElseFirstW(
+      RTE.fromReaderIOK(
+        flow(
+          error => ({
+            error: match(error)
+              .with(P.instanceOf(Error), error => error.message)
+              .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+              .with({ _tag: P.string }, D.draw)
+              .exhaustive(),
+          }),
+          L.errorP('Unable to get records for club from Zenodo'),
+        ),
+      ),
+    ),
     RTE.chainReaderTaskKW(
       flow(records => records.hits.hits, RT.traverseArray(recordToRecentPrereview), RT.map(RA.rights)),
     ),
@@ -246,6 +291,21 @@ export const getPrereviewsForPreprintFromZenodo = flow(
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
   RTE.chainW(flow(records => records.hits.hits, RTE.traverseArray(recordToPreprintPrereview))),
+  RTE.orElseFirstW(
+    RTE.fromReaderIOK(
+      flow(
+        error => ({
+          error: match(error)
+            .with(P.instanceOf(Error), error => error.message)
+            .with({ status: P.number }, response => `${response.status} ${response.statusText}`)
+            .with({ _tag: P.string }, D.draw)
+            .with('text-unavailable', identity)
+            .exhaustive(),
+        }),
+        L.errorP('Unable to get records for preprint from Zenodo'),
+      ),
+    ),
+  ),
   RTE.mapLeft(() => 'unavailable' as const),
 )
 
