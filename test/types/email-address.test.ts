@@ -12,11 +12,14 @@ describe('EmailAddressC', () => {
       expect(actual).toStrictEqual(D.success(string))
     })
 
-    test.prop([fc.string()])('with a non-email address', string => {
-      const actual = _.EmailAddressC.decode(string)
+    test.prop([fc.string().filter(string => !string.includes('.') || !string.includes('@') || /\s/g.test(string))])(
+      'with a non-email address',
+      string => {
+        const actual = _.EmailAddressC.decode(string)
 
-      expect(actual).toStrictEqual(D.failure(string, 'EmailAddress'))
-    })
+        expect(actual).toStrictEqual(D.failure(string, 'EmailAddress'))
+      },
+    )
 
     test.prop([fc.anything().filter(value => typeof value !== 'string')])('with a non-string', value => {
       const actual = _.EmailAddressC.decode(value)
