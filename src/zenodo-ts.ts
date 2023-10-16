@@ -487,17 +487,23 @@ const BaseRecordC = C.struct({
             communities => (communities ?? []) as never,
           ),
         ),
-        contributors: NonEmptyArrayC(
-          pipe(
-            C.struct({
-              name: C.string,
-              type: C.string,
-            }),
-            C.intersect(
-              C.partial({
-                orcid: OrcidC,
+        contributors: pipe(
+          C.array(
+            pipe(
+              C.struct({
+                name: C.string,
+                type: C.string,
               }),
+              C.intersect(
+                C.partial({
+                  orcid: OrcidC,
+                }),
+              ),
             ),
+          ),
+          C.imap(
+            A.match(() => undefined, identity),
+            contributors => (contributors ?? []) as never,
           ),
         ),
         keywords: NonEmptyArrayC(C.string),
