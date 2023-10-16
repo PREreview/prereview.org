@@ -1855,7 +1855,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           {
             url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              q: `contributors.name:"${getClubName(club)}"`,
+              q: `metadata.contributors.person_or_org.name:"${getClubName(club)}"`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
@@ -1902,7 +1902,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         {
           url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            q: `contributors.name:"${getClubName(club)}"`,
+            q: `metadata.contributors.person_or_org.name:"${getClubName(club)}"`,
             size: '100',
             sort: 'publication-desc',
             resource_type: 'publication::publication-peerreview',
@@ -1979,7 +1979,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         (url, { cache }) =>
           url ===
             `https://zenodo.org/api/communities/prereview-reviews/records?${new URLSearchParams({
-              q: `contributors.name:"${getClubName(club)}"`,
+              q: `metadata.contributors.person_or_org.name:"${getClubName(club)}"`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
@@ -1993,7 +1993,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
         (url, { cache }) =>
           url ===
             `https://zenodo.org/api/communities/prereview-reviews/records?${new URLSearchParams({
-              q: `contributors.name:"${getClubName(club)}"`,
+              q: `metadata.contributors.person_or_org.name:"${getClubName(club)}"`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
@@ -2033,7 +2033,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
       {
         url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
         query: {
-          q: `contributors.name:"${getClubName(club)}"`,
+          q: `metadata.contributors.person_or_org.name:"${getClubName(club)}"`,
           size: '100',
           sort: 'publication-desc',
           resource_type: 'publication::publication-peerreview',
@@ -2157,7 +2157,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           {
             url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              q: `contributors.name:"${getClubName(club)}"`,
+              q: `metadata.contributors.person_or_org.name:"${getClubName(club)}"`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',
@@ -2245,7 +2245,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
           {
             url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              q: `contributors.name:"${getClubName(club)}"`,
+              q: `metadata.contributors.person_or_org.name:"${getClubName(club)}"`,
               size: '100',
               sort: 'publication-desc',
               resource_type: 'publication::publication-peerreview',

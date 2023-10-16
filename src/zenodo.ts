@@ -246,7 +246,7 @@ export const getPrereviewsForProfileFromZenodo = flow(
 export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
   pipe(
     new URLSearchParams({
-      q: `contributors.name:"${getClubName(club)}"`,
+      q: `metadata.contributors.person_or_org.name:"${getClubName(club)}"`,
       size: '100',
       sort: 'publication-desc',
       resource_type: 'publication::publication-peerreview',

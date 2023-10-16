@@ -4,7 +4,6 @@ import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from '../src/zenodo-ts'
 import { expect, prereviewWasRemoved, test } from './base'
 
-
 test('can find and view a review', async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -571,7 +570,7 @@ test('might not load the older reviews in time', async ({ fetch, javaScriptEnabl
     {
       name: 'recent-prereviews',
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-      query: { size: 5, sort: 'publication-desc', resource_type: 'publication::publication-peerreview', },
+      query: { size: 5, sort: 'publication-desc', resource_type: 'publication::publication-peerreview' },
     },
     new Promise(() =>
       setTimeout(
