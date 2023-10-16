@@ -26,12 +26,11 @@ export interface Record {
   conceptdoi: Doi
   conceptrecid: number
   files: NonEmptyArray<{
-    key: string
+    filename: string
     links: {
       self: URL
     }
-    size: number
-    type: string
+    filesize: number
   }>
   id: number
   links: {
@@ -40,7 +39,7 @@ export interface Record {
   }
   metadata: {
     communities?: NonEmptyArray<{
-      id: string
+      identifier: string
     }>
     contributors?: NonEmptyArray<{
       name: string
@@ -54,9 +53,7 @@ export interface Record {
     description: string
     doi: Doi
     language?: string
-    license: {
-      id: string
-    }
+    license: string
     keywords?: NonEmptyArray<string>
     notes?: string
     publication_date: Date
@@ -66,48 +63,48 @@ export interface Record {
       relation: string
       resource_type?: string
     }>
-    resource_type:
-      | {
-          type:
-            | 'dataset'
-            | 'figure'
-            | 'lesson'
-            | 'other'
-            | 'physicalobject'
-            | 'poster'
-            | 'presentation'
-            | 'software'
-            | 'video'
-        }
-      | {
-          type: 'image'
-          subtype: 'diagram' | 'drawing' | 'figure' | 'other' | 'photo' | 'plot'
-        }
-      | {
-          type: 'publication'
-          subtype:
-            | 'annotationcollection'
-            | 'article'
-            | 'book'
-            | 'conferencepaper'
-            | 'datamanagementplan'
-            | 'deliverable'
-            | 'milestone'
-            | 'other'
-            | 'patent'
-            | 'peerreview'
-            | 'preprint'
-            | 'proposal'
-            | 'report'
-            | 'section'
-            | 'softwaredocumentation'
-            | 'taxonomictreatment'
-            | 'technicalnote'
-            | 'thesis'
-            | 'workingpaper'
-        }
     title: string
-  }
+  } & (
+    | {
+        upload_type:
+          | 'dataset'
+          | 'figure'
+          | 'lesson'
+          | 'other'
+          | 'physicalobject'
+          | 'poster'
+          | 'presentation'
+          | 'software'
+          | 'video'
+      }
+    | {
+        upload_type: 'image'
+        image_type: 'diagram' | 'drawing' | 'figure' | 'other' | 'photo' | 'plot'
+      }
+    | {
+        upload_type: 'publication'
+        publication_type:
+          | 'annotationcollection'
+          | 'article'
+          | 'book'
+          | 'conferencepaper'
+          | 'datamanagementplan'
+          | 'deliverable'
+          | 'milestone'
+          | 'other'
+          | 'patent'
+          | 'peerreview'
+          | 'preprint'
+          | 'proposal'
+          | 'report'
+          | 'section'
+          | 'softwaredocumentation'
+          | 'taxonomictreatment'
+          | 'technicalnote'
+          | 'thesis'
+          | 'workingpaper'
+      }
+  )
 }
 
 export type DepositMetadata = {
@@ -378,64 +375,6 @@ const PlainDateC = C.make(
   { encode: date => date.toISOString().split('T')[0] ?? '' },
 )
 
-const ResourceTypeC = C.sum('type')({
-  dataset: C.struct({
-    type: C.literal('dataset'),
-  }),
-  figure: C.struct({
-    type: C.literal('figure'),
-  }),
-  image: C.struct({
-    subtype: C.literal('figure', 'plot', 'drawing', 'diagram', 'photo', 'other'),
-    type: C.literal('image'),
-  }),
-  lesson: C.struct({
-    type: C.literal('lesson'),
-  }),
-  other: C.struct({
-    type: C.literal('other'),
-  }),
-  poster: C.struct({
-    type: C.literal('poster'),
-  }),
-  physicalobject: C.struct({
-    type: C.literal('physicalobject'),
-  }),
-  presentation: C.struct({
-    type: C.literal('presentation'),
-  }),
-  publication: C.struct({
-    subtype: C.literal(
-      'annotationcollection',
-      'book',
-      'section',
-      'conferencepaper',
-      'datamanagementplan',
-      'article',
-      'patent',
-      'peerreview',
-      'preprint',
-      'deliverable',
-      'milestone',
-      'proposal',
-      'report',
-      'softwaredocumentation',
-      'taxonomictreatment',
-      'technicalnote',
-      'thesis',
-      'workingpaper',
-      'other',
-    ),
-    type: C.literal('publication'),
-  }),
-  software: C.struct({
-    type: C.literal('software'),
-  }),
-  video: C.struct({
-    type: C.literal('video'),
-  }),
-})
-
 const UploadTypeC = C.sum('upload_type')({
   dataset: C.struct({
     upload_type: C.literal('dataset'),
@@ -500,12 +439,11 @@ const BaseRecordC = C.struct({
   id: C.number,
   files: NonEmptyArrayC(
     C.struct({
-      key: C.string,
+      filename: C.string,
       links: C.struct({
         self: UrlC,
       }),
-      size: C.number,
-      type: C.string,
+      filesize: C.number,
     }),
   ),
   links: C.struct({
@@ -528,17 +466,15 @@ const BaseRecordC = C.struct({
       ),
       description: C.string,
       doi: DoiC,
-      license: C.struct({
-        id: C.string,
-      }),
+      license: C.string,
       publication_date: PlainDateC,
-      resource_type: ResourceTypeC,
       title: C.string,
     }),
+    C.intersect(UploadTypeC),
     C.intersect(
       C.partial({
         communities: pipe(
-          C.array(C.struct({ id: C.string })),
+          C.array(C.struct({ identifier: C.string })),
           C.imap(
             A.match(() => undefined, identity),
             communities => (communities ?? []) as never,

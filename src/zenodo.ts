@@ -22,7 +22,7 @@ import iso6391, { type LanguageCode } from 'iso-639-1'
 import iso6393To1 from 'iso-639-3/to-1.json'
 import * as L from 'logger-fp-ts'
 import { get } from 'spectacles-ts'
-import { P, match } from 'ts-pattern'
+import { P, isMatching, match } from 'ts-pattern'
 import { getClubByName, getClubName } from './club-details'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import type { RecentPrereview } from './home'
@@ -509,20 +509,20 @@ function recordToRecentPrereview(
 }
 
 const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
-  D.fromStruct({ metadata: D.fromStruct({ license: D.fromStruct({ id: D.literal('CC-BY-4.0') }) }) }),
-  D.map(get('metadata.license.id')),
+  D.fromStruct({ metadata: D.fromStruct({ license: D.literal('cc-by-4.0') }) }),
+  D.map(() => 'CC-BY-4.0'),
 )
 
 function isInCommunity(record: Record) {
   return pipe(
     O.fromNullable(record.metadata.communities),
-    O.chain(A.findFirst(community => community.id === 'prereview-reviews')),
+    O.chain(A.findFirst(community => community.identifier === 'prereview-reviews')),
     O.isSome,
   )
 }
 
 function isPeerReview(record: Record) {
-  return record.metadata.resource_type.type === 'publication' && record.metadata.resource_type.subtype === 'peerreview'
+  return isMatching({ metadata: { upload_type: 'publication', publication_type: 'peerreview' } }, record)
 }
 
 const getReviewClub = flow(
@@ -532,7 +532,7 @@ const getReviewClub = flow(
 
 const getReviewUrl = flow(
   (record: Record) => record.files,
-  RA.findFirst(file => file.type === 'html'),
+  RA.findFirst(file => file.filename.endsWith('.html')),
   O.map(get('links.self')),
 )
 
