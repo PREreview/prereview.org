@@ -1,6 +1,6 @@
 import { Status } from 'hyper-ts'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import { RecordsC } from 'zenodo-ts'
+import { RecordsC } from '../src/zenodo-ts'
 import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview, willPublishAReview } from './base'
 
 test.extend(canLogIn).extend(willPublishAReview)(

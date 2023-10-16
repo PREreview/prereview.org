@@ -10,6 +10,11 @@ import * as IO from 'fp-ts/IO'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
+import { getClubName } from '../src/club-details'
+import { plainText, rawHtml } from '../src/html'
+import { reviewMatch } from '../src/routes'
+import type { NewPrereview } from '../src/write-review'
+import * as _ from '../src/zenodo'
 import {
   type EmptyDeposition,
   EmptyDepositionC,
@@ -21,12 +26,7 @@ import {
   SubmittedDepositionC,
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
-} from 'zenodo-ts'
-import { getClubName } from '../src/club-details'
-import { plainText, rawHtml } from '../src/html'
-import { reviewMatch } from '../src/routes'
-import type { NewPrereview } from '../src/write-review'
-import * as _ from '../src/zenodo'
+} from '../src/zenodo-ts'
 import * as fc from './fc'
 import { shouldNotBeCalled } from './should-not-be-called'
 

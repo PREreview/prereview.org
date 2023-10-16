@@ -16,13 +16,6 @@ import * as L from 'logger-fp-ts'
 import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import {
-  EmptyDepositionC,
-  RecordsC,
-  SubmittedDepositionC,
-  UnsubmittedDepositionC,
-  type Record as ZenodoRecord,
-} from 'zenodo-ts'
 import { type ConfigEnv, app } from '../src/app'
 import type { CanChangeContactEmailAddressEnv, CanConnectSlackEnv } from '../src/feature-flags'
 import type {
@@ -35,6 +28,13 @@ import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 import type { IsUserBlockedEnv } from '../src/log-in'
 import type { NonEmptyString } from '../src/types/string'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo'
+import {
+  EmptyDepositionC,
+  RecordsC,
+  SubmittedDepositionC,
+  UnsubmittedDepositionC,
+  type Record as ZenodoRecord,
+} from '../src/zenodo-ts'
 
 import Logger = L.Logger
 import LogEntry = L.LogEntry
