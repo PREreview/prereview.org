@@ -18,7 +18,6 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
-      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
@@ -34,7 +33,6 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
-        canConnectSlack,
         slackUser,
         canChangeContactEmailAddress,
         contactEmailAddress,
@@ -47,7 +45,6 @@ describe('myDetails', () => {
         const actual = await runMiddleware(
           _.myDetails({
             canChangeContactEmailAddress: () => canChangeContactEmailAddress,
-            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -78,7 +75,6 @@ describe('myDetails', () => {
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.boolean(),
-      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
@@ -92,7 +88,6 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
-        canConnectSlack,
         canChangeContactEmailAddress,
         contactEmailAddress,
         isOpenForRequests,
@@ -104,7 +99,6 @@ describe('myDetails', () => {
         const actual = await runMiddleware(
           _.myDetails({
             canChangeContactEmailAddress: () => canChangeContactEmailAddress,
-            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -135,7 +129,6 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
-      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -150,7 +143,6 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
-        canConnectSlack,
         slackUser,
         canChangeContactEmailAddress,
         isOpenForRequests,
@@ -162,7 +154,6 @@ describe('myDetails', () => {
         const actual = await runMiddleware(
           _.myDetails({
             canChangeContactEmailAddress: () => canChangeContactEmailAddress,
-            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -193,7 +184,6 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
-      fc.boolean(),
       fc.slackUser(),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
@@ -208,7 +198,6 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
-        canConnectSlack,
         slackUser,
         canChangeContactEmailAddress,
         contactEmailAddress,
@@ -220,7 +209,6 @@ describe('myDetails', () => {
         const actual = await runMiddleware(
           _.myDetails({
             canChangeContactEmailAddress: () => canChangeContactEmailAddress,
-            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -251,7 +239,6 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
-      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
@@ -266,7 +253,6 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
-        canConnectSlack,
         slackUser,
         canChangeContactEmailAddress,
         contactEmailAddress,
@@ -278,7 +264,6 @@ describe('myDetails', () => {
         const actual = await runMiddleware(
           _.myDetails({
             canChangeContactEmailAddress: () => canChangeContactEmailAddress,
-            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -309,7 +294,6 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
-      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
@@ -324,7 +308,6 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
-        canConnectSlack,
         slackUser,
         canChangeContactEmailAddress,
         contactEmailAddress,
@@ -336,7 +319,6 @@ describe('myDetails', () => {
         const actual = await runMiddleware(
           _.myDetails({
             canChangeContactEmailAddress: () => canChangeContactEmailAddress,
-            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -367,7 +349,6 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
-      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
@@ -382,7 +363,6 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
-        canConnectSlack,
         slackUser,
         canChangeContactEmailAddress,
         contactEmailAddress,
@@ -394,7 +374,6 @@ describe('myDetails', () => {
         const actual = await runMiddleware(
           _.myDetails({
             canChangeContactEmailAddress: () => canChangeContactEmailAddress,
-            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -425,7 +404,6 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
-      fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.boolean(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
@@ -440,7 +418,6 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
-        canConnectSlack,
         slackUser,
         canChangeContactEmailAddress,
         contactEmailAddress,
@@ -452,7 +429,6 @@ describe('myDetails', () => {
         const actual = await runMiddleware(
           _.myDetails({
             canChangeContactEmailAddress: () => canChangeContactEmailAddress,
-            canConnectSlack: () => canConnectSlack,
             getUser: () => M.right(user),
             oauth,
             publicUrl,
@@ -485,7 +461,6 @@ describe('myDetails', () => {
       const actual = await runMiddleware(
         _.myDetails({
           canChangeContactEmailAddress: () => canChangeContactEmailAddress,
-          canConnectSlack: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
           oauth,
           publicUrl,
@@ -529,7 +504,6 @@ describe('myDetails', () => {
       const actual = await runMiddleware(
         _.myDetails({
           canChangeContactEmailAddress: () => canChangeContactEmailAddress,
-          canConnectSlack: shouldNotBeCalled,
           getUser: () => M.left(error),
           oauth,
           publicUrl,

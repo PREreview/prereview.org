@@ -10,7 +10,7 @@ import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, maybeGetCareerStage } from '../career-stage'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../contact-email-address'
-import { canChangeContactEmailAddress, canConnectSlack } from '../feature-flags'
+import { canChangeContactEmailAddress } from '../feature-flags'
 import { deleteFlashMessage, getFlashMessage } from '../flash-message'
 import { html, plainText, sendHtml } from '../html'
 import { type IsOpenForRequests, maybeIsOpenForRequests } from '../is-open-for-requests'
@@ -51,7 +51,6 @@ export const myDetails = pipe(
     pipe(
       RTE.Do,
       RTE.let('user', () => user),
-      RTE.apS('canConnectSlack', RTE.fromReader(canConnectSlack(user))),
       RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('canChangeContactEmailAddress', RTE.fromReader(canChangeContactEmailAddress(user))),
       RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(O.fromNullable))),
@@ -88,7 +87,6 @@ export const myDetails = pipe(
 function createPage({
   user,
   message,
-  canConnectSlack,
   slackUser,
   canChangeContactEmailAddress,
   contactEmailAddress,
@@ -100,7 +98,6 @@ function createPage({
 }: {
   user: User
   message?: D.TypeOf<typeof FlashMessageD>
-  canConnectSlack: boolean
   slackUser: O.Option<SlackUser>
   canChangeContactEmailAddress: boolean
   contactEmailAddress: O.Option<ContactEmailAddress>
@@ -174,10 +171,9 @@ function createPage({
             <dd>${user.pseudonym}</dd>
           </div>
 
-          ${match({ canConnectSlack, slackUser })
-            .with({ canConnectSlack: false }, () => '')
-            .with(
-              { canConnectSlack: true, slackUser: P.when(O.isNone) },
+          ${match(slackUser)
+            .when(
+              O.isNone,
               () => html`
                 <div>
                   <dt>Slack Community name</dt>
@@ -188,7 +184,7 @@ function createPage({
               `,
             )
             .with(
-              { canConnectSlack: true, slackUser: { value: P.select() } },
+              { value: P.select() },
               slackUser => html`
                 <div>
                   <dt>Slack Community name</dt>
@@ -235,10 +231,10 @@ function createPage({
               `,
             )
             .exhaustive()}
-          ${match({ canConnectSlack, slackUser })
-            .with({ canConnectSlack: false }, { canConnectSlack: true, slackUser: P.when(O.isNone) }, () => '')
-            .with(
-              { canConnectSlack: true, slackUser: P.when(O.isSome) },
+          ${match(slackUser)
+            .when(O.isNone, () => '')
+            .when(
+              O.isSome,
               () => html`
                 <div>
                   <dt>Open for review requests</dt>

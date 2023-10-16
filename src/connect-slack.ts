@@ -20,11 +20,10 @@ import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { canConnectSlack } from './feature-flags'
 import { setFlashMessage } from './flash-message'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
-import { notFound, seeOther, serviceUnavailable } from './middleware'
+import { seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from './routes'
@@ -99,16 +98,6 @@ export const connectSlack = pipe(
   RM.of({}),
   RM.apS('user', getUser),
   RM.bindW(
-    'canConnectSlack',
-    flow(
-      RM.fromReaderK(({ user }) => canConnectSlack(user)),
-      RM.filterOrElse(
-        canConnectSlack => canConnectSlack,
-        () => 'not-found' as const,
-      ),
-    ),
-  ),
-  RM.bindW(
     'isSlackUser',
     RM.fromReaderTaskEitherK(({ user }) => isSlackUser(user.orcid)),
   ),
@@ -132,7 +121,6 @@ export const connectSlack = pipe(
           void
         >
       >()
-      .with('not-found', () => notFound)
       .with('no-session', () => logInAndRedirect(connectSlackMatch.formatter, {}))
       .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
       .exhaustive(),
@@ -142,16 +130,6 @@ export const connectSlack = pipe(
 export const connectSlackStart = pipe(
   RM.of({}),
   RM.apS('user', getUser),
-  RM.bindW(
-    'canConnectSlack',
-    flow(
-      RM.fromReaderK(({ user }) => canConnectSlack(user)),
-      RM.filterOrElse(
-        canConnectSlack => canConnectSlack,
-        () => 'not-found' as const,
-      ),
-    ),
-  ),
   RM.apSW('state', RM.fromReaderIO(generateUuid)),
   RM.bindW(
     'signedState',
@@ -177,7 +155,6 @@ export const connectSlackStart = pipe(
           void
         >
       >()
-      .with('not-found', () => notFound)
       .with('no-session', () => logInAndRedirect(connectSlackMatch.formatter, {}))
       .with(P.instanceOf(Error), () => serviceUnavailable)
       .exhaustive(),

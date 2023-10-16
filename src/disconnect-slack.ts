@@ -4,11 +4,10 @@ import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
-import { canConnectSlack } from './feature-flags'
 import { setFlashMessage } from './flash-message'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
-import { getMethod, notFound, seeOther, serviceUnavailable } from './middleware'
+import { getMethod, seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import type { PublicUrlEnv } from './public-url'
 import { disconnectSlackMatch, myDetailsMatch } from './routes'
@@ -19,16 +18,6 @@ import { type GetUserEnv, type User, getUser, maybeGetUser } from './user'
 export const disconnectSlack = pipe(
   RM.of({}),
   RM.apS('user', getUser),
-  RM.bindW(
-    'canConnectSlack',
-    flow(
-      RM.fromReaderK(({ user }) => canConnectSlack(user)),
-      RM.filterOrElse(
-        canConnectSlack => canConnectSlack,
-        () => 'not-found' as const,
-      ),
-    ),
-  ),
   RM.bindW(
     'isSlackUser',
     RM.fromReaderTaskEitherK(({ user }) => isSlackUser(user.orcid)),
@@ -55,7 +44,6 @@ export const disconnectSlack = pipe(
           void
         >
       >()
-      .with('not-found', () => notFound)
       .with('no-session', () => logInAndRedirect(disconnectSlackMatch.formatter, {}))
       .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
       .exhaustive(),
