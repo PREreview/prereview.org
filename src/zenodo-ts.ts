@@ -236,16 +236,17 @@ export const getRecord: (id: number) => ReaderTaskEither<ZenodoEnv, Error | Deco
     RTE.chainTaskEitherKW(F.decode(RecordC)),
   )
 
-export const getRecords: (
-  query: URLSearchParams,
-) => ReaderTaskEither<ZenodoEnv, Error | DecodeError | Response, Records> = query =>
-  pipe(
-    RTE.rightReader(zenodoUrl(`records?${query.toString()}`)),
-    RTE.chainReaderKW(flow(F.Request('GET'), F.setHeader('Accept', 'application/json'), addAuthorizationHeader)),
-    RTE.chainW(F.send),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-    RTE.chainTaskEitherKW(F.decode(RecordsC)),
-  )
+export const getCommunityRecords: (
+  community: string,
+) => (query: URLSearchParams) => ReaderTaskEither<ZenodoEnv, Error | DecodeError | Response, Records> =
+  community => query =>
+    pipe(
+      RTE.rightReader(zenodoUrl(`communities/${community}/records?${query.toString()}`)),
+      RTE.chainReaderKW(flow(F.Request('GET'), F.setHeader('Accept', 'application/json'), addAuthorizationHeader)),
+      RTE.chainW(F.send),
+      RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+      RTE.chainTaskEitherKW(F.decode(RecordsC)),
+    )
 
 export const createEmptyDeposition = (): ReaderTaskEither<
   ZenodoAuthenticatedEnv,
@@ -557,12 +558,26 @@ export const RecordC: Codec<string, string, Record> = pipe(JsonC, C.compose(Base
 export const RecordsC: Codec<string, string, Records> = pipe(
   JsonC,
   C.compose(
-    C.struct({
-      hits: C.struct({
-        hits: C.array(BaseRecordC),
-        total: C.number,
+    C.make(
+      D.union(
+        D.struct({
+          hits: D.struct({
+            hits: D.array(BaseRecordC),
+            total: D.number,
+          }),
+        }),
+        pipe(
+          D.array(BaseRecordC),
+          D.map(hits => ({ hits: { hits, total: 10000 } })),
+        ),
+      ),
+      C.struct({
+        hits: C.struct({
+          hits: C.array(BaseRecordC),
+          total: C.number,
+        }),
       }),
-    }),
+    ),
   ),
 )
 

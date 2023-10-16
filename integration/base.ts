@@ -108,8 +108,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     fetch.get(
       {
         name: 'recent-prereviews',
-        url: 'http://zenodo.test/api/records',
-        query: { communities: 'prereview-reviews', size: 5, sort: 'publication-desc', subtype: 'peerreview' },
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { size: 5, sort: 'publication-desc', resource_type: 'publication::publication-peerreview', },
       },
       {
         body: RecordsC.encode({
@@ -739,8 +739,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     fetch.get(
       {
         name: '10.1101/12345678 reviews',
-        url: 'http://zenodo.test/api/records',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/12345678"' },
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.1101/12345678"' },
       },
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )

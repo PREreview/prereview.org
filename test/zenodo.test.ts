@@ -124,13 +124,12 @@ describe('getRecentPrereviewsFromZenodo', () => {
         clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(
           {
-            url: 'begin:https://zenodo.org/api/records?',
+            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              communities: 'prereview-reviews',
               page,
               size: '5',
               sort: 'publication-desc',
-              subtype: 'peerreview',
+              resource_type: 'publication::publication-peerreview',
             },
           },
           {
@@ -224,12 +223,11 @@ describe('getRecentPrereviewsFromZenodo', () => {
         .getOnce(
           (url, { cache }) =>
             url ===
-              `https://zenodo.org/api/records?${new URLSearchParams({
-                communities: 'prereview-reviews',
+              `https://zenodo.org/api/communities/prereview-reviews/records?${new URLSearchParams({
                 page: page.toString(),
                 size: '5',
                 sort: 'publication-desc',
-                subtype: 'peerreview',
+                resource_type: 'publication::publication-peerreview',
               }).toString()}` && cache === 'force-cache',
           {
             body: RecordsC.encode(records),
@@ -239,12 +237,11 @@ describe('getRecentPrereviewsFromZenodo', () => {
         .getOnce(
           (url, { cache }) =>
             url ===
-              `https://zenodo.org/api/records?${new URLSearchParams({
-                communities: 'prereview-reviews',
+              `https://zenodo.org/api/communities/prereview-reviews/records?${new URLSearchParams({
                 page: page.toString(),
                 size: '5',
                 sort: 'publication-desc',
-                subtype: 'peerreview',
+                resource_type: 'publication::publication-peerreview',
               }).toString()}` && cache === 'no-cache',
           { throws: new Error('Network error') },
         )
@@ -368,13 +365,12 @@ describe('getRecentPrereviewsFromZenodo', () => {
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
         {
-          url: 'begin:https://zenodo.org/api/records?',
+          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            communities: 'prereview-reviews',
             page,
             size: '5',
             sort: 'publication-desc',
-            subtype: 'peerreview',
+            resource_type: 'publication::publication-peerreview',
           },
         },
         {
@@ -497,13 +493,12 @@ describe('getRecentPrereviewsFromZenodo', () => {
 
     const fetch = fetchMock.sandbox().getOnce(
       {
-        url: 'begin:https://zenodo.org/api/records?',
+        url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
         query: {
-          communities: 'prereview-reviews',
           page,
           size: '5',
           sort: 'publication-desc',
-          subtype: 'peerreview',
+          resource_type: 'publication::publication-peerreview',
         },
       },
       {
@@ -531,13 +526,12 @@ describe('getRecentPrereviewsFromZenodo', () => {
       clock: SystemClock,
       fetch: fetchMock.sandbox().getOnce(
         {
-          url: 'begin:https://zenodo.org/api/records?',
+          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            communities: 'prereview-reviews',
             page,
             size: '5',
             sort: 'publication-desc',
-            subtype: 'peerreview',
+            resource_type: 'publication::publication-peerreview',
           },
         },
         {
@@ -557,13 +551,12 @@ describe('getRecentPrereviewsFromZenodo', () => {
     async (page, status) => {
       const fetch = fetchMock.sandbox().getOnce(
         {
-          url: 'begin:https://zenodo.org/api/records?',
+          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            communities: 'prereview-reviews',
             page,
             size: '5',
             sort: 'publication-desc',
-            subtype: 'peerreview',
+            resource_type: 'publication::publication-peerreview',
           },
         },
         { status },
@@ -1331,13 +1324,12 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
           fetch: fetchMock.sandbox().getOnce(
             {
-              url: 'begin:https://zenodo.org/api/records?',
+              url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
               query: {
-                communities: 'prereview-reviews',
-                q: `creators.orcid:${profile.value}`,
+                q: `metadata.creators.person_or_org.identifiers.identifier:${profile.value}`,
                 size: '100',
                 sort: 'publication-desc',
-                subtype: 'peerreview',
+                resource_type: 'publication::publication-peerreview',
               },
             },
             {
@@ -1471,13 +1463,12 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
           fetch: fetchMock.sandbox().getOnce(
             {
-              url: 'begin:https://zenodo.org/api/records?',
+              url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
               query: {
-                communities: 'prereview-reviews',
-                q: `creators.name:"${profile.value}"`,
+                q: `metadata.creators.person_or_org.name:"${profile.value}"`,
                 size: '100',
                 sort: 'publication-desc',
-                subtype: 'peerreview',
+                resource_type: 'publication::publication-peerreview',
               },
             },
             {
@@ -1566,13 +1557,21 @@ describe('getPrereviewsForProfileFromZenodo', () => {
 
       const fetch = fetchMock
         .sandbox()
-        .getOnce((url, { cache }) => url.startsWith('https://zenodo.org/api/records?') && cache === 'force-cache', {
-          body: RecordsC.encode(records),
-          headers: { 'X-Local-Cache-Status': 'stale' },
-        })
-        .getOnce((url, { cache }) => url.startsWith('https://zenodo.org/api/records?') && cache === 'no-cache', {
-          throws: new Error('Network error'),
-        })
+        .getOnce(
+          (url, { cache }) =>
+            url.startsWith('https://zenodo.org/api/communities/prereview-reviews/records?') && cache === 'force-cache',
+          {
+            body: RecordsC.encode(records),
+            headers: { 'X-Local-Cache-Status': 'stale' },
+          },
+        )
+        .getOnce(
+          (url, { cache }) =>
+            url.startsWith('https://zenodo.org/api/communities/prereview-reviews/records?') && cache === 'no-cache',
+          {
+            throws: new Error('Network error'),
+          },
+        )
 
       const actual = await _.getPrereviewsForProfileFromZenodo(profile)({
         clock: SystemClock,
@@ -1687,12 +1686,11 @@ describe('getPrereviewsForProfileFromZenodo', () => {
         clock: SystemClock,
         fetch: fetchMock.sandbox().getOnce(
           {
-            url: 'begin:https://zenodo.org/api/records?',
+            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              communities: 'prereview-reviews',
               size: '100',
               sort: 'publication-desc',
-              subtype: 'peerreview',
+              resource_type: 'publication::publication-peerreview',
             },
           },
           {
@@ -1730,12 +1728,11 @@ describe('getPrereviewsForProfileFromZenodo', () => {
   ])('when the PREreviews cannot be loaded', async (profile, status) => {
     const fetch = fetchMock.sandbox().getOnce(
       {
-        url: 'begin:https://zenodo.org/api/records?',
+        url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
         query: {
-          communities: 'prereview-reviews',
           size: '100',
           sort: 'publication-desc',
-          subtype: 'peerreview',
+          resource_type: 'publication::publication-peerreview',
         },
       },
       { status },
@@ -1856,13 +1853,12 @@ describe('getPrereviewsForClubFromZenodo', () => {
       const actual = await _.getPrereviewsForClubFromZenodo(club)({
         fetch: fetchMock.sandbox().getOnce(
           {
-            url: 'begin:https://zenodo.org/api/records?',
+            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              communities: 'prereview-reviews',
               q: `contributors.name:"${getClubName(club)}"`,
               size: '100',
               sort: 'publication-desc',
-              subtype: 'peerreview',
+              resource_type: 'publication::publication-peerreview',
             },
           },
           {
@@ -1904,13 +1900,12 @@ describe('getPrereviewsForClubFromZenodo', () => {
     const actual = await _.getPrereviewsForClubFromZenodo(club)({
       fetch: fetchMock.sandbox().getOnce(
         {
-          url: 'begin:https://zenodo.org/api/records?',
+          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            communities: 'prereview-reviews',
             q: `contributors.name:"${getClubName(club)}"`,
             size: '100',
             sort: 'publication-desc',
-            subtype: 'peerreview',
+            resource_type: 'publication::publication-peerreview',
           },
         },
         {
@@ -1983,12 +1978,11 @@ describe('getPrereviewsForClubFromZenodo', () => {
       .getOnce(
         (url, { cache }) =>
           url ===
-            `https://zenodo.org/api/records?${new URLSearchParams({
-              communities: 'prereview-reviews',
+            `https://zenodo.org/api/communities/prereview-reviews/records?${new URLSearchParams({
               q: `contributors.name:"${getClubName(club)}"`,
               size: '100',
               sort: 'publication-desc',
-              subtype: 'peerreview',
+              resource_type: 'publication::publication-peerreview',
             }).toString()}` && cache === 'force-cache',
         {
           body: RecordsC.encode(records),
@@ -1998,12 +1992,11 @@ describe('getPrereviewsForClubFromZenodo', () => {
       .getOnce(
         (url, { cache }) =>
           url ===
-            `https://zenodo.org/api/records?${new URLSearchParams({
-              communities: 'prereview-reviews',
+            `https://zenodo.org/api/communities/prereview-reviews/records?${new URLSearchParams({
               q: `contributors.name:"${getClubName(club)}"`,
               size: '100',
               sort: 'publication-desc',
-              subtype: 'peerreview',
+              resource_type: 'publication::publication-peerreview',
             }).toString()}` && cache === 'no-cache',
         { throws: new Error('Network error') },
       )
@@ -2038,13 +2031,12 @@ describe('getPrereviewsForClubFromZenodo', () => {
   ])('when the PREreviews cannot be loaded', async (club, status) => {
     const fetch = fetchMock.sandbox().getOnce(
       {
-        url: 'begin:https://zenodo.org/api/records?',
+        url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
         query: {
-          communities: 'prereview-reviews',
           q: `contributors.name:"${getClubName(club)}"`,
           size: '100',
           sort: 'publication-desc',
-          subtype: 'peerreview',
+          resource_type: 'publication::publication-peerreview',
         },
       },
       { status },
@@ -2163,13 +2155,12 @@ describe('getPrereviewsForClubFromZenodo', () => {
       const actual = await _.getPrereviewsForClubFromZenodo(club)({
         fetch: fetchMock.sandbox().getOnce(
           {
-            url: 'begin:https://zenodo.org/api/records?',
+            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              communities: 'prereview-reviews',
               q: `contributors.name:"${getClubName(club)}"`,
               size: '100',
               sort: 'publication-desc',
-              subtype: 'peerreview',
+              resource_type: 'publication::publication-peerreview',
             },
           },
           {
@@ -2252,13 +2243,12 @@ describe('getPrereviewsForClubFromZenodo', () => {
       const actual = await _.getPrereviewsForClubFromZenodo(club)({
         fetch: fetchMock.sandbox().getOnce(
           {
-            url: 'begin:https://zenodo.org/api/records?',
+            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              communities: 'prereview-reviews',
               q: `contributors.name:"${getClubName(club)}"`,
               size: '100',
               sort: 'publication-desc',
-              subtype: 'peerreview',
+              resource_type: 'publication::publication-peerreview',
             },
           },
           {
@@ -2336,12 +2326,11 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
           .sandbox()
           .getOnce(
             {
-              url: 'begin:https://zenodo.org/api/records?',
+              url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
               query: {
-                communities: 'prereview-reviews',
                 q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
                 sort: 'publication-desc',
-                subtype: 'peerreview',
+                resource_type: 'publication::publication-peerreview',
               },
             },
             {
@@ -2410,12 +2399,11 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
       .getOnce(
         (url, { cache }) =>
           url ===
-            `https://zenodo.org/api/records?${new URLSearchParams({
-              communities: 'prereview-reviews',
+            `https://zenodo.org/api/communities/prereview-reviews/records?${new URLSearchParams({
               q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               size: '100',
               sort: 'publication-desc',
-              subtype: 'peerreview',
+              resource_type: 'publication::publication-peerreview',
             }).toString()}` && cache === 'force-cache',
         {
           body: RecordsC.encode(records),
@@ -2425,12 +2413,11 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
       .getOnce(
         (url, { cache }) =>
           url ===
-            `https://zenodo.org/api/records?${new URLSearchParams({
-              communities: 'prereview-reviews',
+            `https://zenodo.org/api/communities/prereview-reviews/records?${new URLSearchParams({
               q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               size: '100',
               sort: 'publication-desc',
-              subtype: 'peerreview',
+              resource_type: 'publication::publication-peerreview',
             }).toString()}` && cache === 'no-cache',
         { throws: new Error('Network error') },
       )
@@ -2461,12 +2448,11 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
     async (preprint, status) => {
       const fetch = fetchMock.sandbox().getOnce(
         {
-          url: 'begin:https://zenodo.org/api/records?',
+          url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
           query: {
-            communities: 'prereview-reviews',
             q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
             sort: 'publication-desc',
-            subtype: 'peerreview',
+            resource_type: 'publication::publication-peerreview',
           },
         },
         { status },
@@ -2527,12 +2513,11 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
         .sandbox()
         .getOnce(
           {
-            url: 'begin:https://zenodo.org/api/records?',
+            url: 'begin:https://zenodo.org/api/communities/prereview-reviews/records?',
             query: {
-              communities: 'prereview-reviews',
               q: `related.identifier:"${_.toExternalIdentifier(preprint).identifier}"`,
               sort: 'publication-desc',
-              subtype: 'peerreview',
+              resource_type: 'publication::publication-peerreview',
             },
           },
           {

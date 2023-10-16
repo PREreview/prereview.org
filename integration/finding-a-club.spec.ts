@@ -57,13 +57,12 @@ test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
   fetch.get(
     {
       name: 'club-prereviews',
-      url: 'http://zenodo.test/api/records',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        communities: 'prereview-reviews',
         q: 'contributors.name:"ASAPbio Metabolism Crowd"',
         size: '100',
         sort: 'publication-desc',
-        subtype: 'peerreview',
+        resource_type: 'publication::publication-peerreview',
       },
     },
     {
@@ -180,13 +179,12 @@ test('might not load the PREreviews in time', async ({ fetch, javaScriptEnabled,
   fetch.get(
     {
       name: 'club-prereviews',
-      url: 'http://zenodo.test/api/records',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        communities: 'prereview-reviews',
         q: 'contributors.name:"ASAPbio Metabolism Crowd"',
         size: '100',
         sort: 'publication-desc',
-        subtype: 'peerreview',
+        resource_type: 'publication::publication-peerreview',
       },
     },
     new Promise(() =>
@@ -307,13 +305,12 @@ test('the list might be empty', async ({ fetch, page }) => {
   fetch.get(
     {
       name: 'club-prereviews',
-      url: 'http://zenodo.test/api/records',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        communities: 'prereview-reviews',
         q: 'contributors.name:"ASAPbio Metabolism Crowd"',
         size: '100',
         sort: 'publication-desc',
-        subtype: 'peerreview',
+        resource_type: 'publication::publication-peerreview',
       },
     },
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },

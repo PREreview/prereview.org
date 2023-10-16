@@ -84,8 +84,8 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
     })
     .get(
       {
-        url: 'http://zenodo.test/api/records',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.02.14.480364"' },
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.1101/2022.02.14.480364"' },
       },
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
     )

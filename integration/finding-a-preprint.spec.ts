@@ -42,8 +42,8 @@ test('can find and view a preprint', async ({ contextOptions, fetch, page }, tes
   fetch
     .getOnce(
       {
-        url: 'http://zenodo.test/api/records',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
       },
       {
         body: RecordsC.encode({
@@ -155,8 +155,8 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
 
   fetch.getOnce(
     {
-      url: 'http://zenodo.test/api/records',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     new Promise(() => setTimeout(() => ({ body: RecordsC.encode({ hits: { total: 0, hits: [] } }) }), 2000)),
   )
@@ -354,8 +354,8 @@ test('can skip to the main content', async ({ javaScriptEnabled, page }) => {
 test('can skip to the preprint details', async ({ fetch, javaScriptEnabled, page }) => {
   fetch.getOnce(
     {
-      url: 'http://zenodo.test/api/records',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
   )

@@ -49,8 +49,8 @@ import {
   type Record,
   type ZenodoAuthenticatedEnv,
   createEmptyDeposition,
+  getCommunityRecords,
   getRecord,
-  getRecords,
   publishDeposition,
   updateDeposition,
   uploadFile,
@@ -66,13 +66,12 @@ const wasPrereviewRemoved = (id: number): R.Reader<WasPrereviewRemovedEnv, boole
 const getPrereviewsPageForSciety = flow(
   (page: number) =>
     new URLSearchParams({
-      communities: 'prereview-reviews',
       page: page.toString(),
       size: '100',
       sort: '-mostrecent',
-      subtype: 'peerreview',
+      resource_type: 'publication::publication-peerreview',
     }),
-  getRecords,
+  getCommunityRecords('prereview-reviews'),
   RTE.map(records => records.hits.hits),
   RTE.chainReaderTaskKW(flow(RT.traverseArray(recordToScietyPrereview), RT.map(RA.rights))),
   RTE.mapLeft(() => 'unavailable' as const),
@@ -80,12 +79,11 @@ const getPrereviewsPageForSciety = flow(
 
 export const getPrereviewsForSciety = pipe(
   new URLSearchParams({
-    communities: 'prereview-reviews',
     page: '1',
     size: '1',
-    subtype: 'peerreview',
+    resource_type: 'publication::publication-peerreview',
   }),
-  getRecords,
+  getCommunityRecords('prereview-reviews'),
   RTE.mapLeft(() => 'unavailable' as const),
   RTE.chain(
     flow(
@@ -108,13 +106,12 @@ export const getRecentPrereviewsFromZenodo = flow(
     flow(
       ({ currentPage }) =>
         new URLSearchParams({
-          communities: 'prereview-reviews',
           page: currentPage.toString(),
           size: '5',
           sort: 'publication-desc',
-          subtype: 'peerreview',
+          resource_type: 'publication::publication-peerreview',
         }),
-      getRecords,
+      getCommunityRecords('prereview-reviews'),
     ),
   ),
   RTE.local(revalidateIfStale()),
@@ -208,16 +205,21 @@ export const getPrereviewFromZenodo = (id: number) =>
 export const getPrereviewsForProfileFromZenodo = flow(
   (profile: ProfileId) =>
     new URLSearchParams({
-      communities: 'prereview-reviews',
       q: match(profile)
-        .with({ type: 'orcid', value: P.select() }, orcid => `creators.orcid:${orcid}`)
-        .with({ type: 'pseudonym', value: P.select() }, pseudonym => `creators.name:"${pseudonym}"`)
+        .with(
+          { type: 'orcid', value: P.select() },
+          orcid => `metadata.creators.person_or_org.identifiers.identifier:${orcid}`,
+        )
+        .with(
+          { type: 'pseudonym', value: P.select() },
+          pseudonym => `metadata.creators.person_or_org.name:"${pseudonym}"`,
+        )
         .exhaustive(),
       size: '100',
       sort: 'publication-desc',
-      subtype: 'peerreview',
+      resource_type: 'publication::publication-peerreview',
     }),
-  getRecords,
+  getCommunityRecords('prereview-reviews'),
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),
@@ -244,13 +246,12 @@ export const getPrereviewsForProfileFromZenodo = flow(
 export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
   pipe(
     new URLSearchParams({
-      communities: 'prereview-reviews',
       q: `contributors.name:"${getClubName(club)}"`,
       size: '100',
       sort: 'publication-desc',
-      subtype: 'peerreview',
+      resource_type: 'publication::publication-peerreview',
     }),
-    getRecords,
+    getCommunityRecords('prereview-reviews'),
     RTE.local(revalidateIfStale()),
     RTE.local(useStaleCache()),
     RTE.local(timeoutRequest(2000)),
@@ -280,13 +281,12 @@ export const getPrereviewsForClubFromZenodo = (club: ClubId) =>
 export const getPrereviewsForPreprintFromZenodo = flow(
   (preprint: PreprintId) =>
     new URLSearchParams({
-      communities: 'prereview-reviews',
       q: `related.identifier:"${toExternalIdentifier(preprint).identifier}"`,
       size: '100',
       sort: 'publication-desc',
-      subtype: 'peerreview',
+      resource_type: 'publication::publication-peerreview',
     }),
-  getRecords,
+  getCommunityRecords('prereview-reviews'),
   RTE.local(revalidateIfStale()),
   RTE.local(useStaleCache()),
   RTE.local(timeoutRequest(2000)),

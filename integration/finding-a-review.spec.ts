@@ -4,6 +4,7 @@ import { URL } from 'url'
 import { type Record, RecordC, RecordsC } from '../src/zenodo-ts'
 import { expect, prereviewWasRemoved, test } from './base'
 
+
 test('can find and view a review', async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
@@ -57,8 +58,8 @@ test('can find and view a review', async ({ fetch, page }) => {
 
   fetch.get(
     {
-      url: 'http://zenodo.test/api/records',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
   )
@@ -134,8 +135,8 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
 
   fetch.get(
     {
-      url: 'http://zenodo.test/api/records',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
   )
@@ -234,8 +235,8 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
 
   fetch.get(
     {
-      url: 'http://zenodo.test/api/records',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
   )
@@ -569,8 +570,8 @@ test('might not load the older reviews in time', async ({ fetch, javaScriptEnabl
   fetch.get(
     {
       name: 'recent-prereviews',
-      url: 'http://zenodo.test/api/records',
-      query: { communities: 'prereview-reviews', size: 5, sort: 'publication-desc', subtype: 'peerreview' },
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { size: 5, sort: 'publication-desc', resource_type: 'publication::publication-peerreview', },
     },
     new Promise(() =>
       setTimeout(
@@ -739,8 +740,8 @@ test('can skip to the reviews', async ({ fetch, javaScriptEnabled, page }) => {
   fetch
     .getOnce(
       {
-        url: 'http://zenodo.test/api/records',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
       },
       { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
     )

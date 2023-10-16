@@ -62,13 +62,12 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
   fetch.get(
     {
       name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/records',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        communities: 'prereview-reviews',
-        q: 'creators.orcid:0000-0002-2695-5951',
+        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-2695-5951',
         size: 100,
         sort: 'publication-desc',
-        subtype: 'peerreview',
+        resource_type: 'publication::publication-peerreview',
       },
     },
     {
@@ -224,13 +223,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     fetch.get(
       {
         name: 'profile-prereviews',
-        url: 'http://zenodo.test/api/records',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
         query: {
-          communities: 'prereview-reviews',
-          q: 'creators.orcid:0000-0002-1825-0097',
+          q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097',
           size: 100,
           sort: 'publication-desc',
-          subtype: 'peerreview',
+          resource_type: 'publication::publication-peerreview',
         },
       },
       { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
@@ -308,13 +306,12 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
   fetch.get(
     {
       name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/records',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        communities: 'prereview-reviews',
-        q: 'creators.name:"Blue Sheep"',
+        q: 'metadata.creators.person_or_org.name:"Blue Sheep"',
         size: 100,
         sort: 'publication-desc',
-        subtype: 'peerreview',
+        resource_type: 'publication::publication-peerreview',
       },
     },
     {
@@ -419,13 +416,12 @@ test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", asy
   fetch.get(
     {
       name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/records',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        communities: 'prereview-reviews',
-        q: 'creators.name:"Orange Panda"',
+        q: 'metadata.creators.person_or_org.name:"Orange Panda"',
         size: 100,
         sort: 'publication-desc',
-        subtype: 'peerreview',
+        resource_type: 'publication::publication-peerreview',
       },
     },
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
@@ -443,13 +439,12 @@ test('the list might be empty', async ({ fetch, page }) => {
   fetch.get(
     {
       name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/records',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
       query: {
-        communities: 'prereview-reviews',
-        q: 'creators.orcid:0000-0002-6109-0367',
+        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-6109-0367',
         size: 100,
         sort: 'publication-desc',
-        subtype: 'peerreview',
+        resource_type: 'publication::publication-peerreview',
       },
     },
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
