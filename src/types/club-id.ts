@@ -10,6 +10,7 @@ export type ClubId =
   | 'biomass-biocatalysis'
   | 'language-club'
   | 'rr-id-student-reviewer-club'
+  | 'tsl-preprint-club'
 
 export const ClubIdC = C.fromDecoder(pipe(D.string, D.refine(isClubId, 'ClubID')))
 
@@ -22,5 +23,6 @@ export function isClubId(value: string): value is ClubId {
     'biomass-biocatalysis',
     'language-club',
     'rr-id-student-reviewer-club',
+    'tsl-preprint-club',
   ].includes(value)
 }

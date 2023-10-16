@@ -151,4 +151,18 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       'https://docs.google.com/forms/d/e/1FAIpQLSdDfGS5BDYvHPX-UB20Z7CVC3uKmmBG0gKZVT2nqI1wxEmLXg/viewform',
     ),
   },
+  'tsl-preprint-club': {
+    name: 'TSL Preprint Club',
+    description: html`
+      <p>
+        The Sainsbury Laboratory is an independent research institute renowned for world-leading fundamental discoveries
+        in molecular plant-microbe interactions.
+      </p>
+      <p>TSL Preprint Club brings together TSL scientists from all levels to discuss the most recent preprints.</p>
+    `,
+    leads: [
+      { name: 'Daniel Lüdke', orcid: '0000-0002-0064-0695' as Orcid },
+      { name: 'Andrés Posbeyikian', orcid: '0000-0002-9368-6659' as Orcid },
+    ],
+  },
 }
