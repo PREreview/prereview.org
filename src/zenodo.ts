@@ -327,7 +327,6 @@ export const createRecordOnZenodo: (
     RTE.chainFirstW(
       uploadFile({
         name: 'review.html',
-        type: 'text/html',
         content: newPrereview.review.toString(),
       }),
     ),

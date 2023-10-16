@@ -2654,7 +2654,7 @@ ${newPrereview.review.toString()}`,
           .putOnce(
             {
               url: 'http://example.com/bucket/review.html',
-              headers: { 'Content-Type': 'text/html' },
+              headers: { 'Content-Type': 'application/octet-stream' },
               functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
             },
             {
@@ -2787,7 +2787,7 @@ ${newPrereview.review.toString()}`,
           .putOnce(
             {
               url: 'http://example.com/bucket/review.html',
-              headers: { 'Content-Type': 'text/html' },
+              headers: { 'Content-Type': 'application/octet-stream' },
               functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
             },
             {
@@ -2921,7 +2921,7 @@ ${newPrereview.review.toString()}`,
           .putOnce(
             {
               url: 'http://example.com/bucket/review.html',
-              headers: { 'Content-Type': 'text/html' },
+              headers: { 'Content-Type': 'application/octet-stream' },
               functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
             },
             {
@@ -3054,7 +3054,7 @@ ${newPrereview.review.toString()}`,
           .putOnce(
             {
               url: 'http://example.com/bucket/review.html',
-              headers: { 'Content-Type': 'text/html' },
+              headers: { 'Content-Type': 'application/octet-stream' },
               functionMatcher: (_, req) => req.body === newPrereview.review.toString(),
             },
             {
