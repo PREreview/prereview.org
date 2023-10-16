@@ -135,7 +135,11 @@ describe('changeContactEmailAddress', () => {
       fc.oauth(),
       fc.origin(),
       fc.connection({
-        body: fc.record({ emailAddress: fc.nonEmptyString() }),
+        body: fc.record({
+          emailAddress: fc
+            .nonEmptyString()
+            .filter(string => !string.includes('.') || !string.includes('@') || /\s/g.test(string)),
+        }),
         method: fc.constant('POST'),
       }),
       fc.user(),
