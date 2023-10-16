@@ -163,6 +163,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     leads: [
       { name: 'Daniel Lüdke', orcid: '0000-0002-0064-0695' as Orcid },
       { name: 'Andrés Posbeyikian', orcid: '0000-0002-9368-6659' as Orcid },
+      { name: 'Mauricio Pablo Contreras', orcid: '0000-0001-6002-0730' as Orcid },
     ],
   },
 }
