@@ -337,6 +337,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canConnectSlack: () => true,
           isSlackUser: withEnv(isSlackUser, env),
         })),
       ),
@@ -347,6 +348,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canConnectSlack: () => true,
           generateUuid: uuid.v4(),
           signValue: value => cookieSignature.sign(value, env.secret),
         })),
@@ -380,6 +382,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canConnectSlack: () => true,
           deleteSlackUserId: withEnv(
             (orcid: Orcid) =>
               pipe(
@@ -426,6 +429,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          canConnectSlack: () => true,
           getCareerStage: withEnv(getCareerStage, env),
           getContactEmailAddress: withEnv(getContactEmailAddress, env),
           getLanguages: withEnv(getLanguages, env),
