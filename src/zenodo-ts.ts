@@ -439,13 +439,19 @@ const BaseRecordC = C.struct({
   conceptrecid: NumberFromStringC,
   id: C.number,
   files: NonEmptyArrayC(
-    C.struct({
-      filename: C.string,
-      links: C.struct({
-        self: UrlC,
+    pipe(
+      C.struct({
+        filename: C.string,
+        links: C.struct({
+          self: UrlC,
+        }),
+        filesize: C.number,
       }),
-      filesize: C.number,
-    }),
+      C.imap(
+        file => ({ ...file, links: { ...file.links, self: new URL(`${file.filename}/content`, file.links.self) } }),
+        identity,
+      ),
+    ),
   ),
   links: C.struct({
     latest: UrlC,

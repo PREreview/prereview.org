@@ -65,7 +65,7 @@ test('can find and view a review', async ({ fetch, page }) => {
 
   fetch
     .getOnce('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-    .get('http://example.com/file', {
+    .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
@@ -142,7 +142,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
 
   fetch
     .getOnce('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-    .get('http://example.com/file', {
+    .get('http://example.com/review.html/content', {
       body: `
         <dl>
           <div>
@@ -242,7 +242,7 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
 
   fetch
     .getOnce('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-    .get('http://example.com/file', {
+    .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
@@ -310,7 +310,7 @@ test('can view a recent review', async ({ fetch, page }) => {
 
   fetch
     .getOnce('http://zenodo.test/api/records/7747129', { body: RecordC.encode(record) })
-    .getOnce('http://example.com/file', {
+    .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
@@ -384,7 +384,7 @@ test("can view a recent review that's part of a club", async ({ fetch, page }) =
 
   fetch
     .getOnce('http://zenodo.test/api/records/7820084', { body: RecordC.encode(record) })
-    .getOnce('http://example.com/file', {
+    .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
@@ -459,7 +459,7 @@ test('can view an older review', async ({ fetch, page }) => {
 
   fetch
     .getOnce('http://zenodo.test/api/records/7747129', { body: RecordC.encode(record) })
-    .getOnce('http://example.com/file', {
+    .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
@@ -544,7 +544,7 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
 
   fetch
     .getOnce('http://zenodo.test/api/records/7820084', { body: RecordC.encode(record) })
-    .getOnce('http://example.com/file', {
+    .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
@@ -744,7 +744,7 @@ test('can skip to the reviews', async ({ fetch, javaScriptEnabled, page }) => {
       },
       { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
     )
-    .getOnce('http://example.com/file', {
+    .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
@@ -816,7 +816,7 @@ test('can skip to the review', async ({ fetch, javaScriptEnabled, page }) => {
 
   fetch
     .getOnce('http://zenodo.test/api/records/1061864', { body: RecordC.encode(record) })
-    .getOnce('http://example.com/file', {
+    .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 

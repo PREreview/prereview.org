@@ -50,7 +50,7 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
         },
       }),
     })
-    .getOnce('http://example.com/file', {
+    .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
@@ -297,7 +297,7 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
         },
       }),
     })
-    .getOnce('http://example.com/file', {
+    .getOnce('http://example.com/review.html/content', {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 

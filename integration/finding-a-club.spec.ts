@@ -48,7 +48,7 @@ test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
         },
       }),
     })
-    .getOnce('http://example.com/file', {
+    .getOnce('http://example.com/review.html/content', {
       body: '<p>... that this preprint seeks to answer is whether or not Nirmatrelvir plus ritonavir, used ...</p>',
     })
 

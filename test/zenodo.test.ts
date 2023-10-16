@@ -649,7 +649,7 @@ describe('getPrereviewFromZenodo', () => {
             status: Status.OK,
           })
           .getOnce(
-            { url: 'http://example.com/file', functionMatcher: (_, req) => req.cache === 'force-cache' },
+            { url: 'http://example.com/review.html/content', functionMatcher: (_, req) => req.cache === 'force-cache' },
             { body: 'Some text' },
           ),
         getPreprint,
@@ -727,7 +727,7 @@ describe('getPrereviewFromZenodo', () => {
       .getOnce((url, { cache }) => url === `https://zenodo.org/api/records/${id}` && cache === 'no-cache', {
         throws: new Error('Network error'),
       })
-      .getOnce('http://example.com/file', { body: 'Some text' })
+      .getOnce('http://example.com/review.html/content', { body: 'Some text' })
 
     const actual = await _.getPrereviewFromZenodo(id)({
       clock: SystemClock,
@@ -833,7 +833,7 @@ describe('getPrereviewFromZenodo', () => {
           body: RecordC.encode(record),
           status: Status.OK,
         })
-        .getOnce('http://example.com/file', { status: textStatus })
+        .getOnce('http://example.com/review.html/content', { status: textStatus })
 
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
@@ -913,7 +913,7 @@ describe('getPrereviewFromZenodo', () => {
           body: RecordC.encode(record),
           status: Status.OK,
         })
-        .getOnce('http://example.com/file', { body: 'Some text' })
+        .getOnce('http://example.com/review.html/content', { body: 'Some text' })
 
       const actual = await _.getPrereviewFromZenodo(id)({
         clock: SystemClock,
@@ -2338,7 +2338,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
               status: Status.OK,
             },
           )
-          .getOnce('http://example.com/file', { body: 'Some text' }),
+          .getOnce('http://example.com/review.html/content', { body: 'Some text' }),
         logger: () => IO.of(undefined),
       })()
 
@@ -2421,7 +2421,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
             }).toString()}` && cache === 'no-cache',
         { throws: new Error('Network error') },
       )
-      .getOnce('http://example.com/file', { body: 'Some text' })
+      .getOnce('http://example.com/review.html/content', { body: 'Some text' })
 
     const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
       clock: SystemClock,
@@ -2525,7 +2525,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
             status: Status.OK,
           },
         )
-        .getOnce('http://example.com/file', { status: textStatus })
+        .getOnce('http://example.com/review.html/content', { status: textStatus })
 
       const actual = await _.getPrereviewsForPreprintFromZenodo(preprint)({
         clock: SystemClock,
