@@ -1,14 +1,5 @@
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import {
-  areLoggedIn,
-  canChangeContactEmailAddress,
-  canConnectSlack,
-  canLogIn,
-  expect,
-  isASlackUser,
-  test,
-  userIsBlocked,
-} from './base'
+import { areLoggedIn, canChangeContactEmailAddress, canLogIn, expect, isASlackUser, test, userIsBlocked } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
@@ -53,7 +44,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlackUser)(
+test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
   'can connect my Slack Community account',
   async ({ javaScriptEnabled, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
@@ -99,7 +90,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to grant access to your Slack Community account',
   async ({ javaScriptEnabled, oauthServer, page }) => {
     await page.goto('/connect-slack')
@@ -166,49 +157,46 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
   await expect(page.getByRole('main')).toContainText('Career stage Early Shown on your public profile')
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlackUser)(
-  "can say if I'm open for requests",
-  async ({ page }) => {
-    await page.getByRole('link', { name: 'My details' }).click()
-    await page.getByRole('link', { name: 'Connect Slack account' }).click()
-    await page.getByRole('button', { name: 'Start now' }).click()
+test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)("can say if I'm open for requests", async ({ page }) => {
+  await page.getByRole('link', { name: 'My details' }).click()
+  await page.getByRole('link', { name: 'Connect Slack account' }).click()
+  await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Enter open for review requests' }).click()
-    await page.getByLabel('Yes').check()
+  await page.getByRole('link', { name: 'Enter open for review requests' }).click()
+  await page.getByLabel('Yes').check()
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Open for review requests Yes Only visible to PREreview')
+  await expect(page.getByRole('main')).toContainText('Open for review requests Yes Only visible to PREreview')
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Set open-for-review-requests visibility' }).click()
+  await page.getByRole('link', { name: 'Set open-for-review-requests visibility' }).click()
 
-    await expect(page.getByLabel('Only PREreview')).toBeChecked()
+  await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
-    await page.getByLabel('Everyone').check()
+  await page.getByLabel('Everyone').check()
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Open for review requests Yes Shown on your public profile')
+  await expect(page.getByRole('main')).toContainText('Open for review requests Yes Shown on your public profile')
 
-    await page.getByRole('link', { name: 'Change open for review requests' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Change open for review requests' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Open for review requests No')
-  },
-)
+  await expect(page.getByRole('main')).toContainText('Open for review requests No')
+})
 
 test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async ({ page }) => {
   await page.getByRole('link', { name: 'My details' }).click()

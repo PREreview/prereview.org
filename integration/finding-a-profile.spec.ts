@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { RecordC, RecordsC } from '../src/zenodo-ts'
-import { areLoggedIn, canConnectSlack, canLogIn, expect, isASlackUser, test } from './base'
+import { areLoggedIn, canLogIn, expect, isASlackUser, test } from './base'
 
 test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) => {
   fetch
@@ -178,78 +178,75 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlackUser)(
-  'can view my profile',
-  async ({ fetch, page }) => {
-    await page.goto('/my-details')
-    await page.getByRole('link', { name: 'Connect Slack account' }).click()
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByRole('link', { name: 'Enter open for review requests' }).click()
-    await page.getByLabel('Yes').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('link', { name: 'Set open-for-review-requests visibility' }).click()
-    await page.getByLabel('Everyone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('link', { name: 'Enter career stage' }).click()
-    await page.getByLabel('Mid').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('link', { name: 'Set career-stage visibility' }).click()
-    await page.getByLabel('Everyone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('link', { name: 'Enter research interests' }).click()
-    await page
-      .getByLabel('What are your research interests?')
-      .fill('Nunc vestibulum sapien eu magna elementum consectetur.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('link', { name: 'Set research-interests visibility' }).click()
-    await page.getByLabel('Everyone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('link', { name: 'Enter location' }).click()
-    await page.getByLabel('Where are you based?').fill('Vivamus in convallis urna.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('link', { name: 'Set location visibility' }).click()
-    await page.getByLabel('Everyone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('link', { name: 'Enter languages' }).click()
-    await page.getByLabel('What languages can you review in?').fill('English and Spanish')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('link', { name: 'Set languages visibility' }).click()
-    await page.getByLabel('Everyone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my profile', async ({ fetch, page }) => {
+  await page.goto('/my-details')
+  await page.getByRole('link', { name: 'Connect Slack account' }).click()
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByRole('link', { name: 'Enter open for review requests' }).click()
+  await page.getByLabel('Yes').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Set open-for-review-requests visibility' }).click()
+  await page.getByLabel('Everyone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Enter career stage' }).click()
+  await page.getByLabel('Mid').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Set career-stage visibility' }).click()
+  await page.getByLabel('Everyone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Enter research interests' }).click()
+  await page
+    .getByLabel('What are your research interests?')
+    .fill('Nunc vestibulum sapien eu magna elementum consectetur.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Set research-interests visibility' }).click()
+  await page.getByLabel('Everyone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Enter location' }).click()
+  await page.getByLabel('Where are you based?').fill('Vivamus in convallis urna.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Set location visibility' }).click()
+  await page.getByLabel('Everyone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Enter languages' }).click()
+  await page.getByLabel('What languages can you review in?').fill('English and Spanish')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('link', { name: 'Set languages visibility' }).click()
+  await page.getByLabel('Everyone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-1825-0097/personal-details', {
-      body: { name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' } } },
-    })
-    fetch.get(
-      {
-        name: 'profile-prereviews',
-        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
-        query: {
-          q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097',
-          size: 100,
-          sort: 'publication-desc',
-          resource_type: 'publication::publication-peerreview',
-        },
+  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-1825-0097/personal-details', {
+    body: { name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' } } },
+  })
+  fetch.get(
+    {
+      name: 'profile-prereviews',
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: {
+        q: 'metadata.creators.person_or_org.identifiers.identifier:0000-0002-1825-0097',
+        size: 100,
+        sort: 'publication-desc',
+        resource_type: 'publication::publication-peerreview',
       },
-      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
-    )
+    },
+    { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+  )
 
-    await page.getByRole('link', { name: 'View public profile' }).click()
+  await page.getByRole('link', { name: 'View public profile' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Josiah Carberry')
-    await expect(page.getByRole('main')).toContainText('ORCID iD 0000-0002-1825-0097')
-    await expect(page.getByRole('main')).toContainText('Slack Community name jcarberry')
-    await expect(page.getByRole('main')).toContainText('Career stage Mid')
-    await expect(page.getByRole('main')).toContainText(
-      'Research interests Nunc vestibulum sapien eu magna elementum consectetur.',
-    )
-    await expect(page.getByRole('main')).toContainText('Location Vivamus in convallis urna.')
-    await expect(page.getByRole('main')).toContainText('Languages English and Spanish')
-    await expect(page.getByRole('main')).toContainText('Josiah Carberry is happy to take requests for a PREreview.')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-  },
-)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Josiah Carberry')
+  await expect(page.getByRole('main')).toContainText('ORCID iD 0000-0002-1825-0097')
+  await expect(page.getByRole('main')).toContainText('Slack Community name jcarberry')
+  await expect(page.getByRole('main')).toContainText('Career stage Mid')
+  await expect(page.getByRole('main')).toContainText(
+    'Research interests Nunc vestibulum sapien eu magna elementum consectetur.',
+  )
+  await expect(page.getByRole('main')).toContainText('Location Vivamus in convallis urna.')
+  await expect(page.getByRole('main')).toContainText('Languages English and Spanish')
+  await expect(page.getByRole('main')).toContainText('Josiah Carberry is happy to take requests for a PREreview.')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+})
 
 test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
   fetch

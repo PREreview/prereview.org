@@ -17,7 +17,7 @@ import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type ConfigEnv, app } from '../src/app'
-import type { CanChangeContactEmailAddressEnv, CanConnectSlackEnv } from '../src/feature-flags'
+import type { CanChangeContactEmailAddressEnv } from '../src/feature-flags'
 import type {
   IsOpenForRequestsStoreEnv,
   LanguagesStoreEnv,
@@ -54,7 +54,6 @@ interface AppFixtures {
   locationStore: LocationStoreEnv['locationStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: ConfigEnv['slackUserIdStore']
-  canConnectSlack: CanConnectSlackEnv['canConnectSlack']
   canChangeContactEmailAddress: CanChangeContactEmailAddressEnv['canChangeContactEmailAddress']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
@@ -69,9 +68,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     }
 
     await use(`http://localhost:${address.port}`)
-  },
-  canConnectSlack: async ({}, use) => {
-    await use(() => false)
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
@@ -796,7 +792,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   server: async (
     {
       canChangeContactEmailAddress,
-      canConnectSlack,
       fetch,
       logger,
       oauthServer,
@@ -816,7 +811,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     const server = app({
       allowSiteCrawlers: true,
       canChangeContactEmailAddress,
-      canConnectSlack,
+      canConnectSlack: () => true,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
@@ -948,15 +943,12 @@ export const canChangeContactEmailAddress: Fixtures<
   },
 }
 
-export const canConnectSlack: Fixtures<
+export const isASlackUser: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'canConnectSlack' | 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+  Pick<AppFixtures, 'slackUserIdStore' | 'fetch'>
 > = {
-  canConnectSlack: async ({}, use) => {
-    await use(() => true)
-  },
-  page: async ({ fetch, page }, use) => {
+  fetch: async ({ fetch }, use) => {
     fetch.post('http://slack.test/token', {
       status: Status.OK,
       body: {
@@ -973,16 +965,6 @@ export const canConnectSlack: Fixtures<
 
     fetch.post('https://slack.com/api/chat.postMessage', { status: Status.OK, body: { ok: true } })
 
-    await use(page)
-  },
-}
-
-export const isASlackUser: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'slackUserIdStore' | 'fetch'>
-> = {
-  fetch: async ({ fetch }, use) => {
     fetch.get('https://slack.com/api/users.profile.get?user=U0JM', {
       body: {
         ok: true,
