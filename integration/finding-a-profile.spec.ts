@@ -62,12 +62,12 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
   fetch.get(
     {
       name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/records/',
+      url: 'http://zenodo.test/api/records',
       query: {
         communities: 'prereview-reviews',
         q: 'creators.orcid:0000-0002-2695-5951',
         size: 100,
-        sort: '-publication_date',
+        sort: 'publication-desc',
         subtype: 'peerreview',
       },
     },
@@ -224,12 +224,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectSlack).extend(isASlac
     fetch.get(
       {
         name: 'profile-prereviews',
-        url: 'http://zenodo.test/api/records/',
+        url: 'http://zenodo.test/api/records',
         query: {
           communities: 'prereview-reviews',
           q: 'creators.orcid:0000-0002-1825-0097',
           size: 100,
-          sort: '-publication_date',
+          sort: 'publication-desc',
           subtype: 'peerreview',
         },
       },
@@ -308,12 +308,12 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
   fetch.get(
     {
       name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/records/',
+      url: 'http://zenodo.test/api/records',
       query: {
         communities: 'prereview-reviews',
         q: 'creators.name:"Blue Sheep"',
         size: 100,
-        sort: '-publication_date',
+        sort: 'publication-desc',
         subtype: 'peerreview',
       },
     },
@@ -419,12 +419,12 @@ test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", asy
   fetch.get(
     {
       name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/records/',
+      url: 'http://zenodo.test/api/records',
       query: {
         communities: 'prereview-reviews',
         q: 'creators.name:"Orange Panda"',
         size: 100,
-        sort: '-publication_date',
+        sort: 'publication-desc',
         subtype: 'peerreview',
       },
     },
@@ -443,12 +443,12 @@ test('the list might be empty', async ({ fetch, page }) => {
   fetch.get(
     {
       name: 'profile-prereviews',
-      url: 'http://zenodo.test/api/records/',
+      url: 'http://zenodo.test/api/records',
       query: {
         communities: 'prereview-reviews',
         q: 'creators.orcid:0000-0002-6109-0367',
         size: 100,
-        sort: '-publication_date',
+        sort: 'publication-desc',
         subtype: 'peerreview',
       },
     },

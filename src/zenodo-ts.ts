@@ -240,7 +240,7 @@ export const getRecords: (
   query: URLSearchParams,
 ) => ReaderTaskEither<ZenodoEnv, Error | DecodeError | Response, Records> = query =>
   pipe(
-    RTE.rightReader(zenodoUrl(`records/?${query.toString()}`)),
+    RTE.rightReader(zenodoUrl(`records?${query.toString()}`)),
     RTE.chainReaderKW(flow(F.Request('GET'), F.setHeader('Accept', 'application/json'), addAuthorizationHeader)),
     RTE.chainW(F.send),
     RTE.filterOrElseW(F.hasStatus(Status.OK), identity),

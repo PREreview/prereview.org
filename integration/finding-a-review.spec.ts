@@ -57,7 +57,7 @@ test('can find and view a review', async ({ fetch, page }) => {
 
   fetch.get(
     {
-      url: 'http://zenodo.test/api/records/',
+      url: 'http://zenodo.test/api/records',
       query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
@@ -134,7 +134,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
 
   fetch.get(
     {
-      url: 'http://zenodo.test/api/records/',
+      url: 'http://zenodo.test/api/records',
       query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
@@ -234,7 +234,7 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
 
   fetch.get(
     {
-      url: 'http://zenodo.test/api/records/',
+      url: 'http://zenodo.test/api/records',
       query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
@@ -569,8 +569,8 @@ test('might not load the older reviews in time', async ({ fetch, javaScriptEnabl
   fetch.get(
     {
       name: 'recent-prereviews',
-      url: 'http://zenodo.test/api/records/',
-      query: { communities: 'prereview-reviews', size: 5, sort: '-publication_date', subtype: 'peerreview' },
+      url: 'http://zenodo.test/api/records',
+      query: { communities: 'prereview-reviews', size: 5, sort: 'publication-desc', subtype: 'peerreview' },
     },
     new Promise(() =>
       setTimeout(
@@ -739,7 +739,7 @@ test('can skip to the reviews', async ({ fetch, javaScriptEnabled, page }) => {
   fetch
     .getOnce(
       {
-        url: 'http://zenodo.test/api/records/',
+        url: 'http://zenodo.test/api/records',
         query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
       },
       { body: RecordsC.encode({ hits: { total: 1, hits: [record] } }) },
