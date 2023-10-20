@@ -86,7 +86,7 @@
     "@types/markdown-it": "^13.0.2",
     "@types/node": "^18.18.5",
     "@types/rtl-detect": "^1.0.1",
-    "@types/sanitize-html": "^2.9.2",
+    "@types/sanitize-html": "^2.9.3",
     "@types/turndown": "^5.0.2",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
