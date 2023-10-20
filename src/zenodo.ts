@@ -186,7 +186,7 @@ export const getPrereviewFromZenodo = (id: number) =>
               .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
               .with({ _tag: P.string }, error => O.some(D.draw(error)))
               .with('unknown-license', 'text-unavailable', 'unavailable', O.some)
-              .with('removed', 'not-found', () => O.none)
+              .with('no reviewed preprint', 'removed', 'not-found', () => O.none)
               .exhaustive(),
           O.match(
             () => RIO.of(undefined),
@@ -410,18 +410,12 @@ function recordToPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
-  HttpError<404> | 'unavailable' | 'not-found' | 'text-unavailable' | 'unknown-license',
+  HttpError<404> | 'no reviewed preprint' | 'unavailable' | 'not-found' | 'text-unavailable' | 'unknown-license',
   Prereview
 > {
   return pipe(
     RTE.of(record),
-    RTE.bindW(
-      'preprintId',
-      flow(
-        getReviewedPreprintId,
-        RTE.mapLeft(() => new NotFound()),
-      ),
-    ),
+    RTE.bindW('preprintId', getReviewedPreprintId),
     RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
     RTE.bindW(
       'license',
