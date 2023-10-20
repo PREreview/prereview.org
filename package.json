@@ -91,7 +91,7 @@
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
     "@web/dev-server-esbuild": "^0.4.3",
-    "@web/dev-server-rollup": "^0.5.2",
+    "@web/dev-server-rollup": "^0.5.4",
     "@web/test-runner": "^0.17.2",
     "@web/test-runner-commands": "^0.8.0",
     "@web/test-runner-playwright": "^0.10.1",
