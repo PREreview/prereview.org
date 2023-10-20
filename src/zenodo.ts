@@ -15,6 +15,7 @@ import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, identity, pipe } from 'fp-ts/function'
+import { toUpperCase } from 'fp-ts/string'
 import { type HttpError, NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
@@ -508,8 +509,12 @@ function recordToRecentPrereview(
 }
 
 const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
-  D.fromStruct({ metadata: D.fromStruct({ license: D.fromStruct({ id: D.literal('cc-by-4.0') }) }) }),
-  D.map(() => 'CC-BY-4.0'),
+  D.fromStruct({
+    metadata: D.fromStruct({
+      license: D.fromStruct({ id: pipe(D.string, D.map(toUpperCase), D.intersect(D.literal('CC-BY-4.0'))) }),
+    }),
+  }),
+  D.map(get('metadata.license.id')),
 )
 
 function isInCommunity(record: Record) {
