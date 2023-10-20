@@ -29,6 +29,7 @@ export interface Record {
     filename: string
     links: {
       self: URL
+      download: URL
     }
     filesize: number
   }>
@@ -498,19 +499,14 @@ const BaseRecordC = C.struct({
   conceptrecid: NumberFromStringC,
   id: C.number,
   files: NonEmptyArrayC(
-    pipe(
-      C.struct({
-        filename: C.string,
-        links: C.struct({
-          self: UrlC,
-        }),
-        filesize: C.number,
+    C.struct({
+      filename: C.string,
+      links: C.struct({
+        self: UrlC,
+        download: UrlC,
       }),
-      C.imap(
-        file => ({ ...file, links: { ...file.links, self: new URL(`${file.filename}/content`, file.links.self) } }),
-        identity,
-      ),
-    ),
+      filesize: C.number,
+    }),
   ),
   links: C.struct({
     latest: UrlC,

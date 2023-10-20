@@ -46,7 +46,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -86,7 +87,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -187,7 +189,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -293,7 +296,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/file'),
+                  self: new URL('http://example.com/review.html'),
+                  download: new URL('http://example.com/review.html/content'),
                 },
                 filename: 'review.html',
                 filesize: 58,
@@ -333,7 +337,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/file'),
+                  self: new URL('http://example.com/review.html'),
+                  download: new URL('http://example.com/review.html/content'),
                 },
                 filename: 'review.html',
                 filesize: 58,
@@ -427,7 +432,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/file'),
+                  self: new URL('http://example.com/review.html'),
+                  download: new URL('http://example.com/review.html/content'),
                 },
                 filename: 'review.html',
                 filesize: 58,
@@ -467,7 +473,8 @@ describe('getRecentPrereviewsFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/file'),
+                  self: new URL('http://example.com/review.html'),
+                  download: new URL('http://example.com/review.html/content'),
                 },
                 filename: 'review.html',
                 filesize: 58,
@@ -610,7 +617,8 @@ describe('getPrereviewFromZenodo', () => {
         files: [
           {
             links: {
-              self: new URL('http://example.com/file'),
+              self: new URL('http://example.com/review.html'),
+              download: new URL('http://example.com/review.html/content'),
             },
             filename: 'review.html',
             filesize: 58,
@@ -703,7 +711,8 @@ describe('getPrereviewFromZenodo', () => {
       files: [
         {
           links: {
-            self: new URL('http://example.com/file'),
+            self: new URL('http://example.com/review.html'),
+            download: new URL('http://example.com/review.html/content'),
           },
           filename: 'review.html',
           filesize: 58,
@@ -815,7 +824,8 @@ describe('getPrereviewFromZenodo', () => {
         files: [
           {
             links: {
-              self: new URL('http://example.com/file'),
+              self: new URL('http://example.com/review.html'),
+              download: new URL('http://example.com/review.html/content'),
             },
             filename: 'review.html',
             filesize: 58,
@@ -895,7 +905,8 @@ describe('getPrereviewFromZenodo', () => {
         files: [
           {
             links: {
-              self: new URL('http://example.com/file'),
+              self: new URL('http://example.com/review.html'),
+              download: new URL('http://example.com/review.html/content'),
             },
             filename: 'review.html',
             filesize: 58,
@@ -957,7 +968,8 @@ describe('getPrereviewFromZenodo', () => {
       files: [
         {
           links: {
-            self: new URL('http://example.com/file'),
+            self: new URL('http://example.com/review.html'),
+            download: new URL('http://example.com/review.html/content'),
           },
           filename: 'review.html',
           filesize: 58,
@@ -1034,7 +1046,8 @@ describe('getPrereviewFromZenodo', () => {
       files: [
         {
           links: {
-            self: new URL('http://example.com/file'),
+            self: new URL('http://example.com/review.html'),
+            download: new URL('http://example.com/review.html/content'),
           },
           filename: 'review.html',
           filesize: 58,
@@ -1091,7 +1104,8 @@ describe('getPrereviewFromZenodo', () => {
         files: [
           {
             links: {
-              self: new URL('http://example.com/file'),
+              self: new URL('http://example.com/review.html'),
+              download: new URL('http://example.com/review.html/content'),
             },
             filename: 'review.html',
             filesize: 58,
@@ -1152,7 +1166,8 @@ describe('getPrereviewFromZenodo', () => {
         files: [
           {
             links: {
-              self: new URL('http://example.com/file'),
+              self: new URL('http://example.com/review.html'),
+              download: new URL('http://example.com/review.html/content'),
             },
             filename: 'review.html',
             filesize: 58,
@@ -1208,6 +1223,7 @@ describe('getPrereviewFromZenodo', () => {
       fc.record({
         links: fc.record({
           self: fc.url(),
+          download: fc.url(),
         }),
         filename: fc.string(),
         filesize: fc.integer(),
@@ -1279,7 +1295,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 files: [
                   {
                     links: {
-                      self: new URL('http://example.com/file'),
+                      self: new URL('http://example.com/review.html'),
+                      download: new URL('http://example.com/review.html/content'),
                     },
                     filename: 'review.html',
                     filesize: 58,
@@ -1319,7 +1336,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 files: [
                   {
                     links: {
-                      self: new URL('http://example.com/file'),
+                      self: new URL('http://example.com/review.html'),
+                      download: new URL('http://example.com/review.html/content'),
                     },
                     filename: 'review.html',
                     filesize: 58,
@@ -1416,7 +1434,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 files: [
                   {
                     links: {
-                      self: new URL('http://example.com/file'),
+                      self: new URL('http://example.com/review.html'),
+                      download: new URL('http://example.com/review.html/content'),
                     },
                     filename: 'review.html',
                     filesize: 58,
@@ -1456,7 +1475,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 files: [
                   {
                     links: {
-                      self: new URL('http://example.com/file'),
+                      self: new URL('http://example.com/review.html'),
+                      download: new URL('http://example.com/review.html/content'),
                     },
                     filename: 'review.html',
                     filesize: 58,
@@ -1560,7 +1580,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -1650,7 +1671,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -1690,7 +1712,8 @@ describe('getPrereviewsForProfileFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -1810,7 +1833,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -1856,7 +1880,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -1982,7 +2007,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/file'),
+                  self: new URL('http://example.com/review.html'),
+                  download: new URL('http://example.com/review.html/content'),
                 },
                 filename: 'review.html',
                 filesize: 58,
@@ -2118,7 +2144,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -2164,7 +2191,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -2260,7 +2288,8 @@ describe('getPrereviewsForClubFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -2342,7 +2371,8 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,
@@ -2427,7 +2457,8 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
             files: [
               {
                 links: {
-                  self: new URL('http://example.com/file'),
+                  self: new URL('http://example.com/review.html'),
+                  download: new URL('http://example.com/review.html/content'),
                 },
                 filename: 'review.html',
                 filesize: 58,
@@ -2544,7 +2575,8 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
               files: [
                 {
                   links: {
-                    self: new URL('http://example.com/file'),
+                    self: new URL('http://example.com/review.html'),
+                    download: new URL('http://example.com/review.html/content'),
                   },
                   filename: 'review.html',
                   filesize: 58,

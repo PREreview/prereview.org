@@ -56,7 +56,8 @@ test('can find and view a preprint', async ({ contextOptions, fetch, page }, tes
                 files: [
                   {
                     links: {
-                      self: new URL('http://example.com/file'),
+                      self: new URL('http://example.com/review.html'),
+                      download: new URL('http://example.com/review.html/content'),
                     },
                     filename: 'review.html',
                     filesize: 58,

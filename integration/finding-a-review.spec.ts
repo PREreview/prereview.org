@@ -11,7 +11,8 @@ test('can find and view a review', async ({ fetch, page }) => {
     files: [
       {
         links: {
-          self: new URL('http://example.com/file'),
+          self: new URL('http://example.com/review.html'),
+          download: new URL('http://example.com/review.html/content'),
         },
         filename: 'review.html',
         filesize: 58,
@@ -89,7 +90,8 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
     files: [
       {
         links: {
-          self: new URL('http://example.com/file'),
+          self: new URL('http://example.com/review.html'),
+          download: new URL('http://example.com/review.html/content'),
         },
         filename: 'review.html',
         filesize: 58,
@@ -191,7 +193,8 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
     files: [
       {
         links: {
-          self: new URL('http://example.com/file'),
+          self: new URL('http://example.com/review.html'),
+          download: new URL('http://example.com/review.html/content'),
         },
         filename: 'review.html',
         filesize: 58,
@@ -270,7 +273,8 @@ test('can view a recent review', async ({ fetch, page }) => {
     files: [
       {
         links: {
-          self: new URL('http://example.com/file'),
+          self: new URL('http://example.com/review.html'),
+          download: new URL('http://example.com/review.html/content'),
         },
         filename: 'review.html',
         filesize: 58,
@@ -345,7 +349,8 @@ test("can view a recent review that's part of a club", async ({ fetch, page }) =
     files: [
       {
         links: {
-          self: new URL('http://example.com/file'),
+          self: new URL('http://example.com/review.html'),
+          download: new URL('http://example.com/review.html/content'),
         },
         filename: 'review.html',
         filesize: 58,
@@ -422,7 +427,8 @@ test('can view an older review', async ({ fetch, page }) => {
     files: [
       {
         links: {
-          self: new URL('http://example.com/file'),
+          self: new URL('http://example.com/review.html'),
+          download: new URL('http://example.com/review.html/content'),
         },
         filename: 'review.html',
         filesize: 58,
@@ -509,7 +515,8 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
     files: [
       {
         links: {
-          self: new URL('http://example.com/file'),
+          self: new URL('http://example.com/review.html'),
+          download: new URL('http://example.com/review.html/content'),
         },
         filename: 'review.html',
         filesize: 58,
@@ -601,6 +608,9 @@ test('might not load the older reviews in time', async ({ fetch, javaScriptEnabl
                       filename: 'review.html',
                       links: {
                         self: new URL('https://zenodo.org/api/files/77ec063f-e37c-4739-8bc5-d7bba268bbd5/review.html'),
+                        download: new URL(
+                          'https://zenodo.org/api/files/77ec063f-e37c-4739-8bc5-d7bba268bbd5/review.html/content',
+                        ),
                       },
                       filesize: 2538,
                     },
@@ -642,6 +652,9 @@ test('might not load the older reviews in time', async ({ fetch, javaScriptEnabl
                       filename: 'review.html',
                       links: {
                         self: new URL('https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html'),
+                        download: new URL(
+                          'https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html/content',
+                        ),
                       },
                       filesize: 7043,
                     },
@@ -710,7 +723,8 @@ test('can skip to the reviews', async ({ fetch, javaScriptEnabled, page }) => {
     files: [
       {
         links: {
-          self: new URL('http://example.com/file'),
+          self: new URL('http://example.com/review.html'),
+          download: new URL('http://example.com/review.html/content'),
         },
         filename: 'review.html',
         filesize: 58,
@@ -790,7 +804,8 @@ test('can skip to the review', async ({ fetch, javaScriptEnabled, page }) => {
     files: [
       {
         links: {
-          self: new URL('http://example.com/file'),
+          self: new URL('http://example.com/review.html'),
+          download: new URL('http://example.com/review.html/content'),
         },
         filename: 'review.html',
         filesize: 58,
@@ -863,7 +878,8 @@ test('might not load the PREreview in time', async ({ fetch, javaScriptEnabled, 
     files: [
       {
         links: {
-          self: new URL('http://example.com/file'),
+          self: new URL('http://example.com/review.html'),
+          download: new URL('http://example.com/review.html/content'),
         },
         filename: 'review.html',
         filesize: 58,
