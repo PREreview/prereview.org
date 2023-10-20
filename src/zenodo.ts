@@ -198,7 +198,7 @@ export const getPrereviewFromZenodo = (id: number) =>
     RTE.mapLeft(error =>
       match(error)
         .with('removed', () => 'removed' as const)
-        .with('not-found', { status: Status.NotFound }, () => 'not-found' as const)
+        .with('no reviewed preprint', 'not-found', { status: Status.NotFound }, () => 'not-found' as const)
         .otherwise(() => 'unavailable' as const),
     ),
   )
