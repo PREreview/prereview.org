@@ -631,26 +631,12 @@ export const RecordC: Codec<string, string, Record> = pipe(JsonC, C.compose(Base
 export const RecordsC: Codec<string, string, Records> = pipe(
   JsonC,
   C.compose(
-    C.make(
-      D.union(
-        D.struct({
-          hits: D.struct({
-            hits: D.array(BaseRecordC),
-            total: D.number,
-          }),
-        }),
-        pipe(
-          D.array(BaseRecordC),
-          D.map(hits => ({ hits: { hits, total: 10000 } })),
-        ),
-      ),
-      C.struct({
-        hits: C.struct({
-          hits: C.array(BaseRecordC),
-          total: C.number,
-        }),
+    C.struct({
+      hits: C.struct({
+        hits: C.array(BaseRecordC),
+        total: C.number,
       }),
-    ),
+    }),
   ),
 )
 
