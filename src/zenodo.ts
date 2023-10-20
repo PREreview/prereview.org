@@ -511,7 +511,7 @@ function recordToRecentPrereview(
 const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
   D.fromStruct({
     metadata: D.fromStruct({
-      license: D.fromStruct({ id: pipe(D.string, D.map(toUpperCase), D.intersect(D.literal('CC-BY-4.0'))) }),
+      license: D.fromStruct({ id: pipe(D.string, D.map(toUpperCase), D.compose(D.literal('CC-BY-4.0'))) }),
     }),
   }),
   D.map(get('metadata.license.id')),
