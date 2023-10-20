@@ -185,7 +185,7 @@ export const getPrereviewFromZenodo = (id: number) =>
               .with(P.instanceOf(Error), error => O.some(error.message))
               .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
               .with({ _tag: P.string }, error => O.some(D.draw(error)))
-              .with('text-unavailable', 'unavailable', O.some)
+              .with('unknown-license', 'text-unavailable', 'unavailable', O.some)
               .with('removed', 'not-found', () => O.none)
               .exhaustive(),
           O.match(
@@ -410,7 +410,7 @@ function recordToPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<
   F.FetchEnv & GetPreprintEnv & L.LoggerEnv,
-  HttpError<404> | 'unavailable' | 'not-found' | 'text-unavailable' | D.DecodeError,
+  HttpError<404> | 'unavailable' | 'not-found' | 'text-unavailable' | 'unknown-license',
   Prereview
 > {
   return pipe(
@@ -423,7 +423,15 @@ function recordToPrereview(
       ),
     ),
     RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
-    RTE.bindW('license', RTE.fromEitherK(PrereviewLicenseD.decode)),
+    RTE.bindW(
+      'license',
+      RTE.fromEitherK(
+        flow(
+          PrereviewLicenseD.decode,
+          E.mapLeft(() => 'unknown-license' as const),
+        ),
+      ),
+    ),
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
         addendum: RTE.right(pipe(O.fromNullable(review.metadata.notes), O.map(sanitizeHtml), O.toUndefined)),
