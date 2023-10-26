@@ -538,8 +538,8 @@ const getReviewClub = flow(
 
 const getReviewUrl = flow(
   (record: Record) => record.files,
-  RA.findFirst(file => file.filename.endsWith('.html')),
-  O.map(get('links.download')),
+  RA.findFirst(file => file.key.endsWith('.html')),
+  O.map(get('links.self')),
 )
 
 const getReviewText = flow(

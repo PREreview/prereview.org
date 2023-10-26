@@ -26,12 +26,11 @@ export interface Record {
   conceptdoi: Doi
   conceptrecid: number
   files: NonEmptyArray<{
-    filename: string
+    key: string
     links: {
       self: URL
-      download: URL
     }
-    filesize: number
+    size: number
   }>
   id: number
   links: {
@@ -500,12 +499,11 @@ const BaseRecordC = C.struct({
   id: C.number,
   files: NonEmptyArrayC(
     C.struct({
-      filename: C.string,
+      key: C.string,
       links: C.struct({
         self: UrlC,
-        download: UrlC,
       }),
-      filesize: C.number,
+      size: C.number,
     }),
   ),
   links: C.struct({

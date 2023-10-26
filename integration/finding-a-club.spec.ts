@@ -12,12 +12,11 @@ test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
         conceptrecid: 7820083,
         files: [
           {
-            filename: 'review.html',
+            key: 'review.html',
             links: {
-              self: new URL('http://example.com/review.html'),
-              download: new URL('http://example.com/review.html/content'),
+              self: new URL('http://example.com/review.html/content'),
             },
-            filesize: 2538,
+            size: 2538,
           },
         ],
         id: 7820084,
@@ -78,14 +77,13 @@ test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
               conceptrecid: 7820083,
               files: [
                 {
-                  filename: 'review.html',
+                  key: 'review.html',
                   links: {
-                    self: new URL('https://zenodo.org/api/files/77ec063f-e37c-4739-8bc5-d7bba268bbd5/review.html'),
-                    download: new URL(
+                    self: new URL(
                       'https://zenodo.org/api/files/77ec063f-e37c-4739-8bc5-d7bba268bbd5/review.html/content',
                     ),
                   },
-                  filesize: 2538,
+                  size: 2538,
                 },
               ],
               id: 7820084,
@@ -123,14 +121,13 @@ test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
               conceptrecid: 7747128,
               files: [
                 {
-                  filename: 'review.html',
+                  key: 'review.html',
                   links: {
-                    self: new URL('https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html'),
-                    download: new URL(
+                    self: new URL(
                       'https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html/content',
                     ),
                   },
-                  filesize: 7043,
+                  size: 7043,
                 },
               ],
               id: 7747129,
@@ -212,14 +209,13 @@ test('might not load the PREreviews in time', async ({ fetch, javaScriptEnabled,
                   conceptrecid: 7820083,
                   files: [
                     {
-                      filename: 'review.html',
+                      key: 'review.html',
                       links: {
-                        self: new URL('https://zenodo.org/api/files/77ec063f-e37c-4739-8bc5-d7bba268bbd5/review.html'),
-                        download: new URL(
+                        self: new URL(
                           'https://zenodo.org/api/files/77ec063f-e37c-4739-8bc5-d7bba268bbd5/review.html/content',
                         ),
                       },
-                      filesize: 2538,
+                      size: 2538,
                     },
                   ],
                   id: 7820084,
@@ -257,14 +253,13 @@ test('might not load the PREreviews in time', async ({ fetch, javaScriptEnabled,
                   conceptrecid: 7747128,
                   files: [
                     {
-                      filename: 'review.html',
+                      key: 'review.html',
                       links: {
-                        self: new URL('https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html'),
-                        download: new URL(
+                        self: new URL(
                           'https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html/content',
                         ),
                       },
-                      filesize: 7043,
+                      size: 7043,
                     },
                   ],
                   id: 7747129,
