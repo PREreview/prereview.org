@@ -44,7 +44,7 @@
     "markdown-it": "^13.0.2",
     "nanohtml": "^1.10.0",
     "orcid-id-ts": "^0.1.2",
-    "rtl-detect": "^1.0.4",
+    "rtl-detect": "^1.1.2",
     "safe-stable-stringify": "^2.4.3",
     "sanitize-html": "^2.11.0",
     "spectacles-ts": "^1.0.7",
