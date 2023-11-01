@@ -27,6 +27,35 @@ describe('getPage', () => {
   })
 
   test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.stringOf(fc.alphanumeric(), { minLength: 1 })])(
+    'when the page contains an image',
+    async (id, key) => {
+      const actual = await _.getPage(id)({
+        fetch: fetchMock.sandbox().getOnce(
+          { url: `https://content.prereview.org/ghost/api/content/pages/${id}`, query: { key } },
+          {
+            body: {
+              pages: [
+                {
+                  html: '<figure class="kg-card kg-image-card"><img src="https://content.prereview.org/content/images/2021/09/Screen-Shot-2021-09-30-at-11.52.02-AM.png" class="kg-image" alt loading="lazy" width="1464" height="192" srcset="https://content.prereview.org/content/images/size/w600/2021/09/Screen-Shot-2021-09-30-at-11.52.02-AM.png 600w, https://content.prereview.org/content/images/size/w1000/2021/09/Screen-Shot-2021-09-30-at-11.52.02-AM.png 1000w, https://content.prereview.org/content/images/2021/09/Screen-Shot-2021-09-30-at-11.52.02-AM.png 1464w" sizes="(min-width: 720px) 720px"></figure>',
+                },
+              ],
+            },
+          },
+        ),
+        ghostApi: { key },
+      })()
+
+      expect(actual).toStrictEqual(
+        E.right(
+          rawHtml(
+            '<img src="https://content.prereview.org/content/images/2021/09/Screen-Shot-2021-09-30-at-11.52.02-AM.png" width="1464" height="192" />',
+          ),
+        ),
+      )
+    },
+  )
+
+  test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.stringOf(fc.alphanumeric(), { minLength: 1 })])(
     'when the page contains a button',
     async (id, key) => {
       const actual = await _.getPage(id)({

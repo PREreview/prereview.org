@@ -1,8 +1,6 @@
 app = "prereview-sandbox"
 
 [env]
-CAN_EDIT_PROFILE = "true"
-CAN_SEE_CLUBS= "true"
 FATHOM_SITE_ID = "BGNKWQNI"
 LEGACY_PREREVIEW_URL = "https://prereview2.azurewebsites.net/"
 LOG_FORMAT = "json"

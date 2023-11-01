@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  nginx:
+    image: nginx
+    ports:
+      - 443:443
+    volumes:
+      - './.dev:/etc/nginx:ro'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
   redis:
     image: redis
     ports:

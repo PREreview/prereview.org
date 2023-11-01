@@ -53,7 +53,7 @@ export class EditorToolbar extends HTMLElement {
 
     const buttons = this.buttons
     buttons.forEach(button => button.setAttribute('tabindex', '-1'))
-    buttons[0].setAttribute('tabindex', '0')
+    buttons[0]?.setAttribute('tabindex', '0')
   }
 
   private get current() {

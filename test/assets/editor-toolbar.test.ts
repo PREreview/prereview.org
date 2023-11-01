@@ -30,6 +30,13 @@ describe('when it loads', () => {
   })
 })
 
+it('does nothing if there are no buttons', async () => {
+  const element = defineCE(class extends _.EditorToolbar {})
+  await fixture<_.EditorToolbar>(`<${element}></${element}>`)
+
+  expect(document.querySelectorAll('[tabindex]')).to.be.empty
+})
+
 describe('when a button is clicked', () => {
   it('gets focus', async () => {
     const element = defineCE(class extends _.EditorToolbar {})

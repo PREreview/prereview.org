@@ -4,7 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as T from 'fp-ts/Task'
 import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
+import * as M from 'hyper-ts/Middleware'
 import * as _ from '../src/home'
 import { homeMatch } from '../src/routes'
 import * as fc from './fc'
@@ -18,12 +18,10 @@ describe('home', () => {
       fc.user(),
       fc.html(),
       fc.option(fc.constantFrom('logged-in' as const), { nil: undefined }),
-      fc.boolean(),
-    ])('when the message is ok', async (connection, user, page, message, canSeeClubs) => {
+    ])('when the message is ok', async (connection, user, page, message) => {
       const templatePage = jest.fn(_ => page)
       const actual = await runMiddleware(
         _.home(message)({
-          canSeeClubs,
           getRecentPrereviews: () => T.of([]),
           getUser: () => M.right(user),
           publicUrl: new URL('http://example.com'),
@@ -43,18 +41,40 @@ describe('home', () => {
       expect(templatePage).toHaveBeenCalledWith(
         expect.objectContaining({
           current: 'home',
-          title: 'PREreview',
+          title: 'PREreview: Open preprint reviews. For all researchers.',
           user,
         }),
       )
     })
 
-    test.prop([fc.connection({ method: fc.requestMethod() }), fc.user(), fc.boolean()])(
+    test.prop([fc.connection({ method: fc.requestMethod() }), fc.user()])(
       "when the message is 'logged-out'",
-      async (connection, user, canSeeClubs) => {
+      async (connection, user) => {
         const actual = await runMiddleware(
           _.home('logged-out')({
-            canSeeClubs,
+            getRecentPrereviews: shouldNotBeCalled,
+            getUser: () => M.right(user),
+            publicUrl: new URL('http://example.com'),
+            templatePage: shouldNotBeCalled,
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
+            { type: 'endResponse' },
+          ]),
+        )
+      },
+    )
+
+    test.prop([fc.connection({ method: fc.requestMethod() }), fc.user()])(
+      "when the message is 'blocked'",
+      async (connection, user) => {
+        const actual = await runMiddleware(
+          _.home('blocked')({
             getRecentPrereviews: shouldNotBeCalled,
             getUser: () => M.right(user),
             publicUrl: new URL('http://example.com'),
@@ -78,13 +98,11 @@ describe('home', () => {
     test.prop([
       fc.connection({ method: fc.requestMethod() }),
       fc.html(),
-      fc.option(fc.constantFrom('logged-out' as const), { nil: undefined }),
-      fc.boolean(),
-    ])('when the message is ok', async (connection, page, message, canSeeClubs) => {
+      fc.option(fc.constantFrom('logged-out' as const, 'blocked' as const), { nil: undefined }),
+    ])('when the message is ok', async (connection, page, message) => {
       const templatePage = jest.fn(_ => page)
       const actual = await runMiddleware(
         _.home(message)({
-          canSeeClubs,
           getRecentPrereviews: () => T.of([]),
           getUser: () => M.left('no-session'),
           publicUrl: new URL('http://example.com'),
@@ -104,34 +122,30 @@ describe('home', () => {
       expect(templatePage).toHaveBeenCalledWith(
         expect.objectContaining({
           current: 'home',
-          title: 'PREreview',
+          title: 'PREreview: Open preprint reviews. For all researchers.',
           user: undefined,
         }),
       )
     })
 
-    test.prop([fc.connection({ method: fc.requestMethod() }), fc.boolean()])(
-      "when the message is 'logged-in'",
-      async (connection, canSeeClubs) => {
-        const actual = await runMiddleware(
-          _.home('logged-in')({
-            canSeeClubs,
-            getRecentPrereviews: shouldNotBeCalled,
-            getUser: () => M.left('no-session'),
-            publicUrl: new URL('http://example.com'),
-            templatePage: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+    test.prop([fc.connection({ method: fc.requestMethod() })])("when the message is 'logged-in'", async connection => {
+      const actual = await runMiddleware(
+        _.home('logged-in')({
+          getRecentPrereviews: shouldNotBeCalled,
+          getUser: () => M.left('no-session'),
+          publicUrl: new URL('http://example.com'),
+          templatePage: shouldNotBeCalled,
+        }),
+        connection,
+      )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
   })
 })

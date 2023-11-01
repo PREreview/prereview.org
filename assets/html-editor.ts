@@ -22,10 +22,6 @@ const deps = Promise.all([
 export class HtmlEditor extends HTMLElement {
   static element = 'html-editor' as const
 
-  constructor() {
-    super()
-  }
-
   async connectedCallback() {
     const textArea = this.firstElementChild
 
@@ -215,7 +211,7 @@ export class HtmlEditor extends HTMLElement {
 
       const href = window.prompt('Enter a URL')
 
-      if (!href) {
+      if (typeof href !== 'string' || href === '') {
         return
       }
 
@@ -317,7 +313,7 @@ function extractAttributes(source: Element, qualifiedNames: ReadonlyArray<string
     qualifiedNames.flatMap(qualifiedName => {
       const value = source.getAttribute(qualifiedName)
 
-      if (!value) {
+      if (typeof value !== 'string') {
         return []
       }
 
@@ -337,7 +333,7 @@ function fetchSvg(path: string) {
       const svg = document.createRange().createContextualFragment(body).firstElementChild
 
       if (!(svg instanceof SVGSVGElement)) {
-        throw 'Not an SVG'
+        throw new Error('Not an SVG')
       }
 
       svg.removeAttribute('xmlns')

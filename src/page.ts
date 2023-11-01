@@ -8,15 +8,18 @@ import { type Html, type PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
 import {
   aboutUsMatch,
+  clubsMatch,
   codeOfConductMatch,
-  communitiesMatch,
+  ediStatementMatch,
   fundingMatch,
   homeMatch,
+  howToUseMatch,
+  liveReviewsMatch,
   logInMatch,
   logOutMatch,
   myDetailsMatch,
   partnersMatch,
-  preprintJournalClubsMatch,
+  peopleMatch,
   privacyPolicyMatch,
   reviewsMatch,
   trainingsMatch,
@@ -34,20 +37,23 @@ export interface PhaseEnv {
   }
 }
 
-type Page = {
+export interface Page {
   readonly title: PlainText
   readonly type?: 'two-up' | 'streamline'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
   readonly current?:
     | 'about-us'
-    | 'communities'
+    | 'clubs'
     | 'code-of-conduct'
+    | 'edi-statement'
     | 'funding'
     | 'home'
+    | 'how-to-use'
+    | 'live-reviews'
     | 'my-details'
     | 'partners'
-    | 'preprint-journal-clubs'
+    | 'people'
     | 'privacy-policy'
     | 'reviews'
     | 'trainings'
@@ -74,12 +80,12 @@ export function page({
 
   return R.asks(
     ({ fathomId, phase }) => html`
-      <!DOCTYPE html>
+      <!doctype html>
       <html lang="en" dir="ltr">
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <title>${title}</title>
+        <title>${title}${current !== 'home' ? ' | PREreview' : ''}</title>
 
         ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
 
@@ -91,7 +97,7 @@ export function page({
             RA.map(preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
           ),
         )}
-        ${fathomId
+        ${typeof fathomId === 'string'
           ? html` <script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
           : ''}
 
@@ -176,16 +182,16 @@ export function page({
                           </li>
                           <li>
                             <a
-                              href="${format(preprintJournalClubsMatch.formatter, {})}"
-                              ${current === 'preprint-journal-clubs' ? html`aria-current="page"` : ''}
-                              >Preprint journal clubs</a
+                              href="${format(liveReviewsMatch.formatter, {})}"
+                              ${current === 'live-reviews' ? html`aria-current="page"` : ''}
+                              >Live Reviews</a
                             >
                           </li>
                           <li>
                             <a
-                              href="${format(communitiesMatch.formatter, {})}"
-                              ${current === 'communities' ? html`aria-current="page"` : ''}
-                              >Communities</a
+                              href="${format(clubsMatch.formatter, {})}"
+                              ${current === 'clubs' ? html`aria-current="page"` : ''}
+                              >Clubs</a
                             >
                           </li>
                           <li>
@@ -228,6 +234,13 @@ export function page({
                     <li><a href="https://donorbox.org/prereview">Donate</a></li>
                     <li>
                       <a
+                        href="${format(peopleMatch.formatter, {})}"
+                        ${current === 'people' ? html`aria-current="page"` : ''}
+                        >People</a
+                      >
+                    </li>
+                    <li>
+                      <a
                         href="${format(fundingMatch.formatter, {})}"
                         ${current === 'funding' ? html`aria-current="page"` : ''}
                         >How we’re funded</a
@@ -242,12 +255,26 @@ export function page({
                     </li>
                     <li>
                       <a
+                        href="${format(ediStatementMatch.formatter, {})}"
+                        ${current === 'edi-statement' ? html`aria-current="page"` : ''}
+                        >EDI Statement</a
+                      >
+                    </li>
+                    <li>
+                      <a
                         href="${format(privacyPolicyMatch.formatter, {})}"
                         ${current === 'privacy-policy' ? html`aria-current="page"` : ''}
                         >Privacy Policy</a
                       >
                     </li>
                     <li><a href="https://content.prereview.org/">Blog</a></li>
+                    <li>
+                      <a
+                        href="${format(howToUseMatch.formatter, {})}"
+                        ${current === 'how-to-use' ? html`aria-current="page"` : ''}
+                        >How to use</a
+                      >
+                    </li>
                   </ul>
 
                   <ul class="contacts" aria-label="Contact us">

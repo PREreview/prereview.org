@@ -1,44 +1,41 @@
 import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import { sequenceS } from 'fp-ts/Apply'
 import * as I from 'fp-ts/Identity'
-import type { Reader } from 'fp-ts/Reader'
-import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import type { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Status } from 'hyper-ts'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
-import { canSeeClubs } from './feature-flags'
-import { type Html, html, plainText, rawHtml, sendHtml } from './html'
-import { fixHeadingLevels } from './html'
+import { getClubName } from './club-details'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from './html'
 import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
 import { type Preprint, getPreprint } from './preprint'
-import type { PreprintId } from './preprint-id'
-import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from './routes'
+import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
-import type { GetUserEnv, User } from './user'
-import { maybeGetUser } from './user'
+import type { ClubId } from './types/club-id'
+import type { PreprintId } from './types/preprint-id'
+import { isPseudonym } from './types/pseudonym'
+import { type User, maybeGetUser } from './user'
 
-export type Prereview = {
+export interface Prereview {
   authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
-  club?: 'asapbio-metabolism'
+  club?: ClubId
   id: number
   language?: LanguageCode
   text: Html
 }
 
-type RapidPrereview = {
+interface RapidPrereview {
   author: {
     name: string
     orcid?: Orcid
@@ -80,24 +77,27 @@ const sendPage = (args: {
     RM.ichainMiddlewareK(sendHtml),
   )
 
-const getPrereviews = (id: PreprintId) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }: GetPrereviewsEnv) => getPrereviews(id)))
+const getPrereviews = (
+  id: PreprintId,
+): RTE.ReaderTaskEither<GetPrereviewsEnv, 'unavailable', ReadonlyArray<Prereview>> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }) => getPrereviews(id)))
 
-const getRapidPrereviews = (id: PreprintId) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ getRapidPrereviews }: GetRapidPrereviewsEnv) => getRapidPrereviews(id)),
-  )
+const getRapidPrereviews = (
+  id: PreprintId,
+): RTE.ReaderTaskEither<GetRapidPrereviewsEnv, 'unavailable', ReadonlyArray<RapidPrereview>> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getRapidPrereviews }) => getRapidPrereviews(id)))
 
 export const preprintReviews = flow(
   RM.fromReaderTaskEitherK(getPreprint),
-  RM.chainW(preprint =>
-    sequenceS(RM.ApplyPar)({
-      preprint: RM.right<GetRapidPrereviewsEnv & GetPrereviewsEnv & GetUserEnv, StatusOpen, never, Preprint>(preprint),
-      rapidPrereviews: RM.fromReaderTaskEither(getRapidPrereviews(preprint.id)),
-      reviews: RM.fromReaderTaskEither(getPrereviews(preprint.id)),
-      user: maybeGetUser,
-    }),
+  RM.chainReaderTaskEitherKW(preprint =>
+    pipe(
+      RTE.Do,
+      RTE.let('preprint', () => preprint),
+      RTE.apS('rapidPrereviews', getRapidPrereviews(preprint.id)),
+      RTE.apSW('reviews', getPrereviews(preprint.id)),
+    ),
   ),
+  RM.apSW('user', maybeGetUser),
   RM.ichainW(sendPage),
   RM.orElseW(error =>
     match(error)
@@ -108,7 +108,7 @@ export const preprintReviews = flow(
 )
 
 const showFailureMessage = flow(
-  fromReaderK(failureMessage),
+  RM.fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -141,149 +141,138 @@ function createPage({
   rapidPrereviews: ReadonlyArray<RapidPrereview>
   user?: User
 }) {
-  return pipe(
-    canSeeClubs,
-    R.chainW(canSeeClubs =>
-      page({
-        title: plainText`PREreviews of “${preprint.title.text}”`,
-        content: html`
-          <h1 class="visually-hidden">
-            PREreviews of
-            <cite lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
-              >${preprint.title.text}</cite
-            >
-          </h1>
+  return page({
+    title: plainText`PREreviews of “${preprint.title.text}”`,
+    content: html`
+      <h1 class="visually-hidden">
+        PREreviews of
+        <cite lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
+          >${preprint.title.text}</cite
+        >
+      </h1>
 
-          <aside id="preprint-details" tabindex="0" aria-label="Preprint details">
-            <article aria-labelledby="preprint-title">
-              <header>
-                <h2 lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}" id="preprint-title">
-                  ${preprint.title.text}
-                </h2>
+      <aside id="preprint-details" tabindex="0" aria-label="Preprint details">
+        <article aria-labelledby="preprint-title">
+          <header>
+            <h2 lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}" id="preprint-title">
+              ${preprint.title.text}
+            </h2>
 
-                <div class="byline">
-                  <span class="visually-hidden">Authored</span> by
-                  ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList('en'))}
-                </div>
+            <div class="byline">
+              <span class="visually-hidden">Authored</span> by
+              ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList('en'))}
+            </div>
 
-                <dl>
-                  <div>
-                    <dt>Posted</dt>
-                    <dd>${renderDate(preprint.posted)}</dd>
-                  </div>
-                  <div>
-                    <dt>Server</dt>
-                    <dd>
-                      ${match(preprint.id.type)
-                        .with('africarxiv', () => 'AfricArXiv Preprints')
-                        .with('arxiv', () => 'arXiv')
-                        .with('biorxiv', () => 'bioRxiv')
-                        .with('chemrxiv', () => 'ChemRxiv')
-                        .with('eartharxiv', () => 'EarthArXiv')
-                        .with('ecoevorxiv', () => 'EcoEvoRxiv')
-                        .with('edarxiv', () => 'EdArXiv')
-                        .with('engrxiv', () => 'engrXiv')
-                        .with('medrxiv', () => 'medRxiv')
-                        .with('metaarxiv', () => 'MetaArXiv')
-                        .with('osf', () => 'OSF Preprints')
-                        .with('philsci', () => 'PhilSci-Archive')
-                        .with('preprints.org', () => 'Preprints.org')
-                        .with('psyarxiv', () => 'PsyArXiv')
-                        .with('research-square', () => 'Research Square')
-                        .with('scielo', () => 'SciELO Preprints')
-                        .with('science-open', () => 'ScienceOpen Preprints')
-                        .with('socarxiv', () => 'SocArXiv')
-                        .with('zenodo', () => 'Zenodo')
-                        .exhaustive()}
-                    </dd>
-                  </div>
-                  ${match(preprint.id)
-                    .with(
-                      { type: 'philsci' },
-                      id => html`
-                        <div>
-                          <dt>Item ID</dt>
-                          <dd>${id.value}</dd>
-                        </div>
-                      `,
-                    )
-                    .with(
-                      { value: p.when(isDoi) },
-                      id => html`
-                        <div>
-                          <dt>DOI</dt>
-                          <dd class="doi" translate="no">${id.value}</dd>
-                        </div>
-                      `,
-                    )
+            <dl>
+              <div>
+                <dt>Posted</dt>
+                <dd>${renderDate(preprint.posted)}</dd>
+              </div>
+              <div>
+                <dt>Server</dt>
+                <dd>
+                  ${match(preprint.id.type)
+                    .with('africarxiv', () => 'AfricArXiv Preprints')
+                    .with('arxiv', () => 'arXiv')
+                    .with('authorea', () => 'Authorea')
+                    .with('biorxiv', () => 'bioRxiv')
+                    .with('chemrxiv', () => 'ChemRxiv')
+                    .with('eartharxiv', () => 'EarthArXiv')
+                    .with('ecoevorxiv', () => 'EcoEvoRxiv')
+                    .with('edarxiv', () => 'EdArXiv')
+                    .with('engrxiv', () => 'engrXiv')
+                    .with('medrxiv', () => 'medRxiv')
+                    .with('metaarxiv', () => 'MetaArXiv')
+                    .with('osf', () => 'OSF Preprints')
+                    .with('philsci', () => 'PhilSci-Archive')
+                    .with('preprints.org', () => 'Preprints.org')
+                    .with('psyarxiv', () => 'PsyArXiv')
+                    .with('research-square', () => 'Research Square')
+                    .with('scielo', () => 'SciELO Preprints')
+                    .with('science-open', () => 'ScienceOpen Preprints')
+                    .with('socarxiv', () => 'SocArXiv')
+                    .with('zenodo', () => 'Zenodo')
                     .exhaustive()}
-                </dl>
-              </header>
-
-              ${preprint.abstract
-                ? html`
-                    <h3>Abstract</h3>
-
-                    <div lang="${preprint.abstract.language}" dir="${getLangDir(preprint.abstract.language)}">
-                      ${fixHeadingLevels(3, preprint.abstract.text)}
+                </dd>
+              </div>
+              ${match(preprint.id)
+                .with(
+                  { type: 'philsci' },
+                  id => html`
+                    <div>
+                      <dt>Item ID</dt>
+                      <dd>${id.value}</dd>
                     </div>
-                  `
-                : ''}
+                  `,
+                )
+                .with(
+                  { value: p.when(isDoi) },
+                  id => html`
+                    <div>
+                      <dt>DOI</dt>
+                      <dd class="doi" translate="no">${id.value}</dd>
+                    </div>
+                  `,
+                )
+                .exhaustive()}
+            </dl>
+          </header>
 
-              <a href="${preprint.url.href}" class="button">Read the preprint</a>
-            </article>
-          </aside>
+          ${preprint.abstract
+            ? html`
+                <h3>Abstract</h3>
 
-          <main id="prereviews">
-            ${pipe(
-              rapidPrereviews,
-              RA.matchW(() => '', showRapidPrereviews),
-            )}
+                <div lang="${preprint.abstract.language}" dir="${getLangDir(preprint.abstract.language)}">
+                  ${fixHeadingLevels(3, preprint.abstract.text)}
+                </div>
+              `
+            : ''}
 
-            <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
+          <a href="${preprint.url.href}" class="button">Read the preprint</a>
+        </article>
+      </aside>
 
-            <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}" class="button">Write a PREreview</a>
+      <main id="prereviews">
+        ${pipe(
+          rapidPrereviews,
+          RA.matchW(
+            () => '',
+            rapidPrereviews => showRapidPrereviews(rapidPrereviews, preprint),
+          ),
+        )}
 
-            <ol class="cards">
-              ${reviews.map(review => showReview(review, canSeeClubs))}
-            </ol>
-          </main>
-        `,
-        skipLinks: [
-          [html`Skip to preprint details`, '#preprint-details'],
-          [html`Skip to PREreviews`, '#prereviews'],
-        ],
-        type: 'two-up',
-        user,
-      }),
-    ),
-  )
+        <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
+
+        <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}" class="button">Write a PREreview</a>
+
+        <ol class="cards">
+          ${reviews.map(showReview)}
+        </ol>
+      </main>
+    `,
+    skipLinks: [
+      [html`Skip to preprint details`, '#preprint-details'],
+      [html`Skip to PREreviews`, '#prereviews'],
+    ],
+    type: 'two-up',
+    user,
+  })
 }
 
-function showReview(review: Prereview, canSeeClubs: boolean) {
+function showReview(review: Prereview) {
   return html`
     <li>
       <article aria-labelledby="prereview-${review.id}-title">
         <header>
           <h3 class="visually-hidden" id="prereview-${review.id}-title">
             PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
-            ${canSeeClubs && review.club
-              ? html`of the
-                ${match(review.club)
-                  .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                  .exhaustive()}`
-              : ''}
+            ${review.club ? html`of the ${getClubName(review.club)}` : ''}
           </h3>
 
           <div class="byline">
             <span class="visually-hidden">Authored</span> by
             ${pipe(review.authors, RNEA.map(get('name')), formatList('en'))}
-            ${canSeeClubs && review.club
-              ? html`of the
-                ${match(review.club)
-                  .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                  .exhaustive()}`
-              : ''}
+            ${review.club ? html`of the ${getClubName(review.club)}` : ''}
           </div>
         </header>
 
@@ -298,12 +287,7 @@ function showReview(review: Prereview, canSeeClubs: boolean) {
           Read
           <span class="visually-hidden">
             the PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
-            ${canSeeClubs && review.club
-              ? html`of the
-                ${match(review.club)
-                  .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                  .exhaustive()}`
-              : ''}
+            ${review.club ? html`of the ${getClubName(review.club)}` : ''}
           </span>
         </a>
       </article>
@@ -311,7 +295,7 @@ function showReview(review: Prereview, canSeeClubs: boolean) {
   `
 }
 
-function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview>): Html {
+function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrereview>, preprint: Preprint): Html {
   return html`
     <h2>${rapidPrereviews.length} Rapid PREreview${rapidPrereviews.length !== 1 ? 's' : ''}</h2>
 
@@ -325,9 +309,18 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
 
       <div>
         <p>
-          We haven’t yet added the form to the new version of PREreview as we’re looking to improve how Rapid PREreviews
-          work; if you could help, please <a href="mailto:contact@prereview.org">get in touch</a>.
+          We’ve recently replaced Rapid PREreviews with
+          <a href="https://content.prereview.org/introducing-structured-prereviews-on-prereview-org/"
+            >Structured PREreviews</a
+          >.
         </p>
+
+        <p>
+          You can
+          <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}">write a Structured PREreview</a> now.
+        </p>
+
+        <p>We’ll be updating older Rapid PREreviews like these soon.</p>
       </div>
     </details>
 
@@ -412,7 +405,15 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
-    return html`<a href="https://orcid.org/${orcid}" class="orcid">${name}</a>`
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
+      >${name}</a
+    >`
+  }
+
+  if (isPseudonym(name)) {
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: name } })}"
+      >${name}</a
+    >`
   }
 
   return name
@@ -456,11 +457,4 @@ function countRapidPrereviewResponses<Q extends keyof RapidPrereview['questions'
     (total, rapidPrereview) => total + (rapidPrereview.questions[question] === response ? 1 : 0),
     0,
   )
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

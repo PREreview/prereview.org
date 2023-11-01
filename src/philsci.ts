@@ -13,7 +13,7 @@ import { P, match } from 'ts-pattern'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { sanitizeHtml } from './html'
 import type { Preprint } from './preprint'
-import type { PhilsciPreprintId } from './preprint-id'
+import type { PhilsciPreprintId } from './types/preprint-id'
 
 import PlainDate = Temporal.PlainDate
 import PlainYearMonth = Temporal.PlainYearMonth
@@ -142,10 +142,10 @@ function eprintToPreprint(eprint: D.TypeOf<typeof EprintD>): E.Either<D.DecodeEr
         })),
       ),
     ),
-    E.let('id', () => ({ type: 'philsci', value: eprint.eprintid } satisfies PhilsciPreprintId)),
+    E.let('id', () => ({ type: 'philsci', value: eprint.eprintid }) satisfies PhilsciPreprintId),
     E.let('posted', () => eprint.date ?? eprint.datestamp),
     E.let('abstract', () =>
-      eprint.abstract
+      typeof eprint.abstract === 'string'
         ? {
             language: 'en' as const,
             text: sanitizeHtml(`<p>${eprint.abstract}</p>`),

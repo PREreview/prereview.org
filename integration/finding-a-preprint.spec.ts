@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import { Status } from 'hyper-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import { RecordsC } from 'zenodo-ts'
+import { RecordsC } from '../src/zenodo-ts'
 import { expect, test } from './base'
 
 test('might not find anything', async ({ fetch, javaScriptEnabled, page }) => {
@@ -42,8 +42,8 @@ test('can find and view a preprint', async ({ contextOptions, fetch, page }, tes
   fetch
     .getOnce(
       {
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
       },
       {
         body: RecordsC.encode({
@@ -56,10 +56,9 @@ test('can find and view a preprint', async ({ contextOptions, fetch, page }, tes
                 files: [
                   {
                     links: {
-                      self: new URL('http://example.com/file'),
+                      self: new URL('http://example.com/review.html/content'),
                     },
                     key: 'review.html',
-                    type: 'html',
                     size: 58,
                   },
                 ],
@@ -81,9 +80,7 @@ test('can find and view a preprint', async ({ contextOptions, fetch, page }, tes
                   description:
                     '<p>The manuscript &quot;The role of LHCBM1 in non-photochemical quenching in <em>Chlamydomonas reinhardtii</em>&quot; by Liu et al. aims to elucidate how LHCBM1 is involved in non-photochemical quenching (NPQ) in <em>Chlamydomonas reinhardtii</em>. The Chlamydomonas mutant lacking LHCBM1 (<em>npq5</em>) displays a low NPQ phenotype. The authors found that the antenna size and LHCSR3 accumulation are not responsible for the lower NPQ phenotype in <em>npq5</em>. They also artificially acidified the lumenal pH to protonate LHCSR3 for NPQ induction and found that <em>npq5 </em>NPQ is still low. They propose that absence of LHCBM1 could alter the association of LHCSR3 with the PSII supercomplex or that LHCBM1 interacts with LHCSR3 which would enhance its quenching capacity. This work enriches the knowledge about the impact of lack of LHCBM1 on antenna size, PSII function, LHCSR1 and 3 proteins accumulation and NPQ capacity during a 48-h high light treatment.</p>',
                   doi: '10.5281/zenodo.1061864' as Doi,
-                  license: {
-                    id: 'CC-BY-4.0',
-                  },
+                  license: { id: 'cc-by-4.0' },
                   publication_date: new Date('2022-07-05'),
                   related_identifiers: [
                     {
@@ -110,7 +107,7 @@ test('can find and view a preprint', async ({ contextOptions, fetch, page }, tes
         }),
       },
     )
-    .getOnce('http://example.com/file', {
+    .getOnce('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>The manuscript &quot;The role of LHCBM1 in non-photochemical quenching in <em>Chlamydomonas reinhardtii</em>&quot; by Liu et al. aims to elucidate how LHCBM1 is involved in non-photochemical quenching (NPQ) in <em>Chlamydomonas reinhardtii</em>. The Chlamydomonas mutant lacking LHCBM1 (<em>npq5</em>) displays a low NPQ phenotype. The authors found that the antenna size and LHCSR3 accumulation are not responsible for the lower NPQ phenotype in <em>npq5</em>. They also artificially acidified the lumenal pH to protonate LHCSR3 for NPQ induction and found that <em>npq5 </em>NPQ is still low. They propose that absence of LHCBM1 could alter the association of LHCSR3 with the PSII supercomplex or that LHCBM1 interacts with LHCSR3 which would enhance its quenching capacity. This work enriches the knowledge about the impact of lack of LHCBM1 on antenna size, PSII function, LHCSR1 and 3 proteins accumulation and NPQ capacity during a 48-h high light treatment.</p>',
     })
 
@@ -160,8 +157,8 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
 
   fetch.getOnce(
     {
-      url: 'http://zenodo.test/api/records/',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     new Promise(() => setTimeout(() => ({ body: RecordsC.encode({ hits: { total: 0, hits: [] } }) }), 2000)),
   )
@@ -359,8 +356,8 @@ test('can skip to the main content', async ({ javaScriptEnabled, page }) => {
 test('can skip to the preprint details', async ({ fetch, javaScriptEnabled, page }) => {
   fetch.getOnce(
     {
-      url: 'http://zenodo.test/api/records/',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
   )

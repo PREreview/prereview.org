@@ -39,7 +39,7 @@ function toggleControlledElement(node: HTMLInputElement) {
 function getControlledElement(node: HTMLInputElement) {
   const controlledId = node.getAttribute('aria-controls')
 
-  if (!controlledId) {
+  if (typeof controlledId !== 'string') {
     return null
   }
 

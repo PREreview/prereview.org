@@ -2,7 +2,7 @@ import type { Refinement } from 'fp-ts/Refinement'
 import { pipe } from 'fp-ts/function'
 import { decode } from 'html-entities'
 import { type HeadersOpen, MediaType, type ResponseEnded } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
+import * as M from 'hyper-ts/Middleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import katex from 'katex'
@@ -13,11 +13,13 @@ import stripTags from 'striptags'
 
 export interface Html {
   readonly Html: unique symbol
+
   toString(): string
 }
 
 export interface PlainText {
   readonly PlainText: unique symbol
+
   toString(): string
 }
 
@@ -32,7 +34,7 @@ export function rawHtml(html: string): Html {
   return raw(texToMathml(html)) as unknown as Html
 }
 
-export function sanitizeHtml(html: string, allowButtons = false): Html {
+export function sanitizeHtml(html: string, trusted = false): Html {
   const sanitized = sanitize(html, {
     allowedTags: [
       'dd',
@@ -80,11 +82,13 @@ export function sanitizeHtml(html: string, allowButtons = false): Html {
       'mtr',
       'annotation',
       'semantics',
+      ...(trusted ? ['img'] : []),
     ],
     allowedAttributes: {
       '*': ['dir', 'displaystyle', 'lang', 'mathvariant'],
       a: ['href'],
       annotation: ['encoding'],
+      img: ['alt', 'height', 'src', 'width'],
       math: ['display'],
       mo: [
         'fence',
@@ -107,16 +111,16 @@ export function sanitizeHtml(html: string, allowButtons = false): Html {
       mtd: ['columnspan', 'rowspan'],
     },
     allowedClasses: {
-      a: allowButtons ? ['button'] : [],
+      a: trusted ? ['button'] : [],
     },
     transformTags: {
       a: (tagName, attribs) => {
-        if (!/^[A-z][A-z0-9+\-.]*:/.test(attribs.href)) {
-          delete attribs.href
+        if (typeof attribs['href'] === 'string' && !/^[A-z][A-z0-9+\-.]*:/.test(attribs['href'])) {
+          attribs['href'] = ''
         }
 
-        if (allowButtons && attribs.class?.includes('kg-btn')) {
-          attribs.class = 'button'
+        if (trusted && typeof attribs['class'] === 'string' && attribs['class'].includes('kg-btn')) {
+          attribs['class'] = 'button'
         }
 
         return {
@@ -197,7 +201,7 @@ function texToMathml(input: string) {
     try {
       return sanitizeHtml(
         katex
-          .renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml' })
+          .renderToString(decode(match), { displayMode: mode === '$$', output: 'mathml', strict: false })
           .replace(/^<span class="katex">([\s\S]*)<\/span>$/, '$1'),
       ).toString()
     } catch {

@@ -2,26 +2,19 @@ import { type Doi, isDoi, parse } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
-import type { Reader } from 'fp-ts/Reader'
-import * as RTE from 'fp-ts/ReaderTaskEither'
-import type * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Status } from 'hyper-ts'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { type InvalidE, getInput, invalidE } from './form'
 import { html, plainText, rawHtml, sendHtml } from './html'
 import { getMethod, seeOther } from './middleware'
 import { page } from './page'
-import { type IndeterminatePreprintId, type PhilsciPreprintId, fromUrl, parsePreprintDoi } from './preprint-id'
+import { doesPreprintExist } from './preprint'
 import { homeMatch, reviewAPreprintMatch, writeReviewMatch } from './routes'
-import type { User } from './user'
-import { maybeGetUser } from './user'
-
-export interface DoesPreprintExistEnv {
-  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'not-a-preprint' | 'unavailable', boolean>
-}
+import { type IndeterminatePreprintId, type PhilsciPreprintId, fromUrl, parsePreprintDoi } from './types/preprint-id'
+import { type User, maybeGetUser } from './user'
 
 export const reviewAPreprint = pipe(
   RM.fromMiddleware(getMethod),
@@ -32,54 +25,48 @@ export const reviewAPreprint = pipe(
   ),
 )
 
-const doesPreprintExist = (id: IndeterminatePreprintId) =>
-  pipe(
-    RTE.ask<DoesPreprintExistEnv>(),
-    RTE.chainTaskEitherK(({ doesPreprintExist }) => doesPreprintExist(id)),
-  )
-
 const showReviewAPreprintPage = pipe(
   maybeGetUser,
-  chainReaderKW(user => createPage(E.right(undefined), user)),
+  RM.chainReaderKW(user => createPage(E.right(undefined), user)),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showReviewAPreprintErrorPage = flow(
-  fromReaderK(createPage),
+  RM.fromReaderK(createPage),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showUnknownPreprintPage = flow(
-  fromReaderK(createUnknownPreprintPage),
+  RM.fromReaderK(createUnknownPreprintPage),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showUnsupportedDoiPage = flow(
-  fromReaderK(createUnsupportedDoiPage),
+  RM.fromReaderK(createUnsupportedDoiPage),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showUnsupportedUrlPage = flow(
-  fromReaderK(createUnsupportedUrlPage),
+  RM.fromReaderK(createUnsupportedUrlPage),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showNotAPreprintPage = flow(
-  fromReaderK(createNotAPreprintPage),
+  RM.fromReaderK(createNotAPreprintPage),
   RM.ichainFirst(() => RM.status(Status.BadRequest)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showFailureMessage = flow(
-  fromReaderK(failureMessage),
+  RM.fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -299,6 +286,7 @@ function createUnknownPreprintWithDoiPage(preprint: Extract<IndeterminatePreprin
           ${match(preprint.type)
             .with('africarxiv', () => 'an AfricArXiv')
             .with('arxiv', () => 'an arXiv')
+            .with('authorea', () => 'an Authorea')
             .with('biorxiv', () => 'a bioRxiv')
             .with('biorxiv-medrxiv', () => 'a bioRxiv or medRxiv')
             .with('chemrxiv', () => 'a ChemRxiv')
@@ -370,9 +358,9 @@ function createUnsupportedDoiPage(user?: User) {
         <h1>Sorry, we don’t support this DOI</h1>
 
         <p>
-          We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen,
-          SocArXiv and Zenodo.
+          We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv,
+          engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO,
+          ScienceOpen, SocArXiv and Zenodo.
         </p>
 
         <p>
@@ -396,9 +384,9 @@ function createUnsupportedUrlPage(user?: User) {
         <h1>Sorry, we don’t support this URL</h1>
 
         <p>
-          We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen,
-          SocArXiv and Zenodo.
+          We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv,
+          engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO,
+          ScienceOpen, SocArXiv and Zenodo.
         </p>
 
         <p>
@@ -424,9 +412,9 @@ function createNotAPreprintPage(user?: User) {
         <h1>Sorry, we only support preprints</h1>
 
         <p>
-          We support preprints from AfricArXiv, arXiv, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv, engrXiv,
-          medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO, ScienceOpen,
-          SocArXiv and Zenodo.
+          We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv,
+          engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO,
+          ScienceOpen, SocArXiv and Zenodo.
         </p>
 
         <p>If this is a preprint, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
@@ -454,18 +442,4 @@ function failureMessage(user?: User) {
     skipLinks: [[html`Skip to main content`, '#main-content']],
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function chainReaderKW<R2, A, B>(
-  f: (a: A) => Reader<R2, B>,
-): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
-  return RM.chainW(fromReaderK(f))
 }

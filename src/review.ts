@@ -1,35 +1,33 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
-import type { Reader } from 'fp-ts/Reader'
-import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Status } from 'hyper-ts'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
-import { canSeeClubs } from './feature-flags'
-import { type Html, html, plainText, rawHtml, sendHtml } from './html'
-import { fixHeadingLevels } from './html'
+import { getClubName } from './club-details'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from './html'
 import { addCanonicalLinkHeader, notFound } from './middleware'
 import { page } from './page'
-import type { PreprintId } from './preprint-id'
-import { isPseudonym } from './pseudonym'
-import { clubMatch, preprintReviewsMatch, profileMatch, reviewMatch } from './routes'
+import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
-import type { User } from './user'
-import { maybeGetUser } from './user'
+import type { ClubId } from './types/club-id'
+import type { PreprintId } from './types/preprint-id'
+import { isPseudonym } from './types/pseudonym'
+import { type User, maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
-export type Prereview = {
+export interface Prereview {
+  addendum?: Html
   authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
-  club?: 'asapbio-metabolism'
+  club?: ClubId
   doi: Doi
   language?: LanguageCode
   license: 'CC-BY-4.0'
@@ -40,11 +38,12 @@ export type Prereview = {
     title: Html
     url: URL
   }
+  structured: boolean
   text: Html
 }
 
 export interface GetPrereviewEnv {
-  getPrereview: (id: number) => TE.TaskEither<unknown, Prereview>
+  getPrereview: (id: number) => TE.TaskEither<'unavailable' | 'not-found' | 'removed', Prereview>
 }
 
 const getPrereview = (id: number) =>
@@ -52,7 +51,7 @@ const getPrereview = (id: number) =>
 
 const sendPage = (id: number) =>
   flow(
-    fromReaderK(createPage),
+    RM.fromReaderK(createPage),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainFirstW(() => addCanonicalLinkHeader(reviewMatch.formatter, { id })),
     RM.ichainMiddlewareK(sendHtml),
@@ -66,14 +65,22 @@ export const review = (id: number) =>
     RM.ichainW(({ prereview, user }) => sendPage(id)(prereview, user)),
     RM.orElseW(error =>
       match(error)
-        .with({ status: Status.NotFound }, () => notFound)
-        .otherwise(() => pipe(maybeGetUser, RM.ichainW(showFailureMessage))),
+        .with('not-found', () => notFound)
+        .with('removed', () => pipe(maybeGetUser, RM.ichainW(showRemovedMessage)))
+        .with('unavailable', () => pipe(maybeGetUser, RM.ichainW(showFailureMessage)))
+        .exhaustive(),
     ),
   )
 
 const showFailureMessage = flow(
-  fromReaderK(failureMessage),
+  RM.fromReaderK(failureMessage),
   RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
+  RM.ichainMiddlewareK(sendHtml),
+)
+
+const showRemovedMessage = flow(
+  RM.fromReaderK(removedMessage),
+  RM.ichainFirst(() => RM.status(Status.Gone)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
@@ -94,81 +101,95 @@ function failureMessage(user?: User) {
   })
 }
 
+function removedMessage(user?: User) {
+  return page({
+    title: plainText`PREreview removed`,
+    content: html`
+      <main id="main-content">
+        <h1>PREreview removed</h1>
+
+        <p>We’ve removed this PREreview.</p>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
+  })
+}
+
 function createPage(review: Prereview, user?: User) {
-  return pipe(
-    canSeeClubs,
-    R.chainW(canSeeClubs =>
-      page({
-        title: plainText`PREreview of “${review.preprint.title}”`,
-        content: html`
-          <nav>
-            <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
-              >See other reviews</a
+  return page({
+    title: plainText`${review.structured ? 'Structured ' : ''}PREreview of “${review.preprint.title}”`,
+    content: html`
+      <nav>
+        <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
+          >See other reviews</a
+        >
+        <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
+      </nav>
+
+      <main id="prereview">
+        <header>
+          <h1>
+            ${review.structured ? 'Structured ' : ''}PREreview of
+            <cite lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
+              >${review.preprint.title}</cite
             >
-            <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
-          </nav>
+          </h1>
 
-          <main id="prereview">
-            <header>
-              <h1>
-                PREreview of
-                <cite lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
-                  >${review.preprint.title}</cite
-                >
-              </h1>
+          <div class="byline">
+            <span class="visually-hidden">Authored</span> by
+            ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
+            ${review.club
+              ? html`of the
+                  <a href="${format(clubProfileMatch.formatter, { id: review.club })}">${getClubName(review.club)}</a>`
+              : ''}
+          </div>
 
-              <div class="byline">
-                <span class="visually-hidden">Authored</span> by
-                ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
-                ${canSeeClubs && review.club
-                  ? html`of the
-                      <a href="${format(clubMatch.formatter, { id: review.club })}"
-                        >${match(review.club)
-                          .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                          .exhaustive()}</a
-                      >`
-                  : ''}
-              </div>
-
-              <dl>
-                <div>
-                  <dt>Published</dt>
-                  <dd>${renderDate(review.published)}</dd>
-                </div>
-                <div>
-                  <dt>DOI</dt>
-                  <dd class="doi" translate="no">${review.doi}</dd>
-                </div>
-                <div>
-                  <dt>License</dt>
-                  <dd>
-                    ${match(review.license)
-                      .with(
-                        'CC-BY-4.0',
-                        () => html`
-                          <a href="https://creativecommons.org/licenses/by/4.0/">
-                            <dfn>
-                              <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
-                            </dfn>
-                          </a>
-                        `,
-                      )
-                      .exhaustive()}
-                  </dd>
-                </div>
-              </dl>
-            </header>
-
-            <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
-              ${fixHeadingLevels(1, review.text)}
+          <dl>
+            <div>
+              <dt>Published</dt>
+              <dd>${renderDate(review.published)}</dd>
             </div>
-          </main>
-        `,
-        skipLinks: [[html`Skip to PREreview`, '#prereview']],
-        user,
-      }),
-    ),
-  )
+            <div>
+              <dt>DOI</dt>
+              <dd class="doi" translate="no">${review.doi}</dd>
+            </div>
+            <div>
+              <dt>License</dt>
+              <dd>
+                ${match(review.license)
+                  .with(
+                    'CC-BY-4.0',
+                    () => html`
+                      <a href="https://creativecommons.org/licenses/by/4.0/">
+                        <dfn>
+                          <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
+                        </dfn>
+                      </a>
+                    `,
+                  )
+                  .exhaustive()}
+              </dd>
+            </div>
+          </dl>
+        </header>
+
+        <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
+          ${fixHeadingLevels(1, review.text)}
+        </div>
+
+        ${review.addendum
+          ? html`
+              <h2>Addendum</h2>
+
+              ${fixHeadingLevels(2, review.addendum)}
+            `
+          : ''}
+      </main>
+    `,
+    skipLinks: [[html`Skip to PREreview`, '#prereview']],
+    user,
+  })
 }
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
@@ -197,11 +218,4 @@ function formatList(
     list => formatter.format(list),
     rawHtml,
   )
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

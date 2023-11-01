@@ -14,7 +14,7 @@ export function transformJatsToHtml(jats: string): Html {
         frame.text.toLowerCase() === 'graphical abstract'),
     transformTags: {
       '*': (tagName, attribs) => {
-        if (attribs['xml:lang']) {
+        if (typeof attribs['xml:lang'] === 'string') {
           attribs['lang'] = attribs['xml:lang']
           delete attribs['xml:lang']
         }
@@ -24,7 +24,7 @@ export function transformJatsToHtml(jats: string): Html {
       'jats:ext-link': (_, attribs) => {
         if (
           attribs['ext-link-type'] !== 'uri' ||
-          !attribs['xlink:href'] ||
+          typeof attribs['xlink:href'] !== 'string' ||
           !/^[A-z][A-z0-9+\-.]*:/.test(attribs['xlink:href'])
         ) {
           return { tagName: 'a', attribs }
@@ -41,7 +41,7 @@ export function transformJatsToHtml(jats: string): Html {
       'jats:related-object': (_, attribs) => {
         if (
           attribs['ext-link-type'] !== 'uri' ||
-          !attribs['xlink:href'] ||
+          typeof attribs['xlink:href'] !== 'string' ||
           !/^[A-z][A-z0-9+\-.]*:/.test(attribs['xlink:href'])
         ) {
           return { tagName: 'a', attribs }

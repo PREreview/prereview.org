@@ -1,27 +1,19 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import type { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import type * as M from 'hyper-ts/lib/Middleware'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Status } from 'hyper-ts'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
 import { P, match } from 'ts-pattern'
 import TurndownService from 'turndown'
-import { canRapidReview } from '../feature-flags'
 import { type InvalidE, type MissingE, hasAnError, invalidE, missingE } from '../form'
 import { type Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import {
-  writeReviewAlreadyWrittenMatch,
-  writeReviewMatch,
-  writeReviewReviewMatch,
-  writeReviewReviewTypeMatch,
-} from '../routes'
-import { NonEmptyStringC } from '../string'
+import { writeReviewMatch, writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../routes'
+import { NonEmptyStringC } from '../types/string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -38,21 +30,22 @@ export const writeReviewReview = flow(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
       ),
-      RM.bindW(
-        'canRapidReview',
-        fromReaderK(({ user }) => canRapidReview(user)),
-      ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.ichainW(state =>
         match(state)
+          .with(
+            {
+              form: P.union(
+                { alreadyWritten: P.optional(undefined) },
+                { alreadyWritten: 'no', reviewType: 'questions' },
+              ),
+            },
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
+          )
           .with({ method: 'POST', form: { alreadyWritten: 'yes' } }, handlePasteReviewForm)
           .with({ method: 'POST', form: { alreadyWritten: 'no' } }, handleWriteReviewForm)
           .with({ form: { alreadyWritten: 'yes' } }, showPasteReviewForm)
           .with({ form: { alreadyWritten: 'no' } }, showWriteReviewForm)
-          .with(
-            { form: { alreadyWritten: P.optional(undefined) } },
-            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
-          )
           .exhaustive(),
       ),
       RM.orElseW(error =>
@@ -60,7 +53,7 @@ export const writeReviewReview = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -76,18 +69,8 @@ export const writeReviewReview = flow(
 )
 
 const showWriteReviewForm = flow(
-  fromReaderK(
-    ({
-      canRapidReview,
-      form,
-      preprint,
-      user,
-    }: {
-      canRapidReview: boolean
-      form: Form
-      preprint: PreprintTitle
-      user: User
-    }) => writeReviewForm(preprint, { review: E.right(form.review) }, user, canRapidReview),
+  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+    writeReviewForm(preprint, { review: E.right(form.review) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -95,13 +78,13 @@ const showWriteReviewForm = flow(
 
 const showWriteReviewErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form, user, true)),
+    RM.fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
 const showPasteReviewForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     pasteReviewForm(preprint, { review: E.right(form.review) }, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
@@ -110,7 +93,7 @@ const showPasteReviewForm = flow(
 
 const showPasteReviewErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    fromReaderK((form: PasteReviewForm) => pasteReviewForm(preprint, form, user)),
+    RM.fromReaderK((form: PasteReviewForm) => pasteReviewForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -135,7 +118,7 @@ const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -158,7 +141,7 @@ const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -174,15 +157,15 @@ const ReviewFieldD = pipe(
   D.map(({ review }) => sanitizeHtml(markdownIt({ html: true }).render(review))),
 )
 
-type WriteReviewForm = {
+interface WriteReviewForm {
   readonly review: E.Either<MissingE | InvalidE, Html | undefined>
 }
 
-type PasteReviewForm = {
+interface PasteReviewForm {
   readonly review: E.Either<MissingE, Html | undefined>
 }
 
-function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm, user: User, canRapidReview: boolean) {
+function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm, user: User) {
   const error = hasAnError(form)
 
   return page({
@@ -190,7 +173,7 @@ function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm, user: U
     content: html`
       <nav>
         <a
-          href="${format((canRapidReview ? writeReviewReviewTypeMatch : writeReviewAlreadyWrittenMatch).formatter, {
+          href="${format(writeReviewReviewTypeMatch.formatter, {
             id: preprint.id,
           })}"
           class="back"
@@ -336,7 +319,7 @@ function pasteReviewForm(preprint: PreprintTitle, form: PasteReviewForm, user: U
     title: plainText`${error ? 'Error: ' : ''}Paste your PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
@@ -442,19 +425,4 @@ function isSameMarkdownAs(reference: string) {
       turndown.turndown(reference.replaceAll(/\s+/g, ' '))
     )
   }
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

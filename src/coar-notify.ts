@@ -1,9 +1,8 @@
-import type { Doi } from 'doi-ts'
-import { toUrl } from 'doi-ts'
+import { type Doi, toUrl } from 'doi-ts'
 import * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import { v4 as uuidv4 } from 'uuid'
-import type { PreprintId } from './preprint-id'
+import type { PreprintId } from './types/preprint-id'
 
 const BASE_URL = 'https://sandbox.prereview.org'
 const REVIEWS_URL = `${BASE_URL}/reviews`
@@ -29,29 +28,29 @@ const SERVICE_INBOX: NotifyInbox = {
   type: SERVICE_TYPE,
 }
 
-export type NotifyActor = {
+export interface NotifyActor {
   id: URL
   name: string
   type: NotifyType
 }
 
-export type NotifyInbox = {
+export interface NotifyInbox {
   id: URL
   inbox: URL
   type: NotifyType
 }
 
-export type NotifyObject = {
+export interface NotifyObject {
   id: URL
   'ietf:cite-as': Doi
   type: NotifyType
 }
 
-export type NotifyContext = {
+export interface NotifyContext {
   id: URL
 }
 
-export type Notification = {
+export interface Notification {
   '@context': Array<string> | string
   id: string
   actor: NotifyActor
@@ -62,7 +61,7 @@ export type Notification = {
   context: NotifyContext
 }
 
-type Review = {
+interface Review {
   id: number
   doi: Doi
   preprintId: PreprintId

@@ -5,7 +5,9 @@ import { flow, pipe } from 'fp-ts/function'
 import { split } from 'fp-ts/string'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
+import { v4 } from 'uuid-ts'
 import { rawHtml } from './html'
+import { type NonEmptyString, NonEmptyStringC } from './types/string'
 
 export function decodeEnv(process: NodeJS.Process) {
   return pipe(
@@ -19,6 +21,15 @@ export function decodeEnv(process: NodeJS.Process) {
 const BooleanD = pipe(
   D.literal('true', 'false'),
   D.map(value => value === 'true'),
+)
+
+const IntD = pipe(
+  D.string,
+  D.parse(s => {
+    const n = +s
+
+    return isNaN(n) || s.trim() === '' ? D.failure(s, 'Integer') : D.success(n)
+  }),
 )
 
 const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
@@ -35,6 +46,9 @@ const UrlD = pipe(
 
 const HtmlD = pipe(D.string, D.map(rawHtml))
 
+const CommaSeparatedListD = <A>(decoder: D.Decoder<unknown, A>) =>
+  pipe(D.string, D.map(split(',')), D.compose(D.array(decoder)))
+
 const UndefinedD: D.Decoder<unknown, undefined> = {
   decode: val => (val === undefined ? D.success(undefined) : D.failure(val, 'undefined')),
 }
@@ -42,9 +56,9 @@ const UndefinedD: D.Decoder<unknown, undefined> = {
 const EnvD = pipe(
   D.struct({
     ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
-    CAN_EDIT_PROFILE: withDefault(BooleanD, false),
-    CAN_SEE_CLUBS: withDefault(BooleanD, false),
-    CAN_RAPID_REVIEW: withDefault(pipe(D.string, D.map(split(',')), D.compose(D.array(OrcidD))), []),
+    BLOCKED_USERS: withDefault(CommaSeparatedListD(OrcidD), []),
+    CLOUDINARY_API_KEY: D.string,
+    CLOUDINARY_API_SECRET: D.string,
     GHOST_API_KEY: D.string,
     LEGACY_PREREVIEW_API_APP: D.string,
     LEGACY_PREREVIEW_API_KEY: D.string,
@@ -53,7 +67,13 @@ const EnvD = pipe(
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
     PUBLIC_URL: UrlD,
+    REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
+    SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, v4()() as unknown as NonEmptyString),
     SECRET: D.string,
+    SLACK_API_TOKEN: D.string,
+    SLACK_CLIENT_ID: D.string,
+    SLACK_CLIENT_SECRET: D.string,
+    SLACK_UPDATE: withDefault(BooleanD, false),
     ZENODO_API_KEY: D.string,
     ZENODO_URL: UrlD,
   }),

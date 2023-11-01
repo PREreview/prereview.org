@@ -5,10 +5,11 @@ import * as RR from 'fp-ts/ReadonlyRecord'
 import { flow, pipe } from 'fp-ts/function'
 import type { HeadersOpen } from 'hyper-ts'
 import { getSession, storeSession } from 'hyper-ts-session'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { type CompletedForm, CompletedFormC } from './completed-form'
+import { FormC } from './form'
 
 export type PublishedReview = C.TypeOf<typeof PublishedReviewC>
 
@@ -16,7 +17,7 @@ const DoiC = C.make(pipe(D.string, D.refine(isDoi, 'DOI')), { encode: String })
 
 export const PublishedReviewC: C.Codec<unknown, JsonRecord, { doi: Doi; form: CompletedForm; id: number }> = C.struct({
   doi: DoiC,
-  form: CompletedFormC,
+  form: pipe(FormC, C.compose(CompletedFormC)),
   id: C.number,
 })
 

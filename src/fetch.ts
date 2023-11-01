@@ -8,16 +8,21 @@ export function useStaleCache<E extends F.FetchEnv>(): (env: E) => E {
 }
 
 export function revalidateIfStale<E extends F.FetchEnv>(): (env: E) => E {
+  const openRequests = new Set<string>()
+
   return env => ({
     ...env,
     fetch: async (url, init) => {
       const response = await env.fetch(url, init)
 
-      if (response.headers.get('x-local-cache-status') === 'stale') {
+      if (response.headers.get('x-local-cache-status') === 'stale' && !openRequests.has(url)) {
+        openRequests.add(url)
+
         void env
           .fetch(url, { ...init, cache: 'no-cache' })
           .then(response => response.text())
           .catch(constVoid)
+          .finally(() => openRequests.delete(url))
       }
 
       return response
@@ -28,16 +33,7 @@ export function revalidateIfStale<E extends F.FetchEnv>(): (env: E) => E {
 export function timeoutRequest<E extends F.FetchEnv>(timeout: number): (env: E) => E {
   return env => ({
     ...env,
-    fetch: async (url, init) => {
-      const controller = new AbortController()
-      const timeoutId = setTimeout(() => controller.abort(), timeout)
-
-      try {
-        return await env.fetch(url, { signal: controller.signal, ...init })
-      } finally {
-        clearTimeout(timeoutId)
-      }
-    },
+    fetch: async (url, init) => env.fetch(url, { signal: AbortSignal.timeout(timeout), ...init }),
   })
 }
 
@@ -73,8 +69,8 @@ export function collapseRequests<E extends F.FetchEnv & L.LoggerEnv>(): (env: E)
   })
 }
 
-export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(env: E): E {
-  return {
+export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(): (env: E) => E {
+  return env => ({
     ...env,
     fetch: async (url, init) => {
       L.debugP('Sending HTTP request')({
@@ -111,5 +107,5 @@ export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(env: E): E {
           throw error
         })
     },
-  }
+  })
 }

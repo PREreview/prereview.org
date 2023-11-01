@@ -1,4 +1,3 @@
-import { Temporal } from '@js-temporal/polyfill'
 import { type Work, getWork } from 'crossref-ts'
 import { type Doi, hasRegistrant } from 'doi-ts'
 import * as E from 'fp-ts/Either'
@@ -10,7 +9,7 @@ import { flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
-import { P, match } from 'ts-pattern'
+import { P, isMatching, match } from 'ts-pattern'
 import { detectLanguage, detectLanguageFrom } from './detect-language'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { sanitizeHtml } from './html'
@@ -18,6 +17,7 @@ import { transformJatsToHtml } from './jats'
 import type { Preprint } from './preprint'
 import type {
   AfricarxivOsfPreprintId,
+  AuthoreaPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
   EartharxivPreprintId,
@@ -33,12 +33,11 @@ import type {
   ScieloPreprintId,
   ScienceOpenPreprintId,
   SocarxivPreprintId,
-} from './preprint-id'
-
-import PlainDate = Temporal.PlainDate
+} from './types/preprint-id'
 
 export type CrossrefPreprintId =
   | AfricarxivOsfPreprintId
+  | AuthoreaPreprintId
   | BiorxivPreprintId
   | ChemrxivPreprintId
   | EartharxivPreprintId
@@ -61,6 +60,7 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']>
   '14293',
   '20944',
   '21203',
+  '22541',
   '26434',
   '31219',
   '31222',
@@ -91,7 +91,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
   return pipe(
     E.Do,
     E.filterOrElse(
-      () => work.type === 'posted-content' && work.subtype === 'preprint',
+      () => isAPreprint(work),
       () => 'not a preprint',
     ),
     E.apS(
@@ -113,16 +113,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
       ),
     ),
     E.apSW('id', PreprintIdD.decode(work)),
-    E.apSW(
-      'posted',
-      pipe(
-        work.published,
-        E.fromPredicate(
-          (date): date is PlainDate => date instanceof PlainDate,
-          () => 'no published date',
-        ),
-      ),
-    ),
+    E.let('posted', () => findPublishedDate(work)),
     E.bindW('abstract', ({ id: { type } }) =>
       pipe(
         work.abstract,
@@ -134,6 +125,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
           E.fromOptionK(() => 'unknown language' as const)(({ text }) =>
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
+              .with({ type: 'authorea', text: P.select() }, detectLanguage)
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'chemrxiv' }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
@@ -170,6 +162,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
           E.fromOptionK(() => 'unknown language')(({ text }) =>
             match({ type: preprint.id.type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
+              .with({ type: 'authorea', text: P.select() }, detectLanguage)
               .with({ type: P.union('biorxiv', 'medrxiv') }, () => O.some('en' as const))
               .with({ type: 'chemrxiv' }, () => O.some('en' as const))
               .with({ type: 'eartharxiv' }, () => O.some('en' as const))
@@ -200,6 +193,19 @@ function toHttps(url: URL): URL {
   return httpsUrl
 }
 
+const isAPreprint: (work: Work) => boolean = isMatching(
+  P.union(
+    { type: 'posted-content', subtype: 'preprint' },
+    { description: 'Authorea status: Preprint', DOI: P.when(hasRegistrant('22541')), type: 'dataset' },
+  ),
+)
+
+const findPublishedDate = (work: Work) =>
+  pipe(
+    O.fromNullable(work.published),
+    O.getOrElse(() => work.created),
+  )
+
 const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
   pipe(
     D.fromStruct({
@@ -212,8 +218,15 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'africarxiv',
           value: work.DOI,
-        } satisfies AfricarxivOsfPreprintId),
+        }) satisfies AfricarxivOsfPreprintId,
     ),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('22541'), 'DOI'),
+      publisher: D.literal('Authorea, Inc.'),
+    }),
+    D.map(work => ({ type: 'authorea', value: work.DOI }) satisfies AuthoreaPreprintId),
   ),
   pipe(
     D.fromStruct({
@@ -226,7 +239,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'biorxiv',
           value: work.DOI,
-        } satisfies BiorxivPreprintId),
+        }) satisfies BiorxivPreprintId,
     ),
   ),
   pipe(
@@ -239,7 +252,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'chemrxiv',
           value: work.DOI,
-        } satisfies ChemrxivPreprintId),
+        }) satisfies ChemrxivPreprintId,
     ),
   ),
   pipe(
@@ -252,7 +265,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'eartharxiv',
           value: work.DOI,
-        } satisfies EartharxivPreprintId),
+        }) satisfies EartharxivPreprintId,
     ),
   ),
   pipe(
@@ -265,7 +278,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'ecoevorxiv',
           value: work.DOI,
-        } satisfies EcoevorxivPreprintId),
+        }) satisfies EcoevorxivPreprintId,
     ),
   ),
   pipe(
@@ -279,7 +292,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'edarxiv',
           value: work.DOI,
-        } satisfies EdarxivPreprintId),
+        }) satisfies EdarxivPreprintId,
     ),
   ),
   pipe(
@@ -292,7 +305,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'engrxiv',
           value: work.DOI,
-        } satisfies EngrxivPreprintId),
+        }) satisfies EngrxivPreprintId,
     ),
   ),
   pipe(
@@ -306,7 +319,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'medrxiv',
           value: work.DOI,
-        } satisfies MedrxivPreprintId),
+        }) satisfies MedrxivPreprintId,
     ),
   ),
   pipe(
@@ -320,7 +333,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'metaarxiv',
           value: work.DOI,
-        } satisfies MetaarxivPreprintId),
+        }) satisfies MetaarxivPreprintId,
     ),
   ),
   pipe(
@@ -334,7 +347,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'osf',
           value: work.DOI,
-        } satisfies OsfPreprintId),
+        }) satisfies OsfPreprintId,
     ),
   ),
   pipe(
@@ -347,7 +360,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'preprints.org',
           value: work.DOI,
-        } satisfies PreprintsorgPreprintId),
+        }) satisfies PreprintsorgPreprintId,
     ),
   ),
   pipe(
@@ -361,7 +374,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'psyarxiv',
           value: work.DOI,
-        } satisfies PsyarxivPreprintId),
+        }) satisfies PsyarxivPreprintId,
     ),
   ),
   pipe(
@@ -375,7 +388,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'research-square',
           value: work.DOI,
-        } satisfies ResearchSquarePreprintId),
+        }) satisfies ResearchSquarePreprintId,
     ),
   ),
   pipe(
@@ -388,7 +401,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'scielo',
           value: work.DOI,
-        } satisfies ScieloPreprintId),
+        }) satisfies ScieloPreprintId,
     ),
   ),
   pipe(
@@ -401,7 +414,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'science-open',
           value: work.DOI,
-        } satisfies ScienceOpenPreprintId),
+        }) satisfies ScienceOpenPreprintId,
     ),
   ),
   pipe(
@@ -415,7 +428,7 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
         ({
           type: 'socarxiv',
           value: work.DOI,
-        } satisfies SocarxivPreprintId),
+        }) satisfies SocarxivPreprintId,
     ),
   ),
 )

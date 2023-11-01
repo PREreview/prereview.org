@@ -13,29 +13,50 @@ import type { Server } from 'http'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
+import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import { RecordsC, SubmittedDepositionC, UnsubmittedDepositionC, type Record as ZenodoRecord } from 'zenodo-ts'
-import { EmptyDepositionC } from 'zenodo-ts'
-import { app } from '../src/app'
-import type { CanEditProfileEnv, CanRapidReviewEnv, CanSeeClubsEnv } from '../src/feature-flags'
+import { type ConfigEnv, app } from '../src/app'
+import type { CanChangeContactEmailAddressEnv } from '../src/feature-flags'
+import type {
+  IsOpenForRequestsStoreEnv,
+  LanguagesStoreEnv,
+  LocationStoreEnv,
+  ResearchInterestsStoreEnv,
+} from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
+import type { IsUserBlockedEnv } from '../src/log-in'
+import type { NonEmptyString } from '../src/types/string'
+import type { WasPrereviewRemovedEnv } from '../src/zenodo'
+import {
+  EmptyDepositionC,
+  RecordsC,
+  SubmittedDepositionC,
+  UnsubmittedDepositionC,
+  type Record as ZenodoRecord,
+} from '../src/zenodo-ts'
 
 import Logger = L.Logger
 import LogEntry = L.LogEntry
 
 export { expect } from '@playwright/test'
 
-type AppFixtures = {
-  canSeeClubs: CanSeeClubsEnv['canSeeClubs']
-  canEditProfile: CanEditProfileEnv['canEditProfile']
-  canRapidReview: CanRapidReviewEnv['canRapidReview']
+interface AppFixtures {
   fetch: FetchMockSandbox
   logger: Logger
+  oauthServer: OAuth2Server
   port: number
   server: Server
   updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
-  careerStageStore: Keyv<string>
+  careerStageStore: Keyv<unknown>
+  researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
+  languagesStore: LanguagesStoreEnv['languagesStore']
+  locationStore: LocationStoreEnv['locationStore']
+  isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
+  slackUserIdStore: ConfigEnv['slackUserIdStore']
+  canChangeContactEmailAddress: CanChangeContactEmailAddressEnv['canChangeContactEmailAddress']
+  isUserBlocked: IsUserBlockedEnv['isUserBlocked']
+  wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -48,17 +69,11 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await use(`http://localhost:${address.port}`)
   },
-  canSeeClubs: async ({}, use) => {
-    await use(false)
-  },
-  canEditProfile: async ({}, use) => {
-    await use(false)
-  },
-  canRapidReview: async ({}, use) => {
-    await use(() => false)
-  },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
+  },
+  canChangeContactEmailAddress: async ({}, use) => {
+    await use(() => false)
   },
   fetch: async ({}, use) => {
     const fetch = fetchMock.sandbox()
@@ -89,8 +104,8 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     fetch.get(
       {
         name: 'recent-prereviews',
-        url: 'http://zenodo.test/api/records/',
-        query: { communities: 'prereview-reviews', size: 5, sort: '-publication_date', subtype: 'peerreview' },
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { size: 5, sort: 'publication-desc', resource_type: 'publication::publication-peerreview' },
       },
       {
         body: RecordsC.encode({
@@ -104,10 +119,11 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
                   {
                     key: 'review.html',
                     links: {
-                      self: new URL('https://zenodo.org/api/files/77ec063f-e37c-4739-8bc5-d7bba268bbd5/review.html'),
+                      self: new URL(
+                        'https://zenodo.org/api/files/77ec063f-e37c-4739-8bc5-d7bba268bbd5/review.html/content',
+                      ),
                     },
                     size: 2538,
-                    type: 'html',
                   },
                 ],
                 id: 7820084,
@@ -122,7 +138,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
                   description:
                     "<p>The main question that this preprint seeks to answer is whether or not Nirmatrelvir plus ritonavir, used as a treatment for non-hospitalized vaccinated patients, was effective at preventing long COVID symptoms. Overall, the paper found that NMV-r was indeed associated with a reduction in symptoms of long COVID. The findings of this paper are novel, as there has been research conducted on NMV-r's effect on COVID symptoms, but this is the first time its effect on long COVID has been investigated. The results are likely to lead to future research, as the findings are novel and relevant to helping solve a large issue in long COVID. I would say that sufficient detail is provided to allow reproduction of the study. Where the data was taken from and how it was analyzed is described in great detail. I do not have the expertise needed to determine if the methods and statistics are appropriate for the analysis, so I am unsure but they seem logical and is an area that other reviewers could check. The principal conclusions are supported by the data and analysis. The manuscript does discuss limitations. It highlights that there could be significant biases in the data due to differences between the groups receiving and not receiving treatment. The authors claim that they used propensity matching to control for these limitations in the data, but admit that there could still be residual confounding. In addition, the authors also point out that the findings could change depending on the definition of long COVID used. The authors say that their definitions of long COVID may have lacked precision and been too inclusive. The authors say that a more accurate result could be obtained from data from original placebo-controlled trials. The authors have not discussed ethical concerns.  The manuscript does not include new data. It gets its data from the TriNetX Analytics Network. The authors say that more can be found about this database online. I would recommend this manuscript to others due to its novel findings and its potential contributions to finding effective treatments for long COVID. I highly recommend this manuscript for peer review.</p><p>My only concerns with this manuscript would be that the data does not come from placebo-controlled trials and only from electronic health records. However, the authors have already addressed this concern. </p><p>I do not have any competing interests.</p>\n\n    Competing interests\n\n    <p>\n      The author declares that they have no competing interests.\n    </p>",
                   doi: '10.5281/zenodo.7820084' as Doi,
-                  license: { id: 'CC-BY-4.0' },
+                  license: { id: 'cc-by-4.0' },
                   publication_date: new Date('2023-04-12'),
                   related_identifiers: [
                     {
@@ -132,7 +148,10 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
                       scheme: 'doi',
                     },
                   ],
-                  resource_type: { subtype: 'peerreview', type: 'publication' },
+                  resource_type: {
+                    type: 'publication',
+                    subtype: 'peerreview',
+                  },
                   title:
                     'PREreview of "Incidence of Symptoms Associated with Post-Acute Sequelae of SARS-CoV-2 infection in Non-Hospitalized Vaccinated Patients Receiving Nirmatrelvir-Ritonavir"',
                 },
@@ -144,10 +163,11 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
                   {
                     key: 'review.html',
                     links: {
-                      self: new URL('https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html'),
+                      self: new URL(
+                        'https://zenodo.org/api/files/7ff8c56b-1755-40c7-800d-d64b886ae153/review.html/content',
+                      ),
                     },
                     size: 7043,
-                    type: 'html',
                   },
                 ],
                 id: 7747129,
@@ -161,7 +181,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
                   description:
                     '<p>PTP1b has been an attractive target for drug development due to its essential role in several cellular pathways and diseases such as type 2 diabetes. Focus has been paid to identifying allosteric sites that regulate catalytic activity via altering the dynamics of the active site WPD loop. However, the structural mechanisms underlying the WPD loop opening and closing (which is relatively slow by NMR) remains unclear.\u00a0</p><p>In this paper, the authors sought to identify the structural mechanisms underlying PTP1b loop motion by performing long time scale molecular dynamics (MD) simulations. Starting from existing structures with the WPD loop either open or closed, they are able to derive reasonable estimations of the kinetics of loop opening and closing. They address the question of what structural changes need to occur for the loop to remain open or closed as it fluctuates. Using a random forest approach, they narrow their focus down to the PDFG motifs backbone dihedrals as a set of features sufficient for describing and predicting loop movement between states. The major strength of this paper is reducing the WPD loop conformation (including transient states) down to a set of reaction coordinates in the PDFG motif dihedral angles. Based on this minimum set of features, the committor probabilities provide a strong statistical argument for the transition between open, closed, and transient states along the loop trajectory.</p><p>The major weakness of this paper is that the visualizations describing the PDFG motif switch model are insufficient and confusing and lack an atomic explanation of how these dihedral changes occur in the context of surrounding residues to complement their statistical explanations. This makes it difficult to interpret what the actual transitions look like. We understand that the atomic explanation of this mechanism can be complicated but refer the authors to this paper as an example even though it is a different target and may not be specifically relevant to their work: <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1450098/">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1450098/</a> (Fig 3)</p><p>The reaction coordinates alone do not provide a clear direction for envisioning future experiments. Given that this motif is conserved (as the authors explained), other PTP members likely have different structural environments surrounding the motif which likely affects kinetic rates and thermodynamics.\u00a0</p><p>Major Points:</p><ol><li><p>Previous structural studies of PTP\'s have identified atypical open loop conformations in GLEPP1, STEP, and Lyp: <a href="https://www.sciencedirect.com/science/article/pii/S0092867408015134?via%3Dihub">https://www.sciencedirect.com/science/article/pii/S0092867408015134?via%3Dihub</a> Fig 3A. These loops adopt a novel loop conformation that is more open compared to PTP1B. Further, the presence of catalytic water molecules that are tightly bound in closed states and absent in open states have been suggested to play a role in the closing of the WPD loop.\u00a0</p><ol><li><p>Can the authors provide comments on how the PDFG motif factors into the novel open loop conformation (would the motif dihedrals still predict loop states in these family members)?\u00a0</p></li><li><p>Were water molecules detected in the binding site and do they play a role during loop closure?</p></li><li><p>Is it possible to include within these simulations mixed solvent MD with a PTP1B substrate to explore their roles in the loop transition?</p></li></ol></li><li><p>"We note that although the PD[F/H]G BLAST search did return matches in other protein families, there was not the structural information corresponding to those matches that would be needed to draw further conclusions on the conformational significance of PD[F/H]G motifs in those families." - We feel this is a missed opportunity to at least do some exploration and cataloging using the alphafold structures of these other families.</p></li><li><p>The authors describe the backbone dihedrals of the PDFG motif as being sufficient and necessary for predicting WPD loop conformation but do not mention the side chain conformations. We feel that the explanation and visualization of the side chain conformations in both open and closed states is unclear as there is no analysis of how these transitions and conformations affect the populations and rate movement of the loop.\u00a0</p><ol><li><p>What do the rotamer conformations and transitions look like for the PDFG during open, closed, and transient WPD loop states?\u00a0</p></li><li><p>How do these rotamer conformations affect loop movements and populations within the simulation?\u00a0</p></li></ol></li></ol><p>It would be insightful if the authors could provide an explanation of the rotamer transitions during loop opening and closing. Understanding these structural changes during substrate binding and catalysis could yield targets for drug development.\u00a0</p><p>Minor Points:</p><ol><li><p>Supplementary figures S2, S3, S4, and S5 have little to no information to adequately explain what is being illustrated. The authors should be more clear in describing what these figures represent. A description of axes, experimental set up, and legends would be helpful.\u00a0</p></li><li><p>The observation that loop fluctuations without long term stability unless the PDFG motif switches is reminiscent of the population shuffling model of conformational changes put forward by Colin Smith - <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/anie.201408890">https://onlinelibrary.wiley.com/doi/full/10.1002/anie.201408890</a>. Given the previous NMR data on PTP1B, how does this view alter the interpretation away from a strict two state model?</p></li><li><p>"The free energy estimate from these AWE simulations was \u0394Gclosed-to-open = \u22122.6 \u00b1 0.1 kcal mol-1, indicating that the transition from closed to open states is spontaneous (<a href="https://www.biorxiv.org/content/10.1101/2023.02.28.529746v1.full#F2"><b>Figure 2b</b></a>), a finding that is again consistent with experimental data" We are a bit confused by the language here: is this a thermodynamic or kinetic argument? Secondarily, how do the populations compare to those derived from NMR?</p></li></ol><ol><li><p>As previously discussed in a twitter thread with the authors, the backbone ramachandran regions of the 1SUG structure (closed WPD loop conformation) is not in a region previously known for kinases. It would be helpful if the authors could provide validation that the backbone ramachandran regions of the WPD loop are in agreement with what is known about kinases states and whether this would affect their interpretations.\u00a0</p></li></ol><p><a href="https://twitter.com/RolandDunbrack/status/1632284368650530816">https://twitter.com/RolandDunbrack/status/1632284368650530816</a></p><p>Review by - CJ San Felipe (UCSF) and James Fraser (UCSF)</p>\n\n    Competing interests\n\n    <p>\n      The author declares that they have no competing interests.\n    </p>',
                   doi: '10.5281/zenodo.7747129' as Doi,
-                  license: { id: 'CC-BY-4.0' },
+                  license: { id: 'cc-by-4.0' },
                   publication_date: new Date('2023-03-17'),
                   related_identifiers: [
                     {
@@ -172,7 +192,10 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
                     },
                     { identifier: '10.5281/zenodo.7747128', relation: 'isVersionOf', scheme: 'doi' },
                   ],
-                  resource_type: { subtype: 'peerreview', type: 'publication' },
+                  resource_type: {
+                    type: 'publication',
+                    subtype: 'peerreview',
+                  },
                   title: 'PREreview of "A conserved local structural motif controls the kinetics of PTP1B catalysis"',
                 },
               },
@@ -653,7 +676,98 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
     })
 
+    fetch.get('https://api.crossref.org/works/10.1101%2F12345678', {
+      body: {
+        status: 'ok',
+        'message-type': 'work',
+        'message-version': '1.0.0',
+        message: {
+          indexed: { 'date-parts': [[2023, 4, 21]], 'date-time': '2023-04-21T05:37:01Z', timestamp: 1682055421220 },
+          publisher: 'Cold Spring Harbor Laboratory',
+          institution: [{ name: 'bioRxiv' }],
+          'content-domain': { domain: ['psychoceramics.labs.crossref.org'], 'crossmark-restriction': false },
+          'published-print': { 'date-parts': [[2008, 8, 14]] },
+          abstract:
+            '<jats:p>The characteristic theme of the works of Stone is the bridge between culture and society. Several narratives concerning the fatal !aw, and subsequent dialectic, of semioticist class may be found. Thus, Debord uses the term \u2018the subtextual paradigm of consensus\u2019 to denote a cultural paradox. The subject is interpolated into a neocultural discourse that includes sexuality as a totality. But Marx\u2019s critique of prepatriarchialist nihilism states that consciousness is capable of signi"cance. The main theme of Dietrich\u2019s[1]model of cultural discourse is not construction, but neoconstruction. Thus, any number of narratives concerning the textual paradigm of narrative exist. Pretextual cultural theory suggests that context must come from the collective unconscious.</jats:p>',
+          DOI: '10.1101/12345678',
+          type: 'posted-content',
+          subtype: 'preprint',
+          created: { 'date-parts': [[2011, 11, 9]], 'date-time': '2011-11-09T14:42:05Z', timestamp: 1320849725000 },
+          page: '1-3',
+          'update-policy': 'http://dx.doi.org/10.5555/something',
+          source: 'Crossref',
+          'is-referenced-by-count': 3,
+          title: ['Toward a Unified Theory of High-Energy Metaphysics: Silly String Theory'],
+          prefix: '10.5555',
+          volume: '5',
+          'clinical-trial-number': [{ 'clinical-trial-number': 'isrctn12345', registry: '10.18810/isrctn' }],
+          author: [
+            {
+              ORCID: 'http://orcid.org/0000-0002-1825-0097',
+              'authenticated-orcid': false,
+              suffix: 'Jr.',
+              given: 'Josiah',
+              family: 'Carberry',
+              sequence: 'first',
+              affiliation: [{ name: 'Department of Psychoceramics, Brown University' }],
+            },
+          ],
+          member: '7822',
+          'container-title': ['Journal of Psychoceramics'],
+          'original-title': [],
+          language: 'en',
+          link: [
+            {
+              URL: 'http://psychoceramics.labs.crossref.org/10.5555-12345678.html',
+              'content-type': 'unspecified',
+              'content-version': 'vor',
+              'intended-application': 'similarity-checking',
+            },
+          ],
+          deposited: { 'date-parts': [[2023, 4, 20]], 'date-time': '2023-04-20T12:29:52Z', timestamp: 1681993792000 },
+          score: 1,
+          resource: {
+            primary: { URL: 'https://ojs33.crossref.publicknowledgeproject.org/index.php/test/article/view/2' },
+          },
+          subtitle: [],
+          'short-title': [],
+          issued: { 'date-parts': [[2008, 8, 13]] },
+          URL: 'http://dx.doi.org/10.1101/12345678',
+          ISSN: ['0264-3561'],
+          'issn-type': [{ value: '0264-3561', type: 'electronic' }],
+          published: { 'date-parts': [[2008, 8, 13]] },
+        },
+      },
+    })
+
+    fetch.get(
+      {
+        name: '10.1101/12345678 reviews',
+        url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+        query: { q: 'related.identifier:"10.1101/12345678"' },
+      },
+      { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
+    )
+
+    fetch.get('http://prereview.test/api/v2/preprints/doi-10.1101-12345678/rapid-reviews', {
+      body: { data: [] },
+    })
+
+    fetch.get('begin:https://res.cloudinary.com/prereview/search/', { body: { resources: [] } })
+
     await use(fetch)
+  },
+  isOpenForRequestsStore: async ({}, use) => {
+    await use(new Keyv())
+  },
+  isUserBlocked: async ({}, use) => {
+    await use(() => false)
+  },
+  languagesStore: async ({}, use) => {
+    await use(new Keyv())
+  },
+  locationStore: async ({}, use) => {
+    await use(new Keyv())
   },
   logger: async ({}, use, testInfo) => {
     const logs: Array<LogEntry> = []
@@ -663,43 +777,92 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await fs.writeFile(testInfo.outputPath('server.log'), logs.map(L.ShowLogEntry.show).join('\n'))
   },
+  oauthServer: async ({}, use) => {
+    const server = new OAuth2Server()
+    server.service.on('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
+      if (!url.searchParams.has('state')) {
+        url.searchParams.set('state', '')
+      }
+    })
+
+    await server.start()
+
+    await use(server)
+
+    await server.stop()
+  },
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
+  researchInterestsStore: async ({}, use) => {
+    await use(new Keyv())
+  },
   server: async (
-    { canSeeClubs, canEditProfile, canRapidReview, fetch, logger, port, updatesLegacyPrereview, careerStageStore },
+    {
+      canChangeContactEmailAddress,
+      fetch,
+      logger,
+      oauthServer,
+      port,
+      updatesLegacyPrereview,
+      careerStageStore,
+      isOpenForRequestsStore,
+      isUserBlocked,
+      languagesStore,
+      locationStore,
+      researchInterestsStore,
+      slackUserIdStore,
+      wasPrereviewRemoved,
+    },
     use,
   ) => {
     const server = app({
       allowSiteCrawlers: true,
-      canSeeClubs,
-      canEditProfile,
-      canRapidReview,
+      canChangeContactEmailAddress,
+      cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
       formStore: new Keyv(),
       careerStageStore,
+      contactEmailAddressStore: new Keyv(),
       ghostApi: {
         key: 'key',
       },
+      isOpenForRequestsStore,
+      isUserBlocked,
+      languagesStore,
       legacyPrereviewApi: {
         app: 'app',
         key: 'key',
         url: new URL('http://prereview.test'),
         update: updatesLegacyPrereview,
       },
+      locationStore,
       logger,
       oauth: {
-        authorizeUrl: new URL('https://oauth.mocklab.io/oauth/authorize'),
+        authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
         clientId: 'client-id',
         clientSecret: 'client-secret',
         redirectUri: new URL(`http://localhost:${port}/orcid`),
         tokenUrl: new URL('http://orcid.test/token'),
       },
       publicUrl: new URL(`http://localhost:${port}`),
+      researchInterestsStore,
+      scietyListToken: 'secret' as NonEmptyString,
       secret: '',
       sessionCookie: 'session',
       sessionStore: new Keyv(),
+      slackApiToken: '',
+      slackApiUpdate: true,
+      slackOauth: {
+        authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
+        clientId: 'client-id',
+        clientSecret: 'client-secret',
+        redirectUri: new URL(`http://localhost:${port}/connect-slack`),
+        tokenUrl: new URL('http://slack.test/token'),
+      },
+      slackUserIdStore,
+      wasPrereviewRemoved,
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
     })
@@ -710,8 +873,14 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     server.close()
   },
+  slackUserIdStore: async ({}, use) => {
+    await use(new Keyv())
+  },
   updatesLegacyPrereview: async ({}, use) => {
     await use(false)
+  },
+  wasPrereviewRemoved: async ({}, use) => {
+    await use(() => false)
   },
 }
 
@@ -745,12 +914,25 @@ export const canLogIn: Fixtures<
   },
 }
 
+export const userIsBlocked: Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'isUserBlocked'>> = {
+  isUserBlocked: async ({}, use) => {
+    await use(() => true)
+  },
+}
+
+export const prereviewWasRemoved: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'wasPrereviewRemoved'>
+> = {
+  wasPrereviewRemoved: async ({}, use) => {
+    await use(() => true)
+  },
+}
+
 export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, Pick<PlaywrightTestArgs, 'page'>> = {
   page: async ({ page }, use) => {
     await page.goto('/log-in')
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
-    await page.keyboard.press('Enter')
 
     await expect(page).toHaveTitle(/PREreview/)
 
@@ -758,33 +940,52 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
   },
 }
 
-export const canSeeClubs: Fixtures<
-  Pick<AppFixtures, 'canSeeClubs'>,
+export const canChangeContactEmailAddress: Fixtures<
   Record<never, never>,
-  Pick<AppFixtures, 'canSeeClubs'>
-> = {
-  canSeeClubs: async ({}, use) => {
-    await use(true)
-  },
-}
-
-export const canEditProfile: Fixtures<
-  Pick<AppFixtures, 'canEditProfile'>,
   Record<never, never>,
-  Pick<AppFixtures, 'canEditProfile'>
+  Pick<AppFixtures, 'canChangeContactEmailAddress'>
 > = {
-  canEditProfile: async ({}, use) => {
-    await use(true)
-  },
-}
-
-export const canRapidReview: Fixtures<
-  Pick<AppFixtures, 'canRapidReview'>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canRapidReview'>
-> = {
-  canRapidReview: async ({}, use) => {
+  canChangeContactEmailAddress: async ({}, use) => {
     await use(() => true)
+  },
+}
+
+export const isASlackUser: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'slackUserIdStore' | 'fetch'>
+> = {
+  fetch: async ({ fetch }, use) => {
+    fetch.post('http://slack.test/token', {
+      status: Status.OK,
+      body: {
+        authed_user: {
+          id: 'U0JM',
+          access_token: 'access-token',
+          token_type: 'user',
+          scope: 'users.profile:read,users.profile:write',
+        },
+      },
+    })
+
+    fetch.post('https://slack.com/api/users.profile.set', { status: Status.OK, body: { ok: true } })
+
+    fetch.post('https://slack.com/api/chat.postMessage', { status: Status.OK, body: { ok: true } })
+
+    fetch.get('https://slack.com/api/users.profile.get?user=U0JM', {
+      body: {
+        ok: true,
+        profile: {
+          real_name: 'jcarberry',
+          image_48: 'https://secure.gravatar.com/avatar/00000000000000000000000000000000?s=48&d=mp&f=y',
+        },
+      },
+    })
+
+    await use(fetch)
+  },
+  slackUserIdStore: async ({ slackUserIdStore }, use) => {
+    await use(slackUserIdStore)
   },
 }
 
@@ -800,10 +1001,9 @@ export const willPublishAReview: Fixtures<
       files: [
         {
           links: {
-            self: new URL('http://example.com/file'),
+            self: new URL('http://example.com/review.html/content'),
           },
           key: 'review.html',
-          type: 'html',
           size: 58,
         },
       ],
@@ -822,9 +1022,7 @@ export const willPublishAReview: Fixtures<
         ],
         description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
         doi: '10.5072/zenodo.1055806' as Doi,
-        license: {
-          id: 'CC-BY-4.0',
-        },
+        license: { id: 'cc-by-4.0' },
         publication_date: new Date('2022-07-05'),
         related_identifiers: [
           {

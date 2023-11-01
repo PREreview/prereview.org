@@ -1,5 +1,5 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { SystemClock } from 'clock-ts'
 import cookieSignature from 'cookie-signature'
 import fetchMock from 'fetch-mock'
@@ -15,16 +15,11 @@ import { homeMatch, writeReviewMatch } from '../src/routes'
 import { UserC } from '../src/user'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
+import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('logIn', () => {
   test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
+    fc.oauth(),
     fc
       .webUrl()
       .chain(referer => fc.tuple(fc.connection({ headers: fc.constant({ Referer: referer }) }), fc.constant(referer))),
@@ -53,16 +48,7 @@ describe('logIn', () => {
     )
   })
 
-  test.prop([
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
-    fc.connection(),
-  ])("when there isn't a Referer header", async (oauth, connection) => {
+  test.prop([fc.oauth(), fc.connection()])("when there isn't a Referer header", async (oauth, connection) => {
     const actual = await runMiddleware(_.logIn({ oauth }), connection)()
 
     expect(actual).toStrictEqual(
@@ -88,47 +74,39 @@ describe('logIn', () => {
   })
 })
 
-test.prop([
-  fc.record({
-    authorizeUrl: fc.url(),
-    clientId: fc.string(),
-    clientSecret: fc.string(),
-    redirectUri: fc.url(),
-    tokenUrl: fc.url(),
-  }),
-  fc.preprintId(),
-  fc.origin(),
-  fc.connection(),
-])('logInAndRedirect', async (oauth, preprintId, publicUrl, connection) => {
-  const actual = await runMiddleware(
-    _.logInAndRedirect(writeReviewMatch.formatter, { id: preprintId })({
-      oauth,
-      publicUrl,
-    }),
-    connection,
-  )()
+test.prop([fc.oauth(), fc.preprintId(), fc.origin(), fc.connection()])(
+  'logInAndRedirect',
+  async (oauth, preprintId, publicUrl, connection) => {
+    const actual = await runMiddleware(
+      _.logInAndRedirect(writeReviewMatch.formatter, { id: preprintId })({
+        oauth,
+        publicUrl,
+      }),
+      connection,
+    )()
 
-  expect(actual).toStrictEqual(
-    E.right([
-      { type: 'setStatus', status: Status.Found },
-      {
-        type: 'setHeader',
-        name: 'Location',
-        value: new URL(
-          `?${new URLSearchParams({
-            client_id: oauth.clientId,
-            response_type: 'code',
-            redirect_uri: oauth.redirectUri.href,
-            scope: '/authenticate',
-            state: new URL(format(writeReviewMatch.formatter, { id: preprintId }), publicUrl).toString(),
-          }).toString()}`,
-          oauth.authorizeUrl,
-        ).href,
-      },
-      { type: 'endResponse' },
-    ]),
-  )
-})
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.Found },
+        {
+          type: 'setHeader',
+          name: 'Location',
+          value: new URL(
+            `?${new URLSearchParams({
+              client_id: oauth.clientId,
+              response_type: 'code',
+              redirect_uri: oauth.redirectUri.href,
+              scope: '/authenticate',
+              state: new URL(format(writeReviewMatch.formatter, { id: preprintId }), publicUrl).toString(),
+            }).toString()}`,
+            oauth.authorizeUrl,
+          ).href,
+        },
+        { type: 'endResponse' },
+      ]),
+    )
+  },
+)
 
 describe('logOut', () => {
   test.prop([
@@ -182,13 +160,7 @@ describe('authenticate', () => {
   test.prop([
     fc.string(),
     fc.url().chain(url => fc.tuple(fc.constant(url))),
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
+    fc.oauth(),
     fc.record({
       access_token: fc.string(),
       token_type: fc.string(),
@@ -215,6 +187,7 @@ describe('authenticate', () => {
             body: accessToken,
           }),
           getPseudonym: () => TE.right(pseudonym),
+          isUserBlocked: () => false,
           logger: () => IO.of(undefined),
           oauth,
           publicUrl: new URL('/', referer),
@@ -248,13 +221,58 @@ describe('authenticate', () => {
   test.prop([
     fc.string(),
     fc.url().chain(url => fc.tuple(fc.constant(url))),
+    fc.oauth(),
     fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
+      access_token: fc.string(),
+      token_type: fc.string(),
+      name: fc.string(),
+      orcid: fc.orcid(),
     }),
+    fc.string(),
+    fc.cookieName(),
+    fc.connection(),
+  ])('when the user is blocked', async (code, [referer], oauth, accessToken, secret, sessionCookie, connection) => {
+    const sessionStore = new Keyv()
+    const isUserBlocked = jest.fn<_.IsUserBlockedEnv['isUserBlocked']>(_ => true)
+
+    const actual = await runMiddleware(
+      _.authenticate(
+        code,
+        referer.href,
+      )({
+        clock: SystemClock,
+        fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+          status: Status.OK,
+          body: accessToken,
+        }),
+        getPseudonym: shouldNotBeCalled,
+        isUserBlocked,
+        logger: () => IO.of(undefined),
+        oauth,
+        publicUrl: new URL('/', referer),
+        secret,
+        sessionCookie,
+        sessionStore,
+      }),
+      connection,
+    )()
+    const sessions = await all(sessionStore.iterator(undefined))
+
+    expect(sessions).toStrictEqual([])
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.Found },
+        { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, { message: 'blocked' }) },
+        { type: 'endResponse' },
+      ]),
+    )
+    expect(isUserBlocked).toHaveBeenCalledWith(accessToken.orcid)
+  })
+
+  test.prop([
+    fc.string(),
+    fc.url().chain(url => fc.tuple(fc.constant(url))),
+    fc.oauth(),
     fc.record({
       access_token: fc.string(),
       token_type: fc.string(),
@@ -281,6 +299,7 @@ describe('authenticate', () => {
           clock: SystemClock,
           fetch,
           getPseudonym: () => TE.left('unavailable'),
+          isUserBlocked: () => false,
           logger: () => IO.of(undefined),
           oauth,
           publicUrl: new URL('/', referer),
@@ -309,13 +328,7 @@ describe('authenticate', () => {
     fc.string(),
     fc.url(),
     fc.oneof(fc.webUrl(), fc.string()),
-    fc.record({
-      authorizeUrl: fc.url(),
-      clientId: fc.string(),
-      clientSecret: fc.string(),
-      redirectUri: fc.url(),
-      tokenUrl: fc.url(),
-    }),
+    fc.oauth(),
     fc.record({
       access_token: fc.string(),
       token_type: fc.string(),
@@ -342,6 +355,7 @@ describe('authenticate', () => {
             body: accessToken,
           }),
           getPseudonym: () => TE.right(pseudonym),
+          isUserBlocked: () => false,
           logger: () => IO.of(undefined),
           oauth,
           publicUrl,

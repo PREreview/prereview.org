@@ -1,6 +1,5 @@
 import { createTerminus } from '@godaddy/terminus'
 import KeyvRedis from '@keyv/redis'
-import cacache from 'cacache'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
 import * as C from 'fp-ts/Console'
@@ -12,6 +11,7 @@ import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
 import { app } from './app'
 import { decodeEnv } from './env'
+import type { User } from './user'
 
 const env = decodeEnv(process)()
 
@@ -36,12 +36,22 @@ if (env.ZENODO_URL.href.includes('sandbox')) {
   dns.setDefaultResultOrder('ipv4first')
 }
 
+const isPrereviewTeam = (user: User) =>
+  [
+    '0000-0001-8511-8689',
+    '0000-0002-1472-1824',
+    '0000-0002-3708-3546',
+    '0000-0002-6109-0367',
+    '0000-0002-6750-9341',
+    '0000-0003-4921-6155',
+    '0000-0002-5753-2556',
+  ].includes(user.orcid)
+
 const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
-  canSeeClubs: env.CAN_SEE_CLUBS,
-  canEditProfile: env.CAN_EDIT_PROFILE,
-  canRapidReview: user => env.CAN_RAPID_REVIEW.includes(user.orcid) === true,
+  cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
+  contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: keyvStore }),
   fathomId: env.FATHOM_SITE_ID,
   fetch: fetch.defaults({
     cachePath: 'data/cache',
@@ -50,16 +60,21 @@ const server = app({
     },
   }),
   formStore: new Keyv({ namespace: 'forms', store: keyvStore }),
+  canChangeContactEmailAddress: isPrereviewTeam,
   careerStageStore: new Keyv({ namespace: 'career-stage', store: keyvStore }),
   ghostApi: {
     key: env.GHOST_API_KEY,
   },
+  isOpenForRequestsStore: new Keyv({ namespace: 'is-open-for-requests', store: keyvStore }),
+  isUserBlocked: user => env.BLOCKED_USERS.includes(user),
   legacyPrereviewApi: {
     app: env.LEGACY_PREREVIEW_API_APP,
     key: env.LEGACY_PREREVIEW_API_KEY,
     url: env.LEGACY_PREREVIEW_URL,
     update: env.LEGACY_PREREVIEW_UPDATE,
   },
+  languagesStore: new Keyv({ namespace: 'languages', store: keyvStore }),
+  locationStore: new Keyv({ namespace: 'location', store: keyvStore }),
   oauth: {
     authorizeUrl: new URL('https://orcid.org/oauth/authorize'),
     clientId: env.ORCID_CLIENT_ID,
@@ -68,16 +83,29 @@ const server = app({
     tokenUrl: new URL('https://orcid.org/oauth/token'),
   },
   phase:
-    env.PHASE_TAG && env.PHASE_TEXT
+    typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT !== 'undefined'
       ? {
           tag: env.PHASE_TAG,
           text: env.PHASE_TEXT,
         }
       : undefined,
   publicUrl: env.PUBLIC_URL,
+  researchInterestsStore: new Keyv({ namespace: 'research-interests', store: keyvStore }),
+  scietyListToken: env.SCIETY_LIST_TOKEN,
   secret: env.SECRET,
   sessionCookie: 'session',
   sessionStore: new Keyv({ namespace: 'sessions', store: keyvStore, ttl: 1000 * 60 * 60 * 24 * 30 }),
+  slackOauth: {
+    authorizeUrl: new URL('https://slack.com/oauth/v2/authorize'),
+    clientId: env.SLACK_CLIENT_ID,
+    clientSecret: env.SLACK_CLIENT_SECRET,
+    redirectUri: new URL('/connect-slack', env.PUBLIC_URL),
+    tokenUrl: new URL('https://slack.com/api/oauth.v2.access'),
+  },
+  slackApiToken: env.SLACK_API_TOKEN,
+  slackApiUpdate: env.SLACK_UPDATE,
+  slackUserIdStore: new Keyv({ namespace: 'slack-user-id', store: keyvStore }),
+  wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,
 })
@@ -117,4 +145,4 @@ createTerminus(server, {
   signals: ['SIGINT', 'SIGTERM'],
 })
 
-void cacache.verify('data/cache').then(() => server.listen(3000))
+server.listen(3000)

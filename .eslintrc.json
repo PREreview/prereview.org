@@ -3,9 +3,8 @@
   "plugins": ["@typescript-eslint", "no-comments"],
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:@typescript-eslint/strict-type-checked",
+    "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:import/recommended",
     "plugin:import/typescript",
     "plugin:fp-ts/all",
@@ -41,8 +40,12 @@
     "project": "./tsconfig.json"
   },
   "rules": {
+    "@typescript-eslint/array-type": ["error", { "default": "generic" }],
     "@typescript-eslint/consistent-type-imports": ["error", { "fixStyle": "inline-type-imports" }],
+    "@typescript-eslint/no-confusing-void-expression": "off",
     "@typescript-eslint/no-import-type-side-effects": "error",
+    "@typescript-eslint/prefer-nullish-coalescing": ["error", { "ignoreConditionalTests": true }],
+    "@typescript-eslint/strict-boolean-expressions": "error",
     "fp-ts/no-module-imports": "off",
     "import/no-cycle": "error",
     "import/no-duplicates": ["error", { "prefer-inline": true }],
@@ -59,17 +62,20 @@
           "io-ts/*",
           "iso-639-3/to-*.json",
           "http-proxy-middleware/dist/types",
-          "hyper-ts/lib/*",
+          "hyper-ts/*",
           "logging-ts/lib/*",
           "nanohtml/*",
-          "remixicon/**/*.svg"
+          "remixicon/**/*.svg",
+          "tinyld/heavy",
+          "types/*"
         ]
       }
     ],
     "import/no-named-as-default": "off",
     "import/no-named-as-default-member": "off",
     "no-comments/disallowComments": ["error", { "allow": ["eslint", "https://", "Do", "Unfortunately", "Refs"] }],
-    "quotes": ["error", "single", { "avoidEscape": true }]
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "wc/no-child-traversal-in-connectedcallback": "off"
   },
   "settings": {
     "import/core-modules": ["@jest/globals"],

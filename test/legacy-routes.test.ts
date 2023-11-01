@@ -4,9 +4,8 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
-import { ExpressConnection } from 'hyper-ts/lib/express'
-import type { Mock } from 'jest-mock'
+import * as M from 'hyper-ts/Middleware'
+import { ExpressConnection } from 'hyper-ts/express'
 import { createRequest, createResponse } from 'node-mocks-http'
 import * as _ from '../src/legacy-routes'
 import { preprintReviewsMatch, profileMatch } from '../src/routes'
@@ -21,6 +20,9 @@ describe('legacyRoutes', () => {
     ['/blog', 'https://content.prereview.org/'],
     ['/blog?articles_format=grid', 'https://content.prereview.org/'],
     ['/coc', '/code-of-conduct'],
+    ['/communities', '/clubs'],
+    ['/communities?page=1', '/clubs'],
+    ['/communities?search=&page=2&limit=10&offset=0', '/clubs'],
     ['/docs/about', '/about'],
     ['/docs/codeofconduct', '/code-of-conduct'],
     ['/docs/code_of_conduct', '/code-of-conduct'],
@@ -30,13 +32,26 @@ describe('legacyRoutes', () => {
     ['/login', '/log-in'],
     ['/login?next=/10.1101/2020.03.24.004655', '/log-in'],
     ['/logout', '/log-out'],
-    ['/preprints/arxiv-2204.09673', '/preprints/doi-10.48550-arxiv.2204.09673'],
+    ['/preprint-journal-clubs', '/live-reviews'],
+    [
+      '/preprints/doi-10.1101-2022.02.14.480364/write-a-prereview/already-written',
+      '/preprints/doi-10.1101-2022.02.14.480364/write-a-prereview/review-type',
+    ],
+    [
+      '/preprints/doi-10.1590-a+b-c/write-a-prereview/already-written',
+      '/preprints/doi-10.1590-a%2Bb-c/write-a-prereview/review-type',
+    ],
+    [
+      '/preprints/philsci-22206/write-a-prereview/already-written',
+      '/preprints/philsci-22206/write-a-prereview/review-type',
+    ],
     ['/preprints/arxiv-1312.0906', '/preprints/doi-10.48550-arxiv.1312.0906'],
     ['/preprints/arXiv-2106.14108', '/preprints/doi-10.48550-arxiv.2106.14108'],
     ['/prereview.org', '/'],
     ['/PREreview.org', '/'],
     ['/reviews', '/reviews?page=1'],
     ['/reviews/new', '/review-a-preprint'],
+    ['/signup', '/log-in'],
     ['/users/61782', 'https://www.authorea.com/users/61782'],
     ['/users/161073', 'https://www.authorea.com/users/161073'],
     ['/users/173578?articles_format=list&direction=desc&sort=created_at', 'https://www.authorea.com/users/173578'],
@@ -89,9 +104,7 @@ describe('legacyRoutes', () => {
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.profileId(),
     ])('when the profile ID is found', async ([uuid, connection], user, profile) => {
-      const getProfileIdFromUuid: Mock<_.GetProfileIdFromUuidEnv['getProfileIdFromUuid']> = jest.fn(_ =>
-        TE.right(profile),
-      )
+      const getProfileIdFromUuid = jest.fn<_.GetProfileIdFromUuidEnv['getProfileIdFromUuid']>(_ => TE.right(profile))
 
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -169,9 +182,7 @@ describe('legacyRoutes', () => {
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.indeterminatePreprintId(),
     ])('when the ID is found', async ([uuid, connection], user, id) => {
-      const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
-        TE.right(id),
-      )
+      const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
 
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -256,9 +267,7 @@ describe('legacyRoutes', () => {
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.indeterminatePreprintId(),
     ])('when the ID is found', async ([uuid, connection], user, id) => {
-      const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
-        TE.right(id),
-      )
+      const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
 
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -340,9 +349,7 @@ describe('legacyRoutes', () => {
       fc.either(fc.constant('no-session' as const), fc.user()),
       fc.indeterminatePreprintId(),
     ])('when the ID is found', async ([uuid, connection], user, id) => {
-      const getPreprintIdFromUuid: Mock<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']> = jest.fn(_ =>
-        TE.right(id),
-      )
+      const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
 
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -416,9 +423,9 @@ describe('legacyRoutes', () => {
 
   test.each([
     ['/admin'],
+    ['/api'],
     ['/api/docs'],
-    ['/communities?page=1'],
-    ['/communities?search=&page=2&limit=10&offset=0'],
+    ['/api/openapi.json'],
     ['/communities/africarxiv'],
     ['/communities/africarxiv?page=2'],
     ['/communities/africarxiv?page=2&limit=10&offset=0&search='],
@@ -463,6 +470,7 @@ describe('legacyRoutes', () => {
     ['/dashboard/new'],
     ['/dashboard/new?page=2'],
     ['/dashboard/new?search=covid-19&page=2&limit=10&offset=0'],
+    ['/extension'],
   ])('removed page for %s', async path => {
     const actual = await runMiddleware(
       _.legacyRoutes({

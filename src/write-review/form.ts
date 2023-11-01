@@ -2,35 +2,36 @@ import { isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import type { JsonRecord } from 'fp-ts/Json'
-import * as R from 'fp-ts/Reader'
-import type { Reader } from 'fp-ts/Reader'
 import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
-import type { StatusOpen } from 'hyper-ts'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import { canRapidReview } from '../feature-flags'
 import { RawHtmlC } from '../html'
 import { seeOther } from '../middleware'
-import type { PreprintId } from '../preprint-id'
 import {
-  writeReviewAlreadyWrittenMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
+  writeReviewDataPresentationMatch,
+  writeReviewFindingsNextStepsMatch,
   writeReviewIntroductionMatchesMatch,
+  writeReviewLanguageEditingMatch,
+  writeReviewMethodsAppropriateMatch,
+  writeReviewNovelMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
+  writeReviewReadyFullReviewMatch,
+  writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
   writeReviewReviewTypeMatch,
+  writeReviewShouldReadMatch,
 } from '../routes'
-import { NonEmptyStringC } from '../string'
-import type { User } from '../user'
+import type { PreprintId } from '../types/preprint-id'
+import { NonEmptyStringC } from '../types/string'
 
 export type Form = C.TypeOf<typeof FormC>
 
@@ -96,57 +97,142 @@ export function deleteForm(
   )
 }
 
-export const nextFormMatch = (form: Form, user: User) =>
-  pipe(
-    canRapidReview(user),
-    R.map(canRapidReview =>
-      match({ ...form, canRapidReview })
-        .with(
-          { alreadyWritten: P.optional(undefined), review: P.optional(undefined) },
-          () => writeReviewAlreadyWrittenMatch,
-        )
-        .with(
-          { canRapidReview: true, alreadyWritten: 'no', reviewType: P.optional(undefined) },
-          () => writeReviewReviewTypeMatch,
-        )
-        .with(
-          { reviewType: 'questions', introductionMatches: P.optional(undefined) },
-          () => writeReviewIntroductionMatchesMatch,
-        )
-        .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
-        .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
-        .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
-        .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
-        .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
-        .otherwise(() => writeReviewPublishMatch),
-    ),
-  )
+export const nextFormMatch = (form: Form) =>
+  match(form)
+    .with(
+      { alreadyWritten: P.optional(undefined), reviewType: P.optional(undefined) },
+      () => writeReviewReviewTypeMatch,
+    )
+    .with(
+      { reviewType: 'questions', introductionMatches: P.optional(undefined) },
+      () => writeReviewIntroductionMatchesMatch,
+    )
+    .with(
+      { reviewType: 'questions', methodsAppropriate: P.optional(undefined) },
+      () => writeReviewMethodsAppropriateMatch,
+    )
+    .with({ reviewType: 'questions', resultsSupported: P.optional(undefined) }, () => writeReviewResultsSupportedMatch)
+    .with({ reviewType: 'questions', dataPresentation: P.optional(undefined) }, () => writeReviewDataPresentationMatch)
+    .with(
+      { reviewType: 'questions', findingsNextSteps: P.optional(undefined) },
+      () => writeReviewFindingsNextStepsMatch,
+    )
+    .with({ reviewType: 'questions', novel: P.optional(undefined) }, () => writeReviewNovelMatch)
+    .with({ reviewType: 'questions', languageEditing: P.optional(undefined) }, () => writeReviewLanguageEditingMatch)
+    .with({ reviewType: 'questions', shouldRead: P.optional(undefined) }, () => writeReviewShouldReadMatch)
+    .with({ reviewType: 'questions', readyFullReview: P.optional(undefined) }, () => writeReviewReadyFullReviewMatch)
+    .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
+    .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
+    .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
+    .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
+    .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
+    .otherwise(() => writeReviewPublishMatch)
 
 export const redirectToNextForm = (preprint: PreprintId) =>
-  flow(
-    fromReaderK(nextFormMatch),
-    RM.ichainMiddlewareK(flow(match => format(match.formatter, { id: preprint }), seeOther)),
-  )
+  flow(nextFormMatch, match => format(match.formatter, { id: preprint }), seeOther)
 
-const FormC = pipe(
+export const FormC = pipe(
   C.partial({
     alreadyWritten: C.literal('yes', 'no'),
     introductionMatches: C.literal('yes', 'partly', 'no', 'skip'),
+    introductionMatchesDetails: C.partial({ yes: NonEmptyStringC, partly: NonEmptyStringC, no: NonEmptyStringC }),
     review: RawHtmlC,
     reviewType: C.literal('questions', 'freeform'),
     persona: C.literal('public', 'pseudonym'),
+    methodsAppropriate: C.literal(
+      'inappropriate',
+      'somewhat-inappropriate',
+      'adequate',
+      'mostly-appropriate',
+      'highly-appropriate',
+      'skip',
+    ),
+    methodsAppropriateDetails: C.partial({
+      inappropriate: NonEmptyStringC,
+      'somewhat-inappropriate': NonEmptyStringC,
+      adequate: NonEmptyStringC,
+      'mostly-appropriate': NonEmptyStringC,
+      'highly-appropriate': NonEmptyStringC,
+    }),
+    resultsSupported: C.literal(
+      'not-supported',
+      'partially-supported',
+      'neutral',
+      'well-supported',
+      'strongly-supported',
+      'skip',
+    ),
+    resultsSupportedDetails: C.partial({
+      'not-supported': NonEmptyStringC,
+      'partially-supported': NonEmptyStringC,
+      neutral: NonEmptyStringC,
+      'well-supported': NonEmptyStringC,
+      'strongly-supported': NonEmptyStringC,
+    }),
+    dataPresentation: C.literal(
+      'inappropriate-unclear',
+      'somewhat-inappropriate-unclear',
+      'neutral',
+      'mostly-appropriate-clear',
+      'highly-appropriate-clear',
+      'skip',
+    ),
+    dataPresentationDetails: C.partial({
+      'inappropriate-unclear': NonEmptyStringC,
+      'somewhat-inappropriate-unclear': NonEmptyStringC,
+      neutral: NonEmptyStringC,
+      'mostly-appropriate-clear': NonEmptyStringC,
+      'highly-appropriate-clear': NonEmptyStringC,
+    }),
+    findingsNextSteps: C.literal(
+      'inadequately',
+      'insufficiently',
+      'adequately',
+      'clearly-insightfully',
+      'exceptionally',
+      'skip',
+    ),
+    findingsNextStepsDetails: C.partial({
+      inadequately: NonEmptyStringC,
+      insufficiently: NonEmptyStringC,
+      adequately: NonEmptyStringC,
+      'clearly-insightfully': NonEmptyStringC,
+      exceptionally: NonEmptyStringC,
+      skip: NonEmptyStringC,
+    }),
+    novel: C.literal('no', 'limited', 'some', 'substantial', 'highly', 'skip'),
+    novelDetails: C.partial({
+      no: NonEmptyStringC,
+      limited: NonEmptyStringC,
+      some: NonEmptyStringC,
+      substantial: NonEmptyStringC,
+      highly: NonEmptyStringC,
+    }),
+    languageEditing: C.literal('yes', 'no'),
+    languageEditingDetails: C.partial({
+      yes: NonEmptyStringC,
+      no: NonEmptyStringC,
+    }),
+    shouldRead: C.literal('no', 'yes-but', 'yes'),
+    shouldReadDetails: C.partial({
+      no: NonEmptyStringC,
+      'yes-but': NonEmptyStringC,
+      yes: NonEmptyStringC,
+    }),
+    readyFullReview: C.literal('no', 'yes-changes', 'yes'),
+    readyFullReviewDetails: C.partial({
+      no: NonEmptyStringC,
+      'yes-changes': NonEmptyStringC,
+      yes: NonEmptyStringC,
+    }),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     moreAuthorsApproved: C.literal('yes'),
     competingInterests: C.literal('yes', 'no'),
     competingInterestsDetails: NonEmptyStringC,
     conduct: C.literal('yes'),
   }),
-  C.imap(form => (form.review ? { reviewType: 'freeform' as const, ...form } : form), identity),
+  C.imap(
+    form => (form.review || form.alreadyWritten === 'yes' ? { reviewType: 'freeform' as const, ...form } : form),
+    identity,
+  ),
 )
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
-}

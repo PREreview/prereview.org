@@ -4,10 +4,10 @@ import type * as TE from 'fp-ts/TaskEither'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import type { Html } from './html'
-import type { IndeterminatePreprintId, PreprintId } from './preprint-id'
 import type { PartialDate } from './time'
+import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id'
 
-export type Preprint = {
+export interface Preprint {
   abstract?: {
     language: LanguageCode
     text: Html
@@ -25,10 +25,14 @@ export type Preprint = {
   url: URL
 }
 
-export type PreprintTitle = {
+export interface PreprintTitle {
   id: PreprintId
   language: LanguageCode
   title: Html
+}
+
+export interface DoesPreprintExistEnv {
+  doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'not-a-preprint' | 'unavailable', boolean>
 }
 
 export interface GetPreprintEnv {
@@ -38,6 +42,9 @@ export interface GetPreprintEnv {
 export interface GetPreprintTitleEnv {
   getPreprintTitle: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', PreprintTitle>
 }
+
+export const doesPreprintExist = (id: IndeterminatePreprintId) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ doesPreprintExist }: DoesPreprintExistEnv) => doesPreprintExist(id)))
 
 export const getPreprint = (id: IndeterminatePreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(id)))

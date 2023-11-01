@@ -1,41 +1,47 @@
-import type { Doi } from 'doi-ts'
+import { type Doi, isDoi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/Monoid'
 import * as O from 'fp-ts/Option'
-import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe, tuple } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
-import type { ResponseEnded, StatusOpen } from 'hyper-ts'
-import { Status } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
-import type * as M from 'hyper-ts/lib/Middleware'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
-import { match } from 'ts-pattern'
+import { match, P as p } from 'ts-pattern'
 import { type Uuid, isUuid } from 'uuid-ts'
 import { html, plainText, sendHtml } from './html'
 import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
-import type { ArxivPreprintId, IndeterminatePreprintId } from './preprint-id'
-import type { ProfileId } from './profile-id'
 import {
   aboutUsMatch,
+  clubsMatch,
   codeOfConductMatch,
   homeMatch,
+  liveReviewsMatch,
   logInMatch,
   logOutMatch,
   preprintReviewsMatch,
   profileMatch,
   reviewAPreprintMatch,
   reviewsMatch,
+  writeReviewReviewTypeMatch,
 } from './routes'
+import {
+  type ArxivPreprintId,
+  type IndeterminatePreprintId,
+  type PhilsciPreprintId,
+  PreprintDoiD,
+  fromPreprintDoi,
+} from './types/preprint-id'
+import type { ProfileId } from './types/profile-id'
 import { type GetUserEnv, type User, maybeGetUser } from './user'
 
-type LegacyEnv = FathomEnv & GetPreprintIdFromUuidEnv & GetProfileIdFromUuidEnv & GetUserEnv & PhaseEnv
+export type LegacyEnv = FathomEnv & GetPreprintIdFromUuidEnv & GetProfileIdFromUuidEnv & GetUserEnv & PhaseEnv
 
 export interface GetPreprintIdFromUuidEnv {
   getPreprintIdFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', IndeterminatePreprintId>
@@ -77,7 +83,7 @@ const ArxivPreprintIdC = C.make(
     D.parse(s => {
       const [, match] = s.match(/^arxiv-([A-z0-9.+-]+?)(?:v[0-9]+)?$/i) ?? []
 
-      if (match) {
+      if (typeof match === 'string') {
         return D.success({ type: 'arxiv', value: `10.48550/arxiv.${match}` as Doi<'48550'> } satisfies ArxivPreprintId)
       }
 
@@ -89,12 +95,58 @@ const ArxivPreprintIdC = C.make(
   },
 )
 
+const PreprintDoiC = C.make(
+  pipe(
+    D.string,
+    D.parse(s => {
+      const [, match] = s.match(/^doi-(.+)$/) ?? []
+
+      if (typeof match === 'string' && match.toLowerCase() === match) {
+        return pipe(PreprintDoiD, D.map(fromPreprintDoi)).decode(match.replaceAll('-', '/').replaceAll('+', '-'))
+      }
+
+      return D.failure(s, 'DOI')
+    }),
+  ),
+  {
+    encode: id => `doi-${id.value.toLowerCase().replaceAll('-', '+').replaceAll('/', '-')}`,
+  },
+)
+
+const PreprintPhilsciC = C.make(
+  pipe(
+    D.string,
+    D.parse(s => {
+      const [, match] = s.match(/^philsci-([1-9][0-9]*)$/) ?? []
+
+      if (typeof match === 'string') {
+        return D.success({ type: 'philsci', value: parseInt(match, 10) } satisfies PhilsciPreprintId)
+      }
+
+      return D.failure(s, 'ID')
+    }),
+  ),
+  {
+    encode: id => `philsci-${id.value}`,
+  },
+)
+
+// Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
+// Refs https://github.com/gcanti/io-ts/issues/625#issuecomment-1007478009
+const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
+  encode: id =>
+    match(id)
+      .with({ type: 'philsci' }, PreprintPhilsciC.encode)
+      .with({ value: p.when(isDoi) }, PreprintDoiC.encode)
+      .exhaustive(),
+})
+
 const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
   [
     pipe(
       pipe(P.lit('10.1101'), P.then(P.str('suffix')), P.then(P.end)).parser,
       P.map(
-        fromMiddlewareK(({ suffix }) =>
+        RM.fromMiddlewareK(({ suffix }) =>
           movedPermanently(
             format(preprintReviewsMatch.formatter, {
               id: {
@@ -109,7 +161,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('10.5281'), P.then(P.str('suffix')), P.then(P.end)).parser,
       P.map(
-        fromMiddlewareK(({ suffix }) =>
+        RM.fromMiddlewareK(({ suffix }) =>
           movedPermanently(
             format(preprintReviewsMatch.formatter, {
               id: {
@@ -130,21 +182,29 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
+      pipe(P.lit('api'), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
       pipe(P.lit('api'), P.then(P.lit('docs')), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
+      pipe(P.lit('api'), P.then(P.lit('openapi.json')), P.then(P.end)).parser,
+      P.map(() => showRemovedForNowMessage),
+    ),
+    pipe(
       pipe(P.lit('blog'), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently('https://content.prereview.org/'))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently('https://content.prereview.org/'))),
     ),
 
     pipe(
       pipe(P.lit('coc'), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('communities'), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(() => showRemovedForNowMessage),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(clubsMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('communities'), P.then(P.str('communityName')), P.then(query(C.partial({}))), P.then(P.end)).parser,
@@ -168,40 +228,62 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('docs'), P.then(P.lit('about')), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently(format(aboutUsMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(aboutUsMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('docs'), P.then(P.lit('codeofconduct')), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('docs'), P.then(P.lit('code_of_conduct')), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(codeOfConductMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('docs'), P.then(P.lit('resources')), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently('https://content.prereview.org/resources/'))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently('https://content.prereview.org/resources/'))),
     ),
     pipe(
       pipe(P.lit('events'), P.then(type('eventUuid', UuidC)), P.then(P.end)).parser,
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
+      pipe(P.lit('extension'), P.then(P.end)).parser,
+      P.map(() => showRemovedPermanentlyMessage),
+    ),
+    pipe(
       pipe(P.lit('inst'), P.then(P.str('instId')), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(({ instId }) => movedPermanently(`https://www.authorea.com/inst/${instId}`))),
+      P.map(RM.fromMiddlewareK(({ instId }) => movedPermanently(`https://www.authorea.com/inst/${instId}`))),
     ),
     pipe(
       pipe(P.lit('login'), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('logout'), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently(format(logOutMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(logOutMatch.formatter, {})))),
+    ),
+    pipe(
+      pipe(P.lit('preprint-journal-clubs'), P.then(P.end)).parser,
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(liveReviewsMatch.formatter, {})))),
+    ),
+    pipe(
+      pipe(
+        P.lit('preprints'),
+        P.then(type('preprintId', PreprintIdC)),
+        P.then(P.lit('write-a-prereview')),
+        P.then(P.lit('already-written')),
+        P.then(P.end),
+      ).parser,
+      P.map(
+        RM.fromMiddlewareK(({ preprintId }) =>
+          movedPermanently(format(writeReviewReviewTypeMatch.formatter, { id: preprintId })),
+        ),
+      ),
     ),
     pipe(
       pipe(P.lit('preprints'), P.then(type('preprintId', ArxivPreprintIdC)), P.then(P.end)).parser,
       P.map(
-        fromMiddlewareK(({ preprintId }) =>
+        RM.fromMiddlewareK(({ preprintId }) =>
           movedPermanently(format(preprintReviewsMatch.formatter, { id: preprintId })),
         ),
       ),
@@ -222,11 +304,11 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('prereview.org'), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('PREreview.org'), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(homeMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('prereviewers'), P.then(query(C.record(C.string))), P.then(P.end)).parser,
@@ -234,11 +316,11 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('reviews'), P.then(P.lit('new')), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently(format(reviewAPreprintMatch.formatter, {})))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(reviewAPreprintMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('reviews'), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(() => movedPermanently(format(reviewsMatch.formatter, { page: 1 })))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(reviewsMatch.formatter, { page: 1 })))),
     ),
     pipe(
       pipe(P.lit('settings'), P.then(P.lit('api')), P.then(P.end)).parser,
@@ -249,6 +331,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(() => showRemovedForNowMessage),
     ),
     pipe(
+      pipe(P.lit('signup'), P.then(P.end)).parser,
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(logInMatch.formatter, {})))),
+    ),
+    pipe(
       pipe(
         P.lit('users'),
         P.then(P.str('userId')),
@@ -257,14 +343,14 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
         P.then(P.end),
       ).parser,
       P.map(
-        fromMiddlewareK(({ userId, articleId }) =>
+        RM.fromMiddlewareK(({ userId, articleId }) =>
           movedPermanently(encodeURI(`https://www.authorea.com/users/${userId}/articles/${articleId}`)),
         ),
       ),
     ),
     pipe(
       pipe(P.lit('users'), P.then(P.str('userId')), P.then(query(C.partial({}))), P.then(P.end)).parser,
-      P.map(fromMiddlewareK(({ userId }) => movedPermanently(`https://www.authorea.com/users/${userId}`))),
+      P.map(RM.fromMiddlewareK(({ userId }) => movedPermanently(`https://www.authorea.com/users/${userId}`))),
     ),
     pipe(
       pipe(
@@ -276,7 +362,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
         P.then(P.end),
       ).parser,
       P.map(
-        fromMiddlewareK(({ userId, articleId }) =>
+        RM.fromMiddlewareK(({ userId, articleId }) =>
           movedPermanently(encodeURI(`https://www.authorea.com/users/${userId}/articles/${articleId}`)),
         ),
       ),
@@ -293,14 +379,14 @@ export const legacyRoutes = pipe(route(legacyRouter, constant(new NotFound())), 
 
 const showRemovedPermanentlyMessage = pipe(
   maybeGetUser,
-  chainReaderKW(removedPermanentlyMessage),
+  RM.chainReaderKW(removedPermanentlyMessage),
   RM.ichainFirst(() => RM.status(Status.Gone)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
 const showRemovedForNowMessage = pipe(
   maybeGetUser,
-  chainReaderKW(removedForNowMessage),
+  RM.chainReaderKW(removedForNowMessage),
   RM.ichainFirst(() => RM.status(Status.NotFound)),
   RM.ichainMiddlewareK(sendHtml),
 )
@@ -369,27 +455,6 @@ function removedForNowMessage(user?: User) {
   })
 }
 
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-function fromMiddlewareK<R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-  f: (...a: A) => M.Middleware<I, O, E, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, O, E, B> {
-  return (...a) => RM.fromMiddleware(f(...a))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function chainReaderKW<R2, A, B>(
-  f: (a: A) => Reader<R2, B>,
-): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
-  return RM.chainW(fromReaderK(f))
-}
-
 // https://github.com/gcanti/fp-ts-routing/pull/64
 function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
   return new P.Match(
@@ -403,7 +468,7 @@ function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.
 function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Match<{ [_ in K]: A }> {
   return new P.Match(
     new P.Parser(r => {
-      if (r.parts.length === 0) {
+      if (typeof r.parts[0] !== 'string') {
         return O.none
       } else {
         const head = r.parts[0]
@@ -416,4 +481,4 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-const singleton = <K extends string, V>(k: K, v: V): { [_ in K]: V } => ({ [k as any]: v } as any)
+const singleton = <K extends string, V>(k: K, v: V): { [_ in K]: V } => ({ [k as any]: v }) as any

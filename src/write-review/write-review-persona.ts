@@ -1,10 +1,8 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import type { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import type * as M from 'hyper-ts/lib/Middleware'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Status } from 'hyper-ts'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
@@ -14,9 +12,9 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
-  writeReviewIntroductionMatchesMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
+  writeReviewReadyFullReviewMatch,
   writeReviewReviewMatch,
 } from '../routes'
 import { type User, getUser } from '../user'
@@ -39,7 +37,7 @@ export const writeReviewPersona = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -55,7 +53,7 @@ export const writeReviewPersona = flow(
 )
 
 const showPersonaForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     personaForm(preprint, { persona: E.right(form.persona) }, form.reviewType, user),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
@@ -64,7 +62,7 @@ const showPersonaForm = flow(
 
 const showPersonaErrorForm = (preprint: PreprintTitle, user: User, originalForm: Form) =>
   flow(
-    fromReaderK((form: PersonaForm) => personaForm(preprint, form, originalForm.reviewType, user)),
+    RM.fromReaderK((form: PersonaForm) => personaForm(preprint, form, originalForm.reviewType, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -81,7 +79,7 @@ const handlePersonaForm = ({ form, preprint, user }: { form: Form; preprint: Pre
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -97,7 +95,7 @@ const PersonaFieldD = pipe(
   D.map(get('persona')),
 )
 
-type PersonaForm = {
+interface PersonaForm {
   readonly persona: E.Either<MissingE, 'public' | 'pseudonym' | undefined>
 }
 
@@ -115,8 +113,10 @@ function personaForm(
       <nav>
         <a
           href="${format(
-            (reviewType === 'questions' ? writeReviewIntroductionMatchesMatch : writeReviewReviewMatch).formatter,
-            { id: preprint.id },
+            (reviewType === 'questions' ? writeReviewReadyFullReviewMatch : writeReviewReviewMatch).formatter,
+            {
+              id: preprint.id,
+            },
           )}"
           class="back"
           >Back</a
@@ -236,19 +236,4 @@ function personaForm(
     type: 'streamline',
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

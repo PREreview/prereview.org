@@ -1,40 +1,27 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import type { Reader } from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import type * as M from 'hyper-ts/lib/Middleware'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Status } from 'hyper-ts'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { canRapidReview } from '../feature-flags'
 import { type MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
-import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import { writeReviewAlreadyWrittenMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
+import { type Preprint, type PreprintTitle, getPreprint } from '../preprint'
+import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
 import { type User, getUser } from '../user'
-import { type Form, createForm, getForm, saveForm, updateForm } from './form'
-import { redirectToNextForm } from './form'
+import { type Form, createForm, getForm, redirectToNextForm, saveForm, updateForm } from './form'
+import { ensureUserIsNotAnAuthor } from './user-is-author'
 
 export const writeReviewReviewType = flow(
-  RM.fromReaderTaskEitherK(getPreprintTitle),
+  RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
-      RM.right({ preprint }),
-      RM.apS('user', getUser),
-      RM.bindW(
-        'canRapidReview',
-        flow(
-          fromReaderK(({ user }) => canRapidReview(user)),
-          RM.filterOrElse(
-            canRapidReview => canRapidReview,
-            () => 'not-found' as const,
-          ),
-        ),
-      ),
+      RM.right({ preprint: { id: preprint.id, language: preprint.title.language, title: preprint.title.text } }),
+      RM.apS('user', pipe(getUser, RM.chainEitherKW(ensureUserIsNotAnAuthor(preprint)))),
       RM.bindW(
         'form',
         flow(
@@ -43,22 +30,13 @@ export const writeReviewReviewType = flow(
         ),
       ),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.ichainW(state =>
-        match(state)
-          .with({ method: 'POST', form: { alreadyWritten: 'no' } }, handleReviewTypeForm)
-          .with({ form: { alreadyWritten: 'no' } }, showReviewTypeForm)
-          .with(
-            { form: { alreadyWritten: P.optional('yes') } },
-            fromMiddlewareK(() => seeOther(format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id }))),
-          )
-          .exhaustive(),
-      ),
+      RM.ichainW(state => match(state).with({ method: 'POST' }, handleReviewTypeForm).otherwise(showReviewTypeForm)),
       RM.orElseW(error =>
         match(error)
-          .with('not-found', () => notFound)
+          .with({ type: 'is-author', user: P.select() }, user => showOwnPreprintPage(preprint, user))
           .with(
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with(P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -74,8 +52,12 @@ export const writeReviewReviewType = flow(
 )
 
 const showReviewTypeForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    reviewTypeForm(preprint, { reviewType: E.right(form.reviewType) }, user),
+  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+    reviewTypeForm(
+      preprint,
+      { reviewType: E.right(form.alreadyWritten === 'yes' ? 'already-written' : form.reviewType) },
+      user,
+    ),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
@@ -83,8 +65,15 @@ const showReviewTypeForm = flow(
 
 const showReviewTypeErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    fromReaderK((form: ReviewTypeForm) => reviewTypeForm(preprint, form, user)),
+    RM.fromReaderK((form: ReviewTypeForm) => reviewTypeForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
+    RM.ichainMiddlewareK(sendHtml),
+  )
+
+const showOwnPreprintPage = (preprint: Preprint, user: User) =>
+  pipe(
+    RM.rightReader(ownPreprintPage(preprint, user)),
+    RM.ichainFirst(() => RM.status(Status.Forbidden)),
     RM.ichainMiddlewareK(sendHtml),
   )
 
@@ -98,9 +87,20 @@ const handleReviewTypeForm = ({ form, preprint, user }: { form: Form; preprint: 
         E.mapLeft(() => fields),
       ),
     ),
-    RM.map(updateForm(form)),
+    RM.map(
+      flow(
+        fields =>
+          match(fields.reviewType)
+            .returnType<Form>()
+            .with('questions', reviewType => ({ alreadyWritten: 'no', reviewType }))
+            .with('freeform', reviewType => ({ alreadyWritten: 'no', reviewType }))
+            .with('already-written', () => ({ alreadyWritten: 'yes', reviewType: undefined }))
+            .exhaustive(),
+        updateForm(form),
+      ),
+    ),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -111,25 +111,25 @@ const handleReviewTypeForm = ({ form, preprint, user }: { form: Form; preprint: 
 
 const ReviewTypeFieldD = pipe(
   D.struct({
-    reviewType: D.literal('questions', 'freeform'),
+    reviewType: D.literal('questions', 'freeform', 'already-written'),
   }),
   D.map(get('reviewType')),
 )
 
-type ReviewTypeForm = {
-  readonly reviewType: E.Either<MissingE, 'questions' | 'freeform' | undefined>
+interface ReviewTypeForm {
+  readonly reviewType: E.Either<MissingE, 'questions' | 'freeform' | 'already-written' | undefined>
 }
 
 function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: User) {
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}How would you like to write your PREreview? – PREreview of “${
+    title: plainText`${error ? 'Error: ' : ''}How would you like to start your PREreview? – PREreview of “${
       preprint.title
     }”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAlreadyWrittenMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
       </nav>
 
       <main id="form">
@@ -144,7 +144,7 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                           <li>
                             <a href="#review-type-questions">
                               ${match(form.reviewType.left)
-                                .with({ _tag: 'MissingE' }, () => 'Select how you would like to write your PREreview')
+                                .with({ _tag: 'MissingE' }, () => 'Select how you would like to start your PREreview')
                                 .exhaustive()}
                             </a>
                           </li>
@@ -158,23 +158,18 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
           <div ${rawHtml(E.isLeft(form.reviewType) ? 'class="error"' : '')}>
             <fieldset
               role="group"
-              aria-describedby="review-type-tip"
               ${rawHtml(E.isLeft(form.reviewType) ? 'aria-invalid="true" aria-errormessage="review-type-error"' : '')}
             >
               <legend>
-                <h1>How would you like to write your PREreview?</h1>
+                <h1>How would you like to start your PREreview?</h1>
               </legend>
-
-              <p id="review-type-tip" role="note">
-                We can ask you questions about the preprint, or you can write your own.
-              </p>
 
               ${E.isLeft(form.reviewType)
                 ? html`
                     <div class="error-message" id="review-type-error">
                       <span class="visually-hidden">Error:</span>
                       ${match(form.reviewType.left)
-                        .with({ _tag: 'MissingE' }, () => 'Select how you would like to write your PREreview')
+                        .with({ _tag: 'MissingE' }, () => 'Select how you would like to start your PREreview')
                         .exhaustive()}
                     </div>
                   `
@@ -188,12 +183,16 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                       id="review-type-questions"
                       type="radio"
                       value="questions"
+                      aria-describedby="review-type-tip-questions"
                       ${match(form.reviewType)
                         .with({ right: 'questions' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>Answer questions</span>
+                    <span>With prompts</span>
                   </label>
+                  <p id="review-type-tip-questions" role="note">
+                    We’ll ask questions about the preprint to create a structured review.
+                  </p>
                 </li>
                 <li>
                   <label>
@@ -201,11 +200,29 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
                       name="reviewType"
                       type="radio"
                       value="freeform"
+                      aria-describedby="review-type-tip-freeform"
                       ${match(form.reviewType)
                         .with({ right: 'freeform' }, () => 'checked')
                         .otherwise(() => '')}
                     />
-                    <span>Write a freeform review</span>
+                    <span>With a template</span>
+                  </label>
+                  <p id="review-type-tip-freeform" role="note">
+                    We’ll offer a basic template, but you can review it your way.
+                  </p>
+                </li>
+                <li>
+                  <span>or</span>
+                  <label>
+                    <input
+                      name="reviewType"
+                      type="radio"
+                      value="already-written"
+                      ${match(form.reviewType)
+                        .with({ right: 'already-written' }, () => 'checked')
+                        .otherwise(() => '')}
+                    />
+                    <span>I’ve already written the review</span>
                   </label>
                 </li>
               </ol>
@@ -223,17 +240,21 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm, user: Use
   })
 }
 
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))
+function ownPreprintPage(preprint: Preprint, user: User) {
+  return page({
+    title: plainText`Sorry, you can’t review your own preprint`,
+    content: html`
+      <nav>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+      </nav>
 
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
+      <main id="main-content">
+        <h1>Sorry, you can’t review your own preprint</h1>
+
+        <p>If you’re not an author, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
+  })
 }

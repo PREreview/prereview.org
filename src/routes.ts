@@ -7,9 +7,10 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
-import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './preprint-id'
-import type { OrcidProfileId, PseudonymProfileId } from './profile-id'
-import { PseudonymC } from './pseudonym'
+import { ClubIdC } from './types/club-id'
+import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './types/preprint-id'
+import type { OrcidProfileId, PseudonymProfileId } from './types/profile-id'
+import { PseudonymC } from './types/pseudonym'
 
 const IntegerFromStringC = C.make(
   pipe(
@@ -29,7 +30,7 @@ const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 const OrcidProfileIdC = pipe(
   OrcidC,
   C.imap(
-    orcid => ({ type: 'orcid', value: orcid } satisfies OrcidProfileId),
+    orcid => ({ type: 'orcid', value: orcid }) satisfies OrcidProfileId,
     profile => profile.value,
   ),
 )
@@ -44,14 +45,12 @@ const SlugC = C.make(
   },
 )
 
-const ClubC = C.literal('asapbio-metabolism')
-
 const PseudonymSlugC = pipe(SlugC, C.imap(capitalCase, identity), C.compose(PseudonymC))
 
 const PseudonymProfileIdC = pipe(
   PseudonymSlugC,
   C.imap(
-    pseudonym => ({ type: 'pseudonym', value: pseudonym } satisfies PseudonymProfileId),
+    pseudonym => ({ type: 'pseudonym', value: pseudonym }) satisfies PseudonymProfileId,
     profile => profile.value,
   ),
 )
@@ -72,7 +71,7 @@ const PreprintDoiC = C.make(
     D.parse(s => {
       const [, match] = s.match(/^doi-(.+)$/) ?? []
 
-      if (match && match.toLowerCase() === match) {
+      if (typeof match === 'string' && match.toLowerCase() === match) {
         return pipe(PreprintDoiD, D.map(fromPreprintDoi)).decode(match.replaceAll('-', '/').replaceAll('+', '-'))
       }
 
@@ -90,7 +89,7 @@ const PreprintPhilsciC = C.make(
     D.parse(s => {
       const [, match] = s.match(/^philsci-([1-9][0-9]*)$/) ?? []
 
-      if (match) {
+      if (typeof match === 'string') {
         return D.success({ type: 'philsci', value: parseInt(match, 10) } satisfies PhilsciPreprintId)
       }
 
@@ -112,19 +111,28 @@ const PreprintIdC = C.make(D.union(PreprintDoiC, PreprintPhilsciC), {
       .exhaustive(),
 })
 
-export const homeMatch = pipe(query(C.partial({ message: C.literal('logged-out', 'logged-in') })), P.then(P.end))
+export const homeMatch = pipe(
+  query(C.partial({ message: C.literal('logged-out', 'logged-in', 'blocked') })),
+  P.then(P.end),
+)
 
 export const aboutUsMatch = pipe(P.lit('about'), P.then(P.end))
 
+export const peopleMatch = pipe(P.lit('people'), P.then(P.end))
+
+export const howToUseMatch = pipe(P.lit('how-to-use'), P.then(P.end))
+
 export const codeOfConductMatch = pipe(P.lit('code-of-conduct'), P.then(P.end))
 
-export const communitiesMatch = pipe(P.lit('communities'), P.then(P.end))
+export const ediStatementMatch = pipe(P.lit('edi-statement'), P.then(P.end))
+
+export const clubsMatch = pipe(P.lit('clubs'), P.then(P.end))
 
 export const fundingMatch = pipe(P.lit('funding'), P.then(P.end))
 
 export const partnersMatch = pipe(P.lit('partners'), P.then(P.end))
 
-export const preprintJournalClubsMatch = pipe(P.lit('preprint-journal-clubs'), P.then(P.end))
+export const liveReviewsMatch = pipe(P.lit('live-reviews'), P.then(P.end))
 
 export const privacyPolicyMatch = pipe(P.lit('privacy-policy'), P.then(P.end))
 
@@ -148,11 +156,81 @@ export const orcidErrorMatch = pipe(
   P.then(P.end),
 )
 
+export const connectSlackMatch = pipe(P.lit('connect-slack'), P.then(P.end))
+
+export const connectSlackStartMatch = pipe(P.lit('connect-slack'), P.then(P.lit('start-now')), P.then(P.end))
+
+export const connectSlackCodeMatch = pipe(
+  P.lit('connect-slack'),
+  P.then(query(C.struct({ code: C.string, state: C.string }))),
+  P.then(P.end),
+)
+
+export const connectSlackErrorMatch = pipe(
+  P.lit('connect-slack'),
+  P.then(query(C.struct({ error: C.string }))),
+  P.then(P.end),
+)
+
+export const disconnectSlackMatch = pipe(P.lit('disconnect-slack'), P.then(P.end))
+
 export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
 
 export const changeCareerStageMatch = pipe(P.lit('my-details'), P.then(P.lit('change-career-stage')), P.then(P.end))
 
-export const clubMatch = pipe(P.lit('clubs'), P.then(type('id', ClubC)), P.then(P.end))
+export const changeCareerStageVisibilityMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-career-stage-visibility')),
+  P.then(P.end),
+)
+
+export const changeOpenForRequestsMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-open-for-requests')),
+  P.then(P.end),
+)
+
+export const changeOpenForRequestsVisibilityMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-open-for-requests-visibility')),
+  P.then(P.end),
+)
+
+export const changeResearchInterestsMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-research-interests')),
+  P.then(P.end),
+)
+
+export const changeResearchInterestsVisibilityMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-research-interests-visibility')),
+  P.then(P.end),
+)
+
+export const changeLocationMatch = pipe(P.lit('my-details'), P.then(P.lit('change-location')), P.then(P.end))
+
+export const changeLocationVisibilityMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-location-visibility')),
+  P.then(P.end),
+)
+
+export const changeLanguagesMatch = pipe(P.lit('my-details'), P.then(P.lit('change-languages')), P.then(P.end))
+
+export const changeLanguagesVisibilityMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-languages-visibility')),
+  P.then(P.end),
+)
+
+export const changeContactEmailAddressMatch = pipe(
+  P.lit('my-details'),
+  P.then(P.lit('change-email-address')),
+  P.then(P.end),
+)
+
+export const clubProfileMatch = pipe(P.lit('clubs'), P.then(type('id', ClubIdC)), P.then(P.end))
 
 export const profileMatch = pipe(P.lit('profiles'), P.then(type('profile', ProfileIdC)), P.then(P.end))
 
@@ -174,12 +252,6 @@ export const writeReviewMatch = pipe(writeReviewBaseMatch, P.then(P.end))
 
 export const writeReviewStartMatch = pipe(writeReviewBaseMatch, P.then(P.lit('start-now')), P.then(P.end))
 
-export const writeReviewAlreadyWrittenMatch = pipe(
-  writeReviewBaseMatch,
-  P.then(P.lit('already-written')),
-  P.then(P.end),
-)
-
 export const writeReviewReviewTypeMatch = pipe(writeReviewBaseMatch, P.then(P.lit('review-type')), P.then(P.end))
 
 export const writeReviewReviewMatch = pipe(writeReviewBaseMatch, P.then(P.lit('write-your-prereview')), P.then(P.end))
@@ -187,6 +259,46 @@ export const writeReviewReviewMatch = pipe(writeReviewBaseMatch, P.then(P.lit('w
 export const writeReviewIntroductionMatchesMatch = pipe(
   writeReviewBaseMatch,
   P.then(P.lit('introduction-matches')),
+  P.then(P.end),
+)
+
+export const writeReviewMethodsAppropriateMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('methods-appropriate')),
+  P.then(P.end),
+)
+
+export const writeReviewResultsSupportedMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('results-supported')),
+  P.then(P.end),
+)
+
+export const writeReviewDataPresentationMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('data-presentation')),
+  P.then(P.end),
+)
+
+export const writeReviewFindingsNextStepsMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('findings-next-steps')),
+  P.then(P.end),
+)
+
+export const writeReviewNovelMatch = pipe(writeReviewBaseMatch, P.then(P.lit('novel')), P.then(P.end))
+
+export const writeReviewLanguageEditingMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('language-editing')),
+  P.then(P.end),
+)
+
+export const writeReviewShouldReadMatch = pipe(writeReviewBaseMatch, P.then(P.lit('should-read')), P.then(P.end))
+
+export const writeReviewReadyFullReviewMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('ready-full-review')),
   P.then(P.end),
 )
 
@@ -208,6 +320,8 @@ export const writeReviewPublishMatch = pipe(writeReviewBaseMatch, P.then(P.lit('
 
 export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit('prereview-published')), P.then(P.end))
 
+export const scietyListMatch = pipe(P.lit('sciety-list'), P.then(P.end))
+
 // https://github.com/gcanti/fp-ts-routing/pull/64
 function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {
   return new P.Match(
@@ -221,7 +335,7 @@ function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.
 function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Match<{ [_ in K]: A }> {
   return new P.Match(
     new P.Parser(r => {
-      if (r.parts.length === 0) {
+      if (typeof r.parts[0] !== 'string') {
         return O.none
       } else {
         const head = r.parts[0]
@@ -234,4 +348,4 @@ function type<K extends string, A>(k: K, type: C.Codec<string, string, A>): P.Ma
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
-const singleton = <K extends string, V>(k: K, v: V): { [_ in K]: V } => ({ [k as any]: v } as any)
+const singleton = <K extends string, V>(k: K, v: V): { [_ in K]: V } => ({ [k as any]: v }) as any

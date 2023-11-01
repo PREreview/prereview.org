@@ -1,34 +1,31 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
-import type { Reader } from 'fp-ts/Reader'
-import * as R from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as T from 'fp-ts/Task'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Status } from 'hyper-ts'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { canSeeClubs } from './feature-flags'
+import { getClubName } from './club-details'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { addCanonicalLinkHeader, seeOther } from './middleware'
 import { templatePage } from './page'
-import type { PreprintId } from './preprint-id'
 import { aboutUsMatch, homeMatch, reviewAPreprintMatch, reviewMatch, reviewsMatch } from './routes'
 import { renderDate } from './time'
-import type { User } from './user'
-import { maybeGetUser } from './user'
+import type { ClubId } from './types/club-id'
+import type { PreprintId } from './types/preprint-id'
+import { type User, maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
-export type RecentPrereview = {
+export interface RecentPrereview {
   readonly id: number
-  readonly club?: 'asapbio-metabolism'
+  readonly club?: ClubId
   readonly reviewers: RNEA.ReadonlyNonEmptyArray<string>
   readonly published: PlainDate
   readonly preprint: {
@@ -48,22 +45,22 @@ const getRecentPrereviews = () =>
     RT.chainTaskK(({ getRecentPrereviews }) => getRecentPrereviews()),
   )
 
-export const home = (message?: 'logged-out' | 'logged-in') =>
+export const home = (message?: 'logged-out' | 'logged-in' | 'blocked') =>
   pipe(
     maybeGetUser,
     RM.filterOrElse(
       user =>
         match([user, message])
           .with([P.not(undefined), P.union(undefined, 'logged-in')], () => true)
-          .with([undefined, P.union(undefined, 'logged-out')], () => true)
+          .with([undefined, P.union(undefined, 'logged-out', 'blocked')], () => true)
           .with([undefined, P.union('logged-in')], () => false)
-          .with([P.not(undefined), P.union('logged-out')], () => false)
+          .with([P.not(undefined), P.union('logged-out', 'blocked')], () => false)
           .exhaustive(),
       () => 'redirect' as const,
     ),
     RM.bindTo('user'),
-    RM.apSW('recentPrereviews', fromReaderTask(getRecentPrereviews())),
-    chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user, message)),
+    RM.apSW('recentPrereviews', RM.fromReaderTask(getRecentPrereviews())),
+    RM.chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user, message)),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainFirstW(() => addCanonicalLinkHeader(homeMatch.formatter, {})),
     RM.ichainMiddlewareKW(sendHtml),
@@ -73,219 +70,209 @@ export const home = (message?: 'logged-out' | 'logged-in') =>
 function createPage(
   recentPrereviews: ReadonlyArray<RecentPrereview>,
   user?: User,
-  message?: 'logged-out' | 'logged-in',
+  message?: 'logged-out' | 'logged-in' | 'blocked',
 ) {
-  return pipe(
-    canSeeClubs,
-    R.chainW(canSeeClubs =>
-      templatePage({
-        title: plainText`PREreview`,
-        content: html`
-          <main id="main-content">
-            ${match(message)
-              .with(
-                'logged-out',
-                () => html`
-                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
-                    <h2 id="notification-banner-title">Success</h2>
+  return templatePage({
+    title: plainText`PREreview: Open preprint reviews. For all researchers.`,
+    content: html`
+      <main id="main-content">
+        ${match(message)
+          .with(
+            'logged-out',
+            () => html`
+              <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                <h2 id="notification-banner-title">Success</h2>
 
-                    <p>You have been logged out.</p>
-                  </notification-banner>
-                `,
-              )
-              .with(
-                'logged-in',
-                () => html`
-                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
-                    <h2 id="notification-banner-title">Success</h2>
+                <p>You have been logged out.</p>
+              </notification-banner>
+            `,
+          )
+          .with(
+            'logged-in',
+            () => html`
+              <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                <h2 id="notification-banner-title">Success</h2>
 
-                    <p>You have been logged in.</p>
-                  </notification-banner>
-                `,
-              )
-              .with(undefined, () => '')
-              .exhaustive()}
+                <p>You have been logged in.</p>
+              </notification-banner>
+            `,
+          )
+          .with(
+            'blocked',
+            () => html`
+              <notification-banner aria-labelledby="notification-banner-title" type="failure" role="alert">
+                <h2 id="notification-banner-title">Access denied</h2>
 
-            <div class="hero">
-              <h1>Open preprint reviews.<br />For&nbsp;<em>all</em> researchers.</h1>
-              <p>
-                Provide and receive constructive feedback on preprints from an international community of your peers.
-              </p>
+                <p>You are not allowed to log in.</p>
+              </notification-banner>
+            `,
+          )
+          .with(undefined, () => '')
+          .exhaustive()}
 
-              <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
+        <div class="hero">
+          <h1>Open preprint reviews.<br />For&nbsp;<em>all</em> researchers.</h1>
+          <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
 
-              <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
-            </div>
+          <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
 
-            <div class="overview">
-              <section aria-labelledby="for-underserved-researchers-title">
-                <h2 id="for-underserved-researchers-title">For underserved researchers</h2>
+          <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
+        </div>
 
-                <p>
-                  We support and empower diverse and historically excluded communities of researchers (particularly
-                  those at early stages of their career) to find a voice, train, and engage in peer review.
-                </p>
+        <div class="overview">
+          <section aria-labelledby="for-underserved-researchers-title">
+            <h2 id="for-underserved-researchers-title">For underserved researchers</h2>
+
+            <p>
+              We support and empower diverse and historically excluded communities of researchers (particularly those at
+              early stages of their career) to find a voice, train, and engage in peer review.
+            </p>
+          </section>
+
+          <div></div>
+
+          <section aria-labelledby="a-better-way-title">
+            <h2 id="a-better-way-title">A better way</h2>
+
+            <p>Making science and scholarship more equitable, transparent, and collaborative.</p>
+
+            <a href="${format(aboutUsMatch.formatter, {})}" class="forward">Our mission</a>
+          </section>
+        </div>
+
+        <section aria-labelledby="statistics-title">
+          <h2 id="statistics-title">Statistics</h2>
+
+          <ul class="statistics">
+            <li>
+              <data value="742">742</data>
+              PREreviews
+            </li>
+            <li>
+              <data value="20">20</data>
+              preprint servers
+            </li>
+            <li>
+              <data value="2423">2,423</data>
+              PREreviewers
+            </li>
+          </ul>
+        </section>
+
+        ${pipe(
+          recentPrereviews,
+          RA.matchW(
+            () => '',
+            prereviews => html`
+              <section aria-labelledby="recent-prereviews-title">
+                <h2 id="recent-prereviews-title">Recent PREreviews</h2>
+
+                <ol class="cards" aria-labelledby="recent-prereviews-title" tabindex="0">
+                  ${prereviews.map(
+                    prereview => html`
+                      <li>
+                        <article>
+                          <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
+                            ${formatList('en')(prereview.reviewers)}
+                            ${prereview.club ? html`of the <b>${getClubName(prereview.club)}</b>` : ''} reviewed
+                            <cite dir="${getLangDir(prereview.preprint.language)}" lang="${prereview.preprint.language}"
+                              >${prereview.preprint.title}</cite
+                            >
+                          </a>
+
+                          <dl>
+                            <dt>Review published</dt>
+                            <dd>${renderDate(prereview.published)}</dd>
+                            <dt>Preprint server</dt>
+                            <dd>
+                              ${match(prereview.preprint.id.type)
+                                .with('africarxiv', () => 'AfricArXiv Preprints')
+                                .with('arxiv', () => 'arXiv')
+                                .with('authorea', () => 'Authorea')
+                                .with('biorxiv', () => 'bioRxiv')
+                                .with('chemrxiv', () => 'ChemRxiv')
+                                .with('eartharxiv', () => 'EarthArXiv')
+                                .with('ecoevorxiv', () => 'EcoEvoRxiv')
+                                .with('edarxiv', () => 'EdArXiv')
+                                .with('engrxiv', () => 'engrXiv')
+                                .with('medrxiv', () => 'medRxiv')
+                                .with('metaarxiv', () => 'MetaArXiv')
+                                .with('osf', () => 'OSF Preprints')
+                                .with('philsci', () => 'PhilSci-Archive')
+                                .with('preprints.org', () => 'Preprints.org')
+                                .with('psyarxiv', () => 'PsyArXiv')
+                                .with('research-square', () => 'Research Square')
+                                .with('scielo', () => 'SciELO Preprints')
+                                .with('science-open', () => 'ScienceOpen Preprints')
+                                .with('socarxiv', () => 'SocArXiv')
+                                .with('zenodo', () => 'Zenodo')
+                                .exhaustive()}
+                            </dd>
+                          </dl>
+                        </article>
+                      </li>
+                    `,
+                  )}
+                </ol>
+
+                <nav>
+                  <a href="${format(reviewsMatch.formatter, { page: 1 })}" class="forward">See all reviews</a>
+                </nav>
               </section>
+            `,
+          ),
+        )}
 
-              <div></div>
+        <section aria-labelledby="funders-title">
+          <h2 id="funders-title">Funders</h2>
 
-              <section aria-labelledby="a-better-way-title">
-                <h2 id="a-better-way-title">A better way</h2>
-
-                <p>Making science and scholarship more equitable, transparent, and collaborative.</p>
-
-                <a href="${format(aboutUsMatch.formatter, {})}" class="forward">Our mission</a>
-              </section>
-            </div>
-
-            <section aria-labelledby="statistics-title">
-              <h2 id="statistics-title">Statistics</h2>
-
-              <ul class="statistics">
-                <li>
-                  <data value="717">717</data>
-                  PREreviews
-                </li>
-                <li>
-                  <data value="19">19</data>
-                  preprint servers
-                </li>
-                <li>
-                  <data value="2161">2,161</data>
-                  PREreviewers
-                </li>
-              </ul>
-            </section>
-
-            ${pipe(
-              recentPrereviews,
-              RA.matchW(
-                () => '',
-                prereviews => html`
-                  <section aria-labelledby="recent-prereviews-title">
-                    <h2 id="recent-prereviews-title">Recent PREreviews</h2>
-
-                    <ol class="cards" aria-labelledby="recent-prereviews-title" tabindex="0">
-                      ${prereviews.map(
-                        prereview => html`
-                          <li>
-                            <article>
-                              <a href="${format(reviewMatch.formatter, { id: prereview.id })}">
-                                ${formatList('en')(prereview.reviewers)}
-                                ${canSeeClubs && prereview.club
-                                  ? html`of the
-                                    ${match(prereview.club)
-                                      .with('asapbio-metabolism', () => 'ASAPbio Metabolism Crowd')
-                                      .exhaustive()}`
-                                  : ''}
-                                reviewed
-                                <cite
-                                  dir="${getLangDir(prereview.preprint.language)}"
-                                  lang="${prereview.preprint.language}"
-                                  >${prereview.preprint.title}</cite
-                                >
-                              </a>
-
-                              <dl>
-                                <dt>Review published</dt>
-                                <dd>${renderDate(prereview.published)}</dd>
-                                <dt>Preprint server</dt>
-                                <dd>
-                                  ${match(prereview.preprint.id.type)
-                                    .with('africarxiv', () => 'AfricArXiv Preprints')
-                                    .with('arxiv', () => 'arXiv')
-                                    .with('biorxiv', () => 'bioRxiv')
-                                    .with('chemrxiv', () => 'ChemRxiv')
-                                    .with('eartharxiv', () => 'EarthArXiv')
-                                    .with('ecoevorxiv', () => 'EcoEvoRxiv')
-                                    .with('edarxiv', () => 'EdArXiv')
-                                    .with('engrxiv', () => 'engrXiv')
-                                    .with('medrxiv', () => 'medRxiv')
-                                    .with('metaarxiv', () => 'MetaArXiv')
-                                    .with('osf', () => 'OSF Preprints')
-                                    .with('philsci', () => 'PhilSci-Archive')
-                                    .with('preprints.org', () => 'Preprints.org')
-                                    .with('psyarxiv', () => 'PsyArXiv')
-                                    .with('research-square', () => 'Research Square')
-                                    .with('scielo', () => 'SciELO Preprints')
-                                    .with('science-open', () => 'ScienceOpen Preprints')
-                                    .with('socarxiv', () => 'SocArXiv')
-                                    .with('zenodo', () => 'Zenodo')
-                                    .exhaustive()}
-                                </dd>
-                              </dl>
-                            </article>
-                          </li>
-                        `,
-                      )}
-                    </ol>
-
-                    <nav>
-                      <a href="${format(reviewsMatch.formatter, { page: 1 })}" class="forward">See all reviews</a>
-                    </nav>
-                  </section>
-                `,
-              ),
-            )}
-
-            <section aria-labelledby="funders-title">
-              <h2 id="funders-title">Funders</h2>
-
-              <ol class="logos">
-                <li>
-                  <a href="https://sloan.org/grant-detail/8729">
-                    <img
-                      src="${assets['sloan.svg']}"
-                      width="350"
-                      height="190"
-                      loading="lazy"
-                      alt="Alfred P. Sloan Foundation"
-                    />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://chanzuckerberg.com/">
-                    <img
-                      src="${assets['czi.svg']}"
-                      width="192"
-                      height="192"
-                      loading="lazy"
-                      alt="Chan Zuckerberg Initiative"
-                    />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://elifesciences.org/">
-                    <img src="${assets['elife.svg']}" width="129" height="44" loading="lazy" alt="eLife" />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://wellcome.org/grant-funding/schemes/open-research-fund">
-                    <img src="${assets['wellcome.svg']}" width="181" height="181" loading="lazy" alt="Wellcome Trust" />
-                  </a>
-                </li>
-                <li>
-                  <a href="https://foundation.mozilla.org/">
-                    <img
-                      src="${assets['mozilla.svg']}"
-                      width="280"
-                      height="80"
-                      loading="lazy"
-                      alt="Mozilla Foundation"
-                    />
-                  </a>
-                </li>
-              </ol>
-            </section>
-          </main>
-        `,
-        current: 'home',
-        js: message ? ['notification-banner.js'] : [],
-        skipLinks: [[html`Skip to main content`, '#main-content']],
-        user,
-      }),
-    ),
-  )
+          <ol class="logos">
+            <li>
+              <a href="https://sloan.org/grant-detail/8729">
+                <img
+                  src="${assets['sloan.svg']}"
+                  width="350"
+                  height="190"
+                  loading="lazy"
+                  alt="Alfred P. Sloan Foundation"
+                />
+              </a>
+            </li>
+            <li>
+              <a href="https://chanzuckerberg.com/">
+                <img
+                  src="${assets['czi.svg']}"
+                  width="192"
+                  height="192"
+                  loading="lazy"
+                  alt="Chan Zuckerberg Initiative"
+                />
+              </a>
+            </li>
+            <li>
+              <a href="https://elifesciences.org/">
+                <img src="${assets['elife.svg']}" width="129" height="44" loading="lazy" alt="eLife" />
+              </a>
+            </li>
+            <li>
+              <a href="https://wellcome.org/grant-funding/schemes/open-research-fund">
+                <img src="${assets['wellcome.svg']}" width="181" height="181" loading="lazy" alt="Wellcome Trust" />
+              </a>
+            </li>
+            <li>
+              <a href="https://foundation.mozilla.org/">
+                <img src="${assets['mozilla.svg']}" width="280" height="80" loading="lazy" alt="Mozilla Foundation" />
+              </a>
+            </li>
+          </ol>
+        </section>
+      </main>
+    `,
+    current: 'home',
+    js: message ? ['notification-banner.js'] : [],
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
+  })
 }
 
 function formatList(
@@ -298,23 +285,4 @@ function formatList(
     list => formatter.format(list),
     rawHtml,
   )
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function chainReaderKW<R2, A, B>(
-  f: (a: A) => Reader<R2, B>,
-): <R1, I, E>(ma: RM.ReaderMiddleware<R1, I, I, E, A>) => RM.ReaderMiddleware<R1 & R2, I, I, E, B> {
-  return RM.chainW(fromReaderK(f))
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/87
-function fromReaderTask<R, I = StatusOpen, A = never>(fa: RT.ReaderTask<R, A>): RM.ReaderMiddleware<R, I, I, never, A> {
-  return r => M.fromTask(fa(r))
 }

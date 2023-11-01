@@ -1,7 +1,7 @@
 import { Status } from 'hyper-ts'
-import { URL } from 'url'
-import { RecordsC } from 'zenodo-ts'
-import { areLoggedIn, canLogIn, canRapidReview, expect, test, updatesLegacyPrereview, willPublishAReview } from './base'
+import type { MutableRedirectUri } from 'oauth2-mock-server'
+import { RecordsC } from '../src/zenodo-ts'
+import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview, willPublishAReview } from './base'
 
 test.extend(canLogIn).extend(willPublishAReview)(
   'can publish a PREreview',
@@ -21,11 +21,7 @@ test.extend(canLogIn).extend(willPublishAReview)(
 
     await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
-    await page.keyboard.press('Enter')
-
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -87,15 +83,17 @@ test.extend(canLogIn).extend(willPublishAReview)(
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
-
-    await expect(preview).toContainText('Josiah Carberry')
+    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
     if (javaScriptEnabled) {
-      await expect(preview).toContainText('Lorem ipsum dolor sit “amet”, consectetur adipiscing elit.')
+      await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+        'Lorem ipsum dolor sit “amet”, consectetur adipiscing elit.',
+      )
     } else {
-      await expect(preview).toContainText('Lorem ipsum dolor sit "amet", consectetur adipiscing elit.')
+      await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+        'Lorem ipsum dolor sit "amet", consectetur adipiscing elit.',
+      )
     }
-    await expect(preview).toContainText('The author declares that they have no competing interests.')
+    await expect(page.getByRole('main')).toContainText('Competing interests None')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -108,69 +106,140 @@ test.extend(canLogIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(canRapidReview).extend(canLogIn).extend(willPublishAReview)(
-  'can publish a question-based PREreview',
-  async ({ page }) => {
-    await page.goto('/')
-    await page.getByRole('link', { name: 'Review a preprint' }).click()
-    await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await expect(page.getByRole('main')).toContainText('We will ask you to log in')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
-    await page.keyboard.press('Enter')
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
+test.extend(canLogIn).extend(willPublishAReview)('can publish a question-based PREreview', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Review a preprint' }).click()
+  await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(page.getByRole('main')).toContainText('We will ask you to log in')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.getByLabel('Answer questions').check()
+  await page.getByLabel('With prompts').check()
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByLabel('How does the introduction only partly explain the objective?')
+    .fill('Consectetur adipiscing elit.')
 
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Partly').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
+  await page.getByLabel('Why are they neither appropriate nor inappropriate?').fill('Sed egestas tincidunt lacus.')
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
+  await page.getByLabel('Why are they neither supported nor unsupported?').fill('At blandit est facilisis et.')
 
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No, I reviewed it alone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I’m following the Code of Conduct').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
 
-    await expect(preview).toContainText('Josiah Carberry')
-    await expect(preview).toContainText(
-      'Does the introduction explain the objective and match the rest of the preprint? Partly',
-    )
-    await expect(preview).toContainText('The author declares that they have no competing interests.')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+  await page
+    .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
+    .fill('Lorem ipsum dolor sit amet.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
+  await page.getByLabel('How is it neither clear nor unclear?').fill('Cras lobortis quam vitae.')
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
-  },
-)
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Moderately likely', { exact: true }).check()
+  await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
+
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
+
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Yes, but it needs to be improved').check()
+  await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
+
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Yes, after minor changes').check()
+  await page.getByLabel('What needs tweaking?').fill('Quisque in blandit arcu.')
+
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, I reviewed it alone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('region', { name: 'Your review' }).scrollIntoViewIfNeeded()
+
+  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+    'Does the introduction explain the objective of the research presented in the preprint? Partly Consectetur adipiscing elit.',
+  )
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+    'Are the methods well-suited for this research? Neither appropriate nor inappropriate Sed egestas tincidunt lacus.',
+  )
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+    'Are the conclusions supported by the data? Neither supported nor unsupported At blandit est facilisis et.',
+  )
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+    'Are the data presentations, including visualizations, well-suited to represent the data? Neither appropriate and clear nor inappropriate and unclear Lorem ipsum dolor sit amet.',
+  )
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+    'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research? Neither clearly nor unclearly Cras lobortis quam vitae.',
+  )
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+    'Is the preprint likely to advance academic knowledge? Moderately likely Aenean nisl eros.',
+  )
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+    'Would it benefit from language editing? No Condimentum in mi in.',
+  )
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+    'Would you recommend this preprint to others? Yes, but it needs to be improved Dignissim lobortis ligula.',
+  )
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+    'Is it ready for attention from an editor, publisher or broader audience? Yes, after minor changes Quisque in blandit arcu.',
+  )
+  await expect(page.getByRole('main')).toContainText('Competing interests None')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.getByRole('button', { name: 'Publish PREreview' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+  await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+})
 
 test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ fetch, page }) => {
   fetch.get(
     {
-      url: 'http://zenodo.test/api/records/',
-      query: { communities: 'prereview-reviews', q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+      url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+      query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
     },
     { body: RecordsC.encode({ hits: { total: 0, hits: [] } }) },
   )
@@ -183,11 +252,7 @@ test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ 
 
   await page.getByRole('button', { name: 'Start now' }).click()
 
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-  await page.keyboard.press('Enter')
-
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Have you already written your PREreview?')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you like to start your PREreview?')
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
@@ -195,7 +260,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -249,7 +314,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
@@ -364,14 +429,146 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'can skip to the forms when answering questions',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
+
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+    await page.waitForLoadState()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+    await page.waitForLoadState()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+    await page.waitForLoadState()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+    await page.waitForLoadState()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+    await page.waitForLoadState()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+    await page.waitForLoadState()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Moderately likely', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.waitForLoadState()
+    await page.keyboard.press('Tab')
+
+    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.keyboard.press('Enter')
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('main')).toBeFocused()
+    }
+    await expect(page).toHaveScreenshot()
+
     await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
 
@@ -380,19 +577,14 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Enter')
-    await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Answer questions').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
-
+    await page.getByLabel('Yes, but it needs to be improved').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
 
@@ -401,14 +593,13 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     await expect(page).toHaveScreenshot()
 
     await page.keyboard.press('Enter')
-    await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
     await expect(page).toHaveScreenshot()
 
-    await page.getByLabel('Partly').check()
+    await page.getByLabel('Yes, after minor changes').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
   },
 )
@@ -418,7 +609,7 @@ test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn).extend(
   async ({ fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
@@ -457,7 +648,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ browserName, context, contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Yes').check()
+    await page.getByLabel('I’ve already written the review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
 
@@ -512,7 +703,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ browserName, contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
 
@@ -709,7 +900,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -731,7 +922,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
 
@@ -750,7 +941,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -764,7 +955,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
 
@@ -781,7 +972,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   async ({ contextOptions, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -804,10 +995,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
-
-    await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-    await expect(preview).toContainText('Maecenas sed dapibus massa.')
+    await expect(page.getByRole('main')).toContainText('Competing interests Maecenas sed dapibus massa.')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -823,7 +1011,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -837,10 +1025,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    const preview = page.getByRole('blockquote', { name: 'Check your PREreview' })
-
-    await expect(preview).toContainText('Orange Panda')
-    await expect(preview).toContainText('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
@@ -852,7 +1037,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
 test.extend(canLogIn).extend(areLoggedIn)('can change the review after previewing', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('No').check()
+  await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
   await page.waitForLoadState()
   await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -866,7 +1051,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change the review after previewin
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   )
 
@@ -878,7 +1063,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change the review after previewin
     .fill('Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText(
+  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
     'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
   )
 })
@@ -886,7 +1071,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can change the review after previewin
 test.extend(canLogIn).extend(areLoggedIn)('can change the name after previewing', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('No').check()
+  await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
   await page.waitForLoadState()
   await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -900,20 +1085,221 @@ test.extend(canLogIn).extend(areLoggedIn)('can change the name after previewing'
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Josiah Carberry')
+  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
   await page.getByRole('link', { name: 'Change name' }).click()
 
   await page.getByLabel('Orange Panda').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('blockquote', { name: 'Check your PREreview' })).toContainText('Orange Panda')
+  await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
 })
+
+test.extend(canLogIn).extend(areLoggedIn)('can change the competing interests after previewing', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('With a template').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.waitForLoadState()
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, I reviewed it alone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Competing interests None')
+
+  await page.getByRole('link', { name: 'Change competing interests' }).click()
+
+  await page.getByLabel('Yes').check()
+  await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Competing interests Maecenas sed dapibus massa.')
+})
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'can change your answers when answering questions after previewing',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Moderately likely', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, but it needs to be improved').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, after minor changes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    const review = page.getByRole('region', { name: 'Your review' })
+
+    await expect(review).toContainText(
+      'Does the introduction explain the objective of the research presented in the preprint? Partly',
+    )
+    await expect(review).toContainText(
+      'Are the methods well-suited for this research? Neither appropriate nor inappropriate',
+    )
+    await expect(review).toContainText('Are the conclusions supported by the data? Neither supported nor unsupported')
+    await expect(review).toContainText(
+      'Are the data presentations, including visualizations, well-suited to represent the data? Neither appropriate and clear nor inappropriate and unclear',
+    )
+    await expect(review).toContainText(
+      'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research? Neither clearly nor unclearly',
+    )
+    await expect(review).toContainText('Is the preprint likely to advance academic knowledge? Moderately likely')
+    await expect(review).toContainText('Would it benefit from language editing? No')
+    await expect(review).toContainText('Would you recommend this preprint to others? Yes, but it needs to be improved')
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Is it ready for attention from an editor, publisher or broader audience? Yes, after minor changes',
+    )
+
+    await page
+      .getByRole('link', {
+        name: 'Change if the introduction explains the objective of the research presented in the preprint',
+      })
+      .click()
+
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText(
+      'Does the introduction explain the objective of the research presented in the preprint? I don’t know',
+    )
+
+    await page
+      .getByRole('link', {
+        name: 'Change if the introduction explains the objective of the research presented in the preprint',
+      })
+      .click()
+
+    await page.getByLabel('No', { exact: true }).check()
+    await page.getByLabel('How does the introduction not explain the objective?').fill('Consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText(
+      'Does the introduction explain the objective of the research presented in the preprint? No Consectetur adipiscing elit.',
+    )
+
+    await page
+      .getByRole('link', {
+        name: 'Change if the methods are well-suited for this research',
+      })
+      .click()
+
+    await page.getByLabel('Somewhat appropriate', { exact: true }).check()
+    await page.getByLabel('Why are they somewhat appropriate?').fill('Sed egestas tincidunt lacus.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText(
+      'Are the methods well-suited for this research? Somewhat appropriate Sed egestas tincidunt lacus.',
+    )
+
+    await page.getByRole('link', { name: 'Change if the conclusions are supported by the data' }).click()
+
+    await page.getByLabel('Somewhat supported', { exact: true }).check()
+    await page.getByLabel('Why are they somewhat supported?').fill('At blandit est facilisis et.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText(
+      'Are the conclusions supported by the data? Somewhat supported At blandit est facilisis et.',
+    )
+
+    await page
+      .getByRole('link', { name: 'Change if the data presentations are well-suited to represent the data?' })
+      .click()
+
+    await page.getByLabel('Somewhat appropriate and clear', { exact: true }).check()
+    await page.getByLabel('Why are they somewhat appropriate and clear?').fill('Lorem ipsum dolor sit amet.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText(
+      'Are the data presentations, including visualizations, well-suited to represent the data? Somewhat appropriate and clear Lorem ipsum dolor sit amet.',
+    )
+
+    await page
+      .getByRole('link', { name: 'Change how clearly the authors discuss their findings and next steps' })
+      .click()
+
+    await page.getByLabel('Somewhat clearly').check()
+    await page.getByLabel('How is it somewhat clear?').fill('Cras lobortis quam vitae.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText(
+      'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research? Somewhat clearly Cras lobortis quam vitae.',
+    )
+
+    await page.getByRole('link', { name: 'Change if the preprint is likely to advance academic knowledge' }).click()
+
+    await page.getByLabel('Somewhat likely', { exact: true }).check()
+    await page.getByLabel('Why is it somewhat likely?').fill('Aenean nisl eros.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText(
+      'Is the preprint likely to advance academic knowledge? Somewhat likely Aenean nisl eros.',
+    )
+
+    await page.getByRole('link', { name: 'Change if it would benefit from language editing' }).click()
+
+    await page.getByLabel('Yes').check()
+    await page.getByLabel('Why would it?').fill('Condimentum in mi in.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText('Would it benefit from language editing? Yes Condimentum in mi in.')
+
+    await page.getByRole('link', { name: 'Change if you would recommend this preprint to others' }).click()
+
+    await page.getByLabel('Yes, it’s of high quality').check()
+    await page.getByLabel('How is it of high quality?').fill('Dignissim lobortis ligula.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText(
+      'Would you recommend this preprint to others? Yes, it’s of high quality Dignissim lobortis ligula.',
+    )
+
+    await page
+      .getByRole('link', { name: 'Change it it is ready for attention from an editor, publisher or broader audience' })
+      .click()
+
+    await page.getByLabel('Yes, as it is').check()
+    await page.getByLabel('Why is it ready?').fill('Quisque in blandit arcu.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(review).toContainText(
+      'Is it ready for attention from an editor, publisher or broader audience? Yes, as it is Quisque in blandit arcu.',
+    )
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('No').check()
+  await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
   await page.waitForLoadState()
   await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -959,46 +1345,121 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async 
 
   await page.goBack()
 
-  await expect(page.getByLabel('No')).toBeChecked()
+  await expect(page.getByLabel('With a template')).toBeChecked()
 
   await page.goBack()
 
   await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
 })
 
-test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
-  'can go back through the form when answering questions',
-  async ({ page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('Answer questions').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('Partly').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.waitForLoadState()
+test.extend(canLogIn).extend(areLoggedIn)('can go back through the form when answering questions', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('With prompts').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByLabel('Partly', { exact: true }).check()
+  await page
+    .getByLabel('How does the introduction only partly explain the objective?')
+    .fill('Consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
+  await page.getByLabel('Why are they neither appropriate nor inappropriate?').fill('Sed egestas tincidunt lacus.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
+  await page.getByLabel('Why are they neither supported nor unsupported?').fill('At blandit est facilisis et.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
+  await page
+    .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
+    .fill('Lorem ipsum dolor sit amet.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
+  await page.getByLabel('How is it neither clear nor unclear?').fill('Cras lobortis quam vitae.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Moderately likely', { exact: true }).check()
+  await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Yes, but it needs to be improved').click()
+  await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Yes, after minor changes').click()
+  await page.getByLabel('What needs tweaking?').fill('Quisque in blandit arcu.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.waitForLoadState()
 
-    await page.goBack()
+  await page.goBack()
 
-    await expect(page.getByLabel('Partly')).toBeChecked()
+  await expect(page.getByLabel('Yes, after minor changes')).toBeChecked()
+  await expect(page.getByLabel('What needs tweaking?')).toHaveText('Quisque in blandit arcu.')
 
-    await page.goBack()
+  await page.goBack()
 
-    await expect(page.getByLabel('Answer questions')).toBeChecked()
+  await expect(page.getByLabel('Yes, but it needs to be improved')).toBeChecked()
+  await expect(page.getByLabel('What needs to be improved?')).toHaveText('Dignissim lobortis ligula.')
 
-    await page.goBack()
+  await page.goBack()
 
-    await expect(page.getByLabel('No')).toBeChecked()
-  },
-)
+  await expect(page.getByLabel('No')).toBeChecked()
+  await expect(page.getByLabel('Why wouldn’t it?')).toHaveText('Condimentum in mi in.')
+
+  await page.goBack()
+
+  await expect(page.getByLabel('Moderately likely', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('Why is it moderately likely?')).toHaveText('Aenean nisl eros.')
+
+  await page.goBack()
+
+  await expect(page.getByLabel('Neither clearly nor unclearly', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('How is it neither clear nor unclear?')).toHaveText('Cras lobortis quam vitae.')
+
+  await page.goBack()
+
+  await expect(
+    page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }),
+  ).toBeChecked()
+  await expect(page.getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')).toHaveText(
+    'Lorem ipsum dolor sit amet.',
+  )
+
+  await page.goBack()
+
+  await expect(page.getByLabel('Neither supported nor unsupported', { exact: true })).toBeChecked()
+  await page.getByLabel('Why are they neither supported nor unsupported?').fill('At blandit est facilisis et.')
+
+  await page.goBack()
+
+  await expect(page.getByLabel('Neither appropriate nor inappropriate', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('Why are they neither appropriate nor inappropriate?')).toHaveText(
+    'Sed egestas tincidunt lacus.',
+  )
+
+  await page.goBack()
+
+  await expect(page.getByLabel('Partly', { exact: true })).toBeChecked()
+  await expect(page.getByLabel('How does the introduction only partly explain the objective?')).toHaveText(
+    'Consectetur adipiscing elit.',
+  )
+
+  await page.goBack()
+
+  await expect(page.getByLabel('With prompts')).toBeChecked()
+})
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'see existing values when going back a step',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('I’ve already written the review').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('I’ve already written the review')).toBeChecked()
+
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1044,46 +1505,107 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('No')).toBeChecked()
-
-    await page.getByLabel('Yes').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await expect(page.getByLabel('Paste your PREreview')).toHaveText(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      )
-    } else {
-      await expect(page.getByLabel('Paste your PREreview')).toHaveValue(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      )
-    }
+    await expect(page.getByLabel('With a template')).toBeChecked()
   },
 )
 
-test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'see existing values when answering questions and going back a step',
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByLabel('How does the introduction only partly explain the objective?')
+      .fill('Consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
+    await page.getByLabel('Why are they neither appropriate nor inappropriate?').fill('Sed egestas tincidunt lacus.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
+    await page.getByLabel('Why are they neither supported nor unsupported?').fill('At blandit est facilisis et.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
+    await page
+      .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
+      .fill('Lorem ipsum dolor sit amet.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
+    await page.getByLabel('How is it neither clear nor unclear?').fill('Cras lobortis quam vitae.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Moderately likely', { exact: true }).check()
+    await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('Answer questions').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('Partly').check()
+    await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, but it needs to be improved').check()
+    await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, after minor changes').check()
+    await page.getByLabel('What needs tweaking?').fill('Quisque in blandit arcu.')
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Partly')).toBeChecked()
+    await expect(page.getByLabel('Yes, after minor changes')).toBeChecked()
+    await expect(page.getByLabel('What needs tweaking?')).toHaveText('Quisque in blandit arcu.')
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await expect(page.getByLabel('Answer questions')).toBeChecked()
+    await expect(page.getByLabel('Yes, but it needs to be improved')).toBeChecked()
+    await expect(page.getByLabel('What needs to be improved?')).toHaveText('Dignissim lobortis ligula.')
 
     await page.getByRole('link', { name: 'Back' }).click()
 
     await expect(page.getByLabel('No')).toBeChecked()
+    await expect(page.getByLabel('Why wouldn’t it?')).toHaveText('Condimentum in mi in.')
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Moderately likely', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('Why is it moderately likely?')).toHaveText('Aenean nisl eros.')
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Neither clearly nor unclearly', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('How is it neither clear nor unclear?')).toHaveText('Cras lobortis quam vitae.')
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(
+      page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }),
+    ).toBeChecked()
+    await expect(
+      page.getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?'),
+    ).toHaveText('Lorem ipsum dolor sit amet.')
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Neither supported nor unsupported', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('Why are they neither supported nor unsupported?')).toHaveText(
+      'At blandit est facilisis et.',
+    )
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Neither appropriate nor inappropriate', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('Why are they neither appropriate nor inappropriate?')).toHaveText(
+      'Sed egestas tincidunt lacus.',
+    )
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Partly', { exact: true })).toBeChecked()
+    await expect(page.getByLabel('How does the introduction only partly explain the objective?')).toHaveText(
+      'Consectetur adipiscing elit.',
+    )
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('With prompts')).toBeChecked()
   },
 )
 
@@ -1111,7 +1633,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByRole('button', { name: 'Start now' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Have you already written your PREreview?')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you like to start your PREreview?')
   },
 )
 
@@ -1120,7 +1642,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.goto('/')
@@ -1155,17 +1677,13 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.goto('/log-out')
     await page.getByRole('link', { name: 'Review a preprint' }).click()
     await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
-
-    await page.locator('[type=email]').fill('test@example.com')
-    await page.locator('[type=password]').fill('password')
-    await page.keyboard.press('Enter')
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
     await page.mouse.move(0, 0)
@@ -1376,15 +1894,13 @@ test('when is URL is not supported', async ({ javaScriptEnabled, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScriptEnabled, page }) => {
+test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScriptEnabled, oauthServer, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  oauthServer.service.once('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
+    url.searchParams.delete('code')
+    url.searchParams.set('error', 'access_denied')
+  })
   await page.getByRole('button', { name: 'Start now' }).click()
-
-  const [redirectUri, state] = await Promise.all([
-    page.locator('[name=redirectUri]').inputValue(),
-    page.locator('[name=state]').inputValue(),
-  ])
-  await page.goto(`${new URL(redirectUri).pathname}?error=access_denied&state=${state}`)
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t log you in')
   await page.mouse.move(0, 0)
@@ -1405,13 +1921,8 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
 
 test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-
   fetch.postOnce('http://orcid.test/token', { status: Status.ServiceUnavailable })
-  await page.keyboard.press('Enter')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await page.mouse.move(0, 0)
@@ -1432,11 +1943,6 @@ test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page
 
 test('might not authenticate with ORCID in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-
   fetch.postOnce(
     'http://orcid.test/token',
     new Promise(() =>
@@ -1454,7 +1960,7 @@ test('might not authenticate with ORCID in time', async ({ fetch, javaScriptEnab
       ),
     ),
   )
-  await page.keyboard.press('Enter')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await page.mouse.move(0, 0)
@@ -1478,7 +1984,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ fetch, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
@@ -1516,11 +2022,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-
-  await page.locator('[type=email]').fill('test@example.com')
-  await page.locator('[type=password]').fill('password')
-
   fetch.get(
     {
       url: 'http://prereview.test/api/v2/users/0000-0002-1825-0097',
@@ -1536,7 +2037,7 @@ test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, jav
     ),
     { overwriteRoutes: true },
   )
-  await page.keyboard.press('Enter')
+  await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await page.mouse.move(0, 0)
@@ -1556,40 +2057,10 @@ test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, jav
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
-  'have to say if you have already written your PREreview',
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-
-    await page.getByRole('button', { name: 'Continue' }).click()
-
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByRole('group', { name: 'Have you already written your PREreview?' })).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    )
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.getByRole('link', { name: 'Select yes if you have already written your PREreview' }).click()
-
-    await expect(page.getByLabel('No')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-  },
-)
-
-test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   'have to say what type of review you want to do',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
@@ -1598,16 +2069,16 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     } else {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
-    await expect(page.getByRole('group', { name: 'How would you like to write your PREreview?' })).toHaveAttribute(
+    await expect(page.getByRole('group', { name: 'How would you like to start your PREreview?' })).toHaveAttribute(
       'aria-invalid',
       'true',
     )
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Select how you would like to write your PREreview' }).click()
+    await page.getByRole('link', { name: 'Select how you would like to start your PREreview' }).click()
 
-    await expect(page.getByLabel('Answer questions')).toBeFocused()
+    await expect(page.getByLabel('With prompts')).toBeFocused()
 
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
@@ -1619,7 +2090,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').clear()
@@ -1650,7 +2121,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1680,7 +2151,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Yes').check()
+    await page.getByLabel('I’ve already written the review').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1704,17 +2175,13 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
-  'have to say if the introduction matches the rest of the preprint',
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the introduction explains the objective',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('Answer questions').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/introduction-matches')
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -1725,7 +2192,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
     }
     await expect(
       page.getByRole('group', {
-        name: 'Does the introduction explain the objective and match the rest of the preprint?',
+        name: 'Does the introduction explain the objective of the research presented in the preprint?',
       }),
     ).toHaveAttribute('aria-invalid', 'true')
     await page.mouse.move(0, 0)
@@ -1733,7 +2200,7 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
 
     await page
       .getByRole('link', {
-        name: 'Select if the introduction explains the objective and matches the rest of the preprint',
+        name: 'Select if the introduction explains the objective of the research presented in the preprint',
       })
       .click()
 
@@ -1744,10 +2211,357 @@ test.extend(canRapidReview).extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the methods are appropriate',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Are the methods well-suited for this research?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', {
+        name: 'Select if the methods are well-suited for this research',
+      })
+      .click()
+
+    await expect(page.getByLabel('Highly appropriate', { exact: true })).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the results presented are supported by the data',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByRole('group', { name: 'Are the conclusions supported by the data?' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', {
+        name: 'Select if the conclusions are supported by the data',
+      })
+      .click()
+
+    await expect(page.getByLabel('Highly supported', { exact: true })).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the data presentations are appropriate and clear',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Are the data presentations, including visualizations, well-suited to represent the data?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', {
+        name: 'Select if the data presentations are well-suited to represent the data',
+      })
+      .click()
+
+    await expect(page.getByLabel('Highly appropriate and clear', { exact: true })).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say how well the authors discuss their findings and next steps',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', {
+        name: 'Select how clearly the authors discuss their findings and next steps',
+      })
+      .click()
+
+    await expect(page.getByLabel('Very clearly')).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if the findings are novel',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', {
+        name: 'Is the preprint likely to advance academic knowledge?',
+      }),
+    ).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', {
+        name: 'Select if the preprint is likely to advance academic knowledge',
+      })
+      .click()
+
+    await expect(page.getByLabel('Highly likely', { exact: true })).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if would benefit from language editing',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByRole('group', { name: 'Would it benefit from language editing?' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Select yes if it would benefit from language editing' }).click()
+
+    await expect(page.getByLabel('No')).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if others should read this preprint',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByRole('group', { name: 'Would you recommend this preprint to others?' })).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    )
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Select yes if you would recommend this preprint to others' }).click()
+
+    await expect(page.getByLabel('Yes, it’s of high quality')).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to say if it is ready for a full and detailed review',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With prompts').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I don’t know').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, but it needs to be improved').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', { name: 'Is it ready for attention from an editor, publisher or broader audience?' }),
+    ).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', {
+        name: 'Select yes if it is ready for attention from an editor, publisher or broader audience',
+      })
+      .click()
+
+    await expect(page.getByLabel('Yes, as it is')).toBeFocused()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)('have to choose a name', async ({ javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('No').check()
+  await page.getByLabel('With a template').check()
   await page.getByRole('button', { name: 'Continue' }).click()
   await page.waitForLoadState()
   await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1779,7 +2593,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1816,7 +2630,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1853,7 +2667,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1912,7 +2726,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('No').check()
+    await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
@@ -1940,5 +2754,41 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('I’m following the Code of Conduct')).toBeFocused()
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn)("can't review my own preprint", async ({ javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-12345678')
+  await page.getByRole('link', { name: 'Write a PREreview' }).click()
+  await page.getByRole('button', { name: 'Start now' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Tab')
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(page).toHaveScreenshot()
+
+  await page.keyboard.press('Enter')
+
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('main')).toBeFocused()
+  }
+  await expect(page).toHaveScreenshot()
+})
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  "can't review my own preprint when I'm already logged in",
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-12345678')
+    await page.getByRole('link', { name: 'Write a PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
+
+    await page.goto('/preprints/doi-10.1101-12345678/write-a-prereview/review-type')
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
   },
 )

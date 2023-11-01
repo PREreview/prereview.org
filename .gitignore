@@ -1,4 +1,6 @@
 /.cache/
+/.dev/server.crt
+/.dev/server.key
 /data/
 /dist/
 /integration-results/

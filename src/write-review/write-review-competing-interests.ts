@@ -1,11 +1,9 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as I from 'fp-ts/Identity'
-import type { Reader } from 'fp-ts/Reader'
 import { flow, identity, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import type * as M from 'hyper-ts/lib/Middleware'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Status } from 'hyper-ts'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
@@ -15,7 +13,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
-import { type NonEmptyString, NonEmptyStringC } from '../string'
+import { type NonEmptyString, NonEmptyStringC } from '../types/string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
 
@@ -38,7 +36,7 @@ export const writeReviewCompetingInterests = flow(
           .with(
             'no-form',
             'no-session',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -54,7 +52,7 @@ export const writeReviewCompetingInterests = flow(
 )
 
 const showCompetingInterestsForm = flow(
-  fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
     competingInterestsForm(
       preprint,
       {
@@ -70,7 +68,7 @@ const showCompetingInterestsForm = flow(
 
 const showCompetingInterestsErrorForm = (preprint: PreprintTitle, user: User) =>
   flow(
-    fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form, user)),
+    RM.fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form, user)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -99,7 +97,7 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     ),
     RM.map(updateForm(form)),
     RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainW(form => redirectToNextForm(preprint.id)(form, user)),
+    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
@@ -118,7 +116,7 @@ const CompetingInterestsDetailsFieldD = pipe(
   D.map(get('competingInterestsDetails')),
 )
 
-type CompetingInterestsForm = {
+interface CompetingInterestsForm {
   readonly competingInterests: E.Either<MissingE, 'yes' | 'no' | undefined>
   readonly competingInterestsDetails: E.Either<MissingE, NonEmptyString | undefined>
 }
@@ -291,19 +289,4 @@ ${match(form.competingInterestsDetails)
     type: 'streamline',
     user,
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

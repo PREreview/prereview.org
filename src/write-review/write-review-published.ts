@@ -1,9 +1,8 @@
 import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/Reader'
 import { flow, pipe } from 'fp-ts/function'
-import { Status, type StatusOpen } from 'hyper-ts'
-import type * as M from 'hyper-ts/lib/Middleware'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import { Status } from 'hyper-ts'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
@@ -11,6 +10,7 @@ import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import { toUrl } from '../public-url'
 import { preprintReviewsMatch, reviewMatch, writeReviewMatch } from '../routes'
+import { isScietyPreprint, scietyUrl } from '../sciety'
 import { type User, getUser } from '../user'
 import { type PublishedReview, getPublishedReview, removePublishedReview } from './published-review'
 
@@ -27,7 +27,7 @@ export const writeReviewPublished = flow(
           .with(
             'no-session',
             'no-published-review',
-            fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
           .with(P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -43,11 +43,12 @@ export const writeReviewPublished = flow(
 )
 
 const showSuccessMessage = flow(
-  fromReaderK(successMessage),
+  RM.fromReaderK(successMessage),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainFirstW(() => removePublishedReview),
   RM.ichainMiddlewareKW(sendHtml),
 )
+
 function successMessage({
   review: { doi, form, id },
   preprint,
@@ -75,8 +76,17 @@ function successMessage({
 
             <h2>What happens next</h2>
 
-            <p>You’ll be able to see your PREreview shortly.</p>
-
+            <p>
+              You’ll be able to see your PREreview shortly.
+              ${isScietyPreprint(preprint.id)
+                ? html`
+                    It’ll also appear on
+                    <a href="https://sciety.org/" target="_blank" rel="noopener noreferrer"
+                      >Sciety<span class="visually-hidden"> (opens in a new tab)</span></a
+                    >.
+                  `
+                : ''}
+            </p>
             ${form.moreAuthors === 'yes'
               ? html`
                   <div class="inset">
@@ -117,6 +127,15 @@ function successMessage({
                 class="linked-in"
                 >Share it on LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a
               >
+              ${isScietyPreprint(preprint.id)
+                ? html` <a
+                    href="${scietyUrl(preprint.id).href}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="sciety"
+                    >List it on Sciety<span class="visually-hidden"> (opens in a new tab)</span></a
+                  >`
+                : ''}
             </div>
 
             <h2>Let us know how it went</h2>
@@ -141,19 +160,4 @@ function successMessage({
       }),
     ),
   )
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => R.Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

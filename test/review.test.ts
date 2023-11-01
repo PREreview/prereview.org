@@ -4,8 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/lib/Middleware'
-import type { Mock } from 'jest-mock'
+import * as M from 'hyper-ts/Middleware'
 import * as _ from '../src/review'
 import { reviewMatch } from '../src/routes'
 import * as fc from './fc'
@@ -28,15 +27,15 @@ describe('review', () => {
         title: fc.html(),
         url: fc.url(),
       }),
+      structured: fc.boolean(),
       text: fc.html(),
     }),
     fc.either(fc.constant('no-session' as const), fc.user()),
-    fc.boolean(),
-  ])('when the review can be loaded', async (publicUrl, id, connection, prereview, user, canSeeClubs) => {
-    const getPrereview: Mock<_.GetPrereviewEnv['getPrereview']> = jest.fn(_ => TE.right(prereview))
+  ])('when the review can be loaded', async (publicUrl, id, connection, prereview, user) => {
+    const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
     const actual = await runMiddleware(
-      _.review(id)({ canSeeClubs, getPrereview, getUser: () => M.fromEither(user), publicUrl }),
+      _.review(id)({ getPrereview, getUser: () => M.fromEither(user), publicUrl }),
       connection,
     )()
 
@@ -60,12 +59,10 @@ describe('review', () => {
     fc.integer(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.either(fc.constant('no-session' as const), fc.user()),
-    fc.boolean(),
-  ])('when the review is not found', async (publicUrl, id, connection, user, canSeeClubs) => {
+  ])('when the review is not found', async (publicUrl, id, connection, user) => {
     const actual = await runMiddleware(
       _.review(id)({
-        canSeeClubs,
-        getPrereview: () => TE.left({ status: Status.NotFound }),
+        getPrereview: () => TE.left('not-found'),
         getUser: () => M.fromEither(user),
         publicUrl,
       }),
@@ -86,12 +83,34 @@ describe('review', () => {
     fc.origin(),
     fc.integer(),
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-    fc.anything(),
     fc.either(fc.constant('no-session' as const), fc.user()),
-    fc.boolean(),
-  ])('when the review cannot be loaded', async (publicUrl, id, connection, error, user, canSeeClubs) => {
+  ])('when the review was removed', async (publicUrl, id, connection, user) => {
     const actual = await runMiddleware(
-      _.review(id)({ canSeeClubs, getPrereview: () => TE.left(error), getUser: () => M.fromEither(user), publicUrl }),
+      _.review(id)({
+        getPrereview: () => TE.left('removed'),
+        getUser: () => M.fromEither(user),
+        publicUrl,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.Gone },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
+
+  test.prop([
+    fc.origin(),
+    fc.integer(),
+    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+    fc.either(fc.constant('no-session' as const), fc.user()),
+  ])('when the review cannot be loaded', async (publicUrl, id, connection, user) => {
+    const actual = await runMiddleware(
+      _.review(id)({ getPrereview: () => TE.left('unavailable'), getUser: () => M.fromEither(user), publicUrl }),
       connection,
     )()
 

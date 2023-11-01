@@ -11,7 +11,7 @@ import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { NonEmptyStringC } from './string'
+import { type NonEmptyString, NonEmptyStringC } from './types/string'
 
 const JsonD = {
   decode: (s: string) =>
@@ -27,11 +27,11 @@ const PersonalDetailsD = pipe(
     D.struct({
       name: D.struct({
         'given-names': D.struct({
-          value: pipe(NonEmptyStringC, D.map(s.trim)),
+          value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
         }),
         'family-name': D.nullable(
           D.struct({
-            value: pipe(NonEmptyStringC, D.map(s.trim)),
+            value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
           }),
         ),
       }),
@@ -61,7 +61,7 @@ export const getNameFromOrcid = flow(
       match(personalDetails.name)
         .with(
           { 'given-names': { value: P.string }, 'family-name': { value: P.string } },
-          name => `${name['given-names'].value} ${name['family-name'].value}`,
+          name => `${name['given-names'].value} ${name['family-name'].value}` as NonEmptyString,
         )
         .with({ 'given-names': { value: P.string } }, name => name['given-names'].value)
         .exhaustive(),

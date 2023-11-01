@@ -1,4 +1,4 @@
-FROM node:18.16.1-alpine3.18 AS node
+FROM node:18.18.2-alpine3.18 AS node
 ENV NODE_OPTIONS --unhandled-rejections=strict --enable-source-maps
 WORKDIR /app
 
@@ -45,7 +45,7 @@ RUN npm run build
 #
 # Stage: Integration test environment
 #
-FROM mcr.microsoft.com/playwright:v1.36.1-jammy AS test-integration
+FROM mcr.microsoft.com/playwright:v1.39.0-jammy AS test-integration
 WORKDIR /app
 
 COPY --from=npm-dev /app/ .

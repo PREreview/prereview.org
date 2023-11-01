@@ -4,12 +4,10 @@ import * as E from 'fp-ts/Either'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import type * as M from 'hyper-ts/lib/Middleware'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as RM from 'hyper-ts/ReaderMiddleware'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { type Html, html, plainText, rawHtml, sendHtml } from '../html'
-import { fixHeadingLevels } from '../html'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from '../html'
 import { addCanonicalLinkHeader, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { type FathomEnv, type PhaseEnv, page } from '../page'
 import { type Preprint, getPreprint } from '../preprint'
@@ -18,12 +16,14 @@ import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '.
 import { renderDate } from '../time'
 import { type GetUserEnv, type User, getUser } from '../user'
 import { getForm } from './form'
+import { ensureUserIsNotAnAuthor } from './user-is-author'
 
 export const writeReview = flow(
   RM.fromReaderTaskEitherK(getPreprint),
   RM.ichainW(preprint =>
     pipe(
       getUser,
+      RM.chainEitherKW(ensureUserIsNotAnAuthor(preprint)),
       RM.bindTo('user'),
       RM.bindW(
         'form',
@@ -39,7 +39,7 @@ export const writeReview = flow(
         match(state)
           .with(
             { form: P.when(E.isRight) },
-            fromMiddlewareK(() => seeOther(format(writeReviewStartMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddlewareK(() => seeOther(format(writeReviewStartMatch.formatter, { id: preprint.id }))),
           )
           .with({ form: P.when(E.isLeft) }, ({ user }) => showStartPage(preprint, user))
           .exhaustive(),
@@ -55,6 +55,7 @@ export const writeReview = flow(
               void
             >
           >()
+          .with({ type: 'is-author', user: P.select() }, user => showOwnPreprintPage(preprint, user))
           .with('no-session', () => showStartPage(preprint))
           .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
           .exhaustive(),
@@ -73,6 +74,14 @@ const showStartPage = (preprint: Preprint, user?: User) =>
   pipe(
     RM.rightReader(startPage(preprint, user)),
     RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainFirstW(() => addCanonicalLinkHeader(writeReviewMatch.formatter, { id: preprint.id })),
+    RM.ichainMiddlewareK(sendHtml),
+  )
+
+const showOwnPreprintPage = (preprint: Preprint, user: User) =>
+  pipe(
+    RM.rightReader(ownPreprintPage(preprint, user)),
+    RM.ichainFirst(() => RM.status(Status.Forbidden)),
     RM.ichainFirstW(() => addCanonicalLinkHeader(writeReviewMatch.formatter, { id: preprint.id })),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -114,6 +123,7 @@ function startPage(preprint: Preprint, user?: User) {
                   ${match(preprint.id.type)
                     .with('africarxiv', () => 'AfricArXiv Preprints')
                     .with('arxiv', () => 'arXiv')
+                    .with('authorea', () => 'Authorea')
                     .with('biorxiv', () => 'bioRxiv')
                     .with('chemrxiv', () => 'ChemRxiv')
                     .with('eartharxiv', () => 'EarthArXiv')
@@ -170,8 +180,8 @@ function startPage(preprint: Preprint, user?: User) {
           You can write a PREreview of
           <cite lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
             >${preprint.title.text}</cite
-          >. A PREreview is a free-text review of a preprint and can vary from a few sentences to a lengthy report,
-          similar to a journal-organized peer-review report.
+          >. A PREreview is a review of a preprint and can vary from a few sentences to a lengthy report, similar to a
+          journal-organized peer-review report.
         </p>
 
         ${user
@@ -204,6 +214,25 @@ function startPage(preprint: Preprint, user?: User) {
   })
 }
 
+function ownPreprintPage(preprint: Preprint, user: User) {
+  return page({
+    title: plainText`Sorry, you can’t review your own preprint`,
+    content: html`
+      <nav>
+        <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
+      </nav>
+
+      <main id="main-content">
+        <h1>Sorry, you can’t review your own preprint</h1>
+
+        <p>If you’re not an author, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+      </main>
+    `,
+    skipLinks: [[html`Skip to main content`, '#main-content']],
+    user,
+  })
+}
+
 function formatList(
   ...args: ConstructorParameters<typeof Intl.ListFormat>
 ): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
@@ -215,11 +244,3 @@ function formatList(
     rawHtml,
   )
 }
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/83
-const fromMiddlewareK =
-  <R, A extends ReadonlyArray<unknown>, B, I, O, E>(
-    f: (...a: A) => M.Middleware<I, O, E, B>,
-  ): ((...a: A) => RM.ReaderMiddleware<R, I, O, E, B>) =>
-  (...a) =>
-    RM.fromMiddleware(f(...a))

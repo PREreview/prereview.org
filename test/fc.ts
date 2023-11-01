@@ -12,7 +12,8 @@ import type { Json, JsonRecord } from 'fp-ts/Json'
 import type { NonEmptyArray } from 'fp-ts/NonEmptyArray'
 import type { Refinement } from 'fp-ts/Refinement'
 import type * as H from 'hyper-ts'
-import { ExpressConnection } from 'hyper-ts/lib/express'
+import type { OAuthEnv } from 'hyper-ts-oauth'
+import { ExpressConnection } from 'hyper-ts/express'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
 import {
   type Body,
@@ -24,16 +25,30 @@ import {
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
 import type { CareerStage } from '../src/career-stage'
+import type {
+  ContactEmailAddress,
+  UnverifiedContactEmailAddress,
+  VerifiedContactEmailAddress,
+} from '../src/contact-email-address'
 import type { CrossrefPreprintId } from '../src/crossref'
 import type { DatacitePreprintId } from '../src/datacite'
 import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
+import type { IsOpenForRequests } from '../src/is-open-for-requests'
+import type { Languages } from '../src/languages'
+import type { Location } from '../src/location'
 import type { Preprint, PreprintTitle } from '../src/preprint'
+import type { ResearchInterests } from '../src/research-interests'
+import type { SlackUser } from '../src/slack-user'
+import type { SlackUserId } from '../src/slack-user-id'
+import type { ClubId } from '../src/types/club-id'
+import type { EmailAddress } from '../src/types/email-address'
 import type {
   AfricarxivFigsharePreprintId,
   AfricarxivOsfPreprintId,
   AfricarxivPreprintId,
   AfricarxivZenodoPreprintId,
   ArxivPreprintId,
+  AuthoreaPreprintId,
   BiorxivOrMedrxivPreprintId,
   BiorxivPreprintId,
   ChemrxivPreprintId,
@@ -55,14 +70,15 @@ import type {
   SocarxivPreprintId,
   ZenodoOrAfricarxivPreprintId,
   ZenodoPreprintId,
-} from '../src/preprint-id'
-import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/profile-id'
-import type { Pseudonym } from '../src/pseudonym'
-import { type NonEmptyString, isNonEmptyString } from '../src/string'
+} from '../src/types/preprint-id'
+import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/types/profile-id'
+import type { Pseudonym } from '../src/types/pseudonym'
+import { type NonEmptyString, isNonEmptyString } from '../src/types/string'
 import type { User } from '../src/user'
+import { shouldNotBeCalled } from './should-not-be-called'
 
-if (process.env.FAST_CHECK_NUM_RUNS) {
-  fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env.FAST_CHECK_NUM_RUNS, 10) })
+if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
+  fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })
 }
 
 export type Arbitrary<T> = fc.Arbitrary<T>
@@ -73,6 +89,7 @@ export const {
   boolean,
   constant,
   constantFrom,
+  dictionary,
   integer,
   lorem,
   oneof,
@@ -83,6 +100,9 @@ export const {
   tuple,
   webUrl,
 } = fc
+
+export const set = <A>(arb: fc.Arbitrary<A>, constraints?: fc.UniqueArraySharedConstraints): fc.Arbitrary<Set<A>> =>
+  fc.uniqueArray(arb, constraints).map(values => new Set(values))
 
 const left = <E>(arb: fc.Arbitrary<E>): fc.Arbitrary<E.Either<E, never>> => arb.map(E.left)
 
@@ -101,7 +121,72 @@ export const alphanumeric = (): fc.Arbitrary<string> =>
     { num: 10, build: v => String.fromCharCode(v + 0x30) },
   )
 
+export const invisibleCharacter = (): fc.Arbitrary<string> => fc.oneof(lineTerminator(), whiteSpaceCharacter())
+
+export const lineTerminator = (): fc.Arbitrary<string> => fc.constantFrom('\n', '\r', '\u2028', '\u2029')
+
+export const whiteSpaceCharacter = (): fc.Arbitrary<string> =>
+  fc.constantFrom(
+    '\t',
+    '\v',
+    '\f',
+    ' ',
+    '\ufeff',
+    '\u00a0',
+    '\u1680',
+    '\u2000',
+    '\u2001',
+    '\u2002',
+    '\u2003',
+    '\u2004',
+    '\u2005',
+    '\u2006',
+    '\u2007',
+    '\u2008',
+    '\u2009',
+    '\u200a',
+    '\u202f',
+    '\u205f',
+    '\u3000',
+  )
+
+export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyof T> } | undefined>(
+  recordModel: { [K in keyof T]: fc.Arbitrary<T[K]> },
+  constraints?: TConstraints,
+): fc.Arbitrary<
+  fc.RecordValue<{ [K in keyof T]: T[K] }, TConstraints extends undefined ? { withDeletedKeys: true } : TConstraints>
+> =>
+  fc
+    .constantFrom(
+      ...Object.getOwnPropertyNames(recordModel).filter(
+        property => !(constraints?.requiredKeys.includes(property as keyof T) ?? false),
+      ),
+    )
+    .chain(omit =>
+      fc.record(
+        Object.fromEntries(Object.entries(recordModel).filter(([key]) => key !== omit)) as never,
+        (constraints ?? { withDeletedKeys: true }) as never,
+      ),
+    )
+
 export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
+
+export const emailAddress = (): fc.Arbitrary<EmailAddress> => fc.emailAddress() as fc.Arbitrary<EmailAddress>
+
+export const contactEmailAddress = (): fc.Arbitrary<ContactEmailAddress> =>
+  fc.oneof(unverifiedContactEmailAddress(), verifiedContactEmailAddress())
+
+export const unverifiedContactEmailAddress = (): fc.Arbitrary<UnverifiedContactEmailAddress> =>
+  fc.record({
+    type: fc.constant('unverified'),
+    value: emailAddress(),
+  })
+
+export const verifiedContactEmailAddress = (): fc.Arbitrary<VerifiedContactEmailAddress> =>
+  fc.record({
+    type: fc.constant('verified'),
+    value: emailAddress(),
+  })
 
 export const error = (): fc.Arbitrary<Error> => fc.string().map(error => new Error(error))
 
@@ -110,6 +195,15 @@ export const cookieName = (): fc.Arbitrary<string> => fc.lorem({ maxCount: 1 })
 export const html = (): fc.Arbitrary<Html> => fc.lorem().map(text => toHtml`<p>${text}</p>`)
 
 export const sanitisedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeHtml)
+
+export const oauth = (): fc.Arbitrary<OAuthEnv['oauth']> =>
+  fc.record({
+    authorizeUrl: url(),
+    clientId: fc.string(),
+    clientSecret: fc.string(),
+    redirectUri: url(),
+    tokenUrl: url(),
+  })
 
 export const doiRegistrant = (): fc.Arbitrary<string> =>
   fc
@@ -132,6 +226,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
   fc.oneof(
     africarxivPreprintUrl(),
     arxivPreprintUrl(),
+    authoreaPreprintUrl(),
     biorxivPreprintUrl(),
     edarxivPreprintUrl(),
     engrxivPreprintUrl(),
@@ -214,6 +309,15 @@ export const arxivPreprintUrl = (): fc.Arbitrary<[URL, ArxivPreprintId]> =>
       new URL(`https://arxiv.org/abs/${suffix}`),
       { type: 'arxiv', value: `10.48550/arXiv.${suffix}` as Doi<'48550'> },
     ])
+
+export const authoreaPreprintId = (): fc.Arbitrary<AuthoreaPreprintId> =>
+  fc.record({
+    type: fc.constant('authorea'),
+    value: doi(fc.constant('22541')),
+  })
+
+export const authoreaPreprintUrl = (): fc.Arbitrary<[URL, AuthoreaPreprintId]> =>
+  authoreaPreprintId().map(id => [new URL(`https://www.authorea.com/doi/full/${encodeURIComponent(id.value)}`), id])
 
 export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
   fc.record({
@@ -453,6 +557,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
   fc.oneof(
     africarxivPreprintId(),
     arxivPreprintId(),
+    authoreaPreprintId(),
     biorxivPreprintId(),
     chemrxivPreprintId(),
     eartharxivPreprintId(),
@@ -477,6 +582,7 @@ export const indeterminatePreprintId = (): fc.Arbitrary<IndeterminatePreprintId>
 export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(
     africarxivOsfPreprintId(),
+    authoreaPreprintId(),
     biorxivPreprintId(),
     chemrxivPreprintId(),
     eartharxivPreprintId(),
@@ -506,7 +612,56 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcid)
 
-export const careerStage = (): fc.Arbitrary<CareerStage> => fc.constantFrom('early', 'mid', 'late')
+export const careerStage = (): fc.Arbitrary<CareerStage> =>
+  fc.record({ value: careerStageValue(), visibility: careerStageVisibility() })
+
+export const careerStageValue = (): fc.Arbitrary<CareerStage['value']> => fc.constantFrom('early', 'mid', 'late')
+
+export const careerStageVisibility = (): fc.Arbitrary<CareerStage['visibility']> =>
+  fc.constantFrom('public', 'restricted')
+
+export const languages = (): fc.Arbitrary<Languages> =>
+  fc.record({ value: nonEmptyString(), visibility: languagesVisibility() })
+
+export const languagesVisibility = (): fc.Arbitrary<Languages['visibility']> => fc.constantFrom('public', 'restricted')
+
+export const location = (): fc.Arbitrary<Location> =>
+  fc.record({ value: nonEmptyString(), visibility: locationVisibility() })
+
+export const locationVisibility = (): fc.Arbitrary<Location['visibility']> => fc.constantFrom('public', 'restricted')
+
+export const researchInterests = (): fc.Arbitrary<ResearchInterests> =>
+  fc.record({ value: nonEmptyString(), visibility: researchInterestsVisibility() })
+
+export const researchInterestsVisibility = (): fc.Arbitrary<ResearchInterests['visibility']> =>
+  fc.constantFrom('public', 'restricted')
+
+export const isOpenForRequests = (): fc.Arbitrary<IsOpenForRequests> =>
+  fc.oneof(
+    fc.constant({ value: false as const }),
+    fc.record({ value: fc.constant(true as const), visibility: isOpenForRequestsVisibility() }),
+  )
+
+export const isOpenForRequestsVisibility = (): fc.Arbitrary<
+  Extract<IsOpenForRequests, { value: true }>['visibility']
+> => fc.constantFrom('public', 'restricted')
+
+export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
+
+export const slackUserId = (): fc.Arbitrary<SlackUserId> =>
+  fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString(), scopes: set(nonEmptyString()) })
+
+export const clubId = (): fc.Arbitrary<ClubId> =>
+  fc.constantFrom(
+    'asapbio-cancer-biology',
+    'asapbio-meta-research',
+    'asapbio-metabolism',
+    'asapbio-neurobiology',
+    'biomass-biocatalysis',
+    'language-club',
+    'rr-id-student-reviewer-club',
+    'tsl-preprint-club',
+  )
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
   fc
@@ -563,17 +718,27 @@ const headerName = () =>
   )
 
 export const headers = () =>
-  fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init => new Headers(init))
+  fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init =>
+    Object.defineProperties(new Headers(init), {
+      [fc.toStringMethod]: { value: () => fc.stringify(init) },
+    }),
+  )
 
 export const fetchResponse = ({ status }: { status?: fc.Arbitrary<number> } = {}): fc.Arbitrary<F.Response> =>
-  fc.record({
-    headers: headers(),
-    status: status ?? fc.integer(),
-    statusText: fc.string(),
-    url: fc.string(),
-    clone: fc.func(fc.constant(undefined)) as unknown as fc.Arbitrary<F.Response['clone']>,
-    text: fc.func(fc.string().map(text => Promise.resolve(text))),
-  })
+  fc
+    .record({
+      headers: headers(),
+      status: status ?? fc.integer(),
+      statusText: fc.string(),
+      url: fc.string(),
+      text: fc.string(),
+    })
+    .map(args =>
+      Object.defineProperties(
+        { ...args, clone: shouldNotBeCalled, text: () => Promise.resolve(args.text) },
+        { [fc.toStringMethod]: { value: () => fc.stringify(args) } },
+      ),
+    )
 
 export const request = ({
   body,
@@ -627,22 +792,24 @@ export const user = (): fc.Arbitrary<User> =>
     pseudonym: pseudonym(),
   })
 
-export const preprint = (): fc.Arbitrary<Preprint> =>
+export const preprint = ({ authors }: { authors?: Arbitrary<Preprint['authors']> } = {}): fc.Arbitrary<Preprint> =>
   fc.record(
     {
       abstract: fc.record({
         language: languageCode(),
         text: html(),
       }),
-      authors: nonEmptyArray(
-        fc.record(
-          {
-            name: fc.string(),
-            orcid: orcid(),
-          },
-          { requiredKeys: ['name'] },
+      authors:
+        authors ??
+        nonEmptyArray(
+          fc.record(
+            {
+              name: fc.string(),
+              orcid: orcid(),
+            },
+            { requiredKeys: ['name'] },
+          ),
         ),
-      ),
       id: preprintId(),
       posted: plainDate(),
       title: fc.record({

@@ -1,31 +1,36 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
-import type { Reader } from 'fp-ts/Reader'
+import * as R from 'fp-ts/Reader'
 import * as RE from 'fp-ts/ReaderEither'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
-import { Status, type StatusOpen } from 'hyper-ts'
+import { Status } from 'hyper-ts'
 import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { endSession as _endSession, storeSession } from 'hyper-ts-session'
-import * as RM from 'hyper-ts/lib/ReaderMiddleware'
+import * as RM from 'hyper-ts/ReaderMiddleware'
+import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
-import { isOrcid } from 'orcid-id-ts'
+import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { timeoutRequest } from './fetch'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
-import type { Pseudonym } from './pseudonym'
 import { ifHasSameOrigin, toUrl } from './public-url'
 import { homeMatch } from './routes'
+import type { Pseudonym } from './types/pseudonym'
 import { newSessionForUser } from './user'
 
 export interface GetPseudonymEnv {
   getPseudonym: (user: OrcidUser) => TE.TaskEither<'unavailable', Pseudonym>
+}
+
+export interface IsUserBlockedEnv {
+  isUserBlocked: (user: Orcid) => boolean
 }
 
 export const logIn = pipe(
@@ -40,7 +45,7 @@ export const logIn = pipe(
 )
 
 export const logInAndRedirect = flow(
-  fromReaderK(toUrl),
+  RM.fromReaderK(toUrl),
   RM.ichainW(flow(String, requestAuthorizationCode('/authenticate'))),
 )
 
@@ -51,29 +56,45 @@ export const logOut = pipe(
   RM.ichain(() => RM.end()),
 )
 
-const OrcidD = D.fromRefinement(isOrcid, 'ORCID')
+const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
-const OrcidUserD = D.struct({
-  name: D.string,
-  orcid: OrcidD,
+const OrcidUserC = C.struct({
+  name: C.string,
+  orcid: OrcidC,
 })
 
-type OrcidUser = D.TypeOf<typeof OrcidUserD>
+type OrcidUser = C.TypeOf<typeof OrcidUserC>
 
 const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'unavailable', Pseudonym> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPseudonym }: GetPseudonymEnv) => getPseudonym(user)))
 
+const isUserBlocked = (user: Orcid): R.Reader<IsUserBlockedEnv, boolean> =>
+  R.asks(({ isUserBlocked }) => isUserBlocked(user))
+
+const filterBlockedUsers = (user: OrcidUser): RE.ReaderEither<IsUserBlockedEnv, OrcidUser, OrcidUser> =>
+  pipe(
+    isUserBlocked(user.orcid),
+    R.map(isBlocked => (isBlocked ? E.left(user) : E.right(user))),
+  )
+
 export const authenticate = flow(
   (code: string, state: string) => RM.of({ code, state }),
-  RM.bind('referer', fromReaderK(flow(get('state'), getReferer))),
+  RM.bind('referer', RM.fromReaderK(flow(get('state'), getReferer))),
   RM.bindW(
     'user',
     RM.fromReaderTaskEitherK(
       flow(
         get('code'),
-        exchangeAuthorizationCode(OrcidUserD),
+        exchangeAuthorizationCode(OrcidUserC),
         RTE.local(timeoutRequest(2000)),
         RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
+        RTE.chainFirstW(
+          flow(
+            RTE.fromReaderEitherK(filterBlockedUsers),
+            RTE.orElseFirstW(RTE.fromReaderIOK(flow(OrcidUserC.encode, L.infoP('Blocked user from logging in')))),
+            RTE.mapLeft(() => 'blocked' as const),
+          ),
+        ),
       ),
     ),
   ),
@@ -87,7 +108,17 @@ export const authenticate = flow(
   RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), newSessionForUser, storeSession)),
   RM.ichainFirst(() => RM.closeHeaders()),
   RM.ichainFirst(() => RM.end()),
-  RM.orElseW(() => showFailureMessage),
+  RM.orElseW(error =>
+    match(error)
+      .with('blocked', () =>
+        pipe(
+          RM.redirect(format(homeMatch.formatter, { message: 'blocked' })),
+          RM.ichain(() => RM.closeHeaders()),
+          RM.ichain(() => RM.end()),
+        ),
+      )
+      .otherwise(() => showFailureMessage),
+  ),
 )
 
 export const authenticateError = (error: string) =>
@@ -122,7 +153,7 @@ const showFailureMessage = pipe(
 
 const endSession = pipe(
   _endSession(),
-  RM.orElse(() => RM.right(undefined as void)),
+  RM.orElseW(() => RM.right(undefined)),
 )
 
 function accessDeniedMessage() {
@@ -155,11 +186,4 @@ function failureMessage() {
     `,
     skipLinks: [[html`Skip to main content`, '#main-content']],
   })
-}
-
-// https://github.com/DenisFrezzato/hyper-ts/pull/85
-function fromReaderK<R, A extends ReadonlyArray<unknown>, B, I = StatusOpen, E = never>(
-  f: (...a: A) => Reader<R, B>,
-): (...a: A) => RM.ReaderMiddleware<R, I, I, E, B> {
-  return (...a) => RM.rightReader(f(...a))
 }

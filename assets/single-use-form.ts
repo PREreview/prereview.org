@@ -12,11 +12,11 @@ export class SingleUseForm extends HTMLElement {
         return
       }
 
-      if (form.dataset.submitted === 'true') {
+      if (form.dataset['submitted'] === 'true') {
         event.preventDefault()
       }
 
-      form.dataset.submitted = 'true'
+      form.dataset['submitted'] = 'true'
       form.querySelectorAll('button').forEach(disableButton)
     })
   }
