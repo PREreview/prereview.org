@@ -221,7 +221,13 @@ function createPage({
               contactEmailAddress => html`
                 <div>
                   <dt>Email address</dt>
-                  <dd>${contactEmailAddress.value}</dd>
+                  <dd>
+                    ${contactEmailAddress.value}
+                    ${match(contactEmailAddress.type)
+                      .with('verified', () => '')
+                      .with('unverified', () => html`<small>Unverified</small>`)
+                      .exhaustive()}
+                  </dd>
                   <dd>
                     <a href="${format(changeContactEmailAddressMatch.formatter, {})}"
                       >Change <span class="visually-hidden">email address</span></a

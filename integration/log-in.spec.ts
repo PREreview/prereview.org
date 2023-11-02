@@ -34,7 +34,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Email address jcarberry@example.com')
+    await expect(page.getByRole('main')).toContainText('Email address jcarberry@example.com Unverified')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
