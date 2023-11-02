@@ -38,7 +38,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await page.goto('/my-details/verify-email-address')
+    await page.goto('/my-details/change-email-address?verify=jcarberry@example.com')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()

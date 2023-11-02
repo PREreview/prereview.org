@@ -8,6 +8,7 @@ import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
 import { match, P as p } from 'ts-pattern'
 import { ClubIdC } from './types/club-id'
+import { EmailAddressC } from './types/email-address'
 import { type PhilsciPreprintId, PreprintDoiD, fromPreprintDoi } from './types/preprint-id'
 import type { OrcidProfileId, PseudonymProfileId } from './types/profile-id'
 import { PseudonymC } from './types/pseudonym'
@@ -232,7 +233,8 @@ export const changeContactEmailAddressMatch = pipe(
 
 export const verifyContactEmailAddressMatch = pipe(
   P.lit('my-details'),
-  P.then(P.lit('verify-email-address')),
+  P.then(P.lit('change-email-address')),
+  P.then(query(C.struct({ verify: EmailAddressC }))),
   P.then(P.end),
 )
 

@@ -574,7 +574,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       verifyContactEmailAddressMatch.parser,
-      P.map(() => verifyContactEmailAddress),
+      P.map(({ verify }) => verifyContactEmailAddress(verify)),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,

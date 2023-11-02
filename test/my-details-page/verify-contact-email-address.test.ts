@@ -25,7 +25,7 @@ describe('verifyContactEmailAddress', () => {
       const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
 
       const actual = await runMiddleware(
-        _.verifyContactEmailAddress({
+        _.verifyContactEmailAddress(contactEmailAddress.value)({
           canChangeContactEmailAddress,
           getUser: () => M.fromEither(E.right(user)),
           publicUrl,
@@ -60,7 +60,7 @@ describe('verifyContactEmailAddress', () => {
       'when the email address is already verified',
       async (oauth, publicUrl, connection, user, contactEmailAddress) => {
         const actual = await runMiddleware(
-          _.verifyContactEmailAddress({
+          _.verifyContactEmailAddress(contactEmailAddress.value)({
             canChangeContactEmailAddress: () => true,
             getUser: () => M.fromEither(E.right(user)),
             publicUrl,
@@ -88,9 +88,44 @@ describe('verifyContactEmailAddress', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.user(),
-    ])('when there is no email address', async (oauth, publicUrl, connection, user) => {
+      fc.emailAddress(),
+      fc.contactEmailAddress(),
+    ])(
+      "when the email address doesn't match",
+      async (oauth, publicUrl, connection, user, emailAddress, contactEmailAddress) => {
+        const actual = await runMiddleware(
+          _.verifyContactEmailAddress(emailAddress)({
+            canChangeContactEmailAddress: () => true,
+            getUser: () => M.fromEither(E.right(user)),
+            publicUrl,
+            oauth,
+            deleteContactEmailAddress: shouldNotBeCalled,
+            getContactEmailAddress: () => TE.right(contactEmailAddress),
+            saveContactEmailAddress: shouldNotBeCalled,
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.NotFound },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
+
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+      fc.user(),
+      fc.emailAddress(),
+    ])('when there is no email address', async (oauth, publicUrl, connection, user, emailAddress) => {
       const actual = await runMiddleware(
-        _.verifyContactEmailAddress({
+        _.verifyContactEmailAddress(emailAddress)({
           canChangeContactEmailAddress: () => true,
           getUser: () => M.fromEither(E.right(user)),
           publicUrl,
@@ -117,9 +152,10 @@ describe('verifyContactEmailAddress', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.user(),
-    ])("when the email address can't be loaded", async (oauth, publicUrl, connection, user) => {
+      fc.emailAddress(),
+    ])("when the email address can't be loaded", async (oauth, publicUrl, connection, user, emailAddress) => {
       const actual = await runMiddleware(
-        _.verifyContactEmailAddress({
+        _.verifyContactEmailAddress(emailAddress)({
           canChangeContactEmailAddress: () => true,
           getUser: () => M.fromEither(E.right(user)),
           publicUrl,
@@ -142,11 +178,11 @@ describe('verifyContactEmailAddress', () => {
     })
   })
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection()])(
+  test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.emailAddress()])(
     'when the user is not logged in',
-    async (oauth, publicUrl, connection) => {
+    async (oauth, publicUrl, connection, emailAddress) => {
       const actual = await runMiddleware(
-        _.verifyContactEmailAddress({
+        _.verifyContactEmailAddress(emailAddress)({
           canChangeContactEmailAddress: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
           publicUrl,
@@ -170,7 +206,10 @@ describe('verifyContactEmailAddress', () => {
                 response_type: 'code',
                 redirect_uri: oauth.redirectUri.href,
                 scope: '/authenticate',
-                state: new URL(format(verifyContactEmailAddressMatch.formatter, {}), publicUrl).toString(),
+                state: new URL(
+                  format(verifyContactEmailAddressMatch.formatter, { verify: emailAddress }),
+                  publicUrl,
+                ).toString(),
               }).toString()}`,
               oauth.authorizeUrl,
             ).href,
@@ -181,11 +220,11 @@ describe('verifyContactEmailAddress', () => {
     },
   )
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error()])(
+  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.emailAddress(), fc.error()])(
     "when the user can't be loaded",
-    async (oauth, publicUrl, connection, error) => {
+    async (oauth, publicUrl, connection, emailAddress, error) => {
       const actual = await runMiddleware(
-        _.verifyContactEmailAddress({
+        _.verifyContactEmailAddress(emailAddress)({
           canChangeContactEmailAddress: shouldNotBeCalled,
           getUser: () => M.left(error),
           oauth,
@@ -208,11 +247,11 @@ describe('verifyContactEmailAddress', () => {
     },
   )
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.user()])(
+  test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.user(), fc.emailAddress()])(
     "when email addresses can't be changed",
-    async (oauth, publicUrl, connection, user) => {
+    async (oauth, publicUrl, connection, user, emailAddress) => {
       const actual = await runMiddleware(
-        _.verifyContactEmailAddress({
+        _.verifyContactEmailAddress(emailAddress)({
           canChangeContactEmailAddress: () => false,
           getUser: () => M.right(user),
           publicUrl,
