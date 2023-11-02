@@ -180,6 +180,7 @@ export const unverifiedContactEmailAddress = (): fc.Arbitrary<UnverifiedContactE
   fc.record({
     type: fc.constant('unverified'),
     value: emailAddress(),
+    verificationToken: uuid(),
   })
 
 export const verifiedContactEmailAddress = (): fc.Arbitrary<VerifiedContactEmailAddress> =>

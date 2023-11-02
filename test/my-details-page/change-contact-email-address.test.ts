@@ -31,6 +31,7 @@ describe('changeContactEmailAddress', () => {
           getUser: () => M.fromEither(E.right(user)),
           publicUrl,
           oauth,
+          generateUuid: shouldNotBeCalled,
           deleteContactEmailAddress: shouldNotBeCalled,
           getContactEmailAddress: () => TE.fromEither(emailAddress),
           saveContactEmailAddress: shouldNotBeCalled,
@@ -63,9 +64,10 @@ describe('changeContactEmailAddress', () => {
           ),
           fc.user(),
           fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+          fc.uuid(),
         ])(
           'when it is different to the previous value',
-          async (oauth, publicUrl, [emailAddress, connection], user, existingEmailAddress) => {
+          async (oauth, publicUrl, [emailAddress, connection], user, existingEmailAddress, verificationToken) => {
             const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
 
             const actual = await runMiddleware(
@@ -74,6 +76,7 @@ describe('changeContactEmailAddress', () => {
                 getUser: () => M.right(user),
                 publicUrl,
                 oauth,
+                generateUuid: () => verificationToken,
                 deleteContactEmailAddress: shouldNotBeCalled,
                 getContactEmailAddress: () => TE.fromEither(existingEmailAddress),
                 saveContactEmailAddress,
@@ -91,6 +94,7 @@ describe('changeContactEmailAddress', () => {
             expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
               type: 'unverified',
               value: emailAddress,
+              verificationToken,
             })
           },
         )
@@ -117,6 +121,7 @@ describe('changeContactEmailAddress', () => {
                 getUser: () => M.right(user),
                 publicUrl,
                 oauth,
+                generateUuid: shouldNotBeCalled,
                 deleteContactEmailAddress: shouldNotBeCalled,
                 getContactEmailAddress: () => TE.right(existingEmailAddress),
                 saveContactEmailAddress: shouldNotBeCalled,
@@ -155,6 +160,7 @@ describe('changeContactEmailAddress', () => {
             getUser: () => M.right(user),
             publicUrl,
             oauth,
+            generateUuid: shouldNotBeCalled,
             deleteContactEmailAddress: shouldNotBeCalled,
             getContactEmailAddress: () => TE.fromEither(emailAddress),
             saveContactEmailAddress: shouldNotBeCalled,
@@ -180,29 +186,34 @@ describe('changeContactEmailAddress', () => {
         }),
         fc.user(),
         fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
-      ])('the email address cannot be saved', async (oauth, publicUrl, connection, user, emailAddress) => {
-        const actual = await runMiddleware(
-          _.changeContactEmailAddress({
-            canChangeContactEmailAddress: () => true,
-            getUser: () => M.right(user),
-            publicUrl,
-            oauth,
-            deleteContactEmailAddress: () => TE.left('unavailable'),
-            getContactEmailAddress: () => TE.fromEither(emailAddress),
-            saveContactEmailAddress: () => TE.left('unavailable'),
-          }),
-          connection,
-        )()
+        fc.uuid(),
+      ])(
+        'the email address cannot be saved',
+        async (oauth, publicUrl, connection, user, emailAddress, verificationToken) => {
+          const actual = await runMiddleware(
+            _.changeContactEmailAddress({
+              canChangeContactEmailAddress: () => true,
+              getUser: () => M.right(user),
+              publicUrl,
+              oauth,
+              generateUuid: () => verificationToken,
+              deleteContactEmailAddress: () => TE.left('unavailable'),
+              getContactEmailAddress: () => TE.fromEither(emailAddress),
+              saveContactEmailAddress: () => TE.left('unavailable'),
+            }),
+            connection,
+          )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      })
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.ServiceUnavailable },
+              { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+        },
+      )
 
       describe('when no email address is set', () => {
         test.prop([
@@ -225,6 +236,7 @@ describe('changeContactEmailAddress', () => {
                 getUser: () => M.right(user),
                 publicUrl,
                 oauth,
+                generateUuid: shouldNotBeCalled,
                 deleteContactEmailAddress,
                 getContactEmailAddress: () => TE.right(existingEmailAddress),
                 saveContactEmailAddress: shouldNotBeCalled,
@@ -258,6 +270,7 @@ describe('changeContactEmailAddress', () => {
               getUser: () => M.right(user),
               publicUrl,
               oauth,
+              generateUuid: shouldNotBeCalled,
               deleteContactEmailAddress: shouldNotBeCalled,
               getContactEmailAddress: () => TE.left('not-found'),
               saveContactEmailAddress: shouldNotBeCalled,
@@ -286,6 +299,7 @@ describe('changeContactEmailAddress', () => {
           getUser: () => M.left('no-session'),
           publicUrl,
           oauth,
+          generateUuid: shouldNotBeCalled,
           deleteContactEmailAddress: shouldNotBeCalled,
           getContactEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
@@ -325,6 +339,7 @@ describe('changeContactEmailAddress', () => {
           getUser: () => M.left(error),
           oauth,
           publicUrl,
+          generateUuid: shouldNotBeCalled,
           deleteContactEmailAddress: shouldNotBeCalled,
           getContactEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
@@ -352,6 +367,7 @@ describe('changeContactEmailAddress', () => {
           getUser: () => M.right(user),
           publicUrl,
           oauth,
+          generateUuid: shouldNotBeCalled,
           deleteContactEmailAddress: shouldNotBeCalled,
           getContactEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,

@@ -1,9 +1,11 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
-import { flow } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
+import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
+import { type Uuid, isUuid } from 'uuid-ts'
 import { type EmailAddress, EmailAddressC } from './types/email-address'
 
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
@@ -16,6 +18,7 @@ export interface VerifiedContactEmailAddress {
 export interface UnverifiedContactEmailAddress {
   readonly type: 'unverified'
   readonly value: EmailAddress
+  readonly verificationToken: Uuid
 }
 
 export interface GetContactEmailAddressEnv {
@@ -30,9 +33,30 @@ export interface EditContactEmailAddressEnv extends GetContactEmailAddressEnv {
   ) => TE.TaskEither<'unavailable', void>
 }
 
-export const ContactEmailAddressC = C.struct({
-  type: C.literal('verified', 'unverified'),
-  value: EmailAddressC,
+const UuidC = C.make(
+  pipe(
+    D.string,
+    D.parse(s => {
+      if (s.toLowerCase() === s) {
+        return D.fromRefinement(isUuid, 'UUID').decode(s)
+      }
+
+      return D.failure(s, 'UUID')
+    }),
+  ),
+  { encode: uuid => uuid.toLowerCase() },
+)
+
+export const ContactEmailAddressC = C.sum('type')({
+  verified: C.struct({
+    type: C.literal('verified'),
+    value: EmailAddressC,
+  }),
+  unverified: C.struct({
+    type: C.literal('unverified'),
+    value: EmailAddressC,
+    verificationToken: UuidC,
+  }),
 }) satisfies C.Codec<unknown, unknown, ContactEmailAddress>
 
 export const getContactEmailAddress = (orcid: Orcid) =>

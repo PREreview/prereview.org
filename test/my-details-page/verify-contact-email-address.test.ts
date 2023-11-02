@@ -47,7 +47,10 @@ describe('verifyContactEmailAddress', () => {
       )
       expect(canChangeContactEmailAddress).toHaveBeenCalledWith(user)
       expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
-      expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, { ...contactEmailAddress, type: 'verified' })
+      expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
+        type: 'verified',
+        value: contactEmailAddress.value,
+      })
     })
 
     test.prop([
