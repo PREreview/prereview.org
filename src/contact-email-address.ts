@@ -1,4 +1,5 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import type { Refinement } from 'fp-ts/Refinement'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
@@ -88,3 +89,7 @@ export const saveContactEmailAddress = (
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ saveContactEmailAddress }) => saveContactEmailAddress(orcid, emailAddress)),
   )
+
+export const isUnverified: Refinement<ContactEmailAddress, UnverifiedContactEmailAddress> = (
+  emailAddress: ContactEmailAddress,
+): emailAddress is UnverifiedContactEmailAddress => emailAddress.type === 'unverified'

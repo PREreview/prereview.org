@@ -5,7 +5,7 @@ import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
-import { getContactEmailAddress, saveContactEmailAddress } from '../contact-email-address'
+import { getContactEmailAddress, isUnverified, saveContactEmailAddress } from '../contact-email-address'
 import { canChangeContactEmailAddress } from '../feature-flags'
 import { setFlashMessage } from '../flash-message'
 import { logInAndRedirect } from '../log-in'
@@ -36,10 +36,7 @@ export const verifyContactEmailAddress = (verify: EmailAddress) =>
       'contactEmailAddress',
       flow(
         RM.fromReaderTaskEitherK(({ user }) => getContactEmailAddress(user.orcid)),
-        RM.filterOrElseW(
-          contactEmailAddress => contactEmailAddress.type === 'unverified',
-          () => 'already-verified' as const,
-        ),
+        RM.filterOrElseW(isUnverified, () => 'already-verified' as const),
         RM.filterOrElseW(
           contactEmailAddress => eqEmailAddress.equals(contactEmailAddress.value, verify),
           () => 'wrong-email-address' as const,
