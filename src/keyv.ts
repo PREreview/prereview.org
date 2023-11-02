@@ -8,13 +8,12 @@ import type { Encoder } from 'io-ts/Encoder'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { type CareerStage, CareerStageC } from './career-stage'
-import { ContactEmailAddressC, type UnverifiedContactEmailAddress } from './contact-email-address'
+import { ContactEmailAddressC } from './contact-email-address'
 import { IsOpenForRequestsC } from './is-open-for-requests'
 import { LanguagesC } from './languages'
 import { LocationC } from './location'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { SlackUserIdC } from './slack-user-id'
-import { EmailAddressC } from './types/email-address'
 import { NonEmptyStringC } from './types/string'
 
 export interface CareerStageStoreEnv {
@@ -196,16 +195,7 @@ export const deleteContactEmailAddress = flow(
 )
 
 export const getContactEmailAddress = flow(
-  getKey(
-    OrcidE,
-    D.union(
-      ContactEmailAddressC,
-      pipe(
-        EmailAddressC,
-        D.map(value => ({ type: 'unverified', value }) satisfies UnverifiedContactEmailAddress),
-      ),
-    ),
-  ),
+  getKey(OrcidE, ContactEmailAddressC),
   RTE.local((env: ContactEmailAddressStoreEnv) => env.contactEmailAddressStore),
 )
 

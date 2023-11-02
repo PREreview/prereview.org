@@ -6,7 +6,6 @@ import { get } from 'spectacles-ts'
 import { ContactEmailAddressC } from '../src/contact-email-address'
 import * as _ from '../src/keyv'
 import { SlackUserIdC } from '../src/slack-user-id'
-import { EmailAddressC } from '../src/types/email-address'
 import * as fc from './fc'
 
 describe('deleteCareerStage', () => {
@@ -856,18 +855,6 @@ describe('getContactEmailAddress', () => {
       const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
 
       expect(actual).toStrictEqual(E.right(emailAddress))
-    },
-  )
-
-  test.prop([fc.orcid(), fc.emailAddress()])(
-    'when the key contains a plain email address',
-    async (orcid, emailAddress) => {
-      const store = new Keyv()
-      await store.set(orcid, EmailAddressC.encode(emailAddress))
-
-      const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
-
-      expect(actual).toStrictEqual(E.right({ type: 'unverified', value: emailAddress }))
     },
   )
 
