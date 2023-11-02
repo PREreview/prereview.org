@@ -48,48 +48,92 @@ describe('changeContactEmailAddress', () => {
     })
 
     describe('when the form has been submitted', () => {
-      test.prop([
-        fc.oauth(),
-        fc.origin(),
-        fc.emailAddress().chain(emailAddress =>
-          fc.tuple(
-            fc.constant(emailAddress),
-            fc.connection({
-              body: fc.constant({ emailAddress }),
-              method: fc.constant('POST'),
-            }),
+      describe('when an email address is given', () => {
+        test.prop([
+          fc.oauth(),
+          fc.origin(),
+          fc.emailAddress().chain(emailAddress =>
+            fc.tuple(
+              fc.constant(emailAddress),
+              fc.connection({
+                body: fc.constant({ emailAddress }),
+                method: fc.constant('POST'),
+              }),
+            ),
           ),
-        ),
-        fc.user(),
-        fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
-      ])(
-        'when an email address is given',
-        async (oauth, publicUrl, [emailAddress, connection], user, existingEmailAddress) => {
-          const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
+          fc.user(),
+          fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+        ])(
+          'when it is different to the previous value',
+          async (oauth, publicUrl, [emailAddress, connection], user, existingEmailAddress) => {
+            const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
 
-          const actual = await runMiddleware(
-            _.changeContactEmailAddress({
-              canChangeContactEmailAddress: () => true,
-              getUser: () => M.right(user),
-              publicUrl,
-              oauth,
-              deleteContactEmailAddress: shouldNotBeCalled,
-              getContactEmailAddress: () => TE.fromEither(existingEmailAddress),
-              saveContactEmailAddress,
-            }),
-            connection,
-          )()
+            const actual = await runMiddleware(
+              _.changeContactEmailAddress({
+                canChangeContactEmailAddress: () => true,
+                getUser: () => M.right(user),
+                publicUrl,
+                oauth,
+                deleteContactEmailAddress: shouldNotBeCalled,
+                getContactEmailAddress: () => TE.fromEither(existingEmailAddress),
+                saveContactEmailAddress,
+              }),
+              connection,
+            )()
 
-          expect(actual).toStrictEqual(
-            E.right([
-              { type: 'setStatus', status: Status.SeeOther },
-              { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-              { type: 'endResponse' },
-            ]),
-          )
-          expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, { type: 'unverified', value: emailAddress })
-        },
-      )
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.SeeOther },
+                { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+                { type: 'endResponse' },
+              ]),
+            )
+            expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
+              type: 'unverified',
+              value: emailAddress,
+            })
+          },
+        )
+
+        test.prop([
+          fc.oauth(),
+          fc.origin(),
+          fc.contactEmailAddress().chain(existingEmailAddress =>
+            fc.tuple(
+              fc.constant(existingEmailAddress),
+              fc.connection({
+                body: fc.constant({ emailAddress: existingEmailAddress.value }),
+                method: fc.constant('POST'),
+              }),
+            ),
+          ),
+          fc.user(),
+        ])(
+          'when it is the same as the previous value',
+          async (oauth, publicUrl, [existingEmailAddress, connection], user) => {
+            const actual = await runMiddleware(
+              _.changeContactEmailAddress({
+                canChangeContactEmailAddress: () => true,
+                getUser: () => M.right(user),
+                publicUrl,
+                oauth,
+                deleteContactEmailAddress: shouldNotBeCalled,
+                getContactEmailAddress: () => TE.right(existingEmailAddress),
+                saveContactEmailAddress: shouldNotBeCalled,
+              }),
+              connection,
+            )()
+
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.SeeOther },
+                { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+                { type: 'endResponse' },
+              ]),
+            )
+          },
+        )
+      })
 
       test.prop([
         fc.oauth(),
@@ -160,38 +204,75 @@ describe('changeContactEmailAddress', () => {
         )
       })
 
-      test.prop([
-        fc.oauth(),
-        fc.origin(),
-        fc.connection({
-          body: fc.record({ emailAddress: fc.constant('') }, { withDeletedKeys: true }),
-          method: fc.constant('POST'),
-        }),
-        fc.user(),
-      ])('when no email address is set', async (oauth, publicUrl, connection, user) => {
-        const deleteContactEmailAddress = jest.fn<_.Env['deleteContactEmailAddress']>(_ => TE.right(undefined))
-
-        const actual = await runMiddleware(
-          _.changeContactEmailAddress({
-            canChangeContactEmailAddress: () => true,
-            getUser: () => M.right(user),
-            publicUrl,
-            oauth,
-            deleteContactEmailAddress,
-            getContactEmailAddress: shouldNotBeCalled,
-            saveContactEmailAddress: shouldNotBeCalled,
+      describe('when no email address is set', () => {
+        test.prop([
+          fc.oauth(),
+          fc.origin(),
+          fc.connection({
+            body: fc.record({ emailAddress: fc.constant('') }, { withDeletedKeys: true }),
+            method: fc.constant('POST'),
           }),
-          connection,
-        )()
+          fc.user(),
+          fc.contactEmailAddress(),
+        ])(
+          'when there was an email address before',
+          async (oauth, publicUrl, connection, user, existingEmailAddress) => {
+            const deleteContactEmailAddress = jest.fn<_.Env['deleteContactEmailAddress']>(_ => TE.right(undefined))
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-            { type: 'endResponse' },
-          ]),
+            const actual = await runMiddleware(
+              _.changeContactEmailAddress({
+                canChangeContactEmailAddress: () => true,
+                getUser: () => M.right(user),
+                publicUrl,
+                oauth,
+                deleteContactEmailAddress,
+                getContactEmailAddress: () => TE.right(existingEmailAddress),
+                saveContactEmailAddress: shouldNotBeCalled,
+              }),
+              connection,
+            )()
+
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.SeeOther },
+                { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+                { type: 'endResponse' },
+              ]),
+            )
+            expect(deleteContactEmailAddress).toHaveBeenCalledWith(user.orcid)
+          },
         )
-        expect(deleteContactEmailAddress).toHaveBeenCalledWith(user.orcid)
+
+        test.prop([
+          fc.oauth(),
+          fc.origin(),
+          fc.connection({
+            body: fc.record({ emailAddress: fc.constant('') }, { withDeletedKeys: true }),
+            method: fc.constant('POST'),
+          }),
+          fc.user(),
+        ])("when there wasn't an email address before", async (oauth, publicUrl, connection, user) => {
+          const actual = await runMiddleware(
+            _.changeContactEmailAddress({
+              canChangeContactEmailAddress: () => true,
+              getUser: () => M.right(user),
+              publicUrl,
+              oauth,
+              deleteContactEmailAddress: shouldNotBeCalled,
+              getContactEmailAddress: () => TE.left('not-found'),
+              saveContactEmailAddress: shouldNotBeCalled,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.SeeOther },
+              { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+              { type: 'endResponse' },
+            ]),
+          )
+        })
       })
     })
   })

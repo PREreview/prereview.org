@@ -106,8 +106,20 @@ const handleChangeContactEmailAddressForm = (user: User) =>
         E.mapLeft(() => fields),
       ),
     ),
-    RM.ichainW(({ emailAddress }) =>
+    RM.apSW(
+      'originalEmailAddress',
+      pipe(
+        RM.fromReaderTaskEither(getContactEmailAddress(user.orcid)),
+        RM.map(originalEmailAddress => originalEmailAddress.value),
+        RM.orElseW(() => RM.of(undefined)),
+      ),
+    ),
+    RM.ichainW(({ emailAddress, originalEmailAddress }) =>
       match(emailAddress)
+        .with(
+          originalEmailAddress,
+          RM.fromMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
+        )
         .with(P.string, emailAddress =>
           pipe(
             RM.fromReaderTaskEither(saveContactEmailAddress(user.orcid, { type: 'unverified', value: emailAddress })),
