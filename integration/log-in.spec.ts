@@ -38,6 +38,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
+    await page.goto('/my-details/verify-email-address')
+
+    await expect(page.getByRole('main')).not.toContainText('Unverified')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
     await page.getByRole('link', { name: 'Change email address' }).click()
 
     await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')

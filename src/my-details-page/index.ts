@@ -10,3 +10,4 @@ export { changeOpenForRequestsVisibility } from './change-open-for-requests-visi
 export { changeResearchInterests } from './change-research-interests'
 export { changeResearchInterestsVisibility } from './change-research-interests-visibility'
 export { myDetails } from './my-details'
+export { verifyContactEmailAddress } from './verify-contact-email-address'

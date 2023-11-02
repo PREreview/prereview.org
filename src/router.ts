@@ -71,6 +71,7 @@ import {
   changeResearchInterests,
   changeResearchInterestsVisibility,
   myDetails,
+  verifyContactEmailAddress,
 } from './my-details-page'
 import { getNameFromOrcid } from './orcid'
 import type { TemplatePageEnv } from './page'
@@ -125,6 +126,7 @@ import {
   reviewsMatch,
   scietyListMatch,
   trainingsMatch,
+  verifyContactEmailAddressMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
@@ -561,6 +563,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       changeContactEmailAddressMatch.parser,
       P.map(() => changeContactEmailAddress),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteContactEmailAddress: withEnv(deleteContactEmailAddress, env),
+          getContactEmailAddress: withEnv(getContactEmailAddress, env),
+          saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
+        })),
+      ),
+    ),
+    pipe(
+      verifyContactEmailAddressMatch.parser,
+      P.map(() => verifyContactEmailAddress),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
