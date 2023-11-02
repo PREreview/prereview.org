@@ -7,6 +7,7 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { getContactEmailAddress, saveContactEmailAddress } from '../contact-email-address'
 import { canChangeContactEmailAddress } from '../feature-flags'
+import { setFlashMessage } from '../flash-message'
 import { logInAndRedirect } from '../log-in'
 import { notFound, serviceUnavailable } from '../middleware'
 import type { FathomEnv, PhaseEnv } from '../page'
@@ -47,6 +48,7 @@ export const verifyContactEmailAddress = pipe(
   ),
   RM.ichain(() => RM.status(Status.SeeOther)),
   RM.ichain(() => RM.header('Location', format(myDetailsMatch.formatter, {}))),
+  RM.ichainMiddlewareKW(() => setFlashMessage('contact-email-verified')),
   RM.ichain(() => RM.closeHeaders()),
   RM.ichain(() => RM.end()),
   RM.orElseW(error =>

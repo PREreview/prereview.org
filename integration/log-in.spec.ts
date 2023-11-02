@@ -24,7 +24,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
   'can give my email address',
-  async ({ page }) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
     await page.getByRole('link', { name: 'Enter email address' }).click()
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
@@ -40,9 +40,18 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
 
     await page.goto('/my-details/verify-email-address')
 
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+    }
     await expect(page.getByRole('main')).not.toContainText('Unverified')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 
     await page.getByRole('link', { name: 'Change email address' }).click()
 

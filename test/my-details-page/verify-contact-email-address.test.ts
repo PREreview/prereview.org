@@ -41,6 +41,7 @@ describe('verifyContactEmailAddress', () => {
         E.right([
           { type: 'setStatus', status: Status.SeeOther },
           { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+          { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'contact-email-verified' },
           { type: 'endResponse' },
         ]),
       )
