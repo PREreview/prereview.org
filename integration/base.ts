@@ -19,6 +19,7 @@ import { URL } from 'url'
 import { type ConfigEnv, app } from '../src/app'
 import type { CanChangeContactEmailAddressEnv } from '../src/feature-flags'
 import type {
+  ContactEmailAddressStoreEnv,
   IsOpenForRequestsStoreEnv,
   LanguagesStoreEnv,
   LocationStoreEnv,
@@ -55,6 +56,7 @@ interface AppFixtures {
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: ConfigEnv['slackUserIdStore']
   canChangeContactEmailAddress: CanChangeContactEmailAddressEnv['canChangeContactEmailAddress']
+  contactEmailAddressStore: ContactEmailAddressStoreEnv['contactEmailAddressStore']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
 }
@@ -74,6 +76,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   canChangeContactEmailAddress: async ({}, use) => {
     await use(() => false)
+  },
+  contactEmailAddressStore: async ({}, use) => {
+    await use(new Keyv())
   },
   fetch: async ({}, use) => {
     const fetch = fetchMock.sandbox()
@@ -806,6 +811,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       port,
       updatesLegacyPrereview,
       careerStageStore,
+      contactEmailAddressStore,
       isOpenForRequestsStore,
       isUserBlocked,
       languagesStore,
@@ -824,7 +830,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       fetch,
       formStore: new Keyv(),
       careerStageStore,
-      contactEmailAddressStore: new Keyv(),
+      contactEmailAddressStore,
       ghostApi: {
         key: 'key',
       },

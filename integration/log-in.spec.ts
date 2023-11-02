@@ -1,4 +1,6 @@
+import all from 'it-all'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
+import type { UnverifiedContactEmailAddress } from '../src/contact-email-address'
 import { areLoggedIn, canChangeContactEmailAddress, canLogIn, expect, isASlackUser, test, userIsBlocked } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
@@ -24,7 +26,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
   'can give my email address',
-  async ({ javaScriptEnabled, page }) => {
+  async ({ contactEmailAddressStore, javaScriptEnabled, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
     await page.getByRole('link', { name: 'Enter email address' }).click()
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
@@ -38,7 +40,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    await page.goto('/my-details/change-email-address?verify=jcarberry@example.com')
+    const contactEmailAddresses = (await all(contactEmailAddressStore.iterator(undefined))) as Array<
+      [unknown, UnverifiedContactEmailAddress]
+    >
+
+    await page.goto(`/my-details/change-email-address?verify=${contactEmailAddresses[0]?.[1].verificationToken}`)
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()

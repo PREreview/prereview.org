@@ -5,6 +5,7 @@ import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
+import type { Uuid } from 'uuid-ts'
 import { getContactEmailAddress, isUnverified, saveContactEmailAddress } from '../contact-email-address'
 import { canChangeContactEmailAddress } from '../feature-flags'
 import { setFlashMessage } from '../flash-message'
@@ -13,12 +14,11 @@ import { notFound, serviceUnavailable } from '../middleware'
 import type { FathomEnv, PhaseEnv } from '../page'
 import type { PublicUrlEnv } from '../public-url'
 import { myDetailsMatch, verifyContactEmailAddressMatch } from '../routes'
-import { type EmailAddress, eqEmailAddress } from '../types/email-address'
 import { type GetUserEnv, getUser } from '../user'
 
 export type Env = EnvFor<ReturnType<typeof verifyContactEmailAddress>>
 
-export const verifyContactEmailAddress = (verify: EmailAddress) =>
+export const verifyContactEmailAddress = (verify: Uuid) =>
   pipe(
     getUser,
     RM.bindTo('user'),
@@ -38,8 +38,8 @@ export const verifyContactEmailAddress = (verify: EmailAddress) =>
         RM.fromReaderTaskEitherK(({ user }) => getContactEmailAddress(user.orcid)),
         RM.filterOrElseW(isUnverified, () => 'already-verified' as const),
         RM.filterOrElseW(
-          contactEmailAddress => eqEmailAddress.equals(contactEmailAddress.value, verify),
-          () => 'wrong-email-address' as const,
+          contactEmailAddress => contactEmailAddress.verificationToken === verify,
+          () => 'invalid-token' as const,
         ),
       ),
     ),
@@ -65,7 +65,7 @@ export const verifyContactEmailAddress = (verify: EmailAddress) =>
             void
           >
         >()
-        .with('already-verified', 'not-found', 'wrong-email-address', () => notFound)
+        .with('already-verified', 'not-found', 'invalid-token', () => notFound)
         .with('no-session', () => logInAndRedirect(verifyContactEmailAddressMatch.formatter, { verify }))
         .with(P.instanceOf(Error), 'unavailable', () => serviceUnavailable)
         .exhaustive(),
