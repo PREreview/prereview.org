@@ -22,6 +22,7 @@ import {
   verifyContactEmailAddress,
 } from '../contact-email-address'
 import { canChangeContactEmailAddress } from '../feature-flags'
+import { setFlashMessage } from '../flash-message'
 import { type InvalidE, getInput, hasAnError, invalidE } from '../form'
 import { html, plainText, sendHtml } from '../html'
 import { logInAndRedirect } from '../log-in'
@@ -155,7 +156,11 @@ const handleChangeContactEmailAddressForm = (user: User) =>
             RM.chainFirstReaderTaskEitherKW(contactEmailAddress =>
               verifyContactEmailAddress(user, contactEmailAddress),
             ),
-            RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
+            RM.ichain(() => RM.status(Status.SeeOther)),
+            RM.ichain(() => RM.header('Location', format(myDetailsMatch.formatter, {}))),
+            RM.ichainMiddlewareKW(() => setFlashMessage('verify-contact-email')),
+            RM.ichain(() => RM.closeHeaders()),
+            RM.ichain(() => RM.end()),
             RM.orElseW(() => serviceUnavailable),
           ),
         )

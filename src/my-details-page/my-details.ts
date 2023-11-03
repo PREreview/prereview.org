@@ -43,7 +43,12 @@ import { type GetUserEnv, type User, getUser } from '../user'
 
 export type Env = EnvFor<typeof myDetails>
 
-const FlashMessageD = D.literal('contact-email-verified', 'slack-connected', 'slack-disconnected')
+const FlashMessageD = D.literal(
+  'verify-contact-email',
+  'contact-email-verified',
+  'slack-connected',
+  'slack-disconnected',
+)
 
 export const myDetails = pipe(
   getUser,
@@ -112,6 +117,16 @@ function createPage({
     content: html`
       <main id="main-content">
         ${match(message)
+          .with(
+            'verify-contact-email',
+            () => html`
+              <notification-banner aria-labelledby="notification-banner-title" type="notice" role="alert">
+                <h2 id="notification-banner-title">Important</h2>
+
+                <p>We’re sending you an email. Please open it and follow the link to verify your address.</p>
+              </notification-banner>
+            `,
+          )
           .with(
             'contact-email-verified',
             () => html`

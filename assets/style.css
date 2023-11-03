@@ -62,6 +62,7 @@
   --color-divider-light: var(--color-black-10);
   --color-error: var(--color-red-200);
   --color-success: var(--color-green-400);
+  --color-notice: var(--color-blue-90);
   --width-divider-narrow: calc(var(--width-divider) / 1.5);
   --width-divider: 4px;
   --width-divider-wide: calc(var(--width-divider) * 1.5);
@@ -1244,6 +1245,10 @@ notification-banner {
 
   &[type='failure'] {
     --outside-color: var(--color-error);
+  }
+
+  &[type='notice'] {
+    --outside-color: var(--color-notice);
   }
 
   & > * {

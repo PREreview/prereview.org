@@ -91,6 +91,12 @@ describe('changeContactEmailAddress', () => {
               E.right([
                 { type: 'setStatus', status: Status.SeeOther },
                 { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+                {
+                  type: 'setCookie',
+                  name: 'flash-message',
+                  options: { httpOnly: true },
+                  value: 'verify-contact-email',
+                },
                 { type: 'endResponse' },
               ]),
             )

@@ -41,9 +41,18 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Important' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Important' })).toBeInViewport()
+    }
     await expect(page.getByRole('main')).toContainText('Email address jcarberry@example.com Unverified')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Important' })).toBeHidden()
 
     await page.setContent(getLastMailjetEmailBody(fetch))
     await page.getByRole('link').click()
