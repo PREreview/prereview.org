@@ -726,7 +726,7 @@ math {
 
     @media screen {
       max-block-size: 75vb;
-      overflow-y: auto;
+      overflow-block: auto;
       scrollbar-gutter: stable;
 
       @media (height >= 50em) {
@@ -1425,7 +1425,7 @@ html-editor {
 }
 
 :--textarea {
-  overflow-y: auto;
+  overflow-block: auto;
   resize: block;
   cursor: text;
   scrollbar-gutter: stable;
@@ -1628,7 +1628,7 @@ html-editor {
 
   @media screen {
     max-block-size: 75vb;
-    overflow-y: auto;
+    overflow-block: auto;
     scrollbar-gutter: stable;
 
     &:is(article) {
@@ -1819,7 +1819,7 @@ skip-link {
         flex-wrap: nowrap;
         justify-content: flex-start;
         padding-block: var(--width-divider);
-        overflow-x: auto;
+        overflow-inline: auto;
         overscroll-behavior-inline: contain;
         scrollbar-gutter: stable;
         scroll-snap-type: inline mandatory;
@@ -1888,11 +1888,11 @@ skip-link {
         flex-direction: column;
         align-items: flex-end;
         padding-block: var(--space-m) var(--space-xl-2xl);
-        overflow-y: auto;
+        overflow-block: auto;
         background-color: var(--color-background-alt);
         inset-block: 0;
         inset-inline: 0 50%;
-        overscroll-behavior-y: contain;
+        overscroll-behavior-block: contain;
         scrollbar-gutter: stable;
 
         &:focus-visible {
