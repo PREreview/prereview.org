@@ -11,7 +11,7 @@ import * as D from 'io-ts/Decoder'
 import * as E from 'io-ts/Encoder'
 import * as L from 'logger-fp-ts'
 import type { UnverifiedContactEmailAddress } from './contact-email-address'
-import { RawHtmlC, html } from './html'
+import { RawHtmlC, html, mjmlToHtml } from './html'
 import { toUrl } from './public-url'
 import { verifyContactEmailAddressMatch } from './routes'
 import { type EmailAddress, EmailAddressC } from './types/email-address'
@@ -53,12 +53,19 @@ export const sendContactEmailAddressVerificationEmail = (user: User, emailAddres
           To: [{ Email: emailAddress.value, name: user.name }],
           Subject: 'Verify your email address on PREreview',
           TextPart: `Hi ${user.name},\n\nPlease verify your email address on PREreview by going to ${verificationUrl.href}`,
-          HtmlPart: html`
-            <p>Hi ${user.name},</p>
-            <p>
-              Please verify your email address on PREreview: <a href="${verificationUrl.href}">Verify email address</a>
-            </p>
-          `,
+          HtmlPart: mjmlToHtml(html`
+            <mjml>
+              <mj-body>
+                <mj-section>
+                  <mj-column>
+                    <mj-text>Hi ${user.name},</mj-text>
+                    <mj-text>Please verify your email address on PREreview:</mj-text>
+                    <mj-button href="${verificationUrl.href}" target="_self">Verify email address</mj-button>
+                  </mj-column>
+                </mj-section>
+              </mj-body>
+            </mjml>
+          `),
         }) satisfies E.TypeOf<typeof SendEmailE>,
     ),
     RTE.chainW(sendEmail),

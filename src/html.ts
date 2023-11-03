@@ -6,6 +6,7 @@ import * as M from 'hyper-ts/Middleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import katex from 'katex'
+import processMjml from 'mjml'
 import nanohtml from 'nanohtml'
 import raw from 'nanohtml/raw'
 import sanitize from 'sanitize-html'
@@ -32,6 +33,10 @@ export function html(
 
 export function rawHtml(html: string): Html {
   return raw(texToMathml(html)) as unknown as Html
+}
+
+export function mjmlToHtml(mjml: Html): Html {
+  return raw(processMjml(mjml.toString()).html) as unknown as Html
 }
 
 export function sanitizeHtml(html: string, trusted = false): Html {
