@@ -4,10 +4,12 @@ import type { Json } from 'fp-ts/Json'
 import * as J from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { constVoid, identity, pipe } from 'fp-ts/function'
+import * as TE from 'fp-ts/TaskEither'
+import { constVoid, flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as E from 'io-ts/Encoder'
+import * as L from 'logger-fp-ts'
 import type { UnverifiedContactEmailAddress } from './contact-email-address'
 import { RawHtmlC, html } from './html'
 import { toUrl } from './public-url'
@@ -74,8 +76,10 @@ const sendEmail = (email: E.TypeOf<typeof SendEmailE>) =>
     ),
     RTE.chainReaderK(addMailjetApiHeaders),
     RTE.chainW(F.send),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-    RTE.chainTaskEitherKW(F.decode(SentEmailD)),
+    RTE.mapLeft(() => 'network-error' as const),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+    RTE.chainTaskEitherKW(flow(F.decode(SentEmailD), TE.mapLeft(D.draw))),
+    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to send email through Mailjet')))),
     RTE.bimap(() => 'unavailable' as const, constVoid),
   )
 

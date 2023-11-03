@@ -1,7 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as IO from 'fp-ts/IO'
 import * as _ from '../src/mailjet'
 import * as fc from './fc'
 
@@ -45,6 +47,8 @@ describe('sendContactEmailAddressVerificationEmail', () => {
       fetch,
       mailjetApi,
       publicUrl,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.right(undefined))
@@ -88,6 +92,8 @@ describe('sendContactEmailAddressVerificationEmail', () => {
       fetch,
       mailjetApi,
       publicUrl,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -131,6 +137,8 @@ describe('sendContactEmailAddressVerificationEmail', () => {
       fetch,
       mailjetApi,
       publicUrl,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -155,6 +163,8 @@ describe('sendContactEmailAddressVerificationEmail', () => {
       fetch: () => Promise.reject(error),
       mailjetApi,
       publicUrl,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
