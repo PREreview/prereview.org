@@ -56,8 +56,7 @@ export const sendContactEmailAddressVerificationEmail = (user: User, emailAddres
           HtmlPart: html`
             <p>Hi ${user.name},</p>
             <p>
-              Please verify your email address on PREreview by going to
-              <a href="${verificationUrl.href}">${verificationUrl.href}</a>
+              Please verify your email address on PREreview: <a href="${verificationUrl.href}">Verify email address</a>
             </p>
           `,
         }) satisfies E.TypeOf<typeof SendEmailE>,

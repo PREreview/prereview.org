@@ -55,7 +55,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
     await expect(page.getByRole('alert', { name: 'Important' })).toBeHidden()
 
     await page.setContent(getLastMailjetEmailBody(fetch))
-    await page.getByRole('link').click()
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Verify email address' }).click()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
