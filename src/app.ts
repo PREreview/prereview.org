@@ -39,6 +39,7 @@ import {
 } from './legacy-prereview'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes'
 import type { IsUserBlockedEnv } from './log-in'
+import type { MailjetApiEnv } from './mailjet'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import { getPreprintFromPhilsci } from './philsci'
 import type { PublicUrlEnv } from './public-url'
@@ -63,6 +64,7 @@ export type ConfigEnv = CareerStageStoreEnv &
   LegacyPrereviewApiEnv &
   LocationStoreEnv &
   L.LoggerEnv &
+  MailjetApiEnv &
   OAuthEnv &
   PhaseEnv &
   PublicUrlEnv &

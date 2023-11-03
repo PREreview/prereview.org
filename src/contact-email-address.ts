@@ -8,6 +8,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { type Uuid, isUuid } from 'uuid-ts'
 import { type EmailAddress, EmailAddressC } from './types/email-address'
+import type { User } from './user'
 
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
 
@@ -31,6 +32,13 @@ export interface EditContactEmailAddressEnv extends GetContactEmailAddressEnv {
   saveContactEmailAddress: (
     orcid: Orcid,
     ContactEmailAddress: ContactEmailAddress,
+  ) => TE.TaskEither<'unavailable', void>
+}
+
+export interface VerifyContactEmailAddressEnv {
+  verifyContactEmailAddress: (
+    user: User,
+    emailAddress: UnverifiedContactEmailAddress,
   ) => TE.TaskEither<'unavailable', void>
 }
 
@@ -88,6 +96,14 @@ export const saveContactEmailAddress = (
 ): RTE.ReaderTaskEither<EditContactEmailAddressEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ saveContactEmailAddress }) => saveContactEmailAddress(orcid, emailAddress)),
+  )
+
+export const verifyContactEmailAddress = (
+  user: User,
+  emailAddress: UnverifiedContactEmailAddress,
+): RTE.ReaderTaskEither<VerifyContactEmailAddressEnv, 'unavailable', void> =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ verifyContactEmailAddress }) => verifyContactEmailAddress(user, emailAddress)),
   )
 
 export const isUnverified: Refinement<ContactEmailAddress, UnverifiedContactEmailAddress> = (

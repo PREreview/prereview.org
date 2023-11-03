@@ -845,6 +845,11 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
       locationStore,
       logger,
+      mailjetApi: {
+        key: 'key',
+        secret: 'secret',
+        sandbox: false,
+      },
       oauth: {
         authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
         clientId: 'client-id',

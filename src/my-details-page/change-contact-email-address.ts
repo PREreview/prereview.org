@@ -14,7 +14,13 @@ import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { deleteContactEmailAddress, getContactEmailAddress, saveContactEmailAddress } from '../contact-email-address'
+import {
+  type UnverifiedContactEmailAddress,
+  deleteContactEmailAddress,
+  getContactEmailAddress,
+  saveContactEmailAddress,
+  verifyContactEmailAddress,
+} from '../contact-email-address'
 import { canChangeContactEmailAddress } from '../feature-flags'
 import { type InvalidE, getInput, hasAnError, invalidE } from '../form'
 import { html, plainText, sendHtml } from '../html'
@@ -135,8 +141,19 @@ const handleChangeContactEmailAddressForm = (user: User) =>
         .with(P.string, emailAddress =>
           pipe(
             RM.fromReaderIO(generateUuid),
-            RM.chainReaderTaskEitherKW(verificationToken =>
-              saveContactEmailAddress(user.orcid, { type: 'unverified', value: emailAddress, verificationToken }),
+            RM.map(
+              verificationToken =>
+                ({
+                  type: 'unverified',
+                  value: emailAddress,
+                  verificationToken,
+                }) satisfies UnverifiedContactEmailAddress,
+            ),
+            RM.chainFirstReaderTaskEitherKW(contactEmailAddress =>
+              saveContactEmailAddress(user.orcid, contactEmailAddress),
+            ),
+            RM.chainFirstReaderTaskEitherKW(contactEmailAddress =>
+              verifyContactEmailAddress(user, contactEmailAddress),
             ),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),

@@ -75,6 +75,11 @@ const server = app({
   },
   languagesStore: new Keyv({ namespace: 'languages', store: keyvStore }),
   locationStore: new Keyv({ namespace: 'location', store: keyvStore }),
+  mailjetApi: {
+    key: env.MAILJET_API_KEY,
+    secret: env.MAILJET_API_SECRET,
+    sandbox: env.MAILJET_API_SANDBOX,
+  },
   oauth: {
     authorizeUrl: new URL('https://orcid.org/oauth/authorize'),
     clientId: env.ORCID_CLIENT_ID,

@@ -58,6 +58,7 @@ import {
 } from './legacy-prereview'
 import { liveReviews } from './live-reviews'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
+import { sendContactEmailAddressVerificationEmail } from './mailjet'
 import {
   changeCareerStage,
   changeCareerStageVisibility,
@@ -570,6 +571,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getContactEmailAddress: withEnv(getContactEmailAddress, env),
           generateUuid: uuid.v4(),
           saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
+          verifyContactEmailAddress: withEnv(sendContactEmailAddressVerificationEmail, env),
         })),
       ),
     ),

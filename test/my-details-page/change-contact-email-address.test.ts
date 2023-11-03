@@ -35,6 +35,7 @@ describe('changeContactEmailAddress', () => {
           deleteContactEmailAddress: shouldNotBeCalled,
           getContactEmailAddress: () => TE.fromEither(emailAddress),
           saveContactEmailAddress: shouldNotBeCalled,
+          verifyContactEmailAddress: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -69,6 +70,7 @@ describe('changeContactEmailAddress', () => {
           'when it is different to the previous value',
           async (oauth, publicUrl, [emailAddress, connection], user, existingEmailAddress, verificationToken) => {
             const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
+            const verifyContactEmailAddress = jest.fn<_.Env['verifyContactEmailAddress']>(_ => TE.right(undefined))
 
             const actual = await runMiddleware(
               _.changeContactEmailAddress({
@@ -80,6 +82,7 @@ describe('changeContactEmailAddress', () => {
                 deleteContactEmailAddress: shouldNotBeCalled,
                 getContactEmailAddress: () => TE.fromEither(existingEmailAddress),
                 saveContactEmailAddress,
+                verifyContactEmailAddress,
               }),
               connection,
             )()
@@ -92,6 +95,11 @@ describe('changeContactEmailAddress', () => {
               ]),
             )
             expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
+              type: 'unverified',
+              value: emailAddress,
+              verificationToken,
+            })
+            expect(verifyContactEmailAddress).toHaveBeenCalledWith(user, {
               type: 'unverified',
               value: emailAddress,
               verificationToken,
@@ -125,6 +133,7 @@ describe('changeContactEmailAddress', () => {
                 deleteContactEmailAddress: shouldNotBeCalled,
                 getContactEmailAddress: () => TE.right(existingEmailAddress),
                 saveContactEmailAddress: shouldNotBeCalled,
+                verifyContactEmailAddress: shouldNotBeCalled,
               }),
               connection,
             )()
@@ -164,6 +173,7 @@ describe('changeContactEmailAddress', () => {
             deleteContactEmailAddress: shouldNotBeCalled,
             getContactEmailAddress: () => TE.fromEither(emailAddress),
             saveContactEmailAddress: shouldNotBeCalled,
+            verifyContactEmailAddress: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -200,6 +210,46 @@ describe('changeContactEmailAddress', () => {
               deleteContactEmailAddress: () => TE.left('unavailable'),
               getContactEmailAddress: () => TE.fromEither(emailAddress),
               saveContactEmailAddress: () => TE.left('unavailable'),
+              verifyContactEmailAddress: shouldNotBeCalled,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.ServiceUnavailable },
+              { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+        },
+      )
+
+      test.prop([
+        fc.oauth(),
+        fc.origin(),
+        fc.connection({
+          body: fc.record({ emailAddress: fc.emailAddress() }),
+          method: fc.constant('POST'),
+        }),
+        fc.user(),
+        fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+        fc.uuid(),
+      ])(
+        'the verification email cannot be sent',
+        async (oauth, publicUrl, connection, user, emailAddress, verificationToken) => {
+          const actual = await runMiddleware(
+            _.changeContactEmailAddress({
+              canChangeContactEmailAddress: () => true,
+              getUser: () => M.right(user),
+              publicUrl,
+              oauth,
+              generateUuid: () => verificationToken,
+              deleteContactEmailAddress: () => shouldNotBeCalled,
+              getContactEmailAddress: () => TE.fromEither(emailAddress),
+              saveContactEmailAddress: () => TE.right(undefined),
+              verifyContactEmailAddress: () => TE.left('unavailable'),
             }),
             connection,
           )()
@@ -240,6 +290,7 @@ describe('changeContactEmailAddress', () => {
                 deleteContactEmailAddress,
                 getContactEmailAddress: () => TE.right(existingEmailAddress),
                 saveContactEmailAddress: shouldNotBeCalled,
+                verifyContactEmailAddress: shouldNotBeCalled,
               }),
               connection,
             )()
@@ -274,6 +325,7 @@ describe('changeContactEmailAddress', () => {
               deleteContactEmailAddress: shouldNotBeCalled,
               getContactEmailAddress: () => TE.left('not-found'),
               saveContactEmailAddress: shouldNotBeCalled,
+              verifyContactEmailAddress: shouldNotBeCalled,
             }),
             connection,
           )()
@@ -303,6 +355,7 @@ describe('changeContactEmailAddress', () => {
           deleteContactEmailAddress: shouldNotBeCalled,
           getContactEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
+          verifyContactEmailAddress: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -343,6 +396,7 @@ describe('changeContactEmailAddress', () => {
           deleteContactEmailAddress: shouldNotBeCalled,
           getContactEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
+          verifyContactEmailAddress: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -371,6 +425,7 @@ describe('changeContactEmailAddress', () => {
           deleteContactEmailAddress: shouldNotBeCalled,
           getContactEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
+          verifyContactEmailAddress: shouldNotBeCalled,
         }),
         connection,
       )()

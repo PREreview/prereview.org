@@ -1,6 +1,9 @@
-import all from 'it-all'
+import type { FetchMockSandbox } from 'fetch-mock'
+import * as E from 'fp-ts/Either'
+import * as J from 'fp-ts/Json'
+import { pipe } from 'fp-ts/function'
+import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import type { UnverifiedContactEmailAddress } from '../src/contact-email-address'
 import { areLoggedIn, canChangeContactEmailAddress, canLogIn, expect, isASlackUser, test, userIsBlocked } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
@@ -26,7 +29,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
   'can give my email address',
-  async ({ contactEmailAddressStore, javaScriptEnabled, page }) => {
+  async ({ javaScriptEnabled, fetch, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
     await page.getByRole('link', { name: 'Enter email address' }).click()
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
@@ -34,17 +37,16 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
+    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('Email address jcarberry@example.com Unverified')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    const contactEmailAddresses = (await all(contactEmailAddressStore.iterator(undefined))) as Array<
-      [unknown, UnverifiedContactEmailAddress]
-    >
-
-    await page.goto(`/my-details/change-email-address?verify=${contactEmailAddresses[0]?.[1].verificationToken}`)
+    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.getByRole('link').click()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
@@ -606,4 +608,30 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
+)
+
+const getLastMailjetEmailBody = (fetch: FetchMockSandbox) => {
+  return pipe(
+    MailjetEmailD.decode(String(fetch.lastOptions('https://api.mailjet.com/v3.1/send')?.body)),
+    E.match(
+      () => {
+        throw new Error('No email found')
+      },
+      email => email.HtmlPart,
+    ),
+  )
+}
+
+const JsonD = {
+  decode: (s: string) =>
+    pipe(
+      J.parse(s),
+      E.mapLeft(() => D.error(s, 'JSON')),
+    ),
+}
+
+const MailjetEmailD = pipe(
+  JsonD,
+  D.compose(D.struct({ Messages: D.tuple(D.struct({ HtmlPart: D.string })) })),
+  D.map(body => body.Messages[0]),
 )
