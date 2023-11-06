@@ -19,10 +19,10 @@ export const ediStatement = pipe(
 
 function createPage({ content, user }: { content: Html; user?: User }) {
   return page({
-    title: plainText`EDI Statement`,
+    title: plainText`Equity, Diversity, Inclusion, and Accessibility Statement`,
     content: html`
       <main id="main-content">
-        <h1>EDI Statement</h1>
+        <h1>Equity, Diversity, Inclusion, and Accessibility Statement</h1>
 
         ${fixHeadingLevels(1, content)}
       </main>
