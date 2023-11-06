@@ -46,7 +46,7 @@ export interface Page {
     | 'about-us'
     | 'clubs'
     | 'code-of-conduct'
-    | 'edi-statement'
+    | 'edia-statement'
     | 'funding'
     | 'home'
     | 'how-to-use'
@@ -256,8 +256,8 @@ export function page({
                     <li>
                       <a
                         href="${format(ediStatementMatch.formatter, {})}"
-                        ${current === 'edi-statement' ? html`aria-current="page"` : ''}
-                        >EDI Statement</a
+                        ${current === 'edia-statement' ? html`aria-current="page"` : ''}
+                        >EDIA Statement</a
                       >
                     </li>
                     <li>

@@ -8,10 +8,10 @@ test('can read the EDIA statement', async ({ fetch, page }) => {
     { body: { pages: [{ html: '<p>The EDIA statement.</p>' }] } },
   )
 
-  await page.getByRole('link', { name: 'EDI Statement' }).click()
+  await page.getByRole('link', { name: 'EDIA Statement' }).click()
 
   await expect(page.getByRole('main')).toContainText('The EDIA statement.')
-  await expect(page.getByRole('link', { name: 'EDI Statement' })).toHaveAttribute('aria-current', 'page')
+  await expect(page.getByRole('link', { name: 'EDIA Statement' })).toHaveAttribute('aria-current', 'page')
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 })
