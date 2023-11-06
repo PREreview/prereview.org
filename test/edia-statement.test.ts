@@ -4,11 +4,11 @@ import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import * as _ from '../src/edi-statement'
+import * as _ from '../src/edia-statement'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 
-describe('ediStatement', () => {
+describe('ediaStatement', () => {
   test.prop([
     fc.connection({ method: fc.requestMethod() }),
     fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
@@ -23,7 +23,7 @@ describe('ediStatement', () => {
     )
 
     const actual = await runMiddleware(
-      _.ediStatement({
+      _.ediaStatement({
         fetch,
         ghostApi: { key },
         getUser: () => M.fromEither(user),
@@ -55,7 +55,7 @@ describe('ediStatement', () => {
     )
 
     const actual = await runMiddleware(
-      _.ediStatement({
+      _.ediaStatement({
         fetch,
         ghostApi: { key },
         getUser: () => M.fromEither(user),

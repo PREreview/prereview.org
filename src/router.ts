@@ -22,7 +22,7 @@ import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from './connect-slack'
 import { disconnectSlack } from './disconnect-slack'
-import { ediStatement } from './edi-statement'
+import { ediaStatement } from './edia-statement'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
 import { home } from './home'
@@ -278,7 +278,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       ediaStatementMatch.parser,
-      P.map(() => ediStatement),
+      P.map(() => ediaStatement),
     ),
     pipe(
       clubsMatch.parser,
