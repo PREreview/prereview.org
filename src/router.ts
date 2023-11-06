@@ -106,7 +106,7 @@ import {
   connectSlackMatch,
   connectSlackStartMatch,
   disconnectSlackMatch,
-  ediStatementMatch,
+  ediaStatementMatch,
   findAPreprintMatch,
   fundingMatch,
   homeMatch,
@@ -277,7 +277,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(() => codeOfConduct),
     ),
     pipe(
-      ediStatementMatch.parser,
+      ediaStatementMatch.parser,
       P.map(() => ediStatement),
     ),
     pipe(

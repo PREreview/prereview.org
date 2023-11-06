@@ -10,7 +10,7 @@ import {
   aboutUsMatch,
   clubsMatch,
   codeOfConductMatch,
-  ediStatementMatch,
+  ediaStatementMatch,
   fundingMatch,
   homeMatch,
   howToUseMatch,
@@ -255,7 +255,7 @@ export function page({
                     </li>
                     <li>
                       <a
-                        href="${format(ediStatementMatch.formatter, {})}"
+                        href="${format(ediaStatementMatch.formatter, {})}"
                         ${current === 'edia-statement' ? html`aria-current="page"` : ''}
                         >EDIA Statement</a
                       >

@@ -139,7 +139,7 @@ export const howToUseMatch = pipe(P.lit('how-to-use'), P.then(P.end))
 
 export const codeOfConductMatch = pipe(P.lit('code-of-conduct'), P.then(P.end))
 
-export const ediStatementMatch = pipe(P.lit('edi-statement'), P.then(P.end))
+export const ediaStatementMatch = pipe(P.lit('edia-statement'), P.then(P.end))
 
 export const clubsMatch = pipe(P.lit('clubs'), P.then(P.end))
 

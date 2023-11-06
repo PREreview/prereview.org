@@ -22,7 +22,7 @@ test('can skip to the main content', async ({ fetch, javaScriptEnabled, page }) 
     { body: { pages: [{ html: '<p>The EDIA statement.</p>' }] } },
   )
 
-  await page.goto('/edi-statement')
+  await page.goto('/edia-statement')
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
@@ -42,7 +42,7 @@ test('might not load the text in time', async ({ fetch, javaScriptEnabled, page 
     new Promise(() => setTimeout(() => ({ body: { pages: [{ html: '<p>The EDIA statement.</p>' }] } }), 2000)),
   )
 
-  await page.goto('/edi-statement')
+  await page.goto('/edia-statement')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
   await expect(page).toHaveScreenshot()

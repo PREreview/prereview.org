@@ -21,6 +21,7 @@ import {
   aboutUsMatch,
   clubsMatch,
   codeOfConductMatch,
+  ediaStatementMatch,
   homeMatch,
   liveReviewsMatch,
   logInMatch,
@@ -241,6 +242,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     pipe(
       pipe(P.lit('docs'), P.then(P.lit('resources')), P.then(P.end)).parser,
       P.map(RM.fromMiddlewareK(() => movedPermanently('https://content.prereview.org/resources/'))),
+    ),
+    pipe(
+      pipe(P.lit('edi-statement'), P.then(P.end)).parser,
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(ediaStatementMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('events'), P.then(type('eventUuid', UuidC)), P.then(P.end)).parser,
