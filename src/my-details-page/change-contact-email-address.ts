@@ -21,12 +21,11 @@ import {
   saveContactEmailAddress,
   verifyContactEmailAddress,
 } from '../contact-email-address'
-import { canChangeContactEmailAddress } from '../feature-flags'
 import { setFlashMessage } from '../flash-message'
 import { type InvalidE, getInput, hasAnError, invalidE } from '../form'
 import { html, plainText, sendHtml } from '../html'
 import { logInAndRedirect } from '../log-in'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
+import { getMethod, seeOther, serviceUnavailable } from '../middleware'
 import { type FathomEnv, type PhaseEnv, page } from '../page'
 import type { PublicUrlEnv } from '../public-url'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes'
@@ -47,16 +46,6 @@ const generateUuid = pipe(
 export const changeContactEmailAddress = pipe(
   getUser,
   RM.bindTo('user'),
-  RM.bindW(
-    'canChangeContactEmailAddress',
-    flow(
-      RM.fromReaderK(({ user }) => canChangeContactEmailAddress(user)),
-      RM.filterOrElse(
-        canChangeContactEmailAddress => canChangeContactEmailAddress,
-        () => 'not-found' as const,
-      ),
-    ),
-  ),
   RM.apSW('method', RM.fromMiddleware(getMethod)),
   RM.ichainW(state =>
     match(state.method)
@@ -74,7 +63,6 @@ export const changeContactEmailAddress = pipe(
           void
         >
       >()
-      .with('not-found', () => notFound)
       .with('no-session', () => logInAndRedirect(myDetailsMatch.formatter, {}))
       .with(P.instanceOf(Error), () => serviceUnavailable)
       .exhaustive(),

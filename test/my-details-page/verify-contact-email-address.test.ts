@@ -12,130 +12,60 @@ import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('verifyContactEmailAddress', () => {
-  describe('when email addresses can be changed', () => {
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-      fc.user(),
-      fc.unverifiedContactEmailAddress(),
-    ])('when the email address is unverified', async (oauth, publicUrl, connection, user, contactEmailAddress) => {
-      const canChangeContactEmailAddress = jest.fn<_.Env['canChangeContactEmailAddress']>(_ => true)
-      const getContactEmailAddress = jest.fn<_.Env['getContactEmailAddress']>(_ => TE.right(contactEmailAddress))
-      const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
+  test.prop([
+    fc.oauth(),
+    fc.origin(),
+    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+    fc.user(),
+    fc.unverifiedContactEmailAddress(),
+  ])('when the email address is unverified', async (oauth, publicUrl, connection, user, contactEmailAddress) => {
+    const getContactEmailAddress = jest.fn<_.Env['getContactEmailAddress']>(_ => TE.right(contactEmailAddress))
+    const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
 
-      const actual = await runMiddleware(
-        _.verifyContactEmailAddress(contactEmailAddress.verificationToken)({
-          canChangeContactEmailAddress,
-          getUser: () => M.fromEither(E.right(user)),
-          publicUrl,
-          oauth,
-          deleteContactEmailAddress: shouldNotBeCalled,
-          getContactEmailAddress,
-          saveContactEmailAddress,
-        }),
-        connection,
-      )()
+    const actual = await runMiddleware(
+      _.verifyContactEmailAddress(contactEmailAddress.verificationToken)({
+        getUser: () => M.fromEither(E.right(user)),
+        publicUrl,
+        oauth,
+        deleteContactEmailAddress: shouldNotBeCalled,
+        getContactEmailAddress,
+        saveContactEmailAddress,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-          { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'contact-email-verified' },
-          { type: 'endResponse' },
-        ]),
-      )
-      expect(canChangeContactEmailAddress).toHaveBeenCalledWith(user)
-      expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
-      expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
-        type: 'verified',
-        value: contactEmailAddress.value,
-      })
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.SeeOther },
+        { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+        { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'contact-email-verified' },
+        { type: 'endResponse' },
+      ]),
+    )
+    expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
+    expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
+      type: 'verified',
+      value: contactEmailAddress.value,
     })
+  })
 
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-      fc.user(),
-      fc.uuid(),
-      fc.verifiedContactEmailAddress(),
-    ])(
-      'when the email address is already verified',
-      async (oauth, publicUrl, connection, user, id, contactEmailAddress) => {
-        const actual = await runMiddleware(
-          _.verifyContactEmailAddress(id)({
-            canChangeContactEmailAddress: () => true,
-            getUser: () => M.fromEither(E.right(user)),
-            publicUrl,
-            oauth,
-            deleteContactEmailAddress: shouldNotBeCalled,
-            getContactEmailAddress: () => TE.right(contactEmailAddress),
-            saveContactEmailAddress: shouldNotBeCalled,
-          }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.NotFound },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
-
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-      fc.user(),
-      fc.uuid(),
-      fc.unverifiedContactEmailAddress(),
-    ])(
-      "when the verification token doesn't match",
-      async (oauth, publicUrl, connection, user, id, contactEmailAddress) => {
-        const actual = await runMiddleware(
-          _.verifyContactEmailAddress(id)({
-            canChangeContactEmailAddress: () => true,
-            getUser: () => M.fromEither(E.right(user)),
-            publicUrl,
-            oauth,
-            deleteContactEmailAddress: shouldNotBeCalled,
-            getContactEmailAddress: () => TE.right(contactEmailAddress),
-            saveContactEmailAddress: shouldNotBeCalled,
-          }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.NotFound },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
-      },
-    )
-
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-      fc.user(),
-      fc.uuid(),
-    ])('when there is no email address', async (oauth, publicUrl, connection, user, id) => {
+  test.prop([
+    fc.oauth(),
+    fc.origin(),
+    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+    fc.user(),
+    fc.uuid(),
+    fc.verifiedContactEmailAddress(),
+  ])(
+    'when the email address is already verified',
+    async (oauth, publicUrl, connection, user, id, contactEmailAddress) => {
       const actual = await runMiddleware(
         _.verifyContactEmailAddress(id)({
-          canChangeContactEmailAddress: () => true,
           getUser: () => M.fromEither(E.right(user)),
           publicUrl,
           oauth,
           deleteContactEmailAddress: shouldNotBeCalled,
-          getContactEmailAddress: () => TE.left('not-found'),
+          getContactEmailAddress: () => TE.right(contactEmailAddress),
           saveContactEmailAddress: shouldNotBeCalled,
         }),
         connection,
@@ -149,23 +79,26 @@ describe('verifyContactEmailAddress', () => {
           { type: 'setBody', body: expect.anything() },
         ]),
       )
-    })
+    },
+  )
 
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-      fc.user(),
-      fc.uuid(),
-    ])("when the email address can't be loaded", async (oauth, publicUrl, connection, user, id) => {
+  test.prop([
+    fc.oauth(),
+    fc.origin(),
+    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+    fc.user(),
+    fc.uuid(),
+    fc.unverifiedContactEmailAddress(),
+  ])(
+    "when the verification token doesn't match",
+    async (oauth, publicUrl, connection, user, id, contactEmailAddress) => {
       const actual = await runMiddleware(
         _.verifyContactEmailAddress(id)({
-          canChangeContactEmailAddress: () => true,
           getUser: () => M.fromEither(E.right(user)),
           publicUrl,
           oauth,
           deleteContactEmailAddress: shouldNotBeCalled,
-          getContactEmailAddress: () => TE.left('unavailable'),
+          getContactEmailAddress: () => TE.right(contactEmailAddress),
           saveContactEmailAddress: shouldNotBeCalled,
         }),
         connection,
@@ -173,13 +106,71 @@ describe('verifyContactEmailAddress', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: expect.anything() },
         ]),
       )
-    })
+    },
+  )
+
+  test.prop([
+    fc.oauth(),
+    fc.origin(),
+    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+    fc.user(),
+    fc.uuid(),
+  ])('when there is no email address', async (oauth, publicUrl, connection, user, id) => {
+    const actual = await runMiddleware(
+      _.verifyContactEmailAddress(id)({
+        getUser: () => M.fromEither(E.right(user)),
+        publicUrl,
+        oauth,
+        deleteContactEmailAddress: shouldNotBeCalled,
+        getContactEmailAddress: () => TE.left('not-found'),
+        saveContactEmailAddress: shouldNotBeCalled,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.NotFound },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
+
+  test.prop([
+    fc.oauth(),
+    fc.origin(),
+    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+    fc.user(),
+    fc.uuid(),
+  ])("when the email address can't be loaded", async (oauth, publicUrl, connection, user, id) => {
+    const actual = await runMiddleware(
+      _.verifyContactEmailAddress(id)({
+        getUser: () => M.fromEither(E.right(user)),
+        publicUrl,
+        oauth,
+        deleteContactEmailAddress: shouldNotBeCalled,
+        getContactEmailAddress: () => TE.left('unavailable'),
+        saveContactEmailAddress: shouldNotBeCalled,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
   })
 
   test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.uuid()])(
@@ -187,7 +178,6 @@ describe('verifyContactEmailAddress', () => {
     async (oauth, publicUrl, connection, id) => {
       const actual = await runMiddleware(
         _.verifyContactEmailAddress(id)({
-          canChangeContactEmailAddress: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
           publicUrl,
           oauth,
@@ -226,7 +216,6 @@ describe('verifyContactEmailAddress', () => {
     async (oauth, publicUrl, connection, id, error) => {
       const actual = await runMiddleware(
         _.verifyContactEmailAddress(id)({
-          canChangeContactEmailAddress: shouldNotBeCalled,
           getUser: () => M.left(error),
           oauth,
           publicUrl,
@@ -240,33 +229,6 @@ describe('verifyContactEmailAddress', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
-
-  test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.user(), fc.uuid()])(
-    "when email addresses can't be changed",
-    async (oauth, publicUrl, connection, user, id) => {
-      const actual = await runMiddleware(
-        _.verifyContactEmailAddress(id)({
-          canChangeContactEmailAddress: () => false,
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          deleteContactEmailAddress: shouldNotBeCalled,
-          getContactEmailAddress: shouldNotBeCalled,
-          saveContactEmailAddress: shouldNotBeCalled,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: expect.anything() },

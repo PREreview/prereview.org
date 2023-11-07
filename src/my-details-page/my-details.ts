@@ -10,7 +10,6 @@ import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, maybeGetCareerStage } from '../career-stage'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../contact-email-address'
-import { canChangeContactEmailAddress } from '../feature-flags'
 import { deleteFlashMessage, getFlashMessage } from '../flash-message'
 import { html, plainText, sendHtml } from '../html'
 import { type IsOpenForRequests, maybeIsOpenForRequests } from '../is-open-for-requests'
@@ -57,7 +56,6 @@ export const myDetails = pipe(
       RTE.Do,
       RTE.let('user', () => user),
       RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(O.fromNullable))),
-      RTE.apSW('canChangeContactEmailAddress', RTE.fromReader(canChangeContactEmailAddress(user))),
       RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('careerStage', pipe(maybeGetCareerStage(user.orcid), RTE.map(O.fromNullable))),
@@ -93,7 +91,6 @@ function createPage({
   user,
   message,
   slackUser,
-  canChangeContactEmailAddress,
   contactEmailAddress,
   openForRequests,
   careerStage,
@@ -104,7 +101,6 @@ function createPage({
   user: User
   message?: D.TypeOf<typeof FlashMessageD>
   slackUser: O.Option<SlackUser>
-  canChangeContactEmailAddress: boolean
   contactEmailAddress: O.Option<ContactEmailAddress>
   openForRequests: O.Option<IsOpenForRequests>
   careerStage: O.Option<CareerStage>
@@ -228,10 +224,9 @@ function createPage({
               `,
             )
             .exhaustive()}
-          ${match({ canChangeContactEmailAddress, contactEmailAddress })
-            .with({ canChangeContactEmailAddress: false }, () => '')
-            .with(
-              { canChangeContactEmailAddress: true, contactEmailAddress: P.when(O.isNone) },
+          ${match(contactEmailAddress)
+            .when(
+              O.isNone,
               () => html`
                 <div>
                   <dt>Email address</dt>
@@ -242,7 +237,7 @@ function createPage({
               `,
             )
             .with(
-              { canChangeContactEmailAddress: true, contactEmailAddress: { value: P.select() } },
+              { value: P.select() },
               contactEmailAddress => html`
                 <div>
                   <dt>Email address</dt>

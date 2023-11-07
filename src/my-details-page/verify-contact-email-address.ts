@@ -7,7 +7,6 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { getContactEmailAddress, isUnverified, saveContactEmailAddress } from '../contact-email-address'
-import { canChangeContactEmailAddress } from '../feature-flags'
 import { setFlashMessage } from '../flash-message'
 import { logInAndRedirect } from '../log-in'
 import { notFound, serviceUnavailable } from '../middleware'
@@ -22,16 +21,6 @@ export const verifyContactEmailAddress = (verify: Uuid) =>
   pipe(
     getUser,
     RM.bindTo('user'),
-    RM.bindW(
-      'canChangeContactEmailAddress',
-      flow(
-        RM.fromReaderK(({ user }) => canChangeContactEmailAddress(user)),
-        RM.filterOrElse(
-          canChangeContactEmailAddress => canChangeContactEmailAddress,
-          () => 'not-found' as const,
-        ),
-      ),
-    ),
     RM.bindW(
       'contactEmailAddress',
       flow(

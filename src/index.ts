@@ -48,7 +48,6 @@ const server = app({
     },
   }),
   formStore: new Keyv({ namespace: 'forms', store: keyvStore }),
-  canChangeContactEmailAddress: () => true,
   careerStageStore: new Keyv({ namespace: 'career-stage', store: keyvStore }),
   ghostApi: {
     key: env.GHOST_API_KEY,
