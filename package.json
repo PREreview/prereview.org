@@ -90,7 +90,7 @@
     "@types/node": "^20.8.10",
     "@types/rtl-detect": "^1.0.3",
     "@types/sanitize-html": "^2.9.3",
-    "@types/turndown": "^5.0.3",
+    "@types/turndown": "^5.0.4",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "@web/dev-server-esbuild": "^1.0.0",
