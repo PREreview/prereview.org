@@ -82,7 +82,7 @@
     "@types/cookie-signature": "^1.1.1",
     "@types/express": "^4.17.20",
     "@types/http-errors": "^2.0.3",
-    "@types/katex": "^0.16.5",
+    "@types/katex": "^0.16.6",
     "@types/make-fetch-happen": "^10.0.3",
     "@types/markdown-it": "^13.0.5",
     "@types/mjml": "^4.7.3",
