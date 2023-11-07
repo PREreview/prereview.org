@@ -12,7 +12,7 @@ describe('isCrossrefPreprintDoi', () => {
     expect(_.isCrossrefPreprintDoi(doi)).toBe(true)
   })
 
-  test.prop([fc.doi()])('with a non-Crossref DOI', doi => {
+  test.prop([fc.oneof(fc.datacitePreprintDoi(), fc.nonPreprintDoi())])('with a non-Crossref DOI', doi => {
     expect(_.isCrossrefPreprintDoi(doi)).toBe(false)
   })
 })

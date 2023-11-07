@@ -10,7 +10,7 @@ describe('isPreprintDoi', () => {
     expect(_.isPreprintDoi(doi)).toBe(true)
   })
 
-  test.prop([fc.doi()])('with a non-preprint DOI', doi => {
+  test.prop([fc.doi(fc.constantFrom('0001', '1', '123', '1000'))])('with a non-preprint DOI', doi => {
     expect(_.isPreprintDoi(doi)).toBe(false)
   })
 })
