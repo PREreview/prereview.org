@@ -4,7 +4,7 @@ import * as J from 'fp-ts/Json'
 import { pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import { areLoggedIn, canChangeContactEmailAddress, canLogIn, expect, isASlackUser, test, userIsBlocked } from './base'
+import { areLoggedIn, canLogIn, expect, isASlackUser, test, userIsBlocked } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
@@ -27,58 +27,55 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
-  'can give my email address',
-  async ({ javaScriptEnabled, fetch, page }) => {
-    await page.getByRole('link', { name: 'My details' }).click()
-    await page.getByRole('link', { name: 'Enter email address' }).click()
-    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
+test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ javaScriptEnabled, fetch, page }) => {
+  await page.getByRole('link', { name: 'My details' }).click()
+  await page.getByRole('link', { name: 'Enter email address' }).click()
+  await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+  fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'Important' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'Important' })).toBeInViewport()
-    }
-    await expect(page.getByRole('main')).toContainText('Email address jcarberry@example.com Unverified')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'Important' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'Important' })).toBeInViewport()
+  }
+  await expect(page.getByRole('main')).toContainText('Email address jcarberry@example.com Unverified')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.reload()
+  await page.reload()
 
-    await expect(page.getByRole('alert', { name: 'Important' })).toBeHidden()
+  await expect(page.getByRole('alert', { name: 'Important' })).toBeHidden()
 
-    await page.setContent(getLastMailjetEmailBody(fetch))
+  await page.setContent(getLastMailjetEmailBody(fetch))
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Verify email address' }).click()
+  await page.getByRole('link', { name: 'Verify email address' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
-    }
-    await expect(page.getByRole('main')).not.toContainText('Unverified')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+  }
+  await expect(page.getByRole('main')).not.toContainText('Unverified')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.reload()
+  await page.reload()
 
-    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+  await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 
-    await page.getByRole('link', { name: 'Change email address' }).click()
+  await page.getByRole('link', { name: 'Change email address' }).click()
 
-    await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
-  },
-)
+  await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
+})
 
 test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
   'can connect my Slack Community account',
@@ -542,32 +539,27 @@ test.extend(canLogIn).extend(userIsBlocked)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canChangeContactEmailAddress)(
-  'have to give a valid email address',
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/my-details/change-email-address')
-    await page.getByLabel('What is your email address?').fill('not an email address')
+test.extend(canLogIn).extend(areLoggedIn)('have to give a valid email address', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/my-details/change-email-address')
+  await page.getByLabel('What is your email address?').fill('not an email address')
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page
-      .getByRole('link', { name: 'Enter an email address in the correct format, like name@example.com' })
-      .click()
+  await page.getByRole('link', { name: 'Enter an email address in the correct format, like name@example.com' }).click()
 
-    await expect(page.getByLabel('What is your email address?')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-  },
-)
+  await expect(page.getByLabel('What is your email address?')).toBeFocused()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+})
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you are open for requests',

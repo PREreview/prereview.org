@@ -17,7 +17,6 @@ import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type ConfigEnv, app } from '../src/app'
-import type { CanChangeContactEmailAddressEnv } from '../src/feature-flags'
 import type {
   ContactEmailAddressStoreEnv,
   IsOpenForRequestsStoreEnv,
@@ -55,7 +54,6 @@ interface AppFixtures {
   locationStore: LocationStoreEnv['locationStore']
   isOpenForRequestsStore: IsOpenForRequestsStoreEnv['isOpenForRequestsStore']
   slackUserIdStore: ConfigEnv['slackUserIdStore']
-  canChangeContactEmailAddress: CanChangeContactEmailAddressEnv['canChangeContactEmailAddress']
   contactEmailAddressStore: ContactEmailAddressStoreEnv['contactEmailAddressStore']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
@@ -73,9 +71,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
-  },
-  canChangeContactEmailAddress: async ({}, use) => {
-    await use(() => false)
   },
   contactEmailAddressStore: async ({}, use) => {
     await use(new Keyv())
@@ -804,7 +799,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   },
   server: async (
     {
-      canChangeContactEmailAddress,
       fetch,
       logger,
       oauthServer,
@@ -824,7 +818,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   ) => {
     const server = app({
       allowSiteCrawlers: true,
-      canChangeContactEmailAddress,
+      canChangeContactEmailAddress: () => true,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
@@ -948,16 +942,6 @@ export const areLoggedIn: Fixtures<Record<never, never>, Record<never, never>, P
     await expect(page).toHaveTitle(/PREreview/)
 
     await use(page)
-  },
-}
-
-export const canChangeContactEmailAddress: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canChangeContactEmailAddress'>
-> = {
-  canChangeContactEmailAddress: async ({}, use) => {
-    await use(() => true)
   },
 }
 
