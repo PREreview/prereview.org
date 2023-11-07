@@ -18,7 +18,7 @@ import { type Prereviews, getPrereviews } from './prereviews'
 
 export interface OrcidProfile {
   type: 'orcid'
-  name: NonEmptyString
+  name?: NonEmptyString
   orcid: Orcid
   slackUser: SlackUser | undefined
   careerStage: 'early' | 'mid' | 'late' | undefined

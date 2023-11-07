@@ -5,7 +5,7 @@ import type { Orcid } from 'orcid-id-ts'
 import type { NonEmptyString } from '../types/string'
 
 export interface GetNameEnv {
-  getName: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString>
+  getName: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', NonEmptyString | undefined>
 }
 
 export const getName = (orcid: Orcid) =>

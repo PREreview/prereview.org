@@ -2,18 +2,24 @@ import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { getClubName } from '../club-details'
 import { type Html, html, plainText, rawHtml } from '../html'
 import type { Page } from '../page'
 import { clubProfileMatch } from '../routes'
+import type { NonEmptyString } from '../types/string'
 import type { OrcidProfile } from './orcid-profile'
 import type { PseudonymProfile } from './pseudonym-profile'
 import { renderListOfPrereviews } from './render-list-of-prereviews'
 
 export function createPage(profile: OrcidProfile | PseudonymProfile) {
   return {
-    title: plainText`${profile.name}`,
+    title: plainText(
+      match(profile)
+        .with({ name: P.string }, profile => profile.name)
+        .with({ orcid: P.string }, profile => profile.orcid)
+        .exhaustive(),
+    ),
     content: html`
       <main id="main-content">
         ${match(profile)
@@ -42,7 +48,12 @@ function renderContentForOrcid({
   return html`
     <div class="profile-header">
       <div>
-        <h1>${name}</h1>
+        <h1>
+          ${match({ name, orcid })
+            .with({ name: P.string }, profile => profile.name)
+            .with({ orcid: P.string }, () => 'Anonymous')
+            .exhaustive()}
+        </h1>
 
         <dl class="summary-list">
           <div>
@@ -129,7 +140,11 @@ function renderContentForOrcid({
     ${isOpenForRequests
       ? html`
           <div class="inset">
-            ${name} is happy to take requests for a PREreview.
+            ${match({ name, orcid })
+              .with({ name: P.string }, profile => profile.name)
+              .with({ orcid: P.string }, () => 'This person')
+              .exhaustive()}}
+            is happy to take requests for a PREreview.
             ${slackUser
               ? html`They can be contacted on our
                   <a href="https://content.prereview.org/join-prereview-slack/">Slack Community</a>.`
@@ -137,7 +152,13 @@ function renderContentForOrcid({
           </div>
         `
       : ''}
-    ${renderListOfPrereviews(prereviews, name)}
+    ${renderListOfPrereviews(
+      prereviews,
+      match({ name, orcid })
+        .with({ name: P.string }, profile => profile.name)
+        .with({ orcid: P.string }, () => 'This person' as NonEmptyString)
+        .exhaustive(),
+    )}
   `
 }
 

@@ -25,16 +25,18 @@ const PersonalDetailsD = pipe(
   JsonD,
   D.compose(
     D.struct({
-      name: D.struct({
-        'given-names': D.struct({
-          value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
-        }),
-        'family-name': D.nullable(
-          D.struct({
+      name: D.nullable(
+        D.struct({
+          'given-names': D.struct({
             value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
           }),
-        ),
-      }),
+          'family-name': D.nullable(
+            D.struct({
+              value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
+            }),
+          ),
+        }),
+      ),
     }),
   ),
 )
@@ -64,6 +66,7 @@ export const getNameFromOrcid = flow(
           name => `${name['given-names'].value} ${name['family-name'].value}` as NonEmptyString,
         )
         .with({ 'given-names': { value: P.string } }, name => name['given-names'].value)
+        .with(null, () => undefined)
         .exhaustive(),
   ),
 )

@@ -52,6 +52,18 @@ describe('getNameFromOrcid', () => {
 
       expect(actual).toStrictEqual(E.right(expected))
     })
+
+    test.prop([fc.orcid()])('without a name', async orcid => {
+      const actual = await _.getNameFromOrcid(orcid)({
+        clock: SystemClock,
+        fetch: fetchMock.sandbox().get(`https://pub.orcid.org/v3.0/${orcid}/personal-details`, {
+          body: { name: null },
+        }),
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+    })
   })
 
   test.prop([fc.orcid()])('revalidates if the response is stale', async orcid => {
