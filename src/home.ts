@@ -140,6 +140,36 @@ function createPage(
           </section>
         </div>
 
+        <section class="tops" aria-labelledby="tops-title">
+          <h2 id="tops-title" class="visually-hidden">Year of Open Science</h2>
+
+          <img src="${assets['tops.png']}" width="400" height="564" loading="lazy" alt="" />
+
+          <div>
+            <p>
+              PREreview joined the US White House, 10 federal agencies, a coalition of more than 85 universities, and
+              other organizations in a commitment to advancing 4
+              <a href="https://nasa.github.io/Transform-to-Open-Science-Book/Year_of_Open_Science_Guide/readme.html"
+                >Year of Open Science</a
+              >
+              goals to:
+            </p>
+
+            <ol>
+              <li>Develop a strategic plan for open science.</li>
+              <li>Improve the transparency, integrity, and equity of reviews.</li>
+              <li>Account for open science activities in evaluations.</li>
+              <li>Engage underrepresented communities in the advancement of open science.</li>
+            </ol>
+
+            <a
+              href="https://nasa.github.io/Transform-to-Open-Science-Book/Year_of_Open_Science_Guide/participants/PREreview.html"
+              class="forward"
+              >How PREreview is fulfilling this commitment</a
+            >
+          </div>
+        </section>
+
         <section aria-labelledby="statistics-title">
           <h2 id="statistics-title">Statistics</h2>
 

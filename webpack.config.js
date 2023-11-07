@@ -26,7 +26,7 @@ module.exports = (env, argv) => ({
     'single-use-form': path.resolve('assets', 'single-use-form.ts'),
     'skip-link': path.resolve('assets', 'skip-link.ts'),
     style: path.resolve('assets', 'style.css'),
-    ...globSync(`assets/{illustrations,logos}/**/*.svg`, { absolute: true, nodir: true }).reduce(
+    ...globSync(`assets/{illustrations,logos}/**/*.{png,svg}`, { absolute: true, nodir: true }).reduce(
       (files, file) => ({
         ...files,
         [path.basename(file)]: file,
@@ -87,7 +87,7 @@ module.exports = (env, argv) => ({
         },
       },
       {
-        test: /\.svg$/,
+        test: /\.(png|svg)$/,
         type: 'asset/resource',
       },
       {
@@ -130,7 +130,7 @@ module.exports = (env, argv) => ({
       variables: true,
     }),
     new RemoveEmptyScriptsPlugin({
-      extensions: ['css', 'ico', 'svg'],
+      extensions: ['css', 'ico', 'png', 'svg'],
     }),
     new WebpackManifestPlugin({
       fileName: path.resolve('src', 'manifest.json'),
