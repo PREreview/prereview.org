@@ -31,7 +31,7 @@ describe('getPreprintDoiFromLegacyPreviewUuid', () => {
     },
   )
 
-  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.doi()])(
+  test.prop([fc.uuid(), fc.string(), fc.string(), fc.origin(), fc.boolean(), fc.nonPreprintDoi()])(
     'when the DOI is not a preprint DOI',
     async (uuid, app, key, url, update, doi) => {
       const fetch = fetchMock.sandbox().getOnce(

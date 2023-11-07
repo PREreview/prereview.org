@@ -51,7 +51,7 @@ describe('parseLookupPreprint', () => {
   test.prop([
     fc
       .tuple(
-        fc.doi(),
+        fc.nonPreprintDoi(),
         fc.stringOf(fc.constant(' ')),
         fc.constantFrom('doi:', 'https://doi.org/', 'http://doi.org/', 'https://dx.doi.org/', 'http://dx.doi.org/'),
         fc.stringOf(fc.constant(' ')),
@@ -275,7 +275,7 @@ describe('find-a-preprint', () => {
 
     test.prop([
       fc.connection({
-        body: fc.record({ doi: fc.oneof(fc.string(), fc.doi()) }, { withDeletedKeys: true }),
+        body: fc.record({ doi: fc.oneof(fc.string(), fc.nonPreprintDoi()) }, { withDeletedKeys: true }),
         method: fc.constant('POST'),
       }),
       fc.either(fc.constant('no-session' as const), fc.user()),

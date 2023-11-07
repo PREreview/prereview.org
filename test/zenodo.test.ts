@@ -1143,7 +1143,7 @@ describe('getPrereviewFromZenodo', () => {
     },
   )
 
-  test.prop([fc.integer(), fc.oneof(fc.string(), fc.doi())])(
+  test.prop([fc.integer(), fc.oneof(fc.string(), fc.nonPreprintDoi())])(
     'when the record does not review a preprint with a preprint DOI',
     async (id, identifier) => {
       const record: Record = {

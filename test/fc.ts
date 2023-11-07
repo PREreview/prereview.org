@@ -10,6 +10,7 @@ import { isNonEmpty } from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
 import type { Json, JsonRecord } from 'fp-ts/Json'
 import type { NonEmptyArray } from 'fp-ts/NonEmptyArray'
+import { not } from 'fp-ts/Predicate'
 import type { Refinement } from 'fp-ts/Refinement'
 import type * as H from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
@@ -42,34 +43,35 @@ import type { SlackUser } from '../src/slack-user'
 import type { SlackUserId } from '../src/slack-user-id'
 import type { ClubId } from '../src/types/club-id'
 import type { EmailAddress } from '../src/types/email-address'
-import type {
-  AfricarxivFigsharePreprintId,
-  AfricarxivOsfPreprintId,
-  AfricarxivPreprintId,
-  AfricarxivZenodoPreprintId,
-  ArxivPreprintId,
-  AuthoreaPreprintId,
-  BiorxivOrMedrxivPreprintId,
-  BiorxivPreprintId,
-  ChemrxivPreprintId,
-  EartharxivPreprintId,
-  EcoevorxivPreprintId,
-  EdarxivPreprintId,
-  EngrxivPreprintId,
-  IndeterminatePreprintId,
-  MedrxivPreprintId,
-  MetaarxivPreprintId,
-  OsfPreprintId,
-  PhilsciPreprintId,
-  PreprintId,
-  PreprintsorgPreprintId,
-  PsyarxivPreprintId,
-  ResearchSquarePreprintId,
-  ScieloPreprintId,
-  ScienceOpenPreprintId,
-  SocarxivPreprintId,
-  ZenodoOrAfricarxivPreprintId,
-  ZenodoPreprintId,
+import {
+  type AfricarxivFigsharePreprintId,
+  type AfricarxivOsfPreprintId,
+  type AfricarxivPreprintId,
+  type AfricarxivZenodoPreprintId,
+  type ArxivPreprintId,
+  type AuthoreaPreprintId,
+  type BiorxivOrMedrxivPreprintId,
+  type BiorxivPreprintId,
+  type ChemrxivPreprintId,
+  type EartharxivPreprintId,
+  type EcoevorxivPreprintId,
+  type EdarxivPreprintId,
+  type EngrxivPreprintId,
+  type IndeterminatePreprintId,
+  type MedrxivPreprintId,
+  type MetaarxivPreprintId,
+  type OsfPreprintId,
+  type PhilsciPreprintId,
+  type PreprintId,
+  type PreprintsorgPreprintId,
+  type PsyarxivPreprintId,
+  type ResearchSquarePreprintId,
+  type ScieloPreprintId,
+  type ScienceOpenPreprintId,
+  type SocarxivPreprintId,
+  type ZenodoOrAfricarxivPreprintId,
+  type ZenodoPreprintId,
+  isPreprintDoi,
 } from '../src/types/preprint-id'
 import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/types/profile-id'
 import type { Pseudonym } from '../src/types/pseudonym'
@@ -219,6 +221,8 @@ export const doi = <R extends string>(withRegistrant?: fc.Arbitrary<R>): fc.Arbi
     .tuple(withRegistrant ?? doiRegistrant(), fc.unicodeString({ minLength: 1 }))
     .map(([prefix, suffix]) => `10.${prefix}/${suffix}`)
     .filter(isDoi as Refinement<unknown, Doi<R>>)
+
+export const nonPreprintDoi = (): fc.Arbitrary<Doi> => doi().filter(not(isPreprintDoi))
 
 export const preprintDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>['value']> =>
   preprintIdWithDoi().map(id => id.value)

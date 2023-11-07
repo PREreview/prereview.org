@@ -189,7 +189,7 @@ describe('reviewAPreprint', () => {
 
     test.prop([
       fc.connection({
-        body: fc.record({ doi: fc.oneof(fc.string(), fc.doi()) }, { withDeletedKeys: true }),
+        body: fc.record({ doi: fc.oneof(fc.string(), fc.nonPreprintDoi()) }, { withDeletedKeys: true }),
         method: fc.constant('POST'),
       }),
       fc.either(fc.constant('no-session' as const), fc.user()),
