@@ -85,7 +85,7 @@
     "@types/katex": "^0.16.6",
     "@types/make-fetch-happen": "^10.0.4",
     "@types/markdown-it": "^13.0.6",
-    "@types/mjml": "^4.7.3",
+    "@types/mjml": "^4.7.4",
     "@types/mocha": "^10.0.4",
     "@types/node": "^20.8.10",
     "@types/rtl-detect": "^1.0.3",
