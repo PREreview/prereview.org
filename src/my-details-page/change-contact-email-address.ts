@@ -238,6 +238,10 @@ function createFormPage(user: User, form: ChangeContactEmailAddressForm) {
           <div ${error ? html`class="error"` : ''}>
             <h1><label for="email-address">What is your email address?</label></h1>
 
+            <p id="email-address-tip" role="note">
+              We’ll only use this to contact you about your account and PREreviews.
+            </p>
+
             ${E.isLeft(form.emailAddress)
               ? html`
                   <div class="error-message" id="email-address-error">
@@ -259,6 +263,7 @@ function createFormPage(user: User, form: ChangeContactEmailAddressForm) {
               inputmode="email"
               spellcheck="false"
               autocomplete="email"
+              aria-describedby="email-address-tip"
               ${match(form.emailAddress)
                 .with({ right: undefined }, () => '')
                 .with({ right: P.select(P.string) }, value => html`value="${value}"`)
