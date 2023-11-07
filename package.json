@@ -15,7 +15,7 @@
     "clock-ts": "^0.1.2",
     "cloudinary": "^1.41.0",
     "connect-slashes": "^1.4.0",
-    "cookie": "^0.5.0",
+    "cookie": "^0.6.0",
     "cookie-signature": "^1.2.1",
     "crossref-ts": "^0.1.5",
     "datacite-ts": "^0.1.4",
