@@ -66,6 +66,19 @@ describe('getNameFromOrcid', () => {
     })
   })
 
+  test.prop([fc.orcid()])('when the profile is locked', async orcid => {
+    const actual = await _.getNameFromOrcid(orcid)({
+      clock: SystemClock,
+      fetch: fetchMock.sandbox().get(`https://pub.orcid.org/v3.0/${orcid}/personal-details`, {
+        body: { 'error-code': 9018 },
+        status: Status.Conflict,
+      }),
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+  })
+
   test.prop([fc.orcid()])('revalidates if the response is stale', async orcid => {
     const fetch = fetchMock
       .sandbox()
@@ -91,21 +104,29 @@ describe('getNameFromOrcid', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.orcid(), fc.integer({ min: 100, max: 599 }).filter(status => status !== Status.OK)])(
-    'when the request fails',
-    async (orcid, status) => {
-      const fetch = fetchMock.sandbox().get('*', { status })
+  test.prop([
+    fc.orcid(),
+    fc.oneof(
+      fc.record({
+        status: fc.integer({ min: 100, max: 599 }).filter(status => status !== Status.OK && status !== Status.Conflict),
+      }),
+      fc.record({
+        body: fc.record({ 'error-code': fc.integer().filter(code => code !== 9018) }),
+        status: fc.integer({ min: 400, max: 599 }),
+      }),
+    ),
+  ])('when the request fails', async (orcid, response) => {
+    const fetch = fetchMock.sandbox().get('*', response)
 
-      const actual = await _.getNameFromOrcid(orcid)({
-        clock: SystemClock,
-        fetch,
-        logger: () => IO.of(undefined),
-      })()
+    const actual = await _.getNameFromOrcid(orcid)({
+      clock: SystemClock,
+      fetch,
+      logger: () => IO.of(undefined),
+    })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-      expect(fetch.done()).toBeTruthy()
-    },
-  )
+    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(fetch.done()).toBeTruthy()
+  })
 
   test.prop([fc.orcid()])('when the network fails', async orcid => {
     const actual = await _.getNameFromOrcid(orcid)({

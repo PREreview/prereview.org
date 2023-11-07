@@ -21,25 +21,26 @@ const JsonD = {
     ),
 }
 
-const PersonalDetailsD = pipe(
-  JsonD,
-  D.compose(
+const ProfileLockedD = D.struct({
+  'error-code': D.literal(9018),
+})
+
+const PersonalDetailsD = D.struct({
+  name: D.nullable(
     D.struct({
-      name: D.nullable(
+      'given-names': D.struct({
+        value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
+      }),
+      'family-name': D.nullable(
         D.struct({
-          'given-names': D.struct({
-            value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
-          }),
-          'family-name': D.nullable(
-            D.struct({
-              value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
-            }),
-          ),
+          value: pipe(D.string, D.map(s.trim), D.compose(NonEmptyStringC)),
         }),
       ),
     }),
   ),
-)
+})
+
+const PersonDetailsResponseD = pipe(JsonD, D.compose(D.union(PersonalDetailsD, ProfileLockedD)))
 
 const getPersonalDetails = flow(
   (orcid: Orcid) => `https://pub.orcid.org/v3.0/${orcid}/personal-details`,
@@ -47,8 +48,8 @@ const getPersonalDetails = flow(
   F.setHeader('Accept', 'application/json'),
   F.send,
   RTE.mapLeft(() => 'network-error' as const),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
-  RTE.chainTaskEitherKW(flow(F.decode(PersonalDetailsD), TE.mapLeft(D.draw))),
+  RTE.filterOrElseW(F.hasStatus(Status.OK, Status.Conflict), response => `${response.status} status code` as const),
+  RTE.chainTaskEitherKW(flow(F.decode(PersonDetailsResponseD), TE.mapLeft(D.draw))),
 )
 
 export const getNameFromOrcid = flow(
@@ -60,13 +61,13 @@ export const getNameFromOrcid = flow(
   RTE.bimap(
     () => 'unavailable' as const,
     personalDetails =>
-      match(personalDetails.name)
+      match(personalDetails)
         .with(
-          { 'given-names': { value: P.string }, 'family-name': { value: P.string } },
-          name => `${name['given-names'].value} ${name['family-name'].value}` as NonEmptyString,
+          { name: { 'given-names': { value: P.string }, 'family-name': { value: P.string } } },
+          ({ name }) => `${name['given-names'].value} ${name['family-name'].value}` as NonEmptyString,
         )
-        .with({ 'given-names': { value: P.string } }, name => name['given-names'].value)
-        .with(null, () => undefined)
+        .with({ name: { 'given-names': { value: P.string } } }, ({ name }) => name['given-names'].value)
+        .with({ name: null }, { 'error-code': 9018 }, () => undefined)
         .exhaustive(),
   ),
 )
