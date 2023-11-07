@@ -143,7 +143,7 @@ function renderContentForOrcid({
             ${match({ name, orcid })
               .with({ name: P.string }, profile => profile.name)
               .with({ orcid: P.string }, () => 'This person')
-              .exhaustive()}}
+              .exhaustive()}
             is happy to take requests for a PREreview.
             ${slackUser
               ? html`They can be contacted on our
