@@ -9,6 +9,7 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as E from 'io-ts/Encoder'
 import * as L from 'logger-fp-ts'
+import nodemailer from 'nodemailer'
 import type { UnverifiedContactEmailAddress } from './contact-email-address'
 import { RawHtmlC, html, mjmlToHtml } from './html'
 import { toUrl } from './public-url'
@@ -90,5 +91,30 @@ const sendEmail = (email: E.TypeOf<typeof SendEmailE>) =>
           ),
           RTE.bimap(() => 'unavailable' as const, constVoid),
         )
-      : RTE.left('unavailable' as const),
+      : RTE.fromTaskEither(sendToLocalMailcatcher(email)),
   )
+
+const sendToLocalMailcatcher = (email: E.TypeOf<typeof SendEmailE>): TE.TaskEither<'unavailable', void> => {
+  const transporter = nodemailer.createTransport({
+    host: 'localhost',
+    port: 1025,
+    secure: false,
+    auth: {
+      user: '',
+      pass: '',
+    },
+  })
+
+  return TE.tryCatch(
+    async () => {
+      await transporter.sendMail({
+        from: { name: email.From.name, address: email.From.Email },
+        to: { name: email.To[0].name, address: email.To[0].Email },
+        subject: email.Subject,
+        text: email.TextPart,
+        html: email.HtmlPart.toString(),
+      })
+    },
+    () => 'unavailable' as const,
+  )
+}
