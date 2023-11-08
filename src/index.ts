@@ -11,6 +11,7 @@ import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
 import { app } from './app'
 import { decodeEnv } from './env'
+import type { User } from './user'
 
 const env = decodeEnv(process)()
 
@@ -34,6 +35,17 @@ redis?.on('error', (error: Error) => L.errorP('Redis connection error')({ error:
 if (env.ZENODO_URL.href.includes('sandbox')) {
   dns.setDefaultResultOrder('ipv4first')
 }
+
+const isPrereviewTeam = (user: User) =>
+  [
+    '0000-0001-8511-8689',
+    '0000-0002-1472-1824',
+    '0000-0002-3708-3546',
+    '0000-0002-6109-0367',
+    '0000-0002-6750-9341',
+    '0000-0003-4921-6155',
+    '0000-0002-5753-2556',
+  ].includes(user.orcid)
 
 const server = app({
   ...loggerEnv,
@@ -87,6 +99,7 @@ const server = app({
         }
       : undefined,
   publicUrl: env.PUBLIC_URL,
+  requiresVerifiedEmailAddress: isPrereviewTeam,
   researchInterestsStore: new Keyv({ namespace: 'research-interests', store: keyvStore }),
   scietyListToken: env.SCIETY_LIST_TOKEN,
   secret: env.SECRET,

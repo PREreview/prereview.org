@@ -851,6 +851,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         tokenUrl: new URL('http://orcid.test/token'),
       },
       publicUrl: new URL(`http://localhost:${port}`),
+      requiresVerifiedEmailAddress: () => false,
       researchInterestsStore,
       scietyListToken: 'secret' as NonEmptyString,
       secret: '',

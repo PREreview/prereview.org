@@ -19,6 +19,7 @@ import type { CloudinaryApiEnv } from './cloudinary'
 import type { SlackOAuthEnv } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
+import type { RequiresVerifiedEmailAddressEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import type { GhostApiEnv } from './ghost'
 import { handleError } from './http-error'
@@ -67,6 +68,7 @@ export type ConfigEnv = CareerStageStoreEnv &
   OAuthEnv &
   PhaseEnv &
   PublicUrlEnv &
+  RequiresVerifiedEmailAddressEnv &
   ResearchInterestsStoreEnv &
   ScietyListEnv &
   SessionEnv &
