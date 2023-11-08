@@ -51,6 +51,9 @@ export interface PublishPrereviewEnv {
   publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<'unavailable', [Doi, number]>
 }
 
+const needsToConfirmEmailAddress: (user: User) => RTE.ReaderTaskEither<unknown, 'unavailable', boolean> = () =>
+  RTE.of(false)
+
 export const writeReviewPublish = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
@@ -63,6 +66,10 @@ export const writeReviewPublish = flow(
       ),
       RM.bind('form', ({ originalForm }) => RM.right(CompletedFormC.decode(originalForm))),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
+      RM.bindW(
+        'needsToConfirmEmailAddress',
+        RM.fromReaderTaskEitherK(({ user }) => needsToConfirmEmailAddress(user)),
+      ),
       RM.ichainW(state =>
         match(state)
           .with(
@@ -87,7 +94,7 @@ export const writeReviewPublish = flow(
             'no-session',
             RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
           )
-          .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
+          .with('form-unavailable', P.instanceOf(Error), 'unavailable', () => serviceUnavailable)
           .exhaustive(),
       ),
     ),
