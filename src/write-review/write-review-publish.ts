@@ -9,6 +9,7 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
+import { type RequiresVerifiedEmailAddressEnv, requiresVerifiedEmailAddress } from '../feature-flags'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -51,8 +52,10 @@ export interface PublishPrereviewEnv {
   publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<'unavailable', [Doi, number]>
 }
 
-const needsToConfirmEmailAddress: (user: User) => RTE.ReaderTaskEither<unknown, 'unavailable', boolean> = () =>
-  RTE.of(false)
+const needsToConfirmEmailAddress: (
+  user: User,
+) => RTE.ReaderTaskEither<RequiresVerifiedEmailAddressEnv, 'unavailable', boolean> = user =>
+  pipe(RTE.fromReader(requiresVerifiedEmailAddress(user)))
 
 export const writeReviewPublish = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
