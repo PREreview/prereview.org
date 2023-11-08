@@ -72,21 +72,20 @@ export const sendContactEmailAddressVerificationEmail = (user: User, emailAddres
   )
 
 const sendEmail = (email: E.TypeOf<typeof SendEmailE>) =>
-  pipe(
-    RTE.asks(({ mailjetApi: { sandbox } }: MailjetApiEnv) =>
-      pipe(
-        'https://api.mailjet.com/v3.1/send',
-        F.Request('POST'),
-        F.setBody(JSON.stringify({ Messages: [SendEmailE.encode(email)], SandboxMode: sandbox }), 'application/json'),
-      ),
+  RTE.asksReaderTaskEither(({ mailjetApi: { sandbox } }: MailjetApiEnv) =>
+    pipe(
+      'https://api.mailjet.com/v3.1/send',
+      F.Request('POST'),
+      F.setBody(JSON.stringify({ Messages: [SendEmailE.encode(email)], SandboxMode: sandbox }), 'application/json'),
+      addMailjetApiHeaders,
+      RTE.fromReader,
+      RTE.chainW(F.send),
+      RTE.mapLeft(() => 'network-error' as const),
+      RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+      RTE.chainTaskEitherKW(flow(F.decode(SentEmailD), TE.mapLeft(D.draw))),
+      RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to send email through Mailjet')))),
+      RTE.bimap(() => 'unavailable' as const, constVoid),
     ),
-    RTE.chainReaderK(addMailjetApiHeaders),
-    RTE.chainW(F.send),
-    RTE.mapLeft(() => 'network-error' as const),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
-    RTE.chainTaskEitherKW(flow(F.decode(SentEmailD), TE.mapLeft(D.draw))),
-    RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to send email through Mailjet')))),
-    RTE.bimap(() => 'unavailable' as const, constVoid),
   )
 
 function addMailjetApiHeaders(request: F.Request) {
