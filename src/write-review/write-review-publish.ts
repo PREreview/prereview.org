@@ -15,6 +15,7 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
+  changeContactEmailAddressMatch,
   profileMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
@@ -78,6 +79,9 @@ export const writeReviewPublish = flow(
           .with(
             P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
             ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(preprint.id)(originalForm)),
+          )
+          .with({ needsToConfirmEmailAddress: true }, () =>
+            RM.fromMiddleware(seeOther(format(changeContactEmailAddressMatch.formatter, {}))),
           )
           .with({ method: 'POST', form: P.when(E.isRight) }, ({ form, ...state }) =>
             handlePublishForm({ ...state, form: form.right }),
