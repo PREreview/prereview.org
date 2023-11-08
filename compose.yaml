@@ -1,6 +1,10 @@
 version: '3'
 
 services:
+  mailcatcher:
+    image: sj26/mailcatcher
+    ports:
+      - 1080:1080
   nginx:
     image: nginx
     ports:
