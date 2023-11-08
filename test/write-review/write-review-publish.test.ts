@@ -33,9 +33,17 @@ describe('writeReviewPublish', () => {
     ),
     fc.completedForm(),
     fc.user(),
+    fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
   ])(
     'when the user needs to confirm their email address',
-    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newReview, user) => {
+    async (
+      preprintId,
+      preprintTitle,
+      [connection, sessionCookie, sessionId, secret],
+      newReview,
+      user,
+      contactEmailAddress,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
@@ -44,6 +52,7 @@ describe('writeReviewPublish', () => {
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
           formStore,
+          getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           publishPrereview: shouldNotBeCalled,
@@ -111,6 +120,7 @@ describe('writeReviewPublish', () => {
           getUser: () => M.of(user),
           publishPrereview,
           requiresVerifiedEmailAddress: () => false,
+          getContactEmailAddress: shouldNotBeCalled,
           secret,
           sessionCookie,
           sessionStore,
@@ -183,6 +193,7 @@ describe('writeReviewPublish', () => {
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
           formStore,
+          getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           publishPrereview,
@@ -247,6 +258,7 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
+          getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           formStore,
@@ -295,6 +307,7 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
+          getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           formStore: new Keyv(),
@@ -341,6 +354,7 @@ describe('writeReviewPublish', () => {
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({
         formStore: new Keyv(),
+        getContactEmailAddress: shouldNotBeCalled,
         getPreprintTitle: () => TE.left('unavailable'),
         getUser: () => M.of(user),
         publishPrereview: shouldNotBeCalled,
@@ -382,6 +396,7 @@ describe('writeReviewPublish', () => {
     const actual = await runMiddleware(
       _.writeReviewPublish(preprintId)({
         formStore: new Keyv(),
+        getContactEmailAddress: shouldNotBeCalled,
         getPreprintTitle: () => TE.left('not-found'),
         getUser: () => M.of(user),
         publishPrereview: shouldNotBeCalled,
@@ -408,6 +423,7 @@ describe('writeReviewPublish', () => {
     async (preprintId, preprintTitle, connection, sessionCookie, secret) => {
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
+          getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
           formStore: new Keyv(),
@@ -460,6 +476,7 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
+          getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           formStore,

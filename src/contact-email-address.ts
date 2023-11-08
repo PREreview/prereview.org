@@ -109,3 +109,18 @@ export const verifyContactEmailAddress = (
 export const isUnverified: Refinement<ContactEmailAddress, UnverifiedContactEmailAddress> = (
   emailAddress: ContactEmailAddress,
 ): emailAddress is UnverifiedContactEmailAddress => emailAddress.type === 'unverified'
+
+export const hasNoVerifiedContactEmailAddress: (
+  orcid: Orcid,
+) => RTE.ReaderTaskEither<GetContactEmailAddressEnv, 'unavailable', boolean> = orcid =>
+  pipe(
+    orcid,
+    maybeGetContactEmailAddress,
+    RTE.map(emailAddress =>
+      match(emailAddress)
+        .with(undefined, () => true)
+        .with({ type: 'unverified' }, () => true)
+        .with({ type: 'verified' }, () => false)
+        .exhaustive(),
+    ),
+  )

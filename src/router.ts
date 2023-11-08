@@ -693,6 +693,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          getContactEmailAddress: withEnv(getContactEmailAddress, env),
           publishPrereview: withEnv(publishPrereview, env),
         })),
       ),
