@@ -2,6 +2,7 @@ import * as F from 'fetch-fp-ts'
 import { mapLeft } from 'fp-ts/Either'
 import type { Json } from 'fp-ts/Json'
 import * as J from 'fp-ts/Json'
+import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { constVoid, flow, pipe } from 'fp-ts/function'
@@ -11,7 +12,7 @@ import * as E from 'io-ts/Encoder'
 import * as L from 'logger-fp-ts'
 import nodemailer from 'nodemailer'
 import type { UnverifiedContactEmailAddress } from './contact-email-address'
-import { RawHtmlC, html, mjmlToHtml } from './html'
+import { type Html, RawHtmlC, html, mjmlToHtml } from './html'
 import { toUrl } from './public-url'
 import { verifyContactEmailAddressMatch } from './routes'
 import { type EmailAddress, EmailAddressC } from './types/email-address'
@@ -33,6 +34,14 @@ const JsonD = {
     ),
 }
 
+const emailToMailjetEmail = (email: Email): E.TypeOf<typeof SendEmailE> => ({
+  From: { Email: email.from.address, name: email.from.name },
+  To: [{ Email: email.to.address, name: email.to.name }],
+  Subject: email.subject,
+  TextPart: email.text,
+  HtmlPart: email.html,
+})
+
 const SendEmailE = E.struct({
   From: E.struct({ Email: EmailAddressC, name: E.id<string>() }),
   To: E.tuple(E.struct({ Email: EmailAddressC, name: E.id<string>() })),
@@ -43,17 +52,25 @@ const SendEmailE = E.struct({
 
 const SentEmailD = pipe(JsonD, D.compose(D.struct({ Messages: D.tuple(D.struct({ Status: D.literal('success') })) })))
 
-export const sendContactEmailAddressVerificationEmail = (user: User, emailAddress: UnverifiedContactEmailAddress) =>
+interface Email {
+  readonly from: { readonly name: string; readonly address: EmailAddress }
+  readonly to: { readonly name: string; readonly address: EmailAddress }
+  readonly subject: string
+  readonly text: string
+  readonly html: Html
+}
+
+const createContactEmailAddressVerificationEmail = (user: User, emailAddress: UnverifiedContactEmailAddress) =>
   pipe(
-    RTE.fromReader(toUrl(verifyContactEmailAddressMatch.formatter, { verify: emailAddress.verificationToken })),
-    RTE.map(
+    toUrl(verifyContactEmailAddressMatch.formatter, { verify: emailAddress.verificationToken }),
+    R.map(
       verificationUrl =>
         ({
-          From: { Email: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
-          To: [{ Email: emailAddress.value, name: user.name }],
-          Subject: 'Verify your email address on PREreview',
-          TextPart: `Hi ${user.name},\n\nPlease verify your email address on PREreview by going to ${verificationUrl.href}`,
-          HtmlPart: mjmlToHtml(html`
+          from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
+          to: { address: emailAddress.value, name: user.name },
+          subject: 'Verify your email address on PREreview',
+          text: `Hi ${user.name},\n\nPlease verify your email address on PREreview by going to ${verificationUrl.href}`,
+          html: mjmlToHtml(html`
             <mjml>
               <mj-body>
                 <mj-section>
@@ -66,19 +83,21 @@ export const sendContactEmailAddressVerificationEmail = (user: User, emailAddres
               </mj-body>
             </mjml>
           `),
-        }) satisfies E.TypeOf<typeof SendEmailE>,
+        }) satisfies Email,
     ),
-    RTE.chainW(sendEmail),
   )
 
-const sendEmail = (email: E.TypeOf<typeof SendEmailE>) =>
+const sendEmail = (email: Email) =>
   RTE.asksReaderTaskEitherW(({ mailjetApi }: MailjetApiEnv) =>
     mailjetApi
       ? pipe(
           'https://api.mailjet.com/v3.1/send',
           F.Request('POST'),
           F.setBody(
-            JSON.stringify({ Messages: [SendEmailE.encode(email)], SandboxMode: mailjetApi.sandbox }),
+            JSON.stringify({
+              Messages: [SendEmailE.encode(emailToMailjetEmail(email))],
+              SandboxMode: mailjetApi.sandbox,
+            }),
             'application/json',
           ),
           F.setHeaders({ Authorization: `Basic ${btoa(`${mailjetApi.key}:${mailjetApi.secret}`)}` }),
@@ -94,7 +113,7 @@ const sendEmail = (email: E.TypeOf<typeof SendEmailE>) =>
       : RTE.fromTaskEither(sendToLocalMailcatcher(email)),
   )
 
-const sendToLocalMailcatcher = (email: E.TypeOf<typeof SendEmailE>): TE.TaskEither<'unavailable', void> => {
+const sendToLocalMailcatcher = (email: Email): TE.TaskEither<'unavailable', void> => {
   const transporter = nodemailer.createTransport({
     host: 'localhost',
     port: 1025,
@@ -108,13 +127,18 @@ const sendToLocalMailcatcher = (email: E.TypeOf<typeof SendEmailE>): TE.TaskEith
   return TE.tryCatch(
     async () => {
       await transporter.sendMail({
-        from: { name: email.From.name, address: email.From.Email },
-        to: { name: email.To[0].name, address: email.To[0].Email },
-        subject: email.Subject,
-        text: email.TextPart,
-        html: email.HtmlPart.toString(),
+        from: email.from,
+        to: email.to,
+        subject: email.subject,
+        text: email.text,
+        html: email.html.toString(),
       })
     },
     () => 'unavailable' as const,
   )
 }
+
+export const sendContactEmailAddressVerificationEmail = flow(
+  RTE.fromReaderK(createContactEmailAddressVerificationEmail),
+  RTE.chainW(sendEmail),
+)
