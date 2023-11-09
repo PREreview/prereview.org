@@ -12,6 +12,7 @@ import * as L from 'logger-fp-ts'
 import nodemailer from 'nodemailer'
 import type { Email } from './email'
 import { RawHtmlC } from './html'
+import { sendEmailWithNodemailer } from './nodemailer'
 import { EmailAddressC } from './types/email-address'
 
 export interface MailjetApiEnv {
@@ -74,30 +75,15 @@ export const sendEmail = (email: Email) =>
       : RTE.fromTaskEither(sendToLocalMailcatcher(email)),
   )
 
-const sendToLocalMailcatcher = (email: Email): TE.TaskEither<'unavailable', void> => {
-  const transporter = nodemailer.createTransport({
-    host: 'localhost',
-    port: 1025,
-    secure: false,
-    auth: {
-      user: '',
-      pass: '',
-    },
+const sendToLocalMailcatcher = (email: Email): TE.TaskEither<'unavailable', void> =>
+  sendEmailWithNodemailer(email)({
+    nodemailer: nodemailer.createTransport({
+      host: 'localhost',
+      port: 1025,
+      secure: false,
+      auth: {
+        user: '',
+        pass: '',
+      },
+    }),
   })
-
-  return TE.tryCatch(
-    async () => {
-      await transporter.sendMail({
-        from: email.from,
-        to: email.to,
-        subject: email.subject,
-        text: email.text,
-        html: email.html.toString(),
-      })
-    },
-    error => {
-      console.log(error)
-      return 'unavailable' as const
-    },
-  )
-}
