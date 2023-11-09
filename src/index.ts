@@ -9,6 +9,7 @@ import Redis from 'ioredis'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import fetch from 'make-fetch-happen'
+import nodemailer from 'nodemailer'
 import { app } from './app'
 import { decodeEnv } from './env'
 import type { User } from './user'
@@ -47,6 +48,29 @@ const isPrereviewTeam = (user: User) =>
     '0000-0002-5753-2556',
   ].includes(user.orcid)
 
+const sendMailEnv =
+  typeof env.MAILJET_API_KEY === 'string' &&
+  typeof env.MAILJET_API_SANDBOX === 'boolean' &&
+  typeof env.MAILJET_API_SECRET === 'string'
+    ? {
+        mailjetApi: {
+          key: env.MAILJET_API_KEY,
+          secret: env.MAILJET_API_SECRET,
+          sandbox: env.MAILJET_API_SANDBOX,
+        },
+      }
+    : {
+        nodemailer: nodemailer.createTransport({
+          host: 'localhost',
+          port: 1025,
+          secure: false,
+          auth: {
+            user: '',
+            pass: '',
+          },
+        }),
+      }
+
 const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
@@ -74,16 +98,7 @@ const server = app({
   },
   languagesStore: new Keyv({ namespace: 'languages', store: keyvStore }),
   locationStore: new Keyv({ namespace: 'location', store: keyvStore }),
-  mailjetApi:
-    typeof env.MAILJET_API_KEY === 'string' &&
-    typeof env.MAILJET_API_SANDBOX === 'boolean' &&
-    typeof env.MAILJET_API_SECRET === 'string'
-      ? {
-          key: env.MAILJET_API_KEY,
-          secret: env.MAILJET_API_SECRET,
-          sandbox: env.MAILJET_API_SANDBOX,
-        }
-      : undefined,
+  ...sendMailEnv,
   oauth: {
     authorizeUrl: new URL('https://orcid.org/oauth/authorize'),
     clientId: env.ORCID_CLIENT_ID,

@@ -14,7 +14,6 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
-import nodemailer from 'nodemailer'
 import { match, P as p } from 'ts-pattern'
 import type { CloudinaryApiEnv } from './cloudinary'
 import type { SlackOAuthEnv } from './connect-slack'
@@ -42,7 +41,7 @@ import {
 import { type LegacyEnv, legacyRoutes } from './legacy-routes'
 import type { IsUserBlockedEnv } from './log-in'
 import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet'
-import { sendEmailWithNodemailer } from './nodemailer'
+import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import { getPreprintFromPhilsci } from './philsci'
 import type { PublicUrlEnv } from './public-url'
@@ -67,7 +66,7 @@ export type ConfigEnv = CareerStageStoreEnv &
   LegacyPrereviewApiEnv &
   LocationStoreEnv &
   L.LoggerEnv &
-  Partial<MailjetApiEnv> &
+  (MailjetApiEnv | NodemailerEnv) &
   OAuthEnv &
   PhaseEnv &
   PublicUrlEnv &
@@ -125,25 +124,11 @@ const doesPreprintExist = flow(
 
 const sendEmail = (email: Email) =>
   RTE.asksReaderTaskEitherW(
-    ({ mailjetApi, ...env }: ConfigEnv) =>
-      () =>
-        mailjetApi
-          ? sendEmailWithMailjet(email)({
-              ...env,
-              mailjetApi,
-            })
-          : sendEmailWithNodemailer(email)({
-              ...env,
-              nodemailer: nodemailer.createTransport({
-                host: 'localhost',
-                port: 1025,
-                secure: false,
-                auth: {
-                  user: '',
-                  pass: '',
-                },
-              }),
-            }),
+    (env: ConfigEnv) => () =>
+      match(env)
+        .with({ mailjetApi: p._ }, sendEmailWithMailjet(email))
+        .with({ nodemailer: p._ }, sendEmailWithNodemailer(email))
+        .exhaustive(),
   )
 
 const getUser = pipe(getSession(), RM.chainOptionKW(() => 'no-session' as const)(getUserFromSession))
