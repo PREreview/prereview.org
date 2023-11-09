@@ -17,6 +17,7 @@ import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { type ConfigEnv, app } from '../src/app'
+import type { RequiresVerifiedEmailAddressEnv } from '../src/feature-flags'
 import type {
   ContactEmailAddressStoreEnv,
   IsOpenForRequestsStoreEnv,
@@ -57,6 +58,7 @@ interface AppFixtures {
   contactEmailAddressStore: ContactEmailAddressStoreEnv['contactEmailAddressStore']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
+  requiresVerifiedEmailAddress: RequiresVerifiedEmailAddressEnv['requiresVerifiedEmailAddress']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -794,6 +796,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
+  requiresVerifiedEmailAddress: async ({}, use) => {
+    await use(() => false)
+  },
   researchInterestsStore: async ({}, use) => {
     await use(new Keyv())
   },
@@ -813,6 +818,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       researchInterestsStore,
       slackUserIdStore,
       wasPrereviewRemoved,
+      requiresVerifiedEmailAddress,
     },
     use,
   ) => {
@@ -851,7 +857,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         tokenUrl: new URL('http://orcid.test/token'),
       },
       publicUrl: new URL(`http://localhost:${port}`),
-      requiresVerifiedEmailAddress: () => false,
+      requiresVerifiedEmailAddress,
       researchInterestsStore,
       scietyListToken: 'secret' as NonEmptyString,
       secret: '',
@@ -1099,6 +1105,16 @@ export const willPublishAReview: Fixtures<
       })
 
     await use(fetch)
+  },
+}
+
+export const requiresVerifiedEmailAddress: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'requiresVerifiedEmailAddress'>
+> = {
+  requiresVerifiedEmailAddress: async ({}, use) => {
+    await use(() => true)
   },
 }
 

@@ -1,7 +1,15 @@
 import { Status } from 'hyper-ts'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import { RecordsC } from '../src/zenodo-ts'
-import { areLoggedIn, canLogIn, expect, test, updatesLegacyPrereview, willPublishAReview } from './base'
+import {
+  areLoggedIn,
+  canLogIn,
+  expect,
+  requiresVerifiedEmailAddress,
+  test,
+  updatesLegacyPrereview,
+  willPublishAReview,
+} from './base'
 
 test.extend(canLogIn).extend(willPublishAReview)(
   'can publish a PREreview',
@@ -1918,6 +1926,29 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
   }
   await expect(page).toHaveScreenshot()
 })
+
+test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+  'have to give your email address',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('What is your email address?')
+  },
+)
 
 test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
