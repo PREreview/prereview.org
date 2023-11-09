@@ -148,6 +148,7 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
   writeReviewStartMatch,
+  writeReviewVerifyEmailAddressMatch,
 } from './routes'
 import { scietyList } from './sciety-list'
 import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from './slack'
@@ -177,6 +178,7 @@ import {
   writeReviewReviewType,
   writeReviewShouldRead,
   writeReviewStart,
+  writeReviewVerifyEmailAddress,
 } from './write-review'
 import {
   createRecordOnZenodo,
@@ -687,6 +689,16 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       writeReviewConductMatch.parser,
       P.map(({ id }) => writeReviewConduct(id)),
+    ),
+    pipe(
+      writeReviewVerifyEmailAddressMatch.parser,
+      P.map(({ id }) => writeReviewVerifyEmailAddress(id)),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getContactEmailAddress: withEnv(getContactEmailAddress, env),
+        })),
+      ),
     ),
     pipe(
       writeReviewPublishMatch.parser,

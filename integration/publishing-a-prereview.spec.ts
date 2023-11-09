@@ -1,4 +1,9 @@
+import type { FetchMockSandbox } from 'fetch-mock'
+import * as E from 'fp-ts/Either'
+import * as J from 'fp-ts/Json'
+import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
+import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import { RecordsC } from '../src/zenodo-ts'
 import {
@@ -1950,6 +1955,44 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   },
 )
 
+test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+  'have to verify your email address',
+  async ({ context, fetch, page }) => {
+    await page.goto('/my-details/change-email-address')
+    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
+    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    const newPage = await context.newPage()
+    await newPage.setContent(getLastMailjetEmailBody(fetch))
+    await newPage.getByRole('link', { name: 'Verify email address' }).click()
+    await newPage.close()
+
+    await page.reload()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+  },
+)
+
 test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   fetch.postOnce('http://orcid.test/token', { status: Status.ServiceUnavailable })
@@ -2822,4 +2865,30 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, you can’t review your own preprint')
   },
+)
+
+const getLastMailjetEmailBody = (fetch: FetchMockSandbox) => {
+  return pipe(
+    MailjetEmailD.decode(String(fetch.lastOptions('https://api.mailjet.com/v3.1/send')?.body)),
+    E.match(
+      () => {
+        throw new Error('No email found')
+      },
+      email => email.HtmlPart,
+    ),
+  )
+}
+
+const JsonD = {
+  decode: (s: string) =>
+    pipe(
+      J.parse(s),
+      E.mapLeft(() => D.error(s, 'JSON')),
+    ),
+}
+
+const MailjetEmailD = pipe(
+  JsonD,
+  D.compose(D.struct({ Messages: D.tuple(D.struct({ HtmlPart: D.string })) })),
+  D.map(body => body.Messages[0]),
 )

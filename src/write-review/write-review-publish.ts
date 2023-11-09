@@ -16,7 +16,6 @@ import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
-  changeContactEmailAddressMatch,
   profileMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
@@ -34,6 +33,7 @@ import {
   writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
+  writeReviewVerifyEmailAddressMatch,
 } from '../routes'
 import { isPseudonym } from '../types/pseudonym'
 import { type User, getUser } from '../user'
@@ -85,7 +85,7 @@ export const writeReviewPublish = flow(
             ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(preprint.id)(originalForm)),
           )
           .with({ needsToConfirmEmailAddress: true }, () =>
-            RM.fromMiddleware(seeOther(format(changeContactEmailAddressMatch.formatter, {}))),
+            RM.fromMiddleware(seeOther(format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprint.id }))),
           )
           .with({ method: 'POST', form: P.when(E.isRight) }, ({ form, ...state }) =>
             handlePublishForm({ ...state, form: form.right }),
