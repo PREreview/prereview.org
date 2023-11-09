@@ -9,8 +9,8 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
-import { type GetContactEmailAddressEnv, hasNoVerifiedContactEmailAddress } from '../contact-email-address'
-import { type RequiresVerifiedEmailAddressEnv, requiresVerifiedEmailAddress } from '../feature-flags'
+import { maybeGetContactEmailAddress } from '../contact-email-address'
+import { requiresVerifiedEmailAddress } from '../feature-flags'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -20,6 +20,7 @@ import {
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
   writeReviewDataPresentationMatch,
+  writeReviewEnterEmailAddressMatch,
   writeReviewFindingsNextStepsMatch,
   writeReviewIntroductionMatchesMatch,
   writeReviewLanguageEditingMatch,
@@ -54,14 +55,6 @@ export interface PublishPrereviewEnv {
   publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<'unavailable', [Doi, number]>
 }
 
-const needsToConfirmEmailAddress: (
-  user: User,
-) => RTE.ReaderTaskEither<RequiresVerifiedEmailAddressEnv & GetContactEmailAddressEnv, 'unavailable', boolean> = user =>
-  pipe(
-    RTE.fromReader(requiresVerifiedEmailAddress(user)),
-    RTE.chainW(requires => (requires ? hasNoVerifiedContactEmailAddress(user.orcid) : RTE.of(false))),
-  )
-
 export const writeReviewPublish = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
@@ -75,8 +68,13 @@ export const writeReviewPublish = flow(
       RM.bind('form', ({ originalForm }) => RM.right(CompletedFormC.decode(originalForm))),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
       RM.bindW(
-        'needsToConfirmEmailAddress',
-        RM.fromReaderTaskEitherK(({ user }) => needsToConfirmEmailAddress(user)),
+        'requiresVerifiedEmailAddress',
+        RM.fromReaderK(({ user }) => requiresVerifiedEmailAddress(user)),
+      ),
+      RM.bindW('contactEmailAddress', ({ requiresVerifiedEmailAddress, user }) =>
+        requiresVerifiedEmailAddress
+          ? RM.fromReaderTaskEither(maybeGetContactEmailAddress(user.orcid))
+          : RM.of(undefined),
       ),
       RM.ichainW(state =>
         match(state)
@@ -84,8 +82,11 @@ export const writeReviewPublish = flow(
             P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
             ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(preprint.id)(originalForm)),
           )
-          .with({ needsToConfirmEmailAddress: true }, () =>
+          .with({ requiresVerifiedEmailAddress: true, contactEmailAddress: { type: 'unverified' } }, () =>
             RM.fromMiddleware(seeOther(format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprint.id }))),
+          )
+          .with({ requiresVerifiedEmailAddress: true, contactEmailAddress: undefined }, () =>
+            RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id }))),
           )
           .with({ method: 'POST', form: P.when(E.isRight) }, ({ form, ...state }) =>
             handlePublishForm({ ...state, form: form.right }),

@@ -8,7 +8,12 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import merge from 'ts-deepmerge'
-import { writeReviewMatch, writeReviewPublishedMatch, writeReviewVerifyEmailAddressMatch } from '../../src/routes'
+import {
+  writeReviewEnterEmailAddressMatch,
+  writeReviewMatch,
+  writeReviewPublishedMatch,
+  writeReviewVerifyEmailAddressMatch,
+} from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
@@ -33,9 +38,9 @@ describe('writeReviewPublish', () => {
     ),
     fc.completedForm(),
     fc.user(),
-    fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+    fc.unverifiedContactEmailAddress(),
   ])(
-    'when the user needs to confirm their email address',
+    'when the user needs to verify their email address',
     async (
       preprintId,
       preprintTitle,
@@ -52,7 +57,7 @@ describe('writeReviewPublish', () => {
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
           formStore,
-          getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+          getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           publishPrereview: shouldNotBeCalled,
@@ -71,6 +76,58 @@ describe('writeReviewPublish', () => {
             type: 'setHeader',
             name: 'Location',
             value: format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
+
+  test.prop([
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.tuple(fc.uuid(), fc.cookieName(), fc.string()).chain(([sessionId, sessionCookie, secret]) =>
+      fc.tuple(
+        fc.connection({
+          headers: fc.constant({ Cookie: `${sessionCookie}=${cookieSignature.sign(sessionId, secret)}` }),
+        }),
+        fc.constant(sessionCookie),
+        fc.constant(sessionId),
+        fc.constant(secret),
+      ),
+    ),
+    fc.completedForm(),
+    fc.user(),
+  ])(
+    'when the user needs to enter an email address',
+    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newReview, user) => {
+      const sessionStore = new Keyv()
+      await sessionStore.set(sessionId, { user: UserC.encode(user) })
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
+
+      const actual = await runMiddleware(
+        _.writeReviewPublish(preprintId)({
+          formStore,
+          getContactEmailAddress: () => TE.left('not-found'),
+          getPreprintTitle: () => TE.right(preprintTitle),
+          getUser: () => M.of(user),
+          publishPrereview: shouldNotBeCalled,
+          requiresVerifiedEmailAddress: () => true,
+          secret,
+          sessionCookie,
+          sessionStore,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
           },
           { type: 'endResponse' },
         ]),
