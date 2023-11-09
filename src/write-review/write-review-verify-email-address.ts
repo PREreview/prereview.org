@@ -9,7 +9,7 @@ import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import { changeContactEmailAddressMatch, writeReviewConductMatch, writeReviewMatch } from '../routes'
+import { writeReviewConductMatch, writeReviewEnterEmailAddressMatch, writeReviewMatch } from '../routes'
 import { type User, getUser } from '../user'
 import { getForm, redirectToNextForm } from './form'
 
@@ -44,7 +44,7 @@ export const writeReviewVerifyEmailAddress = flow(
           )
           .with({ contactEmailAddress: { type: 'unverified' } }, showNeedToVerifyEmailAddressMessage)
           .with({ contactEmailAddress: undefined }, () =>
-            RM.fromMiddleware(seeOther(format(changeContactEmailAddressMatch.formatter, {}))),
+            RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id }))),
           )
           .exhaustive(),
       ),
@@ -77,7 +77,7 @@ const showNeedToVerifyEmailAddressMessage = flow(
 
 function needToVerifyEmailAddressMessage({ preprint, user }: { preprint: PreprintTitle; user: User }) {
   return page({
-    title: plainText`Verify your email address`,
+    title: plainText`Verify your email address – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back">Back</a>

@@ -338,6 +338,12 @@ export const writeReviewCompetingInterestsMatch = pipe(
 
 export const writeReviewConductMatch = pipe(writeReviewBaseMatch, P.then(P.lit('code-of-conduct')), P.then(P.end))
 
+export const writeReviewEnterEmailAddressMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('enter-email-address')),
+  P.then(P.end),
+)
+
 export const writeReviewVerifyEmailAddressMatch = pipe(
   writeReviewBaseMatch,
   P.then(P.lit('verify-email-address')),

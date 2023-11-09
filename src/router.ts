@@ -133,6 +133,7 @@ import {
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
   writeReviewDataPresentationMatch,
+  writeReviewEnterEmailAddressMatch,
   writeReviewFindingsNextStepsMatch,
   writeReviewIntroductionMatchesMatch,
   writeReviewLanguageEditingMatch,
@@ -164,6 +165,7 @@ import {
   writeReviewCompetingInterests,
   writeReviewConduct,
   writeReviewDataPresentation,
+  writeReviewEnterEmailAddress,
   writeReviewFindingsNextSteps,
   writeReviewIntroductionMatches,
   writeReviewLanguageEditing,
@@ -689,6 +691,20 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       writeReviewConductMatch.parser,
       P.map(({ id }) => writeReviewConduct(id)),
+    ),
+    pipe(
+      writeReviewEnterEmailAddressMatch.parser,
+      P.map(({ id }) => writeReviewEnterEmailAddress(id)),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteContactEmailAddress: withEnv(deleteContactEmailAddress, env),
+          getContactEmailAddress: withEnv(getContactEmailAddress, env),
+          generateUuid: uuid.v4(),
+          saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
+          verifyContactEmailAddress: withEnv(sendContactEmailAddressVerificationEmail, env),
+        })),
+      ),
     ),
     pipe(
       writeReviewVerifyEmailAddressMatch.parser,

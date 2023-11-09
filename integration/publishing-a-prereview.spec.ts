@@ -1934,7 +1934,7 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
 
 test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   'have to give your email address',
-  async ({ page }) => {
+  async ({ fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -1952,6 +1952,15 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('What is your email address?')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+
+    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
   },
 )
 
@@ -2826,6 +2835,85 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('link', { name: 'Confirm that you are following the Code of Conduct' }).click()
 
     await expect(page.getByLabel('I’m following the Code of Conduct')).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+  'have to enter an email address',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Enter your email address' }).click()
+
+    await expect(page.getByLabel('What is your email address?')).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+  'have to enter a valid email address',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('What is your email address?').fill('not an email address')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', { name: 'Enter an email address in the correct format, like name@example.com' })
+      .click()
+
+    await expect(page.getByLabel('What is your email address?')).toBeFocused()
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
   },
