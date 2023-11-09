@@ -12,7 +12,7 @@ node_modules: package.json package-lock.json
 check: format lint-ts lint-css typecheck test-fast
 
 start: .env node_modules start-services
-	REDIS_URI=redis://$(shell docker compose port redis 6379) npm start
+	REDIS_URI=redis://$(shell docker compose port redis 6379) SMTP_URI=smtp://$(shell docker compose port mailcatcher 1025) npm start
 
 .dev/server.crt .dev/server.key: SHELL := /usr/bin/env bash
 .dev/server.crt .dev/server.key: .env

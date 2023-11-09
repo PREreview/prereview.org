@@ -78,12 +78,19 @@ const EnvD = pipe(
     ZENODO_URL: UrlD,
   }),
   D.intersect(
+    D.union(
+      D.struct({
+        MAILJET_API_KEY: D.string,
+        MAILJET_API_SECRET: D.string,
+        MAILJET_API_SANDBOX: withDefault(BooleanD, true),
+      }),
+      D.struct({ SMTP_URI: UrlD }),
+    ),
+  ),
+  D.intersect(
     D.partial({
       FATHOM_SITE_ID: D.string,
       LOG_FORMAT: D.literal('json'),
-      MAILJET_API_KEY: D.string,
-      MAILJET_API_SECRET: D.string,
-      MAILJET_API_SANDBOX: withDefault(BooleanD, true),
       PHASE_TAG: D.string,
       PHASE_TEXT: HtmlD,
       REDIS_URI: UrlD,
