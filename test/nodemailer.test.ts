@@ -1,6 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import * as E from 'fp-ts/Either'
+import * as IO from 'fp-ts/IO'
 import nodemailer from 'nodemailer'
 import * as _ from '../src/nodemailer'
 import * as fc from './fc'
@@ -12,6 +14,8 @@ describe('sendEmailWithNodemailer', () => {
 
     const actual = await _.sendEmailWithNodemailer(email)({
       nodemailer: transporter,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.right(undefined))
@@ -30,6 +34,8 @@ describe('sendEmailWithNodemailer', () => {
 
     const actual = await _.sendEmailWithNodemailer(email)({
       nodemailer: transporter,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
