@@ -39,7 +39,7 @@ import {
 } from './legacy-prereview'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes'
 import type { IsUserBlockedEnv } from './log-in'
-import type { MailjetApiEnv } from './mailjet'
+import { type MailjetApiEnv, sendEmail } from './mailjet'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import { getPreprintFromPhilsci } from './philsci'
 import type { PublicUrlEnv } from './public-url'
@@ -262,6 +262,7 @@ export const app = (config: ConfigEnv) => {
           templatePage: withEnv(page, env),
           getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
           getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
+          sendEmail: withEnv(sendEmail, env),
         })),
         R.local(collapseRequests()),
         R.local(logFetch()),

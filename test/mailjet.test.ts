@@ -7,17 +7,15 @@ import * as IO from 'fp-ts/IO'
 import * as _ from '../src/mailjet'
 import * as fc from './fc'
 
-describe('sendContactEmailAddressVerificationEmail', () => {
+describe('sendEmail', () => {
   test.prop([
     fc.record({
       key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
       secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
       sandbox: fc.boolean(),
     }),
-    fc.origin(),
-    fc.user(),
-    fc.unverifiedContactEmailAddress(),
-  ])('when the email can be sent', async (mailjetApi, publicUrl, user, emailAddress) => {
+    fc.email(),
+  ])('when the email can be sent', async (mailjetApi, email) => {
     const fetch = fetchMock.sandbox().postOnce(
       {
         url: 'https://api.mailjet.com/v3.1/send',
@@ -28,25 +26,22 @@ describe('sendContactEmailAddressVerificationEmail', () => {
         body: {
           Messages: [
             {
-              From: { Email: 'help@prereview.org', name: 'PREreview' },
-              To: [{ Email: emailAddress.value, name: user.name }],
-              Subject: 'Verify your email address on PREreview',
+              From: { Email: email.from.address, name: email.from.name },
+              To: [{ Email: email.to.address, name: email.to.name }],
+              Subject: email.subject,
+              TextPart: email.text,
+              HtmlPart: email.html.toString(),
             },
           ],
           SandboxMode: mailjetApi.sandbox,
         },
-        matchPartialBody: true,
       },
       { body: { Messages: [{ Status: 'success' }] } },
     )
 
-    const actual = await _.sendContactEmailAddressVerificationEmail(
-      user,
-      emailAddress,
-    )({
+    const actual = await _.sendEmail(email)({
       fetch,
       mailjetApi,
-      publicUrl,
       clock: SystemClock,
       logger: () => IO.of(undefined),
     })()
@@ -61,37 +56,20 @@ describe('sendContactEmailAddressVerificationEmail', () => {
       secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
       sandbox: fc.boolean(),
     }),
-    fc.origin(),
-    fc.user(),
-    fc.unverifiedContactEmailAddress(),
+    fc.email(),
     fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
-  ])("when the email can't be sent", async (mailjetApi, publicUrl, user, emailAddress, response) => {
+  ])("when the email can't be sent", async (mailjetApi, email, response) => {
     const fetch = fetchMock.sandbox().postOnce(
       {
         url: 'https://api.mailjet.com/v3.1/send',
         headers: { 'Content-Type': 'application/json' },
-        body: {
-          Messages: [
-            {
-              From: { Email: 'help@prereview.org', name: 'PREreview' },
-              To: [{ Email: emailAddress.value, name: user.name }],
-              Subject: 'Verify your email address on PREreview',
-            },
-          ],
-          SandboxMode: mailjetApi.sandbox,
-        },
-        matchPartialBody: true,
       },
       response,
     )
 
-    const actual = await _.sendContactEmailAddressVerificationEmail(
-      user,
-      emailAddress,
-    )({
+    const actual = await _.sendEmail(email)({
       fetch,
       mailjetApi,
-      publicUrl,
       clock: SystemClock,
       logger: () => IO.of(undefined),
     })()
@@ -106,37 +84,21 @@ describe('sendContactEmailAddressVerificationEmail', () => {
       secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
       sandbox: fc.boolean(),
     }),
-    fc.origin(),
-    fc.user(),
+    fc.email(),
     fc.unverifiedContactEmailAddress(),
     fc.string(),
-  ])("when the response can't be decoded", async (mailjetApi, publicUrl, user, emailAddress, response) => {
+  ])("when the response can't be decoded", async (mailjetApi, email, response) => {
     const fetch = fetchMock.sandbox().postOnce(
       {
         url: 'https://api.mailjet.com/v3.1/send',
         headers: { 'Content-Type': 'application/json' },
-        body: {
-          Messages: [
-            {
-              From: { Email: 'help@prereview.org', name: 'PREreview' },
-              To: [{ Email: emailAddress.value, name: user.name }],
-              Subject: 'Verify your email address on PREreview',
-            },
-          ],
-          SandboxMode: mailjetApi.sandbox,
-        },
-        matchPartialBody: true,
       },
       { body: response },
     )
 
-    const actual = await _.sendContactEmailAddressVerificationEmail(
-      user,
-      emailAddress,
-    )({
+    const actual = await _.sendEmail(email)({
       fetch,
       mailjetApi,
-      publicUrl,
       clock: SystemClock,
       logger: () => IO.of(undefined),
     })()
@@ -151,18 +113,12 @@ describe('sendContactEmailAddressVerificationEmail', () => {
       secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
       sandbox: fc.boolean(),
     }),
-    fc.origin(),
-    fc.user(),
-    fc.unverifiedContactEmailAddress(),
+    fc.email(),
     fc.error(),
-  ])('when fetch throws an error', async (mailjetApi, publicUrl, user, emailAddress, error) => {
-    const actual = await _.sendContactEmailAddressVerificationEmail(
-      user,
-      emailAddress,
-    )({
+  ])('when fetch throws an error', async (mailjetApi, email, error) => {
+    const actual = await _.sendEmail(email)({
       fetch: () => Promise.reject(error),
       mailjetApi,
-      publicUrl,
       clock: SystemClock,
       logger: () => IO.of(undefined),
     })()

@@ -23,6 +23,7 @@ import { codeOfConduct } from './code-of-conduct'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from './connect-slack'
 import { disconnectSlack } from './disconnect-slack'
 import { ediaStatement } from './edia-statement'
+import { type SendEmailEnv, sendContactEmailAddressVerificationEmail } from './email'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
 import { home } from './home'
@@ -58,7 +59,6 @@ import {
 } from './legacy-prereview'
 import { liveReviews } from './live-reviews'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
-import { sendContactEmailAddressVerificationEmail } from './mailjet'
 import {
   changeCareerStage,
   changeCareerStageVisibility,
@@ -213,6 +213,7 @@ export type RouterEnv = ConfigEnv &
   GetPreprintEnv &
   GetPreprintTitleEnv &
   GetUserEnv &
+  SendEmailEnv &
   TemplatePageEnv
 
 const getRapidPrereviews = (id: PreprintId) =>

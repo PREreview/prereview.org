@@ -33,6 +33,7 @@ import type {
 } from '../src/contact-email-address'
 import type { CrossrefPreprintId } from '../src/crossref'
 import type { DatacitePreprintId } from '../src/datacite'
+import type { Email } from '../src/email'
 import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
 import type { IsOpenForRequests } from '../src/is-open-for-requests'
 import type { Languages } from '../src/languages'
@@ -795,6 +796,15 @@ export const user = (): fc.Arbitrary<User> =>
     name: fc.string(),
     orcid: orcid(),
     pseudonym: pseudonym(),
+  })
+
+export const email = (): fc.Arbitrary<Email> =>
+  fc.record({
+    from: fc.record({ name: fc.string(), address: emailAddress() }),
+    to: fc.record({ name: fc.string(), address: emailAddress() }),
+    subject: fc.string(),
+    text: fc.string(),
+    html: html(),
   })
 
 export const preprint = ({ authors }: { authors?: Arbitrary<Preprint['authors']> } = {}): fc.Arbitrary<Preprint> =>
