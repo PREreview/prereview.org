@@ -14,11 +14,13 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
+import nodemailer from 'nodemailer'
 import { match, P as p } from 'ts-pattern'
 import type { CloudinaryApiEnv } from './cloudinary'
 import type { SlackOAuthEnv } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
+import type { Email } from './email'
 import type { RequiresVerifiedEmailAddressEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import type { GhostApiEnv } from './ghost'
@@ -39,7 +41,8 @@ import {
 } from './legacy-prereview'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes'
 import type { IsUserBlockedEnv } from './log-in'
-import { type MailjetApiEnv, sendEmail } from './mailjet'
+import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet'
+import { sendEmailWithNodemailer } from './nodemailer'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import { getPreprintFromPhilsci } from './philsci'
 import type { PublicUrlEnv } from './public-url'
@@ -64,7 +67,7 @@ export type ConfigEnv = CareerStageStoreEnv &
   LegacyPrereviewApiEnv &
   LocationStoreEnv &
   L.LoggerEnv &
-  MailjetApiEnv &
+  Partial<MailjetApiEnv> &
   OAuthEnv &
   PhaseEnv &
   PublicUrlEnv &
@@ -119,6 +122,29 @@ const doesPreprintExist = flow(
       .exhaustive(),
   ),
 )
+
+const sendEmail = (email: Email) =>
+  RTE.asksReaderTaskEitherW(
+    ({ mailjetApi, ...env }: ConfigEnv) =>
+      () =>
+        mailjetApi
+          ? sendEmailWithMailjet(email)({
+              ...env,
+              mailjetApi,
+            })
+          : sendEmailWithNodemailer(email)({
+              ...env,
+              nodemailer: nodemailer.createTransport({
+                host: 'localhost',
+                port: 1025,
+                secure: false,
+                auth: {
+                  user: '',
+                  pass: '',
+                },
+              }),
+            }),
+  )
 
 const getUser = pipe(getSession(), RM.chainOptionKW(() => 'no-session' as const)(getUserFromSession))
 

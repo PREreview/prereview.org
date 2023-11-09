@@ -7,7 +7,7 @@ import * as IO from 'fp-ts/IO'
 import * as _ from '../src/mailjet'
 import * as fc from './fc'
 
-describe('sendEmail', () => {
+describe('sendEmailWithMailjet', () => {
   test.prop([
     fc.record({
       key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
@@ -39,7 +39,7 @@ describe('sendEmail', () => {
       { body: { Messages: [{ Status: 'success' }] } },
     )
 
-    const actual = await _.sendEmail(email)({
+    const actual = await _.sendEmailWithMailjet(email)({
       fetch,
       mailjetApi,
       clock: SystemClock,
@@ -67,7 +67,7 @@ describe('sendEmail', () => {
       response,
     )
 
-    const actual = await _.sendEmail(email)({
+    const actual = await _.sendEmailWithMailjet(email)({
       fetch,
       mailjetApi,
       clock: SystemClock,
@@ -96,7 +96,7 @@ describe('sendEmail', () => {
       { body: response },
     )
 
-    const actual = await _.sendEmail(email)({
+    const actual = await _.sendEmailWithMailjet(email)({
       fetch,
       mailjetApi,
       clock: SystemClock,
@@ -116,7 +116,7 @@ describe('sendEmail', () => {
     fc.email(),
     fc.error(),
   ])('when fetch throws an error', async (mailjetApi, email, error) => {
-    const actual = await _.sendEmail(email)({
+    const actual = await _.sendEmailWithMailjet(email)({
       fetch: () => Promise.reject(error),
       mailjetApi,
       clock: SystemClock,
