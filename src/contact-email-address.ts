@@ -8,6 +8,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { type Uuid, isUuid } from 'uuid-ts'
 import { type EmailAddress, EmailAddressC } from './types/email-address'
+import type { IndeterminatePreprintId } from './types/preprint-id'
 import type { User } from './user'
 
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
@@ -39,6 +40,14 @@ export interface VerifyContactEmailAddressEnv {
   verifyContactEmailAddress: (
     user: User,
     emailAddress: UnverifiedContactEmailAddress,
+  ) => TE.TaskEither<'unavailable', void>
+}
+
+export interface VerifyContactEmailAddressForReviewEnv {
+  verifyContactEmailAddressForReview: (
+    user: User,
+    emailAddress: UnverifiedContactEmailAddress,
+    preprint: IndeterminatePreprintId,
   ) => TE.TaskEither<'unavailable', void>
 }
 
@@ -104,6 +113,17 @@ export const verifyContactEmailAddress = (
 ): RTE.ReaderTaskEither<VerifyContactEmailAddressEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ verifyContactEmailAddress }) => verifyContactEmailAddress(user, emailAddress)),
+  )
+
+export const verifyContactEmailAddressForReview = (
+  user: User,
+  emailAddress: UnverifiedContactEmailAddress,
+  preprint: IndeterminatePreprintId,
+): RTE.ReaderTaskEither<VerifyContactEmailAddressForReviewEnv, 'unavailable', void> =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ verifyContactEmailAddressForReview }) =>
+      verifyContactEmailAddressForReview(user, emailAddress, preprint),
+    ),
   )
 
 export const isUnverified: Refinement<ContactEmailAddress, UnverifiedContactEmailAddress> = (

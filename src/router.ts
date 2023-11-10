@@ -23,7 +23,11 @@ import { codeOfConduct } from './code-of-conduct'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from './connect-slack'
 import { disconnectSlack } from './disconnect-slack'
 import { ediaStatement } from './edia-statement'
-import { type SendEmailEnv, sendContactEmailAddressVerificationEmail } from './email'
+import {
+  type SendEmailEnv,
+  sendContactEmailAddressVerificationEmail,
+  sendContactEmailAddressVerificationEmailForReview,
+} from './email'
 import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
 import { home } from './home'
@@ -150,6 +154,7 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
   writeReviewStartMatch,
+  writeReviewVerifyEmailAddressMatch,
 } from './routes'
 import { scietyList } from './sciety-list'
 import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from './slack'
@@ -181,6 +186,7 @@ import {
   writeReviewReviewType,
   writeReviewShouldRead,
   writeReviewStart,
+  writeReviewVerifyEmailAddress,
 } from './write-review'
 import {
   createRecordOnZenodo,
@@ -702,7 +708,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getContactEmailAddress: withEnv(getContactEmailAddress, env),
           generateUuid: uuid.v4(),
           saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
-          verifyContactEmailAddress: withEnv(sendContactEmailAddressVerificationEmail, env),
+          verifyContactEmailAddressForReview: withEnv(sendContactEmailAddressVerificationEmailForReview, env),
         })),
       ),
     ),
@@ -713,6 +719,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getContactEmailAddress: withEnv(getContactEmailAddress, env),
+        })),
+      ),
+    ),
+    pipe(
+      writeReviewVerifyEmailAddressMatch.parser,
+      P.map(({ id, verify }) => writeReviewVerifyEmailAddress(id, verify)),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteContactEmailAddress: withEnv(deleteContactEmailAddress, env),
+          getContactEmailAddress: withEnv(getContactEmailAddress, env),
+          saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
         })),
       ),
     ),

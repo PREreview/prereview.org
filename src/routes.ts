@@ -350,6 +350,13 @@ export const writeReviewNeedToVerifyEmailAddressMatch = pipe(
   P.then(P.end),
 )
 
+export const writeReviewVerifyEmailAddressMatch = pipe(
+  writeReviewBaseMatch,
+  P.then(P.lit('verify-email-address')),
+  P.then(query(C.struct({ verify: UuidC }))),
+  P.then(P.end),
+)
+
 export const writeReviewPublishMatch = pipe(writeReviewBaseMatch, P.then(P.lit('check-your-prereview')), P.then(P.end))
 
 export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit('prereview-published')), P.then(P.end))

@@ -1934,7 +1934,7 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
 
 test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   'have to give your email address',
-  async ({ fetch, page }) => {
+  async ({ context, fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -1961,6 +1961,20 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
+
+    const newPage = await context.newPage()
+    await newPage.setContent(getLastMailjetEmailBody(fetch))
+
+    await newPage.mouse.move(0, 0)
+    await expect(newPage).toHaveScreenshot()
+
+    await newPage.getByRole('link', { name: 'Verify email address' }).click()
+
+    await expect(newPage.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+
+    await page.reload()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
   },
 )
 

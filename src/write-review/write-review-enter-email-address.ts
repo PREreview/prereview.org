@@ -15,7 +15,7 @@ import {
   type UnverifiedContactEmailAddress,
   maybeGetContactEmailAddress,
   saveContactEmailAddress,
-  verifyContactEmailAddress,
+  verifyContactEmailAddressForReview,
 } from '../contact-email-address'
 import { requiresVerifiedEmailAddress } from '../feature-flags'
 import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form'
@@ -145,7 +145,9 @@ const handleEnterEmailAddressForm = ({ preprint, user }: { preprint: PreprintTit
         RM.chainFirstReaderTaskEitherKW(contactEmailAddress =>
           saveContactEmailAddress(user.orcid, contactEmailAddress),
         ),
-        RM.chainFirstReaderTaskEitherKW(contactEmailAddress => verifyContactEmailAddress(user, contactEmailAddress)),
+        RM.chainFirstReaderTaskEitherKW(contactEmailAddress =>
+          verifyContactEmailAddressForReview(user, contactEmailAddress, preprint.id),
+        ),
         RM.ichainMiddlewareK(() =>
           seeOther(format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id })),
         ),

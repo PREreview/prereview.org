@@ -45,3 +45,46 @@ describe('sendContactEmailAddressVerificationEmail', () => {
     },
   )
 })
+
+describe('sendContactEmailAddressVerificationEmailForReview', () => {
+  test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress(), fc.indeterminatePreprintId()])(
+    'when the email can be sent',
+    async (publicUrl, user, emailAddress, preprint) => {
+      const sendEmail = jest.fn<_.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
+
+      const actual = await _.sendContactEmailAddressVerificationEmailForReview(
+        user,
+        emailAddress,
+        preprint,
+      )({
+        sendEmail,
+        publicUrl,
+      })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(sendEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          from: { address: 'help@prereview.org', name: 'PREreview' },
+          to: { address: emailAddress.value, name: user.name },
+          subject: 'Verify your email address on PREreview',
+        }),
+      )
+    },
+  )
+
+  test.prop([fc.origin(), fc.user(), fc.unverifiedContactEmailAddress(), fc.indeterminatePreprintId()])(
+    "when the email can't be sent",
+    async (publicUrl, user, emailAddress, preprint) => {
+      const actual = await _.sendContactEmailAddressVerificationEmailForReview(
+        user,
+        emailAddress,
+        preprint,
+      )({
+        publicUrl,
+        sendEmail: () => TE.left('unavailable'),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
