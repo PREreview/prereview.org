@@ -29,7 +29,7 @@ import {
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
 } from '../routes'
-import { EmailAddressC } from '../types/email-address'
+import { type EmailAddress, EmailAddressC } from '../types/email-address'
 import { type User, getUser } from '../user'
 import { getForm, redirectToNextForm } from './form'
 
@@ -72,11 +72,7 @@ export const writeReviewEnterEmailAddress = flow(
           .with({ contactEmailAddress: { type: 'verified' } }, state =>
             RM.fromMiddleware(redirectToNextForm(preprint.id)(state.form)),
           )
-          .with({ contactEmailAddress: { type: 'unverified' } }, () =>
-            RM.fromMiddleware(
-              seeOther(format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id })),
-            ),
-          )
+          .with({ contactEmailAddress: { type: 'unverified' } }, showEnterEmailAddressForm)
           .with({ contactEmailAddress: undefined, method: 'POST' }, handleEnterEmailAddressForm)
           .with({ contactEmailAddress: undefined }, showEnterEmailAddressForm)
           .exhaustive(),
@@ -102,9 +98,17 @@ export const writeReviewEnterEmailAddress = flow(
   ),
 )
 
-const showEnterEmailAddressForm = ({ preprint, user }: { preprint: PreprintTitle; user: User }) =>
+const showEnterEmailAddressForm = ({
+  contactEmailAddress,
+  preprint,
+  user,
+}: {
+  contactEmailAddress?: UnverifiedContactEmailAddress
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
-    RM.rightReader(createFormPage(preprint, user, { emailAddress: E.right(undefined) })),
+    RM.rightReader(createFormPage(preprint, user, { emailAddress: E.right(contactEmailAddress?.value) })),
     RM.ichainFirst(() => RM.status(Status.OK)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -163,7 +167,7 @@ const EmailAddressFieldD = pipe(
 )
 
 interface EnterEmailAddressForm {
-  readonly emailAddress: E.Either<MissingE | InvalidE, undefined>
+  readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>
 }
 
 function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAddressForm) {
@@ -238,6 +242,7 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
               autocomplete="email"
               aria-describedby="email-address-tip"
               ${match(form.emailAddress)
+                .with({ right: P.select(P.string) }, value => html`value="${value}"`)
                 .with({ right: undefined }, () => '')
                 .with({ left: { _tag: 'MissingE' } }, () => '')
                 .with({ left: { _tag: 'InvalidE', actual: P.select() } }, value => html`value="${value}"`)

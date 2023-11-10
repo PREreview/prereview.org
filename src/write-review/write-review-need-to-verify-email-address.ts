@@ -9,7 +9,7 @@ import { html, plainText, sendHtml } from '../html'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import { writeReviewConductMatch, writeReviewEnterEmailAddressMatch, writeReviewMatch } from '../routes'
+import { writeReviewEnterEmailAddressMatch, writeReviewMatch } from '../routes'
 import { type User, getUser } from '../user'
 import { getForm, redirectToNextForm } from './form'
 
@@ -80,7 +80,7 @@ function needToVerifyEmailAddressMessage({ preprint, user }: { preprint: Preprin
     title: plainText`Verify your email address – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(writeReviewEnterEmailAddressMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="main-content">

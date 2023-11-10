@@ -69,7 +69,7 @@ describe('writeReviewEnterEmailAddress', () => {
       fc.connection(),
       fc.form(),
       fc.user(),
-      fc.unverifiedContactEmailAddress(),
+      fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
     ])(
       'when the user needs to verify their email address',
       async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress) => {
@@ -81,7 +81,7 @@ describe('writeReviewEnterEmailAddress', () => {
             deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
             generateUuid: shouldNotBeCalled,
-            getContactEmailAddress: () => TE.right(contactEmailAddress),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
             requiresVerifiedEmailAddress: () => true,
@@ -93,13 +93,9 @@ describe('writeReviewEnterEmailAddress', () => {
 
         expect(actual).toStrictEqual(
           E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
-            },
-            { type: 'endResponse' },
+            { type: 'setStatus', status: Status.OK },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
           ]),
         )
       },
