@@ -344,7 +344,7 @@ export const writeReviewEnterEmailAddressMatch = pipe(
   P.then(P.end),
 )
 
-export const writeReviewVerifyEmailAddressMatch = pipe(
+export const writeReviewNeedToVerifyEmailAddressMatch = pipe(
   writeReviewBaseMatch,
   P.then(P.lit('verify-email-address')),
   P.then(P.end),

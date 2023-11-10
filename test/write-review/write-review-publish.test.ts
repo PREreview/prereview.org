@@ -11,8 +11,8 @@ import merge from 'ts-deepmerge'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
+  writeReviewNeedToVerifyEmailAddressMatch,
   writeReviewPublishedMatch,
-  writeReviewVerifyEmailAddressMatch,
 } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
@@ -75,7 +75,7 @@ describe('writeReviewPublish', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
+            value: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
           },
           { type: 'endResponse' },
         ]),

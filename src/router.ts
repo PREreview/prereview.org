@@ -139,6 +139,7 @@ import {
   writeReviewLanguageEditingMatch,
   writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
+  writeReviewNeedToVerifyEmailAddressMatch,
   writeReviewNovelMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
@@ -149,7 +150,6 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
   writeReviewStartMatch,
-  writeReviewVerifyEmailAddressMatch,
 } from './routes'
 import { scietyList } from './sciety-list'
 import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from './slack'
@@ -170,6 +170,7 @@ import {
   writeReviewIntroductionMatches,
   writeReviewLanguageEditing,
   writeReviewMethodsAppropriate,
+  writeReviewNeedToVerifyEmailAddress,
   writeReviewNovel,
   writeReviewPersona,
   writeReviewPublish,
@@ -180,7 +181,6 @@ import {
   writeReviewReviewType,
   writeReviewShouldRead,
   writeReviewStart,
-  writeReviewVerifyEmailAddress,
 } from './write-review'
 import {
   createRecordOnZenodo,
@@ -707,8 +707,8 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       ),
     ),
     pipe(
-      writeReviewVerifyEmailAddressMatch.parser,
-      P.map(({ id }) => writeReviewVerifyEmailAddress(id)),
+      writeReviewNeedToVerifyEmailAddressMatch.parser,
+      P.map(({ id }) => writeReviewNeedToVerifyEmailAddress(id)),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,

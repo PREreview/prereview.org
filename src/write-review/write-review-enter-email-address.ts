@@ -27,7 +27,7 @@ import {
   writeReviewConductMatch,
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
-  writeReviewVerifyEmailAddressMatch,
+  writeReviewNeedToVerifyEmailAddressMatch,
 } from '../routes'
 import { EmailAddressC } from '../types/email-address'
 import { type User, getUser } from '../user'
@@ -73,7 +73,9 @@ export const writeReviewEnterEmailAddress = flow(
             RM.fromMiddleware(redirectToNextForm(preprint.id)(state.form)),
           )
           .with({ contactEmailAddress: { type: 'unverified' } }, () =>
-            RM.fromMiddleware(seeOther(format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprint.id }))),
+            RM.fromMiddleware(
+              seeOther(format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id })),
+            ),
           )
           .with({ contactEmailAddress: undefined, method: 'POST' }, handleEnterEmailAddressForm)
           .with({ contactEmailAddress: undefined }, showEnterEmailAddressForm)
@@ -144,7 +146,9 @@ const handleEnterEmailAddressForm = ({ preprint, user }: { preprint: PreprintTit
           saveContactEmailAddress(user.orcid, contactEmailAddress),
         ),
         RM.chainFirstReaderTaskEitherKW(contactEmailAddress => verifyContactEmailAddress(user, contactEmailAddress)),
-        RM.ichainMiddlewareK(() => seeOther(format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprint.id }))),
+        RM.ichainMiddlewareK(() =>
+          seeOther(format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id })),
+        ),
         RM.orElseW(() => serviceUnavailable),
       ),
     ),

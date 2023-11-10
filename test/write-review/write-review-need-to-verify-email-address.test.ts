@@ -14,7 +14,7 @@ import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
 
-describe('writeReviewVerifyEmailAddress', () => {
+describe('writeReviewNeedToVerifyEmailAddress', () => {
   describe('when a verified email address is required', () => {
     test.prop([
       fc.indeterminatePreprintId(),
@@ -33,7 +33,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         )
 
         const actual = await runMiddleware(
-          _.writeReviewVerifyEmailAddress(preprintId)({
+          _.writeReviewNeedToVerifyEmailAddress(preprintId)({
             formStore,
             getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
@@ -72,7 +72,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const actual = await runMiddleware(
-          _.writeReviewVerifyEmailAddress(preprintId)({
+          _.writeReviewNeedToVerifyEmailAddress(preprintId)({
             formStore,
             getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
@@ -99,7 +99,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
         const actual = await runMiddleware(
-          _.writeReviewVerifyEmailAddress(preprintId)({
+          _.writeReviewNeedToVerifyEmailAddress(preprintId)({
             formStore,
             getContactEmailAddress: () => TE.left('not-found'),
             getPreprintTitle: () => TE.right(preprintTitle),
@@ -127,7 +127,7 @@ describe('writeReviewVerifyEmailAddress', () => {
       'when there is no form',
       async (preprintId, preprintTitle, connection, user) => {
         const actual = await runMiddleware(
-          _.writeReviewVerifyEmailAddress(preprintId)({
+          _.writeReviewNeedToVerifyEmailAddress(preprintId)({
             getContactEmailAddress: shouldNotBeCalled,
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
@@ -156,7 +156,7 @@ describe('writeReviewVerifyEmailAddress', () => {
     "when a verified email address isn't required",
     async (preprintId, preprintTitle, connection, user) => {
       const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(preprintId)({
+        _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
@@ -181,7 +181,7 @@ describe('writeReviewVerifyEmailAddress', () => {
     'when the preprint cannot be loaded',
     async (preprintId, connection, user) => {
       const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(preprintId)({
+        _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.left('unavailable'),
@@ -206,7 +206,7 @@ describe('writeReviewVerifyEmailAddress', () => {
     'when the preprint cannot be found',
     async (preprintId, connection, user) => {
       const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(preprintId)({
+        _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.left('not-found'),
@@ -231,7 +231,7 @@ describe('writeReviewVerifyEmailAddress', () => {
     "when there isn't a session",
     async (preprintId, preprintTitle, connection) => {
       const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(preprintId)({
+        _.writeReviewNeedToVerifyEmailAddress(preprintId)({
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),

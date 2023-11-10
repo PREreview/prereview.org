@@ -8,7 +8,7 @@ import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import type { EditContactEmailAddressEnv, VerifyContactEmailAddressEnv } from '../../src/contact-email-address'
 import type { RequiresVerifiedEmailAddressEnv } from '../../src/feature-flags'
-import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../../src/routes'
+import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
@@ -97,7 +97,7 @@ describe('writeReviewEnterEmailAddress', () => {
             {
               type: 'setHeader',
               name: 'Location',
-              value: format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
+              value: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
             },
             { type: 'endResponse' },
           ]),
@@ -152,7 +152,7 @@ describe('writeReviewEnterEmailAddress', () => {
             {
               type: 'setHeader',
               name: 'Location',
-              value: format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
+              value: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
             },
             { type: 'endResponse' },
           ]),

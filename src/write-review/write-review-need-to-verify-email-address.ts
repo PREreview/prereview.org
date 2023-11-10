@@ -13,7 +13,7 @@ import { writeReviewConductMatch, writeReviewEnterEmailAddressMatch, writeReview
 import { type User, getUser } from '../user'
 import { getForm, redirectToNextForm } from './form'
 
-export const writeReviewVerifyEmailAddress = flow(
+export const writeReviewNeedToVerifyEmailAddress = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
     pipe(

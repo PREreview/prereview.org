@@ -26,6 +26,7 @@ import {
   writeReviewLanguageEditingMatch,
   writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
+  writeReviewNeedToVerifyEmailAddressMatch,
   writeReviewNovelMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
@@ -34,7 +35,6 @@ import {
   writeReviewResultsSupportedMatch,
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
-  writeReviewVerifyEmailAddressMatch,
 } from '../routes'
 import { isPseudonym } from '../types/pseudonym'
 import { type User, getUser } from '../user'
@@ -110,7 +110,9 @@ const decideNextStep = (state: {
       ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm)),
     )
     .with({ requiresVerifiedEmailAddress: true, contactEmailAddress: { type: 'unverified' } }, () =>
-      RM.fromMiddleware(seeOther(format(writeReviewVerifyEmailAddressMatch.formatter, { id: state.preprint.id }))),
+      RM.fromMiddleware(
+        seeOther(format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: state.preprint.id })),
+      ),
     )
     .with({ requiresVerifiedEmailAddress: true, contactEmailAddress: undefined }, () =>
       RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: state.preprint.id }))),
