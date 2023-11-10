@@ -66,7 +66,7 @@ describe('writeReviewEnterEmailAddress', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.connection(),
+      fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.form(),
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
@@ -114,10 +114,19 @@ describe('writeReviewEnterEmailAddress', () => {
         ),
       fc.uuid(),
       fc.user(),
+      fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
       fc.form(),
     ])(
       'when an email address is given',
-      async (preprintId, preprintTitle, [connection, emailAddress], verificationToken, user, newReview) => {
+      async (
+        preprintId,
+        preprintTitle,
+        [connection, emailAddress],
+        verificationToken,
+        user,
+        contactEmailAddress,
+        newReview,
+      ) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
         const saveContactEmailAddress = jest.fn<EditContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
@@ -131,7 +140,7 @@ describe('writeReviewEnterEmailAddress', () => {
           _.writeReviewEnterEmailAddress(preprintId)({
             deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
-            getContactEmailAddress: () => TE.left('not-found'),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             generateUuid: () => verificationToken,
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),

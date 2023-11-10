@@ -72,9 +72,11 @@ export const writeReviewEnterEmailAddress = flow(
           .with({ contactEmailAddress: { type: 'verified' } }, state =>
             RM.fromMiddleware(redirectToNextForm(preprint.id)(state.form)),
           )
-          .with({ contactEmailAddress: { type: 'unverified' } }, showEnterEmailAddressForm)
-          .with({ contactEmailAddress: undefined, method: 'POST' }, handleEnterEmailAddressForm)
-          .with({ contactEmailAddress: undefined }, showEnterEmailAddressForm)
+          .with(
+            { contactEmailAddress: P.union({ type: 'unverified' }, undefined), method: 'POST' },
+            handleEnterEmailAddressForm,
+          )
+          .with({ contactEmailAddress: P.union({ type: 'unverified' }, undefined) }, showEnterEmailAddressForm)
           .exhaustive(),
       ),
       RM.orElseW(error =>
