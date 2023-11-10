@@ -8,7 +8,7 @@ import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import type { EditContactEmailAddressEnv, GetContactEmailAddressEnv } from '../../src/contact-email-address'
 import type { RequiresVerifiedEmailAddressEnv } from '../../src/feature-flags'
-import { writeReviewMatch } from '../../src/routes'
+import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
@@ -18,6 +18,8 @@ import * as fc from './fc'
 describe('writeReviewVerifyEmailAddress', () => {
   describe('when a verified email address is required', () => {
     test.prop([
+      fc.oauth(),
+      fc.origin(),
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc.connection(),
@@ -26,7 +28,7 @@ describe('writeReviewVerifyEmailAddress', () => {
       fc.unverifiedContactEmailAddress(),
     ])(
       'when the email address is unverified',
-      async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress) => {
+      async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, contactEmailAddress) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
         const requiresVerifiedEmailAddress = jest.fn<RequiresVerifiedEmailAddressEnv['requiresVerifiedEmailAddress']>(
@@ -49,6 +51,8 @@ describe('writeReviewVerifyEmailAddress', () => {
             getContactEmailAddress,
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.fromEither(E.right(user)),
+            oauth,
+            publicUrl,
             requiresVerifiedEmailAddress,
             saveContactEmailAddress,
           }),
@@ -75,6 +79,8 @@ describe('writeReviewVerifyEmailAddress', () => {
     )
 
     test.prop([
+      fc.oauth(),
+      fc.origin(),
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc.connection(),
@@ -84,7 +90,7 @@ describe('writeReviewVerifyEmailAddress', () => {
       fc.uuid(),
     ])(
       'when the email address is already verified',
-      async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress, id) => {
+      async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, contactEmailAddress, id) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -98,6 +104,8 @@ describe('writeReviewVerifyEmailAddress', () => {
             getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
+            oauth,
+            publicUrl,
             requiresVerifiedEmailAddress: () => true,
             saveContactEmailAddress: shouldNotBeCalled,
           }),
@@ -116,6 +124,8 @@ describe('writeReviewVerifyEmailAddress', () => {
     )
 
     test.prop([
+      fc.oauth(),
+      fc.origin(),
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc.connection(),
@@ -125,7 +135,7 @@ describe('writeReviewVerifyEmailAddress', () => {
       fc.uuid(),
     ])(
       "when the verification token doesn't match",
-      async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress, id) => {
+      async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, contactEmailAddress, id) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -139,6 +149,8 @@ describe('writeReviewVerifyEmailAddress', () => {
             getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
+            oauth,
+            publicUrl,
             requiresVerifiedEmailAddress: () => true,
             saveContactEmailAddress: shouldNotBeCalled,
           }),
@@ -156,9 +168,18 @@ describe('writeReviewVerifyEmailAddress', () => {
       },
     )
 
-    test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.form(), fc.user(), fc.uuid()])(
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.connection(),
+      fc.form(),
+      fc.user(),
+      fc.uuid(),
+    ])(
       'when there is no email address',
-      async (preprintId, preprintTitle, connection, newReview, user, id) => {
+      async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, id) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -172,6 +193,8 @@ describe('writeReviewVerifyEmailAddress', () => {
             getContactEmailAddress: () => TE.left('not-found'),
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
+            oauth,
+            publicUrl,
             requiresVerifiedEmailAddress: () => true,
             saveContactEmailAddress: shouldNotBeCalled,
           }),
@@ -189,9 +212,18 @@ describe('writeReviewVerifyEmailAddress', () => {
       },
     )
 
-    test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.form(), fc.user(), fc.uuid()])(
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.connection(),
+      fc.form(),
+      fc.user(),
+      fc.uuid(),
+    ])(
       "when the email address can't be loaded",
-      async (preprintId, preprintTitle, connection, newReview, user, id) => {
+      async (oauth, publicUrl, preprintId, preprintTitle, connection, newReview, user, id) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -205,6 +237,8 @@ describe('writeReviewVerifyEmailAddress', () => {
             getContactEmailAddress: () => TE.left('unavailable'),
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
+            oauth,
+            publicUrl,
             requiresVerifiedEmailAddress: () => true,
             saveContactEmailAddress: shouldNotBeCalled,
           }),
@@ -222,43 +256,15 @@ describe('writeReviewVerifyEmailAddress', () => {
       },
     )
 
-    test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user(), fc.uuid()])(
-      'when there is no form',
-      async (preprintId, preprintTitle, connection, user, id) => {
-        const actual = await runMiddleware(
-          _.writeReviewVerifyEmailAddress(
-            preprintId,
-            id,
-          )({
-            deleteContactEmailAddress: shouldNotBeCalled,
-            formStore: new Keyv(),
-            getContactEmailAddress: shouldNotBeCalled,
-            getPreprintTitle: () => TE.right(preprintTitle),
-            getUser: () => M.of(user),
-            requiresVerifiedEmailAddress: () => true,
-            saveContactEmailAddress: shouldNotBeCalled,
-          }),
-          connection,
-        )()
-
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            {
-              type: 'setHeader',
-              name: 'Location',
-              value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
-            },
-            { type: 'endResponse' },
-          ]),
-        )
-      },
-    )
-  })
-
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.user(), fc.uuid()])(
-    "when a verified email address isn't required",
-    async (preprintId, preprintTitle, connection, user, id) => {
+    test.prop([
+      fc.oauth(),
+      fc.origin(),
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.connection(),
+      fc.user(),
+      fc.uuid(),
+    ])('when there is no form', async (oauth, publicUrl, preprintId, preprintTitle, connection, user, id) => {
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
           preprintId,
@@ -269,6 +275,51 @@ describe('writeReviewVerifyEmailAddress', () => {
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
+          oauth,
+          publicUrl,
+          requiresVerifiedEmailAddress: () => true,
+          saveContactEmailAddress: shouldNotBeCalled,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.SeeOther },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    })
+  })
+
+  test.prop([
+    fc.oauth(),
+    fc.origin(),
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.connection(),
+    fc.user(),
+    fc.uuid(),
+  ])(
+    "when a verified email address isn't required",
+    async (oauth, publicUrl, preprintId, preprintTitle, connection, user, id) => {
+      const actual = await runMiddleware(
+        _.writeReviewVerifyEmailAddress(
+          preprintId,
+          id,
+        )({
+          deleteContactEmailAddress: shouldNotBeCalled,
+          formStore: new Keyv(),
+          getContactEmailAddress: shouldNotBeCalled,
+          getPreprintTitle: () => TE.right(preprintTitle),
+          getUser: () => M.of(user),
+          oauth,
+          publicUrl,
           requiresVerifiedEmailAddress: () => false,
           saveContactEmailAddress: shouldNotBeCalled,
         }),
@@ -286,9 +337,9 @@ describe('writeReviewVerifyEmailAddress', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.uuid()])(
+  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.uuid()])(
     'when the preprint cannot be loaded',
-    async (preprintId, connection, user, id) => {
+    async (oauth, publicUrl, preprintId, connection, user, id) => {
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
           preprintId,
@@ -299,6 +350,8 @@ describe('writeReviewVerifyEmailAddress', () => {
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
+          oauth,
+          publicUrl,
           requiresVerifiedEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
         }),
@@ -316,9 +369,9 @@ describe('writeReviewVerifyEmailAddress', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.uuid()])(
+  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.connection(), fc.user(), fc.uuid()])(
     'when the preprint cannot be found',
-    async (preprintId, connection, user, id) => {
+    async (oauth, publicUrl, preprintId, connection, user, id) => {
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
           preprintId,
@@ -329,6 +382,8 @@ describe('writeReviewVerifyEmailAddress', () => {
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
+          oauth,
+          publicUrl,
           requiresVerifiedEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
         }),
@@ -346,9 +401,9 @@ describe('writeReviewVerifyEmailAddress', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.uuid()])(
+  test.prop([fc.oauth(), fc.origin(), fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.uuid()])(
     'when the user is not logged in',
-    async (preprintId, preprintTitle, connection, id) => {
+    async (oauth, publicUrl, preprintId, preprintTitle, connection, id) => {
       const actual = await runMiddleware(
         _.writeReviewVerifyEmailAddress(
           preprintId,
@@ -359,6 +414,8 @@ describe('writeReviewVerifyEmailAddress', () => {
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.left('no-session'),
+          oauth,
+          publicUrl,
           requiresVerifiedEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
         }),
@@ -367,11 +424,23 @@ describe('writeReviewVerifyEmailAddress', () => {
 
       expect(actual).toStrictEqual(
         E.right([
-          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setStatus', status: Status.Found },
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
+            value: new URL(
+              `?${new URLSearchParams({
+                client_id: oauth.clientId,
+                response_type: 'code',
+                redirect_uri: oauth.redirectUri.href,
+                scope: '/authenticate',
+                state: new URL(
+                  format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprintTitle.id, verify: id }),
+                  publicUrl,
+                ).toString(),
+              }).toString()}`,
+              oauth.authorizeUrl,
+            ).href,
           },
           { type: 'endResponse' },
         ]),
@@ -379,33 +448,40 @@ describe('writeReviewVerifyEmailAddress', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.connection(), fc.uuid(), fc.error()])(
-    "when the user can't be loaded",
-    async (preprintId, preprintTitle, connection, id, error) => {
-      const actual = await runMiddleware(
-        _.writeReviewVerifyEmailAddress(
-          preprintId,
-          id,
-        )({
-          deleteContactEmailAddress: shouldNotBeCalled,
-          formStore: new Keyv(),
-          getContactEmailAddress: shouldNotBeCalled,
-          getPreprintTitle: () => TE.right(preprintTitle),
-          getUser: () => M.left(error),
-          requiresVerifiedEmailAddress: shouldNotBeCalled,
-          saveContactEmailAddress: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+  test.prop([
+    fc.oauth(),
+    fc.origin(),
+    fc.indeterminatePreprintId(),
+    fc.preprintTitle(),
+    fc.connection(),
+    fc.uuid(),
+    fc.error(),
+  ])("when the user can't be loaded", async (oauth, publicUrl, preprintId, preprintTitle, connection, id, error) => {
+    const actual = await runMiddleware(
+      _.writeReviewVerifyEmailAddress(
+        preprintId,
+        id,
+      )({
+        deleteContactEmailAddress: shouldNotBeCalled,
+        formStore: new Keyv(),
+        getContactEmailAddress: shouldNotBeCalled,
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getUser: () => M.left(error),
+        oauth,
+        publicUrl,
+        requiresVerifiedEmailAddress: shouldNotBeCalled,
+        saveContactEmailAddress: shouldNotBeCalled,
+      }),
+      connection,
+    )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual(
+      E.right([
+        { type: 'setStatus', status: Status.ServiceUnavailable },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+        { type: 'setBody', body: expect.anything() },
+      ]),
+    )
+  })
 })
