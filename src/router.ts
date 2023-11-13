@@ -13,7 +13,6 @@ import { route } from 'hyper-ts-routing'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import * as uuid from 'uuid-ts'
 import { aboutUs } from './about-us'
 import type { ConfigEnv } from './app'
 import { getAvatarFromCloudinary } from './cloudinary'
@@ -161,6 +160,7 @@ import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile }
 import type { SlackUserId } from './slack-user-id'
 import { trainings } from './trainings'
 import type { PreprintId } from './types/preprint-id'
+import type { GenerateUuidEnv } from './types/uuid'
 import type { GetUserEnv } from './user'
 import {
   type NewPrereview,
@@ -220,6 +220,7 @@ const withEnv =
 
 export type RouterEnv = ConfigEnv &
   DoesPreprintExistEnv &
+  GenerateUuidEnv &
   GetPreprintEnv &
   GetPreprintTitleEnv &
   GetUserEnv &
@@ -363,7 +364,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           canConnectSlack: () => true,
-          generateUuid: uuid.v4(),
           signValue: value => cookieSignature.sign(value, env.secret),
         })),
       ),
@@ -580,7 +580,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           deleteContactEmailAddress: withEnv(deleteContactEmailAddress, env),
           getContactEmailAddress: withEnv(getContactEmailAddress, env),
-          generateUuid: uuid.v4(),
           saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
           verifyContactEmailAddress: withEnv(sendContactEmailAddressVerificationEmail, env),
         })),
@@ -706,7 +705,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           deleteContactEmailAddress: withEnv(deleteContactEmailAddress, env),
           getContactEmailAddress: withEnv(getContactEmailAddress, env),
-          generateUuid: uuid.v4(),
           saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
           verifyContactEmailAddressForReview: withEnv(sendContactEmailAddressVerificationEmailForReview, env),
         })),

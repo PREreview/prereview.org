@@ -15,6 +15,7 @@ import { toRequestHandler } from 'hyper-ts/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
+import * as uuid from 'uuid-ts'
 import type { CloudinaryApiEnv } from './cloudinary'
 import type { SlackOAuthEnv } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
@@ -267,6 +268,7 @@ export const app = (config: ConfigEnv) => {
         R.local((env: ConfigEnv): RouterEnv & LegacyEnv => ({
           ...env,
           doesPreprintExist: withEnv(doesPreprintExist, env),
+          generateUuid: uuid.v4(),
           getUser: withEnv(() => getUser, env),
           getPreprint: withEnv(getPreprint, env),
           getPreprintTitle: withEnv(getPreprintTitle, env),
