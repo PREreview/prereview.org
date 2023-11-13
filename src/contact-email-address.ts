@@ -1,14 +1,14 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type { Refinement } from 'fp-ts/Refinement'
 import type * as TE from 'fp-ts/TaskEither'
-import { flow, pipe } from 'fp-ts/function'
+import { flow } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
-import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import { type Uuid, isUuid } from 'uuid-ts'
+import type { Uuid } from 'uuid-ts'
 import { type EmailAddress, EmailAddressC } from './types/email-address'
 import type { IndeterminatePreprintId } from './types/preprint-id'
+import { UuidC } from './types/uuid'
 import type { User } from './user'
 
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
@@ -50,20 +50,6 @@ export interface VerifyContactEmailAddressForReviewEnv {
     preprint: IndeterminatePreprintId,
   ) => TE.TaskEither<'unavailable', void>
 }
-
-const UuidC = C.make(
-  pipe(
-    D.string,
-    D.parse(s => {
-      if (s.toLowerCase() === s) {
-        return D.fromRefinement(isUuid, 'UUID').decode(s)
-      }
-
-      return D.failure(s, 'UUID')
-    }),
-  ),
-  { encode: uuid => uuid.toLowerCase() },
-)
 
 export const ContactEmailAddressC = C.sum('type')({
   verified: C.struct({

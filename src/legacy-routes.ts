@@ -13,7 +13,7 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { match, P as p } from 'ts-pattern'
-import { type Uuid, isUuid } from 'uuid-ts'
+import type { Uuid } from 'uuid-ts'
 import { html, plainText, sendHtml } from './html'
 import { movedPermanently, notFound, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
@@ -40,6 +40,7 @@ import {
   fromPreprintDoi,
 } from './types/preprint-id'
 import type { ProfileId } from './types/profile-id'
+import { UuidC } from './types/uuid'
 import { type GetUserEnv, type User, maybeGetUser } from './user'
 
 export type LegacyEnv = FathomEnv & GetPreprintIdFromUuidEnv & GetProfileIdFromUuidEnv & GetUserEnv & PhaseEnv
@@ -61,22 +62,6 @@ const getProfileIdFromUuid = (uuid: Uuid) =>
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ getProfileIdFromUuid }: GetProfileIdFromUuidEnv) => getProfileIdFromUuid(uuid)),
   )
-
-const UuidD = D.fromRefinement(isUuid, 'UUID')
-
-const UuidC = C.make(
-  pipe(
-    D.string,
-    D.parse(s => {
-      if (s.toLowerCase() === s) {
-        return UuidD.decode(s)
-      }
-
-      return D.failure(s, 'UUID')
-    }),
-  ),
-  { encode: uuid => uuid.toLowerCase() },
-)
 
 const ArxivPreprintIdC = C.make(
   pipe(
