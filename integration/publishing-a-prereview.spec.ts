@@ -2016,6 +2016,50 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   },
 )
 
+test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+  'can resend the verification email',
+  async ({ context, fetch, page }) => {
+    await page.goto('/my-details/change-email-address')
+    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
+    fetch.postOnce(
+      { name: 'original-verification', url: 'https://api.mailjet.com/v3.1/send' },
+      { body: { Messages: [{ Status: 'success' }] } },
+    )
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    fetch.postOnce(
+      { name: 'resent-verification', url: 'https://api.mailjet.com/v3.1/send' },
+      { body: { Messages: [{ Status: 'success' }] } },
+    )
+    await page.getByRole('button', { name: 'Resend verification email' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
+
+    const newPage = await context.newPage()
+    await newPage.setContent(getLastMailjetEmailBody(fetch))
+    await newPage.getByRole('link', { name: 'Verify email address' }).click()
+    await newPage.close()
+
+    await page.reload()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+  },
+)
+
 test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   fetch.postOnce('http://orcid.test/token', { status: Status.ServiceUnavailable })

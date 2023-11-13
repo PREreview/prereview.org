@@ -6,8 +6,13 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
+import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address'
 import type { RequiresVerifiedEmailAddressEnv } from '../../src/feature-flags'
-import { writeReviewEnterEmailAddressMatch, writeReviewMatch } from '../../src/routes'
+import {
+  writeReviewEnterEmailAddressMatch,
+  writeReviewMatch,
+  writeReviewNeedToVerifyEmailAddressMatch,
+} from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
@@ -39,6 +44,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
             requiresVerifiedEmailAddress,
+            verifyContactEmailAddressForReview: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -61,7 +67,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
     test.prop([
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
-      fc.connection(),
+      fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
       fc.form(),
       fc.user(),
       fc.unverifiedContactEmailAddress(),
@@ -78,6 +84,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
             requiresVerifiedEmailAddress: () => true,
+            verifyContactEmailAddressForReview: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -89,6 +96,49 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
             { type: 'setBody', body: expect.anything() },
           ]),
         )
+      },
+    )
+
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.connection({ method: fc.constant('POST') }),
+      fc.form(),
+      fc.user(),
+      fc.unverifiedContactEmailAddress(),
+    ])(
+      'resending verification email',
+      async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+        const verifyContactEmailAddressForReview = jest.fn<
+          VerifyContactEmailAddressForReviewEnv['verifyContactEmailAddressForReview']
+        >(_ => TE.right(undefined))
+
+        const actual = await runMiddleware(
+          _.writeReviewNeedToVerifyEmailAddress(preprintId)({
+            formStore,
+            getContactEmailAddress: () => TE.right(contactEmailAddress),
+            getPreprintTitle: () => TE.right(preprintTitle),
+            getUser: () => M.of(user),
+            requiresVerifiedEmailAddress: () => true,
+            verifyContactEmailAddressForReview,
+          }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.SeeOther },
+            {
+              type: 'setHeader',
+              name: 'Location',
+              value: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
+            },
+            { type: 'endResponse' },
+          ]),
+        )
+        expect(verifyContactEmailAddressForReview).toHaveBeenCalledWith(user, contactEmailAddress, preprintTitle.id)
       },
     )
 
@@ -105,6 +155,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
             getPreprintTitle: () => TE.right(preprintTitle),
             getUser: () => M.of(user),
             requiresVerifiedEmailAddress: () => true,
+            verifyContactEmailAddressForReview: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -133,6 +184,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
             getUser: () => M.of(user),
             formStore: new Keyv(),
             requiresVerifiedEmailAddress: () => true,
+            verifyContactEmailAddressForReview: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -162,6 +214,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           requiresVerifiedEmailAddress: () => false,
+          verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -187,6 +240,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           getPreprintTitle: () => TE.left('unavailable'),
           getUser: () => M.of(user),
           requiresVerifiedEmailAddress: shouldNotBeCalled,
+          verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -212,6 +266,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           getPreprintTitle: () => TE.left('not-found'),
           getUser: () => M.of(user),
           requiresVerifiedEmailAddress: () => false,
+          verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -237,6 +292,7 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
           getUser: () => M.left('no-session'),
           formStore: new Keyv(),
           requiresVerifiedEmailAddress: shouldNotBeCalled,
+          verifyContactEmailAddressForReview: shouldNotBeCalled,
         }),
         connection,
       )()
