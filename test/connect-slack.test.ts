@@ -11,6 +11,7 @@ import Keyv from 'keyv'
 import * as _ from '../src/connect-slack'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../src/routes'
 import type { EditSlackUserIdEnv } from '../src/slack-user-id'
+import type { GenerateUuidEnv } from '../src/types/uuid'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
 import { shouldNotBeCalled } from './should-not-be-called'
@@ -133,7 +134,7 @@ describe('connectSlackStart', () => {
   test.prop([fc.oauth(), fc.oauth(), fc.uuid(), fc.string(), fc.user(), fc.connection()])(
     'when the user is logged in',
     async (oauth, slackOauth, uuid, signedValue, user, connection) => {
-      const generateUuid = jest.fn<_.GenerateUuidEnv['generateUuid']>(() => uuid)
+      const generateUuid = jest.fn<GenerateUuidEnv['generateUuid']>(() => uuid)
       const signValue = jest.fn<_.SignValueEnv['signValue']>(_ => signedValue)
 
       const actual = await runMiddleware(

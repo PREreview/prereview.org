@@ -1,8 +1,6 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import type { IO } from 'fp-ts/IO'
 import * as O from 'fp-ts/Option'
-import * as RIO from 'fp-ts/ReaderIO'
 import { flow, pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { Status } from 'hyper-ts'
@@ -10,7 +8,6 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import type { Uuid } from 'uuid-ts'
 import {
   type UnverifiedContactEmailAddress,
   maybeGetContactEmailAddress,
@@ -30,17 +27,9 @@ import {
   writeReviewNeedToVerifyEmailAddressMatch,
 } from '../routes'
 import { type EmailAddress, EmailAddressC } from '../types/email-address'
+import { generateUuid } from '../types/uuid'
 import { type User, getUser } from '../user'
 import { getForm, redirectToNextForm } from './form'
-
-interface GenerateUuidEnv {
-  generateUuid: IO<Uuid>
-}
-
-const generateUuid = pipe(
-  RIO.ask<GenerateUuidEnv>(),
-  RIO.chainIOK(({ generateUuid }) => generateUuid),
-)
 
 export const writeReviewEnterEmailAddress = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),

@@ -1,10 +1,8 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import type { IO } from 'fp-ts/IO'
 import * as I from 'fp-ts/Identity'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
-import * as RIO from 'fp-ts/ReaderIO'
 import { flow, pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
@@ -13,7 +11,6 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import type { Uuid } from 'uuid-ts'
 import {
   type UnverifiedContactEmailAddress,
   deleteContactEmailAddress,
@@ -30,18 +27,10 @@ import { type FathomEnv, type PhaseEnv, page } from '../page'
 import type { PublicUrlEnv } from '../public-url'
 import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes'
 import { type EmailAddress, EmailAddressC } from '../types/email-address'
+import { generateUuid } from '../types/uuid'
 import { type GetUserEnv, type User, getUser } from '../user'
 
 export type Env = EnvFor<typeof changeContactEmailAddress>
-
-interface GenerateUuidEnv {
-  generateUuid: IO<Uuid>
-}
-
-const generateUuid = pipe(
-  RIO.ask<GenerateUuidEnv>(),
-  RIO.chainIOK(({ generateUuid }) => generateUuid),
-)
 
 export const changeContactEmailAddress = pipe(
   getUser,

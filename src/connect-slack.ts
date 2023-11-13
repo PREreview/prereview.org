@@ -2,12 +2,10 @@ import cookie from 'cookie'
 import * as F from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
-import type { IO } from 'fp-ts/IO'
 import * as J from 'fp-ts/Json'
 import type * as O from 'fp-ts/Option'
 import type { Ord } from 'fp-ts/Ord'
 import * as R from 'fp-ts/Reader'
-import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RR from 'fp-ts/ReadonlyRecord'
 import * as RS from 'fp-ts/ReadonlySet'
@@ -19,7 +17,6 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import type { Uuid } from 'uuid-ts'
 import { setFlashMessage } from './flash-message'
 import { html, plainText, sendHtml } from './html'
 import { logInAndRedirect } from './log-in'
@@ -30,14 +27,11 @@ import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from './rou
 import { isSlackUser } from './slack-user'
 import { saveSlackUserId } from './slack-user-id'
 import { NonEmptyStringC, ordNonEmptyString } from './types/string'
+import { generateUuid } from './types/uuid'
 import { type GetUserEnv, type User, getUser, maybeGetUser } from './user'
 
 export interface SlackOAuthEnv {
   slackOauth: OAuthEnv['oauth']
-}
-
-export interface GenerateUuidEnv {
-  generateUuid: IO<Uuid>
 }
 
 export interface SignValueEnv {
@@ -47,11 +41,6 @@ export interface SignValueEnv {
 export interface UnsignValueEnv {
   unsignValue: (value: string) => O.Option<string>
 }
-
-const generateUuid = pipe(
-  RIO.ask<GenerateUuidEnv>(),
-  RIO.chainIOK(({ generateUuid }) => generateUuid),
-)
 
 const signValue = (value: string) => R.asks(({ signValue }: SignValueEnv) => signValue(value))
 
