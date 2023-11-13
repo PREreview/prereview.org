@@ -2018,7 +2018,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   'can resend the verification email',
-  async ({ context, fetch, page }) => {
+  async ({ context, fetch, javaScriptEnabled, page }) => {
     await page.goto('/my-details/change-email-address')
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
     fetch.postOnce(
@@ -2047,7 +2047,18 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
     )
     await page.getByRole('button', { name: 'Resend verification email' }).click()
 
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Important' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Important' })).toBeInViewport()
+    }
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Important' })).toBeHidden()
 
     const newPage = await context.newPage()
     await newPage.setContent(getLastMailjetEmailBody(fetch))

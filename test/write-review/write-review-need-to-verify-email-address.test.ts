@@ -135,6 +135,12 @@ describe('writeReviewNeedToVerifyEmailAddress', () => {
               name: 'Location',
               value: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
             },
+            {
+              type: 'setCookie',
+              name: 'flash-message',
+              options: { httpOnly: true },
+              value: 'verify-contact-email-resend',
+            },
             { type: 'endResponse' },
           ]),
         )
