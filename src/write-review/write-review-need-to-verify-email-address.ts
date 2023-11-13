@@ -86,6 +86,8 @@ function needToVerifyEmailAddressMessage({ preprint, user }: { preprint: Preprin
       <main id="main-content">
         <h1>Verify your email address</h1>
 
+        <p>We’re ready to publish your PREreview, but we need to verify your email address first.</p>
+
         <p>
           We’ve sent you an email. Please open it and follow the link to verify your address, then reload this page.
         </p>
