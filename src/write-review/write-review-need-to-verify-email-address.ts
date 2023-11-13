@@ -157,7 +157,7 @@ function needToVerifyEmailAddressMessage({
           action="${format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprint.id })}"
           novalidate
         >
-          <button class="secondary">Resend verification email</button>
+          <button class="secondary">Resend email</button>
         </form>
       </main>
     `,

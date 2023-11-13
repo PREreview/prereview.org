@@ -2045,7 +2045,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
       { name: 'resent-verification', url: 'https://api.mailjet.com/v3.1/send' },
       { body: { Messages: [{ Status: 'success' }] } },
     )
-    await page.getByRole('button', { name: 'Resend verification email' }).click()
+    await page.getByRole('button', { name: 'Resend email' }).click()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'Important' })).toBeFocused()
