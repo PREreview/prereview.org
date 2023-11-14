@@ -105,7 +105,7 @@ const resendVerificationEmail = ({
   )
 
 const showNeedToVerifyEmailAddressMessage = flow(
-  (state: { preprint: PreprintTitle; user: User }) => RM.of(state),
+  (state: { contactEmailAddress: UnverifiedContactEmailAddress; preprint: PreprintTitle; user: User }) => RM.of(state),
   RM.apSW('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
   RM.chainReaderK(needToVerifyEmailAddressMessage),
   RM.ichainFirst(() => RM.status(Status.OK)),
@@ -114,10 +114,12 @@ const showNeedToVerifyEmailAddressMessage = flow(
 )
 
 function needToVerifyEmailAddressMessage({
+  contactEmailAddress,
   message,
   preprint,
   user,
 }: {
+  contactEmailAddress: UnverifiedContactEmailAddress
   message?: D.TypeOf<typeof FlashMessageD>
   preprint: PreprintTitle
   user: User
@@ -149,9 +151,11 @@ function needToVerifyEmailAddressMessage({
         <p>We’re ready to publish your PREreview, but we need to verify your email address first.</p>
 
         <p>
-          We’ve sent you an email. Please open it and follow the link to verify your address. You can then close this
-          page.
+          Please open the email we sent to ${contactEmailAddress.value} and follow the link. You’ll then be able to
+          publish your PREreview.
         </p>
+
+        <p>Once your address is verified, you can close this page.</p>
 
         <form
           method="post"
