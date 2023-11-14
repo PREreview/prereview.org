@@ -148,8 +148,6 @@ function needToVerifyEmailAddressMessage({
 
         <h1>Verify your email address</h1>
 
-        <p>We’re ready to publish your PREreview, but we need to verify your email address first.</p>
-
         <p>
           Please open the email we sent to ${contactEmailAddress.value} and follow the link. You’ll then be able to
           publish your PREreview.

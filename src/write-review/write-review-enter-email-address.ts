@@ -165,7 +165,7 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}What is your email address? – PREreview of “${preprint.title}”`,
+    title: plainText`${error ? 'Error: ' : ''}Contact details – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back">Back</a>
@@ -202,12 +202,14 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
               `
             : ''}
 
-          <div ${error ? html`class="error"` : ''}>
-            <h1><label for="email-address">What is your email address?</label></h1>
+          <h1>Contact details</h1>
 
-            <p id="email-address-tip" role="note">
-              We’ll only use this to contact you about your account and PREreviews.
-            </p>
+          <p>We’re ready to publish your PREreview, but we need to confirm your email address first.</p>
+
+          <p>We’ll only use this to contact you about your account and PREreviews.</p>
+
+          <div ${error ? html`class="error"` : ''}>
+            <h2><label for="email-address">What is your email address?</label></h2>
 
             ${E.isLeft(form.emailAddress)
               ? html`
@@ -231,7 +233,6 @@ function createFormPage(preprint: PreprintTitle, user: User, form: EnterEmailAdd
               inputmode="email"
               spellcheck="false"
               autocomplete="email"
-              aria-describedby="email-address-tip"
               ${match(form.emailAddress)
                 .with({ right: P.select(P.string) }, value => html`value="${value}"`)
                 .with({ right: undefined }, () => '')

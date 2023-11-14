@@ -553,6 +553,7 @@ h2 {
     font-size: var(--step-3);
   }
 
+  form > div > &,
   :is(section, .preview) & {
     font-size: var(--step-2);
   }

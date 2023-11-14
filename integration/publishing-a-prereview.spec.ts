@@ -1951,7 +1951,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('What is your email address?')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
