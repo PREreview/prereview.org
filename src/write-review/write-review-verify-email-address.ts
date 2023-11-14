@@ -55,7 +55,7 @@ export const writeReviewVerifyEmailAddress = (id: IndeterminatePreprintId, verif
             value: contactEmailAddress.value,
           }),
         ),
-        RM.ichainMiddlewareKW(({ preprint, form }) => redirectToNextForm(preprint.id)(form)),
+        RM.ichainMiddlewareKW(({ preprint, form }) => redirectToNextForm(preprint.id, 'contact-email-verified')(form)),
         RM.orElseW(error =>
           match(error)
             .returnType<

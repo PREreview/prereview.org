@@ -67,6 +67,7 @@ describe('writeReviewVerifyEmailAddress', () => {
               name: 'Location',
               value: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
             },
+            { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'contact-email-verified' },
             { type: 'endResponse' },
           ]),
         )

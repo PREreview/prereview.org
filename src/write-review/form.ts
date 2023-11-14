@@ -6,12 +6,14 @@ import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { getAssignSemigroup } from 'fp-ts/struct'
+import { Status } from 'hyper-ts'
+import * as M from 'hyper-ts/Middleware'
 import * as C from 'io-ts/Codec'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
+import { setFlashMessage } from '../flash-message'
 import { RawHtmlC } from '../html'
-import { seeOther } from '../middleware'
 import {
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
@@ -128,8 +130,16 @@ export const nextFormMatch = (form: Form) =>
     .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
     .otherwise(() => writeReviewPublishMatch)
 
-export const redirectToNextForm = (preprint: PreprintId) =>
-  flow(nextFormMatch, match => format(match.formatter, { id: preprint }), seeOther)
+export const redirectToNextForm = (preprint: PreprintId, flashMessage?: string) =>
+  flow(
+    nextFormMatch,
+    match => M.of(format(match.formatter, { id: preprint })),
+    M.ichainFirst(() => M.status(Status.SeeOther)),
+    M.ichain(location => M.header('Location', location)),
+    M.ichain(() => (typeof flashMessage === 'string' ? setFlashMessage(flashMessage) : M.of(undefined))),
+    M.ichain(() => M.closeHeaders()),
+    M.ichain(() => M.end()),
+  )
 
 export const FormC = pipe(
   C.partial({

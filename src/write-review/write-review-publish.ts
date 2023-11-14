@@ -6,11 +6,13 @@ import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { maybeGetContactEmailAddress } from '../contact-email-address'
 import { requiresVerifiedEmailAddress } from '../feature-flags'
+import { deleteFlashMessage, getFlashMessage } from '../flash-message'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
@@ -54,6 +56,8 @@ export interface PublishPrereviewEnv {
   publishPrereview: (newPrereview: NewPrereview) => TE.TaskEither<'unavailable', [Doi, number]>
 }
 
+const FlashMessageD = D.literal('contact-email-verified')
+
 export const writeReviewPublish = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),
   RM.ichainW(preprint =>
@@ -66,6 +70,7 @@ export const writeReviewPublish = flow(
       ),
       RM.bind('form', ({ originalForm }) => RM.right(CompletedFormC.decode(originalForm))),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
+      RM.apSW('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
       RM.bindW(
         'requiresVerifiedEmailAddress',
         RM.fromReaderK(({ user }) => requiresVerifiedEmailAddress(user)),
@@ -162,10 +167,21 @@ const handlePublishForm = ({
   )
 
 const showPublishForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: CompletedForm; preprint: PreprintTitle; user: User }) =>
-    publishForm(preprint, form, user),
+  RM.fromReaderK(
+    ({
+      form,
+      message,
+      preprint,
+      user,
+    }: {
+      form: CompletedForm
+      message?: D.TypeOf<typeof FlashMessageD>
+      preprint: PreprintTitle
+      user: User
+    }) => publishForm(preprint, form, user, message),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainFirst(RM.fromMiddlewareK(() => deleteFlashMessage)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
@@ -347,7 +363,12 @@ function failureMessage(user: User) {
   })
 }
 
-function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User) {
+function publishForm(
+  preprint: PreprintTitle,
+  review: CompletedForm,
+  user: User,
+  message?: D.TypeOf<typeof FlashMessageD>,
+) {
   return page({
     title: plainText`Publish your PREreview of “${preprint.title}”`,
     content: html`
@@ -356,6 +377,20 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
       </nav>
 
       <main id="form">
+        ${match(message)
+          .with(
+            'contact-email-verified',
+            () => html`
+              <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                <h2 id="notification-banner-title">Success</h2>
+
+                <p>Your email address has been verified.</p>
+              </notification-banner>
+            `,
+          )
+          .with(undefined, () => '')
+          .exhaustive()}
+
         <single-use-form>
           <form method="post" action="${format(writeReviewPublishMatch.formatter, { id: preprint.id })}" novalidate>
             <h1>Check your PREreview</h1>
@@ -666,7 +701,7 @@ function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User)
         </single-use-form>
       </main>
     `,
-    js: ['single-use-form.js', 'error-summary.js'],
+    js: ['single-use-form.js', 'error-summary.js', 'notification-banner.js'],
     skipLinks: [[html`Skip to form`, '#form']],
     type: 'streamline',
     user,
