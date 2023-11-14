@@ -1983,44 +1983,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   async ({ context, fetch, page }) => {
     await page.goto('/my-details/change-email-address')
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
-    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('With a template').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No, I reviewed it alone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I’m following the Code of Conduct').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    const newPage = await context.newPage()
-    await newPage.setContent(getLastMailjetEmailBody(fetch))
-    await newPage.getByRole('link', { name: 'Verify email address' }).click()
-    await newPage.close()
-
-    await page.reload()
-
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
-  },
-)
-
-test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
-  'can resend the verification email',
-  async ({ context, fetch, javaScriptEnabled, page }) => {
-    await page.goto('/my-details/change-email-address')
-    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
     fetch.postOnce(
       { name: 'original-verification', url: 'https://api.mailjet.com/v3.1/send' },
       { body: { Messages: [{ Status: 'success' }] } },
@@ -2041,6 +2003,58 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
+
+    fetch.postOnce(
+      { name: 'resent-verification', url: 'https://api.mailjet.com/v3.1/send' },
+      { body: { Messages: [{ Status: 'success' }] } },
+    )
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    const newPage = await context.newPage()
+    await newPage.setContent(getLastMailjetEmailBody(fetch))
+    await newPage.getByRole('link', { name: 'Verify email address' }).click()
+    await newPage.close()
+
+    await page.reload()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+  'can resend the verification email',
+  async ({ context, fetch, javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
+    fetch.postOnce(
+      { name: 'original-verification', url: 'https://api.mailjet.com/v3.1/send' },
+      { body: { Messages: [{ Status: 'success' }] } },
+    )
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
+
     fetch.postOnce(
       { name: 'resent-verification', url: 'https://api.mailjet.com/v3.1/send' },
       { body: { Messages: [{ Status: 'success' }] } },

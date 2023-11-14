@@ -26,7 +26,6 @@ import {
   writeReviewLanguageEditingMatch,
   writeReviewMatch,
   writeReviewMethodsAppropriateMatch,
-  writeReviewNeedToVerifyEmailAddressMatch,
   writeReviewNovelMatch,
   writeReviewPersonaMatch,
   writeReviewPublishMatch,
@@ -109,12 +108,7 @@ const decideNextStep = (state: {
       P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
       ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm)),
     )
-    .with({ requiresVerifiedEmailAddress: true, contactEmailAddress: { type: 'unverified' } }, () =>
-      RM.fromMiddleware(
-        seeOther(format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: state.preprint.id })),
-      ),
-    )
-    .with({ requiresVerifiedEmailAddress: true, contactEmailAddress: undefined }, () =>
+    .with({ requiresVerifiedEmailAddress: true, contactEmailAddress: P.optional({ type: 'unverified' }) }, () =>
       RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: state.preprint.id }))),
     )
     .with({ method: 'POST', form: P.when(E.isRight) }, ({ form, ...state }) =>

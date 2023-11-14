@@ -8,12 +8,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import merge from 'ts-deepmerge'
-import {
-  writeReviewEnterEmailAddressMatch,
-  writeReviewMatch,
-  writeReviewNeedToVerifyEmailAddressMatch,
-  writeReviewPublishedMatch,
-} from '../../src/routes'
+import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
@@ -75,7 +70,7 @@ describe('writeReviewPublish', () => {
           {
             type: 'setHeader',
             name: 'Location',
-            value: format(writeReviewNeedToVerifyEmailAddressMatch.formatter, { id: preprintTitle.id }),
+            value: format(writeReviewEnterEmailAddressMatch.formatter, { id: preprintTitle.id }),
           },
           { type: 'endResponse' },
         ]),
