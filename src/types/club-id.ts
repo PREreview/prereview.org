@@ -8,6 +8,7 @@ export type ClubId =
   | 'asapbio-metabolism'
   | 'asapbio-neurobiology'
   | 'biomass-biocatalysis'
+  | 'hhmi-training-pilot'
   | 'language-club'
   | 'rr-id-student-reviewer-club'
   | 'tsl-preprint-club'
@@ -21,6 +22,7 @@ export function isClubId(value: string): value is ClubId {
     'asapbio-metabolism',
     'asapbio-neurobiology',
     'biomass-biocatalysis',
+    'hhmi-training-pilot',
     'language-club',
     'rr-id-student-reviewer-club',
     'tsl-preprint-club',

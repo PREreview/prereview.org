@@ -111,6 +111,24 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Ayla Sant’Ana da Silva', orcid: '0000-0001-8466-9390' as Orcid }],
   },
+  'hhmi-training-pilot': {
+    name: 'HHMI Transparent and Accountable Peer Review Training Pilot',
+    description: html`
+      <p>
+        HHMI is a biomedical research organization and philanthropy that supports a vibrant community of researchers,
+        educators, students, and professionals. Together, we’re unlocking the fundamentals of biology and building an
+        open, inclusive future for science.
+      </p>
+      <p>
+        As part of a newly developed training pilot, participating graduate students and postdocs in HHMI labs will
+        learn to conduct peer review in a manner that is constructive and transparent.
+      </p>
+    `,
+    leads: [
+      { name: 'Anna Hatch', orcid: '0000-0002-2111-3237' as Orcid },
+      { name: 'Michele Avissar-Whiting', orcid: '0000-0003-0030-3135' as Orcid },
+    ],
+  },
   'language-club': {
     name: 'Language Club',
     description: html`
