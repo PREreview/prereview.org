@@ -1934,7 +1934,7 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
 
 test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   'have to give your email address',
-  async ({ context, fetch, javaScriptEnabled, page }) => {
+  async ({ fetch, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -1962,36 +1962,31 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 
-    const newPage = await context.newPage()
-    await newPage.setContent(getLastMailjetEmailBody(fetch))
+    await page.setContent(getLastMailjetEmailBody(fetch))
 
-    await newPage.mouse.move(0, 0)
-    await expect(newPage).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-    await newPage.getByRole('link', { name: 'Verify email address' }).click()
+    await page.getByRole('link', { name: 'Verify email address' }).click()
 
     if (javaScriptEnabled) {
-      await expect(newPage.getByRole('alert', { name: 'Success' })).toBeFocused()
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
     } else {
-      await expect(newPage.getByRole('alert', { name: 'Success' })).toBeInViewport()
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
     }
-    await expect(newPage.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
-    await newPage.mouse.move(0, 0)
-    await expect(newPage).toHaveScreenshot()
-
-    await newPage.reload()
-
-    await expect(newPage.getByRole('alert', { name: 'Success' })).toBeHidden()
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
     await page.reload()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
   },
 )
 
 test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   'have to verify your email address',
-  async ({ context, fetch, page }) => {
+  async ({ fetch, page }) => {
     await page.goto('/my-details/change-email-address')
     await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
     fetch.postOnce(
@@ -2028,12 +2023,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    const newPage = await context.newPage()
-    await newPage.setContent(getLastMailjetEmailBody(fetch))
-    await newPage.getByRole('link', { name: 'Verify email address' }).click()
-    await newPage.close()
-
-    await page.reload()
+    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.getByRole('link', { name: 'Verify email address' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
   },
@@ -2041,7 +2032,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   'can resend the verification email',
-  async ({ context, fetch, javaScriptEnabled, page }) => {
+  async ({ fetch, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -2085,12 +2076,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
 
     await expect(page.getByRole('alert', { name: 'Important' })).toBeHidden()
 
-    const newPage = await context.newPage()
-    await newPage.setContent(getLastMailjetEmailBody(fetch))
-    await newPage.getByRole('link', { name: 'Verify email address' }).click()
-    await newPage.close()
-
-    await page.reload()
+    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.getByRole('link', { name: 'Verify email address' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
   },
