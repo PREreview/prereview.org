@@ -4,7 +4,7 @@ import * as J from 'fp-ts/Json'
 import { pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import { areLoggedIn, canLogIn, expect, isASlackUser, test, userIsBlocked } from './base'
+import { areLoggedIn, canLogIn, expect, isASlackUser, requiresVerifiedEmailAddress, test, userIsBlocked } from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
@@ -536,6 +536,35 @@ test.extend(canLogIn).extend(userIsBlocked)(
     testInfo.fail(!javaScriptEnabled)
 
     await expect(page.getByRole('alert', { name: 'Access denied' })).toBeHidden()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+  'cannot remove an email address',
+  async ({ javaScriptEnabled, fetch, page }) => {
+    await page.goto('/my-details/change-email-address')
+    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
+    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('link', { name: 'Change email address' }).click()
+
+    await page.getByLabel('What is your email address?').clear()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Enter your email address' }).click()
+
+    await expect(page.getByLabel('What is your email address?')).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
   },
 )
 

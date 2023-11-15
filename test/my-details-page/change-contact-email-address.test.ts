@@ -5,6 +5,7 @@ import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
+import type { RequiresVerifiedEmailAddressEnv } from '../../src/feature-flags'
 import * as _ from '../../src/my-details-page/change-contact-email-address'
 import { myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -27,6 +28,7 @@ describe('changeContactEmailAddress', () => {
         generateUuid: shouldNotBeCalled,
         deleteContactEmailAddress: shouldNotBeCalled,
         getContactEmailAddress: () => TE.fromEither(emailAddress),
+        requiresVerifiedEmailAddress: shouldNotBeCalled,
         saveContactEmailAddress: shouldNotBeCalled,
         verifyContactEmailAddress: shouldNotBeCalled,
       }),
@@ -59,9 +61,18 @@ describe('changeContactEmailAddress', () => {
         fc.user(),
         fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
         fc.uuid(),
+        fc.boolean(),
       ])(
         'when it is different to the previous value',
-        async (oauth, publicUrl, [emailAddress, connection], user, existingEmailAddress, verificationToken) => {
+        async (
+          oauth,
+          publicUrl,
+          [emailAddress, connection],
+          user,
+          existingEmailAddress,
+          verificationToken,
+          requiresVerifiedEmailAddress,
+        ) => {
           const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
           const verifyContactEmailAddress = jest.fn<_.Env['verifyContactEmailAddress']>(_ => TE.right(undefined))
 
@@ -73,6 +84,7 @@ describe('changeContactEmailAddress', () => {
               generateUuid: () => verificationToken,
               deleteContactEmailAddress: shouldNotBeCalled,
               getContactEmailAddress: () => TE.fromEither(existingEmailAddress),
+              requiresVerifiedEmailAddress: () => requiresVerifiedEmailAddress,
               saveContactEmailAddress,
               verifyContactEmailAddress,
             }),
@@ -118,9 +130,10 @@ describe('changeContactEmailAddress', () => {
           ),
         ),
         fc.user(),
+        fc.boolean(),
       ])(
         'when it is the same as the previous value',
-        async (oauth, publicUrl, [existingEmailAddress, connection], user) => {
+        async (oauth, publicUrl, [existingEmailAddress, connection], user, requiresVerifiedEmailAddress) => {
           const actual = await runMiddleware(
             _.changeContactEmailAddress({
               getUser: () => M.right(user),
@@ -129,6 +142,7 @@ describe('changeContactEmailAddress', () => {
               generateUuid: shouldNotBeCalled,
               deleteContactEmailAddress: shouldNotBeCalled,
               getContactEmailAddress: () => TE.right(existingEmailAddress),
+              requiresVerifiedEmailAddress: () => requiresVerifiedEmailAddress,
               saveContactEmailAddress: shouldNotBeCalled,
               verifyContactEmailAddress: shouldNotBeCalled,
             }),
@@ -159,29 +173,34 @@ describe('changeContactEmailAddress', () => {
       }),
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
-    ])('it is not an email address', async (oauth, publicUrl, connection, user, emailAddress) => {
-      const actual = await runMiddleware(
-        _.changeContactEmailAddress({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          generateUuid: shouldNotBeCalled,
-          deleteContactEmailAddress: shouldNotBeCalled,
-          getContactEmailAddress: () => TE.fromEither(emailAddress),
-          saveContactEmailAddress: shouldNotBeCalled,
-          verifyContactEmailAddress: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+      fc.boolean(),
+    ])(
+      'it is not an email address',
+      async (oauth, publicUrl, connection, user, emailAddress, requiresVerifiedEmailAddress) => {
+        const actual = await runMiddleware(
+          _.changeContactEmailAddress({
+            getUser: () => M.right(user),
+            publicUrl,
+            oauth,
+            generateUuid: shouldNotBeCalled,
+            deleteContactEmailAddress: shouldNotBeCalled,
+            getContactEmailAddress: () => TE.fromEither(emailAddress),
+            requiresVerifiedEmailAddress: () => requiresVerifiedEmailAddress,
+            saveContactEmailAddress: shouldNotBeCalled,
+            verifyContactEmailAddress: shouldNotBeCalled,
+          }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.BadRequest },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.BadRequest },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: expect.anything() },
+          ]),
+        )
+      },
+    )
 
     test.prop([
       fc.oauth(),
@@ -193,9 +212,10 @@ describe('changeContactEmailAddress', () => {
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.uuid(),
+      fc.boolean(),
     ])(
       'the email address cannot be saved',
-      async (oauth, publicUrl, connection, user, emailAddress, verificationToken) => {
+      async (oauth, publicUrl, connection, user, emailAddress, verificationToken, requiresVerifiedEmailAddress) => {
         const actual = await runMiddleware(
           _.changeContactEmailAddress({
             getUser: () => M.right(user),
@@ -204,6 +224,7 @@ describe('changeContactEmailAddress', () => {
             generateUuid: () => verificationToken,
             deleteContactEmailAddress: () => TE.left('unavailable'),
             getContactEmailAddress: () => TE.fromEither(emailAddress),
+            requiresVerifiedEmailAddress: () => requiresVerifiedEmailAddress,
             saveContactEmailAddress: () => TE.left('unavailable'),
             verifyContactEmailAddress: shouldNotBeCalled,
           }),
@@ -231,9 +252,10 @@ describe('changeContactEmailAddress', () => {
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.uuid(),
+      fc.boolean(),
     ])(
       'the verification email cannot be sent',
-      async (oauth, publicUrl, connection, user, emailAddress, verificationToken) => {
+      async (oauth, publicUrl, connection, user, emailAddress, verificationToken, requiresVerifiedEmailAddress) => {
         const actual = await runMiddleware(
           _.changeContactEmailAddress({
             getUser: () => M.right(user),
@@ -242,6 +264,7 @@ describe('changeContactEmailAddress', () => {
             generateUuid: () => verificationToken,
             deleteContactEmailAddress: () => shouldNotBeCalled,
             getContactEmailAddress: () => TE.fromEither(emailAddress),
+            requiresVerifiedEmailAddress: () => requiresVerifiedEmailAddress,
             saveContactEmailAddress: () => TE.right(undefined),
             verifyContactEmailAddress: () => TE.left('unavailable'),
           }),
@@ -260,40 +283,88 @@ describe('changeContactEmailAddress', () => {
     )
 
     describe('when no email address is set', () => {
-      test.prop([
-        fc.oauth(),
-        fc.origin(),
-        fc.connection({
-          body: fc.record({ emailAddress: fc.constant('') }, { withDeletedKeys: true }),
-          method: fc.constant('POST'),
-        }),
-        fc.user(),
-        fc.contactEmailAddress(),
-      ])('when there was an email address before', async (oauth, publicUrl, connection, user, existingEmailAddress) => {
-        const deleteContactEmailAddress = jest.fn<_.Env['deleteContactEmailAddress']>(_ => TE.right(undefined))
-
-        const actual = await runMiddleware(
-          _.changeContactEmailAddress({
-            getUser: () => M.right(user),
-            publicUrl,
-            oauth,
-            generateUuid: shouldNotBeCalled,
-            deleteContactEmailAddress,
-            getContactEmailAddress: () => TE.right(existingEmailAddress),
-            saveContactEmailAddress: shouldNotBeCalled,
-            verifyContactEmailAddress: shouldNotBeCalled,
+      describe('when there was an email address before', () => {
+        test.prop([
+          fc.oauth(),
+          fc.origin(),
+          fc.connection({
+            body: fc.record({ emailAddress: fc.constant('') }, { withDeletedKeys: true }),
+            method: fc.constant('POST'),
           }),
-          connection,
-        )()
+          fc.user(),
+          fc.contactEmailAddress(),
+        ])(
+          'when a verified email address is required',
+          async (oauth, publicUrl, connection, user, existingEmailAddress) => {
+            const requiresVerifiedEmailAddress = jest.fn<
+              RequiresVerifiedEmailAddressEnv['requiresVerifiedEmailAddress']
+            >(_ => true)
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-            { type: 'endResponse' },
-          ]),
+            const actual = await runMiddleware(
+              _.changeContactEmailAddress({
+                getUser: () => M.right(user),
+                publicUrl,
+                oauth,
+                generateUuid: shouldNotBeCalled,
+                deleteContactEmailAddress: shouldNotBeCalled,
+                getContactEmailAddress: () => TE.right(existingEmailAddress),
+                requiresVerifiedEmailAddress,
+                saveContactEmailAddress: shouldNotBeCalled,
+                verifyContactEmailAddress: shouldNotBeCalled,
+              }),
+              connection,
+            )()
+
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.BadRequest },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: expect.anything() },
+              ]),
+            )
+            expect(requiresVerifiedEmailAddress).toHaveBeenCalledWith(user)
+          },
         )
-        expect(deleteContactEmailAddress).toHaveBeenCalledWith(user.orcid)
+
+        test.prop([
+          fc.oauth(),
+          fc.origin(),
+          fc.connection({
+            body: fc.record({ emailAddress: fc.constant('') }, { withDeletedKeys: true }),
+            method: fc.constant('POST'),
+          }),
+          fc.user(),
+          fc.contactEmailAddress(),
+        ])(
+          "when a verified email address isn't required",
+          async (oauth, publicUrl, connection, user, existingEmailAddress) => {
+            const deleteContactEmailAddress = jest.fn<_.Env['deleteContactEmailAddress']>(_ => TE.right(undefined))
+
+            const actual = await runMiddleware(
+              _.changeContactEmailAddress({
+                getUser: () => M.right(user),
+                publicUrl,
+                oauth,
+                generateUuid: shouldNotBeCalled,
+                deleteContactEmailAddress,
+                getContactEmailAddress: () => TE.right(existingEmailAddress),
+                requiresVerifiedEmailAddress: () => false,
+                saveContactEmailAddress: shouldNotBeCalled,
+                verifyContactEmailAddress: shouldNotBeCalled,
+              }),
+              connection,
+            )()
+
+            expect(actual).toStrictEqual(
+              E.right([
+                { type: 'setStatus', status: Status.SeeOther },
+                { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+                { type: 'endResponse' },
+              ]),
+            )
+            expect(deleteContactEmailAddress).toHaveBeenCalledWith(user.orcid)
+          },
+        )
       })
 
       test.prop([
@@ -304,29 +375,34 @@ describe('changeContactEmailAddress', () => {
           method: fc.constant('POST'),
         }),
         fc.user(),
-      ])("when there wasn't an email address before", async (oauth, publicUrl, connection, user) => {
-        const actual = await runMiddleware(
-          _.changeContactEmailAddress({
-            getUser: () => M.right(user),
-            publicUrl,
-            oauth,
-            generateUuid: shouldNotBeCalled,
-            deleteContactEmailAddress: shouldNotBeCalled,
-            getContactEmailAddress: () => TE.left('not-found'),
-            saveContactEmailAddress: shouldNotBeCalled,
-            verifyContactEmailAddress: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+        fc.boolean(),
+      ])(
+        "when there wasn't an email address before",
+        async (oauth, publicUrl, connection, user, requiresVerifiedEmailAddress) => {
+          const actual = await runMiddleware(
+            _.changeContactEmailAddress({
+              getUser: () => M.right(user),
+              publicUrl,
+              oauth,
+              generateUuid: shouldNotBeCalled,
+              deleteContactEmailAddress: shouldNotBeCalled,
+              getContactEmailAddress: () => TE.left('not-found'),
+              requiresVerifiedEmailAddress: () => requiresVerifiedEmailAddress,
+              saveContactEmailAddress: shouldNotBeCalled,
+              verifyContactEmailAddress: shouldNotBeCalled,
+            }),
+            connection,
+          )()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-            { type: 'endResponse' },
-          ]),
-        )
-      })
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.SeeOther },
+              { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
+              { type: 'endResponse' },
+            ]),
+          )
+        },
+      )
     })
   })
 
@@ -341,6 +417,7 @@ describe('changeContactEmailAddress', () => {
           generateUuid: shouldNotBeCalled,
           deleteContactEmailAddress: shouldNotBeCalled,
           getContactEmailAddress: shouldNotBeCalled,
+          requiresVerifiedEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
           verifyContactEmailAddress: shouldNotBeCalled,
         }),
@@ -381,6 +458,7 @@ describe('changeContactEmailAddress', () => {
           generateUuid: shouldNotBeCalled,
           deleteContactEmailAddress: shouldNotBeCalled,
           getContactEmailAddress: shouldNotBeCalled,
+          requiresVerifiedEmailAddress: shouldNotBeCalled,
           saveContactEmailAddress: shouldNotBeCalled,
           verifyContactEmailAddress: shouldNotBeCalled,
         }),

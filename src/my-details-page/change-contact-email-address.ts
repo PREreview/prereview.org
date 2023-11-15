@@ -18,8 +18,9 @@ import {
   saveContactEmailAddress,
   verifyContactEmailAddress,
 } from '../contact-email-address'
+import { requiresVerifiedEmailAddress } from '../feature-flags'
 import { setFlashMessage } from '../flash-message'
-import { type InvalidE, getInput, hasAnError, invalidE } from '../form'
+import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form'
 import { html, plainText, sendHtml } from '../html'
 import { logInAndRedirect } from '../log-in'
 import { getMethod, seeOther, serviceUnavailable } from '../middleware'
@@ -110,13 +111,14 @@ const handleChangeContactEmailAddressForm = (user: User) =>
         RM.orElseW(() => RM.of(undefined)),
       ),
     ),
-    RM.ichainW(({ emailAddress, originalEmailAddress }) =>
-      match(emailAddress)
+    RM.apSW('requiresVerifiedEmailAddress', RM.rightReader(requiresVerifiedEmailAddress(user))),
+    RM.ichainW(({ emailAddress, originalEmailAddress, requiresVerifiedEmailAddress }) => {
+      return match([emailAddress, requiresVerifiedEmailAddress])
         .with(
-          originalEmailAddress,
+          [originalEmailAddress, P.boolean],
           RM.fromMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
         )
-        .with(P.string, emailAddress =>
+        .with([P.select(P.string), P.boolean], emailAddress =>
           pipe(
             RM.fromReaderIO(generateUuid),
             RM.map(
@@ -141,15 +143,18 @@ const handleChangeContactEmailAddressForm = (user: User) =>
             RM.orElseW(() => serviceUnavailable),
           ),
         )
-        .with(undefined, () =>
+        .with([undefined, false], () =>
           pipe(
             RM.fromReaderTaskEither(deleteContactEmailAddress(user.orcid)),
             RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
             RM.orElseW(() => serviceUnavailable),
           ),
         )
-        .exhaustive(),
-    ),
+        .with([undefined, true], () =>
+          showChangeContactEmailAddressErrorForm(user)({ emailAddress: E.left(missingE()) }),
+        )
+        .exhaustive()
+    }),
     RM.orElseW(showChangeContactEmailAddressErrorForm(user)),
   )
 
@@ -173,7 +178,7 @@ const EmailAddressFieldD = pipe(
 )
 
 interface ChangeContactEmailAddressForm {
-  readonly emailAddress: E.Either<InvalidE, EmailAddress | undefined>
+  readonly emailAddress: E.Either<MissingE | InvalidE, EmailAddress | undefined>
 }
 
 function createFormPage(user: User, form: ChangeContactEmailAddressForm) {
@@ -198,6 +203,7 @@ function createFormPage(user: User, form: ChangeContactEmailAddressForm) {
                           <li>
                             <a href="#email-address">
                               ${match(form.emailAddress.left)
+                                .with({ _tag: 'MissingE' }, () => 'Enter your email address')
                                 .with(
                                   { _tag: 'InvalidE' },
                                   () => 'Enter an email address in the correct format, like name@example.com',
@@ -224,6 +230,7 @@ function createFormPage(user: User, form: ChangeContactEmailAddressForm) {
                   <div class="error-message" id="email-address-error">
                     <span class="visually-hidden">Error:</span>
                     ${match(form.emailAddress.left)
+                      .with({ _tag: 'MissingE' }, () => 'Enter your email address')
                       .with(
                         { _tag: 'InvalidE' },
                         () => 'Enter an email address in the correct format, like name@example.com',
@@ -244,7 +251,8 @@ function createFormPage(user: User, form: ChangeContactEmailAddressForm) {
               ${match(form.emailAddress)
                 .with({ right: undefined }, () => '')
                 .with({ right: P.select(P.string) }, value => html`value="${value}"`)
-                .with({ left: { actual: P.select() } }, value => html`value="${value}"`)
+                .with({ left: { _tag: 'MissingE' } }, () => '')
+                .with({ left: { _tag: 'InvalidE', actual: P.select() } }, value => html`value="${value}"`)
                 .exhaustive()}
               ${E.isLeft(form.emailAddress) ? html`aria-invalid="true" aria-errormessage="email-address-error"` : ''}
             />
