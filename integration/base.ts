@@ -8,9 +8,13 @@ import {
 import { SystemClock } from 'clock-ts'
 import type { Doi } from 'doi-ts'
 import fetchMock, { type FetchMockSandbox } from 'fetch-mock'
+import * as E from 'fp-ts/Either'
+import * as J from 'fp-ts/Json'
+import { pipe } from 'fp-ts/function'
 import * as fs from 'fs/promises'
 import type { Server } from 'http'
 import { Status } from 'hyper-ts'
+import * as D from 'io-ts/Decoder'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
@@ -1118,4 +1122,68 @@ export const requiresVerifiedEmailAddress: Fixtures<
   },
 }
 
+export const hasAnUnverifiedEmailAddress: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+> = {
+  page: async ({ fetch, page }, use) => {
+    await page.goto('/my-details/change-email-address')
+    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
+    fetch.postOnce(
+      { name: 'original-verification', url: 'https://api.mailjet.com/v3.1/send' },
+      { body: { Messages: [{ Status: 'success' }] } },
+    )
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await use(page)
+  },
+}
+
+export const hasAVerifiedEmailAddress: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+> = {
+  page: async ({ fetch, page }, use) => {
+    await page.goto('/my-details/change-email-address')
+    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
+    fetch.postOnce(
+      { name: 'original-verification', url: 'https://api.mailjet.com/v3.1/send' },
+      { body: { Messages: [{ Status: 'success' }] } },
+    )
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.getByRole('link', { name: 'Verify email address' }).click()
+
+    await use(page)
+  },
+}
+
 export const test = baseTest.extend(appFixtures)
+
+const getLastMailjetEmailBody = (fetch: FetchMockSandbox) => {
+  return pipe(
+    MailjetEmailD.decode(String(fetch.lastOptions('https://api.mailjet.com/v3.1/send')?.body)),
+    E.match(
+      () => {
+        throw new Error('No email found')
+      },
+      email => email.HtmlPart,
+    ),
+  )
+}
+
+const JsonD = {
+  decode: (s: string) =>
+    pipe(
+      J.parse(s),
+      E.mapLeft(() => D.error(s, 'JSON')),
+    ),
+}
+
+const MailjetEmailD = pipe(
+  JsonD,
+  D.compose(D.struct({ Messages: D.tuple(D.struct({ HtmlPart: D.string })) })),
+  D.map(body => body.Messages[0]),
+)

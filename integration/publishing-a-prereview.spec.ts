@@ -10,6 +10,7 @@ import {
   areLoggedIn,
   canLogIn,
   expect,
+  hasAnUnverifiedEmailAddress,
   requiresVerifiedEmailAddress,
   test,
   updatesLegacyPrereview,
@@ -1984,16 +1985,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress).extend(hasAnUnverifiedEmailAddress)(
   'have to verify your email address',
   async ({ fetch, page }) => {
-    await page.goto('/my-details/change-email-address')
-    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
-    fetch.postOnce(
-      { name: 'original-verification', url: 'https://api.mailjet.com/v3.1/send' },
-      { body: { Messages: [{ Status: 'success' }] } },
-    )
-    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()

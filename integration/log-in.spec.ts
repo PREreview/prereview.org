@@ -4,7 +4,16 @@ import * as J from 'fp-ts/Json'
 import { pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import { areLoggedIn, canLogIn, expect, isASlackUser, requiresVerifiedEmailAddress, test, userIsBlocked } from './base'
+import {
+  areLoggedIn,
+  canLogIn,
+  expect,
+  hasAVerifiedEmailAddress,
+  isASlackUser,
+  requiresVerifiedEmailAddress,
+  test,
+  userIsBlocked,
+} from './base'
 
 test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('link', { name: 'My details' }).click()
@@ -539,15 +548,10 @@ test.extend(canLogIn).extend(userIsBlocked)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress).extend(hasAVerifiedEmailAddress)(
   'cannot remove an email address',
-  async ({ javaScriptEnabled, fetch, page }) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/my-details/change-email-address')
-    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
-    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByRole('link', { name: 'Change email address' }).click()
-
     await page.getByLabel('What is your email address?').clear()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
