@@ -111,6 +111,22 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Ayla Sant’Ana da Silva', orcid: '0000-0001-8466-9390' as Orcid }],
   },
+  cara: {
+    name: 'CARA: Critical Analysis of Research Articles Club',
+    description: html`
+      <p>
+        The Biophysics Institute (3. Institute of Physics) at the University of Göttingen has a strong focus on imaging,
+        cell mechanics and robotics. Besides doing research, we love to read and discuss science.
+      </p>
+      <p>
+        This Club is the PREreview manifestation of a seminar CARA that Timo teaches every semester at the University of
+        Göttingen. We discuss each week two papers on subjects around biophysics with a focus on cell mechanics. To gain
+        credits, students need to prepare a peer review of the paper they present, and this club allows them to publish
+        this review, thus hopefully helping the authors to improve their preprints.
+      </p>
+    `,
+    leads: [{ name: 'Timo Betz', orcid: '0000-0002-1548-0655' as Orcid }],
+  },
   'hhmi-training-pilot': {
     name: 'HHMI Transparent and Accountable Peer Review Training Pilot',
     description: html`
