@@ -74,7 +74,7 @@ jobs:
 
       - name: 'Build image'
         id: build
-        uses: docker/build-push-action@v5.0.0
+        uses: docker/build-push-action@v5.1.0
         with:
           outputs: type=docker,dest=/tmp/image.tar
           cache-from: type=gha,ignore-error=true
