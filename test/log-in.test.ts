@@ -131,8 +131,9 @@ describe('logOut', () => {
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.Found },
-        { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, { message: 'logged-out' }) },
+        { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
         { type: 'clearCookie', name: sessionCookie, options: expect.anything() },
+        { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'logged-out' },
         { type: 'endResponse' },
       ]),
     )
@@ -148,7 +149,8 @@ describe('logOut', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.Found },
-          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, { message: 'logged-out' }) },
+          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
+          { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'logged-out' },
           { type: 'endResponse' },
         ]),
       )
@@ -262,7 +264,8 @@ describe('authenticate', () => {
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.Found },
-        { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, { message: 'blocked' }) },
+        { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
+        { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'blocked' },
         { type: 'endResponse' },
       ]),
     )
@@ -373,13 +376,14 @@ describe('authenticate', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.Found },
-          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, { message: 'logged-in' }) },
+          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
           {
             type: 'setCookie',
             name: sessionCookie,
             options: expect.anything(),
             value: expect.stringMatching(new RegExp(`^${sessions[0][0]}\\.`)),
           },
+          { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'logged-in' },
           { type: 'endResponse' },
         ]),
       )

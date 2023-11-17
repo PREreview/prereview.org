@@ -7,10 +7,12 @@ import type * as T from 'fp-ts/Task'
 import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
+import * as D from 'io-ts/Decoder'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
-import { P, match } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import { getClubName } from './club-details'
+import { deleteFlashMessage, getFlashMessage } from './flash-message'
 import { type Html, html, plainText, rawHtml, sendHtml } from './html'
 import * as assets from './manifest.json'
 import { addCanonicalLinkHeader, seeOther } from './middleware'
@@ -45,32 +47,25 @@ const getRecentPrereviews = () =>
     RT.chainTaskK(({ getRecentPrereviews }) => getRecentPrereviews()),
   )
 
-export const home = (message?: 'logged-out' | 'logged-in' | 'blocked') =>
-  pipe(
-    maybeGetUser,
-    RM.filterOrElse(
-      user =>
-        match([user, message])
-          .with([P.not(undefined), P.union(undefined, 'logged-in')], () => true)
-          .with([undefined, P.union(undefined, 'logged-out', 'blocked')], () => true)
-          .with([undefined, P.union('logged-in')], () => false)
-          .with([P.not(undefined), P.union('logged-out', 'blocked')], () => false)
-          .exhaustive(),
-      () => 'redirect' as const,
-    ),
-    RM.bindTo('user'),
-    RM.apSW('recentPrereviews', RM.fromReaderTask(getRecentPrereviews())),
-    RM.chainReaderKW(({ recentPrereviews, user }) => createPage(recentPrereviews, user, message)),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainFirstW(() => addCanonicalLinkHeader(homeMatch.formatter, {})),
-    RM.ichainMiddlewareKW(sendHtml),
-    RM.orElseMiddlewareK(() => seeOther(format(homeMatch.formatter, {}))),
-  )
+const FlashMessageD = D.literal('logged-out', 'logged-in', 'blocked')
+
+export const home = pipe(
+  maybeGetUser,
+  RM.bindTo('user'),
+  RM.apSW('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
+  RM.apSW('recentPrereviews', RM.fromReaderTask(getRecentPrereviews())),
+  RM.chainReaderKW(({ message, recentPrereviews, user }) => createPage(recentPrereviews, user, message)),
+  RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainFirstW(() => addCanonicalLinkHeader(homeMatch.formatter, {})),
+  RM.ichainFirst(RM.fromMiddlewareK(() => deleteFlashMessage)),
+  RM.ichainMiddlewareKW(sendHtml),
+  RM.orElseMiddlewareK(() => seeOther(format(homeMatch.formatter, {}))),
+)
 
 function createPage(
   recentPrereviews: ReadonlyArray<RecentPrereview>,
   user?: User,
-  message?: 'logged-out' | 'logged-in' | 'blocked',
+  message?: D.TypeOf<typeof FlashMessageD>,
 ) {
   return templatePage({
     title: plainText`PREreview: Open preprint reviews. For all researchers.`,

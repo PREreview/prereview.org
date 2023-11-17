@@ -244,7 +244,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
   [
     pipe(
       homeMatch.parser,
-      P.map(({ message }) => home(message)),
+      P.map(() => home),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,

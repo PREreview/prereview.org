@@ -18,6 +18,7 @@ import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { timeoutRequest } from './fetch'
+import { setFlashMessage } from './flash-message'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
 import { ifHasSameOrigin, toUrl } from './public-url'
@@ -50,8 +51,9 @@ export const logInAndRedirect = flow(
 )
 
 export const logOut = pipe(
-  RM.redirect(format(homeMatch.formatter, { message: 'logged-out' })),
+  RM.redirect(format(homeMatch.formatter, {})),
   RM.ichainFirst(() => endSession),
+  RM.ichainW(() => RM.fromMiddleware(setFlashMessage('logged-out'))),
   RM.ichain(() => RM.closeHeaders()),
   RM.ichain(() => RM.end()),
 )
@@ -104,15 +106,21 @@ export const authenticate = flow(
       flow(get('user'), getPseudonym, RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to get pseudonym')))),
     ),
   ),
-  RM.ichainFirstW(flow(get('referer'), RM.redirect)),
-  RM.ichainW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), newSessionForUser, storeSession)),
-  RM.ichainFirst(() => RM.closeHeaders()),
-  RM.ichainFirst(() => RM.end()),
+  flow(
+    RM.ichainFirstW(flow(get('referer'), RM.redirect)),
+    RM.ichainFirstW(flow(({ user, pseudonym }) => ({ ...user, pseudonym }), newSessionForUser, storeSession)),
+    RM.ichainW(({ referer }) =>
+      referer === format(homeMatch.formatter, {}) ? RM.fromMiddleware(setFlashMessage('logged-in')) : RM.of(undefined),
+    ),
+    RM.ichainFirst(() => RM.closeHeaders()),
+    RM.ichainFirst(() => RM.end()),
+  ),
   RM.orElseW(error =>
     match(error)
       .with('blocked', () =>
         pipe(
-          RM.redirect(format(homeMatch.formatter, { message: 'blocked' })),
+          RM.redirect(format(homeMatch.formatter, {})),
+          RM.ichainW(() => RM.fromMiddleware(setFlashMessage('blocked'))),
           RM.ichain(() => RM.closeHeaders()),
           RM.ichain(() => RM.end()),
         ),
@@ -131,7 +139,7 @@ function getReferer(state: string) {
     RE.fromEither(E.tryCatch(() => new URL(state), constant('not-a-url'))),
     RE.chain(ifHasSameOrigin),
     RE.match(
-      () => format(homeMatch.formatter, { message: 'logged-in' }),
+      () => format(homeMatch.formatter, {}),
       referer => referer.href,
     ),
   )

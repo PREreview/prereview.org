@@ -1,6 +1,6 @@
 import { areLoggedIn, canLogIn, expect, test } from './base'
 
-test.extend(canLogIn).extend(areLoggedIn)('can log out', async ({ javaScriptEnabled, page }, testInfo) => {
+test.extend(canLogIn).extend(areLoggedIn)('can log out', async ({ javaScriptEnabled, page }) => {
   const logOut = page.getByRole('link', { name: 'Log out' })
 
   await page.goto('/')
@@ -19,8 +19,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can log out', async ({ javaScriptEnab
   await expect(page).toHaveScreenshot()
 
   await page.reload()
-
-  testInfo.fail(!javaScriptEnabled)
 
   await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 })

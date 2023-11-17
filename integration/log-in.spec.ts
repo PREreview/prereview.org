@@ -499,7 +499,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaS
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnabled, page }, testInfo) => {
+test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnabled, page }) => {
   const logIn = page.getByRole('link', { name: 'Log in' })
 
   await page.goto('/')
@@ -519,34 +519,27 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
 
   await page.reload()
 
-  testInfo.fail(!javaScriptEnabled)
-
   await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
 })
 
-test.extend(canLogIn).extend(userIsBlocked)(
-  "can't log in when blocked",
-  async ({ javaScriptEnabled, page }, testInfo) => {
-    await page.goto('/')
+test.extend(canLogIn).extend(userIsBlocked)("can't log in when blocked", async ({ javaScriptEnabled, page }) => {
+  await page.goto('/')
 
-    await page.getByRole('link', { name: 'Log in' }).click()
+  await page.getByRole('link', { name: 'Log in' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'Access denied' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'Access denied' })).toBeInViewport()
-    }
-    await expect(page.getByRole('link', { name: 'Log in' })).toBeVisible()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'Access denied' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'Access denied' })).toBeInViewport()
+  }
+  await expect(page.getByRole('link', { name: 'Log in' })).toBeVisible()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.reload()
+  await page.reload()
 
-    testInfo.fail(!javaScriptEnabled)
-
-    await expect(page.getByRole('alert', { name: 'Access denied' })).toBeHidden()
-  },
-)
+  await expect(page.getByRole('alert', { name: 'Access denied' })).toBeHidden()
+})
 
 test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress).extend(hasAVerifiedEmailAddress)(
   'cannot remove an email address',
