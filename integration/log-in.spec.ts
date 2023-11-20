@@ -9,6 +9,7 @@ import {
   canLogIn,
   expect,
   hasAVerifiedEmailAddress,
+  isANewUser,
   isASlackUser,
   requiresVerifiedEmailAddress,
   test,
@@ -35,6 +36,23 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
   }
   await expect(page).toHaveScreenshot()
 })
+
+test.extend(canLogIn).extend(areLoggedIn).extend(isANewUser)(
+  'are prompted to view my details once',
+  async ({ page }) => {
+    await page.getByRole('link', { name: 'My details' }).click()
+
+    await expect(page.getByRole('main')).toContainText('Welcome to PREreview!')
+    await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.reload()
+
+    await expect(page.getByRole('main')).not.toContainText('Welcome to PREreview!')
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ javaScriptEnabled, fetch, page }) => {
   await page.getByRole('link', { name: 'My details' }).click()

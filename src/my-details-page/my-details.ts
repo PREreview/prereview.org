@@ -39,7 +39,7 @@ import {
 } from '../routes'
 import { type SlackUser, maybeGetSlackUser } from '../slack-user'
 import { type GetUserEnv, type User, getUser } from '../user'
-import { getUserOnboarding, saveUserOnboarding } from '../user-onboarding'
+import { type UserOnboarding, getUserOnboarding, saveUserOnboarding } from '../user-onboarding'
 
 export type Env = EnvFor<typeof myDetails>
 
@@ -56,7 +56,7 @@ export const myDetails = pipe(
     pipe(
       RTE.Do,
       RTE.let('user', () => user),
-      RTE.apSW('userOnBoarding', getUserOnboarding(user.orcid)),
+      RTE.apSW('userOnboarding', getUserOnboarding(user.orcid)),
       RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(O.fromNullable))),
@@ -68,8 +68,8 @@ export const myDetails = pipe(
   ),
   RM.apSW('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
   RM.ichainFirstW(
-    RM.fromReaderTaskEitherK(({ user, userOnBoarding }) =>
-      userOnBoarding.seenMyDetailsPage
+    RM.fromReaderTaskEitherK(({ user, userOnboarding }) =>
+      userOnboarding.seenMyDetailsPage
         ? RTE.of(undefined)
         : saveUserOnboarding(user.orcid, { seenMyDetailsPage: true }),
     ),
@@ -98,6 +98,7 @@ export const myDetails = pipe(
 
 function createPage({
   user,
+  userOnboarding,
   message,
   slackUser,
   contactEmailAddress,
@@ -108,6 +109,7 @@ function createPage({
   languages,
 }: {
   user: User
+  userOnboarding: UserOnboarding
   message?: D.TypeOf<typeof FlashMessageD>
   slackUser: O.Option<SlackUser>
   contactEmailAddress: O.Option<ContactEmailAddress>
@@ -168,6 +170,19 @@ function createPage({
         <h1>My details</h1>
 
         <div class="inset">
+          ${match(userOnboarding)
+            .with(
+              { seenMyDetailsPage: false },
+              () => html`
+                <p>
+                  Welcome to PREreview! You can use this page to help authors, editors, and other PREreviewers learn
+                  more about your interests, work, and review activity.
+                </p>
+              `,
+            )
+            .with({ seenMyDetailsPage: true }, () => '')
+            .exhaustive()}
+
           <p>Only you can see this page. You have two profile pages that everyone can see:</p>
 
           <div class="forward-group">

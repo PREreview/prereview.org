@@ -28,6 +28,7 @@ import type {
   LanguagesStoreEnv,
   LocationStoreEnv,
   ResearchInterestsStoreEnv,
+  UserOnboardingStoreEnv,
 } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 import type { IsUserBlockedEnv } from '../src/log-in'
@@ -63,6 +64,7 @@ interface AppFixtures {
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
   requiresVerifiedEmailAddress: RequiresVerifiedEmailAddressEnv['requiresVerifiedEmailAddress']
+  userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -821,6 +823,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       locationStore,
       researchInterestsStore,
       slackUserIdStore,
+      userOnboardingStore,
       wasPrereviewRemoved,
       requiresVerifiedEmailAddress,
     },
@@ -877,7 +880,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         tokenUrl: new URL('http://slack.test/token'),
       },
       slackUserIdStore,
-      userOnboardingStore: new Keyv(),
+      userOnboardingStore,
       wasPrereviewRemoved,
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),
@@ -890,6 +893,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     server.close()
   },
   slackUserIdStore: async ({}, use) => {
+    await use(new Keyv())
+  },
+  userOnboardingStore: async ({}, use) => {
     await use(new Keyv())
   },
   updatesLegacyPrereview: async ({}, use) => {
@@ -910,12 +916,21 @@ export const updatesLegacyPrereview: Fixtures<
   },
 }
 
+export const isANewUser: Fixtures<Record<never, never>, Record<never, never>, { hasSeenMyDetailsPage: boolean }> = {
+  hasSeenMyDetailsPage: async ({}, use) => {
+    await use(false)
+  },
+}
+
 export const canLogIn: Fixtures<
+  { hasSeenMyDetailsPage: boolean },
   Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+  Pick<AppFixtures, 'fetch' | 'userOnboardingStore'> & Pick<PlaywrightTestArgs, 'page'>
 > = {
-  page: async ({ fetch, page }, use) => {
+  hasSeenMyDetailsPage: async ({}, use) => {
+    await use(true)
+  },
+  page: async ({ fetch, hasSeenMyDetailsPage, page, userOnboardingStore }, use) => {
     fetch.post('http://orcid.test/token', {
       status: Status.OK,
       body: {
@@ -925,6 +940,8 @@ export const canLogIn: Fixtures<
         orcid: '0000-0002-1825-0097',
       },
     })
+
+    await userOnboardingStore.set('0000-0002-1825-0097', { seenMyDetailsPage: hasSeenMyDetailsPage })
 
     await use(page)
   },
