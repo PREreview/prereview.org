@@ -344,7 +344,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       orcidCodeMatch.parser,
       P.map(({ code, state }) => authenticate(code, state)),
       P.map(
-        R.local((env: ConfigEnv) => ({
+        R.local((env: RouterEnv) => ({
           ...env,
           getPseudonym: withEnv(getPseudonymFromLegacyPrereview, env),
         })),
