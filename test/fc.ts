@@ -13,6 +13,7 @@ import type { NonEmptyArray } from 'fp-ts/NonEmptyArray'
 import { not } from 'fp-ts/Predicate'
 import type { Refinement } from 'fp-ts/Refinement'
 import type * as H from 'hyper-ts'
+import { Status } from 'hyper-ts'
 import type { OAuthEnv } from 'hyper-ts-oauth'
 import { ExpressConnection } from 'hyper-ts/express'
 import ISO6391, { type LanguageCode } from 'iso-639-1'
@@ -34,12 +35,14 @@ import type {
 import type { CrossrefPreprintId } from '../src/crossref'
 import type { DatacitePreprintId } from '../src/datacite'
 import type { Email } from '../src/email'
-import { type Html, sanitizeHtml, html as toHtml } from '../src/html'
+import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html'
 import type { IsOpenForRequests } from '../src/is-open-for-requests'
 import type { Languages } from '../src/languages'
 import type { Location } from '../src/location'
+import * as assets from '../src/manifest.json'
 import type { Preprint, PreprintTitle } from '../src/preprint'
 import type { ResearchInterests } from '../src/research-interests'
+import type { PageResponse } from '../src/response'
 import type { SlackUser } from '../src/slack-user'
 import type { SlackUserId } from '../src/slack-user-id'
 import type { ClubId } from '../src/types/club-id'
@@ -174,6 +177,47 @@ export const partialRecord = <T, TConstraints extends { requiredKeys: Array<keyo
 
 export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
 
+export const pageResponse = ({
+  canonical,
+}: {
+  canonical?: fc.Arbitrary<PageResponse['canonical']>
+} = {}): fc.Arbitrary<PageResponse> =>
+  fc.record({
+    _tag: fc.constant('PageResponse' as const),
+    canonical: canonical ?? fc.option(fc.string(), { nil: undefined }),
+    current: fc.option(
+      fc.constantFrom(
+        'about-us' as const,
+        'clubs' as const,
+        'code-of-conduct' as const,
+        'edia-statement' as const,
+        'funding' as const,
+        'home' as const,
+        'how-to-use' as const,
+        'live-reviews' as const,
+        'my-details' as const,
+        'partners' as const,
+        'people' as const,
+        'privacy-policy' as const,
+        'reviews' as const,
+        'trainings' as const,
+      ),
+      { nil: undefined },
+    ),
+    status: statusCode(),
+    title: plainText(),
+    main: html(),
+    js: fc.array(
+      js().filter((js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'skip-link.js'> => js !== 'skip-link.js'),
+    ),
+  })
+
+const asset = (): fc.Arbitrary<keyof typeof assets> =>
+  fc.constantFrom(...(Object.keys(assets) as Array<keyof typeof assets>))
+
+const js = (): fc.Arbitrary<EndsWith<keyof typeof assets, '.js'>> =>
+  asset().filter((asset): asset is EndsWith<typeof asset, '.js'> => asset.endsWith('.js'))
+
 export const emailAddress = (): fc.Arbitrary<EmailAddress> => fc.emailAddress() as fc.Arbitrary<EmailAddress>
 
 export const contactEmailAddress = (): fc.Arbitrary<ContactEmailAddress> =>
@@ -199,6 +243,8 @@ export const cookieName = (): fc.Arbitrary<string> => fc.lorem({ maxCount: 1 })
 export const html = (): fc.Arbitrary<Html> => fc.lorem().map(text => toHtml`<p>${text}</p>`)
 
 export const sanitisedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeHtml)
+
+export const plainText = (): fc.Arbitrary<PlainText> => fc.string().map(toPlainText)
 
 export const oauth = (): fc.Arbitrary<OAuthEnv['oauth']> =>
   fc.record({
@@ -732,6 +778,8 @@ export const headers = () =>
     }),
   )
 
+export const statusCode = (): fc.Arbitrary<Status> => fc.constantFrom(...Object.values(Status))
+
 export const fetchResponse = ({ status }: { status?: fc.Arbitrary<number> } = {}): fc.Arbitrary<F.Response> =>
   fc
     .record({
@@ -844,3 +892,10 @@ export const preprintTitle = (): fc.Arbitrary<PreprintTitle> =>
     language: languageCode(),
     title: html(),
   })
+
+// https://github.com/gcanti/fp-ts/issues/1680
+type EndsWith<Full extends string, End extends string> = string extends Full
+  ? string extends End
+    ? string
+    : Extract<`${string}${End}`, string>
+  : Extract<Full, `${string}${End}`>

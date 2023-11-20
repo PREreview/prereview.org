@@ -85,6 +85,7 @@ import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv } from '
 import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
+import { handleResponse } from './response'
 import { review } from './review'
 import { reviewAPreprint } from './review-a-preprint'
 import { reviews } from './reviews'
@@ -161,7 +162,7 @@ import type { SlackUserId } from './slack-user-id'
 import { trainings } from './trainings'
 import type { PreprintId } from './types/preprint-id'
 import type { GenerateUuidEnv } from './types/uuid'
-import type { GetUserEnv } from './user'
+import { type GetUserEnv, maybeGetUser } from './user'
 import {
   type NewPrereview,
   writeReview,
@@ -244,7 +245,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
   [
     pipe(
       homeMatch.parser,
-      P.map(() => home),
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(home)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
