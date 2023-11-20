@@ -7,6 +7,7 @@ import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
+import { match } from 'ts-pattern'
 import { type CareerStage, CareerStageC } from './career-stage'
 import { ContactEmailAddressC } from './contact-email-address'
 import { IsOpenForRequestsC } from './is-open-for-requests'
@@ -15,6 +16,7 @@ import { LocationC } from './location'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { SlackUserIdC } from './slack-user-id'
 import { NonEmptyStringC } from './types/string'
+import { type UserOnboarding, UserOnboardingC } from './user-onboarding'
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<unknown>
@@ -42,6 +44,10 @@ export interface ResearchInterestsStoreEnv {
 
 export interface SlackUserIdStoreEnv {
   slackUserIdStore: Keyv<unknown>
+}
+
+export interface UserOnboardingStoreEnv {
+  userOnboardingStore: Keyv<unknown>
 }
 
 const OrcidE: Encoder<string, Orcid> = { encode: identity }
@@ -202,4 +208,20 @@ export const getContactEmailAddress = flow(
 export const saveContactEmailAddress = flow(
   setKey(OrcidE, ContactEmailAddressC),
   RTE.local((env: ContactEmailAddressStoreEnv) => env.contactEmailAddressStore),
+)
+
+export const getUserOnboarding = flow(
+  getKey(OrcidE, UserOnboardingC),
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.right({ seenMyDetailsPage: false } satisfies UserOnboarding))
+      .with('unavailable', RTE.left)
+      .exhaustive(),
+  ),
+  RTE.local((env: UserOnboardingStoreEnv) => env.userOnboardingStore),
+)
+
+export const saveUserOnboarding = flow(
+  setKey(OrcidE, UserOnboardingC),
+  RTE.local((env: UserOnboardingStoreEnv) => env.userOnboardingStore),
 )

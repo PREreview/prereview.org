@@ -109,6 +109,7 @@ const server = app({
   slackApiToken: env.SLACK_API_TOKEN,
   slackApiUpdate: env.SLACK_UPDATE,
   slackUserIdStore: new Keyv({ namespace: 'slack-user-id', store: keyvStore }),
+  userOnboardingStore: new Keyv({ namespace: 'user-onboarding', store: keyvStore }),
   wasPrereviewRemoved: id => env.REMOVED_PREREVIEWS.includes(id),
   zenodoApiKey: env.ZENODO_API_KEY,
   zenodoUrl: env.ZENODO_URL,

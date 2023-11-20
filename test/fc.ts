@@ -81,6 +81,7 @@ import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/types
 import type { Pseudonym } from '../src/types/pseudonym'
 import { type NonEmptyString, isNonEmptyString } from '../src/types/string'
 import type { User } from '../src/user'
+import type { UserOnboarding } from '../src/user-onboarding'
 import { shouldNotBeCalled } from './should-not-be-called'
 
 if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
@@ -846,6 +847,15 @@ export const user = (): fc.Arbitrary<User> =>
     name: fc.string(),
     orcid: orcid(),
     pseudonym: pseudonym(),
+  })
+
+export const userOnboarding = ({
+  seenMyDetailsPage,
+}: {
+  seenMyDetailsPage?: fc.Arbitrary<UserOnboarding['seenMyDetailsPage']>
+} = {}): fc.Arbitrary<UserOnboarding> =>
+  fc.record({
+    seenMyDetailsPage: seenMyDetailsPage ?? fc.boolean(),
   })
 
 export const email = (): fc.Arbitrary<Email> =>

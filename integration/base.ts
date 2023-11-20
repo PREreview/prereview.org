@@ -877,6 +877,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         tokenUrl: new URL('http://slack.test/token'),
       },
       slackUserIdStore,
+      userOnboardingStore: new Keyv(),
       wasPrereviewRemoved,
       zenodoApiKey: '',
       zenodoUrl: new URL('http://zenodo.test/'),

@@ -6,6 +6,7 @@ import { get } from 'spectacles-ts'
 import { ContactEmailAddressC } from '../src/contact-email-address'
 import * as _ from '../src/keyv'
 import { SlackUserIdC } from '../src/slack-user-id'
+import { UserOnboardingC } from '../src/user-onboarding'
 import * as fc from './fc'
 
 describe('deleteCareerStage', () => {
@@ -931,6 +932,98 @@ describe('saveContactEmailAddress', () => {
       store.set = () => Promise.reject(error)
 
       const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
+
+describe('getUserOnboarding', () => {
+  test.prop([fc.orcid(), fc.userOnboarding()])(
+    'when the key contains user onboarding details',
+    async (orcid, userOnboarding) => {
+      const store = new Keyv()
+      await store.set(orcid, UserOnboardingC.encode(userOnboarding))
+
+      const actual = await _.getUserOnboarding(orcid)({ userOnboardingStore: store })()
+
+      expect(actual).toStrictEqual(E.right(userOnboarding))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.anything()])(
+    'when the key contains something other than user onboarding details',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.getUserOnboarding(orcid)({ userOnboardingStore: store })()
+
+      expect(actual).toStrictEqual(E.right({ seenMyDetailsPage: false }))
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.getUserOnboarding(orcid)({ userOnboardingStore: store })()
+
+    expect(actual).toStrictEqual(E.right({ seenMyDetailsPage: false }))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.get = (): Promise<never> => Promise.reject(error)
+
+    const actual = await _.getUserOnboarding(orcid)({ userOnboardingStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
+describe('saveUserOnboarding', () => {
+  test.prop([fc.orcid(), fc.userOnboarding()])(
+    'when the key contains user onboarding details',
+    async (orcid, userOnboarding) => {
+      const store = new Keyv()
+      await store.set(orcid, UserOnboardingC.encode(userOnboarding))
+
+      const actual = await _.saveUserOnboarding(orcid, userOnboarding)({ userOnboardingStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.anything(), fc.userOnboarding()])(
+    'when the key already contains something other than user onboarding details',
+    async (orcid, value, userOnboarding) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveUserOnboarding(orcid, userOnboarding)({ userOnboardingStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.userOnboarding()])('when the key is not set', async (orcid, userOnboarding) => {
+    const store = new Keyv()
+
+    const actual = await _.saveUserOnboarding(orcid, userOnboarding)({ userOnboardingStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
+  })
+
+  test.prop([fc.orcid(), fc.userOnboarding(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, userOnboarding, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveUserOnboarding(orcid, userOnboarding)({ userOnboardingStore: store })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },

@@ -33,6 +33,7 @@ import type {
   LocationStoreEnv,
   ResearchInterestsStoreEnv,
   SlackUserIdStoreEnv,
+  UserOnboardingStoreEnv,
 } from './keyv'
 import {
   type LegacyPrereviewApiEnv,
@@ -79,6 +80,7 @@ export type ConfigEnv = CareerStageStoreEnv &
   SlackApiUpdateEnv &
   SlackOAuthEnv &
   SlackUserIdStoreEnv &
+  UserOnboardingStoreEnv &
   WasPrereviewRemovedEnv &
   ZenodoAuthenticatedEnv & {
     allowSiteCrawlers: boolean

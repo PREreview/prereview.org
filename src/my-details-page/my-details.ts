@@ -10,7 +10,7 @@ import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, maybeGetCareerStage } from '../career-stage'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../contact-email-address'
-import { deleteFlashMessage, getFlashMessage } from '../flash-message'
+import { getFlashMessage } from '../flash-message'
 import { html, plainText, sendHtml } from '../html'
 import { type IsOpenForRequests, maybeIsOpenForRequests } from '../is-open-for-requests'
 import { type Languages, maybeGetLanguages } from '../languages'
@@ -39,6 +39,7 @@ import {
 } from '../routes'
 import { type SlackUser, maybeGetSlackUser } from '../slack-user'
 import { type GetUserEnv, type User, getUser } from '../user'
+import { getUserOnboarding, saveUserOnboarding } from '../user-onboarding'
 
 export type Env = EnvFor<typeof myDetails>
 
@@ -55,6 +56,7 @@ export const myDetails = pipe(
     pipe(
       RTE.Do,
       RTE.let('user', () => user),
+      RTE.apSW('userOnBoarding', getUserOnboarding(user.orcid)),
       RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(O.fromNullable))),
       RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(O.fromNullable))),
@@ -65,9 +67,15 @@ export const myDetails = pipe(
     ),
   ),
   RM.apSW('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
+  RM.ichainFirstW(
+    RM.fromReaderTaskEitherK(({ user, userOnBoarding }) =>
+      userOnBoarding.seenMyDetailsPage
+        ? RTE.of(undefined)
+        : saveUserOnboarding(user.orcid, { seenMyDetailsPage: true }),
+    ),
+  ),
   RM.chainReaderKW(createPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainFirstW(RM.fromMiddlewareK(() => deleteFlashMessage)),
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(error =>
     match(error)

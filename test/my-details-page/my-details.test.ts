@@ -1,5 +1,5 @@
 import { test } from '@fast-check/jest'
-import { describe, expect } from '@jest/globals'
+import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
@@ -7,12 +7,190 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import * as _ from '../../src/my-details-page/my-details'
 import { myDetailsMatch } from '../../src/routes'
+import type { SaveUserOnboardingEnv } from '../../src/user-onboarding'
 import * as fc from '../fc'
 import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('myDetails', () => {
   describe('when the user is logged in', () => {
+    describe('when the details can be loaded', () => {
+      test.prop([
+        fc.oauth(),
+        fc.origin(),
+        fc.connection({ method: fc.requestMethod() }),
+        fc.user(),
+        fc.userOnboarding({ seenMyDetailsPage: fc.constant(true) }),
+        fc.either(fc.constant('not-found' as const), fc.slackUser()),
+        fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+        fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
+        fc.either(fc.constant('not-found' as const), fc.careerStage()),
+        fc.either(fc.constant('not-found' as const), fc.researchInterests()),
+        fc.either(fc.constant('not-found' as const), fc.location()),
+        fc.either(fc.constant('not-found' as const), fc.languages()),
+      ])(
+        'when the user has visited before',
+        async (
+          oauth,
+          publicUrl,
+          connection,
+          user,
+          userOnboarding,
+          slackUser,
+          contactEmailAddress,
+          isOpenForRequests,
+          careerStage,
+          researchInterests,
+          location,
+          languages,
+        ) => {
+          const actual = await runMiddleware(
+            _.myDetails({
+              getUser: () => M.right(user),
+              oauth,
+              publicUrl,
+              getCareerStage: () => TE.fromEither(careerStage),
+              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+              getLanguages: () => TE.fromEither(languages),
+              getLocation: () => TE.fromEither(location),
+              getResearchInterests: () => TE.fromEither(researchInterests),
+              getSlackUser: () => TE.fromEither(slackUser),
+              getUserOnboarding: () => TE.right(userOnboarding),
+              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              saveUserOnboarding: shouldNotBeCalled,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.OK },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+        },
+      )
+
+      test.prop([
+        fc.oauth(),
+        fc.origin(),
+        fc.connection({ method: fc.requestMethod() }),
+        fc.user(),
+        fc.userOnboarding({ seenMyDetailsPage: fc.constant(false) }),
+        fc.either(fc.constant('not-found' as const), fc.slackUser()),
+        fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+        fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
+        fc.either(fc.constant('not-found' as const), fc.careerStage()),
+        fc.either(fc.constant('not-found' as const), fc.researchInterests()),
+        fc.either(fc.constant('not-found' as const), fc.location()),
+        fc.either(fc.constant('not-found' as const), fc.languages()),
+      ])(
+        "when the user hasn't visited before",
+        async (
+          oauth,
+          publicUrl,
+          connection,
+          user,
+          userOnboarding,
+          slackUser,
+          contactEmailAddress,
+          isOpenForRequests,
+          careerStage,
+          researchInterests,
+          location,
+          languages,
+        ) => {
+          const saveUserOnboarding = jest.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
+
+          const actual = await runMiddleware(
+            _.myDetails({
+              getUser: () => M.right(user),
+              oauth,
+              publicUrl,
+              getCareerStage: () => TE.fromEither(careerStage),
+              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+              getLanguages: () => TE.fromEither(languages),
+              getLocation: () => TE.fromEither(location),
+              getResearchInterests: () => TE.fromEither(researchInterests),
+              getSlackUser: () => TE.fromEither(slackUser),
+              getUserOnboarding: () => TE.right(userOnboarding),
+              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              saveUserOnboarding,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.OK },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+          expect(saveUserOnboarding).toHaveBeenCalledWith(user.orcid, { seenMyDetailsPage: true })
+        },
+      )
+
+      test.prop([
+        fc.oauth(),
+        fc.origin(),
+        fc.connection({ method: fc.requestMethod() }),
+        fc.user(),
+        fc.userOnboarding({ seenMyDetailsPage: fc.constant(false) }),
+        fc.either(fc.constant('not-found' as const), fc.slackUser()),
+        fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+        fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
+        fc.either(fc.constant('not-found' as const), fc.careerStage()),
+        fc.either(fc.constant('not-found' as const), fc.researchInterests()),
+        fc.either(fc.constant('not-found' as const), fc.location()),
+        fc.either(fc.constant('not-found' as const), fc.languages()),
+      ])(
+        'when the user onboarding cannot be updated',
+        async (
+          oauth,
+          publicUrl,
+          connection,
+          user,
+          userOnboarding,
+          slackUser,
+          contactEmailAddress,
+          isOpenForRequests,
+          careerStage,
+          researchInterests,
+          location,
+          languages,
+        ) => {
+          const actual = await runMiddleware(
+            _.myDetails({
+              getUser: () => M.right(user),
+              oauth,
+              publicUrl,
+              getCareerStage: () => TE.fromEither(careerStage),
+              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+              getLanguages: () => TE.fromEither(languages),
+              getLocation: () => TE.fromEither(location),
+              getResearchInterests: () => TE.fromEither(researchInterests),
+              getSlackUser: () => TE.fromEither(slackUser),
+              getUserOnboarding: () => TE.right(userOnboarding),
+              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+              saveUserOnboarding: () => TE.left('unavailable'),
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right([
+              { type: 'setStatus', status: Status.ServiceUnavailable },
+              { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+              { type: 'setBody', body: expect.anything() },
+            ]),
+          )
+        },
+      )
+    })
+
     test.prop([
       fc.oauth(),
       fc.origin(),
@@ -26,7 +204,7 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.location()),
       fc.either(fc.constant('not-found' as const), fc.languages()),
     ])(
-      'when the details can be loaded',
+      'when the user onboarding cannot be loaded',
       async (
         oauth,
         publicUrl,
@@ -51,14 +229,17 @@ describe('myDetails', () => {
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.fromEither(slackUser),
+            getUserOnboarding: () => TE.left('unavailable'),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+            saveUserOnboarding: shouldNotBeCalled,
           }),
           connection,
         )()
 
         expect(actual).toStrictEqual(
           E.right([
-            { type: 'setStatus', status: Status.OK },
+            { type: 'setStatus', status: Status.ServiceUnavailable },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
             { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
             { type: 'setBody', body: expect.anything() },
           ]),
@@ -71,6 +252,7 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
@@ -84,6 +266,7 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
+        userOnboarding,
         contactEmailAddress,
         isOpenForRequests,
         careerStage,
@@ -102,7 +285,9 @@ describe('myDetails', () => {
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.left('unavailable'),
+            getUserOnboarding: () => TE.right(userOnboarding),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+            saveUserOnboarding: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -123,6 +308,7 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
@@ -136,6 +322,7 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
+        userOnboarding,
         slackUser,
         isOpenForRequests,
         careerStage,
@@ -154,7 +341,9 @@ describe('myDetails', () => {
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.fromEither(slackUser),
+            getUserOnboarding: () => TE.right(userOnboarding),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+            saveUserOnboarding: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -175,6 +364,7 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.userOnboarding(),
       fc.slackUser(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
@@ -188,6 +378,7 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
+        userOnboarding,
         slackUser,
         contactEmailAddress,
         careerStage,
@@ -206,7 +397,9 @@ describe('myDetails', () => {
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.right(slackUser),
+            getUserOnboarding: () => TE.right(userOnboarding),
             isOpenForRequests: () => TE.left('unavailable'),
+            saveUserOnboarding: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -227,6 +420,7 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -240,6 +434,7 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
+        userOnboarding,
         slackUser,
         contactEmailAddress,
         isOpenForRequests,
@@ -258,7 +453,9 @@ describe('myDetails', () => {
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.fromEither(slackUser),
+            getUserOnboarding: () => TE.right(userOnboarding),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+            saveUserOnboarding: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -279,6 +476,7 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -292,6 +490,7 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
+        userOnboarding,
         slackUser,
         contactEmailAddress,
         isOpenForRequests,
@@ -310,7 +509,9 @@ describe('myDetails', () => {
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.left('unavailable'),
             getSlackUser: () => TE.fromEither(slackUser),
+            getUserOnboarding: () => TE.right(userOnboarding),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+            saveUserOnboarding: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -331,6 +532,7 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -344,6 +546,7 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
+        userOnboarding,
         slackUser,
         contactEmailAddress,
         isOpenForRequests,
@@ -362,7 +565,9 @@ describe('myDetails', () => {
             getLocation: () => TE.left('unavailable'),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.fromEither(slackUser),
+            getUserOnboarding: () => TE.right(userOnboarding),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+            saveUserOnboarding: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -383,6 +588,7 @@ describe('myDetails', () => {
       fc.origin(),
       fc.connection({ method: fc.requestMethod() }),
       fc.user(),
+      fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -396,6 +602,7 @@ describe('myDetails', () => {
         publicUrl,
         connection,
         user,
+        userOnboarding,
         slackUser,
         contactEmailAddress,
         isOpenForRequests,
@@ -414,7 +621,9 @@ describe('myDetails', () => {
             getLocation: () => TE.fromEither(location),
             getResearchInterests: () => TE.fromEither(researchInterests),
             getSlackUser: () => TE.fromEither(slackUser),
+            getUserOnboarding: () => TE.right(userOnboarding),
             isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+            saveUserOnboarding: shouldNotBeCalled,
           }),
           connection,
         )()
@@ -445,7 +654,9 @@ describe('myDetails', () => {
           getLocation: shouldNotBeCalled,
           getResearchInterests: shouldNotBeCalled,
           getSlackUser: shouldNotBeCalled,
+          getUserOnboarding: shouldNotBeCalled,
           isOpenForRequests: shouldNotBeCalled,
+          saveUserOnboarding: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -487,7 +698,9 @@ describe('myDetails', () => {
           getLocation: shouldNotBeCalled,
           getResearchInterests: shouldNotBeCalled,
           getSlackUser: shouldNotBeCalled,
+          getUserOnboarding: shouldNotBeCalled,
           isOpenForRequests: shouldNotBeCalled,
+          saveUserOnboarding: shouldNotBeCalled,
         }),
         connection,
       )()
