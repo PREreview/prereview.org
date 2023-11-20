@@ -4,6 +4,7 @@ import * as R from 'fp-ts/Reader'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
+import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
 import {
@@ -25,6 +26,7 @@ import {
   trainingsMatch,
 } from './routes'
 import type { User } from './user'
+import type { UserOnboarding } from './user-onboarding'
 
 export interface FathomEnv {
   readonly fathomId?: string
@@ -59,6 +61,7 @@ export interface Page {
     | 'trainings'
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
   readonly user?: User
+  readonly userOnboarding?: UserOnboarding
 }
 
 export interface TemplatePageEnv {
@@ -75,6 +78,7 @@ export function page({
   current,
   js = [],
   user,
+  userOnboarding,
 }: Page): R.Reader<FathomEnv & PhaseEnv, Html> {
   const scripts = pipe(js, RA.uniq(stringEq()), RA.concatW(skipLinks.length > 0 ? ['skip-link.js' as const] : []))
 
@@ -141,7 +145,16 @@ export function page({
                                 <a
                                   href="${format(myDetailsMatch.formatter, {})}"
                                   ${current === 'my-details' ? html`aria-current="page"` : ''}
-                                  >My details</a
+                                  >My
+                                  details${match(userOnboarding)
+                                    .with(
+                                      { seenMyDetailsPage: false },
+                                      () =>
+                                        html` <span role="status"
+                                          ><span class="visually-hidden">New notification</span></span
+                                        >`,
+                                    )
+                                    .otherwise(() => '')}</a
                                 >
                               </li>`
                             : ''}

@@ -9,6 +9,7 @@ import { deleteFlashMessage, getFlashMessage } from './flash-message'
 import { type Html, html, sendHtml } from './html'
 import type { Page, TemplatePageEnv } from './page'
 import type { User } from './user'
+import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding'
 
 export type Response = PageResponse
 
@@ -34,7 +35,7 @@ export const handleResponse = (response: {
   current?: Page['current']
   response: Response
   user?: User
-}): RM.ReaderMiddleware<TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
+}): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
   match(response)
     .with({ response: { _tag: 'PageResponse' } }, handlePageResponse)
     .exhaustive()
@@ -45,10 +46,12 @@ const handlePageResponse = ({
 }: {
   response: PageResponse
   user?: User
-}): RM.ReaderMiddleware<TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
+}): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
   pipe(
-    RM.fromMiddleware(getFlashMessage(D.literal('logged-out', 'logged-in', 'blocked'))),
-    RM.chain(message =>
+    RM.of({}),
+    RM.apS('message', RM.fromMiddleware(getFlashMessage(D.literal('logged-out', 'logged-in', 'blocked')))),
+    RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
+    RM.chainW(({ message, userOnboarding }) =>
       RM.asks(({ templatePage }: TemplatePageEnv) =>
         templatePage({
           title: response.title,
@@ -94,6 +97,7 @@ const handlePageResponse = ({
           current: response.current,
           js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
           user,
+          userOnboarding,
         }),
       ),
     ),

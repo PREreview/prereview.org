@@ -1937,7 +1937,24 @@ skip-link {
   }
 
   & :any-link {
+    position: relative;
     color: inherit;
+
+    @media screen {
+      & > [role='status']:last-child {
+        position: absolute;
+        padding: 0.25em;
+        transform: translate(-50%, -50%);
+        inset-block-start: 0;
+        inset-inline-start: 100%;
+        border-radius: 50%;
+        background-color: var(--color-primary);
+
+        @media (forced-colors: active) {
+          background-color: LinkText;
+        }
+      }
+    }
   }
 
   @media screen {

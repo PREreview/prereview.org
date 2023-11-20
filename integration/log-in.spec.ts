@@ -40,6 +40,11 @@ test.extend(canLogIn).extend(areLoggedIn)('can view my details', async ({ javaSc
 test.extend(canLogIn).extend(areLoggedIn).extend(isANewUser)(
   'are prompted to view my details once',
   async ({ page }) => {
+    await expect(page.getByRole('link', { name: 'My details' })).toContainText('New notification')
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
     await page.getByRole('link', { name: 'My details' }).click()
 
     await expect(page.getByRole('main')).toContainText('Welcome to PREreview!')
@@ -51,6 +56,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isANewUser)(
     await page.reload()
 
     await expect(page.getByRole('main')).not.toContainText('Welcome to PREreview!')
+
+    await page.goto('/')
+
+    await expect(page.getByRole('link', { name: 'My details' })).not.toContainText('New notification')
   },
 )
 

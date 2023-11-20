@@ -1,5 +1,6 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
+import { flow } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
 
@@ -23,6 +24,11 @@ export const getUserOnboarding = (
   orcid: Orcid,
 ): RTE.ReaderTaskEither<GetUserOnboardingEnv, 'unavailable', UserOnboarding> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getUserOnboarding }) => getUserOnboarding(orcid)))
+
+export const maybeGetUserOnboarding = flow(
+  getUserOnboarding,
+  RTE.orElseW(() => RTE.of(undefined)),
+)
 
 export const saveUserOnboarding = (
   orcid: Orcid,
