@@ -10,7 +10,7 @@ import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, maybeGetCareerStage } from '../career-stage'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../contact-email-address'
-import { getFlashMessage } from '../flash-message'
+import { deleteFlashMessage, getFlashMessage } from '../flash-message'
 import { html, plainText, sendHtml } from '../html'
 import { type IsOpenForRequests, maybeIsOpenForRequests } from '../is-open-for-requests'
 import { type Languages, maybeGetLanguages } from '../languages'
@@ -76,6 +76,7 @@ export const myDetails = pipe(
   ),
   RM.chainReaderKW(createPage),
   RM.ichainFirst(() => RM.status(Status.OK)),
+  RM.ichainFirstW(RM.fromMiddlewareK(() => deleteFlashMessage)),
   RM.ichainMiddlewareKW(sendHtml),
   RM.orElseW(error =>
     match(error)
