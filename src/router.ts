@@ -303,7 +303,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       howToUseMatch.parser,
-      P.map(() => howToUse),
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(howToUse)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       peopleMatch.parser,
