@@ -290,6 +290,10 @@ body {
   padding-block: var(--space-s);
   padding-inline: max(var(--space-s-m), calc(var(--space-s-m) + (100% - 75rem) / 2));
   background-color: var(--color-primary);
+  background-image: url('giving-tuesday.svg');
+  background-repeat: no-repeat;
+  background-position: right max(-1 * var(--space-s-m), (var(--space-s-m) + (100% - 75rem) / 2) + 10rem) bottom 40%;
+  background-size: auto 100%;
   color: var(--color-white);
   font-size: var(--step--1);
   font-weight: 700;
