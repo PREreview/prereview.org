@@ -149,10 +149,6 @@ const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, Resp
           RM.apS('user', maybeGetUser),
           RM.apSW('response', RM.of(pageNotFound)),
           RM.ichainW(handleResponse),
-          R.local((env: RouterEnv) => ({
-            ...env,
-            getUserOnboarding: withEnv(getUserOnboarding, env),
-          })),
         ),
       )
       .exhaustive(),
@@ -289,6 +285,7 @@ export const app = (config: ConfigEnv) => {
           doesPreprintExist: withEnv(doesPreprintExist, env),
           generateUuid: uuid.v4(),
           getUser: withEnv(() => getUser, env),
+          getUserOnboarding: withEnv(getUserOnboarding, env),
           getPreprint: withEnv(getPreprint, env),
           getPreprintTitle: withEnv(getPreprintTitle, env),
           templatePage: withEnv(page, env),

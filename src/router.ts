@@ -44,7 +44,6 @@ import {
   getLocation,
   getResearchInterests,
   getSlackUserId,
-  getUserOnboarding,
   isOpenForRequests,
   saveCareerStage,
   saveContactEmailAddress,
@@ -165,6 +164,7 @@ import { trainings } from './trainings'
 import type { PreprintId } from './types/preprint-id'
 import type { GenerateUuidEnv } from './types/uuid'
 import { type GetUserEnv, maybeGetUser } from './user'
+import type { GetUserOnboardingEnv } from './user-onboarding'
 import {
   type NewPrereview,
   writeReview,
@@ -227,6 +227,7 @@ export type RouterEnv = ConfigEnv &
   GetPreprintEnv &
   GetPreprintTitleEnv &
   GetUserEnv &
+  GetUserOnboardingEnv &
   SendEmailEnv &
   TemplatePageEnv
 
@@ -269,7 +270,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               ),
             env,
           ),
-          getUserOnboarding: withEnv(getUserOnboarding, env),
         })),
       ),
     ),
@@ -461,7 +461,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getLocation: withEnv(getLocation, env),
           getResearchInterests: withEnv(getResearchInterests, env),
           getSlackUser: withEnv(getSlackUser, env),
-          getUserOnboarding: withEnv(getUserOnboarding, env),
           isOpenForRequests: withEnv(isOpenForRequests, env),
           saveUserOnboarding: withEnv(saveUserOnboarding, env),
         })),
