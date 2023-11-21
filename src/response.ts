@@ -31,8 +31,6 @@ export const PageResponse = (args: Optional<Omit<PageResponse, '_tag'>, 'status'
 })
 
 export const handleResponse = (response: {
-  canonical?: string
-  current?: Page['current']
   response: Response
   user?: User
 }): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
