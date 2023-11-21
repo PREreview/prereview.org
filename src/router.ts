@@ -329,7 +329,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       ediaStatementMatch.parser,
-      P.map(() => ediaStatement),
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(ediaStatement)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       clubsMatch.parser,
