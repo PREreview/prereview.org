@@ -5,6 +5,7 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import { match } from 'ts-pattern'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
+import { PageResponse } from './response'
 import { type User, maybeGetUser } from './user'
 
 export function handleError(error: HttpError<typeof Status.NotFound | typeof Status.ServiceUnavailable>) {
@@ -58,3 +59,20 @@ function problemsPage(user?: User) {
     user,
   })
 }
+
+export const pageNotFound = PageResponse({
+  status: Status.NotFound,
+  title: plainText`Page not found`,
+  main: html`
+    <h1>Page not found</h1>
+
+    <p>If you typed the web address, check it is correct.</p>
+
+    <p>If you pasted the web address, check you copied the entire address.</p>
+
+    <p>
+      If the web address is correct or you selected a link or button, please
+      <a href="mailto:help@prereview.org">get in touch</a>.
+    </p>
+  `,
+})

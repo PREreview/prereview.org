@@ -24,16 +24,17 @@ import type { Email } from './email'
 import type { RequiresVerifiedEmailAddressEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import type { GhostApiEnv } from './ghost'
-import { handleError } from './http-error'
-import type {
-  CareerStageStoreEnv,
-  ContactEmailAddressStoreEnv,
-  IsOpenForRequestsStoreEnv,
-  LanguagesStoreEnv,
-  LocationStoreEnv,
-  ResearchInterestsStoreEnv,
-  SlackUserIdStoreEnv,
-  UserOnboardingStoreEnv,
+import { pageNotFound } from './http-error'
+import {
+  type CareerStageStoreEnv,
+  type ContactEmailAddressStoreEnv,
+  type IsOpenForRequestsStoreEnv,
+  type LanguagesStoreEnv,
+  type LocationStoreEnv,
+  type ResearchInterestsStoreEnv,
+  type SlackUserIdStoreEnv,
+  type UserOnboardingStoreEnv,
+  getUserOnboarding,
 } from './keyv'
 import {
   type LegacyPrereviewApiEnv,
@@ -47,11 +48,12 @@ import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import { getPreprintFromPhilsci } from './philsci'
 import type { PublicUrlEnv } from './public-url'
+import { handleResponse } from './response'
 import { type RouterEnv, routes } from './router'
 import type { ScietyListEnv } from './sciety-list'
 import type { SlackApiEnv, SlackApiUpdateEnv } from './slack'
 import type { IndeterminatePreprintId } from './types/preprint-id'
-import { getUserFromSession } from './user'
+import { getUserFromSession, maybeGetUser } from './user'
 import type { FormStoreEnv } from './write-review'
 import type { WasPrereviewRemovedEnv } from './zenodo'
 import type { ZenodoAuthenticatedEnv } from './zenodo-ts'
@@ -139,7 +141,22 @@ const getUser = pipe(getSession(), RM.chainOptionKW(() => 'no-session' as const)
 const appMiddleware: RM.ReaderMiddleware<RouterEnv & LegacyEnv, StatusOpen, ResponseEnded, never, void> = pipe(
   routes,
   RM.orElseW(() => legacyRoutes),
-  RM.orElseW(handleError),
+  RM.orElseW(error =>
+    match(error)
+      .with({ status: 404 }, () =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.of(pageNotFound)),
+          RM.ichainW(handleResponse),
+          R.local((env: RouterEnv) => ({
+            ...env,
+            getUserOnboarding: withEnv(getUserOnboarding, env),
+          })),
+        ),
+      )
+      .exhaustive(),
+  ),
 )
 
 const withEnv =
