@@ -76,3 +76,13 @@ export const pageNotFound = PageResponse({
     </p>
   `,
 })
+
+export const havingProblemsPage = PageResponse({
+  status: Status.ServiceUnavailable,
+  title: plainText`Sorry, we’re having problems`,
+  main: html`
+    <h1>Sorry, we’re having problems</h1>
+
+    <p>Please try again later.</p>
+  `,
+})

@@ -1,19 +1,14 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
-import * as E from 'fp-ts/Either'
-import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
+import { format } from 'fp-ts-routing'
+import { Status } from 'hyper-ts'
 import * as _ from '../src/about-us'
+import { aboutUsMatch } from '../src/routes'
 import * as fc from './fc'
-import { runMiddleware } from './middleware'
 
-describe('about-us', () => {
-  test.prop([
-    fc.connection({ method: fc.requestMethod() }),
-    fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the page can be loaded', async (connection, key, user) => {
+describe('aboutUs', () => {
+  test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 })])('when the page can be loaded', async key => {
     const fetch = fetchMock.sandbox().getOnce(
       {
         url: 'https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14',
@@ -22,55 +17,40 @@ describe('about-us', () => {
       { body: { pages: [{ html: '<p>Foo<script>bar</script></p>' }] } },
     )
 
-    const actual = await runMiddleware(
-      _.aboutUs({
-        fetch,
-        ghostApi: { key },
-        getUser: () => M.fromEither(user),
-      }),
-      connection,
-    )()
+    const actual = await _.aboutUs({ fetch, ghostApi: { key } })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.OK },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.stringContaining('<p>Foo</p>') },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(aboutUsMatch.formatter, {}),
+      current: 'about-us',
+      status: Status.OK,
+      title: expect.stringContaining('About us'),
+      main: expect.stringContaining('<p>Foo</p>'),
+      js: [],
+    })
   })
 
-  test.prop([
-    fc.connection({ method: fc.requestMethod() }),
-    fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
-    fc.fetchResponse(),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the page cannot be loaded', async (connection, key, response, user) => {
-    const fetch = fetchMock.sandbox().getOnce(
-      {
-        url: 'begin:https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14?',
-        query: { key },
-      },
-      response,
-    )
+  test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 }), fc.fetchResponse()])(
+    'when the page cannot be loaded',
+    async (key, response) => {
+      const fetch = fetchMock.sandbox().getOnce(
+        {
+          url: 'begin:https://content.prereview.org/ghost/api/content/pages/6154aa157741400e8722bb14?',
+          query: { key },
+        },
+        response,
+      )
 
-    const actual = await runMiddleware(
-      _.aboutUs({
-        fetch,
-        ghostApi: { key },
-        getUser: () => M.fromEither(user),
-      }),
-      connection,
-    )()
+      const actual = await _.aboutUs({ fetch, ghostApi: { key } })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-    expect(fetch.done()).toBeTruthy()
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        js: [],
+      })
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
 })
