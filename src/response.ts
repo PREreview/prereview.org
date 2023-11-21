@@ -21,7 +21,7 @@ export interface PageResponse {
   readonly title: Page['title']
   readonly nav?: Html
   readonly main: Html
-  readonly skipToLabel: 'main' | 'prereview'
+  readonly skipToLabel: 'form' | 'main' | 'prereview'
   readonly js: Required<Page>['js']
 }
 
@@ -116,6 +116,7 @@ const handlePageResponse = ({
           skipLinks: [
             [
               match(response.skipToLabel)
+                .with('form', () => html`Skip to form`)
                 .with('main', () => html`Skip to main content`)
                 .with('prereview', () => html`Skip to PREreview`)
                 .exhaustive(),

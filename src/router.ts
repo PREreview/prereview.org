@@ -412,7 +412,22 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       reviewAPreprintMatch.parser,
-      P.map(() => reviewAPreprint),
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS(
+            'body',
+            RM.gets(c => c.getBody()),
+          ),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(reviewAPreprint)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       logInMatch.parser,
