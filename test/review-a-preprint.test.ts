@@ -189,11 +189,36 @@ describe('reviewAPreprint', () => {
 
     test.prop([
       fc.connection({
-        body: fc.record({ doi: fc.oneof(fc.string(), fc.nonPreprintDoi()) }, { withDeletedKeys: true }),
+        body: fc.record({ preprint: fc.nonPreprintDoi() }),
         method: fc.constant('POST'),
       }),
       fc.either(fc.constant('no-session' as const), fc.user()),
     ])('with a non-preprint DOI', async (connection, user) => {
+      const actual = await runMiddleware(
+        _.reviewAPreprint({
+          doesPreprintExist: shouldNotBeCalled,
+          getUser: () => M.fromEither(user),
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.BadRequest },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    })
+
+    test.prop([
+      fc.connection({
+        body: fc.record({ preprint: fc.string() }, { withDeletedKeys: true }),
+        method: fc.constant('POST'),
+      }),
+      fc.either(fc.constant('no-session' as const), fc.user()),
+    ])('with a non-DOI', async (connection, user) => {
       const actual = await runMiddleware(
         _.reviewAPreprint({
           doesPreprintExist: shouldNotBeCalled,
