@@ -342,7 +342,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       liveReviewsMatch.parser,
-      P.map(() => liveReviews),
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(liveReviews)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       privacyPolicyMatch.parser,
