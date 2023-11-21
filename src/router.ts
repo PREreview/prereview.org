@@ -390,7 +390,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       privacyPolicyMatch.parser,
-      P.map(() => privacyPolicy),
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(privacyPolicy)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       findAPreprintMatch.parser,

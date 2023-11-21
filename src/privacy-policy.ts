@@ -1,34 +1,26 @@
+import { format } from 'fp-ts-routing'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/ReaderMiddleware'
 import { getPage } from './ghost'
-import { type Html, fixHeadingLevels, html, plainText, sendHtml } from './html'
-import { serviceUnavailable } from './middleware'
-import { page } from './page'
-import { type User, maybeGetUser } from './user'
+import { type Html, fixHeadingLevels, html, plainText } from './html'
+import { havingProblemsPage } from './http-error'
+import { PageResponse } from './response'
+import { privacyPolicyMatch } from './routes'
 
 export const privacyPolicy = pipe(
-  RM.fromReaderTaskEither(getPage('6154aa157741400e8722bb0f')),
-  RM.bindTo('content'),
-  RM.apSW('user', maybeGetUser),
-  RM.chainReaderKW(createPage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareKW(sendHtml),
-  RM.orElseW(() => serviceUnavailable),
+  getPage('6154aa157741400e8722bb0f'),
+  RTE.matchW(() => havingProblemsPage, createPage),
 )
 
-function createPage({ content, user }: { content: Html; user?: User }) {
-  return page({
+function createPage(content: Html) {
+  return PageResponse({
     title: plainText`Privacy Policy`,
-    content: html`
-      <main id="main-content">
-        <h1>Privacy Policy</h1>
+    main: html`
+      <h1>Privacy Policy</h1>
 
-        ${fixHeadingLevels(1, content)}
-      </main>
+      ${fixHeadingLevels(1, content)}
     `,
+    canonical: format(privacyPolicyMatch.formatter, {}),
     current: 'privacy-policy',
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
   })
 }
