@@ -5,31 +5,34 @@ import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 import { getClubName } from '../club-details'
 import { type Html, html, plainText, rawHtml } from '../html'
-import type { Page } from '../page'
-import { clubProfileMatch } from '../routes'
+import { PageResponse } from '../response'
+import { clubProfileMatch, profileMatch } from '../routes'
+import type { ProfileId } from '../types/profile-id'
 import type { NonEmptyString } from '../types/string'
 import type { OrcidProfile } from './orcid-profile'
 import type { PseudonymProfile } from './pseudonym-profile'
 import { renderListOfPrereviews } from './render-list-of-prereviews'
 
 export function createPage(profile: OrcidProfile | PseudonymProfile) {
-  return {
+  return PageResponse({
     title: plainText(
       match(profile)
         .with({ name: P.string }, profile => profile.name)
         .with({ orcid: P.string }, profile => profile.orcid)
         .exhaustive(),
     ),
-    content: html`
-      <main id="main-content">
-        ${match(profile)
-          .with({ type: 'orcid' }, renderContentForOrcid)
-          .with({ type: 'pseudonym' }, renderContentForPseudonym)
-          .exhaustive()}
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-  } satisfies Page
+    main: match(profile)
+      .with({ type: 'orcid' }, renderContentForOrcid)
+      .with({ type: 'pseudonym' }, renderContentForPseudonym)
+      .exhaustive(),
+    canonical: format(profileMatch.formatter, {
+      profile: match(profile)
+        .returnType<ProfileId>()
+        .with({ type: 'orcid', orcid: P.select(P.string) }, value => ({ type: 'orcid', value }))
+        .with({ type: 'pseudonym', name: P.select(P.string) }, value => ({ type: 'pseudonym', value }))
+        .exhaustive(),
+    }),
+  })
 }
 
 function renderContentForOrcid({

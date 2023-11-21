@@ -1,13 +1,9 @@
 import type { Reader } from 'fp-ts/Reader'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/ReaderMiddleware'
 import { match } from 'ts-pattern'
-import { sendHtml } from '../html'
-import { notFound, serviceUnavailable } from '../middleware'
-import { page } from '../page'
+import { havingProblemsPage, pageNotFound } from '../http-error'
 import type { ProfileId } from '../types/profile-id'
-import { maybeGetUser } from '../user'
 import { createPage } from './create-page'
 import { getOrcidProfile } from './orcid-profile'
 import { getPseudonymProfile } from './pseudonym-profile'
@@ -21,31 +17,25 @@ export const profile = (profileId: ProfileId) =>
     .exhaustive()
 
 const profileForOrcid = flow(
-  RM.fromReaderTaskEitherK(getOrcidProfile),
-  RM.map(createPage),
-  RM.apSW('user', maybeGetUser),
-  RM.chainReaderKW(page),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareKW(sendHtml),
-  RM.orElseW(error =>
-    match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
-      .exhaustive(),
+  getOrcidProfile,
+  RTE.match(
+    error =>
+      match(error)
+        .with('not-found', () => pageNotFound)
+        .with('unavailable', () => havingProblemsPage)
+        .exhaustive(),
+    createPage,
   ),
 )
 
 const profileForPseudonym = flow(
-  RM.fromReaderTaskEitherK(getPseudonymProfile),
-  RM.map(createPage),
-  RM.apSW('user', maybeGetUser),
-  RM.chainReaderKW(page),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareKW(sendHtml),
-  RM.orElseW(error =>
-    match(error)
-      .with('unavailable', () => serviceUnavailable)
-      .exhaustive(),
+  getPseudonymProfile,
+  RTE.match(
+    error =>
+      match(error)
+        .with('unavailable', () => havingProblemsPage)
+        .exhaustive(),
+    createPage,
   ),
 )
 

@@ -1,18 +1,17 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import * as E from 'fp-ts/Either'
+import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
-import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
+import { Status } from 'hyper-ts'
+import { plainText } from '../../src/html'
 import * as _ from '../../src/profile-page'
+import { profileMatch } from '../../src/routes'
 import * as fc from '../fc'
-import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('profile', () => {
   describe('with an ORCID iD', () => {
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.url(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
@@ -24,7 +23,6 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.location()),
@@ -34,12 +32,10 @@ describe('profile', () => {
     ])(
       'when the data can be loaded',
       async (
-        connection,
         profile,
         avatar,
         name,
         prereviews,
-        user,
         careerStage,
         researchInterests,
         location,
@@ -57,29 +53,27 @@ describe('profile', () => {
         const getSlackUser = jest.fn<_.Env['getSlackUser']>(_ => TE.fromEither(slackUser))
         const isOpenForRequests = jest.fn<_.Env['isOpenForRequests']>(_ => TE.fromEither(openForRequests))
 
-        const actual = await runMiddleware(
-          _.profile(profile)({
-            getAvatar,
-            getCareerStage,
-            getLanguages,
-            getLocation,
-            getName,
-            getPrereviews,
-            getResearchInterests,
-            getSlackUser,
-            getUser: () => M.fromEither(user),
-            isOpenForRequests,
-          }),
-          connection,
-        )()
+        const actual = await _.profile(profile)({
+          getAvatar,
+          getCareerStage,
+          getLanguages,
+          getLocation,
+          getName,
+          getPrereviews,
+          getResearchInterests,
+          getSlackUser,
+          isOpenForRequests,
+        })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.OK },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          canonical: format(profileMatch.formatter, { profile }),
+          status: Status.OK,
+          title: expect.stringContaining(name ? plainText(name).toString() : profile.value),
+          main: expect.stringContaining(profile.value),
+          skipToLabel: 'main',
+          js: [],
+        })
         expect(getAvatar).toHaveBeenCalledWith(profile.value)
         expect(getCareerStage).toHaveBeenCalledWith(profile.value)
         expect(getLanguages).toHaveBeenCalledWith(profile.value)
@@ -93,7 +87,6 @@ describe('profile', () => {
     )
 
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.url(),
       fc.array(
@@ -104,36 +97,30 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])("when the name can't be found", async (connection, profile, avatar, prereviews, user) => {
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: () => TE.of(avatar),
-          getCareerStage: () => TE.left('not-found'),
-          getLanguages: () => TE.left('not-found'),
-          getLocation: () => TE.left('not-found'),
-          getName: () => TE.left('not-found'),
-          getPrereviews: () => TE.of(prereviews),
-          getResearchInterests: () => TE.left('not-found'),
-          getSlackUser: () => TE.left('not-found'),
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: () => TE.left('not-found'),
-        }),
-        connection,
-      )()
+    ])("when the name can't be found", async (profile, avatar, prereviews) => {
+      const actual = await _.profile(profile)({
+        getAvatar: () => TE.of(avatar),
+        getCareerStage: () => TE.left('not-found'),
+        getLanguages: () => TE.left('not-found'),
+        getLocation: () => TE.left('not-found'),
+        getName: () => TE.left('not-found'),
+        getPrereviews: () => TE.of(prereviews),
+        getResearchInterests: () => TE.left('not-found'),
+        getSlackUser: () => TE.left('not-found'),
+        isOpenForRequests: () => TE.left('not-found'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.NotFound },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.stringContaining('not found'),
+        main: expect.stringContaining('not found'),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
 
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.url(),
       fc.array(
@@ -144,35 +131,30 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the name is unavailable', async (connection, profile, avatar, prereviews, user) => {
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: () => TE.of(avatar),
-          getCareerStage: () => TE.left('not-found'),
-          getLanguages: () => TE.left('not-found'),
-          getLocation: () => TE.left('not-found'),
-          getName: () => TE.left('unavailable'),
-          getPrereviews: () => TE.of(prereviews),
-          getResearchInterests: () => TE.left('not-found'),
-          getSlackUser: () => TE.left('not-found'),
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: () => TE.left('not-found'),
-        }),
-        connection,
-      )()
+    ])('when the name is unavailable', async (profile, avatar, prereviews) => {
+      const actual = await _.profile(profile)({
+        getAvatar: () => TE.of(avatar),
+        getCareerStage: () => TE.left('not-found'),
+        getLanguages: () => TE.left('not-found'),
+        getLocation: () => TE.left('not-found'),
+        getName: () => TE.left('unavailable'),
+        getPrereviews: () => TE.of(prereviews),
+        getResearchInterests: () => TE.left('not-found'),
+        getSlackUser: () => TE.left('not-found'),
+        isOpenForRequests: () => TE.left('not-found'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
+
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
@@ -183,35 +165,31 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])("when the avatar can't be found", async (connection, profile, name, prereviews, user) => {
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: () => TE.left('not-found'),
-          getCareerStage: () => TE.left('not-found'),
-          getLanguages: () => TE.left('not-found'),
-          getLocation: () => TE.left('not-found'),
-          getName: () => TE.of(name),
-          getPrereviews: () => TE.of(prereviews),
-          getResearchInterests: () => TE.left('not-found'),
-          getSlackUser: () => TE.left('not-found'),
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: () => TE.left('not-found'),
-        }),
-        connection,
-      )()
+    ])("when the avatar can't be found", async (profile, name, prereviews) => {
+      const actual = await _.profile(profile)({
+        getAvatar: () => TE.left('not-found'),
+        getCareerStage: () => TE.left('not-found'),
+        getLanguages: () => TE.left('not-found'),
+        getLocation: () => TE.left('not-found'),
+        getName: () => TE.of(name),
+        getPrereviews: () => TE.of(prereviews),
+        getResearchInterests: () => TE.left('not-found'),
+        getSlackUser: () => TE.left('not-found'),
+        isOpenForRequests: () => TE.left('not-found'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.OK },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(profileMatch.formatter, { profile }),
+        status: Status.OK,
+        title: expect.stringContaining(name ? plainText(name).toString() : profile.value),
+        main: expect.stringContaining(profile.value),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
 
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
@@ -222,36 +200,30 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the avatar is unavailable', async (connection, profile, name, prereviews, user) => {
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: () => TE.left('unavailable'),
-          getCareerStage: () => TE.left('not-found'),
-          getLanguages: () => TE.left('not-found'),
-          getLocation: () => TE.left('not-found'),
-          getName: () => TE.of(name),
-          getPrereviews: () => TE.of(prereviews),
-          getResearchInterests: () => TE.left('not-found'),
-          getSlackUser: () => TE.left('not-found'),
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: () => TE.left('not-found'),
-        }),
-        connection,
-      )()
+    ])('when the avatar is unavailable', async (profile, name, prereviews) => {
+      const actual = await _.profile(profile)({
+        getAvatar: () => TE.left('unavailable'),
+        getCareerStage: () => TE.left('not-found'),
+        getLanguages: () => TE.left('not-found'),
+        getLocation: () => TE.left('not-found'),
+        getName: () => TE.of(name),
+        getPrereviews: () => TE.of(prereviews),
+        getResearchInterests: () => TE.left('not-found'),
+        getSlackUser: () => TE.left('not-found'),
+        isOpenForRequests: () => TE.left('not-found'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
 
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
@@ -262,36 +234,30 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the career stage is unavailable', async (connection, profile, name, prereviews, user) => {
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: () => TE.left('not-found'),
-          getCareerStage: () => TE.left('unavailable'),
-          getLanguages: () => TE.left('not-found'),
-          getLocation: () => TE.left('not-found'),
-          getName: () => TE.of(name),
-          getPrereviews: () => TE.of(prereviews),
-          getResearchInterests: () => TE.left('not-found'),
-          getSlackUser: () => TE.left('not-found'),
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: () => TE.left('not-found'),
-        }),
-        connection,
-      )()
+    ])('when the career stage is unavailable', async (profile, name, prereviews) => {
+      const actual = await _.profile(profile)({
+        getAvatar: () => TE.left('not-found'),
+        getCareerStage: () => TE.left('unavailable'),
+        getLanguages: () => TE.left('not-found'),
+        getLocation: () => TE.left('not-found'),
+        getName: () => TE.of(name),
+        getPrereviews: () => TE.of(prereviews),
+        getResearchInterests: () => TE.left('not-found'),
+        getSlackUser: () => TE.left('not-found'),
+        isOpenForRequests: () => TE.left('not-found'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
 
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
@@ -302,36 +268,30 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the research interests are unavailable', async (connection, profile, name, prereviews, user) => {
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: () => TE.left('not-found'),
-          getCareerStage: () => TE.left('not-found'),
-          getLanguages: () => TE.left('not-found'),
-          getLocation: () => TE.left('not-found'),
-          getName: () => TE.of(name),
-          getPrereviews: () => TE.of(prereviews),
-          getResearchInterests: () => TE.left('unavailable'),
-          getSlackUser: () => TE.left('not-found'),
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: () => TE.left('not-found'),
-        }),
-        connection,
-      )()
+    ])('when the research interests are unavailable', async (profile, name, prereviews) => {
+      const actual = await _.profile(profile)({
+        getAvatar: () => TE.left('not-found'),
+        getCareerStage: () => TE.left('not-found'),
+        getLanguages: () => TE.left('not-found'),
+        getLocation: () => TE.left('not-found'),
+        getName: () => TE.of(name),
+        getPrereviews: () => TE.of(prereviews),
+        getResearchInterests: () => TE.left('unavailable'),
+        getSlackUser: () => TE.left('not-found'),
+        isOpenForRequests: () => TE.left('not-found'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
 
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
@@ -342,36 +302,30 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the location is unavailable', async (connection, profile, name, prereviews, user) => {
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: () => TE.left('not-found'),
-          getCareerStage: () => TE.left('not-found'),
-          getLanguages: () => TE.left('not-found'),
-          getLocation: () => TE.left('unavailable'),
-          getName: () => TE.of(name),
-          getPrereviews: () => TE.of(prereviews),
-          getResearchInterests: () => TE.left('not-found'),
-          getSlackUser: () => TE.left('not-found'),
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: () => TE.left('not-found'),
-        }),
-        connection,
-      )()
+    ])('when the location is unavailable', async (profile, name, prereviews) => {
+      const actual = await _.profile(profile)({
+        getAvatar: () => TE.left('not-found'),
+        getCareerStage: () => TE.left('not-found'),
+        getLanguages: () => TE.left('not-found'),
+        getLocation: () => TE.left('unavailable'),
+        getName: () => TE.of(name),
+        getPrereviews: () => TE.of(prereviews),
+        getResearchInterests: () => TE.left('not-found'),
+        getSlackUser: () => TE.left('not-found'),
+        isOpenForRequests: () => TE.left('not-found'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
 
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
@@ -382,36 +336,30 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when languages are available', async (connection, profile, name, prereviews, user) => {
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: () => TE.left('not-found'),
-          getCareerStage: () => TE.left('not-found'),
-          getLanguages: () => TE.left('unavailable'),
-          getLocation: () => TE.left('not-found'),
-          getName: () => TE.of(name),
-          getPrereviews: () => TE.of(prereviews),
-          getResearchInterests: () => TE.left('not-found'),
-          getSlackUser: () => TE.left('not-found'),
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: () => TE.left('not-found'),
-        }),
-        connection,
-      )()
+    ])('when languages are unavailable', async (profile, name, prereviews) => {
+      const actual = await _.profile(profile)({
+        getAvatar: () => TE.left('not-found'),
+        getCareerStage: () => TE.left('not-found'),
+        getLanguages: () => TE.left('unavailable'),
+        getLocation: () => TE.left('not-found'),
+        getName: () => TE.of(name),
+        getPrereviews: () => TE.of(prereviews),
+        getResearchInterests: () => TE.left('not-found'),
+        getSlackUser: () => TE.left('not-found'),
+        isOpenForRequests: () => TE.left('not-found'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
 
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
@@ -422,36 +370,30 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the Slack user is unavailable', async (connection, profile, name, prereviews, user) => {
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: () => TE.left('not-found'),
-          getCareerStage: () => TE.left('not-found'),
-          getLanguages: () => TE.left('not-found'),
-          getLocation: () => TE.left('not-found'),
-          getName: () => TE.of(name),
-          getPrereviews: () => TE.of(prereviews),
-          getResearchInterests: () => TE.left('not-found'),
-          getSlackUser: () => TE.left('unavailable'),
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: () => TE.left('not-found'),
-        }),
-        connection,
-      )()
+    ])('when the Slack user is unavailable', async (profile, name, prereviews) => {
+      const actual = await _.profile(profile)({
+        getAvatar: () => TE.left('not-found'),
+        getCareerStage: () => TE.left('not-found'),
+        getLanguages: () => TE.left('not-found'),
+        getLocation: () => TE.left('not-found'),
+        getName: () => TE.of(name),
+        getPrereviews: () => TE.of(prereviews),
+        getResearchInterests: () => TE.left('not-found'),
+        getSlackUser: () => TE.left('unavailable'),
+        isOpenForRequests: () => TE.left('not-found'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
 
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.orcidProfileId(),
       fc.option(fc.nonEmptyString(), { nil: undefined }),
       fc.array(
@@ -462,38 +404,32 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when being open for requests is unavailable', async (connection, profile, name, prereviews, user) => {
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: () => TE.left('not-found'),
-          getCareerStage: () => TE.left('not-found'),
-          getLanguages: () => TE.left('not-found'),
-          getLocation: () => TE.left('not-found'),
-          getName: () => TE.of(name),
-          getPrereviews: () => TE.of(prereviews),
-          getResearchInterests: () => TE.left('not-found'),
-          getSlackUser: () => TE.left('not-found'),
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: () => TE.left('unavailable'),
-        }),
-        connection,
-      )()
+    ])('when being open for requests is unavailable', async (profile, name, prereviews) => {
+      const actual = await _.profile(profile)({
+        getAvatar: () => TE.left('not-found'),
+        getCareerStage: () => TE.left('not-found'),
+        getLanguages: () => TE.left('not-found'),
+        getLocation: () => TE.left('not-found'),
+        getName: () => TE.of(name),
+        getPrereviews: () => TE.of(prereviews),
+        getResearchInterests: () => TE.left('not-found'),
+        getSlackUser: () => TE.left('not-found'),
+        isOpenForRequests: () => TE.left('unavailable'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
     })
   })
 
   describe('with a pseudonym', () => {
     test.prop([
-      fc.connection({ method: fc.requestMethod() }),
       fc.pseudonymProfileId(),
       fc.array(
         fc.record({
@@ -503,47 +439,39 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
-    ])('when the data can be loaded', async (connection, profile, prereviews, user) => {
+    ])('when the data can be loaded', async (profile, prereviews) => {
       const getPrereviews = jest.fn<_.Env['getPrereviews']>(_ => TE.of(prereviews))
 
-      const actual = await runMiddleware(
-        _.profile(profile)({
-          getAvatar: shouldNotBeCalled,
-          getCareerStage: shouldNotBeCalled,
-          getLanguages: () => TE.left('not-found'),
-          getLocation: shouldNotBeCalled,
-          getName: shouldNotBeCalled,
-          getPrereviews,
-          getResearchInterests: shouldNotBeCalled,
-          getSlackUser: shouldNotBeCalled,
-          getUser: () => M.fromEither(user),
-          isOpenForRequests: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+      const actual = await _.profile(profile)({
+        getAvatar: shouldNotBeCalled,
+        getCareerStage: shouldNotBeCalled,
+        getLanguages: () => TE.left('not-found'),
+        getLocation: shouldNotBeCalled,
+        getName: shouldNotBeCalled,
+        getPrereviews,
+        getResearchInterests: shouldNotBeCalled,
+        getSlackUser: shouldNotBeCalled,
+        isOpenForRequests: shouldNotBeCalled,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.OK },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(profileMatch.formatter, { profile }),
+        status: Status.OK,
+        title: expect.stringContaining(profile.value),
+        main: expect.stringContaining(profile.value),
+        skipToLabel: 'main',
+        js: [],
+      })
       expect(getPrereviews).toHaveBeenCalledWith(profile)
     })
   })
 })
 
-test.prop([
-  fc.connection({ method: fc.requestMethod() }),
-  fc.profileId(),
-  fc.url(),
-  fc.option(fc.nonEmptyString(), { nil: undefined }),
-  fc.either(fc.constant('no-session' as const), fc.user()),
-])("when the PREreviews can't be loaded", async (connection, profile, avatar, name, user) => {
-  const actual = await runMiddleware(
-    _.profile(profile)({
+test.prop([fc.profileId(), fc.url(), fc.option(fc.nonEmptyString(), { nil: undefined })])(
+  "when the PREreviews can't be loaded",
+  async (profile, avatar, name) => {
+    const actual = await _.profile(profile)({
       getAvatar: () => TE.of(avatar),
       getCareerStage: () => TE.left('not-found'),
       getLanguages: () => TE.left('not-found'),
@@ -552,18 +480,16 @@ test.prop([
       getPrereviews: () => TE.left('unavailable'),
       getResearchInterests: () => TE.left('not-found'),
       getSlackUser: () => TE.left('not-found'),
-      getUser: () => M.fromEither(user),
       isOpenForRequests: () => TE.left('not-found'),
-    }),
-    connection,
-  )()
+    })()
 
-  expect(actual).toStrictEqual(
-    E.right([
-      { type: 'setStatus', status: Status.ServiceUnavailable },
-      { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-      { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-      { type: 'setBody', body: expect.anything() },
-    ]),
-  )
-})
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.stringContaining('problems'),
+      main: expect.stringContaining('problems'),
+      skipToLabel: 'main',
+      js: [],
+    })
+  },
+)
