@@ -20,13 +20,17 @@ export interface PageResponse {
   readonly status: Status
   readonly title: Page['title']
   readonly main: Html
+  readonly skipToLabel: 'main'
   readonly js: Required<Page>['js']
 }
 
-export const PageResponse = (args: Optional<Omit<PageResponse, '_tag'>, 'status' | 'js'>): PageResponse => ({
+export const PageResponse = (
+  args: Optional<Omit<PageResponse, '_tag'>, 'status' | 'js' | 'skipToLabel'>,
+): PageResponse => ({
   _tag: 'PageResponse',
   status: Status.OK,
   js: RA.empty,
+  skipToLabel: 'main',
   ...args,
 })
 
@@ -54,7 +58,7 @@ const handlePageResponse = ({
         templatePage({
           title: response.title,
           content: html`
-            <main id="main">
+            <main id="${response.skipToLabel}">
               ${match(message)
                 .with(
                   'logged-out',
@@ -91,7 +95,14 @@ const handlePageResponse = ({
               ${response.main}
             </main>
           `,
-          skipLinks: [[html`Skip to main content`, '#main']],
+          skipLinks: [
+            [
+              match(response.skipToLabel)
+                .with('main', () => html`Skip to main content`)
+                .exhaustive(),
+              `#${response.skipToLabel}`,
+            ],
+          ],
           current: response.current,
           js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
           user,

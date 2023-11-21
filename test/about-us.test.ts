@@ -26,6 +26,7 @@ describe('aboutUs', () => {
       status: Status.OK,
       title: expect.stringContaining('About us'),
       main: expect.stringContaining('<p>Foo</p>'),
+      skipToLabel: 'main',
       js: [],
     })
   })
@@ -48,6 +49,7 @@ describe('aboutUs', () => {
         status: Status.ServiceUnavailable,
         title: expect.stringContaining('problems'),
         main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
         js: [],
       })
       expect(fetch.done()).toBeTruthy()

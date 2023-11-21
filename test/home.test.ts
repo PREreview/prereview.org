@@ -18,6 +18,7 @@ test('home', async () => {
     status: Status.OK,
     title: expect.stringContaining('PREreview'),
     main: expect.anything(),
+    skipToLabel: 'main',
     js: [],
   })
 })

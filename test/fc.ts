@@ -205,6 +205,7 @@ export const pageResponse = ({
       ),
       { nil: undefined },
     ),
+    skipToLabel: fc.constant('main' as const),
     status: statusCode(),
     title: plainText(),
     main: html(),

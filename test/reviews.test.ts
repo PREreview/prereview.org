@@ -36,6 +36,7 @@ describe('reviews', () => {
       status: Status.OK,
       title: expect.stringContaining('PREreviews'),
       main: expect.stringContaining('PREreviews'),
+      skipToLabel: 'main',
       js: [],
     })
     expect(getRecentPrereviews).toHaveBeenCalledWith(page)
@@ -49,6 +50,7 @@ describe('reviews', () => {
       status: Status.NotFound,
       title: expect.stringContaining('not found'),
       main: expect.stringContaining('not found'),
+      skipToLabel: 'main',
       js: [],
     })
   })
@@ -61,6 +63,7 @@ describe('reviews', () => {
       status: Status.ServiceUnavailable,
       title: expect.stringContaining('problems'),
       main: expect.stringContaining('problems'),
+      skipToLabel: 'main',
       js: [],
     })
   })
