@@ -275,7 +275,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       reviewsMatch.parser,
-      P.map(({ page }) => reviews(page)),
+      P.map(({ page }) =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(reviews(page))),
+          RM.ichainW(handleResponse),
+        ),
+      ),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
