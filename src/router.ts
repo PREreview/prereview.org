@@ -327,7 +327,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       trainingsMatch.parser,
-      P.map(() => trainings),
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(trainings)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       partnersMatch.parser,
