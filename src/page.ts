@@ -115,6 +115,19 @@ export function page({
 
           <div class="contents">
             <header>
+              ${current === 'home'
+                ? html`
+                    <div class="giving-tuesday">
+                      <span>Help us hit our $10K&nbsp;target!</span>
+
+                      <span
+                        ><span>Support open community-driven peer&nbsp;review</span>
+                        <a href="https://donorbox.org/prereview" class="forward">Donate</a></span
+                      >
+                    </div>
+                  `
+                : ''}
+
               <div class="navigation">
                 ${phase
                   ? html`

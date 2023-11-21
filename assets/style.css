@@ -283,6 +283,32 @@ body {
   }
 }
 
+.giving-tuesday {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: flex-start;
+  padding-block: var(--space-s);
+  padding-inline: max(var(--space-s-m), calc(var(--space-s-m) + (100% - 75rem) / 2));
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-size: var(--step--1);
+  font-weight: 700;
+  row-gap: var(--space-3xs-2xs);
+
+  > * {
+    display: inline-flex;
+    flex-wrap: wrap;
+    column-gap: var(--space-xs-s);
+    row-gap: var(--space-3xs-2xs);
+  }
+
+  @media screen {
+    @media (forced-colors: active) {
+      border-block-end: var(--width-divider-narrow) solid currentcolor;
+    }
+  }
+}
+
 .contents > :not(aside, header),
 .contents > aside > * {
   max-inline-size: 75rem;
