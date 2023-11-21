@@ -11,7 +11,7 @@ import type { Page, TemplatePageEnv } from './page'
 import type { User } from './user'
 import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding'
 
-export type Response = PageResponse
+export type Response = PageResponse | RedirectResponse
 
 export interface PageResponse {
   readonly _tag: 'PageResponse'
@@ -25,6 +25,12 @@ export interface PageResponse {
   readonly js: Required<Page>['js']
 }
 
+export interface RedirectResponse {
+  readonly _tag: 'RedirectResponse'
+  readonly status: typeof Status.SeeOther | typeof Status.Found
+  readonly location: URL | string
+}
+
 export const PageResponse = (
   args: Optional<Omit<PageResponse, '_tag'>, 'status' | 'js' | 'skipToLabel'>,
 ): PageResponse => ({
@@ -35,12 +41,21 @@ export const PageResponse = (
   ...args,
 })
 
+export const RedirectResponse = (
+  args: Omit<RedirectResponse, '_tag' | 'status'> & Partial<Pick<RedirectResponse, 'status'>>,
+): RedirectResponse => ({
+  _tag: 'RedirectResponse',
+  status: Status.SeeOther,
+  ...args,
+})
+
 export const handleResponse = (response: {
   response: Response
   user?: User
 }): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
   match(response)
     .with({ response: { _tag: 'PageResponse' } }, handlePageResponse)
+    .with({ response: { _tag: 'RedirectResponse' } }, RM.fromMiddlewareK(handleRedirectResponse))
     .exhaustive()
 
 const handlePageResponse = ({
@@ -125,6 +140,18 @@ const handlePageResponse = ({
       ),
     ),
     RM.ichainMiddlewareK(sendHtml),
+  )
+
+const handleRedirectResponse = ({
+  response,
+}: {
+  response: RedirectResponse
+}): M.Middleware<StatusOpen, ResponseEnded, never, void> =>
+  pipe(
+    M.status(response.status),
+    M.ichain(() => M.header('Location', response.location.toString())),
+    M.ichain(() => M.closeHeaders()),
+    M.ichain(() => M.end()),
   )
 
 // https://github.com/Microsoft/TypeScript/issues/25760#issuecomment-614417742

@@ -109,4 +109,24 @@ describe('handleResponse', () => {
       )
     })
   })
+
+  test.prop([fc.connection(), fc.redirectResponse(), fc.option(fc.user(), { nil: undefined })])(
+    'with a RedirectResponse',
+    async (connection, response, user) => {
+      const actual = await runMiddleware(
+        _.handleResponse({ response, user })({ getUserOnboarding: shouldNotBeCalled, templatePage: shouldNotBeCalled }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right(
+          expect.arrayContaining([
+            { type: 'setStatus', status: response.status },
+            { type: 'setHeader', name: 'Location', value: response.location.toString() },
+            { type: 'endResponse' },
+          ]),
+        ),
+      )
+    },
+  )
 })
