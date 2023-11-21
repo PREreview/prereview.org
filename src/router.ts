@@ -318,7 +318,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       codeOfConductMatch.parser,
-      P.map(() => codeOfConduct),
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(codeOfConduct)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       ediaStatementMatch.parser,
