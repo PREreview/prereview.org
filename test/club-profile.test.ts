@@ -1,21 +1,16 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import * as E from 'fp-ts/Either'
+import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
-import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
+import { Status } from 'hyper-ts'
 import { getClubName } from '../src/club-details'
 import * as _ from '../src/club-profile'
+import { clubProfileMatch } from '../src/routes'
 import * as fc from './fc'
-import { runMiddleware } from './middleware'
-import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('clubProfile', () => {
   test.prop([
-    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-    fc.either(fc.constant('no-session' as const), fc.user()),
     fc.clubId(),
-    fc.html(),
     fc.array(
       fc.record({
         id: fc.integer(),
@@ -24,56 +19,33 @@ describe('clubProfile', () => {
         preprint: fc.preprintTitle(),
       }),
     ),
-  ])('when the data can be loaded', async (connection, user, clubId, page, prereviews) => {
+  ])('when the data can be loaded', async (clubId, prereviews) => {
     const getPrereviews = jest.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.right(prereviews))
-    const templatePage = jest.fn(_ => page)
 
-    const actual = await runMiddleware(
-      _.clubProfile(clubId)({
-        getPrereviews,
-        getUser: () => M.fromEither(user),
-        templatePage,
-      }),
-      connection,
-    )()
+    const actual = await _.clubProfile(clubId)({ getPrereviews })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.OK },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: page.toString() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(clubProfileMatch.formatter, { id: clubId }),
+      status: Status.OK,
+      title: expect.stringContaining(getClubName(clubId)),
+      main: expect.stringContaining(getClubName(clubId)),
+      skipToLabel: 'main',
+      js: [],
+    })
     expect(getPrereviews).toHaveBeenCalledWith(clubId)
-    expect(templatePage).toHaveBeenCalledWith(
-      expect.objectContaining({
-        title: getClubName(clubId),
-        user: E.getOrElseW(() => undefined)(user),
-      }),
-    )
   })
 
-  test.prop([
-    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-    fc.clubId(),
-  ])('when the PREreviews are unavailable', async (connection, user, clubId) => {
-    const actual = await runMiddleware(
-      _.clubProfile(clubId)({
-        getPrereviews: () => TE.left('unavailable'),
-        getUser: () => M.fromEither(user),
-        templatePage: shouldNotBeCalled,
-      }),
-      connection,
-    )()
+  test.prop([fc.clubId()])('when the PREreviews are unavailable', async clubId => {
+    const actual = await _.clubProfile(clubId)({ getPrereviews: () => TE.left('unavailable') })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.stringContaining('problems'),
+      main: expect.stringContaining('problems'),
+      skipToLabel: 'main',
+      js: [],
+    })
   })
 })
