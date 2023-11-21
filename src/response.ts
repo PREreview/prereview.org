@@ -19,8 +19,9 @@ export interface PageResponse {
   readonly current?: Page['current']
   readonly status: Status
   readonly title: Page['title']
+  readonly nav?: Html
   readonly main: Html
-  readonly skipToLabel: 'main'
+  readonly skipToLabel: 'main' | 'prereview'
   readonly js: Required<Page>['js']
 }
 
@@ -58,6 +59,8 @@ const handlePageResponse = ({
         templatePage({
           title: response.title,
           content: html`
+            ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
+
             <main id="${response.skipToLabel}">
               ${match(message)
                 .with(
@@ -99,6 +102,7 @@ const handlePageResponse = ({
             [
               match(response.skipToLabel)
                 .with('main', () => html`Skip to main content`)
+                .with('prereview', () => html`Skip to PREreview`)
                 .exhaustive(),
               `#${response.skipToLabel}`,
             ],

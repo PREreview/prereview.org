@@ -1,20 +1,15 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
-import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
+import { Status } from 'hyper-ts'
 import * as _ from '../src/review'
 import { reviewMatch } from '../src/routes'
 import * as fc from './fc'
-import { runMiddleware } from './middleware'
 
 describe('review', () => {
   test.prop([
-    fc.origin(),
     fc.integer(),
-    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.record({
       authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
       doi: fc.doi(),
@@ -30,96 +25,60 @@ describe('review', () => {
       structured: fc.boolean(),
       text: fc.html(),
     }),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review can be loaded', async (publicUrl, id, connection, prereview, user) => {
+  ])('when the review can be loaded', async (id, prereview) => {
     const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
-    const actual = await runMiddleware(
-      _.review(id)({ getPrereview, getUser: () => M.fromEither(user), publicUrl }),
-      connection,
-    )()
+    const actual = await _.review(id)({ getPrereview })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.OK },
-        {
-          type: 'setHeader',
-          name: 'Link',
-          value: `<${publicUrl.href.slice(0, -1)}${format(reviewMatch.formatter, { id })}>; rel="canonical"`,
-        },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(reviewMatch.formatter, { id }),
+      status: Status.OK,
+      title: expect.stringContaining('PREreview of'),
+      nav: expect.stringContaining('See other reviews'),
+      main: expect.stringContaining('PREreview of'),
+      skipToLabel: 'prereview',
+      js: [],
+    })
     expect(getPrereview).toHaveBeenCalledWith(id)
   })
 
-  test.prop([
-    fc.origin(),
-    fc.integer(),
-    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review is not found', async (publicUrl, id, connection, user) => {
-    const actual = await runMiddleware(
-      _.review(id)({
-        getPrereview: () => TE.left('not-found'),
-        getUser: () => M.fromEither(user),
-        publicUrl,
-      }),
-      connection,
-    )()
+  test.prop([fc.integer()])('when the review is not found', async id => {
+    const actual = await _.review(id)({ getPrereview: () => TE.left('not-found') })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.NotFound },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.NotFound,
+      title: expect.stringContaining('not found'),
+      main: expect.stringContaining('not found'),
+      skipToLabel: 'main',
+      js: [],
+    })
   })
 
-  test.prop([
-    fc.origin(),
-    fc.integer(),
-    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review was removed', async (publicUrl, id, connection, user) => {
-    const actual = await runMiddleware(
-      _.review(id)({
-        getPrereview: () => TE.left('removed'),
-        getUser: () => M.fromEither(user),
-        publicUrl,
-      }),
-      connection,
-    )()
+  test.prop([fc.integer()])('when the review was removed', async id => {
+    const actual = await _.review(id)({ getPrereview: () => TE.left('removed') })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.Gone },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.Gone,
+      title: expect.stringContaining('removed'),
+      main: expect.stringContaining('removed'),
+      skipToLabel: 'main',
+      js: [],
+    })
   })
 
-  test.prop([
-    fc.origin(),
-    fc.integer(),
-    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-  ])('when the review cannot be loaded', async (publicUrl, id, connection, user) => {
-    const actual = await runMiddleware(
-      _.review(id)({ getPrereview: () => TE.left('unavailable'), getUser: () => M.fromEither(user), publicUrl }),
-      connection,
-    )()
+  test.prop([fc.integer()])('when the review cannot be loaded', async id => {
+    const actual = await _.review(id)({ getPrereview: () => TE.left('unavailable') })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.stringContaining('problems'),
+      main: expect.stringContaining('problems'),
+      skipToLabel: 'main',
+      js: [],
+    })
   })
 })

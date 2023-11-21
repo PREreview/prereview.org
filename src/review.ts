@@ -1,26 +1,25 @@
 import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
+import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/ReaderMiddleware'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from './club-details'
-import { type Html, fixHeadingLevels, html, plainText, rawHtml, sendHtml } from './html'
-import { addCanonicalLinkHeader, notFound } from './middleware'
-import { page } from './page'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml } from './html'
+import { pageNotFound } from './http-error'
+import { PageResponse } from './response'
 import { clubProfileMatch, preprintReviewsMatch, profileMatch, reviewMatch } from './routes'
 import { renderDate } from './time'
 import type { ClubId } from './types/club-id'
 import type { PreprintId } from './types/preprint-id'
 import { isPseudonym } from './types/pseudonym'
-import { type User, maybeGetUser } from './user'
 
 import PlainDate = Temporal.PlainDate
 
@@ -46,149 +45,117 @@ export interface GetPrereviewEnv {
   getPrereview: (id: number) => TE.TaskEither<'unavailable' | 'not-found' | 'removed', Prereview>
 }
 
-const getPrereview = (id: number) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereview }: GetPrereviewEnv) => getPrereview(id)))
+const getPrereview = (
+  id: number,
+): RTE.ReaderTaskEither<GetPrereviewEnv, 'unavailable' | 'not-found' | 'removed', Prereview> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereview }) => getPrereview(id)))
 
-const sendPage = (id: number) =>
-  flow(
-    RM.fromReaderK(createPage),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainFirstW(() => addCanonicalLinkHeader(reviewMatch.formatter, { id })),
-    RM.ichainMiddlewareK(sendHtml),
-  )
-
-export const review = (id: number) =>
+export const review = (id: number): RT.ReaderTask<GetPrereviewEnv, PageResponse> =>
   pipe(
-    RM.fromReaderTaskEither(getPrereview(id)),
-    RM.bindTo('prereview'),
-    RM.apSW('user', maybeGetUser),
-    RM.ichainW(({ prereview, user }) => sendPage(id)(prereview, user)),
-    RM.orElseW(error =>
-      match(error)
-        .with('not-found', () => notFound)
-        .with('removed', () => pipe(maybeGetUser, RM.ichainW(showRemovedMessage)))
-        .with('unavailable', () => pipe(maybeGetUser, RM.ichainW(showFailureMessage)))
-        .exhaustive(),
+    RTE.Do,
+    RTE.let('id', () => id),
+    RTE.apS('review', getPrereview(id)),
+    RTE.match(
+      error =>
+        match(error)
+          .with('not-found', () => pageNotFound)
+          .with('removed', () => removedMessage)
+          .with('unavailable', () => failureMessage)
+          .exhaustive(),
+      createPage,
     ),
   )
 
-const showFailureMessage = flow(
-  RM.fromReaderK(failureMessage),
-  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const failureMessage = PageResponse({
+  status: Status.ServiceUnavailable,
+  title: plainText`Sorry, we’re having problems`,
+  main: html`
+    <h1>Sorry, we’re having problems</h1>
 
-const showRemovedMessage = flow(
-  RM.fromReaderK(removedMessage),
-  RM.ichainFirst(() => RM.status(Status.Gone)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+    <p>We’re unable to show the PREreview now.</p>
 
-function failureMessage(user?: User) {
-  return page({
-    title: plainText`Sorry, we’re having problems`,
-    content: html`
-      <main id="main-content">
-        <h1>Sorry, we’re having problems</h1>
+    <p>Please try again later.</p>
+  `,
+})
 
-        <p>We’re unable to show the PREreview now.</p>
+const removedMessage = PageResponse({
+  status: Status.Gone,
+  title: plainText`PREreview removed`,
+  main: html`
+    <h1>PREreview removed</h1>
 
-        <p>Please try again later.</p>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
-}
+    <p>We’ve removed this PREreview.</p>
+  `,
+})
 
-function removedMessage(user?: User) {
-  return page({
-    title: plainText`PREreview removed`,
-    content: html`
-      <main id="main-content">
-        <h1>PREreview removed</h1>
-
-        <p>We’ve removed this PREreview.</p>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
-}
-
-function createPage(review: Prereview, user?: User) {
-  return page({
+function createPage({ id, review }: { id: number; review: Prereview }) {
+  return PageResponse({
     title: plainText`${review.structured ? 'Structured ' : ''}PREreview of “${review.preprint.title}”`,
-    content: html`
-      <nav>
-        <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back"
-          >See other reviews</a
-        >
-        <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
-      </nav>
+    nav: html`
+      <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back">See other reviews</a>
+      <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>
+    `,
+    main: html`
+      <header>
+        <h1>
+          ${review.structured ? 'Structured ' : ''}PREreview of
+          <cite lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
+            >${review.preprint.title}</cite
+          >
+        </h1>
 
-      <main id="prereview">
-        <header>
-          <h1>
-            ${review.structured ? 'Structured ' : ''}PREreview of
-            <cite lang="${review.preprint.language}" dir="${getLangDir(review.preprint.language)}"
-              >${review.preprint.title}</cite
-            >
-          </h1>
-
-          <div class="byline">
-            <span class="visually-hidden">Authored</span> by
-            ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
-            ${review.club
-              ? html`of the
-                  <a href="${format(clubProfileMatch.formatter, { id: review.club })}">${getClubName(review.club)}</a>`
-              : ''}
-          </div>
-
-          <dl>
-            <div>
-              <dt>Published</dt>
-              <dd>${renderDate(review.published)}</dd>
-            </div>
-            <div>
-              <dt>DOI</dt>
-              <dd class="doi" translate="no">${review.doi}</dd>
-            </div>
-            <div>
-              <dt>License</dt>
-              <dd>
-                ${match(review.license)
-                  .with(
-                    'CC-BY-4.0',
-                    () => html`
-                      <a href="https://creativecommons.org/licenses/by/4.0/">
-                        <dfn>
-                          <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
-                        </dfn>
-                      </a>
-                    `,
-                  )
-                  .exhaustive()}
-              </dd>
-            </div>
-          </dl>
-        </header>
-
-        <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
-          ${fixHeadingLevels(1, review.text)}
+        <div class="byline">
+          <span class="visually-hidden">Authored</span> by
+          ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
+          ${review.club
+            ? html`of the
+                <a href="${format(clubProfileMatch.formatter, { id: review.club })}">${getClubName(review.club)}</a>`
+            : ''}
         </div>
 
-        ${review.addendum
-          ? html`
-              <h2>Addendum</h2>
+        <dl>
+          <div>
+            <dt>Published</dt>
+            <dd>${renderDate(review.published)}</dd>
+          </div>
+          <div>
+            <dt>DOI</dt>
+            <dd class="doi" translate="no">${review.doi}</dd>
+          </div>
+          <div>
+            <dt>License</dt>
+            <dd>
+              ${match(review.license)
+                .with(
+                  'CC-BY-4.0',
+                  () => html`
+                    <a href="https://creativecommons.org/licenses/by/4.0/">
+                      <dfn>
+                        <abbr title="Attribution 4.0 International"><span translate="no">CC BY 4.0</span></abbr>
+                      </dfn>
+                    </a>
+                  `,
+                )
+                .exhaustive()}
+            </dd>
+          </div>
+        </dl>
+      </header>
 
-              ${fixHeadingLevels(2, review.addendum)}
-            `
-          : ''}
-      </main>
+      <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
+        ${fixHeadingLevels(1, review.text)}
+      </div>
+
+      ${review.addendum
+        ? html`
+            <h2>Addendum</h2>
+
+            ${fixHeadingLevels(2, review.addendum)}
+          `
+        : ''}
     `,
-    skipLinks: [[html`Skip to PREreview`, '#prereview']],
-    user,
+    skipToLabel: 'prereview',
+    canonical: format(reviewMatch.formatter, { id }),
   })
 }
 

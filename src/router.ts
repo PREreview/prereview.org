@@ -454,7 +454,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       reviewMatch.parser,
-      P.map(({ id }) => review(id)),
+      P.map(({ id }) =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(review(id))),
+          RM.ichainW(handleResponse),
+        ),
+      ),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
