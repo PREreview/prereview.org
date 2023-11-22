@@ -28,6 +28,7 @@ describe('legacyRoutes', () => {
     ['/docs/code_of_conduct', '/code-of-conduct'],
     ['/docs/resources', 'https://content.prereview.org/resources/'],
     ['/edi-statement', '/edia-statement'],
+    ['/find-a-preprint', '/review-a-preprint'],
     ['/inst/7204/', 'https://www.authorea.com/inst/7204'],
     ['/inst/15119?articles_format=grid&current_inst_tab=statistics', 'https://www.authorea.com/inst/15119'],
     ['/login', '/log-in'],

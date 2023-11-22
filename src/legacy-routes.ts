@@ -241,6 +241,10 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
       P.map(() => showRemovedPermanentlyMessage),
     ),
     pipe(
+      pipe(P.lit('find-a-preprint'), P.then(P.end)).parser,
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(reviewAPreprintMatch.formatter, {})))),
+    ),
+    pipe(
       pipe(P.lit('inst'), P.then(P.str('instId')), P.then(query(C.partial({}))), P.then(P.end)).parser,
       P.map(RM.fromMiddlewareK(({ instId }) => movedPermanently(`https://www.authorea.com/inst/${instId}`))),
     ),

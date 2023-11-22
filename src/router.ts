@@ -27,7 +27,6 @@ import {
   sendContactEmailAddressVerificationEmail,
   sendContactEmailAddressVerificationEmailForReview,
 } from './email'
-import { findAPreprint } from './find-a-preprint'
 import { funding } from './funding'
 import { home } from './home'
 import { howToUse } from './how-to-use'
@@ -112,7 +111,6 @@ import {
   connectSlackStartMatch,
   disconnectSlackMatch,
   ediaStatementMatch,
-  findAPreprintMatch,
   fundingMatch,
   homeMatch,
   howToUseMatch,
@@ -405,10 +403,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.ichainW(handleResponse),
         ),
       ),
-    ),
-    pipe(
-      findAPreprintMatch.parser,
-      P.map(() => findAPreprint),
     ),
     pipe(
       reviewAPreprintMatch.parser,
