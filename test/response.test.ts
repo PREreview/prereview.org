@@ -110,6 +110,106 @@ describe('handleResponse', () => {
     })
   })
 
+  describe('with a StreamlinePageResponse', () => {
+    describe('templates the page', () => {
+      test.prop([fc.connection(), fc.streamlinePageResponse(), fc.user(), fc.userOnboarding(), fc.html()])(
+        'when there is a user',
+        async (connection, response, user, userOnboarding, page) => {
+          const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
+          const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
+          const actual = await runMiddleware(
+            _.handleResponse({ response, user })({
+              getUserOnboarding,
+              templatePage,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right(
+              expect.arrayContaining([
+                { type: 'setStatus', status: response.status },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: page.toString() },
+              ]),
+            ),
+          )
+          expect(getUserOnboarding).toHaveBeenCalledWith(user.orcid)
+          expect(templatePage).toHaveBeenCalledWith({
+            title: response.title,
+            content: expect.stringContaining(response.main.toString()),
+            skipLinks: [[rawHtml('Skip to main content'), '#main']],
+            current: response.current,
+            js: response.js,
+            type: 'streamline',
+            user,
+            userOnboarding,
+          })
+        },
+      )
+
+      test.prop([fc.connection(), fc.streamlinePageResponse(), fc.html()])(
+        "when there isn't a user",
+        async (connection, response, page) => {
+          const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
+          const actual = await runMiddleware(
+            _.handleResponse({
+              response,
+              user: undefined,
+            })({ getUserOnboarding: shouldNotBeCalled, templatePage }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right(
+              expect.arrayContaining([
+                { type: 'setStatus', status: response.status },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: page.toString() },
+              ]),
+            ),
+          )
+          expect(templatePage).toHaveBeenCalledWith({
+            title: response.title,
+            content: expect.stringContaining(response.main.toString()),
+            skipLinks: [[rawHtml('Skip to main content'), '#main']],
+            current: response.current,
+            js: response.js,
+            type: 'streamline',
+            user: undefined,
+            userOnboarding: undefined,
+          })
+        },
+      )
+    })
+
+    test.prop([
+      fc.connection(),
+      fc.streamlinePageResponse({ canonical: fc.lorem() }),
+      fc.option(fc.user(), { nil: undefined }),
+      fc.userOnboarding(),
+      fc.html(),
+    ])('sets a canonical link', async (connection, response, user, userOnboarding, page) => {
+      const actual = await runMiddleware(
+        _.handleResponse({
+          response,
+          user,
+        })({ getUserOnboarding: () => TE.right(userOnboarding), templatePage: () => page }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right(
+          expect.arrayContaining([
+            { type: 'setHeader', name: 'Link', value: `<${response.canonical}>; rel="canonical"` },
+          ]),
+        ),
+      )
+    })
+  })
+
   test.prop([fc.connection(), fc.redirectResponse(), fc.option(fc.user(), { nil: undefined })])(
     'with a RedirectResponse',
     async (connection, response, user) => {

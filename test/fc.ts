@@ -42,7 +42,7 @@ import type { Location } from '../src/location'
 import * as assets from '../src/manifest.json'
 import type { Preprint, PreprintTitle } from '../src/preprint'
 import type { ResearchInterests } from '../src/research-interests'
-import type { PageResponse, RedirectResponse } from '../src/response'
+import type { PageResponse, RedirectResponse, StreamlinePageResponse } from '../src/response'
 import type { SlackUser } from '../src/slack-user'
 import type { SlackUserId } from '../src/slack-user-id'
 import type { ClubId } from '../src/types/club-id'
@@ -185,6 +185,42 @@ export const pageResponse = ({
 } = {}): fc.Arbitrary<PageResponse> =>
   fc.record({
     _tag: fc.constant('PageResponse' as const),
+    canonical: canonical ?? fc.option(fc.string(), { nil: undefined }),
+    current: fc.option(
+      fc.constantFrom(
+        'about-us' as const,
+        'clubs' as const,
+        'code-of-conduct' as const,
+        'edia-statement' as const,
+        'funding' as const,
+        'home' as const,
+        'how-to-use' as const,
+        'live-reviews' as const,
+        'my-details' as const,
+        'partners' as const,
+        'people' as const,
+        'privacy-policy' as const,
+        'reviews' as const,
+        'trainings' as const,
+      ),
+      { nil: undefined },
+    ),
+    skipToLabel: fc.constant('main' as const),
+    status: statusCode(),
+    title: plainText(),
+    main: html(),
+    js: fc.array(
+      js().filter((js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'skip-link.js'> => js !== 'skip-link.js'),
+    ),
+  })
+
+export const streamlinePageResponse = ({
+  canonical,
+}: {
+  canonical?: fc.Arbitrary<StreamlinePageResponse['canonical']>
+} = {}): fc.Arbitrary<StreamlinePageResponse> =>
+  fc.record({
+    _tag: fc.constant('StreamlinePageResponse' as const),
     canonical: canonical ?? fc.option(fc.string(), { nil: undefined }),
     current: fc.option(
       fc.constantFrom(

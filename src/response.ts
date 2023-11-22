@@ -11,7 +11,7 @@ import { type Page, type TemplatePageEnv, templatePage } from './page'
 import type { User } from './user'
 import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding'
 
-export type Response = PageResponse | RedirectResponse
+export type Response = PageResponse | StreamlinePageResponse | RedirectResponse
 
 export interface PageResponse {
   readonly _tag: 'PageResponse'
@@ -25,6 +25,18 @@ export interface PageResponse {
   readonly js: Required<Page>['js']
 }
 
+export interface StreamlinePageResponse {
+  readonly _tag: 'StreamlinePageResponse'
+  readonly canonical?: string
+  readonly current?: Page['current']
+  readonly status: Status
+  readonly title: Page['title']
+  readonly nav?: Html
+  readonly main: Html
+  readonly skipToLabel: 'form' | 'main'
+  readonly js: Required<Page>['js']
+}
+
 export interface RedirectResponse {
   readonly _tag: 'RedirectResponse'
   readonly status: typeof Status.SeeOther | typeof Status.Found
@@ -35,6 +47,16 @@ export const PageResponse = (
   args: Optional<Omit<PageResponse, '_tag'>, 'status' | 'js' | 'skipToLabel'>,
 ): PageResponse => ({
   _tag: 'PageResponse',
+  status: Status.OK,
+  js: RA.empty,
+  skipToLabel: 'main',
+  ...args,
+})
+
+export const StreamlinePageResponse = (
+  args: Optional<Omit<StreamlinePageResponse, '_tag'>, 'status' | 'js' | 'skipToLabel'>,
+): StreamlinePageResponse => ({
+  _tag: 'StreamlinePageResponse',
   status: Status.OK,
   js: RA.empty,
   skipToLabel: 'main',
@@ -55,6 +77,7 @@ export const handleResponse = (response: {
 }): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
   match(response)
     .with({ response: { _tag: 'PageResponse' } }, handlePageResponse)
+    .with({ response: { _tag: 'StreamlinePageResponse' } }, handlePageResponse)
     .with({ response: { _tag: 'RedirectResponse' } }, RM.fromMiddlewareK(handleRedirectResponse))
     .exhaustive()
 
@@ -62,7 +85,7 @@ const handlePageResponse = ({
   response,
   user,
 }: {
-  response: PageResponse
+  response: PageResponse | StreamlinePageResponse
   user?: User
 }): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
   pipe(
@@ -124,6 +147,7 @@ const handlePageResponse = ({
         ],
         current: response.current,
         js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
+        type: response._tag === 'StreamlinePageResponse' ? 'streamline' : undefined,
         user,
         userOnboarding,
       }),
