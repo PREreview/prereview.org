@@ -30,7 +30,7 @@
       }
     },
     {
-      "files": ["integration/**/*.ts", "test/**/*.ts"],
+      "files": ["integration/**/*.ts", "test/**/*.ts", "visual-regression/**/*.ts"],
       "rules": {
         "import/no-internal-modules": "off"
       }
