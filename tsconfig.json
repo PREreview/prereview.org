@@ -9,5 +9,5 @@
     "resolveJsonModule": true,
     "types": ["mocha"]
   },
-  "include": ["assets", "integration", "src", "test", "*.ts"]
+  "include": ["assets", "integration", "src", "test", "visual-regression", "*.ts"]
 }

@@ -51,7 +51,15 @@
     "import/no-duplicates": ["error", { "prefer-inline": true }],
     "import/no-extraneous-dependencies": [
       "error",
-      { "devDependencies": ["assets/**/*.ts", "integration/**/*.ts", "test/**/*.ts", "*.ts"] }
+      {
+        "devDependencies": [
+          "assets/**/*.ts",
+          "integration/**/*.ts",
+          "test/**/*.ts",
+          "visual-regression/**/*.ts",
+          "*.ts"
+        ]
+      }
     ],
     "import/no-internal-modules": [
       "error",
@@ -67,6 +75,7 @@
           "nanohtml/*",
           "remixicon/**/*.svg",
           "tinyld/heavy",
+          "integration/base",
           "types/*"
         ]
       }

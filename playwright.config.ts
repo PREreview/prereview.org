@@ -37,6 +37,12 @@ export default defineConfig({
       name: 'iPhone 11',
       use: { ...devices['iPhone 11'] },
     },
+    {
+      name: 'Desktop Firefox Visual Regression',
+      use: { ...devices['Desktop Firefox'] },
+      testDir: 'visual-regression',
+      snapshotDir: path.resolve('visual-regression', 'snapshots'),
+    },
   ].flatMap(env => [env, { name: `${env.name} (no JavaScript)`, use: { ...env.use, javaScriptEnabled: false } }]),
   snapshotDir: path.resolve('integration', 'snapshots'),
   testDir: 'integration',

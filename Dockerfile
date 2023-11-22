@@ -53,6 +53,7 @@ COPY --from=build-prod /app/dist/assets/ dist/assets/
 COPY src/ src/
 COPY --from=build-prod /app/src/manifest.json src/
 COPY integration/ integration/
+COPY visual-regression/ visual-regression/
 COPY playwright.config.ts .
 
 ENTRYPOINT ["npx", "playwright", "test"]
