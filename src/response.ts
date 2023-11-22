@@ -7,7 +7,7 @@ import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage } from './flash-message'
 import { type Html, html, sendHtml } from './html'
-import type { Page, TemplatePageEnv } from './page'
+import { type Page, type TemplatePageEnv, templatePage } from './page'
 import type { User } from './user'
 import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding'
 
@@ -69,66 +69,64 @@ const handlePageResponse = ({
     RM.of({}),
     RM.apS('message', RM.fromMiddleware(getFlashMessage(D.literal('logged-out', 'logged-in', 'blocked')))),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
-    RM.chainW(({ message, userOnboarding }) =>
-      RM.asks(({ templatePage }: TemplatePageEnv) =>
-        templatePage({
-          title: response.title,
-          content: html`
-            ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
+    RM.chainReaderKW(({ message, userOnboarding }) =>
+      templatePage({
+        title: response.title,
+        content: html`
+          ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 
-            <main id="${response.skipToLabel}">
-              ${match(message)
-                .with(
-                  'logged-out',
-                  () => html`
-                    <notification-banner aria-labelledby="notification-banner-title" role="alert">
-                      <h2 id="notification-banner-title">Success</h2>
+          <main id="${response.skipToLabel}">
+            ${match(message)
+              .with(
+                'logged-out',
+                () => html`
+                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                    <h2 id="notification-banner-title">Success</h2>
 
-                      <p>You have been logged out.</p>
-                    </notification-banner>
-                  `,
-                )
-                .with(
-                  'logged-in',
-                  () => html`
-                    <notification-banner aria-labelledby="notification-banner-title" role="alert">
-                      <h2 id="notification-banner-title">Success</h2>
+                    <p>You have been logged out.</p>
+                  </notification-banner>
+                `,
+              )
+              .with(
+                'logged-in',
+                () => html`
+                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                    <h2 id="notification-banner-title">Success</h2>
 
-                      <p>You have been logged in.</p>
-                    </notification-banner>
-                  `,
-                )
-                .with(
-                  'blocked',
-                  () => html`
-                    <notification-banner aria-labelledby="notification-banner-title" type="failure" role="alert">
-                      <h2 id="notification-banner-title">Access denied</h2>
+                    <p>You have been logged in.</p>
+                  </notification-banner>
+                `,
+              )
+              .with(
+                'blocked',
+                () => html`
+                  <notification-banner aria-labelledby="notification-banner-title" type="failure" role="alert">
+                    <h2 id="notification-banner-title">Access denied</h2>
 
-                      <p>You are not allowed to log in.</p>
-                    </notification-banner>
-                  `,
-                )
-                .with(undefined, () => '')
-                .exhaustive()}
-              ${response.main}
-            </main>
-          `,
-          skipLinks: [
-            [
-              match(response.skipToLabel)
-                .with('form', () => html`Skip to form`)
-                .with('main', () => html`Skip to main content`)
-                .with('prereview', () => html`Skip to PREreview`)
-                .exhaustive(),
-              `#${response.skipToLabel}`,
-            ],
+                    <p>You are not allowed to log in.</p>
+                  </notification-banner>
+                `,
+              )
+              .with(undefined, () => '')
+              .exhaustive()}
+            ${response.main}
+          </main>
+        `,
+        skipLinks: [
+          [
+            match(response.skipToLabel)
+              .with('form', () => html`Skip to form`)
+              .with('main', () => html`Skip to main content`)
+              .with('prereview', () => html`Skip to PREreview`)
+              .exhaustive(),
+            `#${response.skipToLabel}`,
           ],
-          current: response.current,
-          js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
-          user,
-          userOnboarding,
-        }),
-      ),
+        ],
+        current: response.current,
+        js: response.js.concat(...(message ? (['notification-banner.js'] as const) : [])),
+        user,
+        userOnboarding,
+      }),
     ),
     RM.ichainFirst(() => RM.status(response.status)),
     RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
