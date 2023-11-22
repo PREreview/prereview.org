@@ -42,7 +42,7 @@ import type { Location } from '../src/location'
 import * as assets from '../src/manifest.json'
 import type { Preprint, PreprintTitle } from '../src/preprint'
 import type { ResearchInterests } from '../src/research-interests'
-import type { PageResponse, RedirectResponse, StreamlinePageResponse } from '../src/response'
+import type { LogInResponse, PageResponse, RedirectResponse, StreamlinePageResponse } from '../src/response'
 import type { SlackUser } from '../src/slack-user'
 import type { SlackUserId } from '../src/slack-user-id'
 import type { ClubId } from '../src/types/club-id'
@@ -255,6 +255,12 @@ export const redirectResponse = (): fc.Arbitrary<RedirectResponse> =>
     _tag: fc.constant('RedirectResponse' as const),
     status: fc.constantFrom(Status.SeeOther, Status.Found),
     location: fc.oneof(fc.string(), url()),
+  })
+
+export const logInResponse = (): fc.Arbitrary<LogInResponse> =>
+  fc.record({
+    _tag: fc.constant('LogInResponse' as const),
+    location: fc.string(),
   })
 
 const asset = (): fc.Arbitrary<keyof typeof assets> =>

@@ -1,6 +1,7 @@
 import * as RA from 'fp-ts/ReadonlyArray'
 import { pipe } from 'fp-ts/function'
 import { type HeadersOpen, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/Middleware'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
@@ -8,10 +9,11 @@ import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage } from './flash-message'
 import { type Html, html, sendHtml } from './html'
 import { type Page, type TemplatePageEnv, templatePage } from './page'
+import type { PublicUrlEnv } from './public-url'
 import type { User } from './user'
 import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding'
 
-export type Response = PageResponse | StreamlinePageResponse | RedirectResponse
+export type Response = PageResponse | StreamlinePageResponse | RedirectResponse | LogInResponse
 
 export interface PageResponse {
   readonly _tag: 'PageResponse'
@@ -43,6 +45,11 @@ export interface RedirectResponse {
   readonly location: URL | string
 }
 
+export interface LogInResponse {
+  readonly _tag: 'LogInResponse'
+  readonly location: string
+}
+
 export const PageResponse = (
   args: Optional<Omit<PageResponse, '_tag'>, 'status' | 'js' | 'skipToLabel'>,
 ): PageResponse => ({
@@ -71,15 +78,28 @@ export const RedirectResponse = (
   ...args,
 })
 
-export const handleResponse = (response: {
+export const LogInResponse = (args: Omit<LogInResponse, '_tag'>): LogInResponse => ({
+  _tag: 'LogInResponse',
+  ...args,
+})
+
+export function handleResponse(response: {
   response: Response
   user?: User
-}): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
-  match(response)
+}): RM.ReaderMiddleware<
+  GetUserOnboardingEnv & OAuthEnv & PublicUrlEnv & TemplatePageEnv,
+  StatusOpen,
+  ResponseEnded,
+  never,
+  void
+> {
+  return match(response)
     .with({ response: { _tag: 'PageResponse' } }, handlePageResponse)
     .with({ response: { _tag: 'StreamlinePageResponse' } }, handlePageResponse)
     .with({ response: { _tag: 'RedirectResponse' } }, RM.fromMiddlewareK(handleRedirectResponse))
+    .with({ response: { _tag: 'LogInResponse' } }, handleLogInResponse)
     .exhaustive()
+}
 
 const handlePageResponse = ({
   response,
@@ -175,6 +195,16 @@ const handleRedirectResponse = ({
     M.ichain(() => M.header('Location', response.location.toString())),
     M.ichain(() => M.closeHeaders()),
     M.ichain(() => M.end()),
+  )
+
+const handleLogInResponse = ({
+  response,
+}: {
+  response: LogInResponse
+}): RM.ReaderMiddleware<OAuthEnv & PublicUrlEnv, StatusOpen, ResponseEnded, never, void> =>
+  pipe(
+    RM.asks(({ publicUrl }: PublicUrlEnv) => new URL(response.location, publicUrl).href),
+    RM.ichainW(requestAuthorizationCode('/authenticate')),
   )
 
 // https://github.com/Microsoft/TypeScript/issues/25760#issuecomment-614417742
