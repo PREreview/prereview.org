@@ -278,6 +278,7 @@ const handleTwoUpPageResponse = ({
           [html`Skip to preprint details`, '#preprint-details'],
           [html`Skip to PREreviews`, '#prereviews'],
         ],
+        js: message ? (['notification-banner.js'] as const) : [],
         type: 'two-up',
         user,
         userOnboarding,
