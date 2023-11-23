@@ -1,137 +1,150 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as RT from 'fp-ts/ReaderTask'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
 import { P, match } from 'ts-pattern'
 import TurndownService from 'turndown'
 import { type InvalidE, type MissingE, hasAnError, invalidE, missingE } from '../form'
-import { type Html, html, plainText, rawHtml, sanitizeHtml, sendHtml } from '../html'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
-import { type PreprintTitle, getPreprintTitle } from '../preprint'
+import { type Html, html, plainText, rawHtml, sanitizeHtml } from '../html'
+import { havingProblemsPage, pageNotFound } from '../http-error'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../preprint'
+import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
 import { writeReviewMatch, writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../routes'
+import type { IndeterminatePreprintId } from '../types/preprint-id'
 import { NonEmptyStringC } from '../types/string'
-import { type User, getUser } from '../user'
-import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
+import type { User } from '../user'
+import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form'
 
 const turndown = new TurndownService({ bulletListMarker: '-', emDelimiter: '*', headingStyle: 'atx' })
 turndown.keep(['sub', 'sup'])
 
-export const writeReviewReview = flow(
-  RM.fromReaderTaskEitherK(getPreprintTitle),
-  RM.ichainW(preprint =>
-    pipe(
-      RM.right({ preprint }),
-      RM.apS('user', getUser),
-      RM.bindW(
-        'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
-      ),
-      RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.ichainW(state =>
-        match(state)
-          .with(
-            {
-              form: P.union(
-                { alreadyWritten: P.optional(undefined) },
-                { alreadyWritten: 'no', reviewType: 'questions' },
-              ),
-            },
-            RM.fromMiddlewareK(() => seeOther(format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }))),
-          )
-          .with({ method: 'POST', form: { alreadyWritten: 'yes' } }, handlePasteReviewForm)
-          .with({ method: 'POST', form: { alreadyWritten: 'no' } }, handleWriteReviewForm)
-          .with({ form: { alreadyWritten: 'yes' } }, showPasteReviewForm)
-          .with({ form: { alreadyWritten: 'no' } }, showWriteReviewForm)
-          .exhaustive(),
-      ),
-      RM.orElseW(error =>
-        match(error)
-          .with(
-            'no-form',
-            'no-session',
-            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
-          )
-          .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
-          .exhaustive(),
-      ),
-    ),
-  ),
-  RM.orElseW(error =>
-    match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
-      .exhaustive(),
-  ),
-)
-
-const showWriteReviewForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    writeReviewForm(preprint, { review: E.right(form.review) }, user),
-  ),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
-
-const showWriteReviewErrorForm = (preprint: PreprintTitle, user: User) =>
-  flow(
-    RM.fromReaderK((form: WriteReviewForm) => writeReviewForm(preprint, form, user)),
-    RM.ichainFirst(() => RM.status(Status.BadRequest)),
-    RM.ichainMiddlewareK(sendHtml),
-  )
-
-const showPasteReviewForm = flow(
-  RM.fromReaderK(({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
-    pasteReviewForm(preprint, { review: E.right(form.review) }, user),
-  ),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
-
-const showPasteReviewErrorForm = (preprint: PreprintTitle, user: User) =>
-  flow(
-    RM.fromReaderK((form: PasteReviewForm) => pasteReviewForm(preprint, form, user)),
-    RM.ichainFirst(() => RM.status(Status.BadRequest)),
-    RM.ichainMiddlewareK(sendHtml),
-  )
-
-const handleWriteReviewForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+export const writeReviewReview = ({
+  body,
+  id,
+  method,
+  user,
+}: {
+  body: unknown
+  id: IndeterminatePreprintId
+  method: string
+  user?: User
+}): RT.ReaderTask<GetPreprintTitleEnv & FormStoreEnv, PageResponse | StreamlinePageResponse | RedirectResponse> =>
   pipe(
-    RM.decodeBody(body =>
-      E.right({
-        review: pipe(
-          ReviewFieldD.decode(body),
-          E.mapLeft(missingE),
-          E.filterOrElseW(isSameMarkdownAs(template), flow(String, invalidE)),
+    getPreprintTitle(id),
+    RTE.matchE(
+      error =>
+        RT.of(
+          match(error)
+            .with('not-found', () => pageNotFound)
+            .with('unavailable', () => havingProblemsPage)
+            .exhaustive(),
         ),
-      }),
+      preprint =>
+        pipe(
+          RTE.Do,
+          RTE.let('preprint', () => preprint),
+          RTE.apS('user', pipe(RTE.fromNullable('no-session' as const)(user))),
+          RTE.bindW('form', ({ user }) => getForm(user.orcid, preprint.id)),
+          RTE.let('body', () => body),
+          RTE.let('method', () => method),
+          RTE.matchEW(
+            error =>
+              RT.of(
+                match(error)
+                  .with('no-form', 'no-session', () =>
+                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage)
+                  .exhaustive(),
+              ),
+            state =>
+              match(state)
+                .returnType<RT.ReaderTask<FormStoreEnv, PageResponse | StreamlinePageResponse | RedirectResponse>>()
+                .with(
+                  {
+                    form: P.union(
+                      { alreadyWritten: P.optional(undefined) },
+                      { alreadyWritten: 'no', reviewType: 'questions' },
+                    ),
+                  },
+                  () =>
+                    RT.of(
+                      RedirectResponse({ location: format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }) }),
+                    ),
+                )
+                .with({ method: 'POST', form: { alreadyWritten: 'yes' } }, handlePasteReviewForm)
+                .with({ method: 'POST', form: { alreadyWritten: 'no' } }, handleWriteReviewForm)
+                .with({ form: { alreadyWritten: 'yes' } }, state => RT.of(showPasteReviewForm(state)))
+                .with({ form: { alreadyWritten: 'no' } }, state => RT.of(showWriteReviewForm(state)))
+                .exhaustive(),
+          ),
+        ),
     ),
-    RM.chainEitherK(fields =>
+  )
+
+const showWriteReviewForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
+  writeReviewForm(preprint, { review: E.right(form.review) })
+
+const showPasteReviewForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
+  pasteReviewForm(preprint, { review: E.right(form.review) })
+
+const handleWriteReviewForm = ({
+  body,
+  form,
+  preprint,
+  user,
+}: {
+  body: unknown
+  form: Form
+  preprint: PreprintTitle
+  user: User
+}) =>
+  pipe(
+    RTE.right({
+      review: pipe(
+        ReviewFieldD.decode(body),
+        E.mapLeft(missingE),
+        E.filterOrElseW(isSameMarkdownAs(template), flow(String, invalidE)),
+      ),
+    }),
+    RTE.chainEitherK(fields =>
       pipe(
         E.Do,
         E.apS('review', fields.review),
         E.mapLeft(() => fields),
       ),
     ),
-    RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
-    RM.orElseW(error =>
-      match(error)
-        .with('form-unavailable', () => serviceUnavailable)
-        .with({ review: P.any }, showWriteReviewErrorForm(preprint, user))
-        .exhaustive(),
+    RTE.map(updateForm(form)),
+    RTE.chainFirstW(saveForm(user.orcid, preprint.id)),
+    RTE.matchW(
+      error =>
+        match(error)
+          .with('form-unavailable', () => havingProblemsPage)
+          .with({ review: P.any }, form => writeReviewForm(preprint, form))
+          .exhaustive(),
+      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
     ),
   )
 
-const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint: PreprintTitle; user: User }) =>
+const handlePasteReviewForm = ({
+  body,
+  form,
+  preprint,
+  user,
+}: {
+  body: unknown
+  form: Form
+  preprint: PreprintTitle
+  user: User
+}) =>
   pipe(
-    RM.decodeBody(
-      flow(
-        ReviewFieldD.decode,
+    RTE.fromEither(
+      pipe(
+        ReviewFieldD.decode(body),
         E.mapLeft(missingE),
         E.bimap(
           review => ({ review: E.left(review) }),
@@ -139,14 +152,15 @@ const handlePasteReviewForm = ({ form, preprint, user }: { form: Form; preprint:
         ),
       ),
     ),
-    RM.map(updateForm(form)),
-    RM.chainFirstReaderTaskEitherKW(saveForm(user.orcid, preprint.id)),
-    RM.ichainMiddlewareKW(redirectToNextForm(preprint.id)),
-    RM.orElseW(error =>
-      match(error)
-        .with('form-unavailable', () => serviceUnavailable)
-        .with({ review: P.any }, showPasteReviewErrorForm(preprint, user))
-        .exhaustive(),
+    RTE.map(updateForm(form)),
+    RTE.chainFirstW(saveForm(user.orcid, preprint.id)),
+    RTE.matchW(
+      error =>
+        match(error)
+          .with('form-unavailable', () => havingProblemsPage)
+          .with({ review: P.any }, form => pasteReviewForm(preprint, form))
+          .exhaustive(),
+      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
     ),
   )
 
@@ -165,244 +179,236 @@ interface PasteReviewForm {
   readonly review: E.Either<MissingE, Html | undefined>
 }
 
-function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm, user: User) {
+function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm) {
   const error = hasAnError(form)
 
-  return page({
+  return StreamlinePageResponse({
+    status: error ? Status.BadRequest : Status.OK,
     title: plainText`${error ? 'Error: ' : ''}Write your PREreview of “${preprint.title}”`,
-    content: html`
-      <nav>
-        <a
-          href="${format(writeReviewReviewTypeMatch.formatter, {
-            id: preprint.id,
-          })}"
-          class="back"
-          >Back</a
-        >
-      </nav>
+    nav: html`
+      <a
+        href="${format(writeReviewReviewTypeMatch.formatter, {
+          id: preprint.id,
+        })}"
+        class="back"
+        >Back</a
+      >
+    `,
+    main: html`
+      <form method="post" action="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" novalidate>
+        ${error
+          ? html`
+              <error-summary aria-labelledby="error-summary-title" role="alert">
+                <h2 id="error-summary-title">There is a problem</h2>
+                <ul>
+                  ${E.isLeft(form.review)
+                    ? html`
+                        <li>
+                          <a href="#review">
+                            ${match(form.review.left)
+                              .with({ _tag: P.union('MissingE', 'InvalidE') }, () => 'Enter your PREreview')
+                              .exhaustive()}
+                          </a>
+                        </li>
+                      `
+                    : ''}
+                </ul>
+              </error-summary>
+            `
+          : ''}
 
-      <main id="form">
-        <form method="post" action="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" novalidate>
-          ${error
+        <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
+          <h1><label id="review-label" for="review">Write your PREreview</label></h1>
+
+          <p id="review-tip" role="note">
+            We want to support you in contributing high-quality feedback on PREreview. Check out our
+            <a href="https://content.prereview.org/resources/">tips and resources for reviewers</a>.
+          </p>
+
+          <details>
+            <summary><span>Examples of good reviewer behavior</span></summary>
+
+            <div>
+              <ul>
+                <li>Being respectful of the authors and their work.</li>
+                <li>Being humble and aware of how you would like to receive feedback from others.</li>
+                <li>Giving clear, constructive, and actionable feedback that can improve the preprint.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details>
+            <summary><span>Examples of helpful review sections</span></summary>
+
+            <div>
+              <ol>
+                <li>Begin with a summary of the research and how it contributes to the field of study.</li>
+                <li>Next, share your positive feedback, including the approach’s strengths and results.</li>
+                <li>
+                  Finally, share major and minor concerns and related clear, constructive, and actionable suggestions
+                  for addressing them.
+                </li>
+              </ol>
+            </div>
+          </details>
+
+          ${E.isLeft(form.review)
             ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
-                  <ul>
-                    ${E.isLeft(form.review)
-                      ? html`
-                          <li>
-                            <a href="#review">
-                              ${match(form.review.left)
-                                .with({ _tag: P.union('MissingE', 'InvalidE') }, () => 'Enter your PREreview')
-                                .exhaustive()}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
+                <div class="error-message" id="review-error">
+                  <span class="visually-hidden">Error:</span>
+                  ${match(form.review.left)
+                    .with({ _tag: P.union('MissingE', 'InvalidE') }, () => 'Enter your PREreview')
+                    .exhaustive()}
+                </div>
               `
             : ''}
 
-          <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
-            <h1><label id="review-label" for="review">Write your PREreview</label></h1>
-
-            <p id="review-tip" role="note">
-              We want to support you in contributing high-quality feedback on PREreview. Check out our
-              <a href="https://content.prereview.org/resources/">tips and resources for reviewers</a>.
-            </p>
-
-            <details>
-              <summary><span>Examples of good reviewer behavior</span></summary>
-
-              <div>
-                <ul>
-                  <li>Being respectful of the authors and their work.</li>
-                  <li>Being humble and aware of how you would like to receive feedback from others.</li>
-                  <li>Giving clear, constructive, and actionable feedback that can improve the preprint.</li>
-                </ul>
-              </div>
-            </details>
-
-            <details>
-              <summary><span>Examples of helpful review sections</span></summary>
-
-              <div>
-                <ol>
-                  <li>Begin with a summary of the research and how it contributes to the field of study.</li>
-                  <li>Next, share your positive feedback, including the approach’s strengths and results.</li>
-                  <li>
-                    Finally, share major and minor concerns and related clear, constructive, and actionable suggestions
-                    for addressing them.
-                  </li>
-                </ol>
-              </div>
-            </details>
-
-            ${E.isLeft(form.review)
-              ? html`
-                  <div class="error-message" id="review-error">
-                    <span class="visually-hidden">Error:</span>
-                    ${match(form.review.left)
-                      .with({ _tag: P.union('MissingE', 'InvalidE') }, () => 'Enter your PREreview')
-                      .exhaustive()}
-                  </div>
-                `
-              : ''}
-
-            <html-editor>
-              ${match(form.review)
-                .with(
-                  { right: undefined },
-                  () => html`
-                    <textarea id="review" name="review" rows="20" aria-describedby="review-tip">${template}</textarea>
-                    <textarea hidden disabled>${markdownIt().render(template)}</textarea>
-                  `,
-                )
-                .with(
-                  { right: P.select(P.not(undefined)) },
-                  review => html`
-                    <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
+          <html-editor>
+            ${match(form.review)
+              .with(
+                { right: undefined },
+                () => html`
+                  <textarea id="review" name="review" rows="20" aria-describedby="review-tip">${template}</textarea>
+                  <textarea hidden disabled>${markdownIt().render(template)}</textarea>
+                `,
+              )
+              .with(
+                { right: P.select(P.not(undefined)) },
+                review => html`
+                  <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
 ${turndown.turndown(review.toString())}</textarea
-                    >
-                    <textarea hidden disabled>${review}</textarea>
-                  `,
-                )
-                .with(
-                  { left: { _tag: 'MissingE' } },
-                  () => html`
-                    <textarea
-                      id="review"
-                      name="review"
-                      rows="20"
-                      aria-describedby="review-tip"
-                      aria-invalid="true"
-                      aria-errormessage="review-error"
-                    ></textarea>
-                  `,
-                )
-                .with(
-                  { left: { _tag: 'InvalidE', actual: P.select() } },
-                  review => html`
-                    <textarea
-                      id="review"
-                      name="review"
-                      rows="20"
-                      aria-describedby="review-tip"
-                      aria-invalid="true"
-                      aria-errormessage="review-error"
-                    >
+                  >
+                  <textarea hidden disabled>${review}</textarea>
+                `,
+              )
+              .with(
+                { left: { _tag: 'MissingE' } },
+                () => html`
+                  <textarea
+                    id="review"
+                    name="review"
+                    rows="20"
+                    aria-describedby="review-tip"
+                    aria-invalid="true"
+                    aria-errormessage="review-error"
+                  ></textarea>
+                `,
+              )
+              .with(
+                { left: { _tag: 'InvalidE', actual: P.select() } },
+                review => html`
+                  <textarea
+                    id="review"
+                    name="review"
+                    rows="20"
+                    aria-describedby="review-tip"
+                    aria-invalid="true"
+                    aria-errormessage="review-error"
+                  >
 ${turndown.turndown(review)}</textarea
-                    >
-                    <textarea hidden disabled>${rawHtml(review)}</textarea>
-                  `,
-                )
-                .exhaustive()}
-            </html-editor>
-          </div>
+                  >
+                  <textarea hidden disabled>${rawHtml(review)}</textarea>
+                `,
+              )
+              .exhaustive()}
+          </html-editor>
+        </div>
 
-          <button>Save and continue</button>
-        </form>
-      </main>
+        <button>Save and continue</button>
+      </form>
     `,
-    js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
-    skipLinks: [[html`Skip to form`, '#form']],
-    type: 'streamline',
-    user,
+    skipToLabel: 'form',
+    canonical: format(writeReviewReviewMatch.formatter, { id: preprint.id }),
+    js: error ? ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'] : ['html-editor.js', 'editor-toolbar.js'],
   })
 }
 
-function pasteReviewForm(preprint: PreprintTitle, form: PasteReviewForm, user: User) {
+function pasteReviewForm(preprint: PreprintTitle, form: PasteReviewForm) {
   const error = hasAnError(form)
 
-  return page({
+  return StreamlinePageResponse({
+    status: error ? Status.BadRequest : Status.OK,
     title: plainText`${error ? 'Error: ' : ''}Paste your PREreview of “${preprint.title}”`,
-    content: html`
-      <nav>
-        <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back">Back</a>
-      </nav>
+    nav: html` <a href="${format(writeReviewReviewTypeMatch.formatter, { id: preprint.id })}" class="back">Back</a> `,
+    main: html`
+      <form method="post" action="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" novalidate>
+        ${error
+          ? html`
+              <error-summary aria-labelledby="error-summary-title" role="alert">
+                <h2 id="error-summary-title">There is a problem</h2>
+                <ul>
+                  ${E.isLeft(form.review)
+                    ? html`
+                        <li>
+                          <a href="#review">
+                            ${match(form.review.left)
+                              .with({ _tag: 'MissingE' }, () => 'Paste your PREreview')
+                              .exhaustive()}
+                          </a>
+                        </li>
+                      `
+                    : ''}
+                </ul>
+              </error-summary>
+            `
+          : ''}
 
-      <main id="form">
-        <form method="post" action="${format(writeReviewReviewMatch.formatter, { id: preprint.id })}" novalidate>
-          ${error
+        <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
+          <h1><label id="review-label" for="review">Paste your PREreview</label></h1>
+
+          <p id="review-tip" role="note">
+            Copy your PREreview and paste it here. We’ll do our best to preserve how it looks.
+          </p>
+
+          ${E.isLeft(form.review)
             ? html`
-                <error-summary aria-labelledby="error-summary-title" role="alert">
-                  <h2 id="error-summary-title">There is a problem</h2>
-                  <ul>
-                    ${E.isLeft(form.review)
-                      ? html`
-                          <li>
-                            <a href="#review">
-                              ${match(form.review.left)
-                                .with({ _tag: 'MissingE' }, () => 'Paste your PREreview')
-                                .exhaustive()}
-                            </a>
-                          </li>
-                        `
-                      : ''}
-                  </ul>
-                </error-summary>
+                <div class="error-message" id="review-error">
+                  <span class="visually-hidden">Error:</span>
+                  ${match(form.review.left)
+                    .with({ _tag: 'MissingE' }, () => 'Paste your PREreview')
+                    .exhaustive()}
+                </div>
               `
             : ''}
 
-          <div ${rawHtml(E.isLeft(form.review) ? 'class="error"' : '')}>
-            <h1><label id="review-label" for="review">Paste your PREreview</label></h1>
-
-            <p id="review-tip" role="note">
-              Copy your PREreview and paste it here. We’ll do our best to preserve how it looks.
-            </p>
-
-            ${E.isLeft(form.review)
-              ? html`
-                  <div class="error-message" id="review-error">
-                    <span class="visually-hidden">Error:</span>
-                    ${match(form.review.left)
-                      .with({ _tag: 'MissingE' }, () => 'Paste your PREreview')
-                      .exhaustive()}
-                  </div>
-                `
-              : ''}
-
-            <html-editor>
-              ${match(form.review)
-                .with(
-                  { right: undefined },
-                  () => html` <textarea id="review" name="review" rows="20" aria-describedby="review-tip"></textarea> `,
-                )
-                .with(
-                  { right: P.select(P.not(undefined)) },
-                  review => html`
-                    <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
+          <html-editor>
+            ${match(form.review)
+              .with(
+                { right: undefined },
+                () => html` <textarea id="review" name="review" rows="20" aria-describedby="review-tip"></textarea> `,
+              )
+              .with(
+                { right: P.select(P.not(undefined)) },
+                review => html`
+                  <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
 ${turndown.turndown(review.toString())}</textarea
-                    >
-                    <textarea hidden disabled>${review}</textarea>
-                  `,
-                )
-                .with(
-                  { left: { _tag: 'MissingE' } },
-                  () => html`
-                    <textarea
-                      id="review"
-                      name="review"
-                      rows="20"
-                      aria-describedby="review-tip"
-                      aria-invalid="true"
-                      aria-errormessage="review-error"
-                    ></textarea>
-                  `,
-                )
-                .exhaustive()}
-            </html-editor>
-          </div>
+                  >
+                  <textarea hidden disabled>${review}</textarea>
+                `,
+              )
+              .with(
+                { left: { _tag: 'MissingE' } },
+                () => html`
+                  <textarea
+                    id="review"
+                    name="review"
+                    rows="20"
+                    aria-describedby="review-tip"
+                    aria-invalid="true"
+                    aria-errormessage="review-error"
+                  ></textarea>
+                `,
+              )
+              .exhaustive()}
+          </html-editor>
+        </div>
 
-          <button>Save and continue</button>
-        </form>
-      </main>
+        <button>Save and continue</button>
+      </form>
     `,
-    js: ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'],
-    skipLinks: [[html`Skip to form`, '#form']],
-    type: 'streamline',
-    user,
+    skipToLabel: 'form',
+    canonical: format(writeReviewReviewMatch.formatter, { id: preprint.id }),
+    js: error ? ['html-editor.js', 'error-summary.js', 'editor-toolbar.js'] : ['html-editor.js', 'editor-toolbar.js'],
   })
 }
 
