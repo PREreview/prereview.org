@@ -117,6 +117,28 @@ describe('handleResponse', () => {
         ),
       )
     })
+
+    test.prop([
+      fc.string().chain(message => fc.connection({ headers: fc.constant({ Cookie: `flash-message=${message}` }) })),
+      fc.pageResponse(),
+      fc.option(fc.user(), { nil: undefined }),
+      fc.userOnboarding(),
+      fc.html(),
+      fc.oauth(),
+      fc.origin(),
+    ])('when there is a flash message', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
+      const actual = await runMiddleware(
+        _.handleResponse({
+          response,
+          user,
+        })({ getUserOnboarding: () => TE.right(userOnboarding), oauth, publicUrl, templatePage: () => page }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right(expect.arrayContaining([{ type: 'clearCookie', name: 'flash-message', options: { httpOnly: true } }])),
+      )
+    })
   })
 
   describe('with a StreamlinePageResponse', () => {
@@ -226,6 +248,28 @@ describe('handleResponse', () => {
         ),
       )
     })
+
+    test.prop([
+      fc.string().chain(message => fc.connection({ headers: fc.constant({ Cookie: `flash-message=${message}` }) })),
+      fc.streamlinePageResponse(),
+      fc.option(fc.user(), { nil: undefined }),
+      fc.userOnboarding(),
+      fc.html(),
+      fc.oauth(),
+      fc.origin(),
+    ])('when there is a flash message', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
+      const actual = await runMiddleware(
+        _.handleResponse({
+          response,
+          user,
+        })({ getUserOnboarding: () => TE.right(userOnboarding), oauth, publicUrl, templatePage: () => page }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right(expect.arrayContaining([{ type: 'clearCookie', name: 'flash-message', options: { httpOnly: true } }])),
+      )
+    })
   })
 
   describe('with a TwoUpPageResponse', () => {
@@ -309,6 +353,28 @@ describe('handleResponse', () => {
         })
       },
     )
+
+    test.prop([
+      fc.string().chain(message => fc.connection({ headers: fc.constant({ Cookie: `flash-message=${message}` }) })),
+      fc.twoUpPageResponse(),
+      fc.option(fc.user(), { nil: undefined }),
+      fc.userOnboarding(),
+      fc.html(),
+      fc.oauth(),
+      fc.origin(),
+    ])('when there is a flash message', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
+      const actual = await runMiddleware(
+        _.handleResponse({
+          response,
+          user,
+        })({ getUserOnboarding: () => TE.right(userOnboarding), oauth, publicUrl, templatePage: () => page }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right(expect.arrayContaining([{ type: 'clearCookie', name: 'flash-message', options: { httpOnly: true } }])),
+      )
+    })
   })
 
   test.prop([
