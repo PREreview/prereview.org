@@ -1,22 +1,16 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
-import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
+import { Status } from 'hyper-ts'
 import type { GetPreprintEnv } from '../src/preprint'
 import * as _ from '../src/preprint-reviews'
 import { preprintReviewsMatch } from '../src/routes'
 import * as fc from './fc'
-import { runMiddleware } from './middleware'
 import { shouldNotBeCalled } from './should-not-be-called'
 
 describe('preprintReviews', () => {
   test.prop([
-    fc.origin(),
-    fc.connection(),
-    fc.either(fc.constant('no-session' as const), fc.user()),
     fc.preprint(),
     fc.array(
       fc.record({
@@ -59,98 +53,67 @@ describe('preprintReviews', () => {
         }),
       }),
     ),
-  ])('when the reviews can be loaded', async (publicUrl, connection, user, preprint, prereviews, rapidPrereviews) => {
+  ])('when the reviews can be loaded', async (preprint, prereviews, rapidPrereviews) => {
     const getPreprint = jest.fn<GetPreprintEnv['getPreprint']>(_ => TE.right(preprint))
     const getPrereviews = jest.fn<_.GetPrereviewsEnv['getPrereviews']>(_ => TE.right(prereviews))
     const getRapidPrereviews = jest.fn<_.GetRapidPrereviewsEnv['getRapidPrereviews']>(_ => TE.right(rapidPrereviews))
 
-    const actual = await runMiddleware(
-      _.preprintReviews(preprint.id)({
-        getPreprint,
-        getPrereviews,
-        getRapidPrereviews,
-        getUser: () => M.fromEither(user),
-        publicUrl,
-      }),
-      connection,
-    )()
+    const actual = await _.preprintReviews(preprint.id)({
+      getPreprint,
+      getPrereviews,
+      getRapidPrereviews,
+    })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.OK },
-        {
-          type: 'setHeader',
-          name: 'Link',
-          value: `<${publicUrl.href.slice(0, -1)}${format(preprintReviewsMatch.formatter, {
-            id: preprint.id,
-          })}>; rel="canonical"`,
-        },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'TwoUpPageResponse',
+      canonical: format(preprintReviewsMatch.formatter, {
+        id: preprint.id,
+      }),
+      title: expect.stringContaining('PREreviews of'),
+      h1: expect.stringContaining('PREreviews of'),
+      aside: expect.stringContaining('Server'),
+      main: expect.stringContaining('PREreview'),
+    })
     expect(getPreprint).toHaveBeenCalledWith(preprint.id)
     expect(getPrereviews).toHaveBeenCalledWith(preprint.id)
     expect(getRapidPrereviews).toHaveBeenCalledWith(preprint.id)
   })
 
-  test.prop([
-    fc.origin(),
-    fc.connection(),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-    fc.indeterminatePreprintId(),
-  ])('when the preprint is not found', async (publicUrl, connection, user, preprintId) => {
-    const actual = await runMiddleware(
-      _.preprintReviews(preprintId)({
-        getPreprint: () => TE.left('not-found'),
-        getPrereviews: shouldNotBeCalled,
-        getRapidPrereviews: shouldNotBeCalled,
-        getUser: () => M.fromEither(user),
-        publicUrl,
-      }),
-      connection,
-    )()
+  test.prop([fc.indeterminatePreprintId()])('when the preprint is not found', async preprintId => {
+    const actual = await _.preprintReviews(preprintId)({
+      getPreprint: () => TE.left('not-found'),
+      getPrereviews: shouldNotBeCalled,
+      getRapidPrereviews: shouldNotBeCalled,
+    })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.NotFound },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.NotFound,
+      title: expect.stringContaining('not found'),
+      main: expect.stringContaining('not found'),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
+
+  test.prop([fc.indeterminatePreprintId()])('when the preprint is unavailable', async preprintId => {
+    const actual = await _.preprintReviews(preprintId)({
+      getPreprint: () => TE.left('unavailable'),
+      getPrereviews: shouldNotBeCalled,
+      getRapidPrereviews: shouldNotBeCalled,
+    })()
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.stringContaining('problems'),
+      main: expect.stringContaining('problems'),
+      skipToLabel: 'main',
+      js: [],
+    })
   })
 
   test.prop([
-    fc.origin(),
-    fc.connection(),
-    fc.either(fc.constant('no-session' as const), fc.user()),
-    fc.indeterminatePreprintId(),
-  ])('when the preprint is unavailable', async (publicUrl, connection, user, preprintId) => {
-    const actual = await runMiddleware(
-      _.preprintReviews(preprintId)({
-        getPreprint: () => TE.left('unavailable'),
-        getPrereviews: shouldNotBeCalled,
-        getRapidPrereviews: shouldNotBeCalled,
-        getUser: () => M.fromEither(user),
-        publicUrl,
-      }),
-      connection,
-    )()
-
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
-
-  test.prop([
-    fc.origin(),
-    fc.connection(),
-    fc.either(fc.constant('no-session' as const), fc.user()),
     fc.preprint(),
     fc.array(
       fc.record({
@@ -177,31 +140,24 @@ describe('preprintReviews', () => {
         }),
       }),
     ),
-  ])('when the reviews cannot be loaded', async (publicUrl, connection, user, preprint, rapidPrereviews) => {
-    const actual = await runMiddleware(
-      _.preprintReviews(preprint.id)({
-        getPreprint: () => TE.right(preprint),
-        getPrereviews: () => TE.left('unavailable'),
-        getRapidPrereviews: () => TE.right(rapidPrereviews),
-        getUser: () => M.fromEither(user),
-        publicUrl,
-      }),
-      connection,
-    )()
+  ])('when the reviews cannot be loaded', async (preprint, rapidPrereviews) => {
+    const actual = await _.preprintReviews(preprint.id)({
+      getPreprint: () => TE.right(preprint),
+      getPrereviews: () => TE.left('unavailable'),
+      getRapidPrereviews: () => TE.right(rapidPrereviews),
+    })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.stringContaining('problems'),
+      main: expect.stringContaining('problems'),
+      skipToLabel: 'main',
+      js: [],
+    })
   })
 
   test.prop([
-    fc.origin(),
-    fc.connection(),
-    fc.either(fc.constant('no-session' as const), fc.user()),
     fc.preprint(),
     fc.array(
       fc.record({
@@ -219,24 +175,20 @@ describe('preprintReviews', () => {
         text: fc.html(),
       }),
     ),
-  ])('when the rapid PREreviews cannot be loaded', async (publicUrl, connection, user, preprint, prereviews) => {
-    const actual = await runMiddleware(
-      _.preprintReviews(preprint.id)({
-        getPreprint: () => TE.right(preprint),
-        getPrereviews: () => TE.right(prereviews),
-        getRapidPrereviews: () => TE.left('unavailable'),
-        getUser: () => M.fromEither(user),
-        publicUrl,
-      }),
-      connection,
-    )()
+  ])('when the rapid PREreviews cannot be loaded', async (preprint, prereviews) => {
+    const actual = await _.preprintReviews(preprint.id)({
+      getPreprint: () => TE.right(preprint),
+      getPrereviews: () => TE.right(prereviews),
+      getRapidPrereviews: () => TE.left('unavailable'),
+    })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.stringContaining('problems'),
+      main: expect.stringContaining('problems'),
+      skipToLabel: 'main',
+      js: [],
+    })
   })
 })

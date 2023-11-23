@@ -228,6 +228,87 @@ describe('handleResponse', () => {
     })
   })
 
+  describe('with a TwoUpPageResponse', () => {
+    test.prop([
+      fc.connection(),
+      fc.twoUpPageResponse(),
+      fc.user(),
+      fc.userOnboarding(),
+      fc.html(),
+      fc.oauth(),
+      fc.origin(),
+    ])('when there is a user', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
+      const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
+      const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
+      const actual = await runMiddleware(
+        _.handleResponse({ response, user })({
+          getUserOnboarding,
+          oauth,
+          publicUrl,
+          templatePage,
+        }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.OK },
+          { type: 'setHeader', name: 'Link', value: `<${response.canonical}>; rel="canonical"` },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: page.toString() },
+        ]),
+      )
+      expect(getUserOnboarding).toHaveBeenCalledWith(user.orcid)
+      expect(templatePage).toHaveBeenCalledWith({
+        title: response.title,
+        content: expect.stringContaining(response.main.toString()),
+        skipLinks: [
+          [rawHtml('Skip to preprint details'), '#preprint-details'],
+          [rawHtml('Skip to PREreviews'), '#prereviews'],
+        ],
+        type: 'two-up',
+        user,
+        userOnboarding,
+      })
+    })
+
+    test.prop([fc.connection(), fc.twoUpPageResponse(), fc.html(), fc.oauth(), fc.origin()])(
+      "when there isn't a user",
+      async (connection, response, page, oauth, publicUrl) => {
+        const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
+        const actual = await runMiddleware(
+          _.handleResponse({
+            response,
+            user: undefined,
+          })({ getUserOnboarding: shouldNotBeCalled, oauth, publicUrl, templatePage }),
+          connection,
+        )()
+
+        expect(actual).toStrictEqual(
+          E.right([
+            { type: 'setStatus', status: Status.OK },
+            { type: 'setHeader', name: 'Link', value: `<${response.canonical}>; rel="canonical"` },
+            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+            { type: 'setBody', body: page.toString() },
+          ]),
+        )
+        expect(templatePage).toHaveBeenCalledWith({
+          title: response.title,
+          content: expect.stringContaining(response.main.toString()),
+          skipLinks: [
+            [rawHtml('Skip to preprint details'), '#preprint-details'],
+            [rawHtml('Skip to PREreviews'), '#prereviews'],
+          ],
+          type: 'two-up',
+          user: undefined,
+          userOnboarding: undefined,
+        })
+      },
+    )
+  })
+
   test.prop([
     fc.connection(),
     fc.redirectResponse(),

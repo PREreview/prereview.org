@@ -13,7 +13,7 @@ import type { PublicUrlEnv } from './public-url'
 import type { User } from './user'
 import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding'
 
-export type Response = PageResponse | StreamlinePageResponse | RedirectResponse | LogInResponse
+export type Response = PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse | LogInResponse
 
 export interface PageResponse {
   readonly _tag: 'PageResponse'
@@ -37,6 +37,15 @@ export interface StreamlinePageResponse {
   readonly main: Html
   readonly skipToLabel: 'form' | 'main'
   readonly js: Required<Page>['js']
+}
+
+export interface TwoUpPageResponse {
+  readonly _tag: 'TwoUpPageResponse'
+  readonly canonical: string
+  readonly title: Page['title']
+  readonly h1: Html
+  readonly aside: Html
+  readonly main: Html
 }
 
 export interface RedirectResponse {
@@ -70,6 +79,11 @@ export const StreamlinePageResponse = (
   ...args,
 })
 
+export const TwoUpPageResponse = (args: Omit<TwoUpPageResponse, '_tag'>): TwoUpPageResponse => ({
+  _tag: 'TwoUpPageResponse',
+  ...args,
+})
+
 export const RedirectResponse = (
   args: Omit<RedirectResponse, '_tag' | 'status'> & Partial<Pick<RedirectResponse, 'status'>>,
 ): RedirectResponse => ({
@@ -96,6 +110,7 @@ export function handleResponse(response: {
   return match(response)
     .with({ response: { _tag: 'PageResponse' } }, handlePageResponse)
     .with({ response: { _tag: 'StreamlinePageResponse' } }, handlePageResponse)
+    .with({ response: { _tag: 'TwoUpPageResponse' } }, handleTwoUpPageResponse)
     .with({ response: { _tag: 'RedirectResponse' } }, RM.fromMiddlewareK(handleRedirectResponse))
     .with({ response: { _tag: 'LogInResponse' } }, handleLogInResponse)
     .exhaustive()
@@ -182,6 +197,77 @@ const handlePageResponse = ({
           .exhaustive(),
       ),
     ),
+    RM.ichainMiddlewareK(sendHtml),
+  )
+
+const handleTwoUpPageResponse = ({
+  response,
+  user,
+}: {
+  response: TwoUpPageResponse
+  user?: User
+}): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
+  pipe(
+    RM.of({}),
+    RM.apS('message', RM.fromMiddleware(getFlashMessage(D.literal('logged-out', 'logged-in', 'blocked')))),
+    RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
+    RM.chainReaderKW(({ message, userOnboarding }) =>
+      templatePage({
+        title: response.title,
+        content: html`
+          <h1 class="visually-hidden">${response.h1}</h1>
+
+          <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
+
+          <main id="prereviews">
+            ${match(message)
+              .with(
+                'logged-out',
+                () => html`
+                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                    <h2 id="notification-banner-title">Success</h2>
+
+                    <p>You have been logged out.</p>
+                  </notification-banner>
+                `,
+              )
+              .with(
+                'logged-in',
+                () => html`
+                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                    <h2 id="notification-banner-title">Success</h2>
+
+                    <p>You have been logged in.</p>
+                  </notification-banner>
+                `,
+              )
+              .with(
+                'blocked',
+                () => html`
+                  <notification-banner aria-labelledby="notification-banner-title" type="failure" role="alert">
+                    <h2 id="notification-banner-title">Access denied</h2>
+
+                    <p>You are not allowed to log in.</p>
+                  </notification-banner>
+                `,
+              )
+              .with(undefined, () => '')
+              .exhaustive()}
+            ${response.main}
+          </main>
+        `,
+        skipLinks: [
+          [html`Skip to preprint details`, '#preprint-details'],
+          [html`Skip to PREreviews`, '#prereviews'],
+        ],
+        type: 'two-up',
+        user,
+        userOnboarding,
+      }),
+    ),
+    RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
+    RM.ichainFirst(() => RM.header('Link', `<${response.canonical}>; rel="canonical"`)),
     RM.ichainMiddlewareK(sendHtml),
   )
 

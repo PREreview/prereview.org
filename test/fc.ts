@@ -42,7 +42,13 @@ import type { Location } from '../src/location'
 import * as assets from '../src/manifest.json'
 import type { Preprint, PreprintTitle } from '../src/preprint'
 import type { ResearchInterests } from '../src/research-interests'
-import type { LogInResponse, PageResponse, RedirectResponse, StreamlinePageResponse } from '../src/response'
+import type {
+  LogInResponse,
+  PageResponse,
+  RedirectResponse,
+  StreamlinePageResponse,
+  TwoUpPageResponse,
+} from '../src/response'
 import type { SlackUser } from '../src/slack-user'
 import type { SlackUserId } from '../src/slack-user-id'
 import type { ClubId } from '../src/types/club-id'
@@ -248,6 +254,16 @@ export const streamlinePageResponse = ({
     js: fc.array(
       js().filter((js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'skip-link.js'> => js !== 'skip-link.js'),
     ),
+  })
+
+export const twoUpPageResponse = (): fc.Arbitrary<TwoUpPageResponse> =>
+  fc.record({
+    _tag: fc.constant('TwoUpPageResponse' as const),
+    canonical: fc.string(),
+    title: plainText(),
+    h1: html(),
+    aside: html(),
+    main: html(),
   })
 
 export const redirectResponse = (): fc.Arbitrary<RedirectResponse> =>
