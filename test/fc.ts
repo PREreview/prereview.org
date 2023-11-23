@@ -43,6 +43,7 @@ import * as assets from '../src/manifest.json'
 import type { Preprint, PreprintTitle } from '../src/preprint'
 import type { ResearchInterests } from '../src/research-interests'
 import type {
+  FlashMessageResponse,
   LogInResponse,
   PageResponse,
   RedirectResponse,
@@ -271,6 +272,13 @@ export const redirectResponse = (): fc.Arbitrary<RedirectResponse> =>
     _tag: fc.constant('RedirectResponse' as const),
     status: fc.constantFrom(Status.SeeOther, Status.Found),
     location: fc.oneof(fc.string(), url()),
+  })
+
+export const flashMessageResponse = (): fc.Arbitrary<FlashMessageResponse> =>
+  fc.record({
+    _tag: fc.constant('FlashMessageResponse' as const),
+    location: fc.string(),
+    message: fc.string(),
   })
 
 export const logInResponse = (): fc.Arbitrary<LogInResponse> =>

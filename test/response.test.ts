@@ -337,6 +337,35 @@ describe('handleResponse', () => {
     )
   })
 
+  test.prop([
+    fc.connection(),
+    fc.flashMessageResponse(),
+    fc.option(fc.user(), { nil: undefined }),
+    fc.oauth(),
+    fc.origin(),
+  ])('with a FlashMessageResponse', async (connection, response, user, oauth, publicUrl) => {
+    const actual = await runMiddleware(
+      _.handleResponse({ response, user })({
+        getUserOnboarding: shouldNotBeCalled,
+        oauth,
+        publicUrl,
+        templatePage: shouldNotBeCalled,
+      }),
+      connection,
+    )()
+
+    expect(actual).toStrictEqual(
+      E.right(
+        expect.arrayContaining([
+          { type: 'setStatus', status: Status.SeeOther },
+          { type: 'setHeader', name: 'Location', value: response.location },
+          { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: response.message },
+          { type: 'endResponse' },
+        ]),
+      ),
+    )
+  })
+
   test.prop([fc.connection(), fc.logInResponse(), fc.option(fc.user(), { nil: undefined }), fc.oauth(), fc.origin()])(
     'with a LogInResponse',
     async (connection, response, user, oauth, publicUrl) => {

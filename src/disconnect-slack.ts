@@ -1,115 +1,86 @@
 import { format } from 'fp-ts-routing'
+import * as RT from 'fp-ts/ReaderTask'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import type { OAuthEnv } from 'hyper-ts-oauth'
-import * as RM from 'hyper-ts/ReaderMiddleware'
+import { Status } from 'hyper-ts'
 import { P, match } from 'ts-pattern'
-import { setFlashMessage } from './flash-message'
-import { html, plainText, sendHtml } from './html'
-import { logInAndRedirect } from './log-in'
-import { getMethod, seeOther, serviceUnavailable } from './middleware'
-import { type FathomEnv, type PhaseEnv, page } from './page'
-import type { PublicUrlEnv } from './public-url'
+import { html, plainText } from './html'
+import { havingProblemsPage } from './http-error'
+import { FlashMessageResponse, LogInResponse, PageResponse, RedirectResponse } from './response'
 import { disconnectSlackMatch, myDetailsMatch } from './routes'
-import { isSlackUser } from './slack-user'
-import { deleteSlackUserId } from './slack-user-id'
-import { type GetUserEnv, type User, getUser, maybeGetUser } from './user'
+import { type IsSlackUserEnv, isSlackUser } from './slack-user'
+import { type DeleteSlackUserIdEnv, deleteSlackUserId } from './slack-user-id'
+import type { User } from './user'
 
-export const disconnectSlack = pipe(
-  RM.of({}),
-  RM.apS('user', getUser),
-  RM.bindW(
-    'isSlackUser',
-    RM.fromReaderTaskEitherK(({ user }) => isSlackUser(user.orcid)),
-  ),
-  RM.apSW('method', RM.fromMiddleware(getMethod)),
-  RM.ichainW(state =>
-    match(state)
-      .with({ method: 'POST', isSlackUser: true, user: { orcid: P.select() } }, handleDisconnectSlack)
-      .with({ isSlackUser: true }, showDisconnectSlackPage)
-      .with(
-        { isSlackUser: false },
-        RM.fromMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
-      )
-      .exhaustive(),
-  ),
-  RM.orElseW(error =>
-    match(error)
-      .returnType<
-        RM.ReaderMiddleware<
-          GetUserEnv & FathomEnv & OAuthEnv & PhaseEnv & PublicUrlEnv,
-          StatusOpen,
-          ResponseEnded,
-          never,
-          void
-        >
-      >()
-      .with('no-session', () => logInAndRedirect(disconnectSlackMatch.formatter, {}))
-      .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
-      .exhaustive(),
-  ),
-)
-
-const showDisconnectSlackPage = flow(
-  RM.fromReaderK(disconnectSlackPage),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareKW(sendHtml),
-)
+export const disconnectSlack = ({
+  method,
+  user,
+}: {
+  method: string
+  user?: User
+}): RT.ReaderTask<
+  DeleteSlackUserIdEnv & IsSlackUserEnv,
+  PageResponse | LogInResponse | RedirectResponse | FlashMessageResponse
+> =>
+  pipe(
+    RTE.Do,
+    RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.bindW('isSlackUser', ({ user }) => isSlackUser(user.orcid)),
+    RTE.let('method', () => method),
+    RTE.matchEW(
+      error =>
+        RT.of(
+          match(error)
+            .with('no-session', () => LogInResponse({ location: format(disconnectSlackMatch.formatter, {}) }))
+            .with(P.union('unavailable', P.instanceOf(Error)), () => havingProblemsPage)
+            .exhaustive(),
+        ),
+      state =>
+        match(state)
+          .returnType<RT.ReaderTask<DeleteSlackUserIdEnv, PageResponse | RedirectResponse | FlashMessageResponse>>()
+          .with({ method: 'POST', isSlackUser: true, user: { orcid: P.select() } }, handleDisconnectSlack)
+          .with({ isSlackUser: true }, () => RT.of(disconnectSlackPage))
+          .with({ isSlackUser: false }, () =>
+            RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })),
+          )
+          .exhaustive(),
+    ),
+  )
 
 const handleDisconnectSlack = flow(
-  RM.fromReaderTaskEitherK(deleteSlackUserId),
-  RM.ichain(() => RM.status(Status.SeeOther)),
-  RM.ichain(() => RM.header('Location', format(myDetailsMatch.formatter, {}))),
-  RM.ichainMiddlewareKW(() => setFlashMessage('slack-disconnected')),
-  RM.ichain(() => RM.closeHeaders()),
-  RM.ichain(() => RM.end()),
-  RM.orElseW(() => showFailureMessage),
+  deleteSlackUserId,
+  RTE.matchW(
+    () => failureMessage,
+    () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'slack-disconnected' }),
+  ),
 )
 
-const showFailureMessage = pipe(
-  maybeGetUser,
-  RM.chainReaderKW(failureMessage),
-  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
-  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const disconnectSlackPage = PageResponse({
+  title: plainText`Disconnect your Community Slack Account`,
+  main: html`
+    <form method="post" action="${format(disconnectSlackMatch.formatter, {})}" novalidate>
+      <h1>Disconnect your Community Slack Account</h1>
 
-function disconnectSlackPage({ user }: { user: User }) {
-  return page({
-    title: plainText`Disconnect your Community Slack Account`,
-    content: html`
-      <main id="main-content">
-        <form method="post" action="${format(disconnectSlackMatch.formatter, {})}" novalidate>
-          <h1>Disconnect your Community Slack Account</h1>
+      <p>You can disconnect your PREreview profile from your account on the PREreview Community Slack.</p>
 
-          <p>You can disconnect your PREreview profile from your account on the PREreview Community Slack.</p>
+      <p>We’ll remove your ORCID iD from your Slack profile.</p>
 
-          <p>We’ll remove your ORCID iD from your Slack profile.</p>
+      <p>You will be able to reconnect it at any time.</p>
 
-          <p>You will be able to reconnect it at any time.</p>
+      <button>Disconnect account</button>
+    </form>
+  `,
+  canonical: format(disconnectSlackMatch.formatter, {}),
+})
 
-          <button>Disconnect account</button>
-        </form>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
-}
+const failureMessage = PageResponse({
+  status: Status.ServiceUnavailable,
+  title: plainText`Sorry, we’re having problems`,
+  main: html`
+    <h1>Sorry, we’re having problems</h1>
 
-function failureMessage(user?: User) {
-  return page({
-    title: plainText`Sorry, we’re having problems`,
-    content: html`
-      <main id="main-content">
-        <h1>Sorry, we’re having problems</h1>
+    <p>We’re unable to disconnect your account right now.</p>
 
-        <p>We’re unable to disconnect your account right now.</p>
-
-        <p>Please try again later.</p>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
-}
+    <p>Please try again later.</p>
+  `,
+})

@@ -6,14 +6,20 @@ import * as M from 'hyper-ts/Middleware'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
-import { deleteFlashMessage, getFlashMessage } from './flash-message'
+import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message'
 import { type Html, html, sendHtml } from './html'
 import { type Page, type TemplatePageEnv, templatePage } from './page'
 import type { PublicUrlEnv } from './public-url'
 import type { User } from './user'
 import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding'
 
-export type Response = PageResponse | StreamlinePageResponse | TwoUpPageResponse | RedirectResponse | LogInResponse
+export type Response =
+  | PageResponse
+  | StreamlinePageResponse
+  | TwoUpPageResponse
+  | RedirectResponse
+  | FlashMessageResponse
+  | LogInResponse
 
 export interface PageResponse {
   readonly _tag: 'PageResponse'
@@ -54,6 +60,12 @@ export interface RedirectResponse {
   readonly location: URL | string
 }
 
+export interface FlashMessageResponse {
+  readonly _tag: 'FlashMessageResponse'
+  readonly location: string
+  readonly message: string
+}
+
 export interface LogInResponse {
   readonly _tag: 'LogInResponse'
   readonly location: string
@@ -92,6 +104,11 @@ export const RedirectResponse = (
   ...args,
 })
 
+export const FlashMessageResponse = (args: Omit<FlashMessageResponse, '_tag'>): FlashMessageResponse => ({
+  _tag: 'FlashMessageResponse',
+  ...args,
+})
+
 export const LogInResponse = (args: Omit<LogInResponse, '_tag'>): LogInResponse => ({
   _tag: 'LogInResponse',
   ...args,
@@ -112,6 +129,7 @@ export function handleResponse(response: {
     .with({ response: { _tag: 'StreamlinePageResponse' } }, handlePageResponse)
     .with({ response: { _tag: 'TwoUpPageResponse' } }, handleTwoUpPageResponse)
     .with({ response: { _tag: 'RedirectResponse' } }, RM.fromMiddlewareK(handleRedirectResponse))
+    .with({ response: { _tag: 'FlashMessageResponse' } }, RM.fromMiddlewareK(handleFlashMessageResponse))
     .with({ response: { _tag: 'LogInResponse' } }, handleLogInResponse)
     .exhaustive()
 }
@@ -279,6 +297,19 @@ const handleRedirectResponse = ({
   pipe(
     M.status(response.status),
     M.ichain(() => M.header('Location', response.location.toString())),
+    M.ichain(() => M.closeHeaders()),
+    M.ichain(() => M.end()),
+  )
+
+const handleFlashMessageResponse = ({
+  response,
+}: {
+  response: FlashMessageResponse
+}): M.Middleware<StatusOpen, ResponseEnded, never, void> =>
+  pipe(
+    M.status(Status.SeeOther),
+    M.ichain(() => M.header('Location', response.location.toString())),
+    M.ichain(() => setFlashMessage(response.message)),
     M.ichain(() => M.closeHeaders()),
     M.ichain(() => M.end()),
   )
