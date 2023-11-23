@@ -770,7 +770,22 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       writeReviewReviewTypeMatch.parser,
-      P.map(({ id }) => writeReviewReviewType(id)),
+      P.map(
+        flow(
+          RM.of,
+          RM.apS(
+            'body',
+            RM.gets(c => c.getBody()),
+          ),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(writeReviewReviewType)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       writeReviewReviewMatch.parser,
