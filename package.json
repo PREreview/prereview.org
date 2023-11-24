@@ -91,7 +91,7 @@
     "@types/node": "^20.8.10",
     "@types/nodemailer": "^6.4.14",
     "@types/rtl-detect": "^1.0.3",
-    "@types/sanitize-html": "^2.9.4",
+    "@types/sanitize-html": "^2.9.5",
     "@types/turndown": "^5.0.4",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
