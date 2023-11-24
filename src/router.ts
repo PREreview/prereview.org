@@ -767,7 +767,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       verifyContactEmailAddressMatch.parser,
-      P.map(({ verify }) => verifyContactEmailAddress(verify)),
+      P.map(
+        flow(
+          RM.of,
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(verifyContactEmailAddress)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
