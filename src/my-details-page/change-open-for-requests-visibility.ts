@@ -1,157 +1,133 @@
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
+import * as RT from 'fp-ts/ReaderTask'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import type { OAuthEnv } from 'hyper-ts-oauth'
-import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { P, match } from 'ts-pattern'
-import { html, plainText, sendHtml } from '../html'
+import { match } from 'ts-pattern'
+import { html, plainText } from '../html'
+import { havingProblemsPage } from '../http-error'
 import { type IsOpenForRequests, isOpenForRequests, saveOpenForRequests } from '../is-open-for-requests'
-import { logInAndRedirect } from '../log-in'
-import { getMethod, seeOther, serviceUnavailable } from '../middleware'
-import { type FathomEnv, type PhaseEnv, page } from '../page'
-import type { PublicUrlEnv } from '../public-url'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response'
 import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../routes'
-import { type GetUserEnv, type User, getUser } from '../user'
+import type { User } from '../user'
 
-export type Env = EnvFor<typeof changeOpenForRequestsVisibility>
+export type Env = EnvFor<ReturnType<typeof changeOpenForRequestsVisibility>>
 
-export const changeOpenForRequestsVisibility = pipe(
-  getUser,
-  RM.bindTo('user'),
-  RM.apSW('method', RM.fromMiddleware(getMethod)),
-  RM.bindW(
-    'openForRequests',
-    RM.fromReaderTaskEitherK(({ user }) => isOpenForRequests(user.orcid)),
-  ),
-  RM.ichainW(state =>
-    match(state)
-      .with(
-        { openForRequests: { value: false } },
-        RM.fromMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
-      )
-      .with(
-        {
-          method: 'POST',
-          openForRequests: { value: true },
-        },
-        state => handleChangeOpenForRequestsVisibilityForm(state.user, state.openForRequests),
-      )
-      .with({ openForRequests: { value: true } }, state =>
-        showChangeOpenForRequestsVisibilityForm(state.user, state.openForRequests),
-      )
-      .exhaustive(),
-  ),
-  RM.orElseW(error =>
-    match(error)
-      .returnType<
-        RM.ReaderMiddleware<
-          FathomEnv & GetUserEnv & OAuthEnv & PhaseEnv & PublicUrlEnv,
-          StatusOpen,
-          ResponseEnded,
-          never,
-          void
-        >
-      >()
-      .with(
-        'not-found',
-        RM.fromMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
-      )
-      .with('no-session', () => logInAndRedirect(myDetailsMatch.formatter, {}))
-      .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
-      .exhaustive(),
-  ),
-)
-
-const showChangeOpenForRequestsVisibilityForm = (
-  user: User,
-  openForRequests: Extract<IsOpenForRequests, { value: true }>,
-) =>
+export const changeOpenForRequestsVisibility = ({
+  body,
+  method,
+  user,
+}: {
+  body: unknown
+  method: string
+  user?: User
+}) =>
   pipe(
-    RM.rightReader(createFormPage(user, openForRequests)),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareK(sendHtml),
+    RTE.Do,
+    RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.let('body', () => body),
+    RTE.let('method', () => method),
+    RTE.bindW('openForRequests', ({ user }) => isOpenForRequests(user.orcid)),
+    RTE.matchE(
+      error =>
+        match(error)
+          .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
+          .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
+          .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
+          .with('unavailable', () => RT.of(havingProblemsPage))
+          .exhaustive(),
+      state =>
+        match(state)
+          .with({ openForRequests: { value: false } }, () =>
+            RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })),
+          )
+          .with({ method: 'POST', openForRequests: { value: true } }, handleChangeOpenForRequestsVisibilityForm)
+          .with({ openForRequests: { value: true } }, state => RT.of(createFormPage(state)))
+          .exhaustive(),
+    ),
   )
 
 const ChangeOpenForRequestsVisibilityFormD = pipe(
   D.struct({ openForRequestsVisibility: D.literal('public', 'restricted') }),
 )
 
-const handleChangeOpenForRequestsVisibilityForm = (
-  user: User,
-  openForRequests: Extract<IsOpenForRequests, { value: true }>,
-) =>
+const handleChangeOpenForRequestsVisibilityForm = ({
+  body,
+  openForRequests,
+  user,
+}: {
+  body: unknown
+  openForRequests: Extract<IsOpenForRequests, { value: true }>
+  user: User
+}) =>
   pipe(
-    RM.decodeBody(body => ChangeOpenForRequestsVisibilityFormD.decode(body)),
-    RM.orElseW(() => RM.of({ openForRequestsVisibility: 'restricted' as const })),
-    RM.ichainW(
+    RTE.fromEither(ChangeOpenForRequestsVisibilityFormD.decode(body)),
+    RTE.getOrElseW(() => RT.of({ openForRequestsVisibility: 'restricted' as const })),
+    RT.chain(
       flow(
         ({ openForRequestsVisibility }) => ({ ...openForRequests, visibility: openForRequestsVisibility }),
-        RM.fromReaderTaskEitherK(openForRequests => saveOpenForRequests(user.orcid, openForRequests)),
-        RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
-        RM.orElseW(() => serviceUnavailable),
+        openForRequests => saveOpenForRequests(user.orcid, openForRequests),
+        RTE.matchW(
+          () => havingProblemsPage,
+          () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
+        ),
       ),
     ),
   )
 
-function createFormPage(user: User, openForRequests: Extract<IsOpenForRequests, { value: true }>) {
-  return page({
+function createFormPage({ openForRequests }: { openForRequests: Extract<IsOpenForRequests, { value: true }> }) {
+  return PageResponse({
     title: plainText`Who can see if you are open for review requests?`,
-    content: html`
-      <nav>
-        <a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>
-      </nav>
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    main: html`
+      <form method="post" action="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}" novalidate>
+        <fieldset role="group">
+          <legend>
+            <h1>Who can see if you are open for review requests?</h1>
+          </legend>
 
-      <main id="form">
-        <form method="post" action="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}" novalidate>
-          <fieldset role="group">
-            <legend>
-              <h1>Who can see if you are open for review requests?</h1>
-            </legend>
+          <ol>
+            <li>
+              <label>
+                <input
+                  name="openForRequestsVisibility"
+                  id="open-for-requests-visibility-public"
+                  type="radio"
+                  value="public"
+                  aria-describedby="open-for-requests-visibility-tip-public"
+                  ${match(openForRequests.visibility)
+                    .with('public', () => 'checked')
+                    .otherwise(() => '')}
+                />
+                <span>Everyone</span>
+              </label>
+              <p id="open-for-requests-visibility-tip-public" role="note">We’ll say so on your public profile.</p>
+            </li>
+            <li>
+              <label>
+                <input
+                  name="openForRequestsVisibility"
+                  id="open-for-requests-visibility-restricted"
+                  type="radio"
+                  value="restricted"
+                  aria-describedby="open-for-requests-visibility-tip-restricted"
+                  ${match(openForRequests.visibility)
+                    .with('restricted', () => 'checked')
+                    .otherwise(() => '')}
+                />
+                <span>Only PREreview</span>
+              </label>
+              <p id="open-for-requests-visibility-tip-restricted" role="note">We won’t let anyone else know.</p>
+            </li>
+          </ol>
+        </fieldset>
 
-            <ol>
-              <li>
-                <label>
-                  <input
-                    name="openForRequestsVisibility"
-                    id="open-for-requests-visibility-public"
-                    type="radio"
-                    value="public"
-                    aria-describedby="open-for-requests-visibility-tip-public"
-                    ${match(openForRequests.visibility)
-                      .with('public', () => 'checked')
-                      .otherwise(() => '')}
-                  />
-                  <span>Everyone</span>
-                </label>
-                <p id="open-for-requests-visibility-tip-public" role="note">We’ll say so on your public profile.</p>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="openForRequestsVisibility"
-                    id="open-for-requests-visibility-restricted"
-                    type="radio"
-                    value="restricted"
-                    aria-describedby="open-for-requests-visibility-tip-restricted"
-                    ${match(openForRequests.visibility)
-                      .with('restricted', () => 'checked')
-                      .otherwise(() => '')}
-                  />
-                  <span>Only PREreview</span>
-                </label>
-                <p id="open-for-requests-visibility-tip-restricted" role="note">We won’t let anyone else know.</p>
-              </li>
-            </ol>
-          </fieldset>
-
-          <button>Save and continue</button>
-        </form>
-      </main>
+        <button>Save and continue</button>
+      </form>
     `,
-    skipLinks: [[html`Skip to form`, '#form']],
-    user,
+    skipToLabel: 'form',
+    canonical: format(changeOpenForRequestsVisibilityMatch.formatter, {}),
   })
 }
 
