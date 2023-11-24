@@ -1,82 +1,53 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
-import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
+import { Status } from 'hyper-ts'
 import * as _ from '../../src/my-details-page/change-open-for-requests'
-import { myDetailsMatch } from '../../src/routes'
+import { changeOpenForRequestsMatch, myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
-import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('changeOpenForRequests', () => {
   test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+    fc.anything(),
+    fc.string().filter(method => method !== 'POST'),
     fc.user(),
     fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.isOpenForRequests()),
-  ])('when there is a logged in user', async (oauth, publicUrl, connection, user, openForRequests) => {
-    const actual = await runMiddleware(
-      _.changeOpenForRequests({
-        getUser: () => M.fromEither(E.right(user)),
-        publicUrl,
-        oauth,
-        isOpenForRequests: () => TE.fromEither(openForRequests),
-        saveOpenForRequests: shouldNotBeCalled,
-      }),
-      connection,
-    )()
+  ])('when there is a logged in user', async (body, method, user, openForRequests) => {
+    const actual = await _.changeOpenForRequests({ body, method, user })({
+      isOpenForRequests: () => TE.fromEither(openForRequests),
+      saveOpenForRequests: shouldNotBeCalled,
+    })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.OK },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(changeOpenForRequestsMatch.formatter, {}),
+      status: Status.OK,
+      title: expect.stringContaining('requests'),
+      nav: expect.stringContaining('Back'),
+      main: expect.stringContaining('requests'),
+      skipToLabel: 'form',
+      js: [],
+    })
   })
 
   describe('when the form has been submitted', () => {
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.constantFrom('yes' as const, 'no' as const).chain(openForRequests =>
-        fc.tuple(
-          fc.constant(openForRequests),
-          fc.connection({
-            body: fc.constant({ openForRequests }),
-            method: fc.constant('POST'),
-          }),
-        ),
-      ),
-      fc.user(),
-      fc.isOpenForRequests(),
-    ])(
+    test.prop([fc.constantFrom('yes' as const, 'no' as const), fc.user(), fc.isOpenForRequests()])(
       'there is open for requests already',
-      async (oauth, publicUrl, [openForRequests, connection], user, existingOpenForRequests) => {
+      async (openForRequests, user, existingOpenForRequests) => {
         const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
-        const actual = await runMiddleware(
-          _.changeOpenForRequests({
-            getUser: () => M.right(user),
-            publicUrl,
-            oauth,
-            isOpenForRequests: () => TE.right(existingOpenForRequests),
-            saveOpenForRequests,
-          }),
-          connection,
-        )()
+        const actual = await _.changeOpenForRequests({ body: { openForRequests }, method: 'POST', user })({
+          isOpenForRequests: () => TE.right(existingOpenForRequests),
+          saveOpenForRequests,
+        })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.SeeOther },
-            { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-            { type: 'endResponse' },
-          ]),
-        )
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(myDetailsMatch.formatter, {}),
+        })
         expect(saveOpenForRequests).toHaveBeenCalledWith(
           user.orcid,
           openForRequests === 'yes'
@@ -89,177 +60,87 @@ describe('changeOpenForRequests', () => {
       },
     )
 
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.constantFrom('yes', 'no').chain(openForRequests =>
-        fc.tuple(
-          fc.constant(openForRequests),
-          fc.connection({
-            body: fc.constant({ openForRequests }),
-            method: fc.constant('POST'),
-          }),
-        ),
-      ),
-      fc.user(),
-    ])("there isn't open for requests already", async (oauth, publicUrl, [openForRequests, connection], user) => {
-      const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
+    test.prop([fc.constantFrom('yes', 'no'), fc.user()])(
+      "when there isn't a career stage already",
+      async (openForRequests, user) => {
+        const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
 
-      const actual = await runMiddleware(
-        _.changeOpenForRequests({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
+        const actual = await _.changeOpenForRequests({ body: { openForRequests }, method: 'POST', user })({
           isOpenForRequests: () => TE.left('not-found'),
           saveOpenForRequests,
-        }),
-        connection,
-      )()
+        })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-          { type: 'endResponse' },
-        ]),
-      )
-      expect(saveOpenForRequests).toHaveBeenCalledWith(
-        user.orcid,
-        openForRequests === 'yes'
-          ? {
-              value: true,
-              visibility: 'restricted',
-            }
-          : { value: false },
-      )
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(myDetailsMatch.formatter, {}),
+        })
+        expect(saveOpenForRequests).toHaveBeenCalledWith(
+          user.orcid,
+          openForRequests === 'yes'
+            ? {
+                value: true,
+                visibility: 'restricted',
+              }
+            : { value: false },
+        )
+      },
+    )
   })
 
   test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.connection({
-      body: fc.record({ openForRequests: fc.constantFrom('yes', 'no') }),
-      method: fc.constant('POST'),
-    }),
+    fc.constantFrom('yes', 'no'),
     fc.user(),
-    fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
+    fc.either(fc.constantFrom('not-found' as const), fc.isOpenForRequests()),
   ])(
-    'when the form has been submitted but open for requests cannot be saved',
-    async (oauth, publicUrl, connection, user, openForRequests) => {
-      const actual = await runMiddleware(
-        _.changeOpenForRequests({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          isOpenForRequests: () => TE.fromEither(openForRequests),
-          saveOpenForRequests: () => TE.left('unavailable'),
-        }),
-        connection,
-      )()
+    'when the form has been submitted but the career stage cannot be saved',
+    async (openForRequests, user, existingOpenForRequests) => {
+      const actual = await _.changeOpenForRequests({ body: { openForRequests }, method: 'POST', user })({
+        isOpenForRequests: () => TE.fromEither(existingOpenForRequests),
+        saveOpenForRequests: () => TE.left('unavailable'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
     },
   )
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.connection({
-      body: fc.record({ openForRequests: fc.lorem() }, { withDeletedKeys: true }),
-      method: fc.constant('POST'),
-    }),
-    fc.user(),
-  ])(
+  test.prop([fc.record({ openForRequests: fc.lorem() }, { withDeletedKeys: true }), fc.user()])(
     'when the form has been submitted without setting open for requests',
-    async (oauth, publicUrl, connection, user) => {
-      const actual = await runMiddleware(
-        _.changeOpenForRequests({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          isOpenForRequests: shouldNotBeCalled,
-          saveOpenForRequests: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+    async (body, user) => {
+      const actual = await _.changeOpenForRequests({ body, method: 'POST', user })({
+        isOpenForRequests: shouldNotBeCalled,
+        saveOpenForRequests: shouldNotBeCalled,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.BadRequest },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(changeOpenForRequestsMatch.formatter, {}),
+        status: Status.BadRequest,
+        title: expect.stringContaining('requests'),
+        nav: expect.stringContaining('Back'),
+        main: expect.stringContaining('requests'),
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
+      })
     },
   )
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection()])(
-    'when the user is not logged in',
-    async (oauth, publicUrl, connection) => {
-      const actual = await runMiddleware(
-        _.changeOpenForRequests({
-          getUser: () => M.left('no-session'),
-          publicUrl,
-          oauth,
-          isOpenForRequests: shouldNotBeCalled,
-          saveOpenForRequests: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
+    const actual = await _.changeOpenForRequests({ body, method, user: undefined })({
+      isOpenForRequests: shouldNotBeCalled,
+      saveOpenForRequests: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Found },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                client_id: oauth.clientId,
-                response_type: 'code',
-                redirect_uri: oauth.redirectUri.href,
-                scope: '/authenticate',
-                state: new URL(format(myDetailsMatch.formatter, {}), publicUrl).toString(),
-              }).toString()}`,
-              oauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
-
-  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error()])(
-    "when the user can't be loaded",
-    async (oauth, publicUrl, connection, error) => {
-      const actual = await runMiddleware(
-        _.changeOpenForRequests({
-          getUser: () => M.left(error),
-          oauth,
-          publicUrl,
-          isOpenForRequests: shouldNotBeCalled,
-          saveOpenForRequests: shouldNotBeCalled,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'LogInResponse',
+      location: format(myDetailsMatch.formatter, {}),
+    })
+  })
 })
