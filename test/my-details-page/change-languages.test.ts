@@ -1,256 +1,131 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
-import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
+import { Status } from 'hyper-ts'
 import * as _ from '../../src/my-details-page/change-languages'
-import { myDetailsMatch } from '../../src/routes'
+import { changeLanguagesMatch, myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
-import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('changeLanguages', () => {
   test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
+    fc.anything(),
+    fc.string().filter(method => method !== 'POST'),
     fc.user(),
     fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.languages()),
-  ])('when there is a logged in user', async (oauth, publicUrl, connection, user, languages) => {
-    const actual = await runMiddleware(
-      _.changeLanguages({
-        getUser: () => M.fromEither(E.right(user)),
-        publicUrl,
-        oauth,
-        deleteLanguages: shouldNotBeCalled,
-        getLanguages: () => TE.fromEither(languages),
-        saveLanguages: shouldNotBeCalled,
-      }),
-      connection,
-    )()
+  ])('when there is a logged in user', async (body, method, user, languages) => {
+    const actual = await _.changeLanguages({ body, method, user })({
+      deleteLanguages: shouldNotBeCalled,
+      getLanguages: () => TE.fromEither(languages),
+      saveLanguages: shouldNotBeCalled,
+    })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.OK },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(changeLanguagesMatch.formatter, {}),
+      status: Status.OK,
+      title: expect.stringContaining('languages'),
+      nav: expect.stringContaining('Back'),
+      main: expect.stringContaining('languages'),
+      skipToLabel: 'form',
+      js: [],
+    })
   })
 
   describe('when the form has been submitted', () => {
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.nonEmptyString().chain(languages =>
-        fc.tuple(
-          fc.constant(languages),
-          fc.connection({
-            body: fc.constant({ languages }),
-            method: fc.constant('POST'),
-          }),
-        ),
-      ),
-      fc.user(),
-      fc.languages(),
-    ])('there are languages already', async (oauth, publicUrl, [languages, connection], user, existingLanguages) => {
-      const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
+    test.prop([fc.nonEmptyString(), fc.user(), fc.languages()])(
+      'there are languages already',
+      async (languages, user, existingLanguages) => {
+        const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
-      const actual = await runMiddleware(
-        _.changeLanguages({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
+        const actual = await _.changeLanguages({ body: { languages }, method: 'POST', user })({
           deleteLanguages: shouldNotBeCalled,
           getLanguages: () => TE.right(existingLanguages),
           saveLanguages,
-        }),
-        connection,
-      )()
+        })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-          { type: 'endResponse' },
-        ]),
-      )
-      expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
-        value: languages,
-        visibility: existingLanguages.visibility,
-      })
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(myDetailsMatch.formatter, {}),
+        })
+        expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
+          value: languages,
+          visibility: existingLanguages.visibility,
+        })
+      },
+    )
 
-    test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.nonEmptyString().chain(languages =>
-        fc.tuple(
-          fc.constant(languages),
-          fc.connection({
-            body: fc.constant({ languages }),
-            method: fc.constant('POST'),
-          }),
-        ),
-      ),
-      fc.user(),
-    ])("when there aren't languages already", async (oauth, publicUrl, [languages, connection], user) => {
+    test.prop([fc.nonEmptyString(), fc.user()])("when there aren't languages already", async (languages, user) => {
       const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
-      const actual = await runMiddleware(
-        _.changeLanguages({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          deleteLanguages: shouldNotBeCalled,
-          getLanguages: () => TE.left('not-found'),
-          saveLanguages,
-        }),
-        connection,
-      )()
+      const actual = await _.changeLanguages({ body: { languages }, method: 'POST', user })({
+        deleteLanguages: shouldNotBeCalled,
+        getLanguages: () => TE.left('not-found'),
+        saveLanguages,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-          { type: 'endResponse' },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(myDetailsMatch.formatter, {}),
+      })
       expect(saveLanguages).toHaveBeenCalledWith(user.orcid, { value: languages, visibility: 'restricted' })
     })
   })
 
   test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.connection({
-      body: fc.record({ languages: fc.oneof(fc.nonEmptyString(), fc.constant('skip')) }),
-      method: fc.constant('POST'),
-    }),
+    fc.record({ languages: fc.nonEmptyString() }),
     fc.user(),
     fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.languages()),
-  ])(
-    'when the form has been submitted but languages cannot be saved',
-    async (oauth, publicUrl, connection, user, existingLanguages) => {
-      const actual = await runMiddleware(
-        _.changeLanguages({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          deleteLanguages: () => TE.left('unavailable'),
-          getLanguages: () => TE.fromEither(existingLanguages),
-          saveLanguages: () => TE.left('unavailable'),
-        }),
-        connection,
-      )()
+  ])('when the form has been submitted but languages cannot be saved', async (body, user, existingLanguages) => {
+    const actual = await _.changeLanguages({ body, method: 'POST', user })({
+      deleteLanguages: () => TE.left('unavailable'),
+      getLanguages: () => TE.fromEither(existingLanguages),
+      saveLanguages: () => TE.left('unavailable'),
+    })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.stringContaining('problems'),
+      main: expect.stringContaining('problems'),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.connection({
-      body: fc.record({ languages: fc.constant('') }, { withDeletedKeys: true }),
-      method: fc.constant('POST'),
-    }),
-    fc.user(),
-  ])('when the form has been submitted without setting languages', async (oauth, publicUrl, connection, user) => {
-    const deleteLanguages = jest.fn<_.Env['deleteLanguages']>(_ => TE.right(undefined))
+  test.prop([fc.record({ languages: fc.constant('') }, { withDeletedKeys: true }), fc.user()])(
+    'when the form has been submitted without setting languages',
+    async (body, user) => {
+      const deleteLanguages = jest.fn<_.Env['deleteLanguages']>(_ => TE.right(undefined))
 
-    const actual = await runMiddleware(
-      _.changeLanguages({
-        getUser: () => M.right(user),
-        publicUrl,
-        oauth,
+      const actual = await _.changeLanguages({ body, method: 'POST', user })({
         deleteLanguages,
         getLanguages: shouldNotBeCalled,
         saveLanguages: shouldNotBeCalled,
-      }),
-      connection,
-    )()
+      })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.SeeOther },
-        { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-        { type: 'endResponse' },
-      ]),
-    )
-    expect(deleteLanguages).toHaveBeenCalledWith(user.orcid)
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(myDetailsMatch.formatter, {}),
+      })
+      expect(deleteLanguages).toHaveBeenCalledWith(user.orcid)
+    },
+  )
+
+  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
+    const actual = await _.changeLanguages({ body, method, user: undefined })({
+      deleteLanguages: shouldNotBeCalled,
+      getLanguages: shouldNotBeCalled,
+      saveLanguages: shouldNotBeCalled,
+    })()
+
+    expect(actual).toStrictEqual({
+      _tag: 'LogInResponse',
+      location: format(myDetailsMatch.formatter, {}),
+    })
   })
-
-  test.prop([fc.oauth(), fc.origin(), fc.connection()])(
-    'when the user is not logged in',
-    async (oauth, publicUrl, connection) => {
-      const actual = await runMiddleware(
-        _.changeLanguages({
-          getUser: () => M.left('no-session'),
-          publicUrl,
-          oauth,
-          deleteLanguages: shouldNotBeCalled,
-          getLanguages: shouldNotBeCalled,
-          saveLanguages: shouldNotBeCalled,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Found },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                client_id: oauth.clientId,
-                response_type: 'code',
-                redirect_uri: oauth.redirectUri.href,
-                scope: '/authenticate',
-                state: new URL(format(myDetailsMatch.formatter, {}), publicUrl).toString(),
-              }).toString()}`,
-              oauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
-
-  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error()])(
-    "when the user can't be loaded",
-    async (oauth, publicUrl, connection, error) => {
-      const actual = await runMiddleware(
-        _.changeLanguages({
-          getUser: () => M.left(error),
-          oauth,
-          publicUrl,
-          deleteLanguages: shouldNotBeCalled,
-          getLanguages: shouldNotBeCalled,
-          saveLanguages: shouldNotBeCalled,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
 })
