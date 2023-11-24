@@ -25,8 +25,10 @@ export const LanguagesC = C.struct({
   visibility: C.literal('public', 'restricted'),
 }) satisfies C.Codec<unknown, unknown, Languages>
 
-export const getLanguages = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getLanguages }: GetLanguagesEnv) => getLanguages(orcid)))
+export const getLanguages = (
+  orcid: Orcid,
+): RTE.ReaderTaskEither<GetLanguagesEnv, 'not-found' | 'unavailable', Languages> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getLanguages }) => getLanguages(orcid)))
 
 export const maybeGetLanguages = flow(
   getLanguages,

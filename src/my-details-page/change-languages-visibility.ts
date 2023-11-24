@@ -1,136 +1,119 @@
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
+import * as RT from 'fp-ts/ReaderTask'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import type { OAuthEnv } from 'hyper-ts-oauth'
-import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { P, match } from 'ts-pattern'
-import { html, plainText, sendHtml } from '../html'
+import { match } from 'ts-pattern'
+import { html, plainText } from '../html'
+import { havingProblemsPage } from '../http-error'
 import { type Languages, getLanguages, saveLanguages } from '../languages'
-import { logInAndRedirect } from '../log-in'
-import { getMethod, seeOther, serviceUnavailable } from '../middleware'
-import { type FathomEnv, type PhaseEnv, page } from '../page'
-import type { PublicUrlEnv } from '../public-url'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response'
 import { changeLanguagesVisibilityMatch, myDetailsMatch } from '../routes'
-import { type GetUserEnv, type User, getUser } from '../user'
+import type { User } from '../user'
 
-export type Env = EnvFor<typeof changeLanguagesVisibility>
+export type Env = EnvFor<ReturnType<typeof changeLanguagesVisibility>>
 
-export const changeLanguagesVisibility = pipe(
-  getUser,
-  RM.bindTo('user'),
-  RM.apSW('method', RM.fromMiddleware(getMethod)),
-  RM.bindW(
-    'languages',
-    RM.fromReaderTaskEitherK(({ user }) => getLanguages(user.orcid)),
-  ),
-  RM.ichainW(state =>
-    match(state.method)
-      .with('POST', () => handleChangeLanguagesVisibilityForm(state.user, state.languages))
-      .otherwise(() => showChangeLanguagesVisibilityForm(state.user, state.languages)),
-  ),
-  RM.orElseW(error =>
-    match(error)
-      .returnType<
-        RM.ReaderMiddleware<
-          FathomEnv & GetUserEnv & OAuthEnv & PhaseEnv & PublicUrlEnv,
-          StatusOpen,
-          ResponseEnded,
-          never,
-          void
-        >
-      >()
-      .with(
-        'not-found',
-        RM.fromMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
-      )
-      .with('no-session', () => logInAndRedirect(myDetailsMatch.formatter, {}))
-      .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
-      .exhaustive(),
-  ),
-)
-
-const showChangeLanguagesVisibilityForm = (user: User, languages: Languages) =>
+export const changeLanguagesVisibility = ({ body, method, user }: { body: unknown; method: string; user?: User }) =>
   pipe(
-    RM.rightReader(createFormPage(user, languages)),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareK(sendHtml),
+    RTE.Do,
+    RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.let('body', () => body),
+    RTE.let('method', () => method),
+    RTE.bindW('languages', ({ user }) => getLanguages(user.orcid)),
+    RTE.matchE(
+      error =>
+        match(error)
+          .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
+          .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
+          .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
+          .with('unavailable', () => RT.of(havingProblemsPage))
+          .exhaustive(),
+      state =>
+        match(state)
+          .with({ method: 'POST' }, handleChangeLanguagesVisibilityForm)
+          .otherwise(state => RT.of(createFormPage(state))),
+    ),
   )
 
 const ChangeLanguagesVisibilityFormD = pipe(D.struct({ languagesVisibility: D.literal('public', 'restricted') }))
 
-const handleChangeLanguagesVisibilityForm = (user: User, languages: Languages) =>
+const handleChangeLanguagesVisibilityForm = ({
+  body,
+  languages,
+  user,
+}: {
+  body: unknown
+  languages: Languages
+  user: User
+}) =>
   pipe(
-    RM.decodeBody(body => ChangeLanguagesVisibilityFormD.decode(body)),
-    RM.orElseW(() => RM.of({ languagesVisibility: 'restricted' as const })),
-    RM.ichainW(
+    RTE.fromEither(ChangeLanguagesVisibilityFormD.decode(body)),
+    RTE.getOrElseW(() => RT.of({ languagesVisibility: 'restricted' as const })),
+    RT.chain(
       flow(
         ({ languagesVisibility }) => ({ ...languages, visibility: languagesVisibility }),
-        RM.fromReaderTaskEitherK(languages => saveLanguages(user.orcid, languages)),
-        RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
-        RM.orElseW(() => serviceUnavailable),
+        languages => saveLanguages(user.orcid, languages),
+        RTE.matchW(
+          () => havingProblemsPage,
+          () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
+        ),
       ),
     ),
   )
 
-function createFormPage(user: User, languages: Languages) {
-  return page({
+function createFormPage({ languages }: { languages: Languages }) {
+  return PageResponse({
     title: plainText`Who can see your languages?`,
-    content: html`
-      <nav>
-        <a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>
-      </nav>
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    main: html`
+      <form method="post" action="${format(changeLanguagesVisibilityMatch.formatter, {})}" novalidate>
+        <fieldset role="group">
+          <legend>
+            <h1>Who can see your languages?</h1>
+          </legend>
 
-      <main id="form">
-        <form method="post" action="${format(changeLanguagesVisibilityMatch.formatter, {})}" novalidate>
-          <fieldset role="group">
-            <legend>
-              <h1>Who can see your languages?</h1>
-            </legend>
+          <ol>
+            <li>
+              <label>
+                <input
+                  name="languagesVisibility"
+                  id="languages-visibility-public"
+                  type="radio"
+                  value="public"
+                  aria-describedby="languages-visibility-tip-public"
+                  ${match(languages.visibility)
+                    .with('public', () => 'checked')
+                    .otherwise(() => '')}
+                />
+                <span>Everyone</span>
+              </label>
+              <p id="languages-visibility-tip-public" role="note">We’ll show them on your public profile.</p>
+            </li>
+            <li>
+              <label>
+                <input
+                  name="languagesVisibility"
+                  id="languages-visibility-restricted"
+                  type="radio"
+                  value="restricted"
+                  aria-describedby="languages-visibility-tip-restricted"
+                  ${match(languages.visibility)
+                    .with('restricted', () => 'checked')
+                    .otherwise(() => '')}
+                />
+                <span>Only PREreview</span>
+              </label>
+              <p id="languages-visibility-tip-restricted" role="note">We won’t share them with anyone else.</p>
+            </li>
+          </ol>
+        </fieldset>
 
-            <ol>
-              <li>
-                <label>
-                  <input
-                    name="languagesVisibility"
-                    id="languages-visibility-public"
-                    type="radio"
-                    value="public"
-                    aria-describedby="languages-visibility-tip-public"
-                    ${match(languages.visibility)
-                      .with('public', () => 'checked')
-                      .otherwise(() => '')}
-                  />
-                  <span>Everyone</span>
-                </label>
-                <p id="languages-visibility-tip-public" role="note">We’ll show them on your public profile.</p>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="languagesVisibility"
-                    id="languages-visibility-restricted"
-                    type="radio"
-                    value="restricted"
-                    aria-describedby="languages-visibility-tip-restricted"
-                    ${match(languages.visibility)
-                      .with('restricted', () => 'checked')
-                      .otherwise(() => '')}
-                  />
-                  <span>Only PREreview</span>
-                </label>
-                <p id="languages-visibility-tip-restricted" role="note">We won’t share them with anyone else.</p>
-              </li>
-            </ol>
-          </fieldset>
-
-          <button>Save and continue</button>
-        </form>
-      </main>
+        <button>Save and continue</button>
+      </form>
     `,
-    skipLinks: [[html`Skip to form`, '#form']],
-    user,
+    skipToLabel: 'form',
+    canonical: format(changeLanguagesVisibilityMatch.formatter, {}),
   })
 }
 

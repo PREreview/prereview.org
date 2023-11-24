@@ -1,83 +1,56 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
-import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
+import { Status } from 'hyper-ts'
 import * as _ from '../../src/my-details-page/change-languages-visibility'
-import { myDetailsMatch } from '../../src/routes'
+import { changeLanguagesVisibilityMatch, myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
-import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('changeLanguagesVisibility', () => {
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
-    fc.user(),
-    fc.languages(),
-  ])('when there is a logged in user', async (oauth, publicUrl, connection, user, languages) => {
-    const actual = await runMiddleware(
-      _.changeLanguagesVisibility({
-        getUser: () => M.fromEither(E.right(user)),
-        publicUrl,
-        oauth,
+  test.prop([fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user(), fc.languages()])(
+    'when there is a logged in user',
+    async (body, method, user, languages) => {
+      const actual = await _.changeLanguagesVisibility({ body, method, user })({
         deleteLanguages: shouldNotBeCalled,
         getLanguages: () => TE.of(languages),
         saveLanguages: shouldNotBeCalled,
-      }),
-      connection,
-    )()
+      })()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.OK },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(changeLanguagesVisibilityMatch.formatter, {}),
+        status: Status.OK,
+        title: expect.stringContaining('languages'),
+        nav: expect.stringContaining('Back'),
+        main: expect.stringContaining('languages'),
+        skipToLabel: 'form',
+        js: [],
+      })
+    },
+  )
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.languagesVisibility().chain(visibility =>
-      fc.tuple(
-        fc.constant(visibility),
-        fc.connection({
-          body: fc.constant({ languagesVisibility: visibility }),
-          method: fc.constant('POST'),
-        }),
-      ),
-    ),
-    fc.user(),
-    fc.languages(),
-  ])(
+  test.prop([fc.languagesVisibility(), fc.user(), fc.languages()])(
     'when the form has been submitted',
-    async (oauth, publicUrl, [visibility, connection], user, existingLanguages) => {
+    async (visibility, user, existingLanguages) => {
       const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
-      const actual = await runMiddleware(
-        _.changeLanguagesVisibility({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          deleteLanguages: shouldNotBeCalled,
-          getLanguages: () => TE.right(existingLanguages),
-          saveLanguages,
-        }),
-        connection,
-      )()
+      const actual = await _.changeLanguagesVisibility({
+        body: { languagesVisibility: visibility },
+        method: 'POST',
+        user,
+      })({
+        deleteLanguages: shouldNotBeCalled,
+        getLanguages: () => TE.right(existingLanguages),
+        saveLanguages,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-          { type: 'endResponse' },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(myDetailsMatch.formatter, {}),
+      })
       expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
         value: existingLanguages.value,
         visibility,
@@ -85,74 +58,42 @@ describe('changeLanguagesVisibility', () => {
     },
   )
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.connection({
-      body: fc.record({ languagesVisibility: fc.languagesVisibility() }),
-      method: fc.constant('POST'),
-    }),
-    fc.user(),
-    fc.languages(),
-  ])(
+  test.prop([fc.record({ languagesVisibility: fc.languagesVisibility() }), fc.user(), fc.languages()])(
     'when the form has been submitted but the visibility cannot be saved',
-    async (oauth, publicUrl, connection, user, languages) => {
-      const actual = await runMiddleware(
-        _.changeLanguagesVisibility({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          deleteLanguages: shouldNotBeCalled,
-          getLanguages: () => TE.of(languages),
-          saveLanguages: () => TE.left('unavailable'),
-        }),
-        connection,
-      )()
+    async (body, user, languages) => {
+      const actual = await _.changeLanguagesVisibility({ body, method: 'POST', user })({
+        deleteLanguages: shouldNotBeCalled,
+        getLanguages: () => TE.of(languages),
+        saveLanguages: () => TE.left('unavailable'),
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
     },
   )
 
-  test.prop([
-    fc.oauth(),
-    fc.origin(),
-    fc.connection({
-      body: fc.record({ languagesVisibility: fc.string() }, { withDeletedKeys: true }),
-      method: fc.constant('POST'),
-    }),
-    fc.user(),
-    fc.languages(),
-  ])(
+  test.prop([fc.record({ languagesVisibility: fc.string() }, { withDeletedKeys: true }), fc.user(), fc.languages()])(
     'when the form has been submitted without setting visibility',
-    async (oauth, publicUrl, connection, user, languages) => {
+    async (body, user, languages) => {
       const saveLanguages = jest.fn<_.Env['saveLanguages']>(_ => TE.right(undefined))
 
-      const actual = await runMiddleware(
-        _.changeLanguagesVisibility({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          deleteLanguages: shouldNotBeCalled,
-          getLanguages: () => TE.of(languages),
-          saveLanguages,
-        }),
-        connection,
-      )()
+      const actual = await _.changeLanguagesVisibility({ body, method: 'POST', user })({
+        deleteLanguages: shouldNotBeCalled,
+        getLanguages: () => TE.of(languages),
+        saveLanguages,
+      })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-          { type: 'endResponse' },
-        ]),
-      )
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(myDetailsMatch.formatter, {}),
+      })
       expect(saveLanguages).toHaveBeenCalledWith(user.orcid, {
         value: languages.value,
         visibility: 'restricted',
@@ -160,92 +101,30 @@ describe('changeLanguagesVisibility', () => {
     },
   )
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.user()])(
-    "there aren't languages",
-    async (oauth, publicUrl, connection, user) => {
-      const actual = await runMiddleware(
-        _.changeLanguagesVisibility({
-          getUser: () => M.right(user),
-          publicUrl,
-          oauth,
-          deleteLanguages: shouldNotBeCalled,
-          getLanguages: () => TE.left('not-found'),
-          saveLanguages: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+  test.prop([fc.anything(), fc.string(), fc.user()])("there aren't languages", async (body, method, user) => {
+    const actual = await _.changeLanguagesVisibility({ body, method, user })({
+      deleteLanguages: shouldNotBeCalled,
+      getLanguages: () => TE.left('not-found'),
+      saveLanguages: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.SeeOther },
-          { type: 'setHeader', name: 'Location', value: format(myDetailsMatch.formatter, {}) },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'RedirectResponse',
+      status: Status.SeeOther,
+      location: format(myDetailsMatch.formatter, {}),
+    })
+  })
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection()])(
-    'when the user is not logged in',
-    async (oauth, publicUrl, connection) => {
-      const actual = await runMiddleware(
-        _.changeLanguagesVisibility({
-          getUser: () => M.left('no-session'),
-          publicUrl,
-          oauth,
-          deleteLanguages: shouldNotBeCalled,
-          getLanguages: shouldNotBeCalled,
-          saveLanguages: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
+    const actual = await _.changeLanguagesVisibility({ body, method, user: undefined })({
+      deleteLanguages: shouldNotBeCalled,
+      getLanguages: shouldNotBeCalled,
+      saveLanguages: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Found },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                client_id: oauth.clientId,
-                response_type: 'code',
-                redirect_uri: oauth.redirectUri.href,
-                scope: '/authenticate',
-                state: new URL(format(myDetailsMatch.formatter, {}), publicUrl).toString(),
-              }).toString()}`,
-              oauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
-
-  test.prop([fc.oauth(), fc.origin(), fc.connection(), fc.error()])(
-    "when the user can't be loaded",
-    async (oauth, publicUrl, connection, error) => {
-      const actual = await runMiddleware(
-        _.changeLanguagesVisibility({
-          getUser: () => M.left(error),
-          oauth,
-          publicUrl,
-          deleteLanguages: shouldNotBeCalled,
-          getLanguages: shouldNotBeCalled,
-          saveLanguages: shouldNotBeCalled,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'LogInResponse',
+      location: format(myDetailsMatch.formatter, {}),
+    })
+  })
 })
