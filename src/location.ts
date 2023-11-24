@@ -25,8 +25,10 @@ export const LocationC = C.struct({
   visibility: C.literal('public', 'restricted'),
 }) satisfies C.Codec<unknown, unknown, Location>
 
-export const getLocation = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getLocation }: GetLocationEnv) => getLocation(orcid)))
+export const getLocation = (
+  orcid: Orcid,
+): RTE.ReaderTaskEither<GetLocationEnv, 'not-found' | 'unavailable', Location> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getLocation }) => getLocation(orcid)))
 
 export const maybeGetLocation = flow(
   getLocation,

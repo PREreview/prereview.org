@@ -1,136 +1,119 @@
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
+import * as RT from 'fp-ts/ReaderTask'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import type { OAuthEnv } from 'hyper-ts-oauth'
-import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { P, match } from 'ts-pattern'
-import { html, plainText, sendHtml } from '../html'
+import { match } from 'ts-pattern'
+import { html, plainText } from '../html'
+import { havingProblemsPage } from '../http-error'
 import { type Location, getLocation, saveLocation } from '../location'
-import { logInAndRedirect } from '../log-in'
-import { getMethod, seeOther, serviceUnavailable } from '../middleware'
-import { type FathomEnv, type PhaseEnv, page } from '../page'
-import type { PublicUrlEnv } from '../public-url'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response'
 import { changeLocationVisibilityMatch, myDetailsMatch } from '../routes'
-import { type GetUserEnv, type User, getUser } from '../user'
+import type { User } from '../user'
 
-export type Env = EnvFor<typeof changeLocationVisibility>
+export type Env = EnvFor<ReturnType<typeof changeLocationVisibility>>
 
-export const changeLocationVisibility = pipe(
-  getUser,
-  RM.bindTo('user'),
-  RM.apSW('method', RM.fromMiddleware(getMethod)),
-  RM.bindW(
-    'location',
-    RM.fromReaderTaskEitherK(({ user }) => getLocation(user.orcid)),
-  ),
-  RM.ichainW(state =>
-    match(state.method)
-      .with('POST', () => handleChangeLocationVisibilityForm(state.user, state.location))
-      .otherwise(() => showChangeLocationVisibilityForm(state.user, state.location)),
-  ),
-  RM.orElseW(error =>
-    match(error)
-      .returnType<
-        RM.ReaderMiddleware<
-          FathomEnv & GetUserEnv & OAuthEnv & PhaseEnv & PublicUrlEnv,
-          StatusOpen,
-          ResponseEnded,
-          never,
-          void
-        >
-      >()
-      .with(
-        'not-found',
-        RM.fromMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
-      )
-      .with('no-session', () => logInAndRedirect(myDetailsMatch.formatter, {}))
-      .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
-      .exhaustive(),
-  ),
-)
-
-const showChangeLocationVisibilityForm = (user: User, location: Location) =>
+export const changeLocationVisibility = ({ body, method, user }: { body: unknown; method: string; user?: User }) =>
   pipe(
-    RM.rightReader(createFormPage(user, location)),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareK(sendHtml),
+    RTE.Do,
+    RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.let('body', () => body),
+    RTE.let('method', () => method),
+    RTE.bindW('location', ({ user }) => getLocation(user.orcid)),
+    RTE.matchE(
+      error =>
+        match(error)
+          .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
+          .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
+          .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
+          .with('unavailable', () => RT.of(havingProblemsPage))
+          .exhaustive(),
+      state =>
+        match(state)
+          .with({ method: 'POST' }, handleChangeLocationVisibilityForm)
+          .otherwise(state => RT.of(createFormPage(state))),
+    ),
   )
 
 const ChangeLocationVisibilityFormD = pipe(D.struct({ locationVisibility: D.literal('public', 'restricted') }))
 
-const handleChangeLocationVisibilityForm = (user: User, location: Location) =>
+const handleChangeLocationVisibilityForm = ({
+  body,
+  location,
+  user,
+}: {
+  body: unknown
+  location: Location
+  user: User
+}) =>
   pipe(
-    RM.decodeBody(body => ChangeLocationVisibilityFormD.decode(body)),
-    RM.orElseW(() => RM.of({ locationVisibility: 'restricted' as const })),
-    RM.ichainW(
+    RTE.fromEither(ChangeLocationVisibilityFormD.decode(body)),
+    RTE.getOrElseW(() => RT.of({ locationVisibility: 'restricted' as const })),
+    RT.chain(
       flow(
         ({ locationVisibility }) => ({ ...location, visibility: locationVisibility }),
-        RM.fromReaderTaskEitherK(location => saveLocation(user.orcid, location)),
-        RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
-        RM.orElseW(() => serviceUnavailable),
+        location => saveLocation(user.orcid, location),
+        RTE.matchW(
+          () => havingProblemsPage,
+          () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
+        ),
       ),
     ),
   )
 
-function createFormPage(user: User, location: Location) {
-  return page({
+function createFormPage({ location }: { location: Location }) {
+  return PageResponse({
     title: plainText`Who can see your location?`,
-    content: html`
-      <nav>
-        <a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>
-      </nav>
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    main: html`
+      <form method="post" action="${format(changeLocationVisibilityMatch.formatter, {})}" novalidate>
+        <fieldset role="group">
+          <legend>
+            <h1>Who can see your location?</h1>
+          </legend>
 
-      <main id="form">
-        <form method="post" action="${format(changeLocationVisibilityMatch.formatter, {})}" novalidate>
-          <fieldset role="group">
-            <legend>
-              <h1>Who can see your location?</h1>
-            </legend>
+          <ol>
+            <li>
+              <label>
+                <input
+                  name="locationVisibility"
+                  id="location-visibility-public"
+                  type="radio"
+                  value="public"
+                  aria-describedby="location-visibility-tip-public"
+                  ${match(location.visibility)
+                    .with('public', () => 'checked')
+                    .otherwise(() => '')}
+                />
+                <span>Everyone</span>
+              </label>
+              <p id="location-visibility-tip-public" role="note">We’ll show it on your public profile.</p>
+            </li>
+            <li>
+              <label>
+                <input
+                  name="locationVisibility"
+                  id="location-visibility-restricted"
+                  type="radio"
+                  value="restricted"
+                  aria-describedby="location-visibility-tip-restricted"
+                  ${match(location.visibility)
+                    .with('restricted', () => 'checked')
+                    .otherwise(() => '')}
+                />
+                <span>Only PREreview</span>
+              </label>
+              <p id="location-visibility-tip-restricted" role="note">We won’t share it with anyone else.</p>
+            </li>
+          </ol>
+        </fieldset>
 
-            <ol>
-              <li>
-                <label>
-                  <input
-                    name="locationVisibility"
-                    id="location-visibility-public"
-                    type="radio"
-                    value="public"
-                    aria-describedby="location-visibility-tip-public"
-                    ${match(location.visibility)
-                      .with('public', () => 'checked')
-                      .otherwise(() => '')}
-                  />
-                  <span>Everyone</span>
-                </label>
-                <p id="location-visibility-tip-public" role="note">We’ll show it on your public profile.</p>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="locationVisibility"
-                    id="location-visibility-restricted"
-                    type="radio"
-                    value="restricted"
-                    aria-describedby="location-visibility-tip-restricted"
-                    ${match(location.visibility)
-                      .with('restricted', () => 'checked')
-                      .otherwise(() => '')}
-                  />
-                  <span>Only PREreview</span>
-                </label>
-                <p id="location-visibility-tip-restricted" role="note">We won’t share it with anyone else.</p>
-              </li>
-            </ol>
-          </fieldset>
-
-          <button>Save and continue</button>
-        </form>
-      </main>
+        <button>Save and continue</button>
+      </form>
     `,
-    skipLinks: [[html`Skip to form`, '#form']],
-    user,
+    skipToLabel: 'form',
+    canonical: format(changeLocationVisibilityMatch.formatter, {}),
   })
 }
 
