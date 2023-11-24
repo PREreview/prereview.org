@@ -1,24 +1,18 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
-import { MediaType, Status } from 'hyper-ts'
-import * as M from 'hyper-ts/Middleware'
+import { Status } from 'hyper-ts'
 import * as _ from '../../src/my-details-page/my-details'
 import { myDetailsMatch } from '../../src/routes'
 import type { SaveUserOnboardingEnv } from '../../src/user-onboarding'
 import * as fc from '../fc'
-import { runMiddleware } from '../middleware'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('myDetails', () => {
   describe('when the user is logged in', () => {
     describe('when the details can be loaded', () => {
       test.prop([
-        fc.oauth(),
-        fc.origin(),
-        fc.connection({ method: fc.requestMethod() }),
         fc.user(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(true) }),
         fc.either(fc.constant('not-found' as const), fc.slackUser()),
@@ -31,9 +25,6 @@ describe('myDetails', () => {
       ])(
         'when the user has visited before',
         async (
-          oauth,
-          publicUrl,
-          connection,
           user,
           userOnboarding,
           slackUser,
@@ -44,38 +35,32 @@ describe('myDetails', () => {
           location,
           languages,
         ) => {
-          const actual = await runMiddleware(
-            _.myDetails({
-              getUser: () => M.right(user),
-              oauth,
-              publicUrl,
-              getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-              getLanguages: () => TE.fromEither(languages),
-              getLocation: () => TE.fromEither(location),
-              getResearchInterests: () => TE.fromEither(researchInterests),
-              getSlackUser: () => TE.fromEither(slackUser),
-              getUserOnboarding: () => TE.right(userOnboarding),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
-              saveUserOnboarding: shouldNotBeCalled,
-            }),
-            connection,
-          )()
+          const actual = await _.myDetails({ user })({
+            getCareerStage: () => TE.fromEither(careerStage),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+            getLanguages: () => TE.fromEither(languages),
+            getLocation: () => TE.fromEither(location),
+            getResearchInterests: () => TE.fromEither(researchInterests),
+            getSlackUser: () => TE.fromEither(slackUser),
+            getUserOnboarding: () => TE.right(userOnboarding),
+            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+            saveUserOnboarding: shouldNotBeCalled,
+          })()
 
-          expect(actual).toStrictEqual(
-            E.right([
-              { type: 'setStatus', status: Status.OK },
-              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-              { type: 'setBody', body: expect.anything() },
-            ]),
-          )
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            canonical: format(myDetailsMatch.formatter, {}),
+            current: 'my-details',
+            status: Status.OK,
+            title: expect.stringContaining('My details'),
+            main: expect.stringContaining('My details'),
+            skipToLabel: 'main',
+            js: [],
+          })
         },
       )
 
       test.prop([
-        fc.oauth(),
-        fc.origin(),
-        fc.connection({ method: fc.requestMethod() }),
         fc.user(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(false) }),
         fc.either(fc.constant('not-found' as const), fc.slackUser()),
@@ -88,9 +73,6 @@ describe('myDetails', () => {
       ])(
         "when the user hasn't visited before",
         async (
-          oauth,
-          publicUrl,
-          connection,
           user,
           userOnboarding,
           slackUser,
@@ -103,39 +85,33 @@ describe('myDetails', () => {
         ) => {
           const saveUserOnboarding = jest.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
 
-          const actual = await runMiddleware(
-            _.myDetails({
-              getUser: () => M.right(user),
-              oauth,
-              publicUrl,
-              getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-              getLanguages: () => TE.fromEither(languages),
-              getLocation: () => TE.fromEither(location),
-              getResearchInterests: () => TE.fromEither(researchInterests),
-              getSlackUser: () => TE.fromEither(slackUser),
-              getUserOnboarding: () => TE.right(userOnboarding),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
-              saveUserOnboarding,
-            }),
-            connection,
-          )()
+          const actual = await _.myDetails({ user })({
+            getCareerStage: () => TE.fromEither(careerStage),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+            getLanguages: () => TE.fromEither(languages),
+            getLocation: () => TE.fromEither(location),
+            getResearchInterests: () => TE.fromEither(researchInterests),
+            getSlackUser: () => TE.fromEither(slackUser),
+            getUserOnboarding: () => TE.right(userOnboarding),
+            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+            saveUserOnboarding,
+          })()
 
-          expect(actual).toStrictEqual(
-            E.right([
-              { type: 'setStatus', status: Status.OK },
-              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-              { type: 'setBody', body: expect.anything() },
-            ]),
-          )
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            canonical: format(myDetailsMatch.formatter, {}),
+            current: 'my-details',
+            status: Status.OK,
+            title: expect.stringContaining('My details'),
+            main: expect.stringContaining('My details'),
+            skipToLabel: 'main',
+            js: [],
+          })
           expect(saveUserOnboarding).toHaveBeenCalledWith(user.orcid, { seenMyDetailsPage: true })
         },
       )
 
       test.prop([
-        fc.oauth(),
-        fc.origin(),
-        fc.connection({ method: fc.requestMethod() }),
         fc.user(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(false) }),
         fc.either(fc.constant('not-found' as const), fc.slackUser()),
@@ -148,9 +124,6 @@ describe('myDetails', () => {
       ])(
         'when the user onboarding cannot be updated',
         async (
-          oauth,
-          publicUrl,
-          connection,
           user,
           userOnboarding,
           slackUser,
@@ -161,40 +134,31 @@ describe('myDetails', () => {
           location,
           languages,
         ) => {
-          const actual = await runMiddleware(
-            _.myDetails({
-              getUser: () => M.right(user),
-              oauth,
-              publicUrl,
-              getCareerStage: () => TE.fromEither(careerStage),
-              getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-              getLanguages: () => TE.fromEither(languages),
-              getLocation: () => TE.fromEither(location),
-              getResearchInterests: () => TE.fromEither(researchInterests),
-              getSlackUser: () => TE.fromEither(slackUser),
-              getUserOnboarding: () => TE.right(userOnboarding),
-              isOpenForRequests: () => TE.fromEither(isOpenForRequests),
-              saveUserOnboarding: () => TE.left('unavailable'),
-            }),
-            connection,
-          )()
+          const actual = await _.myDetails({ user })({
+            getCareerStage: () => TE.fromEither(careerStage),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+            getLanguages: () => TE.fromEither(languages),
+            getLocation: () => TE.fromEither(location),
+            getResearchInterests: () => TE.fromEither(researchInterests),
+            getSlackUser: () => TE.fromEither(slackUser),
+            getUserOnboarding: () => TE.right(userOnboarding),
+            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+            saveUserOnboarding: () => TE.left('unavailable'),
+          })()
 
-          expect(actual).toStrictEqual(
-            E.right([
-              { type: 'setStatus', status: Status.ServiceUnavailable },
-              { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-              { type: 'setBody', body: expect.anything() },
-            ]),
-          )
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: Status.ServiceUnavailable,
+            title: expect.stringContaining('problems'),
+            main: expect.stringContaining('problems'),
+            skipToLabel: 'main',
+            js: [],
+          })
         },
       )
     })
 
     test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
@@ -206,9 +170,6 @@ describe('myDetails', () => {
     ])(
       'when the user onboarding cannot be loaded',
       async (
-        oauth,
-        publicUrl,
-        connection,
         user,
         slackUser,
         contactEmailAddress,
@@ -218,39 +179,30 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await runMiddleware(
-          _.myDetails({
-            getUser: () => M.right(user),
-            oauth,
-            publicUrl,
-            getCareerStage: () => TE.fromEither(careerStage),
-            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-            getLanguages: () => TE.fromEither(languages),
-            getLocation: () => TE.fromEither(location),
-            getResearchInterests: () => TE.fromEither(researchInterests),
-            getSlackUser: () => TE.fromEither(slackUser),
-            getUserOnboarding: () => TE.left('unavailable'),
-            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
-            saveUserOnboarding: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+        const actual = await _.myDetails({ user })({
+          getCareerStage: () => TE.fromEither(careerStage),
+          getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+          getLanguages: () => TE.fromEither(languages),
+          getLocation: () => TE.fromEither(location),
+          getResearchInterests: () => TE.fromEither(researchInterests),
+          getSlackUser: () => TE.fromEither(slackUser),
+          getUserOnboarding: () => TE.left('unavailable'),
+          isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+          saveUserOnboarding: shouldNotBeCalled,
+        })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
       },
     )
 
     test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
@@ -262,9 +214,6 @@ describe('myDetails', () => {
     ])(
       'when the Slack user cannot be loaded',
       async (
-        oauth,
-        publicUrl,
-        connection,
         user,
         userOnboarding,
         contactEmailAddress,
@@ -274,39 +223,30 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await runMiddleware(
-          _.myDetails({
-            getUser: () => M.right(user),
-            oauth,
-            publicUrl,
-            getCareerStage: () => TE.fromEither(careerStage),
-            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-            getLanguages: () => TE.fromEither(languages),
-            getLocation: () => TE.fromEither(location),
-            getResearchInterests: () => TE.fromEither(researchInterests),
-            getSlackUser: () => TE.left('unavailable'),
-            getUserOnboarding: () => TE.right(userOnboarding),
-            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
-            saveUserOnboarding: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+        const actual = await _.myDetails({ user })({
+          getCareerStage: () => TE.fromEither(careerStage),
+          getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+          getLanguages: () => TE.fromEither(languages),
+          getLocation: () => TE.fromEither(location),
+          getResearchInterests: () => TE.fromEither(researchInterests),
+          getSlackUser: () => TE.left('unavailable'),
+          getUserOnboarding: () => TE.right(userOnboarding),
+          isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+          saveUserOnboarding: shouldNotBeCalled,
+        })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
       },
     )
 
     test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
@@ -318,9 +258,6 @@ describe('myDetails', () => {
     ])(
       'when the contact email address cannot be loaded',
       async (
-        oauth,
-        publicUrl,
-        connection,
         user,
         userOnboarding,
         slackUser,
@@ -330,39 +267,30 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await runMiddleware(
-          _.myDetails({
-            getUser: () => M.right(user),
-            oauth,
-            publicUrl,
-            getCareerStage: () => TE.fromEither(careerStage),
-            getContactEmailAddress: () => TE.left('unavailable'),
-            getLanguages: () => TE.fromEither(languages),
-            getLocation: () => TE.fromEither(location),
-            getResearchInterests: () => TE.fromEither(researchInterests),
-            getSlackUser: () => TE.fromEither(slackUser),
-            getUserOnboarding: () => TE.right(userOnboarding),
-            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
-            saveUserOnboarding: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+        const actual = await _.myDetails({ user })({
+          getCareerStage: () => TE.fromEither(careerStage),
+          getContactEmailAddress: () => TE.left('unavailable'),
+          getLanguages: () => TE.fromEither(languages),
+          getLocation: () => TE.fromEither(location),
+          getResearchInterests: () => TE.fromEither(researchInterests),
+          getSlackUser: () => TE.fromEither(slackUser),
+          getUserOnboarding: () => TE.right(userOnboarding),
+          isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+          saveUserOnboarding: shouldNotBeCalled,
+        })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
       },
     )
 
     test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.userOnboarding(),
       fc.slackUser(),
@@ -374,9 +302,6 @@ describe('myDetails', () => {
     ])(
       'when being open for requests is unavailable',
       async (
-        oauth,
-        publicUrl,
-        connection,
         user,
         userOnboarding,
         slackUser,
@@ -386,39 +311,30 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await runMiddleware(
-          _.myDetails({
-            getUser: () => M.right(user),
-            oauth,
-            publicUrl,
-            getCareerStage: () => TE.fromEither(careerStage),
-            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-            getLanguages: () => TE.fromEither(languages),
-            getLocation: () => TE.fromEither(location),
-            getResearchInterests: () => TE.fromEither(researchInterests),
-            getSlackUser: () => TE.right(slackUser),
-            getUserOnboarding: () => TE.right(userOnboarding),
-            isOpenForRequests: () => TE.left('unavailable'),
-            saveUserOnboarding: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+        const actual = await _.myDetails({ user })({
+          getCareerStage: () => TE.fromEither(careerStage),
+          getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+          getLanguages: () => TE.fromEither(languages),
+          getLocation: () => TE.fromEither(location),
+          getResearchInterests: () => TE.fromEither(researchInterests),
+          getSlackUser: () => TE.right(slackUser),
+          getUserOnboarding: () => TE.right(userOnboarding),
+          isOpenForRequests: () => TE.left('unavailable'),
+          saveUserOnboarding: shouldNotBeCalled,
+        })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
       },
     )
 
     test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
@@ -430,9 +346,6 @@ describe('myDetails', () => {
     ])(
       'when the career stage cannot be loaded',
       async (
-        oauth,
-        publicUrl,
-        connection,
         user,
         userOnboarding,
         slackUser,
@@ -442,39 +355,30 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await runMiddleware(
-          _.myDetails({
-            getUser: () => M.right(user),
-            oauth,
-            publicUrl,
-            getCareerStage: () => TE.left('unavailable'),
-            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-            getLanguages: () => TE.fromEither(languages),
-            getLocation: () => TE.fromEither(location),
-            getResearchInterests: () => TE.fromEither(researchInterests),
-            getSlackUser: () => TE.fromEither(slackUser),
-            getUserOnboarding: () => TE.right(userOnboarding),
-            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
-            saveUserOnboarding: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+        const actual = await _.myDetails({ user })({
+          getCareerStage: () => TE.left('unavailable'),
+          getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+          getLanguages: () => TE.fromEither(languages),
+          getLocation: () => TE.fromEither(location),
+          getResearchInterests: () => TE.fromEither(researchInterests),
+          getSlackUser: () => TE.fromEither(slackUser),
+          getUserOnboarding: () => TE.right(userOnboarding),
+          isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+          saveUserOnboarding: shouldNotBeCalled,
+        })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
       },
     )
 
     test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
@@ -486,9 +390,6 @@ describe('myDetails', () => {
     ])(
       'when the research interests cannot be loaded',
       async (
-        oauth,
-        publicUrl,
-        connection,
         user,
         userOnboarding,
         slackUser,
@@ -498,39 +399,30 @@ describe('myDetails', () => {
         location,
         languages,
       ) => {
-        const actual = await runMiddleware(
-          _.myDetails({
-            getUser: () => M.right(user),
-            oauth,
-            publicUrl,
-            getCareerStage: () => TE.fromEither(careerStage),
-            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-            getLanguages: () => TE.fromEither(languages),
-            getLocation: () => TE.fromEither(location),
-            getResearchInterests: () => TE.left('unavailable'),
-            getSlackUser: () => TE.fromEither(slackUser),
-            getUserOnboarding: () => TE.right(userOnboarding),
-            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
-            saveUserOnboarding: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+        const actual = await _.myDetails({ user })({
+          getCareerStage: () => TE.fromEither(careerStage),
+          getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+          getLanguages: () => TE.fromEither(languages),
+          getLocation: () => TE.fromEither(location),
+          getResearchInterests: () => TE.left('unavailable'),
+          getSlackUser: () => TE.fromEither(slackUser),
+          getUserOnboarding: () => TE.right(userOnboarding),
+          isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+          saveUserOnboarding: shouldNotBeCalled,
+        })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
       },
     )
 
     test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
@@ -542,9 +434,6 @@ describe('myDetails', () => {
     ])(
       'when the location cannot be loaded',
       async (
-        oauth,
-        publicUrl,
-        connection,
         user,
         userOnboarding,
         slackUser,
@@ -554,39 +443,30 @@ describe('myDetails', () => {
         researchInterests,
         languages,
       ) => {
-        const actual = await runMiddleware(
-          _.myDetails({
-            getUser: () => M.right(user),
-            oauth,
-            publicUrl,
-            getCareerStage: () => TE.fromEither(careerStage),
-            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-            getLanguages: () => TE.fromEither(languages),
-            getLocation: () => TE.left('unavailable'),
-            getResearchInterests: () => TE.fromEither(researchInterests),
-            getSlackUser: () => TE.fromEither(slackUser),
-            getUserOnboarding: () => TE.right(userOnboarding),
-            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
-            saveUserOnboarding: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+        const actual = await _.myDetails({ user })({
+          getCareerStage: () => TE.fromEither(careerStage),
+          getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+          getLanguages: () => TE.fromEither(languages),
+          getLocation: () => TE.left('unavailable'),
+          getResearchInterests: () => TE.fromEither(researchInterests),
+          getSlackUser: () => TE.fromEither(slackUser),
+          getUserOnboarding: () => TE.right(userOnboarding),
+          isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+          saveUserOnboarding: shouldNotBeCalled,
+        })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
       },
     )
 
     test.prop([
-      fc.oauth(),
-      fc.origin(),
-      fc.connection({ method: fc.requestMethod() }),
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
@@ -598,9 +478,6 @@ describe('myDetails', () => {
     ])(
       'when the languages cannot be loaded',
       async (
-        oauth,
-        publicUrl,
-        connection,
         user,
         userOnboarding,
         slackUser,
@@ -610,109 +487,46 @@ describe('myDetails', () => {
         researchInterests,
         location,
       ) => {
-        const actual = await runMiddleware(
-          _.myDetails({
-            getUser: () => M.right(user),
-            oauth,
-            publicUrl,
-            getCareerStage: () => TE.fromEither(careerStage),
-            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
-            getLanguages: () => TE.left('unavailable'),
-            getLocation: () => TE.fromEither(location),
-            getResearchInterests: () => TE.fromEither(researchInterests),
-            getSlackUser: () => TE.fromEither(slackUser),
-            getUserOnboarding: () => TE.right(userOnboarding),
-            isOpenForRequests: () => TE.fromEither(isOpenForRequests),
-            saveUserOnboarding: shouldNotBeCalled,
-          }),
-          connection,
-        )()
+        const actual = await _.myDetails({ user })({
+          getCareerStage: () => TE.fromEither(careerStage),
+          getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+          getLanguages: () => TE.left('unavailable'),
+          getLocation: () => TE.fromEither(location),
+          getResearchInterests: () => TE.fromEither(researchInterests),
+          getSlackUser: () => TE.fromEither(slackUser),
+          getUserOnboarding: () => TE.right(userOnboarding),
+          isOpenForRequests: () => TE.fromEither(isOpenForRequests),
+          saveUserOnboarding: shouldNotBeCalled,
+        })()
 
-        expect(actual).toStrictEqual(
-          E.right([
-            { type: 'setStatus', status: Status.ServiceUnavailable },
-            { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-            { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-            { type: 'setBody', body: expect.anything() },
-          ]),
-        )
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
       },
     )
   })
 
-  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() })])(
-    'when the user is not logged in',
-    async (oauth, publicUrl, connection) => {
-      const actual = await runMiddleware(
-        _.myDetails({
-          getUser: () => M.left('no-session'),
-          oauth,
-          publicUrl,
-          getCareerStage: shouldNotBeCalled,
-          getContactEmailAddress: shouldNotBeCalled,
-          getLanguages: shouldNotBeCalled,
-          getLocation: shouldNotBeCalled,
-          getResearchInterests: shouldNotBeCalled,
-          getSlackUser: shouldNotBeCalled,
-          getUserOnboarding: shouldNotBeCalled,
-          isOpenForRequests: shouldNotBeCalled,
-          saveUserOnboarding: shouldNotBeCalled,
-        }),
-        connection,
-      )()
+  test.prop([fc.option(fc.string(), { nil: undefined })])('when the user is not logged in', async message => {
+    const actual = await _.myDetails({ message, user: undefined })({
+      getCareerStage: shouldNotBeCalled,
+      getContactEmailAddress: shouldNotBeCalled,
+      getLanguages: shouldNotBeCalled,
+      getLocation: shouldNotBeCalled,
+      getResearchInterests: shouldNotBeCalled,
+      getSlackUser: shouldNotBeCalled,
+      getUserOnboarding: shouldNotBeCalled,
+      isOpenForRequests: shouldNotBeCalled,
+      saveUserOnboarding: shouldNotBeCalled,
+    })()
 
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.Found },
-          {
-            type: 'setHeader',
-            name: 'Location',
-            value: new URL(
-              `?${new URLSearchParams({
-                client_id: oauth.clientId,
-                response_type: 'code',
-                redirect_uri: oauth.redirectUri.href,
-                scope: '/authenticate',
-                state: new URL(format(myDetailsMatch.formatter, {}), publicUrl).toString(),
-              }).toString()}`,
-              oauth.authorizeUrl,
-            ).href,
-          },
-          { type: 'endResponse' },
-        ]),
-      )
-    },
-  )
-
-  test.prop([fc.oauth(), fc.origin(), fc.connection({ method: fc.requestMethod() }), fc.error()])(
-    "when the user can't be loaded",
-    async (oauth, publicUrl, connection, error) => {
-      const actual = await runMiddleware(
-        _.myDetails({
-          getUser: () => M.left(error),
-          oauth,
-          publicUrl,
-          getCareerStage: shouldNotBeCalled,
-          getContactEmailAddress: shouldNotBeCalled,
-          getLanguages: shouldNotBeCalled,
-          getLocation: shouldNotBeCalled,
-          getResearchInterests: shouldNotBeCalled,
-          getSlackUser: shouldNotBeCalled,
-          getUserOnboarding: shouldNotBeCalled,
-          isOpenForRequests: shouldNotBeCalled,
-          saveUserOnboarding: shouldNotBeCalled,
-        }),
-        connection,
-      )()
-
-      expect(actual).toStrictEqual(
-        E.right([
-          { type: 'setStatus', status: Status.ServiceUnavailable },
-          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
-        ]),
-      )
-    },
-  )
+    expect(actual).toStrictEqual({
+      _tag: 'LogInResponse',
+      location: format(myDetailsMatch.formatter, {}),
+    })
+  })
 })
