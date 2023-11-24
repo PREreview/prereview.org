@@ -24,8 +24,10 @@ export const CareerStageC = C.struct({
   visibility: C.literal('public', 'restricted'),
 }) satisfies C.Codec<unknown, unknown, CareerStage>
 
-export const getCareerStage = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }: GetCareerStageEnv) => getCareerStage(orcid)))
+export const getCareerStage = (
+  orcid: Orcid,
+): RTE.ReaderTaskEither<GetCareerStageEnv, 'not-found' | 'unavailable', CareerStage> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getCareerStage }) => getCareerStage(orcid)))
 
 export const maybeGetCareerStage = flow(
   getCareerStage,
