@@ -25,10 +25,10 @@ export const ResearchInterestsC = C.struct({
   visibility: C.literal('public', 'restricted'),
 }) satisfies C.Codec<unknown, unknown, ResearchInterests>
 
-export const getResearchInterests = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ getResearchInterests }: GetResearchInterestsEnv) => getResearchInterests(orcid)),
-  )
+export const getResearchInterests = (
+  orcid: Orcid,
+): RTE.ReaderTaskEither<GetResearchInterestsEnv, 'not-found' | 'unavailable', ResearchInterests> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getResearchInterests }) => getResearchInterests(orcid)))
 
 export const maybeGetResearchInterests = flow(
   getResearchInterests,

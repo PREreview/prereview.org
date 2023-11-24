@@ -1,140 +1,129 @@
 import { format } from 'fp-ts-routing'
 import type { Reader } from 'fp-ts/Reader'
+import * as RT from 'fp-ts/ReaderTask'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import type { OAuthEnv } from 'hyper-ts-oauth'
-import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
-import { P, match } from 'ts-pattern'
-import { html, plainText, sendHtml } from '../html'
-import { logInAndRedirect } from '../log-in'
-import { getMethod, seeOther, serviceUnavailable } from '../middleware'
-import { type FathomEnv, type PhaseEnv, page } from '../page'
-import type { PublicUrlEnv } from '../public-url'
+import { match } from 'ts-pattern'
+import { html, plainText } from '../html'
+import { havingProblemsPage } from '../http-error'
 import { type ResearchInterests, getResearchInterests, saveResearchInterests } from '../research-interests'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response'
 import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../routes'
-import { type GetUserEnv, type User, getUser } from '../user'
+import type { User } from '../user'
 
-export type Env = EnvFor<typeof changeResearchInterestsVisibility>
+export type Env = EnvFor<ReturnType<typeof changeResearchInterestsVisibility>>
 
-export const changeResearchInterestsVisibility = pipe(
-  getUser,
-  RM.bindTo('user'),
-  RM.apSW('method', RM.fromMiddleware(getMethod)),
-  RM.bindW(
-    'researchInterests',
-    RM.fromReaderTaskEitherK(({ user }) => getResearchInterests(user.orcid)),
-  ),
-  RM.ichainW(state =>
-    match(state.method)
-      .with('POST', () => handleChangeResearchInterestsVisibilityForm(state.user, state.researchInterests))
-      .otherwise(() => showChangeResearchInterestsVisibilityForm(state.user, state.researchInterests)),
-  ),
-  RM.orElseW(error =>
-    match(error)
-      .returnType<
-        RM.ReaderMiddleware<
-          FathomEnv & GetUserEnv & OAuthEnv & PhaseEnv & PublicUrlEnv,
-          StatusOpen,
-          ResponseEnded,
-          never,
-          void
-        >
-      >()
-      .with(
-        'not-found',
-        RM.fromMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
-      )
-      .with('no-session', () => logInAndRedirect(myDetailsMatch.formatter, {}))
-      .with(P.union('unavailable', P.instanceOf(Error)), () => serviceUnavailable)
-      .exhaustive(),
-  ),
-)
-
-const showChangeResearchInterestsVisibilityForm = (user: User, researchInterests: ResearchInterests) =>
+export const changeResearchInterestsVisibility = ({
+  body,
+  method,
+  user,
+}: {
+  body: unknown
+  method: string
+  user?: User
+}) =>
   pipe(
-    RM.rightReader(createFormPage(user, researchInterests)),
-    RM.ichainFirst(() => RM.status(Status.OK)),
-    RM.ichainMiddlewareK(sendHtml),
+    RTE.Do,
+    RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.let('body', () => body),
+    RTE.let('method', () => method),
+    RTE.bindW('researchInterests', ({ user }) => getResearchInterests(user.orcid)),
+    RTE.matchE(
+      error =>
+        match(error)
+          .returnType<RT.ReaderTask<unknown, RedirectResponse | LogInResponse | PageResponse>>()
+          .with('not-found', () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
+          .with('no-session', () => RT.of(LogInResponse({ location: format(myDetailsMatch.formatter, {}) })))
+          .with('unavailable', () => RT.of(havingProblemsPage))
+          .exhaustive(),
+      state =>
+        match(state)
+          .with({ method: 'POST' }, handleChangeResearchInterestsVisibilityForm)
+          .otherwise(state => RT.of(createFormPage(state))),
+    ),
   )
 
 const ChangeResearchInterestsVisibilityFormD = pipe(
   D.struct({ researchInterestsVisibility: D.literal('public', 'restricted') }),
 )
 
-const handleChangeResearchInterestsVisibilityForm = (user: User, researchInterests: ResearchInterests) =>
+const handleChangeResearchInterestsVisibilityForm = ({
+  body,
+  researchInterests,
+  user,
+}: {
+  body: unknown
+  researchInterests: ResearchInterests
+  user: User
+}) =>
   pipe(
-    RM.decodeBody(body => ChangeResearchInterestsVisibilityFormD.decode(body)),
-    RM.orElseW(() => RM.of({ researchInterestsVisibility: 'restricted' as const })),
-    RM.ichainW(
+    RTE.fromEither(ChangeResearchInterestsVisibilityFormD.decode(body)),
+    RTE.getOrElseW(() => RT.of({ researchInterestsVisibility: 'restricted' as const })),
+    RT.chain(
       flow(
         ({ researchInterestsVisibility }) => ({ ...researchInterests, visibility: researchInterestsVisibility }),
-        RM.fromReaderTaskEitherK(researchInterests => saveResearchInterests(user.orcid, researchInterests)),
-        RM.ichainMiddlewareK(() => seeOther(format(myDetailsMatch.formatter, {}))),
-        RM.orElseW(() => serviceUnavailable),
+        researchInterests => saveResearchInterests(user.orcid, researchInterests),
+        RTE.matchW(
+          () => havingProblemsPage,
+          () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
+        ),
       ),
     ),
   )
 
-function createFormPage(user: User, researchInterests: ResearchInterests) {
-  return page({
+function createFormPage({ researchInterests }: { researchInterests: ResearchInterests }) {
+  return PageResponse({
     title: plainText`Who can see your research interests?`,
-    content: html`
-      <nav>
-        <a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>
-      </nav>
+    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
+    main: html`
+      <form method="post" action="${format(changeResearchInterestsVisibilityMatch.formatter, {})}" novalidate>
+        <fieldset role="group">
+          <legend>
+            <h1>Who can see your research interests?</h1>
+          </legend>
 
-      <main id="form">
-        <form method="post" action="${format(changeResearchInterestsVisibilityMatch.formatter, {})}" novalidate>
-          <fieldset role="group">
-            <legend>
-              <h1>Who can see your research interests?</h1>
-            </legend>
+          <ol>
+            <li>
+              <label>
+                <input
+                  name="researchInterestsVisibility"
+                  id="research-interests-visibility-public"
+                  type="radio"
+                  value="public"
+                  aria-describedby="research-interests-visibility-tip-public"
+                  ${match(researchInterests.visibility)
+                    .with('public', () => 'checked')
+                    .otherwise(() => '')}
+                />
+                <span>Everyone</span>
+              </label>
+              <p id="research-interests-visibility-tip-public" role="note">We’ll show them on your public profile.</p>
+            </li>
+            <li>
+              <label>
+                <input
+                  name="researchInterestsVisibility"
+                  id="research-interests-visibility-restricted"
+                  type="radio"
+                  value="restricted"
+                  aria-describedby="research-interests-visibility-tip-restricted"
+                  ${match(researchInterests.visibility)
+                    .with('restricted', () => 'checked')
+                    .otherwise(() => '')}
+                />
+                <span>Only PREreview</span>
+              </label>
+              <p id="research-interests-visibility-tip-restricted" role="note">We won’t share them with anyone else.</p>
+            </li>
+          </ol>
+        </fieldset>
 
-            <ol>
-              <li>
-                <label>
-                  <input
-                    name="researchInterestsVisibility"
-                    id="research-interests-visibility-public"
-                    type="radio"
-                    value="public"
-                    aria-describedby="research-interests-visibility-tip-public"
-                    ${match(researchInterests.visibility)
-                      .with('public', () => 'checked')
-                      .otherwise(() => '')}
-                  />
-                  <span>Everyone</span>
-                </label>
-                <p id="research-interests-visibility-tip-public" role="note">We’ll show them on your public profile.</p>
-              </li>
-              <li>
-                <label>
-                  <input
-                    name="researchInterestsVisibility"
-                    id="research-interests-visibility-restricted"
-                    type="radio"
-                    value="restricted"
-                    aria-describedby="research-interests-visibility-tip-restricted"
-                    ${match(researchInterests.visibility)
-                      .with('restricted', () => 'checked')
-                      .otherwise(() => '')}
-                  />
-                  <span>Only PREreview</span>
-                </label>
-                <p id="research-interests-visibility-tip-restricted" role="note">
-                  We won’t share them with anyone else.
-                </p>
-              </li>
-            </ol>
-          </fieldset>
-
-          <button>Save and continue</button>
-        </form>
-      </main>
+        <button>Save and continue</button>
+      </form>
     `,
-    skipLinks: [[html`Skip to form`, '#form']],
-    user,
+    skipToLabel: 'form',
+    canonical: format(changeResearchInterestsVisibilityMatch.formatter, {}),
   })
 }
 
