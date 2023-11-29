@@ -24,6 +24,12 @@ test('skip-link', async ({ page }) => {
   })({})
 
   await page.setContent(pageHtml.toString())
+
+  await expect(page.getByRole('link', { name: 'Skip to main content' }).boundingBox()).resolves.toMatchObject({
+    height: 1,
+    width: 1,
+  })
+
   await page.keyboard.press('Tab')
 
   await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
