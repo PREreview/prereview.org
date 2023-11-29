@@ -136,6 +136,8 @@ export const privacyPolicyMatch = pipe(P.lit('privacy-policy'), P.then(P.end))
 
 export const trainingsMatch = pipe(P.lit('trainings'), P.then(P.end))
 
+export const resourcesMatch = pipe(P.lit('resources'), P.then(P.end))
+
 export const logInMatch = pipe(P.lit('log-in'), P.then(P.end))
 
 export const logOutMatch = pipe(P.lit('log-out'), P.then(P.end))

@@ -87,6 +87,7 @@ import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv } from '
 import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
+import { resources } from './resources'
 import { handleResponse } from './response'
 import { review } from './review'
 import { reviewAPreprint } from './review-a-preprint'
@@ -127,6 +128,7 @@ import {
   preprintReviewsMatch,
   privacyPolicyMatch,
   profileMatch,
+  resourcesMatch,
   reviewAPreprintMatch,
   reviewMatch,
   reviewsMatch,
@@ -374,6 +376,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.of({}),
           RM.apS('user', maybeGetUser),
           RM.apSW('response', RM.fromReaderTask(trainings)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+    ),
+    pipe(
+      resourcesMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(resources)),
           RM.ichainW(handleResponse),
         ),
       ),
