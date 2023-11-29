@@ -22,6 +22,7 @@ describe('resources', () => {
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
       canonical: format(resourcesMatch.formatter, {}),
+      current: 'resources',
       status: Status.OK,
       title: expect.stringContaining('Resources'),
       main: expect.stringContaining('<p>Foo</p>'),

@@ -21,5 +21,6 @@ function createPage(content: Html) {
       ${fixHeadingLevels(1, content)}
     `,
     canonical: format(resourcesMatch.formatter, {}),
+    current: 'resources',
   })
 }

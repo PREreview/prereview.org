@@ -22,6 +22,7 @@ import {
   partnersMatch,
   peopleMatch,
   privacyPolicyMatch,
+  resourcesMatch,
   reviewsMatch,
   trainingsMatch,
 } from './routes'
@@ -57,6 +58,7 @@ export interface Page {
     | 'partners'
     | 'people'
     | 'privacy-policy'
+    | 'resources'
     | 'reviews'
     | 'trainings'
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
@@ -211,6 +213,13 @@ export function page({
                               href="${format(liveReviewsMatch.formatter, {})}"
                               ${current === 'live-reviews' ? html`aria-current="page"` : ''}
                               >Live Reviews</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="${format(resourcesMatch.formatter, {})}"
+                              ${current === 'resources' ? html`aria-current="page"` : ''}
+                              >Resources</a
                             >
                           </li>
                           <li>
