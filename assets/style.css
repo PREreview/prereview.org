@@ -630,7 +630,7 @@ h6 {
 
 :--list {
   margin-block-start: var(--space-s);
-  padding-inline-start: var(--space-m);
+  padding-inline-start: 1em;
   text-wrap: pretty;
 
   nav > & {
@@ -642,6 +642,10 @@ h6 {
     column-gap: var(--space-xs-m);
     list-style-type: none;
     row-gap: var(--space-3xs-2xs);
+
+    & li {
+      margin-block-start: 0;
+    }
   }
 
   fieldset > & {
@@ -650,6 +654,7 @@ h6 {
     list-style-type: none;
 
     & > li {
+      max-inline-size: 100%;
       margin-block-start: var(--space-xs);
 
       & > span {
@@ -670,6 +675,16 @@ h6 {
     margin-block-start: var(--space-3xs-2xs);
     padding-inline-start: 0;
     list-style-type: none;
+  }
+}
+
+li {
+  &:where(:not(:first-child)) {
+    margin-block-start: var(--space-4xs);
+  }
+
+  &:where(:not(:has(:--list))) {
+    max-inline-size: 64ch;
   }
 }
 
@@ -1727,6 +1742,7 @@ skip-link {
   }
 
   > li {
+    max-inline-size: 100%;
     text-align: initial;
   }
 
