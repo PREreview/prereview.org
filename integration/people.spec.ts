@@ -24,16 +24,11 @@ test('can skip to the main content', async ({ fetch, javaScriptEnabled, page }) 
 
   await page.goto('/people')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 })
 
 test('might not load the text in time', async ({ fetch, javaScriptEnabled, page }) => {

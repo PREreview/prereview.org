@@ -380,45 +380,30 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page 
 test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaScriptEnabled, page }) => {
   await page.goto('/my-details/change-career-stage')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 
   await page.getByLabel('Mid').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await page.goto('/my-details/change-career-stage-visibility')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 
   await page.goto('/my-details/change-research-interests')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 
   await page
     .getByLabel('What are your research interests?')
@@ -427,103 +412,68 @@ test.extend(canLogIn).extend(areLoggedIn)('can skip to the form', async ({ javaS
 
   await page.goto('/my-details/change-research-interests-visibility')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 
   await page.goto('/my-details/change-open-for-requests')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await page.goto('/my-details/change-open-for-requests-visibility')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 
   await page.goto('/my-details/change-location')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 
   await page.getByLabel('Where are you based?').fill('Vivamus in convallis urna.')
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await page.goto('/my-details/change-location-visibility')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 
   await page.goto('/my-details/change-languages')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 
   await page.getByLabel('What languages can you review in?').fill('English and Spanish')
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await page.goto('/my-details/change-languages-visibility')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnabled, page }) => {

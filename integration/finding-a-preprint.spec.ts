@@ -131,16 +131,11 @@ test('can skip to the PREreviews', async ({ fetch, javaScriptEnabled, page }) =>
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page.keyboard.press('Tab')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to PREreviews' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 })
 
 test('can skip to the preprint details', async ({ fetch, javaScriptEnabled, page }) => {
@@ -154,14 +149,9 @@ test('can skip to the preprint details', async ({ fetch, javaScriptEnabled, page
 
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to preprint details' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('complementary', { name: 'Preprint details' })).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 })

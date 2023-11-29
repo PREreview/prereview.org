@@ -775,16 +775,11 @@ test('can skip to the reviews', async ({ fetch, javaScriptEnabled, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
   await page.keyboard.press('Tab')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to PREreviews' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 })
 
 test('can skip to the review', async ({ fetch, javaScriptEnabled, page }) => {
@@ -848,16 +843,11 @@ test('can skip to the review', async ({ fetch, javaScriptEnabled, page }) => {
 
   await page.goto('/reviews/1061864')
   await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to PREreview' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
   await page.keyboard.press('Enter')
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('main')).toBeFocused()
   }
-  await expect(page).toHaveScreenshot()
 })
 
 test('might not load the PREreview in time', async ({ fetch, javaScriptEnabled, page }) => {

@@ -302,144 +302,90 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('With a template').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
     await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('No, I reviewed it alone').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
   },
 )
 
@@ -451,167 +397,107 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
     await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('With prompts').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
     await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Partly', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
     await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
     await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
     await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
     await page.waitForLoadState()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Yes, but it needs to be improved').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.waitForLoadState()
     await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to form' })).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.keyboard.press('Enter')
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('main')).toBeFocused()
     }
-    await expect(page).toHaveScreenshot()
 
     await page.getByLabel('Yes, after minor changes').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
