@@ -28,6 +28,7 @@ import {
   logOutMatch,
   preprintReviewsMatch,
   profileMatch,
+  resourcesMatch,
   reviewAPreprintMatch,
   reviewsMatch,
   writeReviewReviewTypeMatch,
@@ -226,7 +227,7 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
     ),
     pipe(
       pipe(P.lit('docs'), P.then(P.lit('resources')), P.then(P.end)).parser,
-      P.map(RM.fromMiddlewareK(() => movedPermanently('https://content.prereview.org/resources/'))),
+      P.map(RM.fromMiddlewareK(() => movedPermanently(format(resourcesMatch.formatter, {})))),
     ),
     pipe(
       pipe(P.lit('edi-statement'), P.then(P.end)).parser,
