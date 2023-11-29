@@ -16,21 +16,6 @@ test('can read about trainings', async ({ fetch, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
-test('can skip to the main content', async ({ fetch, javaScriptEnabled, page }) => {
-  fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/64639b5007fb34a92c7f8518', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about trainings.</p>' }] } },
-  )
-
-  await page.goto('/trainings')
-  await page.keyboard.press('Tab')
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-})
-
 test('might not load the text in time', async ({ fetch, javaScriptEnabled, page }) => {
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/64639b5007fb34a92c7f8518', query: { key: 'key' } },

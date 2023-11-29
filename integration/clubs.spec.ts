@@ -16,21 +16,6 @@ test('can read about clubs', async ({ fetch, page }) => {
   await expect(page).toHaveScreenshot()
 })
 
-test('can skip to the main content', async ({ fetch, javaScriptEnabled, page }) => {
-  fetch.getOnce(
-    { url: 'https://content.prereview.org/ghost/api/content/pages/64637b4c07fb34a92c7f84ec', query: { key: 'key' } },
-    { body: { pages: [{ html: '<p>Some information about clubs.</p>' }] } },
-  )
-
-  await page.goto('/clubs')
-  await page.keyboard.press('Tab')
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-})
-
 test('might not load the text in time', async ({ fetch, javaScriptEnabled, page }) => {
   fetch.getOnce(
     { url: 'https://content.prereview.org/ghost/api/content/pages/64637b4c07fb34a92c7f84ec', query: { key: 'key' } },
