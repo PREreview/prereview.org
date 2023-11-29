@@ -16,7 +16,7 @@ const test = baseTest.extend({
   },
 })
 
-test('skip-link', async ({ page }) => {
+test('visibly hidden when not focussed', async ({ page }) => {
   const pageHtml = templatePage({
     content: html`<p id="main">hello</p>`,
     title: plainText('Something'),
@@ -25,13 +25,12 @@ test('skip-link', async ({ page }) => {
 
   await page.setContent(pageHtml.toString())
 
-  await expect(page.getByRole('link', { name: 'Skip to main content' }).boundingBox()).resolves.toMatchObject({
-    height: 1,
-    width: 1,
-  })
+  const skipLink = page.getByRole('link', { name: 'Skip to main content' })
+
+  await expect(skipLink.boundingBox()).resolves.toMatchObject({ height: 1, width: 1 })
 
   await page.keyboard.press('Tab')
 
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
+  await expect(skipLink).toBeFocused()
   await expect(page).toHaveScreenshot()
 })
