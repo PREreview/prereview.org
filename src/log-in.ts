@@ -73,7 +73,7 @@ const getPseudonym = (user: OrcidUser): RTE.ReaderTaskEither<GetPseudonymEnv, 'u
 const isUserBlocked = (user: Orcid): R.Reader<IsUserBlockedEnv, boolean> =>
   R.asks(({ isUserBlocked }) => isUserBlocked(user))
 
-const filterBlockedUsers = (user: OrcidUser): RE.ReaderEither<IsUserBlockedEnv, OrcidUser, OrcidUser> =>
+const filterBlockedUsers = <T extends OrcidUser>(user: T): RE.ReaderEither<IsUserBlockedEnv, T, T> =>
   pipe(
     isUserBlocked(user.orcid),
     R.map(isBlocked => (isBlocked ? E.left(user) : E.right(user))),
