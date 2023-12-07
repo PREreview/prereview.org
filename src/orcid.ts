@@ -1,6 +1,7 @@
 import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
+import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
@@ -10,8 +11,13 @@ import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
+import { URL } from 'url'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import { type NonEmptyString, NonEmptyStringC } from './types/string'
+
+export interface OrcidApiEnv {
+  readonly orcidApiUrl: URL
+}
 
 const JsonD = {
   decode: (s: string) =>
@@ -43,10 +49,8 @@ const PersonalDetailsD = D.struct({
 const PersonDetailsResponseD = pipe(JsonD, D.compose(D.union(PersonalDetailsD, ProfileLockedD)))
 
 const getPersonalDetails = flow(
-  (orcid: Orcid) => `https://pub.orcid.org/v3.0/${orcid}/personal-details`,
-  F.Request('GET'),
-  F.setHeader('Accept', 'application/json'),
-  F.send,
+  RTE.fromReaderK((orcid: Orcid) => orcidApiUrl(`${orcid}/personal-details`)),
+  RTE.chainW(flow(F.Request('GET'), F.setHeader('Accept', 'application/json'), F.send)),
   RTE.mapLeft(() => 'network-error' as const),
   RTE.filterOrElseW(F.hasStatus(Status.OK, Status.Conflict), response => `${response.status} status code` as const),
   RTE.chainTaskEitherKW(flow(F.decode(PersonDetailsResponseD), TE.mapLeft(D.draw))),
@@ -71,3 +75,5 @@ export const getNameFromOrcid = flow(
         .exhaustive(),
   ),
 )
+
+const orcidApiUrl = (path: string) => R.asks(({ orcidApiUrl }: OrcidApiEnv) => new URL(`/v3.0/${path}`, orcidApiUrl))

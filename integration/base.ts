@@ -863,6 +863,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         redirectUri: new URL(`http://localhost:${port}/orcid`),
         tokenUrl: new URL('http://orcid.test/token'),
       },
+      orcidApiUrl: new URL('http://api.orcid.test/'),
       publicUrl: new URL(`http://localhost:${port}`),
       requiresVerifiedEmailAddress,
       researchInterestsStore,

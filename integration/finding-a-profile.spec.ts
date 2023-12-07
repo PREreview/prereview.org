@@ -58,7 +58,7 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
 
   await page.goto('/reviews/7747129')
 
-  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-2695-5951/personal-details', {
+  fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-2695-5951/personal-details', {
     body: { name: { 'given-names': { value: 'CJ' }, 'family-name': { value: 'San Felipe' } } },
   })
   fetch.get(
@@ -225,7 +225,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my prof
   await page.getByLabel('Everyone').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-1825-0097/personal-details', {
+  fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-1825-0097/personal-details', {
     body: { name: { 'given-names': { value: 'Josiah' }, 'family-name': { value: 'Carberry' } } },
   })
   fetch.get(
@@ -450,7 +450,7 @@ test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", asy
 })
 
 test('the list might be empty', async ({ fetch, page }) => {
-  fetch.getOnce('https://pub.orcid.org/v3.0/0000-0002-6109-0367/personal-details', {
+  fetch.getOnce('http://api.orcid.test/v3.0/0000-0002-6109-0367/personal-details', {
     body: { name: { 'given-names': { value: 'Daniela' }, 'family-name': { value: 'Saderi' } } },
   })
   fetch.get(

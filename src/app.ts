@@ -45,6 +45,7 @@ import { type LegacyEnv, legacyRoutes } from './legacy-routes'
 import type { IsUserBlockedEnv } from './log-in'
 import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer'
+import type { OrcidApiEnv } from './orcid'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import { getPreprintFromPhilsci } from './philsci'
 import type { PublicUrlEnv } from './public-url'
@@ -72,6 +73,7 @@ export type ConfigEnv = CareerStageStoreEnv &
   L.LoggerEnv &
   (MailjetApiEnv | NodemailerEnv) &
   OAuthEnv &
+  OrcidApiEnv &
   PhaseEnv &
   PublicUrlEnv &
   RequiresVerifiedEmailAddressEnv &

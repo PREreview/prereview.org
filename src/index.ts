@@ -85,6 +85,7 @@ const server = app({
     redirectUri: new URL('/orcid', env.PUBLIC_URL),
     tokenUrl: new URL('https://orcid.org/oauth/token'),
   },
+  orcidApiUrl: new URL('https://pub.orcid.org/'),
   phase:
     typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT !== 'undefined'
       ? {
