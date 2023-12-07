@@ -66,6 +66,8 @@ const EnvD = pipe(
     LEGACY_PREREVIEW_UPDATE: withDefault(BooleanD, false),
     ORCID_CLIENT_ID: D.string,
     ORCID_CLIENT_SECRET: D.string,
+    ORCID_URL: withDefault(UrlD, new URL('https://orcid.org/')),
+    ORCID_API_URL: withDefault(UrlD, new URL('https://pub.orcid.org/')),
     PUBLIC_URL: UrlD,
     REMOVED_PREREVIEWS: withDefault(CommaSeparatedListD(IntD), []),
     SCIETY_LIST_TOKEN: withDefault(NonEmptyStringC, v4()() as unknown as NonEmptyString),

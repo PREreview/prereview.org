@@ -79,13 +79,13 @@ const server = app({
   locationStore: new Keyv({ namespace: 'location', store: keyvStore }),
   ...sendMailEnv,
   oauth: {
-    authorizeUrl: new URL('https://orcid.org/oauth/authorize'),
+    authorizeUrl: new URL(`${env.ORCID_URL.origin}/oauth/authorize`),
     clientId: env.ORCID_CLIENT_ID,
     clientSecret: env.ORCID_CLIENT_SECRET,
     redirectUri: new URL('/orcid', env.PUBLIC_URL),
-    tokenUrl: new URL('https://orcid.org/oauth/token'),
+    tokenUrl: new URL(`${env.ORCID_URL.origin}/oauth/token`),
   },
-  orcidApiUrl: new URL('https://pub.orcid.org/'),
+  orcidApiUrl: env.ORCID_API_URL,
   phase:
     typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT !== 'undefined'
       ? {
