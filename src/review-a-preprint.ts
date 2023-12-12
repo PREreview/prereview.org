@@ -237,7 +237,7 @@ function createUnknownPreprintWithDoiPage(preprint: Extract<IndeterminatePreprin
           .with('engrxiv', () => 'an engrXiv')
           .with('medrxiv', () => 'a medRxiv')
           .with('metaarxiv', () => 'a MetaArXiv')
-          .with('osf', () => 'an OSF')
+          .with('osf-preprints', () => 'an OSF')
           .with('preprints.org', () => 'a Preprints.org')
           .with('psyarxiv', () => 'a PsyArXiv')
           .with('research-square', () => 'a Research Square')

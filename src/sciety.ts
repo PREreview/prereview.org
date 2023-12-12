@@ -9,7 +9,7 @@ import type {
   EdarxivPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
-  OsfPreprintId,
+  OsfPreprintsPreprintId,
   PreprintId,
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
@@ -23,7 +23,7 @@ export type PreprintIdSupportedBySciety =
   | EdarxivPreprintId
   | MedrxivPreprintId
   | MetaarxivPreprintId
-  | OsfPreprintId
+  | OsfPreprintsPreprintId
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
   | ScieloPreprintId
@@ -40,7 +40,7 @@ export const isScietyPreprint: Refinement<PreprintId, PreprintIdSupportedBySciet
             'edarxiv',
             'medrxiv',
             'metaarxiv',
-            'osf',
+            'osf-preprints',
             'psyarxiv',
             'research-square',
             'scielo',

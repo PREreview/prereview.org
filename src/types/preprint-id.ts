@@ -17,7 +17,7 @@ export type PreprintId =
   | EngrxivPreprintId
   | MedrxivPreprintId
   | MetaarxivPreprintId
-  | OsfPreprintId
+  | OsfPreprintsPreprintId
   | PhilsciPreprintId
   | PreprintsorgPreprintId
   | PsyarxivPreprintId
@@ -96,8 +96,8 @@ export interface MetaarxivPreprintId {
   readonly value: Doi<'31222'>
 }
 
-export interface OsfPreprintId {
-  readonly type: 'osf'
+export interface OsfPreprintsPreprintId {
+  readonly type: 'osf-preprints'
   readonly value: Doi<'31219'>
 }
 
@@ -198,7 +198,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('22541'), doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId)
     .when(hasRegistrant('26434'), doi => ({ type: 'chemrxiv', value: doi }) satisfies ChemrxivPreprintId)
     .when(hasRegistrant('20944'), doi => ({ type: 'preprints.org', value: doi }) satisfies PreprintsorgPreprintId)
-    .when(hasRegistrant('31219'), doi => ({ type: 'osf', value: doi }) satisfies OsfPreprintId)
+    .when(hasRegistrant('31219'), doi => ({ type: 'osf-preprints', value: doi }) satisfies OsfPreprintsPreprintId)
     .when(hasRegistrant('31222'), doi => ({ type: 'metaarxiv', value: doi }) satisfies MetaarxivPreprintId)
     .when(hasRegistrant('31223'), doi => ({ type: 'eartharxiv', value: doi }) satisfies EartharxivPreprintId)
     .when(hasRegistrant('31224'), doi => ({ type: 'engrxiv', value: doi }) satisfies EngrxivPreprintId)

@@ -26,7 +26,7 @@ import type {
   EngrxivPreprintId,
   MedrxivPreprintId,
   MetaarxivPreprintId,
-  OsfPreprintId,
+  OsfPreprintsPreprintId,
   PreprintsorgPreprintId,
   PsyarxivPreprintId,
   ResearchSquarePreprintId,
@@ -46,7 +46,7 @@ export type CrossrefPreprintId =
   | EngrxivPreprintId
   | MedrxivPreprintId
   | MetaarxivPreprintId
-  | OsfPreprintId
+  | OsfPreprintsPreprintId
   | PreprintsorgPreprintId
   | PsyarxivPreprintId
   | ResearchSquarePreprintId
@@ -133,7 +133,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
               .with({ type: 'engrxiv' }, () => O.some('en' as const))
               .with({ type: 'metaarxiv' }, () => O.some('en' as const))
-              .with({ type: 'osf', text: P.select() }, detectLanguage)
+              .with({ type: 'osf-preprints', text: P.select() }, detectLanguage)
               .with({ type: 'preprints.org' }, () => O.some('en' as const))
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
@@ -170,7 +170,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'edarxiv', text: P.select() }, detectLanguage)
               .with({ type: 'engrxiv' }, () => O.some('en' as const))
               .with({ type: 'metaarxiv' }, () => O.some('en' as const))
-              .with({ type: 'osf', text: P.select() }, detectLanguage)
+              .with({ type: 'osf-preprints', text: P.select() }, detectLanguage)
               .with({ type: 'preprints.org' }, () => O.some('en' as const))
               .with({ type: 'psyarxiv' }, () => O.some('en' as const))
               .with({ type: 'research-square' }, () => O.some('en' as const))
@@ -345,9 +345,9 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
     D.map(
       work =>
         ({
-          type: 'osf',
+          type: 'osf-preprints',
           value: work.DOI,
-        }) satisfies OsfPreprintId,
+        }) satisfies OsfPreprintsPreprintId,
     ),
   ),
   pipe(

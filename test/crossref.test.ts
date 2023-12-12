@@ -1376,7 +1376,7 @@ describe('getPreprintFromCrossref', () => {
       )
     })
 
-    test.prop([fc.osfPreprintId(), fc.plainDate()])('from OSF', async (id, posted) => {
+    test.prop([fc.osfPreprintsPreprintId(), fc.plainDate()])('from OSF', async (id, posted) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
         body: {
           status: 'ok',

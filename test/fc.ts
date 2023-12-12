@@ -71,7 +71,7 @@ import {
   type IndeterminatePreprintId,
   type MedrxivPreprintId,
   type MetaarxivPreprintId,
-  type OsfPreprintId,
+  type OsfPreprintsPreprintId,
   type PhilsciPreprintId,
   type PreprintId,
   type PreprintsorgPreprintId,
@@ -359,7 +359,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
     engrxivPreprintUrl(),
     medrxivPreprintUrl(),
     metaarxivPreprintUrl(),
-    osfPreprintUrl(),
+    osfPreprintsPreprintUrl(),
     philsciPreprintUrl(),
     preprintsorgPreprintUrl(),
     psyarxivPreprintUrl(),
@@ -547,16 +547,19 @@ export const metaarxivPreprintUrl = (): fc.Arbitrary<[URL, MetaarxivPreprintId]>
       { type: 'metaarxiv', value: `10.31222/osf.io/${id}` as Doi<'31222'> },
     ])
 
-export const osfPreprintId = (): fc.Arbitrary<OsfPreprintId> =>
+export const osfPreprintsPreprintId = (): fc.Arbitrary<OsfPreprintsPreprintId> =>
   fc.record({
-    type: fc.constant('osf'),
+    type: fc.constant('osf-preprints'),
     value: doi(fc.constant('31219')),
   })
 
-export const osfPreprintUrl = (): fc.Arbitrary<[URL, OsfPreprintId]> =>
+export const osfPreprintsPreprintUrl = (): fc.Arbitrary<[URL, OsfPreprintsPreprintId]> =>
   fc
     .stringOf(alphanumeric(), { minLength: 1 })
-    .map(id => [new URL(`https://osf.io/${id}`), { type: 'osf', value: `10.31219/osf.io/${id}` as Doi<'31219'> }])
+    .map(id => [
+      new URL(`https://osf.io/${id}`),
+      { type: 'osf-preprints', value: `10.31219/osf.io/${id}` as Doi<'31219'> },
+    ])
 
 export const philsciPreprintId = (): fc.Arbitrary<PhilsciPreprintId> =>
   fc.record({
@@ -693,7 +696,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
     engrxivPreprintId(),
     medrxivPreprintId(),
     metaarxivPreprintId(),
-    osfPreprintId(),
+    osfPreprintsPreprintId(),
     preprintsorgPreprintId(),
     psyarxivPreprintId(),
     researchSquarePreprintId(),
@@ -718,7 +721,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     engrxivPreprintId(),
     medrxivPreprintId(),
     metaarxivPreprintId(),
-    osfPreprintId(),
+    osfPreprintsPreprintId(),
     preprintsorgPreprintId(),
     psyarxivPreprintId(),
     researchSquarePreprintId(),

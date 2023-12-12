@@ -422,7 +422,7 @@ function publishForm(
                       .with('engrxiv', () => 'engrXiv')
                       .with('medrxiv', () => 'medRxiv')
                       .with('metaarxiv', () => 'MetaArXiv')
-                      .with('osf', () => 'OSF Preprints')
+                      .with('osf-preprints', () => 'OSF Preprints')
                       .with('philsci', () => 'PhilSci-Archive')
                       .with('preprints.org', () => 'Preprints.org')
                       .with('psyarxiv', () => 'PsyArXiv')

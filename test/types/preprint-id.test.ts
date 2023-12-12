@@ -343,7 +343,7 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'metaarxiv', value: doi }))
   })
 
-  test.prop([fc.osfPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+  test.prop([fc.osfPreprintsPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('https://www.osf.io/ewdn8'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // www.
       [[new URL('http://osf.io/ewdn8'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // http
@@ -354,7 +354,7 @@ describe('fromUrl', () => {
       [[new URL('https://osf.io/ewdn8/download?format=pdf'), '10.31219/osf.io/ewdn8' as Doi<'31219'>]], // download pdf
     ],
   })('with an OSF URL', ([url, doi]) => {
-    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'osf', value: doi }))
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'osf-preprints', value: doi }))
   })
 
   test.prop([fc.philsciPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
