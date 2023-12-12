@@ -272,20 +272,20 @@ export const redirectResponse = (): fc.Arbitrary<RedirectResponse> =>
   fc.record({
     _tag: fc.constant('RedirectResponse' as const),
     status: fc.constantFrom(Status.SeeOther, Status.Found),
-    location: fc.oneof(fc.string(), url()),
+    location: fc.oneof(fc.webPath(), url()),
   })
 
 export const flashMessageResponse = (): fc.Arbitrary<FlashMessageResponse> =>
   fc.record({
     _tag: fc.constant('FlashMessageResponse' as const),
-    location: fc.string(),
+    location: fc.webPath(),
     message: fc.string(),
   })
 
 export const logInResponse = (): fc.Arbitrary<LogInResponse> =>
   fc.record({
     _tag: fc.constant('LogInResponse' as const),
-    location: fc.string(),
+    location: fc.webPath(),
   })
 
 const asset = (): fc.Arbitrary<keyof typeof assets> =>
