@@ -573,6 +573,211 @@ describe('getPreprintFromDatacite', () => {
       )
     })
 
+    test.prop([fc.osfPreprintId(), fc.plainDate()])('from OSF', async (id, posted) => {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
+        body: {
+          data: {
+            id: '10.17605/osf.io/eq8bk',
+            type: 'dois',
+            attributes: {
+              doi: id.value,
+              prefix: '10.17605',
+              suffix: 'osf.io/eq8bk',
+              identifiers: [{ identifier: 'https://osf.io/eq8bk', identifierType: 'URL' }],
+              alternateIdentifiers: [{ alternateIdentifierType: 'URL', alternateIdentifier: 'https://osf.io/eq8bk' }],
+              creators: [
+                {
+                  name: 'Da Silva, Maria Isabel Caetano',
+                  nameType: 'Personal',
+                  givenName: 'Maria Isabel Caetano',
+                  familyName: 'Da Silva',
+                  affiliation: [],
+                  nameIdentifiers: [{ nameIdentifier: 'https://osf.io/bejuy', nameIdentifierScheme: 'URL' }],
+                },
+                {
+                  name: 'Eglídia Carla Figueirêdo Vidal',
+                  nameType: 'Personal',
+                  affiliation: [],
+                  nameIdentifiers: [{ nameIdentifier: 'https://osf.io/p3t8m', nameIdentifierScheme: 'URL' }],
+                },
+                {
+                  name: 'De Sena, Aline Sampaio Rolim',
+                  nameType: 'Personal',
+                  givenName: 'Aline Sampaio Rolim',
+                  familyName: 'De Sena',
+                  affiliation: [],
+                  nameIdentifiers: [{ nameIdentifier: 'https://osf.io/dh3qp', nameIdentifierScheme: 'URL' }],
+                },
+                {
+                  name: 'De Farias Rodrigues, Marina Pessoa',
+                  nameType: 'Personal',
+                  givenName: 'Marina Pessoa',
+                  familyName: 'De Farias Rodrigues',
+                  affiliation: [],
+                  nameIdentifiers: [{ nameIdentifier: 'https://osf.io/d86sz', nameIdentifierScheme: 'URL' }],
+                },
+                {
+                  name: 'Bezerra, Gabriela Duarte',
+                  nameType: 'Personal',
+                  givenName: 'Gabriela Duarte',
+                  familyName: 'Bezerra',
+                  affiliation: [],
+                  nameIdentifiers: [
+                    {
+                      schemeUri: 'https://orcid.org',
+                      nameIdentifier: 'https://orcid.org/0000-0002-7472-4621',
+                      nameIdentifierScheme: 'ORCID',
+                    },
+                    { nameIdentifier: 'https://osf.io/2xgv4', nameIdentifierScheme: 'URL' },
+                  ],
+                },
+                {
+                  name: 'WONESKA RODRIGUES PINHEIRO',
+                  nameType: 'Personal',
+                  affiliation: [],
+                  nameIdentifiers: [{ nameIdentifier: 'https://osf.io/gcse5', nameIdentifierScheme: 'URL' }],
+                },
+              ],
+              titles: [
+                {
+                  lang: 'por',
+                  title:
+                    'Teorias De Enfermagem Para Abordagem Familiar De Potenciais Doadores De Órgãos: revisão de escopo',
+                },
+              ],
+              publisher: 'OSF',
+              container: {},
+              publicationYear: 2023,
+              subjects: [
+                { subject: 'Abordagem familiar' },
+                { subject: 'Doação de órgãos' },
+                { subject: 'Entrevista' },
+                { subject: 'Morte Cerebral' },
+                { subject: 'Revisão de Escopo' },
+                { subject: 'Teorias de Enfermagem' },
+              ],
+              contributors: [
+                {
+                  name: 'Center For Open Science',
+                  nameType: 'Organizational',
+                  affiliation: [],
+                  contributorType: 'HostingInstitution',
+                  nameIdentifiers: [
+                    { nameIdentifier: 'https://cos.io/', nameIdentifierScheme: 'URL' },
+                    {
+                      schemeUri: 'https://ror.org',
+                      nameIdentifier: 'https://ror.org/05d5mza29',
+                      nameIdentifierScheme: 'ROR',
+                    },
+                  ],
+                },
+              ],
+              dates: [
+                { date: posted.toString(), dateType: 'Created' },
+                { date: '2023-09-13', dateType: 'Updated' },
+                { date: '2023', dateType: 'Issued' },
+              ],
+              language: 'pt',
+              types: {
+                ris: 'GEN',
+                bibtex: 'misc',
+                citeproc: 'article',
+                schemaOrg: 'CreativeWork',
+                resourceType: 'Project',
+                resourceTypeGeneral: 'Preprint',
+              },
+              relatedIdentifiers: [],
+              relatedItems: [],
+              sizes: [],
+              formats: [],
+              version: null,
+              rightsList: [
+                {
+                  rights: 'Creative Commons Attribution 4.0 International',
+                  rightsUri: 'https://creativecommons.org/licenses/by/4.0/legalcode',
+                  schemeUri: 'https://spdx.org/licenses/',
+                  rightsIdentifier: 'cc-by-4.0',
+                  rightsIdentifierScheme: 'SPDX',
+                },
+              ],
+              descriptions: [
+                {
+                  lang: 'por',
+                  description:
+                    'Revisão de Escopo realizada no período de novembro de 2022 a junho de 2023, que objetivou mapear na literatura quais teorias de enfermagem e estruturas conceituais podem contribuir por suas características na abordagem familiar de potenciais doadores. A revisão foi realizada nas bases de dados LILACS, SCOPUS, SciELO, MEDLINE, EMBASE e Web of science, que foram acessadas via Biblioteca Virtual em Saúde e via Pubmed, bem como, na literatura cinzenta, Google acadêmico e na lista de referência dos estudos. A amostra foi composta por 14 estudos, onde foram identificadas 9 Teorias de Enfermagem.',
+                  descriptionType: 'Abstract',
+                },
+              ],
+              geoLocations: [],
+              fundingReferences: [],
+              url: 'https://osf.io/eq8bk/',
+              contentUrl: null,
+              metadataVersion: 0,
+              schemaVersion: 'http://datacite.org/schema/kernel-4',
+              source: 'mds',
+              isActive: true,
+              state: 'findable',
+              reason: null,
+              viewCount: 0,
+              viewsOverTime: [],
+              downloadCount: 0,
+              downloadsOverTime: [],
+              referenceCount: 0,
+              citationCount: 0,
+              citationsOverTime: [],
+              partCount: 0,
+              partOfCount: 0,
+              versionCount: 0,
+              versionOfCount: 0,
+              created: '2023-09-13T01:58:23.000Z',
+              registered: '2023-09-13T01:58:23.000Z',
+              published: '2023',
+              updated: '2023-09-13T01:58:24.000Z',
+            },
+            relationships: {
+              client: { data: { id: 'cos.osf', type: 'clients' } },
+              provider: { data: { id: 'cos', type: 'providers' } },
+              media: { data: { id: '10.17605/osf.io/eq8bk', type: 'media' } },
+              references: { data: [] },
+              citations: { data: [] },
+              parts: { data: [] },
+              partOf: { data: [] },
+              versions: { data: [] },
+              versionOf: { data: [] },
+            },
+          },
+        },
+      })
+
+      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          abstract: {
+            language: 'pt',
+            text: expect.stringContaining('<p>Revisão de Escopo realizada no período'),
+          },
+          authors: [
+            { name: 'Maria Isabel Caetano Da Silva', orcid: undefined },
+            { name: 'Eglídia Carla Figueirêdo Vidal' },
+            { name: 'Aline Sampaio Rolim De Sena', orcid: undefined },
+            { name: 'Marina Pessoa De Farias Rodrigues', orcid: undefined },
+            { name: 'Gabriela Duarte Bezerra', orcid: '0000-0002-7472-4621' },
+            { name: 'WONESKA RODRIGUES PINHEIRO' },
+          ],
+          id,
+          posted,
+          title: {
+            language: 'pt',
+            text: rawHtml(
+              'Teorias De Enfermagem Para Abordagem Familiar De Potenciais Doadores De Órgãos: revisão de escopo',
+            ),
+          },
+          url: new URL('https://osf.io/eq8bk/'),
+        }),
+      )
+    })
+
     test.prop([fc.zenodoPreprintId(), fc.plainDate()])('from Zenodo', async (id, posted) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
         body: {

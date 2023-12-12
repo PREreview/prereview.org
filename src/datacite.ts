@@ -19,6 +19,7 @@ import type {
   AfricarxivFigsharePreprintId,
   AfricarxivZenodoPreprintId,
   ArxivPreprintId,
+  OsfPreprintId,
   ZenodoPreprintId,
 } from './types/preprint-id'
 
@@ -30,11 +31,13 @@ export type DatacitePreprintId =
   | AfricarxivFigsharePreprintId
   | AfricarxivZenodoPreprintId
   | ArxivPreprintId
+  | OsfPreprintId
   | ZenodoPreprintId
 
 export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant(
   '5281',
   '6084',
+  '17605',
   '48550',
 )
 
@@ -109,6 +112,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
+              .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'zenodo', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
@@ -132,6 +136,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
             match({ type, text })
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
+              .with({ type: 'osf', text: P.select() }, detectLanguage)
               .with({ type: 'zenodo', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
@@ -226,6 +231,19 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
           type: 'arxiv',
           value: work.doi,
         }) satisfies ArxivPreprintId,
+    ),
+  ),
+  pipe(
+    D.fromStruct({
+      doi: D.fromRefinement(hasRegistrant('17605'), 'DOI'),
+      publisher: D.literal('OSF'),
+    }),
+    D.map(
+      work =>
+        ({
+          type: 'osf',
+          value: work.doi,
+        }) satisfies OsfPreprintId,
     ),
   ),
   pipe(
