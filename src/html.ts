@@ -87,7 +87,7 @@ export function sanitizeHtml(html: string, trusted = false): Html {
       'mtr',
       'annotation',
       'semantics',
-      ...(trusted ? ['img'] : []),
+      ...(trusted ? ['img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'] : []),
     ],
     allowedAttributes: {
       '*': ['dir', 'displaystyle', 'lang', 'mathvariant'],
@@ -114,6 +114,8 @@ export function sanitizeHtml(html: string, trusted = false): Html {
       munderover: ['accent', 'accentunder'],
       mspace: ['depth', 'height', 'width'],
       mtd: ['columnspan', 'rowspan'],
+      td: ['colspan', 'rowspan'],
+      th: ['colspan', 'rowspan'],
     },
     allowedClasses: {
       a: trusted ? ['button'] : [],
