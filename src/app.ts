@@ -92,6 +92,7 @@ export type ConfigEnv = CareerStageStoreEnv &
 
 const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
+    .with({ type: 'osf' }, () => RTE.left('unavailable' as const))
     .with({ type: 'philsci' }, getPreprintFromPhilsci)
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)

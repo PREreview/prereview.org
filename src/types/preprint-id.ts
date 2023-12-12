@@ -17,6 +17,7 @@ export type PreprintId =
   | EngrxivPreprintId
   | MedrxivPreprintId
   | MetaarxivPreprintId
+  | OsfPreprintId
   | OsfPreprintsPreprintId
   | PhilsciPreprintId
   | PreprintsorgPreprintId
@@ -96,6 +97,11 @@ export interface MetaarxivPreprintId {
   readonly value: Doi<'31222'>
 }
 
+export interface OsfPreprintId {
+  readonly type: 'osf'
+  readonly value: Doi<'17605'>
+}
+
 export interface OsfPreprintsPreprintId {
   readonly type: 'osf-preprints'
   readonly value: Doi<'31219'>
@@ -157,6 +163,7 @@ export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { v
   '5281',
   '6084',
   '14293',
+  '17605',
   '21203',
   '26434',
   '20944',
@@ -194,6 +201,7 @@ export function fromPreprintDoi(
     )
     .when(hasRegistrant('6084'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivFigsharePreprintId)
     .when(hasRegistrant('14293'), doi => ({ type: 'science-open', value: doi }) satisfies ScienceOpenPreprintId)
+    .when(hasRegistrant('17605'), doi => ({ type: 'osf', value: doi }) satisfies OsfPreprintId)
     .when(hasRegistrant('21203'), doi => ({ type: 'research-square', value: doi }) satisfies ResearchSquarePreprintId)
     .when(hasRegistrant('22541'), doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId)
     .when(hasRegistrant('26434'), doi => ({ type: 'chemrxiv', value: doi }) satisfies ChemrxivPreprintId)

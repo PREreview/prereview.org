@@ -164,6 +164,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
                               .with('engrxiv', () => 'engrXiv')
                               .with('medrxiv', () => 'medRxiv')
                               .with('metaarxiv', () => 'MetaArXiv')
+                              .with('osf', () => 'OSF')
                               .with('osf-preprints', () => 'OSF Preprints')
                               .with('philsci', () => 'PhilSci-Archive')
                               .with('preprints.org', () => 'Preprints.org')

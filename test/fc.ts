@@ -71,6 +71,7 @@ import {
   type IndeterminatePreprintId,
   type MedrxivPreprintId,
   type MetaarxivPreprintId,
+  type OsfPreprintId,
   type OsfPreprintsPreprintId,
   type PhilsciPreprintId,
   type PreprintId,
@@ -547,6 +548,12 @@ export const metaarxivPreprintUrl = (): fc.Arbitrary<[URL, MetaarxivPreprintId]>
       { type: 'metaarxiv', value: `10.31222/osf.io/${id}` as Doi<'31222'> },
     ])
 
+export const osfPreprintId = (): fc.Arbitrary<OsfPreprintId> =>
+  fc.record({
+    type: fc.constant('osf'),
+    value: doi(fc.constant('17605')),
+  })
+
 export const osfPreprintsPreprintId = (): fc.Arbitrary<OsfPreprintsPreprintId> =>
   fc.record({
     type: fc.constant('osf-preprints'),
@@ -696,6 +703,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
     engrxivPreprintId(),
     medrxivPreprintId(),
     metaarxivPreprintId(),
+    osfPreprintId(),
     osfPreprintsPreprintId(),
     preprintsorgPreprintId(),
     psyarxivPreprintId(),
