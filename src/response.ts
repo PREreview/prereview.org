@@ -12,7 +12,7 @@ import { type Html, html, sendHtml } from './html'
 import type { OAuthEnv } from './log-in'
 import { type Page, type TemplatePageEnv, templatePage } from './page'
 import { type PublicUrlEnv, toUrl } from './public-url'
-import { logInMatch } from './routes'
+import { orcidCodeMatch } from './routes'
 import type { User } from './user'
 import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding'
 
@@ -334,7 +334,11 @@ function addRedirectUri<R extends OAuthEnv & PublicUrlEnv>(): (env: R) => R & _O
     ...env,
     oauth: {
       ...env.oauth,
-      redirectUri: toUrl(logInMatch.formatter, {})(env),
+      redirectUri: pipe(toUrl(orcidCodeMatch.formatter, { code: 'code', state: 'state' })(env), url => {
+        url.search = ''
+
+        return url
+      }),
     },
   })
 }

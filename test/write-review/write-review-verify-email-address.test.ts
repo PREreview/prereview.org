@@ -8,7 +8,7 @@ import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import type { EditContactEmailAddressEnv, GetContactEmailAddressEnv } from '../../src/contact-email-address'
 import type { RequiresVerifiedEmailAddressEnv } from '../../src/feature-flags'
-import { logInMatch, writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../../src/routes'
+import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { FormC, formKey } from '../../src/write-review/form'
 import { runMiddleware } from '../middleware'
@@ -433,7 +433,7 @@ describe('writeReviewVerifyEmailAddress', () => {
               `?${new URLSearchParams({
                 client_id: oauth.clientId,
                 response_type: 'code',
-                redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
+                redirect_uri: new URL('/orcid', publicUrl).toString(),
                 scope: '/authenticate',
                 state: new URL(
                   format(writeReviewVerifyEmailAddressMatch.formatter, { id: preprintTitle.id, verify: id }),

@@ -23,7 +23,7 @@ import { setFlashMessage } from './flash-message'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
 import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from './public-url'
-import { homeMatch, logInMatch } from './routes'
+import { homeMatch, orcidCodeMatch } from './routes'
 import type { Pseudonym } from './types/pseudonym'
 import { newSessionForUser } from './user'
 
@@ -91,7 +91,11 @@ function addRedirectUri<R extends OAuthEnv & PublicUrlEnv>(): (env: R) => R & _O
     ...env,
     oauth: {
       ...env.oauth,
-      redirectUri: toUrl(logInMatch.formatter, {})(env),
+      redirectUri: pipe(toUrl(orcidCodeMatch.formatter, { code: 'code', state: 'state' })(env), url => {
+        url.search = ''
+
+        return url
+      }),
     },
   })
 }

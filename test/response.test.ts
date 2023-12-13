@@ -1,13 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
-import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import { rawHtml } from '../src/html'
 import type { TemplatePageEnv } from '../src/page'
 import * as _ from '../src/response'
-import { logInMatch } from '../src/routes'
 import type { GetUserOnboardingEnv } from '../src/user-onboarding'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -460,7 +458,7 @@ describe('handleResponse', () => {
                 `?${new URLSearchParams({
                   client_id: oauth.clientId,
                   response_type: 'code',
-                  redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
+                  redirect_uri: new URL('/orcid', publicUrl).toString(),
                   scope: '/authenticate',
                   state: new URL(response.location, publicUrl).href,
                 }).toString()}`,

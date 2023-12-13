@@ -9,7 +9,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import * as _ from '../src/connect-slack'
-import { connectSlackMatch, connectSlackStartMatch, logInMatch, myDetailsMatch } from '../src/routes'
+import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../src/routes'
 import type { EditSlackUserIdEnv } from '../src/slack-user-id'
 import type { GenerateUuidEnv } from '../src/types/uuid'
 import * as fc from './fc'
@@ -116,7 +116,7 @@ describe('connectSlack', () => {
               `?${new URLSearchParams({
                 client_id: oauth.clientId,
                 response_type: 'code',
-                redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
+                redirect_uri: new URL('/orcid', publicUrl).toString(),
                 scope: '/authenticate',
                 state: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
               }).toString()}`,
@@ -201,7 +201,7 @@ describe('connectSlackStart', () => {
               `?${new URLSearchParams({
                 client_id: oauth.clientId,
                 response_type: 'code',
-                redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
+                redirect_uri: new URL('/orcid', publicUrl).toString(),
                 scope: '/authenticate',
                 state: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
               }).toString()}`,

@@ -11,7 +11,7 @@ import { MediaType, Status } from 'hyper-ts'
 import all from 'it-all'
 import Keyv from 'keyv'
 import * as _ from '../src/log-in'
-import { homeMatch, logInMatch, writeReviewMatch } from '../src/routes'
+import { homeMatch, writeReviewMatch } from '../src/routes'
 import { UserC } from '../src/user'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -37,7 +37,7 @@ describe('logIn', () => {
             `?${new URLSearchParams({
               client_id: oauth.clientId,
               response_type: 'code',
-              redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
+              redirect_uri: new URL('/orcid', publicUrl).toString(),
               scope: '/authenticate',
               state: referer,
             }).toString()}`,
@@ -64,7 +64,7 @@ describe('logIn', () => {
               `?${new URLSearchParams({
                 client_id: oauth.clientId,
                 response_type: 'code',
-                redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
+                redirect_uri: new URL('/orcid', publicUrl).toString(),
                 scope: '/authenticate',
                 state: '',
               }).toString()}`,
@@ -99,7 +99,7 @@ test.prop([fc.oauth(), fc.preprintId(), fc.origin(), fc.connection()])(
             `?${new URLSearchParams({
               client_id: oauth.clientId,
               response_type: 'code',
-              redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
+              redirect_uri: new URL('/orcid', publicUrl).toString(),
               scope: '/authenticate',
               state: new URL(format(writeReviewMatch.formatter, { id: preprintId }), publicUrl).toString(),
             }).toString()}`,
