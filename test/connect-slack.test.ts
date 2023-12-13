@@ -9,7 +9,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
 import * as _ from '../src/connect-slack'
-import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from '../src/routes'
+import { connectSlackMatch, connectSlackStartMatch, logInMatch, myDetailsMatch } from '../src/routes'
 import type { EditSlackUserIdEnv } from '../src/slack-user-id'
 import type { GenerateUuidEnv } from '../src/types/uuid'
 import * as fc from './fc'
@@ -116,7 +116,7 @@ describe('connectSlack', () => {
               `?${new URLSearchParams({
                 client_id: oauth.clientId,
                 response_type: 'code',
-                redirect_uri: oauth.redirectUri.href,
+                redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
                 scope: '/authenticate',
                 state: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
               }).toString()}`,
@@ -131,9 +131,9 @@ describe('connectSlack', () => {
 })
 
 describe('connectSlackStart', () => {
-  test.prop([fc.oauth(), fc.oauth(), fc.uuid(), fc.string(), fc.user(), fc.connection()])(
+  test.prop([fc.oauth(), fc.oauth(), fc.origin(), fc.uuid(), fc.string(), fc.user(), fc.connection()])(
     'when the user is logged in',
-    async (oauth, slackOauth, uuid, signedValue, user, connection) => {
+    async (oauth, slackOauth, publicUrl, uuid, signedValue, user, connection) => {
       const generateUuid = jest.fn<GenerateUuidEnv['generateUuid']>(() => uuid)
       const signValue = jest.fn<_.SignValueEnv['signValue']>(_ => signedValue)
 
@@ -142,7 +142,7 @@ describe('connectSlackStart', () => {
           generateUuid,
           getUser: () => M.of(user),
           oauth,
-          publicUrl: new URL('http://example.com'),
+          publicUrl,
           signValue,
           slackOauth,
         }),
@@ -159,7 +159,7 @@ describe('connectSlackStart', () => {
               `?${new URLSearchParams({
                 client_id: slackOauth.clientId,
                 response_type: 'code',
-                redirect_uri: slackOauth.redirectUri.href,
+                redirect_uri: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
                 user_scope: 'users.profile:read,users.profile:write',
                 state: uuid,
                 team: 'T057XMB3EGH',
@@ -201,7 +201,7 @@ describe('connectSlackStart', () => {
               `?${new URLSearchParams({
                 client_id: oauth.clientId,
                 response_type: 'code',
-                redirect_uri: oauth.redirectUri.href,
+                redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
                 scope: '/authenticate',
                 state: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
               }).toString()}`,
@@ -220,6 +220,7 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.oauth(),
+    fc.origin(),
     fc.nonEmptyString(),
     fc.set(fc.lorem(), { minLength: 1 }),
     fc.nonEmptyString(),
@@ -231,7 +232,7 @@ describe('connectSlackCode', () => {
       ),
   ])(
     'when the access token can be decoded',
-    async (code, user, oauth, userId, scopes, accessToken, state, [signedState, connection]) => {
+    async (code, user, oauth, publicUrl, userId, scopes, accessToken, state, [signedState, connection]) => {
       const saveSlackUserId = jest.fn<EditSlackUserIdEnv['saveSlackUserId']>(_ => TE.right(undefined))
       const unsignValue = jest.fn<_.UnsignValueEnv['unsignValue']>(_ => O.some(state))
 
@@ -249,7 +250,7 @@ describe('connectSlackCode', () => {
                   client_id: oauth.clientId,
                   client_secret: oauth.clientSecret,
                   grant_type: 'authorization_code',
-                  redirect_uri: oauth.redirectUri.href,
+                  redirect_uri: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
                   code,
                 }).toString(),
               headers: {
@@ -269,6 +270,7 @@ describe('connectSlackCode', () => {
             },
           ),
           getUser: () => M.of(user),
+          publicUrl,
           saveSlackUserId,
           slackOauth: oauth,
           unsignValue,
@@ -294,53 +296,59 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.oauth(),
+    fc.origin(),
     fc.string(),
     fc.string(),
     fc.lorem().chain(state => fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
-  ])('when the access token cannot be decoded', async (code, user, oauth, accessToken, state, connection) => {
-    const slackUserIdStore = new Keyv()
-    const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-      status: Status.OK,
-      body: accessToken,
-    })
+  ])(
+    'when the access token cannot be decoded',
+    async (code, user, oauth, publicUrl, accessToken, state, connection) => {
+      const slackUserIdStore = new Keyv()
+      const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+        status: Status.OK,
+        body: accessToken,
+      })
 
-    const actual = await runMiddleware(
-      _.connectSlackCode(
-        code,
-        state,
-      )({
-        fetch,
-        getUser: () => M.of(user),
-        saveSlackUserId: shouldNotBeCalled,
-        slackOauth: oauth,
-        unsignValue: () => O.some(state),
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.connectSlackCode(
+          code,
+          state,
+        )({
+          fetch,
+          getUser: () => M.of(user),
+          publicUrl,
+          saveSlackUserId: shouldNotBeCalled,
+          slackOauth: oauth,
+          unsignValue: () => O.some(state),
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-    expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
-    expect(fetch.done()).toBeTruthy()
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+      expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
 
   test.prop([
     fc.string(),
     fc.user(),
     fc.oauth(),
+    fc.origin(),
     fc.string(),
     fc.string(),
     fc.connection({
       headers: fc.record({ Cookie: fc.lorem() }, { withDeletedKeys: true }),
     }),
-  ])("when the state doesn't match", async (code, user, oauth, state, unsignedState, connection) => {
+  ])("when the state doesn't match", async (code, user, oauth, publicUrl, state, unsignedState, connection) => {
     const actual = await runMiddleware(
       _.connectSlackCode(
         code,
@@ -348,6 +356,7 @@ describe('connectSlackCode', () => {
       )({
         fetch: shouldNotBeCalled,
         getUser: () => M.of(user),
+        publicUrl,
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
         unsignValue: () => O.some(unsignedState),
@@ -370,9 +379,10 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.oauth(),
+    fc.origin(),
     fc.string(),
     fc.lorem().chain(state => fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
-  ])("when the state can't be unsigned", async (code, user, oauth, state, connection) => {
+  ])("when the state can't be unsigned", async (code, user, oauth, publicUrl, state, connection) => {
     const actual = await runMiddleware(
       _.connectSlackCode(
         code,
@@ -380,6 +390,7 @@ describe('connectSlackCode', () => {
       )({
         fetch: shouldNotBeCalled,
         getUser: () => M.of(user),
+        publicUrl,
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
         unsignValue: () => O.none,
@@ -402,54 +413,60 @@ describe('connectSlackCode', () => {
     fc.string(),
     fc.user(),
     fc.oauth(),
+    fc.origin(),
     fc.integer({ min: 200, max: 599 }).filter(status => status !== Status.OK && status !== Status.NotFound),
     fc
       .lorem()
       .chain(state =>
         fc.tuple(fc.constant(state), fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
       ),
-  ])('when the response has a non-200/404 status code', async (code, user, oauth, accessToken, [state, connection]) => {
-    const slackUserIdStore = new Keyv()
-    const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-      status: Status.OK,
-      body: accessToken,
-    })
+  ])(
+    'when the response has a non-200/404 status code',
+    async (code, user, oauth, publicUrl, accessToken, [state, connection]) => {
+      const slackUserIdStore = new Keyv()
+      const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+        status: Status.OK,
+        body: accessToken,
+      })
 
-    const actual = await runMiddleware(
-      _.connectSlackCode(
-        code,
-        state,
-      )({
-        fetch,
-        getUser: () => M.of(user),
-        saveSlackUserId: shouldNotBeCalled,
-        slackOauth: oauth,
-        unsignValue: () => O.some(state),
-      }),
-      connection,
-    )()
+      const actual = await runMiddleware(
+        _.connectSlackCode(
+          code,
+          state,
+        )({
+          fetch,
+          getUser: () => M.of(user),
+          publicUrl,
+          saveSlackUserId: shouldNotBeCalled,
+          slackOauth: oauth,
+          unsignValue: () => O.some(state),
+        }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-    expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
-    expect(fetch.done()).toBeTruthy()
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+      expect(await slackUserIdStore.has(user.orcid)).toBeFalsy()
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
 
   test.prop([
     fc.string(),
     fc.user(),
     fc.oauth(),
+    fc.origin(),
     fc.error(),
     fc.string(),
     fc.lorem().chain(state => fc.connection({ headers: fc.constant({ Cookie: `slack-state=${state}` }) })),
-  ])('when fetch throws an error', async (code, user, oauth, error, state, connection) => {
+  ])('when fetch throws an error', async (code, user, oauth, publicUrl, error, state, connection) => {
     const slackUserIdStore = new Keyv()
 
     const actual = await runMiddleware(
@@ -459,6 +476,7 @@ describe('connectSlackCode', () => {
       )({
         fetch: () => Promise.reject(error),
         getUser: () => M.of(user),
+        publicUrl,
         saveSlackUserId: shouldNotBeCalled,
         slackOauth: oauth,
         unsignValue: () => O.some(state),

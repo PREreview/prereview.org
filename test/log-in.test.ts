@@ -11,7 +11,7 @@ import { MediaType, Status } from 'hyper-ts'
 import all from 'it-all'
 import Keyv from 'keyv'
 import * as _ from '../src/log-in'
-import { homeMatch, writeReviewMatch } from '../src/routes'
+import { homeMatch, logInMatch, writeReviewMatch } from '../src/routes'
 import { UserC } from '../src/user'
 import * as fc from './fc'
 import { runMiddleware } from './middleware'
@@ -20,11 +20,12 @@ import { shouldNotBeCalled } from './should-not-be-called'
 describe('logIn', () => {
   test.prop([
     fc.oauth(),
+    fc.origin(),
     fc
       .webUrl()
       .chain(referer => fc.tuple(fc.connection({ headers: fc.constant({ Referer: referer }) }), fc.constant(referer))),
-  ])('when there is a Referer header', async (oauth, [connection, referer]) => {
-    const actual = await runMiddleware(_.logIn({ oauth }), connection)()
+  ])('when there is a Referer header', async (oauth, publicUrl, [connection, referer]) => {
+    const actual = await runMiddleware(_.logIn({ oauth, publicUrl }), connection)()
 
     expect(actual).toStrictEqual(
       E.right([
@@ -36,7 +37,7 @@ describe('logIn', () => {
             `?${new URLSearchParams({
               client_id: oauth.clientId,
               response_type: 'code',
-              redirect_uri: oauth.redirectUri.href,
+              redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
               scope: '/authenticate',
               state: referer,
             }).toString()}`,
@@ -48,30 +49,33 @@ describe('logIn', () => {
     )
   })
 
-  test.prop([fc.oauth(), fc.connection()])("when there isn't a Referer header", async (oauth, connection) => {
-    const actual = await runMiddleware(_.logIn({ oauth }), connection)()
+  test.prop([fc.oauth(), fc.origin(), fc.connection()])(
+    "when there isn't a Referer header",
+    async (oauth, publicUrl, connection) => {
+      const actual = await runMiddleware(_.logIn({ oauth, publicUrl }), connection)()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.Found },
-        {
-          type: 'setHeader',
-          name: 'Location',
-          value: new URL(
-            `?${new URLSearchParams({
-              client_id: oauth.clientId,
-              response_type: 'code',
-              redirect_uri: oauth.redirectUri.href,
-              scope: '/authenticate',
-              state: '',
-            }).toString()}`,
-            oauth.authorizeUrl,
-          ).href,
-        },
-        { type: 'endResponse' },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          {
+            type: 'setHeader',
+            name: 'Location',
+            value: new URL(
+              `?${new URLSearchParams({
+                client_id: oauth.clientId,
+                response_type: 'code',
+                redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
+                scope: '/authenticate',
+                state: '',
+              }).toString()}`,
+              oauth.authorizeUrl,
+            ).href,
+          },
+          { type: 'endResponse' },
+        ]),
+      )
+    },
+  )
 })
 
 test.prop([fc.oauth(), fc.preprintId(), fc.origin(), fc.connection()])(
@@ -95,7 +99,7 @@ test.prop([fc.oauth(), fc.preprintId(), fc.origin(), fc.connection()])(
             `?${new URLSearchParams({
               client_id: oauth.clientId,
               response_type: 'code',
-              redirect_uri: oauth.redirectUri.href,
+              redirect_uri: new URL(format(logInMatch.formatter, {}), publicUrl).toString(),
               scope: '/authenticate',
               state: new URL(format(writeReviewMatch.formatter, { id: preprintId }), publicUrl).toString(),
             }).toString()}`,

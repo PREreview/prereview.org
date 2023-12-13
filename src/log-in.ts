@@ -1,3 +1,4 @@
+import type { FetchEnv } from 'fetch-fp-ts'
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
@@ -8,7 +9,7 @@ import type * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { Status } from 'hyper-ts'
-import { exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
+import { type OAuthEnv as _OAuthEnv, exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { endSession as _endSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
@@ -21,10 +22,14 @@ import { timeoutRequest } from './fetch'
 import { setFlashMessage } from './flash-message'
 import { html, plainText, sendHtml } from './html'
 import { page } from './page'
-import { ifHasSameOrigin, toUrl } from './public-url'
-import { homeMatch } from './routes'
+import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from './public-url'
+import { homeMatch, logInMatch } from './routes'
 import type { Pseudonym } from './types/pseudonym'
 import { newSessionForUser } from './user'
+
+export interface OAuthEnv {
+  oauth: Omit<_OAuthEnv['oauth'], 'redirectUri'>
+}
 
 export interface GetPseudonymEnv {
   getPseudonym: (user: OrcidUser) => TE.TaskEither<'unavailable', Pseudonym>
@@ -43,11 +48,13 @@ export const logIn = pipe(
     ),
   ),
   RM.ichainW(requestAuthorizationCode('/authenticate')),
+  R.local(addRedirectUri()),
 )
 
 export const logInAndRedirect = flow(
   RM.fromReaderK(toUrl),
   RM.ichainW(flow(String, requestAuthorizationCode('/authenticate'))),
+  R.local(addRedirectUri()),
 )
 
 export const logOut = pipe(
@@ -79,6 +86,16 @@ const filterBlockedUsers = <T extends OrcidUser>(user: T): RE.ReaderEither<IsUse
     R.map(isBlocked => (isBlocked ? E.left(user) : E.right(user))),
   )
 
+function addRedirectUri<R extends OAuthEnv & PublicUrlEnv>(): (env: R) => R & _OAuthEnv {
+  return env => ({
+    ...env,
+    oauth: {
+      ...env.oauth,
+      redirectUri: toUrl(logInMatch.formatter, {})(env),
+    },
+  })
+}
+
 export const authenticate = flow(
   (code: string, state: string) => RM.of({ code, state }),
   RM.bind('referer', RM.fromReaderK(flow(get('state'), getReferer))),
@@ -88,6 +105,7 @@ export const authenticate = flow(
       flow(
         get('code'),
         exchangeAuthorizationCode(OrcidUserC),
+        R.local(addRedirectUri<FetchEnv & OAuthEnv & PublicUrlEnv>()),
         RTE.local(timeoutRequest(2000)),
         RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
         RTE.chainFirstW(

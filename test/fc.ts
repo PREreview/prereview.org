@@ -322,12 +322,11 @@ export const sanitisedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeH
 
 export const plainText = (): fc.Arbitrary<PlainText> => fc.string().map(toPlainText)
 
-export const oauth = (): fc.Arbitrary<OAuthEnv['oauth']> =>
+export const oauth = (): fc.Arbitrary<Omit<OAuthEnv['oauth'], 'redirectUri'>> =>
   fc.record({
     authorizeUrl: url(),
     clientId: fc.string(),
     clientSecret: fc.string(),
-    redirectUri: url(),
     tokenUrl: url(),
   })
 

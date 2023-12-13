@@ -12,17 +12,16 @@ import * as RS from 'fp-ts/ReadonlySet'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { split } from 'fp-ts/string'
 import { MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { setFlashMessage } from './flash-message'
 import { html, plainText, sendHtml } from './html'
-import { logInAndRedirect } from './log-in'
+import { type OAuthEnv, logInAndRedirect } from './log-in'
 import { seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
-import type { PublicUrlEnv } from './public-url'
+import { type PublicUrlEnv, toUrl } from './public-url'
 import { connectSlackMatch, connectSlackStartMatch, myDetailsMatch } from './routes'
 import { isSlackUser } from './slack-user'
 import { saveSlackUserId } from './slack-user-id'
@@ -31,7 +30,7 @@ import { generateUuid } from './types/uuid'
 import { type GetUserEnv, type User, getUser, maybeGetUser } from './user'
 
 export interface SlackOAuthEnv {
-  slackOauth: OAuthEnv['oauth']
+  slackOauth: Omit<OAuthEnv['oauth'], 'redirectUri'>
 }
 
 export interface SignValueEnv {
@@ -47,34 +46,43 @@ const signValue = (value: string) => R.asks(({ signValue }: SignValueEnv) => sig
 const unsignValue = (value: string) => R.asks(({ unsignValue }: UnsignValueEnv) => unsignValue(value))
 
 const authorizationRequestUrl = (state: string) =>
-  R.asks(({ slackOauth: { authorizeUrl, clientId, redirectUri } }: SlackOAuthEnv) => {
-    return new URL(
-      `?${new URLSearchParams({
-        client_id: clientId,
-        response_type: 'code',
-        redirect_uri: redirectUri.href,
-        user_scope: 'users.profile:read,users.profile:write',
-        state,
-        team: 'T057XMB3EGH',
-      }).toString()}`,
-      authorizeUrl,
-    )
-  })
+  pipe(
+    toUrl(connectSlackMatch.formatter, {}),
+    R.chainW(redirectUri =>
+      R.asks(
+        ({ slackOauth: { authorizeUrl, clientId } }: SlackOAuthEnv) =>
+          new URL(
+            `?${new URLSearchParams({
+              client_id: clientId,
+              response_type: 'code',
+              redirect_uri: redirectUri.href,
+              user_scope: 'users.profile:read,users.profile:write',
+              state,
+              team: 'T057XMB3EGH',
+            }).toString()}`,
+            authorizeUrl,
+          ),
+      ),
+    ),
+  )
 
 const exchangeAuthorizationCode = (code: string) =>
   pipe(
-    RTE.asks(({ slackOauth: { clientId, clientSecret, redirectUri, tokenUrl } }: SlackOAuthEnv) =>
-      pipe(
-        F.Request('POST')(tokenUrl),
-        F.setBody(
-          new URLSearchParams({
-            client_id: clientId,
-            client_secret: clientSecret,
-            grant_type: 'authorization_code',
-            redirect_uri: redirectUri.href,
-            code,
-          }).toString(),
-          MediaType.applicationFormURLEncoded,
+    RTE.fromReader(toUrl(connectSlackMatch.formatter, {})),
+    RTE.chainW(redirectUri =>
+      RTE.asks(({ slackOauth: { clientId, clientSecret, tokenUrl } }: SlackOAuthEnv) =>
+        pipe(
+          F.Request('POST')(tokenUrl),
+          F.setBody(
+            new URLSearchParams({
+              client_id: clientId,
+              client_secret: clientSecret,
+              grant_type: 'authorization_code',
+              redirect_uri: redirectUri.href,
+              code,
+            }).toString(),
+            MediaType.applicationFormURLEncoded,
+          ),
         ),
       ),
     ),

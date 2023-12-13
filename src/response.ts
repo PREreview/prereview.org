@@ -1,15 +1,18 @@
+import * as R from 'fp-ts/Reader'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { pipe } from 'fp-ts/function'
 import { type HeadersOpen, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
+import { type OAuthEnv as _OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/Middleware'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message'
 import { type Html, html, sendHtml } from './html'
+import type { OAuthEnv } from './log-in'
 import { type Page, type TemplatePageEnv, templatePage } from './page'
-import type { PublicUrlEnv } from './public-url'
+import { type PublicUrlEnv, toUrl } from './public-url'
+import { logInMatch } from './routes'
 import type { User } from './user'
 import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding'
 
@@ -323,7 +326,18 @@ const handleLogInResponse = ({
   pipe(
     RM.asks(({ publicUrl }: PublicUrlEnv) => new URL(response.location, publicUrl).href),
     RM.ichainW(requestAuthorizationCode('/authenticate')),
+    R.local(addRedirectUri()),
   )
+
+function addRedirectUri<R extends OAuthEnv & PublicUrlEnv>(): (env: R) => R & _OAuthEnv {
+  return env => ({
+    ...env,
+    oauth: {
+      ...env.oauth,
+      redirectUri: toUrl(logInMatch.formatter, {})(env),
+    },
+  })
+}
 
 // https://github.com/Microsoft/TypeScript/issues/25760#issuecomment-614417742
 type Optional<T, K extends keyof T> = Omit<T, K> & Partial<T>
