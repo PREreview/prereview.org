@@ -12,13 +12,14 @@ import * as RS from 'fp-ts/ReadonlySet'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { split } from 'fp-ts/string'
 import { MediaType, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import type { OAuthEnv } from 'hyper-ts-oauth'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { setFlashMessage } from './flash-message'
 import { html, plainText, sendHtml } from './html'
-import { type OAuthEnv, logInAndRedirect } from './log-in'
+import { type OrcidOAuthEnv, logInAndRedirect } from './log-in'
 import { seeOther, serviceUnavailable } from './middleware'
 import { type FathomEnv, type PhaseEnv, page } from './page'
 import { type PublicUrlEnv, toUrl } from './public-url'
@@ -111,7 +112,7 @@ export const connectSlack = pipe(
     match(error)
       .returnType<
         RM.ReaderMiddleware<
-          GetUserEnv & FathomEnv & OAuthEnv & PhaseEnv & PublicUrlEnv,
+          GetUserEnv & FathomEnv & OrcidOAuthEnv & PhaseEnv & PublicUrlEnv,
           StatusOpen,
           ResponseEnded,
           never,
@@ -145,7 +146,7 @@ export const connectSlackStart = pipe(
     match(error)
       .returnType<
         RM.ReaderMiddleware<
-          GetUserEnv & FathomEnv & OAuthEnv & PhaseEnv & PublicUrlEnv,
+          GetUserEnv & FathomEnv & OrcidOAuthEnv & PhaseEnv & PublicUrlEnv,
           StatusOpen,
           ResponseEnded,
           never,

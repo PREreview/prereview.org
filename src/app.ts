@@ -41,7 +41,7 @@ import {
   getProfileIdFromLegacyPreviewUuid,
 } from './legacy-prereview'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes'
-import type { IsUserBlockedEnv, OAuthEnv } from './log-in'
+import type { IsUserBlockedEnv, OrcidOAuthEnv } from './log-in'
 import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer'
 import type { OrcidApiEnv } from './orcid'
@@ -71,8 +71,8 @@ export type ConfigEnv = CareerStageStoreEnv &
   LocationStoreEnv &
   L.LoggerEnv &
   (MailjetApiEnv | NodemailerEnv) &
-  OAuthEnv &
   OrcidApiEnv &
+  OrcidOAuthEnv &
   PhaseEnv &
   PublicUrlEnv &
   RequiresVerifiedEmailAddressEnv &

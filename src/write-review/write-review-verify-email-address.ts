@@ -6,7 +6,7 @@ import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { getContactEmailAddress, isUnverified, saveContactEmailAddress } from '../contact-email-address'
 import { requiresVerifiedEmailAddress } from '../feature-flags'
-import { type OAuthEnv, logInAndRedirect } from '../log-in'
+import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import type { FathomEnv, PhaseEnv } from '../page'
 import { getPreprintTitle } from '../preprint'
@@ -59,7 +59,7 @@ export const writeReviewVerifyEmailAddress = (id: IndeterminatePreprintId, verif
           match(error)
             .returnType<
               RM.ReaderMiddleware<
-                FathomEnv & GetUserEnv & OAuthEnv & PhaseEnv & PublicUrlEnv,
+                FathomEnv & GetUserEnv & OrcidOAuthEnv & PhaseEnv & PublicUrlEnv,
                 StatusOpen,
                 ResponseEnded,
                 never,

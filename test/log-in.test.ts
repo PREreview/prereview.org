@@ -24,8 +24,8 @@ describe('logIn', () => {
     fc
       .webUrl()
       .chain(referer => fc.tuple(fc.connection({ headers: fc.constant({ Referer: referer }) }), fc.constant(referer))),
-  ])('when there is a Referer header', async (oauth, publicUrl, [connection, referer]) => {
-    const actual = await runMiddleware(_.logIn({ oauth, publicUrl }), connection)()
+  ])('when there is a Referer header', async (orcidOauth, publicUrl, [connection, referer]) => {
+    const actual = await runMiddleware(_.logIn({ orcidOauth, publicUrl }), connection)()
 
     expect(actual).toStrictEqual(
       E.right([
@@ -35,13 +35,13 @@ describe('logIn', () => {
           name: 'Location',
           value: new URL(
             `?${new URLSearchParams({
-              client_id: oauth.clientId,
+              client_id: orcidOauth.clientId,
               response_type: 'code',
               redirect_uri: new URL('/orcid', publicUrl).toString(),
               scope: '/authenticate',
               state: referer,
             }).toString()}`,
-            oauth.authorizeUrl,
+            orcidOauth.authorizeUrl,
           ).href,
         },
         { type: 'endResponse' },
@@ -51,8 +51,8 @@ describe('logIn', () => {
 
   test.prop([fc.oauth(), fc.origin(), fc.connection()])(
     "when there isn't a Referer header",
-    async (oauth, publicUrl, connection) => {
-      const actual = await runMiddleware(_.logIn({ oauth, publicUrl }), connection)()
+    async (orcidOauth, publicUrl, connection) => {
+      const actual = await runMiddleware(_.logIn({ orcidOauth, publicUrl }), connection)()
 
       expect(actual).toStrictEqual(
         E.right([
@@ -62,13 +62,13 @@ describe('logIn', () => {
             name: 'Location',
             value: new URL(
               `?${new URLSearchParams({
-                client_id: oauth.clientId,
+                client_id: orcidOauth.clientId,
                 response_type: 'code',
                 redirect_uri: new URL('/orcid', publicUrl).toString(),
                 scope: '/authenticate',
                 state: '',
               }).toString()}`,
-              oauth.authorizeUrl,
+              orcidOauth.authorizeUrl,
             ).href,
           },
           { type: 'endResponse' },
@@ -80,10 +80,10 @@ describe('logIn', () => {
 
 test.prop([fc.oauth(), fc.preprintId(), fc.origin(), fc.connection()])(
   'logInAndRedirect',
-  async (oauth, preprintId, publicUrl, connection) => {
+  async (orcidOauth, preprintId, publicUrl, connection) => {
     const actual = await runMiddleware(
       _.logInAndRedirect(writeReviewMatch.formatter, { id: preprintId })({
-        oauth,
+        orcidOauth,
         publicUrl,
       }),
       connection,
@@ -97,13 +97,13 @@ test.prop([fc.oauth(), fc.preprintId(), fc.origin(), fc.connection()])(
           name: 'Location',
           value: new URL(
             `?${new URLSearchParams({
-              client_id: oauth.clientId,
+              client_id: orcidOauth.clientId,
               response_type: 'code',
               redirect_uri: new URL('/orcid', publicUrl).toString(),
               scope: '/authenticate',
               state: new URL(format(writeReviewMatch.formatter, { id: preprintId }), publicUrl).toString(),
             }).toString()}`,
-            oauth.authorizeUrl,
+            orcidOauth.authorizeUrl,
           ).href,
         },
         { type: 'endResponse' },
@@ -179,7 +179,7 @@ describe('authenticate', () => {
     fc.connection(),
   ])(
     'when the state contains a valid referer',
-    async (code, [referer], oauth, accessToken, pseudonym, secret, sessionCookie, connection) => {
+    async (code, [referer], orcidOauth, accessToken, pseudonym, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
 
       const actual = await runMiddleware(
@@ -188,14 +188,14 @@ describe('authenticate', () => {
           referer.href,
         )({
           clock: SystemClock,
-          fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+          fetch: fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
             status: Status.OK,
             body: accessToken,
           }),
           getPseudonym: () => TE.right(pseudonym),
           isUserBlocked: () => false,
           logger: () => IO.of(undefined),
-          oauth,
+          orcidOauth,
           publicUrl: new URL('/', referer),
           secret,
           sessionCookie,
@@ -237,44 +237,47 @@ describe('authenticate', () => {
     fc.string(),
     fc.cookieName(),
     fc.connection(),
-  ])('when the user is blocked', async (code, [referer], oauth, accessToken, secret, sessionCookie, connection) => {
-    const sessionStore = new Keyv()
-    const isUserBlocked = jest.fn<_.IsUserBlockedEnv['isUserBlocked']>(_ => true)
+  ])(
+    'when the user is blocked',
+    async (code, [referer], orcidOauth, accessToken, secret, sessionCookie, connection) => {
+      const sessionStore = new Keyv()
+      const isUserBlocked = jest.fn<_.IsUserBlockedEnv['isUserBlocked']>(_ => true)
 
-    const actual = await runMiddleware(
-      _.authenticate(
-        code,
-        referer.href,
-      )({
-        clock: SystemClock,
-        fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
-          status: Status.OK,
-          body: accessToken,
+      const actual = await runMiddleware(
+        _.authenticate(
+          code,
+          referer.href,
+        )({
+          clock: SystemClock,
+          fetch: fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
+            status: Status.OK,
+            body: accessToken,
+          }),
+          getPseudonym: shouldNotBeCalled,
+          isUserBlocked,
+          logger: () => IO.of(undefined),
+          orcidOauth,
+          publicUrl: new URL('/', referer),
+          secret,
+          sessionCookie,
+          sessionStore,
         }),
-        getPseudonym: shouldNotBeCalled,
-        isUserBlocked,
-        logger: () => IO.of(undefined),
-        oauth,
-        publicUrl: new URL('/', referer),
-        secret,
-        sessionCookie,
-        sessionStore,
-      }),
-      connection,
-    )()
-    const sessions = await all(sessionStore.iterator(undefined))
+        connection,
+      )()
+      const sessions = await all(sessionStore.iterator(undefined))
 
-    expect(sessions).toStrictEqual([])
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.Found },
-        { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
-        { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'blocked' },
-        { type: 'endResponse' },
-      ]),
-    )
-    expect(isUserBlocked).toHaveBeenCalledWith(accessToken.orcid)
-  })
+      expect(sessions).toStrictEqual([])
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.Found },
+          { type: 'setHeader', name: 'Location', value: format(homeMatch.formatter, {}) },
+          { type: 'setCookie', name: 'flash-message', options: { httpOnly: true }, value: 'blocked' },
+          { type: 'endResponse' },
+        ]),
+      )
+      expect(isUserBlocked).toHaveBeenCalledWith(accessToken.orcid)
+    },
+  )
 
   test.prop([
     fc.string(),
@@ -291,9 +294,9 @@ describe('authenticate', () => {
     fc.connection(),
   ])(
     'when a pseudonym cannot be retrieved',
-    async (code, [referer], oauth, accessToken, secret, sessionCookie, connection) => {
+    async (code, [referer], orcidOauth, accessToken, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
-      const fetch = fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+      const fetch = fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
         status: Status.OK,
         body: accessToken,
       })
@@ -308,7 +311,7 @@ describe('authenticate', () => {
           getPseudonym: () => TE.left('unavailable'),
           isUserBlocked: () => false,
           logger: () => IO.of(undefined),
-          oauth,
+          orcidOauth,
           publicUrl: new URL('/', referer),
           secret,
           sessionCookie,
@@ -348,7 +351,7 @@ describe('authenticate', () => {
     fc.connection(),
   ])(
     'when the state contains an invalid referer',
-    async (code, publicUrl, state, oauth, accessToken, pseudonym, secret, sessionCookie, connection) => {
+    async (code, publicUrl, state, orcidOauth, accessToken, pseudonym, secret, sessionCookie, connection) => {
       const sessionStore = new Keyv()
 
       const actual = await runMiddleware(
@@ -357,14 +360,14 @@ describe('authenticate', () => {
           state,
         )({
           clock: SystemClock,
-          fetch: fetchMock.sandbox().postOnce(oauth.tokenUrl.href, {
+          fetch: fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
             status: Status.OK,
             body: accessToken,
           }),
           getPseudonym: () => TE.right(pseudonym),
           isUserBlocked: () => false,
           logger: () => IO.of(undefined),
-          oauth,
+          orcidOauth,
           publicUrl,
           secret,
           sessionCookie,

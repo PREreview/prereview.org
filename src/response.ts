@@ -2,14 +2,14 @@ import * as R from 'fp-ts/Reader'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { pipe } from 'fp-ts/function'
 import { type HeadersOpen, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
-import { type OAuthEnv as _OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
+import { type OAuthEnv, requestAuthorizationCode } from 'hyper-ts-oauth'
 import * as M from 'hyper-ts/Middleware'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message'
 import { type Html, html, sendHtml } from './html'
-import type { OAuthEnv } from './log-in'
+import type { OrcidOAuthEnv } from './log-in'
 import { type Page, type TemplatePageEnv, templatePage } from './page'
 import { type PublicUrlEnv, toUrl } from './public-url'
 import { orcidCodeMatch } from './routes'
@@ -121,7 +121,7 @@ export function handleResponse(response: {
   response: Response
   user?: User
 }): RM.ReaderMiddleware<
-  GetUserOnboardingEnv & OAuthEnv & PublicUrlEnv & TemplatePageEnv,
+  GetUserOnboardingEnv & OrcidOAuthEnv & PublicUrlEnv & TemplatePageEnv,
   StatusOpen,
   ResponseEnded,
   never,
@@ -322,18 +322,18 @@ const handleLogInResponse = ({
   response,
 }: {
   response: LogInResponse
-}): RM.ReaderMiddleware<OAuthEnv & PublicUrlEnv, StatusOpen, ResponseEnded, never, void> =>
+}): RM.ReaderMiddleware<OrcidOAuthEnv & PublicUrlEnv, StatusOpen, ResponseEnded, never, void> =>
   pipe(
     RM.asks(({ publicUrl }: PublicUrlEnv) => new URL(response.location, publicUrl).href),
     RM.ichainW(requestAuthorizationCode('/authenticate')),
     R.local(addRedirectUri()),
   )
 
-function addRedirectUri<R extends OAuthEnv & PublicUrlEnv>(): (env: R) => R & _OAuthEnv {
+function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R & OAuthEnv {
   return env => ({
     ...env,
     oauth: {
-      ...env.oauth,
+      ...env.orcidOauth,
       redirectUri: pipe(toUrl(orcidCodeMatch.formatter, { code: 'code', state: 'state' })(env), url => {
         url.search = ''
 

@@ -20,12 +20,12 @@ describe('connectSlack', () => {
   describe('when the user is logged in', () => {
     test.prop([fc.oauth(), fc.user(), fc.connection()])(
       'when the Slack is not already connected',
-      async (oauth, user, connection) => {
+      async (orcidOauth, user, connection) => {
         const actual = await runMiddleware(
           _.connectSlack({
             isSlackUser: () => TE.right(false),
             getUser: () => M.of(user),
-            oauth,
+            orcidOauth,
             publicUrl: new URL('http://example.com'),
           }),
           connection,
@@ -43,12 +43,12 @@ describe('connectSlack', () => {
 
     test.prop([fc.oauth(), fc.user(), fc.connection()])(
       'when the Slack is connected',
-      async (oauth, user, connection) => {
+      async (orcidOauth, user, connection) => {
         const actual = await runMiddleware(
           _.connectSlack({
             isSlackUser: () => TE.right(true),
             getUser: () => M.of(user),
-            oauth,
+            orcidOauth,
             publicUrl: new URL('http://example.com'),
           }),
           connection,
@@ -70,12 +70,12 @@ describe('connectSlack', () => {
 
     test.prop([fc.oauth(), fc.user(), fc.connection()])(
       "when the Slack user can't be loaded",
-      async (oauth, user, connection) => {
+      async (orcidOauth, user, connection) => {
         const actual = await runMiddleware(
           _.connectSlack({
             isSlackUser: () => TE.left('unavailable'),
             getUser: () => M.of(user),
-            oauth,
+            orcidOauth,
             publicUrl: new URL('http://example.com'),
           }),
           connection,
@@ -95,12 +95,12 @@ describe('connectSlack', () => {
 
   test.prop([fc.oauth(), fc.origin(), fc.connection()])(
     'when the user is not logged in',
-    async (oauth, publicUrl, connection) => {
+    async (orcidOauth, publicUrl, connection) => {
       const actual = await runMiddleware(
         _.connectSlack({
           isSlackUser: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
-          oauth,
+          orcidOauth,
           publicUrl,
         }),
         connection,
@@ -114,13 +114,13 @@ describe('connectSlack', () => {
             name: 'Location',
             value: new URL(
               `?${new URLSearchParams({
-                client_id: oauth.clientId,
+                client_id: orcidOauth.clientId,
                 response_type: 'code',
                 redirect_uri: new URL('/orcid', publicUrl).toString(),
                 scope: '/authenticate',
                 state: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
               }).toString()}`,
-              oauth.authorizeUrl,
+              orcidOauth.authorizeUrl,
             ).href,
           },
           { type: 'endResponse' },
@@ -133,7 +133,7 @@ describe('connectSlack', () => {
 describe('connectSlackStart', () => {
   test.prop([fc.oauth(), fc.oauth(), fc.origin(), fc.uuid(), fc.string(), fc.user(), fc.connection()])(
     'when the user is logged in',
-    async (oauth, slackOauth, publicUrl, uuid, signedValue, user, connection) => {
+    async (orcidOauth, slackOauth, publicUrl, uuid, signedValue, user, connection) => {
       const generateUuid = jest.fn<GenerateUuidEnv['generateUuid']>(() => uuid)
       const signValue = jest.fn<_.SignValueEnv['signValue']>(_ => signedValue)
 
@@ -141,7 +141,7 @@ describe('connectSlackStart', () => {
         _.connectSlackStart({
           generateUuid,
           getUser: () => M.of(user),
-          oauth,
+          orcidOauth,
           publicUrl,
           signValue,
           slackOauth,
@@ -178,12 +178,12 @@ describe('connectSlackStart', () => {
 
   test.prop([fc.oauth(), fc.oauth(), fc.origin(), fc.connection()])(
     'when the user is not logged in',
-    async (oauth, slackOauth, publicUrl, connection) => {
+    async (orcidOauth, slackOauth, publicUrl, connection) => {
       const actual = await runMiddleware(
         _.connectSlackStart({
           generateUuid: shouldNotBeCalled,
           getUser: () => M.left('no-session'),
-          oauth,
+          orcidOauth,
           publicUrl,
           signValue: shouldNotBeCalled,
           slackOauth,
@@ -199,13 +199,13 @@ describe('connectSlackStart', () => {
             name: 'Location',
             value: new URL(
               `?${new URLSearchParams({
-                client_id: oauth.clientId,
+                client_id: orcidOauth.clientId,
                 response_type: 'code',
                 redirect_uri: new URL('/orcid', publicUrl).toString(),
                 scope: '/authenticate',
                 state: new URL(format(connectSlackMatch.formatter, {}), publicUrl).toString(),
               }).toString()}`,
-              oauth.authorizeUrl,
+              orcidOauth.authorizeUrl,
             ).href,
           },
           { type: 'endResponse' },

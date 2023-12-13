@@ -856,13 +856,13 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         secret: 'secret',
         sandbox: false,
       },
-      oauth: {
+      orcidApiUrl: new URL('http://api.orcid.test/'),
+      orcidOauth: {
         authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
         clientId: 'client-id',
         clientSecret: 'client-secret',
         tokenUrl: new URL('http://orcid.test/token'),
       },
-      orcidApiUrl: new URL('http://api.orcid.test/'),
       publicUrl: new URL(`http://localhost:${port}`),
       requiresVerifiedEmailAddress,
       researchInterestsStore,

@@ -9,7 +9,7 @@ import type * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { Status } from 'hyper-ts'
-import { type OAuthEnv as _OAuthEnv, exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
+import { type OAuthEnv, exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { endSession as _endSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
@@ -27,8 +27,8 @@ import { homeMatch, orcidCodeMatch } from './routes'
 import type { Pseudonym } from './types/pseudonym'
 import { newSessionForUser } from './user'
 
-export interface OAuthEnv {
-  oauth: Omit<_OAuthEnv['oauth'], 'redirectUri'>
+export interface OrcidOAuthEnv {
+  orcidOauth: Omit<OAuthEnv['oauth'], 'redirectUri'>
 }
 
 export interface GetPseudonymEnv {
@@ -86,11 +86,11 @@ const filterBlockedUsers = <T extends OrcidUser>(user: T): RE.ReaderEither<IsUse
     R.map(isBlocked => (isBlocked ? E.left(user) : E.right(user))),
   )
 
-function addRedirectUri<R extends OAuthEnv & PublicUrlEnv>(): (env: R) => R & _OAuthEnv {
+function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R & OAuthEnv {
   return env => ({
     ...env,
     oauth: {
-      ...env.oauth,
+      ...env.orcidOauth,
       redirectUri: pipe(toUrl(orcidCodeMatch.formatter, { code: 'code', state: 'state' })(env), url => {
         url.search = ''
 
@@ -109,7 +109,7 @@ export const authenticate = flow(
       flow(
         get('code'),
         exchangeAuthorizationCode(OrcidUserC),
-        R.local(addRedirectUri<FetchEnv & OAuthEnv & PublicUrlEnv>()),
+        R.local(addRedirectUri<FetchEnv & OrcidOAuthEnv & PublicUrlEnv>()),
         RTE.local(timeoutRequest(2000)),
         RTE.orElseFirstW(RTE.fromReaderIOK(() => L.warn('Unable to exchange authorization code'))),
         RTE.chainFirstW(

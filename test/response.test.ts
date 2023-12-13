@@ -22,14 +22,14 @@ describe('handleResponse', () => {
         fc.html(),
         fc.oauth(),
         fc.origin(),
-      ])('when there is a user', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
+      ])('when there is a user', async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
         const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
         const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
         const actual = await runMiddleware(
           _.handleResponse({ response, user })({
             getUserOnboarding,
-            oauth,
+            orcidOauth,
             publicUrl,
             templatePage,
           }),
@@ -59,14 +59,14 @@ describe('handleResponse', () => {
 
       test.prop([fc.connection(), fc.pageResponse(), fc.html(), fc.oauth(), fc.origin()])(
         "when there isn't a user",
-        async (connection, response, page, oauth, publicUrl) => {
+        async (connection, response, page, orcidOauth, publicUrl) => {
           const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
           const actual = await runMiddleware(
             _.handleResponse({
               response,
               user: undefined,
-            })({ getUserOnboarding: shouldNotBeCalled, oauth, publicUrl, templatePage }),
+            })({ getUserOnboarding: shouldNotBeCalled, orcidOauth, publicUrl, templatePage }),
             connection,
           )()
 
@@ -100,12 +100,12 @@ describe('handleResponse', () => {
       fc.html(),
       fc.oauth(),
       fc.origin(),
-    ])('sets a canonical link', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
+    ])('sets a canonical link', async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
       const actual = await runMiddleware(
         _.handleResponse({
           response,
           user,
-        })({ getUserOnboarding: () => TE.right(userOnboarding), oauth, publicUrl, templatePage: () => page }),
+        })({ getUserOnboarding: () => TE.right(userOnboarding), orcidOauth, publicUrl, templatePage: () => page }),
         connection,
       )()
 
@@ -126,19 +126,24 @@ describe('handleResponse', () => {
       fc.html(),
       fc.oauth(),
       fc.origin(),
-    ])('when there is a flash message', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
-      const actual = await runMiddleware(
-        _.handleResponse({
-          response,
-          user,
-        })({ getUserOnboarding: () => TE.right(userOnboarding), oauth, publicUrl, templatePage: () => page }),
-        connection,
-      )()
+    ])(
+      'when there is a flash message',
+      async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
+        const actual = await runMiddleware(
+          _.handleResponse({
+            response,
+            user,
+          })({ getUserOnboarding: () => TE.right(userOnboarding), orcidOauth, publicUrl, templatePage: () => page }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right(expect.arrayContaining([{ type: 'clearCookie', name: 'flash-message', options: { httpOnly: true } }])),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right(
+            expect.arrayContaining([{ type: 'clearCookie', name: 'flash-message', options: { httpOnly: true } }]),
+          ),
+        )
+      },
+    )
   })
 
   describe('with a StreamlinePageResponse', () => {
@@ -151,14 +156,14 @@ describe('handleResponse', () => {
         fc.html(),
         fc.oauth(),
         fc.origin(),
-      ])('when there is a user', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
+      ])('when there is a user', async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
         const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
         const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
         const actual = await runMiddleware(
           _.handleResponse({ response, user })({
             getUserOnboarding,
-            oauth,
+            orcidOauth,
             publicUrl,
             templatePage,
           }),
@@ -189,14 +194,14 @@ describe('handleResponse', () => {
 
       test.prop([fc.connection(), fc.streamlinePageResponse(), fc.html(), fc.oauth(), fc.origin()])(
         "when there isn't a user",
-        async (connection, response, page, oauth, publicUrl) => {
+        async (connection, response, page, orcidOauth, publicUrl) => {
           const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
           const actual = await runMiddleware(
             _.handleResponse({
               response,
               user: undefined,
-            })({ getUserOnboarding: shouldNotBeCalled, oauth, publicUrl, templatePage }),
+            })({ getUserOnboarding: shouldNotBeCalled, orcidOauth, publicUrl, templatePage }),
             connection,
           )()
 
@@ -231,12 +236,12 @@ describe('handleResponse', () => {
       fc.html(),
       fc.oauth(),
       fc.origin(),
-    ])('sets a canonical link', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
+    ])('sets a canonical link', async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
       const actual = await runMiddleware(
         _.handleResponse({
           response,
           user,
-        })({ getUserOnboarding: () => TE.right(userOnboarding), oauth, publicUrl, templatePage: () => page }),
+        })({ getUserOnboarding: () => TE.right(userOnboarding), orcidOauth, publicUrl, templatePage: () => page }),
         connection,
       )()
 
@@ -257,19 +262,24 @@ describe('handleResponse', () => {
       fc.html(),
       fc.oauth(),
       fc.origin(),
-    ])('when there is a flash message', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
-      const actual = await runMiddleware(
-        _.handleResponse({
-          response,
-          user,
-        })({ getUserOnboarding: () => TE.right(userOnboarding), oauth, publicUrl, templatePage: () => page }),
-        connection,
-      )()
+    ])(
+      'when there is a flash message',
+      async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
+        const actual = await runMiddleware(
+          _.handleResponse({
+            response,
+            user,
+          })({ getUserOnboarding: () => TE.right(userOnboarding), orcidOauth, publicUrl, templatePage: () => page }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right(expect.arrayContaining([{ type: 'clearCookie', name: 'flash-message', options: { httpOnly: true } }])),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right(
+            expect.arrayContaining([{ type: 'clearCookie', name: 'flash-message', options: { httpOnly: true } }]),
+          ),
+        )
+      },
+    )
   })
 
   describe('with a TwoUpPageResponse', () => {
@@ -281,14 +291,14 @@ describe('handleResponse', () => {
       fc.html(),
       fc.oauth(),
       fc.origin(),
-    ])('when there is a user', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
+    ])('when there is a user', async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
       const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
       const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
       const actual = await runMiddleware(
         _.handleResponse({ response, user })({
           getUserOnboarding,
-          oauth,
+          orcidOauth,
           publicUrl,
           templatePage,
         }),
@@ -320,14 +330,14 @@ describe('handleResponse', () => {
 
     test.prop([fc.connection(), fc.twoUpPageResponse(), fc.html(), fc.oauth(), fc.origin()])(
       "when there isn't a user",
-      async (connection, response, page, oauth, publicUrl) => {
+      async (connection, response, page, orcidOauth, publicUrl) => {
         const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
         const actual = await runMiddleware(
           _.handleResponse({
             response,
             user: undefined,
-          })({ getUserOnboarding: shouldNotBeCalled, oauth, publicUrl, templatePage }),
+          })({ getUserOnboarding: shouldNotBeCalled, orcidOauth, publicUrl, templatePage }),
           connection,
         )()
 
@@ -362,19 +372,24 @@ describe('handleResponse', () => {
       fc.html(),
       fc.oauth(),
       fc.origin(),
-    ])('when there is a flash message', async (connection, response, user, userOnboarding, page, oauth, publicUrl) => {
-      const actual = await runMiddleware(
-        _.handleResponse({
-          response,
-          user,
-        })({ getUserOnboarding: () => TE.right(userOnboarding), oauth, publicUrl, templatePage: () => page }),
-        connection,
-      )()
+    ])(
+      'when there is a flash message',
+      async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
+        const actual = await runMiddleware(
+          _.handleResponse({
+            response,
+            user,
+          })({ getUserOnboarding: () => TE.right(userOnboarding), orcidOauth, publicUrl, templatePage: () => page }),
+          connection,
+        )()
 
-      expect(actual).toStrictEqual(
-        E.right(expect.arrayContaining([{ type: 'clearCookie', name: 'flash-message', options: { httpOnly: true } }])),
-      )
-    })
+        expect(actual).toStrictEqual(
+          E.right(
+            expect.arrayContaining([{ type: 'clearCookie', name: 'flash-message', options: { httpOnly: true } }]),
+          ),
+        )
+      },
+    )
   })
 
   test.prop([
@@ -383,11 +398,11 @@ describe('handleResponse', () => {
     fc.option(fc.user(), { nil: undefined }),
     fc.oauth(),
     fc.origin(),
-  ])('with a RedirectResponse', async (connection, response, user, oauth, publicUrl) => {
+  ])('with a RedirectResponse', async (connection, response, user, orcidOauth, publicUrl) => {
     const actual = await runMiddleware(
       _.handleResponse({ response, user })({
         getUserOnboarding: shouldNotBeCalled,
-        oauth,
+        orcidOauth,
         publicUrl,
         templatePage: shouldNotBeCalled,
       }),
@@ -411,11 +426,11 @@ describe('handleResponse', () => {
     fc.option(fc.user(), { nil: undefined }),
     fc.oauth(),
     fc.origin(),
-  ])('with a FlashMessageResponse', async (connection, response, user, oauth, publicUrl) => {
+  ])('with a FlashMessageResponse', async (connection, response, user, orcidOauth, publicUrl) => {
     const actual = await runMiddleware(
       _.handleResponse({ response, user })({
         getUserOnboarding: shouldNotBeCalled,
-        oauth,
+        orcidOauth,
         publicUrl,
         templatePage: shouldNotBeCalled,
       }),
@@ -436,11 +451,11 @@ describe('handleResponse', () => {
 
   test.prop([fc.connection(), fc.logInResponse(), fc.option(fc.user(), { nil: undefined }), fc.oauth(), fc.origin()])(
     'with a LogInResponse',
-    async (connection, response, user, oauth, publicUrl) => {
+    async (connection, response, user, orcidOauth, publicUrl) => {
       const actual = await runMiddleware(
         _.handleResponse({ response, user })({
           getUserOnboarding: shouldNotBeCalled,
-          oauth,
+          orcidOauth,
           publicUrl,
           templatePage: shouldNotBeCalled,
         }),
@@ -456,13 +471,13 @@ describe('handleResponse', () => {
               name: 'Location',
               value: new URL(
                 `?${new URLSearchParams({
-                  client_id: oauth.clientId,
+                  client_id: orcidOauth.clientId,
                   response_type: 'code',
                   redirect_uri: new URL('/orcid', publicUrl).toString(),
                   scope: '/authenticate',
                   state: new URL(response.location, publicUrl).href,
                 }).toString()}`,
-                oauth.authorizeUrl,
+                orcidOauth.authorizeUrl,
               ).href,
             },
             { type: 'endResponse' },
