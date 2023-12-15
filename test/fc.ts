@@ -801,6 +801,7 @@ export const clubId = (): fc.Arbitrary<ClubId> =>
     'asapbio-metabolism',
     'asapbio-neurobiology',
     'biomass-biocatalysis',
+    'biophysics-leipzig',
     'cara',
     'hhmi-training-pilot',
     'language-club',

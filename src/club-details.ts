@@ -111,6 +111,29 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
     `,
     leads: [{ name: 'Ayla Sant’Ana da Silva', orcid: '0000-0001-8466-9390' as Orcid }],
   },
+  'biophysics-leipzig': {
+    name: 'Biophysics Leipzig University',
+    description: html`
+      <p>
+        The Institute for Medical Physics and Biophysics counts among the clinical-theoretical institutes of the Medical
+        Faculty of Leipzig University. The members of the institute are of diverse origin, hold multidisciplinary
+        educational backgrounds and share interdisciplinary research interests. We are using different techniques like
+        NMR spectroscopy, mass spectrometry, cell-based assays, electron paramagnetic resonance and much more.
+      </p>
+      <p>
+        This club should develop as a sustainable contribution to the development towards unconfined OpenScience
+        practices in the area of publishing and knowledge sharing. At our institute, it should initially give PhD
+        students access to the peer review system and educate them in giving adequate feedback on research data.
+      </p>
+    `,
+    leads: [
+      { name: 'Jenny Leopold', orcid: '0000-0002-4993-5136' as Orcid },
+      {
+        name: 'Benedikt Schwarze',
+        orcid: '0000-0002-5815-8703' as Orcid,
+      },
+    ],
+  },
   cara: {
     name: 'CARA: Critical Analysis of Research Articles Club',
     description: html`
