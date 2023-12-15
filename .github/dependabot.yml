@@ -10,6 +10,11 @@ updates:
     directory: '/'
     schedule:
       interval: 'daily'
+    groups:
+      artifacts:
+        patterns:
+          - 'actions/download-artifact'
+          - 'actions/upload-artifact'
 
   - package-ecosystem: 'npm'
     directory: '/'
