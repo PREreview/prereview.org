@@ -136,7 +136,7 @@
     "purgecss-webpack-plugin": "^5.0.0",
     "remixicon": "^3.7.0",
     "stylelint": "^15.11.0",
-    "stylelint-config-property-sort-order-smacss": "^9.1.0",
+    "stylelint-config-property-sort-order-smacss": "^10.0.0",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-use-logical-spec": "^5.0.0",
     "ts-deepmerge": "^6.2.0",
