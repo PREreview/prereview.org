@@ -189,6 +189,23 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       'https://docs.google.com/forms/d/e/1FAIpQLScamu28Lkm2pBS1n-g0UpMmp8trCeGPVVdAxJ8MIauhlwx7Dw/viewform',
     ),
   },
+  'open-science-community-iraqi': {
+    name: 'Open Science Community Iraqi (OSCI)',
+    description: html`
+      <p>
+        Open Science Community Iraqi (OSCI) aims to provide a place where newcomers and experienced peers interact,
+        inspire each other to embed open science practices and values in their workflows and provide feedback on
+        policies, infrastructures, and support services.
+      </p>
+      <p>
+        Open Science Community Iraqi (OSCI) describes an ongoing movement in the way research is performed, researchers
+        collaborate, knowledge is shared, and science is organized. It affects the whole research cycle and its
+        stakeholders and enhances science by facilitating more transparency, openness, networking, and collaboration.
+      </p>
+    `,
+    leads: [{ name: 'Assist. Prof. Dr. Salwan M. Abdulateef', orcid: '0000-0002-7389-0003' as Orcid }],
+    contact: 'ag.salwan.mahmood@uoanbar.edu.iq' as EmailAddress,
+  },
   'rr-id-student-reviewer-club': {
     name: 'RR\\ID Student Reviewer Club',
     description: html`
