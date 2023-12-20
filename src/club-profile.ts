@@ -76,6 +76,7 @@ function createPage({ club, id, prereviews }: { club: Club; id: ClubId; prerevie
         </dd>
       </dl>
 
+      ${club.contact ? html`<a href="mailto:${club.contact}" class="button">Contact the club</a>` : ''}
       ${club.joinLink ? html`<a href="${club.joinLink.href}" class="button">Join the club</a> ` : ''}
 
       <h2>PREreviews</h2>

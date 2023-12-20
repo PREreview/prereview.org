@@ -8,11 +8,13 @@ import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
 import { type Html, html } from './html'
 import type { ClubId } from './types/club-id'
+import type { EmailAddress } from './types/email-address'
 
 export interface Club {
   readonly name: string
   readonly description: Html
   readonly leads: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid: Orcid }>
+  readonly contact?: EmailAddress
   readonly joinLink?: URL
 }
 
@@ -133,6 +135,7 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
         orcid: '0000-0002-5815-8703' as Orcid,
       },
     ],
+    contact: 'jenny.leopold@medizin.uni-leipzig.de' as EmailAddress,
   },
   cara: {
     name: 'CARA: Critical Analysis of Research Articles Club',
