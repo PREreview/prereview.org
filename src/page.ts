@@ -140,6 +140,7 @@ export function page({
                                     >About</a
                                   >
                                 </li>
+                                <li><a href="https://donorbox.org/prereview">Donate</a></li>
                               `
                             : ''}
                           ${user && type !== 'streamline'
