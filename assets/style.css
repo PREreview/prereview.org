@@ -851,8 +851,10 @@ th {
 }
 
 td {
-  text-align: end;
-  font-variant-numeric: tabular-nums;
+  &.numeric {
+    text-align: end;
+    font-variant-numeric: tabular-nums;
+  }
 
   th + & {
     padding-inline-start: var(--space-s-m);

@@ -334,25 +334,25 @@ function showRapidPrereviews(rapidPrereviews: ReadonlyNonEmptyArray<RapidPrerevi
               ({ question, answers }) => html`
                 <tr>
                   <th scope="row">${displayRapidPrereviewQuestion(question)}</th>
-                  <td>
+                  <td class="numeric">
                     ${(answers.yes / rapidPrereviews.length).toLocaleString('en', {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}
                   </td>
-                  <td>
+                  <td class="numeric">
                     ${(answers.unsure / rapidPrereviews.length).toLocaleString('en', {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}
                   </td>
-                  <td>
+                  <td class="numeric">
                     ${(answers.na / rapidPrereviews.length).toLocaleString('en', {
                       style: 'percent',
                       maximumFractionDigits: 0,
                     })}
                   </td>
-                  <td>
+                  <td class="numeric">
                     ${(answers.no / rapidPrereviews.length).toLocaleString('en', {
                       style: 'percent',
                       maximumFractionDigits: 0,

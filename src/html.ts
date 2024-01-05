@@ -119,6 +119,7 @@ export function sanitizeHtml(html: string, trusted = false): Html {
     },
     allowedClasses: {
       a: trusted ? ['button'] : [],
+      td: trusted ? ['numeric'] : [],
     },
     transformTags: {
       a: (tagName, attribs) => {
