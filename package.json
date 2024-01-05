@@ -8,7 +8,7 @@
     "@godaddy/terminus": "^4.12.1",
     "@hapi/address": "^5.1.1",
     "@js-temporal/polyfill": "^0.4.4",
-    "@keyv/redis": "^2.8.0",
+    "@keyv/redis": "^2.8.2",
     "anonymus": "^2.1.3",
     "cacache": "^18.0.1",
     "capital-case": "^1.0.4",
