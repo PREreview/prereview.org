@@ -87,12 +87,13 @@ export function sanitizeHtml(html: string, trusted = false): Html {
       'mtr',
       'annotation',
       'semantics',
-      ...(trusted ? ['img', 'table', 'thead', 'tbody', 'tr', 'th', 'td'] : []),
+      ...(trusted ? ['img', 'table', 'colgroup', 'col', 'thead', 'tbody', 'tr', 'th', 'td'] : []),
     ],
     allowedAttributes: {
       '*': ['dir', 'displaystyle', 'lang', 'mathvariant'],
       a: ['href'],
       annotation: ['encoding'],
+      col: ['span'],
       img: ['alt', 'height', 'src', 'width'],
       math: ['display'],
       mo: [

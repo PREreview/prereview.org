@@ -820,8 +820,15 @@ table {
   inline-size: 100%;
   margin-block-start: var(--space-s-m);
   border-spacing: 0;
+  border-collapse: collapse;
   font-size: var(--step--1);
   text-wrap: pretty;
+}
+
+col {
+  &:not(:last-child) {
+    border-inline-end: var(--width-divider-narrow) solid var(--color-divider);
+  }
 }
 
 caption {
