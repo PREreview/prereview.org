@@ -818,11 +818,15 @@ math {
 
 table {
   inline-size: 100%;
-  margin-block-start: var(--space-s-m);
+  margin-block-start: var(--space-m-l);
   border-spacing: 0;
   border-collapse: collapse;
   font-size: var(--step--1);
   text-wrap: pretty;
+
+  & + :not(.visually-hidden) {
+    margin-block-start: var(--space-m-l);
+  }
 }
 
 col {
