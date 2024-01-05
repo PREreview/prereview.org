@@ -833,7 +833,18 @@ td,
 th {
   border-block-end: var(--width-divider-narrow) solid var(--color-divider);
   padding-block: var(--space-3xs-2xs);
+  padding-inline: calc(var(--space-2xs-s) / 2);
   vertical-align: baseline;
+
+  tbody & {
+    &:first-child {
+      padding-inline-start: 0;
+    }
+
+    &:last-child {
+      padding-inline-end: 0;
+    }
+  }
 }
 
 th {
@@ -844,24 +855,12 @@ th {
     font-weight: 500;
     text-align: start;
   }
-
-  & + & {
-    padding-inline-start: var(--space-2xs-s);
-  }
 }
 
 td {
   &.numeric {
     text-align: end;
     font-variant-numeric: tabular-nums;
-  }
-
-  th + & {
-    padding-inline-start: var(--space-s-m);
-  }
-
-  & + & {
-    padding-inline-start: var(--space-2xs-s);
   }
 }
 
