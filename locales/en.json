@@ -2,7 +2,8 @@
   "slogan": {
     "open": "Open preprint reviews.",
     "all": "For <em>all</em> researchers.",
-    "peers": "Provide and receive constructive feedback on preprints from an international community of your peers."
+    "peers": "Provide and receive constructive feedback on preprints from an international community of your peers.",
+    "withData": "hello "
   },
   "cta": "Review a preprint"
 }

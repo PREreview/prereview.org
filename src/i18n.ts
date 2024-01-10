@@ -29,6 +29,8 @@ export const i18n = i18next
 
 export const t = flow(i18n.t, rawHtml)
 
+export type Translate = typeof t
+
 declare module 'i18next' {
   interface CustomTypeOptions {
     defaultNS: typeof defaultNS
