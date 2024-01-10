@@ -8,7 +8,7 @@ import numberedListIcon from 'remixicon/icons/Editor/list-ordered.svg'
 import bulletedListIcon from 'remixicon/icons/Editor/list-unordered.svg'
 import subscriptIcon from 'remixicon/icons/Editor/subscript.svg'
 import superscriptIcon from 'remixicon/icons/Editor/superscript.svg'
-import { disableButton, enableButton, preventDefault } from './dom'
+import { disableButton, enableButton, language, preventDefault } from './dom'
 
 const deps = Promise.all([
   import('@tiptap/core'),
@@ -19,6 +19,25 @@ const deps = Promise.all([
   import('@tiptap/starter-kit'),
 ])
 
+const locales = ['en', 'es'] as const
+
+type Locale = (typeof locales)[number]
+
+function isLocale(value: string): value is Locale {
+  return (locales as ReadonlyArray<string>).includes(value)
+}
+
+const messages = {
+  'button.bold': {
+    en: 'Bold',
+    es: 'Negrita',
+  },
+  loading: {
+    en: 'Loading',
+    es: 'Cargando',
+  },
+}
+
 export class HtmlEditor extends HTMLElement {
   static element = 'html-editor' as const
 
@@ -27,6 +46,12 @@ export class HtmlEditor extends HTMLElement {
 
     if (!(textArea instanceof HTMLTextAreaElement)) {
       throw new Error('No text area')
+    }
+
+    const lang = language(this)
+
+    if (typeof lang !== 'string' || !isLocale(lang)) {
+      throw new Error('Unknown locale')
     }
 
     const form = textArea.form
@@ -49,14 +74,14 @@ export class HtmlEditor extends HTMLElement {
     const status = document.createElement('div')
     status.classList.add('loading', 'visually-hidden')
     const statusText = document.createElement('span')
-    statusText.textContent = 'Loading'
+    statusText.textContent = messages.loading[lang]
     status.append(statusText)
     this.append(status)
 
     setTimeout(() => status.classList.remove('visually-hidden'), 100)
 
     const toolbarButtons = Promise.all([
-      createButton('Bold', boldIcon),
+      createButton(messages['button.bold'][lang], boldIcon),
       createButton('Italic', italicIcon),
       createButton('Subscript', subscriptIcon),
       createButton('Superscript', superscriptIcon),

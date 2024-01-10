@@ -1,3 +1,7 @@
+export function language(element: HTMLElement): string | null {
+  return element.closest('[lang]')?.getAttribute('lang') ?? null
+}
+
 export function preventDefault(event: Event) {
   event.preventDefault()
 }
