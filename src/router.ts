@@ -255,9 +255,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW(
+          RM.apS('t', RM.of(t)),
+          RM.bindW(
             'response',
-            pipe(
+            ({t}) => pipe(
               RM.fromReaderTask(home),
               RM.map(foo => foo(t)),
             ),
