@@ -32,7 +32,8 @@ import { getFlashMessage } from './flash-message'
 import { funding } from './funding'
 import { home } from './home'
 import { howToUse } from './how-to-use'
-import { t } from './i18n'
+import { rawHtml } from './html'
+import { i18n } from './i18n'
 import {
   deleteCareerStage,
   deleteContactEmailAddress,
@@ -255,10 +256,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apS('t', RM.of(t)),
-          RM.bindW(
-            'response',
-            ({t}) => pipe(
+          RM.apS('i18n', RM.of(i18n.cloneInstance({ lng: 'es' }))),
+          RM.bind('t', ({ i18n }) => RM.of(flow(i18n.t, rawHtml))),
+          RM.bindW('response', ({ t }) =>
+            pipe(
               RM.fromReaderTask(home),
               RM.map(foo => foo(t)),
             ),
