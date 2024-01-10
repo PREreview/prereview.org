@@ -10,6 +10,7 @@ import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from './club-details'
 import { type Html, html, plainText, rawHtml } from './html'
+import { i18n, t } from './i18n'
 import * as assets from './manifest.json'
 import { PageResponse } from './response'
 import { aboutUsMatch, homeMatch, reviewAPreprintMatch, reviewMatch, reviewsMatch } from './routes'
@@ -45,13 +46,13 @@ export const home: RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> = pipe(ge
 
 function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
   return PageResponse({
-    title: plainText`PREreview: Open preprint reviews. For all researchers.`,
+    title: plainText`PREreview: ${t('common:slogan.open')} ${t('common:slogan.all')}`,
     main: html`
       <div class="hero">
-        <h1>Open preprint reviews.<br />For&nbsp;<em>all</em> researchers.</h1>
-        <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
+        <h1>${t('common:slogan.open')}<br />${t('common:slogan.all')}</h1>
+        <p>${t('common:slogan.peers')}</p>
 
-        <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
+        <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">${i18n.t('common:cta')}</a>
 
         <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
       </div>
