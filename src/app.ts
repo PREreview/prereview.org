@@ -23,7 +23,9 @@ import type { Email } from './email'
 import type { RequiresVerifiedEmailAddressEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import type { GhostApiEnv } from './ghost'
+import { rawHtml } from './html'
 import { pageNotFound } from './http-error'
+import { i18n } from './i18n'
 import {
   type CareerStageStoreEnv,
   type ContactEmailAddressStoreEnv,
@@ -279,6 +281,7 @@ export const app = (config: ConfigEnv) => {
       next()
     })
     .use((req, res, next) => {
+      const i18nLngSpecific = i18n.cloneInstance({ lng: 'es' })
       return pipe(
         appMiddleware,
         R.local((env: ConfigEnv): RouterEnv & LegacyEnv => ({
@@ -293,6 +296,7 @@ export const app = (config: ConfigEnv) => {
           getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
           getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
           sendEmail: withEnv(sendEmail, env),
+          t: flow(i18nLngSpecific.t, rawHtml),
         })),
         R.local(collapseRequests()),
         R.local(logFetch()),

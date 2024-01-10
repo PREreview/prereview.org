@@ -1,5 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
+import * as R from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
@@ -36,19 +37,23 @@ interface GetRecentPrereviewsEnv {
   getRecentPrereviews: () => T.Task<ReadonlyArray<RecentPrereview>>
 }
 
+export interface TranslateEnv {
+  t: Translate
+}
+
 const getRecentPrereviews = () =>
   pipe(
     RT.ask<GetRecentPrereviewsEnv>(),
     RT.chainTaskK(({ getRecentPrereviews }) => getRecentPrereviews()),
   )
 
-export const home: RT.ReaderTask<GetRecentPrereviewsEnv, (t: Translate) => PageResponse> = pipe(
+export const home: RT.ReaderTask<GetRecentPrereviewsEnv & TranslateEnv, PageResponse> = pipe(
   getRecentPrereviews(),
-  RT.map(createPage),
+  RT.chainReaderKW(createPage),
 )
 
-function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
-  return (t: Translate) =>
+function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>): R.Reader<TranslateEnv, PageResponse> {
+  return ({ t }) =>
     PageResponse({
       title: plainText`PREreview: ${t('common:slogan.open')} ${t('common:slogan.all')}`,
       main: html`

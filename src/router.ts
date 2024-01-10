@@ -30,7 +30,7 @@ import {
 } from './email'
 import { getFlashMessage } from './flash-message'
 import { funding } from './funding'
-import { home } from './home'
+import { TranslateEnv, home } from './home'
 import { howToUse } from './how-to-use'
 import { rawHtml } from './html'
 import { i18n } from './i18n'
@@ -233,7 +233,8 @@ export type RouterEnv = ConfigEnv &
   GetUserEnv &
   GetUserOnboardingEnv &
   SendEmailEnv &
-  TemplatePageEnv
+  TemplatePageEnv &
+  TranslateEnv
 
 const getRapidPrereviews = (id: PreprintId) =>
   isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
@@ -256,14 +257,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apS('i18n', RM.of(i18n.cloneInstance({ lng: 'es' }))),
-          RM.bind('t', ({ i18n }) => RM.of(flow(i18n.t, rawHtml))),
-          RM.bindW('response', ({ t }) =>
-            pipe(
-              RM.fromReaderTask(home),
-              RM.map(foo => foo(t)),
-            ),
-          ),
+          RM.apSW('response', RM.fromReaderTask(home)),
           RM.ichainW(handleResponse),
         ),
       ),
