@@ -4,6 +4,7 @@ import * as R from 'fp-ts/Reader'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
+import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { type Html, type PlainText, html, rawHtml } from './html'
 import * as assets from './manifest.json'
@@ -72,6 +73,10 @@ export interface TemplatePageEnv {
 
 export const templatePage = (page: Page) => R.asks(({ templatePage }: TemplatePageEnv) => templatePage(page))
 
+export interface LanguageEnv {
+  readonly language: string
+}
+
 export function page({
   title,
   type,
@@ -81,13 +86,13 @@ export function page({
   js = [],
   user,
   userOnboarding,
-}: Page): R.Reader<FathomEnv & PhaseEnv, Html> {
+}: Page): R.Reader<FathomEnv & LanguageEnv & PhaseEnv, Html> {
   const scripts = pipe(js, RA.uniq(stringEq()), RA.concatW(skipLinks.length > 0 ? ['skip-link.js' as const] : []))
 
   return R.asks(
-    ({ fathomId, phase }) => html`
+    ({ fathomId, language, phase }) => html`
       <!doctype html>
-      <html lang="en" dir="ltr">
+      <html lang="${language}" dir="${getLangDir(language)}">
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 

@@ -292,7 +292,7 @@ export const app = (config: ConfigEnv) => {
           getUserOnboarding: withEnv(getUserOnboarding, env),
           getPreprint: withEnv(getPreprint, env),
           getPreprintTitle: withEnv(getPreprintTitle, env),
-          templatePage: withEnv(page, env),
+          templatePage: withEnv(page, { ...env, language: i18nLngSpecific.language }),
           getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
           getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
           sendEmail: withEnv(sendEmail, env),
