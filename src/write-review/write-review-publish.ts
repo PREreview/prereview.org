@@ -337,9 +337,17 @@ function renderReview(form: CompletedForm) {
     <h2>Competing interests</h2>
 
     <p>
-      ${form.competingInterests === 'yes'
-        ? form.competingInterestsDetails
-        : 'The author declares that they have no competing interests.'}
+      ${match(form)
+        .with({ competingInterests: 'yes' }, form => form.competingInterestsDetails)
+        .with(
+          { competingInterests: 'no', moreAuthors: P.union('yes', 'yes-private') },
+          () => 'The authors declare that they have no competing interests.',
+        )
+        .with(
+          { competingInterests: 'no', moreAuthors: 'no' },
+          () => 'The author declares that they have no competing interests.',
+        )
+        .exhaustive()}
     </p>`
 }
 
