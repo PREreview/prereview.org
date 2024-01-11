@@ -336,20 +336,21 @@ function renderReview(form: CompletedForm) {
 
     <h2>Competing interests</h2>
 
-    <p>
-      ${match(form)
-        .with({ competingInterests: 'yes' }, form => form.competingInterestsDetails)
-        .with(
-          { competingInterests: 'no', moreAuthors: P.union('yes', 'yes-private') },
-          () => 'The authors declare that they have no competing interests.',
-        )
-        .with(
-          { competingInterests: 'no', moreAuthors: 'no' },
-          () => 'The author declares that they have no competing interests.',
-        )
-        .exhaustive()}
-    </p>`
+    <p>${getCompetingInterests(form)}</p>`
 }
+
+const getCompetingInterests = (form: CompletedForm) =>
+  match(form)
+    .with({ competingInterests: 'yes' }, form => form.competingInterestsDetails)
+    .with(
+      { competingInterests: 'no', moreAuthors: P.union('yes', 'yes-private') },
+      () => 'The authors declare that they have no competing interests.',
+    )
+    .with(
+      { competingInterests: 'no', moreAuthors: 'no' },
+      () => 'The author declares that they have no competing interests.',
+    )
+    .exhaustive()
 
 function failureMessage(user: User) {
   return page({
@@ -464,7 +465,7 @@ function publishForm(
 
                 <div>
                   <dt>Competing interests</dt>
-                  <dd>${review.competingInterests === 'yes' ? review.competingInterestsDetails : 'None'}</dd>
+                  <dd>${getCompetingInterests(review)}</dd>
                   <dd>
                     <a href="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}"
                       >Change <span class="visually-hidden">competing interests</span></a

@@ -107,7 +107,9 @@ test.extend(canLogIn).extend(willPublishAReview)(
         'Lorem ipsum dolor sit "amet", consectetur adipiscing elit.',
       )
     }
-    await expect(page.getByRole('main')).toContainText('Competing interests None')
+    await expect(page.getByRole('main')).toContainText(
+      'Competing interests The author declares that they have no competing interests.',
+    )
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -239,7 +241,9 @@ test.extend(canLogIn).extend(willPublishAReview)('can publish a question-based P
   await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
     'Is it ready for attention from an editor, publisher or broader audience? Yes, after minor changes Quisque in blandit arcu.',
   )
-  await expect(page.getByRole('main')).toContainText('Competing interests None')
+  await expect(page.getByRole('main')).toContainText(
+    'Competing interests The author declares that they have no competing interests.',
+  )
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
@@ -615,6 +619,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('main')).toContainText(
+      'Competing interests The authors declare that they have no competing interests.',
+    )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
@@ -648,6 +655,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('main')).toContainText(
+      'Competing interests The authors declare that they have no competing interests.',
+    )
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
@@ -805,7 +815,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can change the competing interests af
   await page.getByLabel('I’m following the Code of Conduct').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Competing interests None')
+  await expect(page.getByRole('main')).toContainText(
+    'Competing interests The author declares that they have no competing interests.',
+  )
 
   await page.getByRole('link', { name: 'Change competing interests' }).click()
 
