@@ -83,6 +83,8 @@ test.extend(canLogIn).extend(willPublishAReview)(
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Do you have any competing interests?')
+
     await page.getByLabel('No').check()
 
     await page.mouse.move(0, 0)
@@ -613,6 +615,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Do you, or any of the other authors, have any competing interests?',
+    )
 
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -2560,6 +2566,68 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Enter details of your competing interests' }).click()
+
+    await expect(page.getByLabel('What are they?')).toBeFocused()
+
+    testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
+
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn)(
+  'have to declare any competing interests by any author',
+  async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, and some or all want to be listed as authors').check()
+    await page.getByLabel('They have read and approved the PREreview').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', { name: 'Do you, or any of the other authors, have any competing interests?' }),
+    ).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page
+      .getByRole('link', { name: 'Select yes if you, or any of the other authors, have any competing interests' })
+      .click()
+
+    await expect(page.getByLabel('No')).toBeFocused()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByLabel('Yes').check()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('What are they?')).toHaveAttribute('aria-invalid', 'true')
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
+
+    await page.getByRole('link', { name: 'Enter details of the competing interests' }).click()
 
     await expect(page.getByLabel('What are they?')).toBeFocused()
 

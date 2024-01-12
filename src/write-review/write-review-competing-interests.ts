@@ -60,15 +60,16 @@ const showCompetingInterestsForm = flow(
         competingInterestsDetails: E.right(form.competingInterestsDetails),
       },
       user,
+      form.moreAuthors !== 'no',
     ),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showCompetingInterestsErrorForm = (preprint: PreprintTitle, user: User) =>
+const showCompetingInterestsErrorForm = (preprint: PreprintTitle, user: User, otherAuthors: boolean) =>
   flow(
-    RM.fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form, user)),
+    RM.fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form, user, otherAuthors)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -101,7 +102,7 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, user))
+        .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, user, form.moreAuthors !== 'no'))
         .exhaustive(),
     ),
   )
@@ -121,11 +122,18 @@ interface CompetingInterestsForm {
   readonly competingInterestsDetails: E.Either<MissingE, NonEmptyString | undefined>
 }
 
-function competingInterestsForm(preprint: PreprintTitle, form: CompetingInterestsForm, user: User) {
+function competingInterestsForm(
+  preprint: PreprintTitle,
+  form: CompetingInterestsForm,
+  user: User,
+  otherAuthors: boolean,
+) {
   const error = hasAnError(form)
 
   return page({
-    title: plainText`${error ? 'Error: ' : ''}Do you have any competing interests? – PREreview of “${preprint.title}”`,
+    title: plainText`${error ? 'Error: ' : ''}Do you${
+      otherAuthors ? ', or any of the other authors,' : ''
+    } have any competing interests? – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
         <a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back">Back</a>
@@ -147,7 +155,13 @@ function competingInterestsForm(preprint: PreprintTitle, form: CompetingInterest
                           <li>
                             <a href="#competing-interests-no">
                               ${match(form.competingInterests.left)
-                                .with({ _tag: 'MissingE' }, () => 'Select yes if you have any competing interests')
+                                .with(
+                                  { _tag: 'MissingE' },
+                                  () =>
+                                    `Select yes if you${
+                                      otherAuthors ? ', or any of the other authors,' : ''
+                                    } have any competing interests`,
+                                )
                                 .exhaustive()}
                             </a>
                           </li>
@@ -158,7 +172,10 @@ function competingInterestsForm(preprint: PreprintTitle, form: CompetingInterest
                           <li>
                             <a href="#competing-interests-details">
                               ${match(form.competingInterestsDetails.left)
-                                .with({ _tag: 'MissingE' }, () => 'Enter details of your competing interests')
+                                .with(
+                                  { _tag: 'MissingE' },
+                                  () => `Enter details of ${otherAuthors ? 'the' : 'your'} competing interests`,
+                                )
                                 .exhaustive()}
                             </a>
                           </li>
@@ -181,7 +198,7 @@ function competingInterestsForm(preprint: PreprintTitle, form: CompetingInterest
                 )}
               >
                 <legend>
-                  <h1>Do you have any competing interests?</h1>
+                  <h1>Do you${otherAuthors ? ', or any of the other authors,' : ''} have any competing interests?</h1>
                 </legend>
 
                 <p id="competing-interests-tip" role="note">
@@ -209,7 +226,13 @@ function competingInterestsForm(preprint: PreprintTitle, form: CompetingInterest
                       <div class="error-message" id="competing-interests-error">
                         <span class="visually-hidden">Error:</span>
                         ${match(form.competingInterests.left)
-                          .with({ _tag: 'MissingE' }, () => 'Select yes if you have any competing interests')
+                          .with(
+                            { _tag: 'MissingE' },
+                            () =>
+                              `Select yes if you${
+                                otherAuthors ? ', or any of the other authors,' : ''
+                              } have any competing interests`,
+                          )
                           .exhaustive()}
                       </div>
                     `
@@ -252,7 +275,10 @@ function competingInterestsForm(preprint: PreprintTitle, form: CompetingInterest
                               <div class="error-message" id="competing-interests-details-error">
                                 <span class="visually-hidden">Error:</span>
                                 ${match(form.competingInterestsDetails.left)
-                                  .with({ _tag: 'MissingE' }, () => 'Enter details of your competing interests')
+                                  .with(
+                                    { _tag: 'MissingE' },
+                                    () => `Enter details of ${otherAuthors ? 'the' : 'your'} competing interests`,
+                                  )
                                   .exhaustive()}
                               </div>
                             `
