@@ -16,7 +16,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { aboutUs } from './about-us'
 import type { ConfigEnv } from './app'
-import { authorInvite, authorInviteCheck } from './author-invite-flow'
+import { authorInvite, authorInviteCheck, authorInviteStart } from './author-invite-flow'
 import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
@@ -98,6 +98,7 @@ import {
   aboutUsMatch,
   authorInviteCheckMatch,
   authorInviteMatch,
+  authorInviteStartMatch,
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
   changeContactEmailAddressMatch,
@@ -1134,9 +1135,33 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       authorInviteMatch.parser,
       P.map(({ id }) =>
         pipe(
-          RM.of({}),
+          RM.of({ id }),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(authorInvite(id))),
+          RM.bindW('response', RM.fromReaderTaskK(authorInvite)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getAuthorInvite: withEnv(getAuthorInvite, env),
+          getPrereview: withEnv(
+            flow(
+              getPrereviewFromZenodo,
+              RTE.mapLeft(() => 'unavailable' as const),
+            ),
+            env,
+          ),
+        })),
+      ),
+    ),
+    pipe(
+      authorInviteStartMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(authorInviteStart)),
           RM.ichainW(handleResponse),
         ),
       ),

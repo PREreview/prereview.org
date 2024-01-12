@@ -646,11 +646,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   },
 )
 
-test('can invite other people to appear as authors', async ({ authorInviteStore, fetch, page }) => {
+test.extend(canLogIn)('can invite other people to appear as authors', async ({ authorInviteStore, fetch, page }) => {
   await authorInviteStore.set('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0', AuthorInviteC.encode({ review: 1061864 }))
 
   fetch
-    .getOnce('http://zenodo.test/api/records/1061864', {
+    .get('http://zenodo.test/api/records/1061864', {
       body: RecordC.encode({
         conceptdoi: '10.5072/zenodo.1061863' as Doi,
         conceptrecid: 1061863,
@@ -710,6 +710,8 @@ test('can invite other people to appear as authors', async ({ authorInviteStore,
   await page.goto('/author-invite/ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0')
 
   await expect(page.getByRole('main')).toContainText('You’ve been invited to appear as an author')
+
+  await page.getByRole('button', { name: 'Start now' }).click()
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
