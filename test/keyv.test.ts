@@ -9,6 +9,46 @@ import { SlackUserIdC } from '../src/slack-user-id'
 import { UserOnboardingC } from '../src/user-onboarding'
 import * as fc from './fc'
 
+describe('getAuthorInvite', () => {
+  test.prop([fc.uuid(), fc.authorInvite()])('when the key contains an author invite', async (uuid, authorInvite) => {
+    const store = new Keyv()
+    await store.set(uuid, authorInvite)
+
+    const actual = await _.getAuthorInvite(uuid)({ authorInviteStore: store })()
+
+    expect(actual).toStrictEqual(E.right(authorInvite))
+  })
+
+  test.prop([fc.uuid(), fc.anything()])(
+    'when the key contains something other than author invite',
+    async (uuid, value) => {
+      const store = new Keyv()
+      await store.set(uuid, value)
+
+      const actual = await _.getAuthorInvite(uuid)({ authorInviteStore: store })()
+
+      expect(actual).toStrictEqual(E.left('not-found'))
+    },
+  )
+
+  test.prop([fc.uuid()])('when the key is not found', async uuid => {
+    const store = new Keyv()
+
+    const actual = await _.getAuthorInvite(uuid)({ authorInviteStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.uuid(), fc.anything()])('when the key cannot be accessed', async (uuid, error) => {
+    const store = new Keyv()
+    store.get = (): Promise<never> => Promise.reject(error)
+
+    const actual = await _.getAuthorInvite(uuid)({ authorInviteStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
 describe('deleteCareerStage', () => {
   test.prop([fc.orcid(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
     const store = new Keyv()

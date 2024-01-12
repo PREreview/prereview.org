@@ -16,6 +16,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { aboutUs } from './about-us'
 import type { ConfigEnv } from './app'
+import { authorInvite } from './author-invite-flow'
 import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
@@ -39,6 +40,7 @@ import {
   deleteLocation,
   deleteResearchInterests,
   deleteSlackUserId,
+  getAuthorInvite,
   getCareerStage,
   getContactEmailAddress,
   getLanguages,
@@ -94,6 +96,7 @@ import { reviewAPreprint } from './review-a-preprint'
 import { reviews } from './reviews'
 import {
   aboutUsMatch,
+  authorInviteMatch,
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
   changeContactEmailAddressMatch,
@@ -1125,6 +1128,30 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       writeReviewPublishedMatch.parser,
       P.map(({ id }) => writeReviewPublished(id)),
+    ),
+    pipe(
+      authorInviteMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apSW('response', RM.fromReaderTask(authorInvite(id))),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getAuthorInvite: withEnv(getAuthorInvite, env),
+          getPrereview: withEnv(
+            flow(
+              getPrereviewFromZenodo,
+              RTE.mapLeft(() => 'unavailable' as const),
+            ),
+            env,
+          ),
+        })),
+      ),
     ),
     pipe(
       scietyListMatch.parser,

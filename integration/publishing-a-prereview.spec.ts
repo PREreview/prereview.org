@@ -1,3 +1,4 @@
+import type { Doi } from 'doi-ts'
 import type { FetchMockSandbox } from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
@@ -5,7 +6,10 @@ import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
-import { RecordsC } from '../src/zenodo-ts'
+import type { Orcid } from 'orcid-id-ts'
+import { URL } from 'url'
+import { AuthorInviteC } from '../src/author-invite'
+import { RecordC, RecordsC } from '../src/zenodo-ts'
 import {
   areLoggedIn,
   canLogIn,
@@ -641,6 +645,72 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await expect(page).toHaveScreenshot()
   },
 )
+
+test('can invite other people to appear as authors', async ({ authorInviteStore, fetch, page }) => {
+  await authorInviteStore.set('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0', AuthorInviteC.encode({ review: 1061864 }))
+
+  fetch
+    .getOnce('http://zenodo.test/api/records/1061864', {
+      body: RecordC.encode({
+        conceptdoi: '10.5072/zenodo.1061863' as Doi,
+        conceptrecid: 1061863,
+        files: [
+          {
+            links: {
+              self: new URL('http://example.com/review.html/content'),
+            },
+            key: 'review.html',
+            size: 58,
+          },
+        ],
+        id: 1061864,
+        links: {
+          latest: new URL('http://example.com/latest'),
+          latest_html: new URL('http://example.com/latest_html'),
+        },
+        metadata: {
+          communities: [{ id: 'prereview-reviews' }],
+          creators: [
+            { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
+            { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
+            { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
+            { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
+            { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
+            { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
+          ],
+          description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+          doi: '10.5072/zenodo.1061864' as Doi,
+          license: { id: 'cc-by-4.0' },
+          publication_date: new Date('2022-07-05'),
+          related_identifiers: [
+            {
+              identifier: '10.1101/2022.01.13.476201',
+              relation: 'reviews',
+              resource_type: 'publication-preprint',
+              scheme: 'doi',
+            },
+            {
+              identifier: '10.5072/zenodo.1061863',
+              relation: 'isVersionOf',
+              scheme: 'doi',
+            },
+          ],
+          resource_type: {
+            type: 'publication',
+            subtype: 'peerreview',
+          },
+          title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+        },
+      }),
+    })
+    .get('http://example.com/review.html/content', {
+      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+    })
+
+  await page.goto('/author-invite/ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0')
+
+  await expect(page.getByRole('main')).toContainText('You’ve been invited to appear as an author')
+})
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   "can publish a PREreview with more authors who don't want to be listed as authors",

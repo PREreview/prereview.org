@@ -8,6 +8,7 @@ import type { Encoder } from 'io-ts/Encoder'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
+import { AuthorInviteC } from './author-invite'
 import { type CareerStage, CareerStageC } from './career-stage'
 import { ContactEmailAddressC } from './contact-email-address'
 import { IsOpenForRequestsC } from './is-open-for-requests'
@@ -16,7 +17,12 @@ import { LocationC } from './location'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { SlackUserIdC } from './slack-user-id'
 import { NonEmptyStringC } from './types/string'
+import { UuidC } from './types/uuid'
 import { type UserOnboarding, UserOnboardingC } from './user-onboarding'
+
+export interface AuthorInviteStoreEnv {
+  authorInviteStore: Keyv<unknown>
+}
 
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<unknown>
@@ -87,6 +93,11 @@ const setKey =
       },
       () => 'unavailable' as const,
     )
+
+export const getAuthorInvite = flow(
+  getKey(UuidC, AuthorInviteC),
+  RTE.local((env: AuthorInviteStoreEnv) => env.authorInviteStore),
+)
 
 export const deleteCareerStage = flow(
   deleteKey(OrcidE),

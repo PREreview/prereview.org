@@ -25,6 +25,7 @@ import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import type { GhostApiEnv } from './ghost'
 import { pageNotFound } from './http-error'
 import {
+  type AuthorInviteStoreEnv,
   type CareerStageStoreEnv,
   type ContactEmailAddressStoreEnv,
   type IsOpenForRequestsStoreEnv,
@@ -58,7 +59,8 @@ import type { FormStoreEnv } from './write-review'
 import type { WasPrereviewRemovedEnv } from './zenodo'
 import type { ZenodoAuthenticatedEnv } from './zenodo-ts'
 
-export type ConfigEnv = CareerStageStoreEnv &
+export type ConfigEnv = AuthorInviteStoreEnv &
+  CareerStageStoreEnv &
   CloudinaryApiEnv &
   ContactEmailAddressStoreEnv &
   FathomEnv &

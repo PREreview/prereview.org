@@ -23,6 +23,7 @@ import { URL } from 'url'
 import { type ConfigEnv, app } from '../src/app'
 import type { RequiresVerifiedEmailAddressEnv } from '../src/feature-flags'
 import type {
+  AuthorInviteStoreEnv,
   ContactEmailAddressStoreEnv,
   IsOpenForRequestsStoreEnv,
   LanguagesStoreEnv,
@@ -65,9 +66,13 @@ interface AppFixtures {
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
   requiresVerifiedEmailAddress: RequiresVerifiedEmailAddressEnv['requiresVerifiedEmailAddress']
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
+  authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
+  authorInviteStore: async ({}, use) => {
+    await use(new Keyv())
+  },
   baseURL: async ({ server }, use) => {
     const address = server.address()
 
@@ -826,11 +831,13 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       userOnboardingStore,
       wasPrereviewRemoved,
       requiresVerifiedEmailAddress,
+      authorInviteStore,
     },
     use,
   ) => {
     const server = app({
       allowSiteCrawlers: true,
+      authorInviteStore,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
