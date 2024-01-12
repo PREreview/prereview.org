@@ -346,6 +346,13 @@ export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit
 
 export const authorInviteMatch = pipe(P.lit('author-invite'), P.then(type('id', UuidC)), P.then(P.end))
 
+export const authorInviteCheckMatch = pipe(
+  P.lit('author-invite'),
+  P.then(type('id', UuidC)),
+  P.then(P.lit('check-your-prereview')),
+  P.then(P.end),
+)
+
 export const scietyListMatch = pipe(P.lit('sciety-list'), P.then(P.end))
 
 // https://github.com/gcanti/fp-ts-routing/pull/64

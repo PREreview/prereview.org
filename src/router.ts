@@ -16,7 +16,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { aboutUs } from './about-us'
 import type { ConfigEnv } from './app'
-import { authorInvite } from './author-invite-flow'
+import { authorInvite, authorInviteCheck } from './author-invite-flow'
 import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
@@ -96,6 +96,7 @@ import { reviewAPreprint } from './review-a-preprint'
 import { reviews } from './reviews'
 import {
   aboutUsMatch,
+  authorInviteCheckMatch,
   authorInviteMatch,
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
@@ -1136,6 +1137,30 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.of({}),
           RM.apS('user', maybeGetUser),
           RM.apSW('response', RM.fromReaderTask(authorInvite(id))),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getAuthorInvite: withEnv(getAuthorInvite, env),
+          getPrereview: withEnv(
+            flow(
+              getPrereviewFromZenodo,
+              RTE.mapLeft(() => 'unavailable' as const),
+            ),
+            env,
+          ),
+        })),
+      ),
+    ),
+    pipe(
+      authorInviteCheckMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(authorInviteCheck)),
           RM.ichainW(handleResponse),
         ),
       ),
