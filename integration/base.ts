@@ -1121,6 +1121,9 @@ export const willPublishAReview: Fixtures<
       .postOnce('http://example.com/publish', {
         body: SubmittedDepositionC.encode({
           ...record,
+          links: {
+            edit: new URL('http://example.com/edit'),
+          },
           metadata: {
             ...record.metadata,
             communities: [{ identifier: 'prereview-reviews' }],

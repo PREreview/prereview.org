@@ -2655,6 +2655,9 @@ describe('createRecordOnZenodo', () => {
       }
       const submittedDeposition: SubmittedDeposition = {
         id: 1,
+        links: {
+          edit: new URL('http://example.com/edit'),
+        },
         metadata: {
           creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
           description: 'Description',
@@ -2787,6 +2790,9 @@ ${newPrereview.review.toString()}`,
       }
       const submittedDeposition: SubmittedDeposition = {
         id: 1,
+        links: {
+          edit: new URL('http://example.com/edit'),
+        },
         metadata: {
           creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
           description: 'Description',
@@ -2922,6 +2928,9 @@ ${newPrereview.review.toString()}`,
       }
       const submittedDeposition: SubmittedDeposition = {
         id: 1,
+        links: {
+          edit: new URL('http://example.com/edit'),
+        },
         metadata: {
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
@@ -3054,6 +3063,9 @@ ${newPrereview.review.toString()}`,
       }
       const submittedDeposition: SubmittedDeposition = {
         id: 1,
+        links: {
+          edit: new URL('http://example.com/edit'),
+        },
         metadata: {
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
