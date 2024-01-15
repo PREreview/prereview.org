@@ -66,6 +66,7 @@ import {
 } from './legacy-prereview'
 import { liveReviews } from './live-reviews'
 import { authenticate, authenticateError, logIn, logOut } from './log-in'
+import { getMethod } from './middleware'
 import {
   changeCareerStage,
   changeCareerStageVisibility,
@@ -1185,6 +1186,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ id }),
           RM.apS('user', maybeGetUser),
+          RM.apS('method', RM.fromMiddleware(getMethod)),
           RM.bindW('response', RM.fromReaderTaskK(authorInviteCheck)),
           RM.ichainW(handleResponse),
         ),
