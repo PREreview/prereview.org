@@ -8,8 +8,8 @@ import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
+import { RecordC, RecordsC } from 'zenodo-ts'
 import { AuthorInviteC } from '../src/author-invite'
-import { RecordC, RecordsC } from '../src/zenodo-ts'
 import {
   areLoggedIn,
   canLogIn,

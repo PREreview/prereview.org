@@ -1,7 +1,7 @@
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import { RecordsC } from '../src/zenodo-ts'
+import { RecordsC } from 'zenodo-ts'
 import { expect, test } from './base'
 
 test('can find and view a preprint', async ({ fetch, page }) => {

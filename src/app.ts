@@ -15,6 +15,7 @@ import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
+import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import type { CloudinaryApiEnv } from './cloudinary'
 import type { SlackOAuthEnv } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
@@ -57,7 +58,6 @@ import type { IndeterminatePreprintId } from './types/preprint-id'
 import { getUserFromSession, maybeGetUser } from './user'
 import type { FormStoreEnv } from './write-review'
 import type { WasPrereviewRemovedEnv } from './zenodo'
-import type { ZenodoAuthenticatedEnv } from './zenodo-ts'
 
 export type ConfigEnv = AuthorInviteStoreEnv &
   CareerStageStoreEnv &

@@ -1,7 +1,7 @@
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import { type Record, RecordC, RecordsC } from '../src/zenodo-ts'
+import { type Record, RecordC, RecordsC } from 'zenodo-ts'
 import { expect, prereviewWasRemoved, test } from './base'
 
 test('can find and view a review', async ({ fetch, page }) => {

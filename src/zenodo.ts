@@ -24,6 +24,18 @@ import iso6393To1 from 'iso-639-3/to-1.json'
 import * as L from 'logger-fp-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
+import {
+  type DepositMetadata,
+  type EmptyDeposition,
+  type Record,
+  type ZenodoAuthenticatedEnv,
+  createEmptyDeposition,
+  getCommunityRecords,
+  getRecord,
+  publishDeposition,
+  updateDeposition,
+  uploadFile,
+} from 'zenodo-ts'
 import { getClubByName, getClubName } from './club-details'
 import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import type { RecentPrereview } from './home'
@@ -44,18 +56,6 @@ import {
 } from './types/preprint-id'
 import type { ProfileId } from './types/profile-id'
 import type { NewPrereview } from './write-review'
-import {
-  type DepositMetadata,
-  type EmptyDeposition,
-  type Record,
-  type ZenodoAuthenticatedEnv,
-  createEmptyDeposition,
-  getCommunityRecords,
-  getRecord,
-  publishDeposition,
-  updateDeposition,
-  uploadFile,
-} from './zenodo-ts'
 
 export interface WasPrereviewRemovedEnv {
   wasPrereviewRemoved: (id: number) => boolean
