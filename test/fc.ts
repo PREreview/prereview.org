@@ -761,8 +761,10 @@ export const authorInvite = (): fc.Arbitrary<AuthorInvite> => fc.oneof(openAutho
 export const openAuthorInvite = (): fc.Arbitrary<OpenAuthorInvite> =>
   fc.record({ status: fc.constant('open'), review: fc.integer({ min: 1 }) })
 
-export const assignedAuthorInvite = (): fc.Arbitrary<AssignedAuthorInvite> =>
-  fc.record({ status: fc.constant('assigned'), orcid: orcid(), review: fc.integer({ min: 1 }) })
+export const assignedAuthorInvite = ({
+  orcid: _orcid,
+}: { orcid?: fc.Arbitrary<Orcid> } = {}): fc.Arbitrary<AssignedAuthorInvite> =>
+  fc.record({ status: fc.constant('assigned'), orcid: _orcid ?? orcid(), review: fc.integer({ min: 1 }) })
 
 export const careerStage = (): fc.Arbitrary<CareerStage> =>
   fc.record({ value: careerStageValue(), visibility: careerStageVisibility() })

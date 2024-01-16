@@ -50,15 +50,16 @@ describe('authorInviteStart', () => {
 
       test.prop([
         fc.uuid(),
-        fc.user(),
-        fc.assignedAuthorInvite(),
+        fc
+          .user()
+          .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
         fc.record({
           preprint: fc.record({
             language: fc.languageCode(),
             title: fc.html(),
           }),
         }),
-      ])('the invite is already assigned', async (inviteId, user, invite, prereview) => {
+      ])('the invite is already assigned to the user', async (inviteId, [user, invite], prereview) => {
         const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
         const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
@@ -75,6 +76,33 @@ describe('authorInviteStart', () => {
         })
         expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
         expect(getPrereview).toHaveBeenCalledWith(invite.review)
+      })
+
+      test.prop([
+        fc.uuid(),
+        fc.user(),
+        fc.assignedAuthorInvite(),
+        fc.record({
+          preprint: fc.record({
+            language: fc.languageCode(),
+            title: fc.html(),
+          }),
+        }),
+      ])('the invite is already assigned to someone else', async (inviteId, user, invite, prereview) => {
+        const actual = await _.authorInviteStart({ id: inviteId, user })({
+          getAuthorInvite: () => TE.right(invite),
+          getPrereview: () => TE.right(prereview),
+          saveAuthorInvite: shouldNotBeCalled,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.NotFound,
+          title: expect.stringContaining('not found'),
+          main: expect.stringContaining('not found'),
+          skipToLabel: 'main',
+          js: [],
+        })
       })
     })
 

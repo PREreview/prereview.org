@@ -4,10 +4,10 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
-import type { Orcid } from 'orcid-id-ts'
+import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
+import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
 import { type Html, html, plainText } from '../html'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
@@ -44,13 +44,16 @@ export const authorInviteCheck = ({
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('inviteId', () => id),
-    RTE.apSW(
-      'invite',
+    RTE.bindW('invite', ({ user }) =>
       pipe(
         getAuthorInvite(id),
         RTE.filterOrElseW(
-          invite => invite.status === 'assigned',
+          (invite): invite is AssignedAuthorInvite => invite.status === 'assigned',
           () => 'not-assigned' as const,
+        ),
+        RTE.filterOrElseW(
+          invite => eqOrcid.equals(invite.orcid, user.orcid),
+          () => 'wrong-user' as const,
         ),
       ),
     ),
@@ -61,7 +64,7 @@ export const authorInviteCheck = ({
         match(error)
           .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound)
+          .with('not-found', 'wrong-user', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
       state =>

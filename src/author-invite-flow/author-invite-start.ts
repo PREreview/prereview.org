@@ -4,7 +4,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, type SaveAuthorInviteEnv, getAuthorInvite, saveAuthorInvite } from '../author-invite'
 import type { Html } from '../html'
@@ -45,6 +45,7 @@ export const authorInviteStart = ({
     RTE.chainFirstW(({ invite, user }) =>
       match(invite)
         .with({ status: 'open' }, invite => saveAuthorInvite(id, { ...invite, status: 'assigned', orcid: user.orcid }))
+        .with({ status: 'assigned', orcid: P.not(user.orcid) }, () => RTE.left('wrong-user' as const))
         .with({ status: 'assigned' }, () => RTE.of(undefined))
         .exhaustive(),
     ),
@@ -52,7 +53,7 @@ export const authorInviteStart = ({
       error =>
         match(error)
           .with('no-session', () => LogInResponse({ location: format(authorInviteStartMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound)
+          .with('not-found', 'wrong-user', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
       () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }),
