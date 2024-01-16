@@ -647,7 +647,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
 )
 
 test.extend(canLogIn)('can invite other people to appear as authors', async ({ authorInviteStore, fetch, page }) => {
-  await authorInviteStore.set('ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0', AuthorInviteC.encode({ review: 1061864 }))
+  await authorInviteStore.set(
+    'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0',
+    AuthorInviteC.encode({ status: 'open', review: 1061864 }),
+  )
 
   fetch
     .get('http://zenodo.test/api/records/1061864', {

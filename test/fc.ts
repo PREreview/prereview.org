@@ -26,7 +26,7 @@ import {
 } from 'node-mocks-http'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
-import type { AuthorInvite } from '../src/author-invite'
+import type { AssignedAuthorInvite, AuthorInvite, OpenAuthorInvite } from '../src/author-invite'
 import type { CareerStage } from '../src/career-stage'
 import type {
   ContactEmailAddress,
@@ -756,7 +756,13 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcid)
 
-export const authorInvite = (): fc.Arbitrary<AuthorInvite> => fc.record({ review: fc.integer({ min: 1 }) })
+export const authorInvite = (): fc.Arbitrary<AuthorInvite> => fc.oneof(openAuthorInvite(), assignedAuthorInvite())
+
+export const openAuthorInvite = (): fc.Arbitrary<OpenAuthorInvite> =>
+  fc.record({ status: fc.constant('open'), review: fc.integer({ min: 1 }) })
+
+export const assignedAuthorInvite = (): fc.Arbitrary<AssignedAuthorInvite> =>
+  fc.record({ status: fc.constant('assigned'), review: fc.integer({ min: 1 }) })
 
 export const careerStage = (): fc.Arbitrary<CareerStage> =>
   fc.record({ value: careerStageValue(), visibility: careerStageVisibility() })

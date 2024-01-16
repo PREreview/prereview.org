@@ -15,7 +15,7 @@ describe('authorInvite', () => {
     test.prop([
       fc.uuid(),
       fc.user(),
-      fc.authorInvite(),
+      fc.assignedAuthorInvite(),
       fc.record({
         preprint: fc.record({
           language: fc.languageCode(),
@@ -47,7 +47,7 @@ describe('authorInvite', () => {
       fc.uuid(),
       fc.user(),
       fc.string().filter(method => method !== 'POST'),
-      fc.authorInvite(),
+      fc.assignedAuthorInvite(),
       fc.record({
         preprint: fc.record({
           language: fc.languageCode(),
@@ -76,7 +76,7 @@ describe('authorInvite', () => {
       expect(getPrereview).toHaveBeenCalledWith(invite.review)
     })
 
-    test.prop([fc.uuid(), fc.user(), fc.string(), fc.authorInvite()])(
+    test.prop([fc.uuid(), fc.user(), fc.string(), fc.assignedAuthorInvite()])(
       'when the review cannot be loaded',
       async (inviteId, user, method, invite) => {
         const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
@@ -110,6 +110,22 @@ describe('authorInvite', () => {
           main: expect.stringContaining('problems'),
           skipToLabel: 'main',
           js: [],
+        })
+      },
+    )
+
+    test.prop([fc.uuid(), fc.user(), fc.string(), fc.openAuthorInvite()])(
+      'when the invite is not assigned',
+      async (inviteId, user, method, invite) => {
+        const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
+          getAuthorInvite: () => TE.right(invite),
+          getPrereview: shouldNotBeCalled,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(authorInviteMatch.formatter, { id: inviteId }),
         })
       },
     )

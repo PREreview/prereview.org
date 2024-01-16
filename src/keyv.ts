@@ -99,6 +99,11 @@ export const getAuthorInvite = flow(
   RTE.local((env: AuthorInviteStoreEnv) => env.authorInviteStore),
 )
 
+export const saveAuthorInvite = flow(
+  setKey(UuidC, AuthorInviteC),
+  RTE.local((env: AuthorInviteStoreEnv) => env.authorInviteStore),
+)
+
 export const deleteCareerStage = flow(
   deleteKey(OrcidE),
   RTE.local((env: CareerStageStoreEnv) => env.careerStageStore),

@@ -49,6 +49,52 @@ describe('getAuthorInvite', () => {
   })
 })
 
+describe('saveAuthorInvite', () => {
+  test.prop([fc.uuid(), fc.authorInvite()])('when the key contains an author invite', async (uuid, authorInvite) => {
+    const store = new Keyv()
+    await store.set(uuid, authorInvite)
+
+    const actual = await _.saveAuthorInvite(uuid, authorInvite)({ authorInviteStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(uuid)).toStrictEqual(authorInvite)
+  })
+
+  test.prop([fc.uuid(), fc.anything(), fc.authorInvite()])(
+    'when the key already contains something other than an author invite',
+    async (uuid, value, authorInvite) => {
+      const store = new Keyv()
+      await store.set(uuid, value)
+
+      const actual = await _.saveAuthorInvite(uuid, authorInvite)({ authorInviteStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(uuid)).toStrictEqual(authorInvite)
+    },
+  )
+
+  test.prop([fc.uuid(), fc.authorInvite()])('when the key is not set', async (uuid, authorInvite) => {
+    const store = new Keyv()
+
+    const actual = await _.saveAuthorInvite(uuid, authorInvite)({ authorInviteStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(uuid)).toStrictEqual(authorInvite)
+  })
+
+  test.prop([fc.uuid(), fc.authorInvite(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (uuid, authorInvite, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveAuthorInvite(uuid, authorInvite)({ authorInviteStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
+
 describe('deleteCareerStage', () => {
   test.prop([fc.orcid(), fc.careerStage()])('when the key contains a career stage', async (orcid, careerStage) => {
     const store = new Keyv()

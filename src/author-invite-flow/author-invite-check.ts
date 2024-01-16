@@ -10,7 +10,7 @@ import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
 import { type Html, html, plainText } from '../html'
 import { havingProblemsPage, pageNotFound } from '../http-error'
-import { LogInResponse, type PageResponse, StreamlinePageResponse } from '../response'
+import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
 import { authorInviteCheckMatch, authorInviteMatch, profileMatch } from '../routes'
 import type { User } from '../user'
 
@@ -36,18 +36,31 @@ export const authorInviteCheck = ({
   id: Uuid
   method: string
   user?: User
-}): RT.ReaderTask<GetPrereviewEnv & GetAuthorInviteEnv, LogInResponse | PageResponse | StreamlinePageResponse> =>
+}): RT.ReaderTask<
+  GetPrereviewEnv & GetAuthorInviteEnv,
+  LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
+> =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('inviteId', () => id),
-    RTE.apSW('invite', getAuthorInvite(id)),
+    RTE.apSW(
+      'invite',
+      pipe(
+        getAuthorInvite(id),
+        RTE.filterOrElseW(
+          invite => invite.status === 'assigned',
+          () => 'not-assigned' as const,
+        ),
+      ),
+    ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.let('method', () => method),
     RTE.matchW(
       error =>
         match(error)
           .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
+          .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),

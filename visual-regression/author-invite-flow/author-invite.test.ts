@@ -9,7 +9,7 @@ import { expect, test } from '../base'
 
 test('content looks right', async ({ page }) => {
   const response = await authorInvite({ id: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid })({
-    getAuthorInvite: () => TE.right({ review: 1234 }),
+    getAuthorInvite: () => TE.right({ status: 'open', review: 1234 }),
     getPrereview: () =>
       TE.right({
         preprint: {
@@ -40,7 +40,7 @@ test('content looks right when logged in', async ({ page }) => {
       pseudonym: 'Orange Panda' as Pseudonym,
     },
   })({
-    getAuthorInvite: () => TE.right({ review: 1234 }),
+    getAuthorInvite: () => TE.right({ status: 'open', review: 1234 }),
     getPrereview: () =>
       TE.right({
         preprint: {
