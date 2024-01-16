@@ -42,9 +42,9 @@ export const authorInviteStart = ({
     RTE.apS('invite', getAuthorInvite(id)),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.apSW('user', RTE.fromNullable('no-session' as const)(user)),
-    RTE.chainFirstW(({ invite }) =>
+    RTE.chainFirstW(({ invite, user }) =>
       match(invite)
-        .with({ status: 'open' }, invite => saveAuthorInvite(id, { ...invite, status: 'assigned' }))
+        .with({ status: 'open' }, invite => saveAuthorInvite(id, { ...invite, status: 'assigned', orcid: user.orcid }))
         .with({ status: 'assigned' }, () => RTE.of(undefined))
         .exhaustive(),
     ),

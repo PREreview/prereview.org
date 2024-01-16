@@ -2,6 +2,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 
@@ -14,6 +15,7 @@ export interface OpenAuthorInvite {
 
 export interface AssignedAuthorInvite {
   readonly status: 'assigned'
+  readonly orcid: Orcid
   readonly review: number
 }
 
@@ -25,6 +27,8 @@ export interface SaveAuthorInviteEnv {
   saveAuthorInvite: (id: Uuid, authorInvite: AuthorInvite) => TE.TaskEither<'unavailable', void>
 }
 
+const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
+
 const OpenAuthorInviteC = C.struct({
   status: C.literal('open'),
   review: C.number,
@@ -32,6 +36,7 @@ const OpenAuthorInviteC = C.struct({
 
 const AssignedAuthorInviteC = C.struct({
   status: C.literal('assigned'),
+  orcid: OrcidC,
   review: C.number,
 }) satisfies C.Codec<unknown, unknown, AssignedAuthorInvite>
 

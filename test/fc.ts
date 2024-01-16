@@ -762,7 +762,7 @@ export const openAuthorInvite = (): fc.Arbitrary<OpenAuthorInvite> =>
   fc.record({ status: fc.constant('open'), review: fc.integer({ min: 1 }) })
 
 export const assignedAuthorInvite = (): fc.Arbitrary<AssignedAuthorInvite> =>
-  fc.record({ status: fc.constant('assigned'), review: fc.integer({ min: 1 }) })
+  fc.record({ status: fc.constant('assigned'), orcid: orcid(), review: fc.integer({ min: 1 }) })
 
 export const careerStage = (): fc.Arbitrary<CareerStage> =>
   fc.record({ value: careerStageValue(), visibility: careerStageVisibility() })

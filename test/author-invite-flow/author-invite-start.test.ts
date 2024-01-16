@@ -41,7 +41,11 @@ describe('authorInviteStart', () => {
         })
         expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
         expect(getPrereview).toHaveBeenCalledWith(invite.review)
-        expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, { status: 'assigned', review: invite.review })
+        expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, {
+          status: 'assigned',
+          orcid: user.orcid,
+          review: invite.review,
+        })
       })
 
       test.prop([

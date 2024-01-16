@@ -17,7 +17,7 @@ test('content looks right', async ({ page }) => {
       pseudonym: 'Orange Panda' as Pseudonym,
     },
   })({
-    getAuthorInvite: () => TE.right({ status: 'assigned', review: 1234 }),
+    getAuthorInvite: () => TE.right({ status: 'assigned', orcid: '0000-0002-1825-0097' as Orcid, review: 1234 }),
     getPrereview: () =>
       TE.right({
         preprint: {
