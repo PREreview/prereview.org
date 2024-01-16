@@ -4,10 +4,10 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
-import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
+import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
+import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
 import { type Html, html, plainText } from '../html'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
@@ -47,13 +47,12 @@ export const authorInviteCheck = ({
     RTE.bindW('invite', ({ user }) =>
       pipe(
         getAuthorInvite(id),
-        RTE.filterOrElseW(
-          (invite): invite is AssignedAuthorInvite => invite.status === 'assigned',
-          () => 'not-assigned' as const,
-        ),
-        RTE.filterOrElseW(
-          invite => eqOrcid.equals(invite.orcid, user.orcid),
-          () => 'wrong-user' as const,
+        RTE.chainW(invite =>
+          match(invite)
+            .with({ status: 'open' }, () => RTE.left('not-assigned' as const))
+            .with({ orcid: P.not(user.orcid) }, () => RTE.left('wrong-user' as const))
+            .with({ status: 'assigned' }, RTE.of)
+            .exhaustive(),
         ),
       ),
     ),
