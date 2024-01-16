@@ -4,7 +4,7 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
-import { P, match } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
 import type { Html } from '../html'
@@ -38,18 +38,14 @@ export const authorInviteStart = ({
     RTE.Do,
     RTE.apS('invite', getAuthorInvite(id)),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
+    RTE.apSW('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.matchW(
       error =>
         match(error)
+          .with('no-session', () => LogInResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }))
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
-      () =>
-        match(user)
-          .with({ name: P.string }, () =>
-            RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }),
-          )
-          .with(undefined, () => LogInResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }))
-          .exhaustive(),
+      () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }),
     ),
   )
