@@ -1,0 +1,8 @@
+{
+  "heroHeading": { "message": "Open preprint reviews." },
+  "heroHeadingPartTwo": { "message": "For '<em>'all'</em>' researchers." },
+  "heroByLine": {
+    "message": "Provide and receive constructive feedback on preprints from an international community of your peers."
+  },
+  "cta": { "message": "Review a preprint" }
+}

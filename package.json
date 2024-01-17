@@ -156,7 +156,7 @@
     "build": "run-p build:*",
     "build:app": "wait-on src/manifest.json && tsc --project tsconfig.build.json",
     "build:assets": "webpack build --mode production",
-    "build:translations": "docker build -f translationDockerfile -t intlc . && docker run -v ./locales-icu:/locales intlc compile /locales/es.json -l es > ./src/translations/es.ts",
+    "build:translations": "docker build -f translationDockerfile -t intlc . && docker run -v ./locales-icu:/locales intlc compile /locales/en.json -l en > ./src/translations/en.ts && docker run -v ./locales-icu:/locales intlc compile /locales/es.json -l es > ./src/translations/es.ts",
     "format": "prettier --ignore-unknown --check '**'",
     "format:fix": "npm run format -- --write",
     "lint": "run-p --aggregate-output lint:*",
