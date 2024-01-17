@@ -52,6 +52,7 @@ import { handleResponse } from './response'
 import { type RouterEnv, routes } from './router'
 import type { ScietyListEnv } from './sciety-list'
 import type { SlackApiEnv, SlackApiUpdateEnv } from './slack'
+import { t } from './translations-index'
 import type { IndeterminatePreprintId } from './types/preprint-id'
 import { getUserFromSession, maybeGetUser } from './user'
 import type { FormStoreEnv } from './write-review'
@@ -293,7 +294,7 @@ export const app = (config: ConfigEnv) => {
           getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
           getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
           sendEmail: withEnv(sendEmail, env),
-          t: 'es',
+          t: t('es'),
         })),
         R.local(collapseRequests()),
         R.local(logFetch()),
