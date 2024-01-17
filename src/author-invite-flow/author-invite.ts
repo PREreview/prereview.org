@@ -4,12 +4,13 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
+import { Eq as eqOrcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
 import { type Html, html, plainText } from '../html'
-import { havingProblemsPage, pageNotFound } from '../http-error'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
 import { type PageResponse, StreamlinePageResponse } from '../response'
 import { authorInviteMatch, authorInviteStartMatch } from '../routes'
 import type { User } from '../user'
@@ -40,12 +41,17 @@ export const authorInvite = ({
     RTE.let('user', () => user),
     RTE.let('inviteId', () => id),
     RTE.apS('invite', getAuthorInvite(id)),
+    RTE.filterOrElseW(
+      ({ user, invite }) => !user || !('orcid' in invite) || eqOrcid.equals(user.orcid, invite.orcid),
+      () => 'wrong-user' as const,
+    ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.matchW(
       error =>
         match(error)
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
+          .with('wrong-user', () => noPermissionPage)
           .exhaustive(),
       startPage,
     ),
