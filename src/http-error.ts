@@ -86,3 +86,13 @@ export const havingProblemsPage = PageResponse({
     <p>Please try again later.</p>
   `,
 })
+
+export const noPermissionPage = PageResponse({
+  status: Status.Forbidden,
+  title: plainText`You do not have permission to view this page`,
+  main: html`
+    <h1>You do not have permission to view this page</h1>
+
+    <p>If you think you should have access, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+  `,
+})

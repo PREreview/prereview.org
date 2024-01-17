@@ -99,9 +99,9 @@ describe('authorInviteStart', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'PageResponse',
-          status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
+          status: Status.Forbidden,
+          title: expect.stringContaining('do not have permission'),
+          main: expect.stringContaining('do not have permission'),
           skipToLabel: 'main',
           js: [],
         })

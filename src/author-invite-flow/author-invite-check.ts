@@ -16,7 +16,7 @@ import {
   saveAuthorInvite,
 } from '../author-invite'
 import { type Html, html, plainText } from '../html'
-import { havingProblemsPage, pageNotFound } from '../http-error'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
 import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch, profileMatch } from '../routes'
 import type { User } from '../user'
@@ -84,8 +84,9 @@ export const authorInviteCheck = ({
             )
             .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-            .with('not-found', 'wrong-user', () => pageNotFound)
+            .with('not-found', () => pageNotFound)
             .with('unavailable', () => havingProblemsPage)
+            .with('wrong-user', () => noPermissionPage)
             .exhaustive(),
         ),
       state =>

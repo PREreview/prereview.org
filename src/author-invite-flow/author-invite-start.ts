@@ -8,7 +8,7 @@ import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, type SaveAuthorInviteEnv, getAuthorInvite, saveAuthorInvite } from '../author-invite'
 import type { Html } from '../html'
-import { havingProblemsPage, pageNotFound } from '../http-error'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response'
 import { authorInviteCheckMatch, authorInvitePublishedMatch, authorInviteStartMatch } from '../routes'
 import type { User } from '../user'
@@ -59,8 +59,9 @@ export const authorInviteStart = ({
             RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
           )
           .with('no-session', () => LogInResponse({ location: format(authorInviteStartMatch.formatter, { id }) }))
-          .with('not-found', 'wrong-user', () => pageNotFound)
+          .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
+          .with('wrong-user', () => noPermissionPage)
           .exhaustive(),
       () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }),
     ),
