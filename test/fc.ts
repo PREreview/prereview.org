@@ -26,7 +26,7 @@ import {
 } from 'node-mocks-http'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
-import type { AssignedAuthorInvite, AuthorInvite, OpenAuthorInvite } from '../src/author-invite'
+import type { AssignedAuthorInvite, AuthorInvite, CompletedAuthorInvite, OpenAuthorInvite } from '../src/author-invite'
 import type { CareerStage } from '../src/career-stage'
 import type {
   ContactEmailAddress,
@@ -114,6 +114,7 @@ export const {
   string,
   stringOf,
   tuple,
+  uniqueArray,
   webUrl,
 } = fc
 
@@ -756,7 +757,8 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcid)
 
-export const authorInvite = (): fc.Arbitrary<AuthorInvite> => fc.oneof(openAuthorInvite(), assignedAuthorInvite())
+export const authorInvite = (): fc.Arbitrary<AuthorInvite> =>
+  fc.oneof(openAuthorInvite(), assignedAuthorInvite(), completedAuthorInvite())
 
 export const openAuthorInvite = (): fc.Arbitrary<OpenAuthorInvite> =>
   fc.record({ status: fc.constant('open'), review: fc.integer({ min: 1 }) })
@@ -765,6 +767,11 @@ export const assignedAuthorInvite = ({
   orcid: _orcid,
 }: { orcid?: fc.Arbitrary<Orcid> } = {}): fc.Arbitrary<AssignedAuthorInvite> =>
   fc.record({ status: fc.constant('assigned'), orcid: _orcid ?? orcid(), review: fc.integer({ min: 1 }) })
+
+export const completedAuthorInvite = ({
+  orcid: _orcid,
+}: { orcid?: fc.Arbitrary<Orcid> } = {}): fc.Arbitrary<CompletedAuthorInvite> =>
+  fc.record({ status: fc.constant('completed'), orcid: _orcid ?? orcid(), review: fc.integer({ min: 1 }) })
 
 export const careerStage = (): fc.Arbitrary<CareerStage> =>
   fc.record({ value: careerStageValue(), visibility: careerStageVisibility() })

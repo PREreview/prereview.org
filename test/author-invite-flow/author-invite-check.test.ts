@@ -7,7 +7,7 @@ import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-check'
-import { authorInviteCheckMatch, authorInviteMatch } from '../../src/routes'
+import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
@@ -113,6 +113,25 @@ describe('authorInvite', () => {
         })
       },
     )
+
+    test.prop([
+      fc.uuid(),
+      fc
+        .user()
+        .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.string(),
+    ])('when the invite is already complete', async (inviteId, [user, invite], method) => {
+      const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
+        getAuthorInvite: () => TE.right(invite),
+        getPrereview: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
+      })
+    })
 
     test.prop([
       fc.uuid(),

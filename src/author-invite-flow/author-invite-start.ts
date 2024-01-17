@@ -10,7 +10,7 @@ import { type GetAuthorInviteEnv, type SaveAuthorInviteEnv, getAuthorInvite, sav
 import type { Html } from '../html'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse } from '../response'
-import { authorInviteCheckMatch, authorInviteStartMatch } from '../routes'
+import { authorInviteCheckMatch, authorInvitePublishedMatch, authorInviteStartMatch } from '../routes'
 import type { User } from '../user'
 
 export interface Prereview {
@@ -45,13 +45,19 @@ export const authorInviteStart = ({
     RTE.chainFirstW(({ invite, user }) =>
       match(invite)
         .with({ status: 'open' }, invite => saveAuthorInvite(id, { ...invite, status: 'assigned', orcid: user.orcid }))
-        .with({ status: 'assigned', orcid: P.not(user.orcid) }, () => RTE.left('wrong-user' as const))
+        .with({ status: P.union('assigned', 'completed'), orcid: P.not(user.orcid) }, () =>
+          RTE.left('wrong-user' as const),
+        )
+        .with({ status: 'completed' }, () => RTE.left('already-completed' as const))
         .with({ status: 'assigned' }, () => RTE.of(undefined))
         .exhaustive(),
     ),
     RTE.matchW(
       error =>
         match(error)
+          .with('already-completed', () =>
+            RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
+          )
           .with('no-session', () => LogInResponse({ location: format(authorInviteStartMatch.formatter, { id }) }))
           .with('not-found', 'wrong-user', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)

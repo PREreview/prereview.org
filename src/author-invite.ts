@@ -6,7 +6,7 @@ import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 
-export type AuthorInvite = OpenAuthorInvite | AssignedAuthorInvite
+export type AuthorInvite = OpenAuthorInvite | AssignedAuthorInvite | CompletedAuthorInvite
 
 export interface OpenAuthorInvite {
   readonly status: 'open'
@@ -15,6 +15,12 @@ export interface OpenAuthorInvite {
 
 export interface AssignedAuthorInvite {
   readonly status: 'assigned'
+  readonly orcid: Orcid
+  readonly review: number
+}
+
+export interface CompletedAuthorInvite {
+  readonly status: 'completed'
   readonly orcid: Orcid
   readonly review: number
 }
@@ -40,13 +46,20 @@ const AssignedAuthorInviteC = C.struct({
   review: C.number,
 }) satisfies C.Codec<unknown, unknown, AssignedAuthorInvite>
 
+const CompletedAuthorInviteC = C.struct({
+  status: C.literal('completed'),
+  orcid: OrcidC,
+  review: C.number,
+}) satisfies C.Codec<unknown, unknown, CompletedAuthorInvite>
+
 // Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
 // Refs https://github.com/gcanti/io-ts/issues/625#issuecomment-1007478009
-export const AuthorInviteC = C.make(D.union(OpenAuthorInviteC, AssignedAuthorInviteC), {
+export const AuthorInviteC = C.make(D.union(OpenAuthorInviteC, AssignedAuthorInviteC, CompletedAuthorInviteC), {
   encode: authorInvite =>
     match(authorInvite)
       .with({ status: 'open' }, OpenAuthorInviteC.encode)
       .with({ status: 'assigned' }, AssignedAuthorInviteC.encode)
+      .with({ status: 'completed' }, CompletedAuthorInviteC.encode)
       .exhaustive(),
 }) satisfies C.Codec<unknown, unknown, AuthorInvite>
 

@@ -5,6 +5,7 @@ import * as O from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
+import * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
@@ -16,7 +17,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { aboutUs } from './about-us'
 import type { ConfigEnv } from './app'
-import { authorInvite, authorInviteCheck, authorInviteStart } from './author-invite-flow'
+import { authorInvite, authorInviteCheck, authorInvitePublished, authorInviteStart } from './author-invite-flow'
 import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
@@ -100,6 +101,7 @@ import {
   aboutUsMatch,
   authorInviteCheckMatch,
   authorInviteMatch,
+  authorInvitePublishedMatch,
   authorInviteStartMatch,
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
@@ -1190,6 +1192,33 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.apS('user', maybeGetUser),
           RM.apS('method', RM.fromMiddleware(getMethod)),
           RM.bindW('response', RM.fromReaderTaskK(authorInviteCheck)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          addAuthorToPrereview: () => TE.left('unavailable'),
+          getAuthorInvite: withEnv(getAuthorInvite, env),
+          getPrereview: withEnv(
+            flow(
+              getPrereviewFromZenodo,
+              RTE.mapLeft(() => 'unavailable' as const),
+            ),
+            env,
+          ),
+          saveAuthorInvite: withEnv(saveAuthorInvite, env),
+        })),
+      ),
+    ),
+    pipe(
+      authorInvitePublishedMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS('user', maybeGetUser),
+          RM.apS('method', RM.fromMiddleware(getMethod)),
+          RM.bindW('response', RM.fromReaderTaskK(authorInvitePublished)),
           RM.ichainW(handleResponse),
         ),
       ),

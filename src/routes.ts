@@ -360,6 +360,13 @@ export const authorInviteCheckMatch = pipe(
   P.then(P.end),
 )
 
+export const authorInvitePublishedMatch = pipe(
+  P.lit('author-invite'),
+  P.then(type('id', UuidC)),
+  P.then(P.lit('name-published')),
+  P.then(P.end),
+)
+
 export const scietyListMatch = pipe(P.lit('sciety-list'), P.then(P.end))
 
 // https://github.com/gcanti/fp-ts-routing/pull/64

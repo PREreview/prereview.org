@@ -7,7 +7,7 @@ import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-start'
-import { authorInviteCheckMatch, authorInviteStartMatch } from '../../src/routes'
+import { authorInviteCheckMatch, authorInvitePublishedMatch, authorInviteStartMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
@@ -82,7 +82,7 @@ describe('authorInviteStart', () => {
       test.prop([
         fc.uuid(),
         fc
-          .tuple(fc.user(), fc.assignedAuthorInvite())
+          .tuple(fc.user(), fc.oneof(fc.assignedAuthorInvite(), fc.completedAuthorInvite()))
           .filter(([user, invite]) => !eqOrcid.equals(user.orcid, invite.orcid)),
         fc.record({
           preprint: fc.record({
@@ -105,6 +105,36 @@ describe('authorInviteStart', () => {
           skipToLabel: 'main',
           js: [],
         })
+      })
+
+      test.prop([
+        fc.uuid(),
+        fc
+          .user()
+          .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.record({
+          preprint: fc.record({
+            language: fc.languageCode(),
+            title: fc.html(),
+          }),
+        }),
+      ])('the invite is already completed', async (inviteId, [user, invite], prereview) => {
+        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+
+        const actual = await _.authorInviteStart({ id: inviteId, user })({
+          getAuthorInvite,
+          getPrereview,
+          saveAuthorInvite: shouldNotBeCalled,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
+        })
+        expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
+        expect(getPrereview).toHaveBeenCalledWith(invite.review)
       })
     })
 
