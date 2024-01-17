@@ -172,6 +172,7 @@ function checkPage({ inviteId, user }: { inviteId: Uuid; user: User }) {
     `,
     canonical: format(authorInviteCheckMatch.formatter, { id: inviteId }),
     skipToLabel: 'form',
+    js: ['single-use-form.js'],
   })
 }
 

@@ -114,7 +114,7 @@ describe('authorInvite', () => {
         title: expect.stringContaining('Check your details'),
         main: expect.stringContaining('Check your details'),
         skipToLabel: 'form',
-        js: [],
+        js: ['single-use-form.js'],
       })
       expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
       expect(getPrereview).toHaveBeenCalledWith(invite.review)
