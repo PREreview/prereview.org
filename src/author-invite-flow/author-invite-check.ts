@@ -3,6 +3,7 @@ import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
+import { Status } from 'hyper-ts'
 import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
@@ -117,7 +118,7 @@ const handlePublishForm = ({ invite, inviteId, user }: { invite: AssignedAuthorI
     RTE.matchW(
       error =>
         match(error)
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => failureMessage)
           .exhaustive(),
       () =>
         RedirectResponse({
@@ -125,6 +126,20 @@ const handlePublishForm = ({ invite, inviteId, user }: { invite: AssignedAuthorI
         }),
     ),
   )
+
+const failureMessage = StreamlinePageResponse({
+  status: Status.ServiceUnavailable,
+  title: plainText`Sorry, we’re having problems`,
+  main: html`
+    <h1>Sorry, we’re having problems</h1>
+
+    <p>We were unable to add your name to the PREreview. We saved your work.</p>
+
+    <p>Please try again later by coming back to this page.</p>
+
+    <p>If this problem persists, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
+  `,
+})
 
 function checkPage({ inviteId, user }: { inviteId: Uuid; user: User }) {
   return StreamlinePageResponse({

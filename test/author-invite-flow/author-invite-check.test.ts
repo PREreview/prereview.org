@@ -75,10 +75,10 @@ describe('authorInvite', () => {
         })()
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
+          _tag: 'StreamlinePageResponse',
           status: Status.ServiceUnavailable,
           title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
+          main: expect.stringContaining('unable to'),
           skipToLabel: 'main',
           js: [],
         })
