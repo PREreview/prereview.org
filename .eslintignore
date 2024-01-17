@@ -4,3 +4,4 @@
 /dist/
 /integration-results/
 /*.js
+/src/translations/
