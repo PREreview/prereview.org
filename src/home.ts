@@ -79,7 +79,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>): R.Reader<
           <div></div>
 
           <section aria-labelledby="a-better-way-title">
-            <h2 id="a-better-way-title">A better way</h2>
+            <h2 id="a-better-way-title">${t('aBetterWayTitle')}</h2>
 
             <p>Making science and scholarship more equitable, transparent, and collaborative.</p>
 
