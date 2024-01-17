@@ -14,7 +14,7 @@ export type SupportedLang = keyof typeof translations
 
 type TranslatedStringKey = keyof typeof en
 
-export const t =
+export const translate =
   <K extends TranslatedStringKey, A extends Parameters<(typeof en)[K]>>(lang: SupportedLang) =>
   (key: K, args: A = []): Html =>
     pipe(
@@ -27,4 +27,4 @@ export const t =
       rawHtml,
     )
 
-export type Translate = ReturnType<typeof t>
+export type Translate = ReturnType<typeof translate>

@@ -37,6 +37,7 @@ import {
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
 } from '../routes'
+import { Translate, translate } from '../translations-index'
 import { isPseudonym } from '../types/pseudonym'
 import { type User, getUser } from '../user'
 import { type CompletedForm, CompletedFormC } from './completed-form'
@@ -178,7 +179,7 @@ const showPublishForm = flow(
       message?: D.TypeOf<typeof FlashMessageD>
       preprint: PreprintTitle
       user: User
-    }) => publishForm(preprint, form, user, message),
+    }) => publishForm(preprint, form, user, message, translate('es')),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainFirst(RM.fromMiddlewareK(() => deleteFlashMessage)),
@@ -368,6 +369,7 @@ function publishForm(
   review: CompletedForm,
   user: User,
   message?: D.TypeOf<typeof FlashMessageD>,
+  t: Translate,
 ) {
   return page({
     title: plainText`Publish your PREreview of “${preprint.title}”`,
@@ -456,7 +458,7 @@ function publishForm(
 
                 <div>
                   <dt>Competing interests</dt>
-                  <dd>${review.competingInterests === 'yes' ? review.competingInterestsDetails : 'None'}</dd>
+                  <dd>${t('competingInterests', [{ competingInterests: review.competingInterests }])}</dd>
                   <dd>
                     <a href="${format(writeReviewCompetingInterestsMatch.formatter, { id: preprint.id })}"
                       >Change <span class="visually-hidden">competing interests</span></a
