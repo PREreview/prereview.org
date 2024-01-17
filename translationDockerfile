@@ -1,0 +1,4 @@
+FROM debian:stable-slim
+ADD https://github.com/unsplash/intlc/releases/download/v0.8.1/intlc-v0.8.1-linux-x86_64 /usr/local/bin/intlc
+RUN chmod +x /usr/local/bin/intlc
+ENTRYPOINT [ "intlc" ]

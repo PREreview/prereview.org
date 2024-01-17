@@ -155,6 +155,7 @@
     "build": "run-p build:*",
     "build:app": "wait-on src/manifest.json && tsc --project tsconfig.build.json",
     "build:assets": "webpack build --mode production",
+    "build:translations": "docker build -f translationDockerfile -t intlc . && docker run intlc",
     "format": "prettier --ignore-unknown --check '**'",
     "format:fix": "npm run format -- --write",
     "lint": "run-p --aggregate-output lint:*",
