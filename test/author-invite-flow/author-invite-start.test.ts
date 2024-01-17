@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
+import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-start'
@@ -80,15 +81,16 @@ describe('authorInviteStart', () => {
 
       test.prop([
         fc.uuid(),
-        fc.user(),
-        fc.assignedAuthorInvite(),
+        fc
+          .tuple(fc.user(), fc.assignedAuthorInvite())
+          .filter(([user, invite]) => !eqOrcid.equals(user.orcid, invite.orcid)),
         fc.record({
           preprint: fc.record({
             language: fc.languageCode(),
             title: fc.html(),
           }),
         }),
-      ])('the invite is already assigned to someone else', async (inviteId, user, invite, prereview) => {
+      ])('the invite is already assigned to someone else', async (inviteId, [user, invite], prereview) => {
         const actual = await _.authorInviteStart({ id: inviteId, user })({
           getAuthorInvite: () => TE.right(invite),
           getPrereview: () => TE.right(prereview),

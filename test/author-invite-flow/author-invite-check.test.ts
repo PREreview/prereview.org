@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
+import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-check'
@@ -113,24 +114,27 @@ describe('authorInvite', () => {
       },
     )
 
-    test.prop([fc.uuid(), fc.user(), fc.string(), fc.assignedAuthorInvite()])(
-      'when the invite is assigned to someone else',
-      async (inviteId, user, method, invite) => {
-        const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
-          getAuthorInvite: () => TE.right(invite),
-          getPrereview: shouldNotBeCalled,
-        })()
+    test.prop([
+      fc.uuid(),
+      fc
+        .tuple(fc.user(), fc.assignedAuthorInvite())
+        .filter(([user, invite]) => !eqOrcid.equals(user.orcid, invite.orcid)),
+      fc.string(),
+    ])('when the invite is assigned to someone else', async (inviteId, [user, invite], method) => {
+      const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
+        getAuthorInvite: () => TE.right(invite),
+        getPrereview: shouldNotBeCalled,
+      })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
-          skipToLabel: 'main',
-          js: [],
-        })
-      },
-    )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.stringContaining('not found'),
+        main: expect.stringContaining('not found'),
+        skipToLabel: 'main',
+        js: [],
+      })
+    })
 
     test.prop([fc.uuid(), fc.user(), fc.string(), fc.openAuthorInvite()])(
       'when the invite is not assigned',
