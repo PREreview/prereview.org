@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import type * as RT from 'fp-ts/ReaderTask'
+import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
@@ -7,7 +7,13 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
+import {
+  type AssignedAuthorInvite,
+  type GetAuthorInviteEnv,
+  type SaveAuthorInviteEnv,
+  getAuthorInvite,
+  saveAuthorInvite,
+} from '../author-invite'
 import { type Html, html, plainText } from '../html'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
@@ -20,6 +26,15 @@ export interface Prereview {
     title: Html
   }
 }
+
+export interface AddAuthorToPrereviewEnv {
+  addAuthorToPrereview: (prereview: number, author: User) => TE.TaskEither<'unavailable', void>
+}
+
+const addAuthorToPrereview = (prereview: number, author: User) =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ addAuthorToPrereview }: AddAuthorToPrereviewEnv) => addAuthorToPrereview(prereview, author)),
+  )
 
 export interface GetPrereviewEnv {
   getPrereview: (id: number) => TE.TaskEither<'unavailable', Prereview>
@@ -37,7 +52,7 @@ export const authorInviteCheck = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetPrereviewEnv & GetAuthorInviteEnv,
+  AddAuthorToPrereviewEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -59,22 +74,55 @@ export const authorInviteCheck = ({
     ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.let('method', () => method),
+    RTE.matchEW(
+      error =>
+        RT.of(
+          match(error)
+            .with('already-completed', () =>
+              RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
+            )
+            .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
+            .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
+            .with('not-found', 'wrong-user', () => pageNotFound)
+            .with('unavailable', () => havingProblemsPage)
+            .exhaustive(),
+        ),
+      state =>
+        match(state)
+          .returnType<
+            RT.ReaderTask<
+              AddAuthorToPrereviewEnv & SaveAuthorInviteEnv,
+              PageResponse | RedirectResponse | StreamlinePageResponse
+            >
+          >()
+          .with({ method: 'POST' }, handlePublishForm)
+          .with({ method: P.string }, state => RT.of(checkPage(state)))
+          .exhaustive(),
+    ),
+  )
+
+const handlePublishForm = ({ invite, inviteId, user }: { invite: AssignedAuthorInvite; inviteId: Uuid; user: User }) =>
+  pipe(
+    saveAuthorInvite(inviteId, { ...invite, status: 'completed' }),
+    RTE.chainW(() =>
+      pipe(
+        addAuthorToPrereview(invite.review, user),
+        RTE.orElseFirstW(error =>
+          match(error)
+            .with('unavailable', () => saveAuthorInvite(inviteId, invite))
+            .exhaustive(),
+        ),
+      ),
+    ),
     RTE.matchW(
       error =>
         match(error)
-          .with('already-completed', () =>
-            RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
-          )
-          .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-          .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-          .with('not-found', 'wrong-user', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
-      state =>
-        match(state)
-          .with({ method: 'POST' }, () => havingProblemsPage)
-          .with({ method: P.string }, checkPage)
-          .exhaustive(),
+      () =>
+        RedirectResponse({
+          location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
+        }),
     ),
   )
 

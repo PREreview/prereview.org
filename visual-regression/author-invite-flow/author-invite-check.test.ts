@@ -17,6 +17,7 @@ test('content looks right', async ({ page }) => {
       pseudonym: 'Orange Panda' as Pseudonym,
     },
   })({
+    addAuthorToPrereview: () => TE.left('unavailable'),
     getAuthorInvite: () => TE.right({ status: 'assigned', orcid: '0000-0002-1825-0097' as Orcid, review: 1234 }),
     getPrereview: () =>
       TE.right({
@@ -25,6 +26,7 @@ test('content looks right', async ({ page }) => {
           language: 'en',
         },
       }),
+    saveAuthorInvite: () => TE.left('unavailable'),
   })()
 
   if (response._tag !== 'StreamlinePageResponse') {
