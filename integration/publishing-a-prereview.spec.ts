@@ -8,7 +8,7 @@ import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import { RecordC, RecordsC } from 'zenodo-ts'
+import { InProgressDepositionC, type Record, RecordC, RecordsC, SubmittedDepositionC } from 'zenodo-ts'
 import { AuthorInviteC } from '../src/author-invite'
 import {
   areLoggedIn,
@@ -652,59 +652,61 @@ test.extend(canLogIn)('can invite other people to appear as authors', async ({ a
     AuthorInviteC.encode({ status: 'open', review: 1061864 }),
   )
 
+  const record: Record = {
+    conceptdoi: '10.5072/zenodo.1061863' as Doi,
+    conceptrecid: 1061863,
+    files: [
+      {
+        links: {
+          self: new URL('http://example.com/review.html/content'),
+        },
+        key: 'review.html',
+        size: 58,
+      },
+    ],
+    id: 1061864,
+    links: {
+      latest: new URL('http://example.com/latest'),
+      latest_html: new URL('http://example.com/latest_html'),
+    },
+    metadata: {
+      communities: [{ id: 'prereview-reviews' }],
+      creators: [
+        { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
+        { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
+        { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
+        { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
+        { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
+        { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
+      ],
+      description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+      doi: '10.5072/zenodo.1061864' as Doi,
+      license: { id: 'cc-by-4.0' },
+      publication_date: new Date('2022-07-05'),
+      related_identifiers: [
+        {
+          identifier: '10.1101/2022.01.13.476201',
+          relation: 'reviews',
+          resource_type: 'publication-preprint',
+          scheme: 'doi',
+        },
+        {
+          identifier: '10.5072/zenodo.1061863',
+          relation: 'isVersionOf',
+          scheme: 'doi',
+        },
+      ],
+      resource_type: {
+        type: 'publication',
+        subtype: 'peerreview',
+      },
+      title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
+    },
+  }
+
   fetch
     .get('http://zenodo.test/api/records/1061864', {
-      body: RecordC.encode({
-        conceptdoi: '10.5072/zenodo.1061863' as Doi,
-        conceptrecid: 1061863,
-        files: [
-          {
-            links: {
-              self: new URL('http://example.com/review.html/content'),
-            },
-            key: 'review.html',
-            size: 58,
-          },
-        ],
-        id: 1061864,
-        links: {
-          latest: new URL('http://example.com/latest'),
-          latest_html: new URL('http://example.com/latest_html'),
-        },
-        metadata: {
-          communities: [{ id: 'prereview-reviews' }],
-          creators: [
-            { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
-            { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
-            { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
-            { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
-            { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
-            { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
-          ],
-          description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-          doi: '10.5072/zenodo.1061864' as Doi,
-          license: { id: 'cc-by-4.0' },
-          publication_date: new Date('2022-07-05'),
-          related_identifiers: [
-            {
-              identifier: '10.1101/2022.01.13.476201',
-              relation: 'reviews',
-              resource_type: 'publication-preprint',
-              scheme: 'doi',
-            },
-            {
-              identifier: '10.5072/zenodo.1061863',
-              relation: 'isVersionOf',
-              scheme: 'doi',
-            },
-          ],
-          resource_type: {
-            type: 'publication',
-            subtype: 'peerreview',
-          },
-          title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-        },
-      }),
+      body: RecordC.encode(record),
     })
     .get('http://example.com/review.html/content', {
       body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
@@ -718,7 +720,86 @@ test.extend(canLogIn)('can invite other people to appear as authors', async ({ a
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
 
+  fetch
+    .getOnce('http://zenodo.test/api/deposit/depositions/1061864', {
+      body: SubmittedDepositionC.encode({
+        ...record,
+        links: {
+          edit: new URL('http://example.com/edit'),
+        },
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          license: record.metadata.license.id,
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'done',
+        submitted: true,
+      }),
+    })
+    .postOnce('http://example.com/edit', {
+      body: InProgressDepositionC.encode({
+        ...record,
+        links: {
+          publish: new URL('http://example.com/publish'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          license: record.metadata.license.id,
+          prereserve_doi: { doi: record.metadata.doi },
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'inprogress',
+        submitted: true,
+      }),
+      status: Status.Created,
+    })
+    .putOnce('http://example.com/self', {
+      body: InProgressDepositionC.encode({
+        ...record,
+        links: {
+          publish: new URL('http://example.com/publish'),
+          self: new URL('http://example.com/self'),
+        },
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          license: record.metadata.license.id,
+          prereserve_doi: { doi: record.metadata.doi },
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'inprogress',
+        submitted: true,
+      }),
+      status: Status.OK,
+    })
+    .postOnce('http://example.com/publish', {
+      body: SubmittedDepositionC.encode({
+        ...record,
+        links: {
+          edit: new URL('http://example.com/edit'),
+        },
+        metadata: {
+          ...record.metadata,
+          communities: [{ identifier: 'prereview-reviews' }],
+          license: record.metadata.license.id,
+          upload_type: 'publication',
+          publication_type: 'peerreview',
+        },
+        state: 'done',
+        submitted: true,
+      }),
+      status: Status.Accepted,
+    })
+
   await page.getByRole('button', { name: 'Update PREreview' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Name added to the PREreview')
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(

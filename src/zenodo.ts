@@ -14,7 +14,7 @@ import type { ReaderTaskEither } from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import * as RR from 'fp-ts/ReadonlyRecord'
-import { flow, identity, pipe } from 'fp-ts/function'
+import { constVoid, flow, identity, pipe } from 'fp-ts/function'
 import { toUpperCase } from 'fp-ts/string'
 import { type HttpError, NotFound } from 'http-errors'
 import { Status } from 'hyper-ts'
@@ -24,15 +24,19 @@ import iso6393To1 from 'iso-639-3/to-1.json'
 import * as L from 'logger-fp-ts'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
+import { URL } from 'url'
 import {
   type DepositMetadata,
   type EmptyDeposition,
   type Record,
   type ZenodoAuthenticatedEnv,
   createEmptyDeposition,
+  depositionIsSubmitted,
   getCommunityRecords,
+  getDeposition,
   getRecord,
   publishDeposition,
+  unlockDeposition,
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
@@ -55,6 +59,7 @@ import {
   fromUrl,
 } from './types/preprint-id'
 import type { ProfileId } from './types/profile-id'
+import type { User } from './user'
 import type { NewPrereview } from './write-review'
 
 export interface WasPrereviewRemovedEnv {
@@ -309,6 +314,27 @@ export const getPrereviewsForPreprintFromZenodo = flow(
   ),
   RTE.mapLeft(() => 'unavailable' as const),
 )
+
+export const addAuthorToRecordOnZenodo = (
+  id: number,
+  user: User,
+): ReaderTaskEither<ZenodoAuthenticatedEnv, 'unavailable', void> =>
+  pipe(
+    getDeposition(id),
+    RTE.filterOrElseW(depositionIsSubmitted, () => 'not published' as const),
+    RTE.chainW(unlockDeposition),
+    RTE.chainW(deposition =>
+      updateDeposition(
+        {
+          ...deposition.metadata,
+          creators: pipe(deposition.metadata.creators, A.appendW({ name: user.name, orcid: user.orcid })),
+        },
+        deposition,
+      ),
+    ),
+    RTE.chainW(publishDeposition),
+    RTE.bimap(() => 'unavailable', constVoid),
+  )
 
 export const createRecordOnZenodo: (
   newPrereview: NewPrereview,

@@ -5,7 +5,6 @@ import * as O from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
-import * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
@@ -203,6 +202,7 @@ import {
   writeReviewVerifyEmailAddress,
 } from './write-review'
 import {
+  addAuthorToRecordOnZenodo,
   createRecordOnZenodo,
   getPrereviewFromZenodo,
   getPrereviewsForClubFromZenodo,
@@ -1198,7 +1198,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          addAuthorToPrereview: () => TE.left('unavailable'),
+          addAuthorToPrereview: withEnv(addAuthorToRecordOnZenodo, env),
           getAuthorInvite: withEnv(getAuthorInvite, env),
           getPrereview: withEnv(
             flow(
