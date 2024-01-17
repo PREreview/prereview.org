@@ -1,6 +1,6 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { format } from 'fp-ts-routing'
-import * as R from 'fp-ts/Reader'
+import type * as R from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
@@ -11,11 +11,11 @@ import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from './club-details'
 import { type Html, html, plainText, rawHtml } from './html'
-import type { Translate } from './i18n'
 import * as assets from './manifest.json'
 import { PageResponse } from './response'
 import { aboutUsMatch, homeMatch, reviewAPreprintMatch, reviewMatch, reviewsMatch } from './routes'
 import { renderDate } from './time'
+import { type SupportedLang, translations } from './translations-index'
 import type { ClubId } from './types/club-id'
 import type { PreprintId } from './types/preprint-id'
 
@@ -38,7 +38,7 @@ interface GetRecentPrereviewsEnv {
 }
 
 export interface TranslateEnv {
-  t: Translate
+  t: SupportedLang
 }
 
 const getRecentPrereviews = () =>
@@ -55,13 +55,13 @@ export const home: RT.ReaderTask<GetRecentPrereviewsEnv & TranslateEnv, PageResp
 function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>): R.Reader<TranslateEnv, PageResponse> {
   return ({ t }) =>
     PageResponse({
-      title: plainText`PREreview: ${t('common:slogan.open')} ${t('common:slogan.all')}`,
+      title: plainText`PREreview: ${translations[t].heroHeading()} ${rawHtml(translations[t].heroHeadingPartTwo())}`,
       main: html`
         <div class="hero">
-          <h1>${t('common:slogan.open')}<br />${t('common:slogan.all')}</h1>
-          <p>${t('common:slogan.peers')}</p>
+          <h1>${translations[t].heroHeading()}<br />${rawHtml(translations[t].heroHeadingPartTwo())}</h1>
+          <p>${translations[t].heroByLine()}</p>
 
-          <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">${t('common:cta')}</a>
+          <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">${translations[t].cta()}</a>
 
           <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
         </div>
