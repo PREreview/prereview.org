@@ -48,21 +48,23 @@ export const authorInviteStart = ({
         .with({ status: P.union('assigned', 'completed'), orcid: P.not(user.orcid) }, () =>
           RTE.left('wrong-user' as const),
         )
-        .with({ status: 'completed' }, () => RTE.left('already-completed' as const))
-        .with({ status: 'assigned' }, () => RTE.of(undefined))
+        .with({ status: P.union('assigned', 'completed') }, () => RTE.of(undefined))
         .exhaustive(),
     ),
     RTE.matchW(
       error =>
         match(error)
-          .with('already-completed', () =>
-            RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
-          )
           .with('no-session', () => LogInResponse({ location: format(authorInviteStartMatch.formatter, { id }) }))
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .with('wrong-user', () => noPermissionPage)
           .exhaustive(),
-      () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }),
+      ({ invite }) =>
+        match(invite.status)
+          .with('open', 'assigned', () =>
+            RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }),
+          )
+          .with('completed', () => RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }))
+          .exhaustive(),
     ),
   )
