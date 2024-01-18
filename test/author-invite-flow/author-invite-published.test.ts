@@ -18,6 +18,7 @@ describe('authorInvite', () => {
         .user()
         .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
       fc.record({
+        doi: fc.doi(),
         preprint: fc.record({
           language: fc.languageCode(),
           title: fc.html(),
@@ -36,8 +37,8 @@ describe('authorInvite', () => {
         _tag: 'StreamlinePageResponse',
         canonical: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
         status: Status.OK,
-        title: expect.stringContaining('Name added to the PREreview'),
-        main: expect.stringContaining('Name added to the PREreview'),
+        title: expect.stringContaining('Name added'),
+        main: expect.stringContaining('Name added'),
         skipToLabel: 'main',
         js: [],
       })

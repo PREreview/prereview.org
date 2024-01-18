@@ -799,7 +799,7 @@ test.extend(canLogIn)('can invite other people to appear as authors', async ({ a
 
   await page.getByRole('button', { name: 'Update PREreview' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Name added to the PREreview')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Name added')
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(

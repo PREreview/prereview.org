@@ -1,3 +1,4 @@
+import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -14,6 +15,7 @@ import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch }
 import type { User } from '../user'
 
 export interface Prereview {
+  doi: Doi
   preprint: {
     language: LanguageCode
     title: Html
@@ -69,12 +71,17 @@ export const authorInvitePublished = ({
     ),
   )
 
-function publishedPage({ inviteId }: { inviteId: Uuid }) {
+function publishedPage({ inviteId, review }: { inviteId: Uuid; review: Prereview }) {
   return StreamlinePageResponse({
-    title: plainText`Name added to the PREreview`,
+    title: plainText`Name added`,
     main: html`
       <div class="panel">
-        <h1>Name added to the PREreview</h1>
+        <h1>Name added</h1>
+
+        <div>
+          Your DOI <br />
+          <strong class="doi" translate="no">${review.doi}</strong>
+        </div>
       </div>
 
       <h2>What happens next</h2>
