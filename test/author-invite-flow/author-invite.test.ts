@@ -7,34 +7,22 @@ import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite'
-import { authorInviteMatch } from '../../src/routes'
+import { authorInviteMatch, authorInvitePublishedMatch, authorInviteStartMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('authorInvite', () => {
   test.prop([
     fc.uuid(),
-    fc.oneof(
-      fc.tuple(fc.constant(undefined), fc.authorInvite()),
-      fc
-        .user()
-        .chain(user =>
-          fc.tuple(
-            fc.constant(user),
-            fc.oneof(
-              fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }),
-              fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }),
-            ),
-          ),
-        ),
-    ),
+    fc.constant(undefined),
+    fc.authorInvite(),
     fc.record({
       preprint: fc.record({
         language: fc.languageCode(),
         title: fc.html(),
       }),
     }),
-  ])('when the review can be loaded', async (inviteId, [user, invite], prereview) => {
+  ])('when the user is not logged in', async (inviteId, user, invite, prereview) => {
     const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
     const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
@@ -54,6 +42,86 @@ describe('authorInvite', () => {
     })
     expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
     expect(getPrereview).toHaveBeenCalledWith(invite.review)
+  })
+
+  describe('when the user is logged in', () => {
+    test.prop([
+      fc.uuid(),
+      fc.user(),
+      fc.openAuthorInvite(),
+      fc.record({
+        preprint: fc.record({
+          language: fc.languageCode(),
+          title: fc.html(),
+        }),
+      }),
+    ])('when the invite is open', async (inviteId, user, invite, prereview) => {
+      const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+      const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+
+      const actual = await _.authorInvite({ id: inviteId, user })({
+        getAuthorInvite,
+        getPrereview,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'StreamlinePageResponse',
+        canonical: format(authorInviteMatch.formatter, { id: inviteId }),
+        status: Status.OK,
+        title: expect.stringContaining('Be listed as an author'),
+        main: expect.stringContaining('Be listed as an author'),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
+      expect(getPrereview).toHaveBeenCalledWith(invite.review)
+    })
+
+    test.prop([
+      fc.uuid(),
+      fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.record({
+        preprint: fc.record({
+          language: fc.languageCode(),
+          title: fc.html(),
+        }),
+      }),
+    ])('when the invite is assigned', async (inviteId, [user, invite], prereview) => {
+      const actual = await _.authorInvite({ id: inviteId, user })({
+        getAuthorInvite: () => TE.right(invite),
+        getPrereview: () => TE.right(prereview),
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(authorInviteStartMatch.formatter, { id: inviteId }),
+      })
+    })
+
+    test.prop([
+      fc.uuid(),
+      fc
+        .user()
+        .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.record({
+        preprint: fc.record({
+          language: fc.languageCode(),
+          title: fc.html(),
+        }),
+      }),
+    ])('when the invite is completed', async (inviteId, [user, invite], prereview) => {
+      const actual = await _.authorInvite({ id: inviteId, user })({
+        getAuthorInvite: () => TE.right(invite),
+        getPrereview: () => TE.right(prereview),
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
+      })
+    })
   })
 
   test.prop([

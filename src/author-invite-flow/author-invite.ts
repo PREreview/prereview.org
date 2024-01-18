@@ -6,13 +6,13 @@ import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
 import { Eq as eqOrcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
 import { type Html, html, plainText } from '../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
-import { type PageResponse, StreamlinePageResponse } from '../response'
-import { authorInviteMatch, authorInviteStartMatch } from '../routes'
+import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
+import { authorInviteMatch, authorInvitePublishedMatch, authorInviteStartMatch } from '../routes'
 import type { User } from '../user'
 
 export interface Prereview {
@@ -35,7 +35,7 @@ export const authorInvite = ({
 }: {
   id: Uuid
   user?: User
-}): RT.ReaderTask<GetPrereviewEnv & GetAuthorInviteEnv, PageResponse | StreamlinePageResponse> =>
+}): RT.ReaderTask<GetPrereviewEnv & GetAuthorInviteEnv, PageResponse | RedirectResponse | StreamlinePageResponse> =>
   pipe(
     RTE.Do,
     RTE.let('user', () => user),
@@ -53,7 +53,15 @@ export const authorInvite = ({
           .with('unavailable', () => havingProblemsPage)
           .with('wrong-user', () => noPermissionPage)
           .exhaustive(),
-      startPage,
+      state =>
+        match(state)
+          .with({ user: P.not(undefined), invite: { status: 'completed' } }, () =>
+            RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
+          )
+          .with({ user: P.not(undefined), invite: { status: 'assigned' } }, () =>
+            RedirectResponse({ location: format(authorInviteStartMatch.formatter, { id }) }),
+          )
+          .otherwise(startPage),
     ),
   )
 

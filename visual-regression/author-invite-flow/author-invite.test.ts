@@ -19,6 +19,10 @@ test('content looks right', async ({ page }) => {
       }),
   })()
 
+  if (response._tag !== 'StreamlinePageResponse') {
+    throw new Error('incorrect page response')
+  }
+
   const content = html` <main id="${response.skipToLabel}">${response.main}</main> `
 
   const pageHtml = templatePage({
@@ -49,6 +53,10 @@ test('content looks right when logged in', async ({ page }) => {
         },
       }),
   })()
+
+  if (response._tag !== 'StreamlinePageResponse') {
+    throw new Error('incorrect page response')
+  }
 
   const content = html` <main id="${response.skipToLabel}">${response.main}</main> `
 
