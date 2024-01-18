@@ -189,6 +189,28 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       'https://docs.google.com/forms/d/e/1FAIpQLScamu28Lkm2pBS1n-g0UpMmp8trCeGPVVdAxJ8MIauhlwx7Dw/viewform',
     ),
   },
+  'open-box-science': {
+    name: 'Open Box Science',
+    description: html`
+      <p>
+        <a href="https://openboxscience.org/">Open Box Science (OBS)</a> is a 501(c)(3) nonprofit organization dedicated
+        to promoting open science and democratizing scientific training. The OBS grassroots community organizes free
+        talks by early-career scientists and is open to all around the world.
+      </p>
+      <p>
+        The OBS PREreview club will provide reviews of selected preprints presented in OBS seminars. The purpose of the
+        club is to (i) provide continuous discussion and collaboration to help advance science, and to (ii) provide an
+        open platform for training and practice in responsible peer review.
+      </p>
+    `,
+    leads: [
+      { name: 'Kuan-lin Huang', orcid: '0000-0002-5537-5817' as Orcid },
+      { name: 'Chih-Chung (Jerry) Lin', orcid: '0000-0002-0335-9540' as Orcid },
+      { name: 'Eugenio Contreras Castillo', orcid: '0009-0001-2806-2874' as Orcid },
+      { name: 'Anna Salamero Boix', orcid: '0000-0002-9821-1396' as Orcid },
+    ],
+    joinLink: new URL('https://join.slack.com/t/openboxscience/shared_invite/zt-1cjr8dt6c-hRnnCmmAG8JeRo1271O5aA'),
+  },
   'open-science-community-iraqi': {
     name: 'Open Science Community Iraqi (OSCI)',
     description: html`

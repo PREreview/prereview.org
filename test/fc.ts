@@ -823,6 +823,7 @@ export const clubId = (): fc.Arbitrary<ClubId> =>
     'cara',
     'hhmi-training-pilot',
     'language-club',
+    'open-box-science',
     'open-science-community-iraqi',
     'rr-id-student-reviewer-club',
     'tsl-preprint-club',

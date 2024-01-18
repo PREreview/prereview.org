@@ -12,6 +12,7 @@ export type ClubId =
   | 'cara'
   | 'hhmi-training-pilot'
   | 'language-club'
+  | 'open-box-science'
   | 'open-science-community-iraqi'
   | 'rr-id-student-reviewer-club'
   | 'tsl-preprint-club'
@@ -29,6 +30,7 @@ export function isClubId(value: string): value is ClubId {
     'cara',
     'hhmi-training-pilot',
     'language-club',
+    'open-box-science',
     'open-science-community-iraqi',
     'rr-id-student-reviewer-club',
     'tsl-preprint-club',
