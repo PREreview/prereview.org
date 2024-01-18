@@ -71,9 +71,13 @@ describe('authorInviteStart', () => {
         })()
 
         expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: Status.SeeOther,
-          location: format(authorInviteCheckMatch.formatter, { id: inviteId }),
+          _tag: 'StreamlinePageResponse',
+          canonical: format(authorInviteStartMatch.formatter, { id: inviteId }),
+          status: Status.OK,
+          title: expect.stringContaining('Be listed as an author'),
+          main: expect.stringContaining('Be listed as an author'),
+          skipToLabel: 'main',
+          js: [],
         })
         expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
         expect(getPrereview).toHaveBeenCalledWith(invite.review)

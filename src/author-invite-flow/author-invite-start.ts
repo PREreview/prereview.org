@@ -7,9 +7,9 @@ import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type GetAuthorInviteEnv, type SaveAuthorInviteEnv, getAuthorInvite, saveAuthorInvite } from '../author-invite'
-import type { Html } from '../html'
+import { type Html, html, plainText } from '../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
-import { LogInResponse, type PageResponse, RedirectResponse } from '../response'
+import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
 import { authorInviteCheckMatch, authorInvitePublishedMatch, authorInviteStartMatch } from '../routes'
 import type { User } from '../user'
 
@@ -35,7 +35,7 @@ export const authorInviteStart = ({
   user?: User
 }): RT.ReaderTask<
   GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
-  LogInResponse | PageResponse | RedirectResponse
+  LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
     RTE.Do,
@@ -61,10 +61,25 @@ export const authorInviteStart = ({
           .exhaustive(),
       ({ invite }) =>
         match(invite.status)
-          .with('open', 'assigned', () =>
-            RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }),
-          )
+          .with('open', () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }))
+          .with('assigned', () => carryOnPage(id))
           .with('completed', () => RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }))
           .exhaustive(),
     ),
   )
+
+function carryOnPage(inviteId: Uuid) {
+  return StreamlinePageResponse({
+    title: plainText`Be listed as an author`,
+    main: html`
+      <h1>Be listed as an author</h1>
+
+      <p>As you’ve already started, we’ll take you to the next step so you can carry&nbsp;on.</p>
+
+      <a href="${format(authorInviteCheckMatch.formatter, { id: inviteId })}" role="button" draggable="false"
+        >Continue</a
+      >
+    `,
+    canonical: format(authorInviteStartMatch.formatter, { id: inviteId }),
+  })
+}
