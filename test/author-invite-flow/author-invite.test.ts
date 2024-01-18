@@ -17,10 +17,19 @@ describe('authorInvite', () => {
     fc.constant(undefined),
     fc.authorInvite(),
     fc.record({
+      authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+      doi: fc.doi(),
+      language: fc.option(fc.languageCode(), { nil: undefined }),
+      license: fc.constant('CC-BY-4.0' as const),
       preprint: fc.record({
+        id: fc.preprintId(),
         language: fc.languageCode(),
         title: fc.html(),
+        url: fc.url(),
       }),
+      published: fc.plainDate(),
+      structured: fc.boolean(),
+      text: fc.html(),
     }),
   ])('when the user is not logged in', async (inviteId, user, invite, prereview) => {
     const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
@@ -50,10 +59,19 @@ describe('authorInvite', () => {
       fc.user(),
       fc.openAuthorInvite(),
       fc.record({
+        authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        doi: fc.doi(),
+        language: fc.option(fc.languageCode(), { nil: undefined }),
+        license: fc.constant('CC-BY-4.0' as const),
         preprint: fc.record({
+          id: fc.preprintId(),
           language: fc.languageCode(),
           title: fc.html(),
+          url: fc.url(),
         }),
+        published: fc.plainDate(),
+        structured: fc.boolean(),
+        text: fc.html(),
       }),
     ])('when the invite is open', async (inviteId, user, invite, prereview) => {
       const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
@@ -81,10 +99,19 @@ describe('authorInvite', () => {
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
       fc.record({
+        authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        doi: fc.doi(),
+        language: fc.option(fc.languageCode(), { nil: undefined }),
+        license: fc.constant('CC-BY-4.0' as const),
         preprint: fc.record({
+          id: fc.preprintId(),
           language: fc.languageCode(),
           title: fc.html(),
+          url: fc.url(),
         }),
+        published: fc.plainDate(),
+        structured: fc.boolean(),
+        text: fc.html(),
       }),
     ])('when the invite is assigned', async (inviteId, [user, invite], prereview) => {
       const actual = await _.authorInvite({ id: inviteId, user })({
@@ -105,10 +132,19 @@ describe('authorInvite', () => {
         .user()
         .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
       fc.record({
+        authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        doi: fc.doi(),
+        language: fc.option(fc.languageCode(), { nil: undefined }),
+        license: fc.constant('CC-BY-4.0' as const),
         preprint: fc.record({
+          id: fc.preprintId(),
           language: fc.languageCode(),
           title: fc.html(),
+          url: fc.url(),
         }),
+        published: fc.plainDate(),
+        structured: fc.boolean(),
+        text: fc.html(),
       }),
     ])('when the invite is completed', async (inviteId, [user, invite], prereview) => {
       const actual = await _.authorInvite({ id: inviteId, user })({
