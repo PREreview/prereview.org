@@ -53,7 +53,7 @@ import type {
 } from '../src/response'
 import type { SlackUser } from '../src/slack-user'
 import type { SlackUserId } from '../src/slack-user-id'
-import type { ClubId } from '../src/types/club-id'
+import { type ClubId, clubIds } from '../src/types/club-id'
 import type { EmailAddress } from '../src/types/email-address'
 import {
   type AfricarxivFigsharePreprintId,
@@ -812,22 +812,7 @@ export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.str
 export const slackUserId = (): fc.Arbitrary<SlackUserId> =>
   fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString(), scopes: set(nonEmptyString()) })
 
-export const clubId = (): fc.Arbitrary<ClubId> =>
-  fc.constantFrom(
-    'asapbio-cancer-biology',
-    'asapbio-meta-research',
-    'asapbio-metabolism',
-    'asapbio-neurobiology',
-    'biomass-biocatalysis',
-    'biophysics-leipzig',
-    'cara',
-    'hhmi-training-pilot',
-    'language-club',
-    'open-box-science',
-    'open-science-community-iraqi',
-    'rr-id-student-reviewer-club',
-    'tsl-preprint-club',
-  )
+export const clubId = (): fc.Arbitrary<ClubId> => fc.constantFrom(...clubIds)
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
   fc
