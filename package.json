@@ -104,7 +104,7 @@
     "cdigit": "^3.2.1",
     "cookie-signature": "^1.2.1",
     "css-loader": "^6.9.0",
-    "css-minimizer-webpack-plugin": "^5.0.1",
+    "css-minimizer-webpack-plugin": "^6.0.0",
     "del-cli": "^5.1.0",
     "dotenv": "^16.3.2",
     "eslint": "^8.56.0",
