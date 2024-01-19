@@ -47,7 +47,7 @@ import { storeInformationForWriteReviewPublishedPage } from './published-review'
 
 export interface NewPrereview {
   conduct: 'yes'
-  otherAuthors: ReadonlyArray<{ name: NonEmptyString; address: EmailAddress }>
+  otherAuthors: ReadonlyArray<{ name: NonEmptyString; emailAddress: EmailAddress }>
   persona: 'public' | 'pseudonym'
   preprint: PreprintTitle
   review: Html

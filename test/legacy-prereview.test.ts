@@ -647,7 +647,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.boolean(),
       fc.uuid(),
       fc.doi(),
-      fc.array(fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() })),
+      fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
     ])(
       'when the review can be posted',
       async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors) => {
@@ -699,7 +699,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.boolean(),
       fc.uuid(),
       fc.doi(),
-      fc.array(fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() })),
+      fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
       fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
     ])(
       'when the review cannot be posted',
@@ -752,7 +752,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.boolean(),
       fc.uuid(),
       fc.doi(),
-      fc.array(fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() })),
+      fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
       fc.record({ status: fc.integer(), body: fc.string() }),
     ])(
       'when the preprint cannot be resolved',
@@ -789,7 +789,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.preprintIdWithDoi(),
       fc.boolean(),
       fc.doi(),
-      fc.array(fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() })),
+      fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
       fc.error(),
     ])(
       'when fetch throws an error',
@@ -825,7 +825,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
     fc.boolean(),
     fc.uuid(),
     fc.doi(),
-    fc.array(fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() })),
+    fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() })),
   ])(
     'when the legacy PREreview should not be updated',
     async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors) => {

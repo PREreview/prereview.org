@@ -93,7 +93,7 @@ export const sendContactEmailAddressVerificationEmailForReview = (
   )
 
 export const sendAuthorInviteEmail = (
-  person: { name: NonEmptyString; address: EmailAddress },
+  person: { name: NonEmptyString; emailAddress: EmailAddress },
   authorInviteId: Uuid,
 ): RTE.ReaderTaskEither<SendEmailEnv & PublicUrlEnv, 'unavailable', void> =>
   pipe(
@@ -102,7 +102,7 @@ export const sendAuthorInviteEmail = (
       inviteUrl =>
         ({
           from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
-          to: person,
+          to: { address: person.emailAddress, name: person.name },
           subject: 'Be listed as a PREreview author',
           text: `Hi ${person.name},\n\nYou’ve been invited to appear as an author on a PREreview. Respond by going to ${inviteUrl.href}`,
           html: mjmlToHtml(html`
