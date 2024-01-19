@@ -19,7 +19,7 @@ describe('writeReviewAddAuthors', () => {
     fc.preprintTitle(),
     fc.connection({ method: fc.constant('POST') }),
     fc.user(),
-    fc.completedForm({ moreAuthors: fc.constant('yes') }),
+    fc.completedForm({ moreAuthors: fc.constant('yes' as const), otherAuthors: fc.otherAuthors() }),
   ])('when the form is completed', async (preprintId, preprintTitle, connection, user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))

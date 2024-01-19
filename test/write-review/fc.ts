@@ -181,6 +181,9 @@ export const moreAuthorsApproved = (): fc.Arbitrary<Required<Form>['moreAuthorsA
 
 export const persona = (): fc.Arbitrary<Required<Form>['persona']> => fc.constantFrom('public', 'pseudonym')
 
+export const otherAuthors = (): fc.Arbitrary<Required<Form>['otherAuthors']> =>
+  fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }))
+
 export const competingInterests = (): fc.Arbitrary<Required<Form>['competingInterests']> => fc.constantFrom('yes', 'no')
 
 export const reviewType = (): fc.Arbitrary<Required<Form>['reviewType']> => fc.constantFrom('freeform', 'questions')
@@ -203,6 +206,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
           shouldRead: shouldRead(),
           readyFullReview: readyFullReview(),
           moreAuthors: moreAuthors(),
+          otherAuthors: otherAuthors(),
           competingInterests: competingInterests(),
           conduct: conduct(),
         },
@@ -240,6 +244,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
           review: fc.html(),
           persona: persona(),
           moreAuthors: moreAuthors(),
+          otherAuthors: otherAuthors(),
           competingInterests: competingInterests(),
           conduct: conduct(),
         },
@@ -293,10 +298,18 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         findingsNextSteps: findingsNextSteps(),
         novel: novel(),
         readyFullReview: readyFullReview(),
-        moreAuthors: moreAuthors(),
         persona: persona(),
         reviewType: fc.constant('questions' as const),
       }),
+      fc.oneof(
+        fc.record({
+          moreAuthors: fc.constant('yes' as const),
+          otherAuthors: otherAuthors(),
+        }),
+        fc.record({
+          moreAuthors: fc.constantFrom('yes-private' as const, 'no' as const),
+        }),
+      ),
       fc.oneof(
         fc.record({
           competingInterests: fc.constant('yes' as const),
@@ -396,11 +409,19 @@ export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { r
       fc.record({
         alreadyWritten: alreadyWritten(),
         conduct: conduct(),
-        moreAuthors: moreAuthors(),
         persona: persona(),
         review: fc.html(),
         reviewType: fc.constant('freeform' as const),
       }),
+      fc.oneof(
+        fc.record({
+          moreAuthors: fc.constant('yes' as const),
+          otherAuthors: otherAuthors(),
+        }),
+        fc.record({
+          moreAuthors: fc.constantFrom('yes-private' as const, 'no' as const),
+        }),
+      ),
       fc.oneof(
         fc.record({
           competingInterests: fc.constant('yes' as const),
@@ -415,11 +436,11 @@ export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { r
 
 export const completedForm = (
   model: {
-    [K in keyof Partial<CompletedForm>]: fc.Arbitrary<CompletedForm[K]>
+    [K in keyof Form]: fc.Arbitrary<Form[K]>
   } = {},
 ): fc.Arbitrary<CompletedForm> =>
   fc
-    .tuple(fc.oneof(completedFreeformForm(), completedQuestionsForm()), fc.record(model as never))
+    .tuple(fc.oneof(completedFreeformForm(), completedQuestionsForm()), fc.record(model))
     .map(parts => merge(...(parts as never)))
 
 export const unknownFormType = () =>
@@ -428,6 +449,7 @@ export const unknownFormType = () =>
       review: fc.html(),
       persona: persona(),
       moreAuthors: moreAuthors(),
+      otherAuthors: otherAuthors(),
       competingInterests: competingInterests(),
       conduct: conduct(),
       introductionMatches: introductionMatches(),

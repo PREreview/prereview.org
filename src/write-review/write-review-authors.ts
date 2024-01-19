@@ -94,6 +94,7 @@ const handleAuthorsForm = ({ form, preprint, user }: { form: Form; preprint: Pre
         E.Do,
         E.apS('moreAuthors', fields.moreAuthors),
         E.apS('moreAuthorsApproved', fields.moreAuthorsApproved),
+        E.let('otherAuthors', () => []),
         E.mapLeft(() => fields),
       ),
     ),

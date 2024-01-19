@@ -32,6 +32,7 @@ import {
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
 } from '../routes'
+import { EmailAddressC } from '../types/email-address'
 import type { PreprintId } from '../types/preprint-id'
 import { NonEmptyStringC } from '../types/string'
 
@@ -126,6 +127,7 @@ export const nextFormMatch = (form: Form) =>
     .with({ reviewType: P.optional('freeform'), review: P.optional(undefined) }, () => writeReviewReviewMatch)
     .with({ persona: P.optional(undefined) }, () => writeReviewPersonaMatch)
     .with({ moreAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
+    .with({ moreAuthors: 'yes', otherAuthors: P.optional(undefined) }, () => writeReviewAuthorsMatch)
     .with({ competingInterests: P.optional(undefined) }, () => writeReviewCompetingInterestsMatch)
     .with({ conduct: P.optional(undefined) }, () => writeReviewConductMatch)
     .otherwise(() => writeReviewPublishMatch)
@@ -237,6 +239,7 @@ export const FormC = pipe(
     }),
     moreAuthors: C.literal('yes', 'yes-private', 'no'),
     moreAuthorsApproved: C.literal('yes'),
+    otherAuthors: pipe(C.array(C.struct({ name: NonEmptyStringC, emailAddress: EmailAddressC })), C.readonly),
     competingInterests: C.literal('yes', 'no'),
     competingInterestsDetails: NonEmptyStringC,
     conduct: C.literal('yes'),

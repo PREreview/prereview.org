@@ -145,7 +145,7 @@ const handlePublishForm = ({
     RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.id)),
     RM.map(() => ({
       conduct: form.conduct,
-      otherAuthors: [],
+      otherAuthors: form.moreAuthors === 'yes' ? form.otherAuthors : [],
       persona: form.persona,
       preprint,
       review: renderReview(form),

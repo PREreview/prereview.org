@@ -2,6 +2,7 @@ import { pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as E from 'io-ts/Encoder'
 import { RawHtmlC } from '../html'
+import { EmailAddressC } from '../types/email-address'
 import { NonEmptyStringC } from '../types/string'
 import type { Form } from './form'
 
@@ -21,6 +22,20 @@ export const CompletedFormC = pipe(
       }),
       no: C.struct({
         competingInterests: C.literal('no'),
+      }),
+    }),
+  ),
+  C.intersect(
+    C.sum('moreAuthors')({
+      yes: C.struct({
+        moreAuthors: C.literal('yes'),
+        otherAuthors: pipe(C.array(C.struct({ name: NonEmptyStringC, emailAddress: EmailAddressC })), C.readonly),
+      }),
+      'yes-private': C.struct({
+        moreAuthors: C.literal('yes-private'),
+      }),
+      no: C.struct({
+        moreAuthors: C.literal('no'),
       }),
     }),
   ),
