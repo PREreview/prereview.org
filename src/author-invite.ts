@@ -25,6 +25,10 @@ export interface CompletedAuthorInvite {
   readonly review: number
 }
 
+export interface CreateAuthorInviteEnv {
+  createAuthorInvite: (authorInvite: OpenAuthorInvite) => TE.TaskEither<'unavailable', Uuid>
+}
+
 export interface GetAuthorInviteEnv {
   getAuthorInvite: (id: Uuid) => TE.TaskEither<'not-found' | 'unavailable', AuthorInvite>
 }
@@ -62,6 +66,11 @@ export const AuthorInviteC = C.make(D.union(OpenAuthorInviteC, AssignedAuthorInv
       .with({ status: 'completed' }, CompletedAuthorInviteC.encode)
       .exhaustive(),
 }) satisfies C.Codec<unknown, unknown, AuthorInvite>
+
+export const createAuthorInvite = (
+  authorInvite: OpenAuthorInvite,
+): RTE.ReaderTaskEither<CreateAuthorInviteEnv, 'unavailable', Uuid> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ createAuthorInvite }) => createAuthorInvite(authorInvite)))
 
 export const getAuthorInvite = (
   id: Uuid,

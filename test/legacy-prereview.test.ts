@@ -647,9 +647,10 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.boolean(),
       fc.uuid(),
       fc.doi(),
+      fc.array(fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() })),
     ])(
       'when the review can be posted',
-      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi) => {
+      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors) => {
         const fetch = fetchMock
           .sandbox()
           .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, { body: { uuid: preprintUuid } })
@@ -670,6 +671,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
 
         const actual = await _.createPrereviewOnLegacyPrereview({
           conduct: 'yes',
+          otherAuthors,
           persona: 'public',
           preprint: {
             id: preprintId,
@@ -697,10 +699,11 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.boolean(),
       fc.uuid(),
       fc.doi(),
+      fc.array(fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() })),
       fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
     ])(
       'when the review cannot be posted',
-      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, response) => {
+      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, response) => {
         const fetch = fetchMock
           .sandbox()
           .getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, { body: { uuid: preprintUuid } })
@@ -721,6 +724,7 @@ describe('createPrereviewOnLegacyPrereview', () => {
 
         const actual = await _.createPrereviewOnLegacyPrereview({
           conduct: 'yes',
+          otherAuthors,
           persona: 'public',
           preprint: {
             id: preprintId,
@@ -748,14 +752,16 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.boolean(),
       fc.uuid(),
       fc.doi(),
+      fc.array(fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() })),
       fc.record({ status: fc.integer(), body: fc.string() }),
     ])(
       'when the preprint cannot be resolved',
-      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, response) => {
+      async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors, response) => {
         const fetch = fetchMock.sandbox().getOnce(`${url}api/v2/resolve?identifier=${preprintId.value}`, response)
 
         const actual = await _.createPrereviewOnLegacyPrereview({
           conduct: 'yes',
+          otherAuthors,
           persona: 'public',
           preprint: {
             id: preprintId,
@@ -783,26 +789,31 @@ describe('createPrereviewOnLegacyPrereview', () => {
       fc.preprintIdWithDoi(),
       fc.boolean(),
       fc.doi(),
+      fc.array(fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() })),
       fc.error(),
-    ])('when fetch throws an error', async (user, app, key, url, preprintId, structured, reviewDoi, error) => {
-      const actual = await _.createPrereviewOnLegacyPrereview({
-        conduct: 'yes',
-        persona: 'public',
-        preprint: {
-          id: preprintId,
-          language: 'en',
-          title: rawHtml('foo'),
-        },
-        review: rawHtml('<p>hello</p>'),
-        structured,
-        user,
-      })(reviewDoi)({
-        fetch: () => Promise.reject(error),
-        legacyPrereviewApi: { app, key, url, update: true },
-      })()
+    ])(
+      'when fetch throws an error',
+      async (user, app, key, url, preprintId, structured, reviewDoi, otherAuthors, error) => {
+        const actual = await _.createPrereviewOnLegacyPrereview({
+          conduct: 'yes',
+          otherAuthors,
+          persona: 'public',
+          preprint: {
+            id: preprintId,
+            language: 'en',
+            title: rawHtml('foo'),
+          },
+          review: rawHtml('<p>hello</p>'),
+          structured,
+          user,
+        })(reviewDoi)({
+          fetch: () => Promise.reject(error),
+          legacyPrereviewApi: { app, key, url, update: true },
+        })()
 
-      expect(actual).toStrictEqual(E.left('unavailable'))
-    })
+        expect(actual).toStrictEqual(E.left('unavailable'))
+      },
+    )
   })
 
   test.prop([
@@ -814,11 +825,13 @@ describe('createPrereviewOnLegacyPrereview', () => {
     fc.boolean(),
     fc.uuid(),
     fc.doi(),
+    fc.array(fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() })),
   ])(
     'when the legacy PREreview should not be updated',
-    async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi) => {
+    async (app, key, url, user, preprintId, structured, preprintUuid, reviewDoi, otherAuthors) => {
       const actual = await _.createPrereviewOnLegacyPrereview({
         conduct: 'yes',
+        otherAuthors,
         persona: 'public',
         preprint: {
           id: preprintId,

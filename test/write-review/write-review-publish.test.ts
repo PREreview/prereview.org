@@ -183,6 +183,7 @@ describe('writeReviewPublish', () => {
 
       expect(publishPrereview).toHaveBeenCalledWith({
         conduct: 'yes',
+        otherAuthors: [],
         persona: newReview.persona,
         preprint: preprintTitle,
         review: expect.stringContaining('<dl>'),
@@ -260,6 +261,7 @@ describe('writeReviewPublish', () => {
 
       expect(publishPrereview).toHaveBeenCalledWith({
         conduct: 'yes',
+        otherAuthors: [],
         persona: newReview.persona,
         preprint: preprintTitle,
         review: expect.stringContaining(newReview.review.toString()),

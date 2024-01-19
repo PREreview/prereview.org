@@ -37,7 +37,9 @@ import {
   writeReviewReviewMatch,
   writeReviewShouldReadMatch,
 } from '../routes'
+import type { EmailAddress } from '../types/email-address'
 import { isPseudonym } from '../types/pseudonym'
+import type { NonEmptyString } from '../types/string'
 import { type User, getUser } from '../user'
 import { type CompletedForm, CompletedFormC } from './completed-form'
 import { type Form, deleteForm, getForm, redirectToNextForm, saveForm } from './form'
@@ -45,6 +47,7 @@ import { storeInformationForWriteReviewPublishedPage } from './published-review'
 
 export interface NewPrereview {
   conduct: 'yes'
+  otherAuthors: ReadonlyArray<{ name: NonEmptyString; address: EmailAddress }>
   persona: 'public' | 'pseudonym'
   preprint: PreprintTitle
   review: Html
@@ -142,6 +145,7 @@ const handlePublishForm = ({
     RM.fromReaderTaskEither(deleteForm(user.orcid, preprint.id)),
     RM.map(() => ({
       conduct: form.conduct,
+      otherAuthors: [],
       persona: form.persona,
       preprint,
       review: renderReview(form),

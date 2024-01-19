@@ -2,12 +2,14 @@ import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
+import type { Uuid } from 'uuid-ts'
 import type { UnverifiedContactEmailAddress } from './contact-email-address'
 import { type Html, html, mjmlToHtml } from './html'
 import { type PublicUrlEnv, toUrl } from './public-url'
-import { verifyContactEmailAddressMatch, writeReviewVerifyEmailAddressMatch } from './routes'
+import { authorInviteMatch, verifyContactEmailAddressMatch, writeReviewVerifyEmailAddressMatch } from './routes'
 import type { EmailAddress } from './types/email-address'
 import type { IndeterminatePreprintId } from './types/preprint-id'
+import type { NonEmptyString } from './types/string'
 import type { User } from './user'
 
 export interface SendEmailEnv {
@@ -80,6 +82,37 @@ export const sendContactEmailAddressVerificationEmailForReview = (
                     <mj-text>Hi ${user.name},</mj-text>
                     <mj-text>Please verify your email address on PREreview:</mj-text>
                     <mj-button href="${verificationUrl.href}" target="_self">Verify email address</mj-button>
+                  </mj-column>
+                </mj-section>
+              </mj-body>
+            </mjml>
+          `),
+        }) satisfies Email,
+    ),
+    RTE.chainW(sendEmail),
+  )
+
+export const sendAuthorInviteEmail = (
+  person: { name: NonEmptyString; address: EmailAddress },
+  authorInviteId: Uuid,
+): RTE.ReaderTaskEither<SendEmailEnv & PublicUrlEnv, 'unavailable', void> =>
+  pipe(
+    RTE.fromReader(toUrl(authorInviteMatch.formatter, { id: authorInviteId })),
+    RTE.map(
+      inviteUrl =>
+        ({
+          from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
+          to: person,
+          subject: 'Be listed as a PREreview author',
+          text: `Hi ${person.name},\n\nYou’ve been invited to appear as an author on a PREreview. Respond by going to ${inviteUrl.href}`,
+          html: mjmlToHtml(html`
+            <mjml>
+              <mj-body>
+                <mj-section>
+                  <mj-column>
+                    <mj-text>Hi ${person.name},</mj-text>
+                    <mj-text>You’ve been invited to appear as an author on a PREreview.</mj-text>
+                    <mj-button href="${inviteUrl.href}" target="_self">Respond</mj-button>
                   </mj-column>
                 </mj-section>
               </mj-body>

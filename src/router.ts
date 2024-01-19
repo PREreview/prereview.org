@@ -16,6 +16,7 @@ import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { aboutUs } from './about-us'
 import type { ConfigEnv } from './app'
+import { type OpenAuthorInvite, createAuthorInvite } from './author-invite'
 import { authorInvite, authorInviteCheck, authorInvitePublished, authorInviteStart } from './author-invite-flow'
 import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
@@ -26,6 +27,7 @@ import { disconnectSlack } from './disconnect-slack'
 import { ediaStatement } from './edia-statement'
 import {
   type SendEmailEnv,
+  sendAuthorInviteEmail,
   sendContactEmailAddressVerificationEmail,
   sendContactEmailAddressVerificationEmailForReview,
 } from './email'
@@ -172,7 +174,7 @@ import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile }
 import type { SlackUserId } from './slack-user-id'
 import { trainings } from './trainings'
 import type { PreprintId } from './types/preprint-id'
-import type { GenerateUuidEnv } from './types/uuid'
+import { type GenerateUuidEnv, generateUuid } from './types/uuid'
 import { type GetUserEnv, maybeGetUser } from './user'
 import type { GetUserOnboardingEnv } from './user-onboarding'
 import {
@@ -252,6 +254,17 @@ const publishPrereview = (newPrereview: NewPrereview) =>
       isLegacyCompatiblePrereview(newPrereview)
         ? flow(([doi]) => doi, createPrereviewOnLegacyPrereview(newPrereview))
         : () => RTE.right(undefined),
+    ),
+    RTE.chainFirstW(([, review]) =>
+      pipe(
+        newPrereview.otherAuthors,
+        RTE.traverseArray(otherAuthor =>
+          pipe(
+            createAuthorInvite({ status: 'open', review }),
+            RTE.chainW(authorInvite => sendAuthorInviteEmail(otherAuthor, authorInvite)),
+          ),
+        ),
+      ),
     ),
   )
 
@@ -1127,7 +1140,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getContactEmailAddress: withEnv(getContactEmailAddress, env),
-          publishPrereview: withEnv(publishPrereview, env),
+          publishPrereview: withEnv(publishPrereview, {
+            ...env,
+            createAuthorInvite: withEnv(
+              (authorInvite: OpenAuthorInvite) =>
+                pipe(
+                  RTE.rightReaderIO(generateUuid),
+                  RTE.chainFirstW(uuid => saveAuthorInvite(uuid, authorInvite)),
+                ),
+              env,
+            ),
+          }),
         })),
       ),
     ),

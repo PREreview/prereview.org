@@ -88,3 +88,44 @@ describe('sendContactEmailAddressVerificationEmailForReview', () => {
     },
   )
 })
+
+describe('sendAuthorInviteEmail', () => {
+  test.prop([fc.origin(), fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() }), fc.uuid()])(
+    'when the email can be sent',
+    async (publicUrl, person, authorInviteId) => {
+      const sendEmail = jest.fn<_.SendEmailEnv['sendEmail']>(_ => TE.right(undefined))
+
+      const actual = await _.sendAuthorInviteEmail(
+        person,
+        authorInviteId,
+      )({
+        sendEmail,
+        publicUrl,
+      })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(sendEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          from: { address: 'help@prereview.org', name: 'PREreview' },
+          to: { address: person.address, name: person.name },
+          subject: 'Be listed as a PREreview author',
+        }),
+      )
+    },
+  )
+
+  test.prop([fc.origin(), fc.record({ name: fc.nonEmptyString(), address: fc.emailAddress() }), fc.uuid()])(
+    "when the email can't be sent",
+    async (publicUrl, person, authorInviteId) => {
+      const actual = await _.sendAuthorInviteEmail(
+        person,
+        authorInviteId,
+      )({
+        publicUrl,
+        sendEmail: () => TE.left('unavailable'),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
