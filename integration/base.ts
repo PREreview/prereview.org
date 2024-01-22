@@ -10,6 +10,7 @@ import type { Doi } from 'doi-ts'
 import fetchMock, { type FetchMockSandbox } from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
+import type { JsonRecord } from 'fp-ts/Json'
 import { pipe } from 'fp-ts/function'
 import * as fs from 'fs/promises'
 import type { Server } from 'http'
@@ -55,6 +56,7 @@ interface AppFixtures {
   port: number
   server: Server
   updatesLegacyPrereview: LegacyPrereviewApiEnv['legacyPrereviewApi']['update']
+  formStore: Keyv<JsonRecord>
   careerStageStore: Keyv<unknown>
   researchInterestsStore: ResearchInterestsStoreEnv['researchInterestsStore']
   languagesStore: LanguagesStoreEnv['languagesStore']
@@ -770,6 +772,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
 
     await use(fetch)
   },
+  formStore: async ({}, use) => {
+    await use(new Keyv())
+  },
   isOpenForRequestsStore: async ({}, use) => {
     await use(new Keyv())
   },
@@ -820,6 +825,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       oauthServer,
       port,
       updatesLegacyPrereview,
+      formStore,
       careerStageStore,
       contactEmailAddressStore,
       isOpenForRequestsStore,
@@ -841,7 +847,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
-      formStore: new Keyv(),
+      formStore,
       careerStageStore,
       contactEmailAddressStore,
       ghostApi: {

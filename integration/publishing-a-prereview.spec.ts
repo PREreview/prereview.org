@@ -9,7 +9,6 @@ import type { MutableRedirectUri } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
 import { InProgressDepositionC, RecordC, RecordsC, SubmittedDepositionC, type Record as ZenodoRecord } from 'zenodo-ts'
-import { AuthorInviteC } from '../src/author-invite'
 import {
   areLoggedIn,
   canLogIn,
@@ -646,161 +645,198 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(canLogIn)('can invite other people to appear as authors', async ({ authorInviteStore, fetch, page }) => {
-  await authorInviteStore.set(
-    'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0',
-    AuthorInviteC.encode({ status: 'open', review: 1061864 }),
-  )
+test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
+  'can invite other people to appear as authors',
+  async ({ fetch, formStore, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, and some or all want to be listed as authors').check()
+    await page.getByLabel('They have read and approved the PREreview').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  const record: ZenodoRecord = {
-    conceptdoi: '10.5072/zenodo.1061863' as Doi,
-    conceptrecid: 1061863,
-    files: [
-      {
-        links: {
-          self: new URL('http://example.com/review.html/content'),
-        },
-        key: 'review.html',
-        size: 58,
-      },
-    ],
-    id: 1061864,
-    links: {
-      latest: new URL('http://example.com/latest'),
-      latest_html: new URL('http://example.com/latest_html'),
-    },
-    metadata: {
-      communities: [{ id: 'prereview-reviews' }],
-      creators: [
-        { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
-        { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
-        { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
-        { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
-        { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
-        { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
-      ],
-      description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      doi: '10.5072/zenodo.1061864' as Doi,
-      license: { id: 'cc-by-4.0' },
-      publication_date: new Date('2022-07-05'),
-      related_identifiers: [
+    const form = await formStore.get('0000-0002-1825-0097_10.1101/2022.01.13.476201')
+    await formStore.set('0000-0002-1825-0097_10.1101/2022.01.13.476201', {
+      ...form,
+      otherAuthors: [{ name: 'Jean-Baptiste Botul', emailAddress: 'jbbotul@example.com' }],
+    })
+
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+
+    const record: ZenodoRecord = {
+      conceptdoi: '10.5072/zenodo.1055805' as Doi,
+      conceptrecid: 1055805,
+      files: [
         {
-          identifier: '10.1101/2022.01.13.476201',
-          relation: 'reviews',
-          resource_type: 'publication-preprint',
-          scheme: 'doi',
-        },
-        {
-          identifier: '10.5072/zenodo.1061863',
-          relation: 'isVersionOf',
-          scheme: 'doi',
+          links: {
+            self: new URL('http://example.com/review.html/content'),
+          },
+          key: 'review.html',
+          size: 58,
         },
       ],
-      resource_type: {
-        type: 'publication',
-        subtype: 'peerreview',
+      id: 1055806,
+      links: {
+        latest: new URL('http://example.com/latest'),
+        latest_html: new URL('http://example.com/latest_html'),
       },
-      title: 'PREreview of The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
-    },
-  }
-
-  fetch
-    .get('http://zenodo.test/api/records/1061864', {
-      body: RecordC.encode(record),
-    })
-    .get('http://example.com/review.html/content', {
-      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-
-  await page.goto('/author-invite/ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0')
-
-  await expect(page.getByRole('main')).toContainText('You’ve been invited to appear as an author')
-
-  await page.getByRole('button', { name: 'Start now' }).click()
-
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
-
-  fetch
-    .getOnce('http://zenodo.test/api/deposit/depositions/1061864', {
-      body: SubmittedDepositionC.encode({
-        ...record,
-        links: {
-          edit: new URL('http://example.com/edit'),
+      metadata: {
+        communities: [{ id: 'prereview-reviews' }],
+        creators: [
+          {
+            name: 'Josiah Carberry',
+            orcid: '0000-0002-1825-0097' as Orcid,
+          },
+        ],
+        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+        doi: '10.5072/zenodo.1055806' as Doi,
+        license: { id: 'cc-by-4.0' },
+        publication_date: new Date('2022-07-05'),
+        related_identifiers: [
+          {
+            identifier: '10.1101/2022.01.13.476201',
+            relation: 'reviews',
+            resource_type: 'publication-preprint',
+            scheme: 'doi',
+          },
+          {
+            identifier: '10.5072/zenodo.1061863',
+            relation: 'isVersionOf',
+            scheme: 'doi',
+          },
+        ],
+        resource_type: {
+          type: 'publication',
+          subtype: 'peerreview',
         },
-        metadata: {
-          ...record.metadata,
-          communities: [{ identifier: 'prereview-reviews' }],
-          license: record.metadata.license.id,
-          upload_type: 'publication',
-          publication_type: 'peerreview',
-        },
-        state: 'done',
-        submitted: true,
-      }),
-    })
-    .postOnce('http://example.com/edit', {
-      body: InProgressDepositionC.encode({
-        ...record,
-        links: {
-          publish: new URL('http://example.com/publish'),
-          self: new URL('http://example.com/self'),
-        },
-        metadata: {
-          ...record.metadata,
-          communities: [{ identifier: 'prereview-reviews' }],
-          license: record.metadata.license.id,
-          prereserve_doi: { doi: record.metadata.doi },
-          upload_type: 'publication',
-          publication_type: 'peerreview',
-        },
-        state: 'inprogress',
-        submitted: true,
-      }),
-      status: Status.Created,
-    })
-    .putOnce('http://example.com/self', {
-      body: InProgressDepositionC.encode({
-        ...record,
-        links: {
-          publish: new URL('http://example.com/publish'),
-          self: new URL('http://example.com/self'),
-        },
-        metadata: {
-          ...record.metadata,
-          communities: [{ identifier: 'prereview-reviews' }],
-          license: record.metadata.license.id,
-          prereserve_doi: { doi: record.metadata.doi },
-          upload_type: 'publication',
-          publication_type: 'peerreview',
-        },
-        state: 'inprogress',
-        submitted: true,
-      }),
-      status: Status.OK,
-    })
-    .postOnce('http://example.com/publish', {
-      body: SubmittedDepositionC.encode({
-        ...record,
-        links: {
-          edit: new URL('http://example.com/edit'),
-        },
-        metadata: {
-          ...record.metadata,
-          communities: [{ identifier: 'prereview-reviews' }],
-          license: record.metadata.license.id,
-          upload_type: 'publication',
-          publication_type: 'peerreview',
-        },
-        state: 'done',
-        submitted: true,
-      }),
-      status: Status.Accepted,
-    })
+        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      },
+    }
 
-  await page.getByRole('button', { name: 'Update PREreview' }).click()
+    fetch
+      .get('http://zenodo.test/api/records/1055806', {
+        body: RecordC.encode(record),
+      })
+      .get('http://example.com/review.html/content', {
+        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+      })
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Name added')
-})
+    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.getByRole('link', { name: 'Respond' }).click()
+    await page.getByRole('button', { name: 'Start now' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
+
+    fetch
+      .getOnce(
+        { name: 'get-published-deposition', url: 'http://zenodo.test/api/deposit/depositions/1055806' },
+        {
+          body: SubmittedDepositionC.encode({
+            ...record,
+            links: {
+              edit: new URL('http://example.com/edit'),
+            },
+            metadata: {
+              ...record.metadata,
+              communities: [{ identifier: 'prereview-reviews' }],
+              license: record.metadata.license.id,
+              upload_type: 'publication',
+              publication_type: 'peerreview',
+            },
+            state: 'done',
+            submitted: true,
+          }),
+        },
+      )
+      .postOnce(
+        { name: 'unlock-deposition', url: 'http://example.com/edit' },
+        {
+          body: InProgressDepositionC.encode({
+            ...record,
+            links: {
+              publish: new URL('http://example.com/publish'),
+              self: new URL('http://example.com/self'),
+            },
+            metadata: {
+              ...record.metadata,
+              communities: [{ identifier: 'prereview-reviews' }],
+              license: record.metadata.license.id,
+              prereserve_doi: { doi: record.metadata.doi },
+              upload_type: 'publication',
+              publication_type: 'peerreview',
+            },
+            state: 'inprogress',
+            submitted: true,
+          }),
+          status: Status.Created,
+        },
+      )
+      .putOnce(
+        { name: 'update-deposition', url: 'http://example.com/self' },
+        {
+          body: InProgressDepositionC.encode({
+            ...record,
+            links: {
+              publish: new URL('http://example.com/publish'),
+              self: new URL('http://example.com/self'),
+            },
+            metadata: {
+              ...record.metadata,
+              communities: [{ identifier: 'prereview-reviews' }],
+              license: record.metadata.license.id,
+              prereserve_doi: { doi: record.metadata.doi },
+              upload_type: 'publication',
+              publication_type: 'peerreview',
+            },
+            state: 'inprogress',
+            submitted: true,
+          }),
+          status: Status.OK,
+        },
+      )
+      .postOnce(
+        { name: 'publish-updated-deposition', url: 'http://example.com/publish' },
+        {
+          body: SubmittedDepositionC.encode({
+            ...record,
+            links: {
+              edit: new URL('http://example.com/edit'),
+            },
+            metadata: {
+              ...record.metadata,
+              communities: [{ identifier: 'prereview-reviews' }],
+              license: record.metadata.license.id,
+              upload_type: 'publication',
+              publication_type: 'peerreview',
+            },
+            state: 'done',
+            submitted: true,
+          }),
+          status: Status.Accepted,
+        },
+      )
+
+    await page.getByRole('button', { name: 'Update PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Name added')
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   "can publish a PREreview with more authors who don't want to be listed as authors",
