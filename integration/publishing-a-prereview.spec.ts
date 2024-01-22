@@ -8,7 +8,7 @@ import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import { InProgressDepositionC, type Record, RecordC, RecordsC, SubmittedDepositionC } from 'zenodo-ts'
+import { InProgressDepositionC, RecordC, RecordsC, SubmittedDepositionC, type Record as ZenodoRecord } from 'zenodo-ts'
 import { AuthorInviteC } from '../src/author-invite'
 import {
   areLoggedIn,
@@ -652,7 +652,7 @@ test.extend(canLogIn)('can invite other people to appear as authors', async ({ a
     AuthorInviteC.encode({ status: 'open', review: 1061864 }),
   )
 
-  const record: Record = {
+  const record: ZenodoRecord = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
     conceptrecid: 1061863,
     files: [
