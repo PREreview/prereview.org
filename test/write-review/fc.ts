@@ -434,13 +434,11 @@ export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { r
     )
     .map(parts => merge(...parts))
 
-export const completedForm = (
-  model: {
-    [K in keyof Form]: fc.Arbitrary<Form[K]>
-  } = {},
-): fc.Arbitrary<CompletedForm> =>
+export const completedForm = <F extends Form>(model?: {
+  [K in keyof F]: fc.Arbitrary<F[K]>
+}): fc.Arbitrary<CompletedForm & F> =>
   fc
-    .tuple(fc.oneof(completedFreeformForm(), completedQuestionsForm()), fc.record(model))
+    .tuple(fc.oneof(completedFreeformForm(), completedQuestionsForm()), model ? fc.record(model) : fc.constant({}))
     .map(parts => merge(...(parts as never)))
 
 export const unknownFormType = () =>
