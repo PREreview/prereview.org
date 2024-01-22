@@ -27,9 +27,10 @@ import { disconnectSlack } from './disconnect-slack'
 import { ediaStatement } from './edia-statement'
 import {
   type SendEmailEnv,
-  sendAuthorInviteEmail,
+  createAuthorInviteEmail,
   sendContactEmailAddressVerificationEmail,
   sendContactEmailAddressVerificationEmailForReview,
+  sendEmail,
 } from './email'
 import { getFlashMessage } from './flash-message'
 import { funding } from './funding'
@@ -261,7 +262,8 @@ const publishPrereview = (newPrereview: NewPrereview) =>
         RTE.traverseArray(otherAuthor =>
           pipe(
             createAuthorInvite({ status: 'open', review }),
-            RTE.chainW(authorInvite => sendAuthorInviteEmail(otherAuthor, authorInvite)),
+            RTE.chainReaderKW(authorInvite => createAuthorInviteEmail(otherAuthor, authorInvite)),
+            RTE.chainW(sendEmail),
           ),
         ),
       ),

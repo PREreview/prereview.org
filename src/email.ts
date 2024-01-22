@@ -24,7 +24,7 @@ export interface Email {
   readonly html: Html
 }
 
-const sendEmail = (email: Email): RTE.ReaderTaskEither<SendEmailEnv, 'unavailable', void> =>
+export const sendEmail = (email: Email): RTE.ReaderTaskEither<SendEmailEnv, 'unavailable', void> =>
   R.asks(({ sendEmail }) => sendEmail(email))
 
 export const sendContactEmailAddressVerificationEmail = (
@@ -92,13 +92,13 @@ export const sendContactEmailAddressVerificationEmailForReview = (
     RTE.chainW(sendEmail),
   )
 
-export const sendAuthorInviteEmail = (
+export const createAuthorInviteEmail = (
   person: { name: NonEmptyString; emailAddress: EmailAddress },
   authorInviteId: Uuid,
-): RTE.ReaderTaskEither<SendEmailEnv & PublicUrlEnv, 'unavailable', void> =>
+): R.Reader<PublicUrlEnv, Email> =>
   pipe(
-    RTE.fromReader(toUrl(authorInviteMatch.formatter, { id: authorInviteId })),
-    RTE.map(
+    toUrl(authorInviteMatch.formatter, { id: authorInviteId }),
+    R.map(
       inviteUrl =>
         ({
           from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
@@ -120,5 +120,4 @@ export const sendAuthorInviteEmail = (
           `),
         }) satisfies Email,
     ),
-    RTE.chainW(sendEmail),
   )
