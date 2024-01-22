@@ -21,7 +21,7 @@ import type { SlackOAuthEnv } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import type { Email } from './email'
-import type { RequiresVerifiedEmailAddressEnv } from './feature-flags'
+import type { CanInviteAuthorsEnv, RequiresVerifiedEmailAddressEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import type { GhostApiEnv } from './ghost'
 import { pageNotFound } from './http-error'
@@ -60,6 +60,7 @@ import type { FormStoreEnv } from './write-review'
 import type { WasPrereviewRemovedEnv } from './zenodo'
 
 export type ConfigEnv = AuthorInviteStoreEnv &
+  CanInviteAuthorsEnv &
   CareerStageStoreEnv &
   CloudinaryApiEnv &
   ContactEmailAddressStoreEnv &

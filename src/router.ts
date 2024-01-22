@@ -146,6 +146,7 @@ import {
   scietyListMatch,
   trainingsMatch,
   verifyContactEmailAddressMatch,
+  writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
@@ -181,6 +182,7 @@ import type { GetUserOnboardingEnv } from './user-onboarding'
 import {
   type NewPrereview,
   writeReview,
+  writeReviewAddAuthor,
   writeReviewAddAuthors,
   writeReviewAuthors,
   writeReviewCompetingInterests,
@@ -1086,6 +1088,25 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       writeReviewAuthorsMatch.parser,
       P.map(({ id }) => writeReviewAuthors(id)),
+    ),
+    pipe(
+      writeReviewAddAuthorMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS(
+            'body',
+            RM.gets(c => c.getBody()),
+          ),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(writeReviewAddAuthor)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       writeReviewAddAuthorsMatch.parser,

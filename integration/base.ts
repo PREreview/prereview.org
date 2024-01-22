@@ -29,7 +29,7 @@ import {
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { type ConfigEnv, app } from '../src/app'
-import type { RequiresVerifiedEmailAddressEnv } from '../src/feature-flags'
+import type { CanInviteAuthorsEnv, RequiresVerifiedEmailAddressEnv } from '../src/feature-flags'
 import type {
   AuthorInviteStoreEnv,
   ContactEmailAddressStoreEnv,
@@ -69,6 +69,7 @@ interface AppFixtures {
   requiresVerifiedEmailAddress: RequiresVerifiedEmailAddressEnv['requiresVerifiedEmailAddress']
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
+  canInviteAuthors: CanInviteAuthorsEnv['canInviteAuthors']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -83,6 +84,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     }
 
     await use(`http://localhost:${address.port}`)
+  },
+  canInviteAuthors: async ({}, use) => {
+    await use(() => false)
   },
   careerStageStore: async ({}, use) => {
     await use(new Keyv())
@@ -838,12 +842,14 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       wasPrereviewRemoved,
       requiresVerifiedEmailAddress,
       authorInviteStore,
+      canInviteAuthors,
     },
     use,
   ) => {
     const server = app({
       allowSiteCrawlers: true,
       authorInviteStore,
+      canInviteAuthors,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
@@ -1144,6 +1150,16 @@ export const willPublishAReview: Fixtures<
       })
 
     await use(fetch)
+  },
+}
+
+export const canInviteAuthors: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canInviteAuthors'>
+> = {
+  canInviteAuthors: async ({}, use) => {
+    await use(() => true)
   },
 }
 

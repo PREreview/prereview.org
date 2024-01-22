@@ -311,6 +311,8 @@ export const writeReviewPersonaMatch = pipe(writeReviewBaseMatch, P.then(P.lit('
 
 export const writeReviewAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('more-authors')), P.then(P.end))
 
+export const writeReviewAddAuthorMatch = pipe(writeReviewBaseMatch, P.then(P.lit('add-author')), P.then(P.end))
+
 export const writeReviewAddAuthorsMatch = pipe(writeReviewBaseMatch, P.then(P.lit('add-more-authors')), P.then(P.end))
 
 export const writeReviewCompetingInterestsMatch = pipe(
