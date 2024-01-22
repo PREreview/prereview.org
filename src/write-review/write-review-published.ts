@@ -87,7 +87,7 @@ function successMessage({
                   `
                 : ''}
             </p>
-            ${form.moreAuthors === 'yes'
+            ${form.moreAuthors === 'yes' && form.otherAuthors.length === 0
               ? html`
                   <div class="inset">
                     <p>
@@ -99,7 +99,9 @@ function successMessage({
                     </p>
                   </div>
                 `
-              : ''}
+              : form.moreAuthors === 'yes' && form.otherAuthors.length > 0
+                ? html`<p>We’ve sent emails to the other authors, inviting them to appear.</p> `
+                : ''}
 
             <h2>Share your review</h2>
 

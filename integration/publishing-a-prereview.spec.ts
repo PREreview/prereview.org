@@ -678,6 +678,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+    await expect(page.getByRole('main')).toContainText('We’ve sent emails to the other authors')
+    await expect(page.getByRole('main')).not.toContainText('other authors’ details')
 
     const record: ZenodoRecord = {
       conceptdoi: '10.5072/zenodo.1055805' as Doi,
