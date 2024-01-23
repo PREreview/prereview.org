@@ -6,7 +6,7 @@ import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import type { CanInviteAuthorsEnv } from '../../src/feature-flags'
 import type { GetPreprintTitleEnv } from '../../src/preprint'
-import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
+import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
 import { FormC, formKey } from '../../src/write-review/form'
@@ -34,7 +34,7 @@ describe('writeReviewAddAuthor', () => {
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
         status: Status.SeeOther,
-        location: format(writeReviewPublishMatch.formatter, { id: preprintTitle.id }),
+        location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
       })
       expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
         otherAuthors: [...newReview.otherAuthors, body],
@@ -60,7 +60,7 @@ describe('writeReviewAddAuthor', () => {
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
         status: Status.SeeOther,
-        location: expect.stringContaining(`${format(writeReviewMatch.formatter, { id: preprintTitle.id })}/`),
+        location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
       })
     })
 

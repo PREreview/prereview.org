@@ -664,7 +664,6 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn).extend(willPu
     await page.getByLabel('Name').fill('Jean-Baptiste Botul')
     await page.getByLabel('Email address').fill('jbbotul@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/add-more-authors')
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByLabel('No').check()
@@ -2792,7 +2791,6 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Name').fill('Jean-Baptiste Botul')
     await page.getByLabel('Email address').fill('jbbotul@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/add-more-authors')
 
     await page.getByRole('button', { name: 'Continue' }).click()
 

@@ -15,12 +15,17 @@ import { html, plainText, rawHtml } from '../html'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../preprint'
 import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
-import { writeReviewAddAuthorMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
+import {
+  writeReviewAddAuthorMatch,
+  writeReviewAddAuthorsMatch,
+  writeReviewAuthorsMatch,
+  writeReviewMatch,
+} from '../routes'
 import { type EmailAddress, EmailAddressC } from '../types/email-address'
 import type { IndeterminatePreprintId } from '../types/preprint-id'
 import { type NonEmptyString, NonEmptyStringC } from '../types/string'
 import type { User } from '../user'
-import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form'
+import { type Form, type FormStoreEnv, getForm, saveForm, updateForm } from './form'
 
 export const writeReviewAddAuthor = ({
   body,
@@ -141,7 +146,7 @@ const handleAddAuthorForm = ({
           .with('form-unavailable', () => havingProblemsPage)
           .with({ name: P.any }, form => addAuthorForm({ form, preprint }))
           .exhaustive(),
-      form => RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+      () => RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
     ),
   )
 
