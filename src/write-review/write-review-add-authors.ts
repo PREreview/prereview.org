@@ -1,90 +1,88 @@
 import { format } from 'fp-ts-routing'
-import { flow, pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
-import * as RM from 'hyper-ts/ReaderMiddleware'
-import { P, match } from 'ts-pattern'
-import { html, plainText, sendHtml } from '../html'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
-import { type PreprintTitle, getPreprintTitle } from '../preprint'
+import * as RT from 'fp-ts/ReaderTask'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import { pipe } from 'fp-ts/function'
+import { match } from 'ts-pattern'
+import { html, plainText } from '../html'
+import { havingProblemsPage, pageNotFound } from '../http-error'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../preprint'
+import { type LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
 import { writeReviewAddAuthorsMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
-import { type User, getUser } from '../user'
-import { type Form, getForm, redirectToNextForm } from './form'
+import type { IndeterminatePreprintId } from '../types/preprint-id'
+import type { User } from '../user'
+import { type FormStoreEnv, getForm, nextFormMatch } from './form'
 
-export const writeReviewAddAuthors = flow(
-  RM.fromReaderTaskEitherK(getPreprintTitle),
-  RM.ichainW(preprint =>
-    pipe(
-      RM.right({ preprint }),
-      RM.apS('user', getUser),
-      RM.bindW(
-        'form',
-        RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
-      ),
-      RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.ichainW(state =>
-        match(state)
-          .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, RM.fromMiddlewareK(handleCannotAddAuthorsForm))
-          .with({ form: { moreAuthors: 'yes' } }, showCannotAddAuthorsForm)
-          .otherwise(() => notFound),
-      ),
-      RM.orElseW(error =>
-        match(error)
-          .with(
-            'no-form',
-            'no-session',
-            RM.fromMiddlewareK(() => seeOther(format(writeReviewMatch.formatter, { id: preprint.id }))),
-          )
-          .with('form-unavailable', P.instanceOf(Error), () => serviceUnavailable)
-          .exhaustive(),
-      ),
+export const writeReviewAddAuthors = ({
+  id,
+  method,
+  user,
+}: {
+  id: IndeterminatePreprintId
+  method: string
+  user?: User
+}): RT.ReaderTask<
+  FormStoreEnv & GetPreprintTitleEnv,
+  LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
+> =>
+  pipe(
+    getPreprintTitle(id),
+    RTE.matchE(
+      error =>
+        RT.of(
+          match(error)
+            .with('not-found', () => pageNotFound)
+            .with('unavailable', () => havingProblemsPage)
+            .exhaustive(),
+        ),
+      preprint =>
+        pipe(
+          RTE.Do,
+          RTE.apS('user', pipe(RTE.fromNullable('no-session' as const)(user))),
+          RTE.let('preprint', () => preprint),
+          RTE.let('method', () => method),
+          RTE.bindW('form', ({ preprint, user }) => getForm(user.orcid, preprint.id)),
+          RTE.matchW(
+            error =>
+              match(error)
+                .with('no-form', 'no-session', () =>
+                  RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                )
+                .with('form-unavailable', () => havingProblemsPage)
+                .exhaustive(),
+            state =>
+              match(state)
+                .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, ({ form }) =>
+                  RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
+                )
+                .with({ form: { moreAuthors: 'yes' } }, cannotAddAuthorsForm)
+                .otherwise(() => pageNotFound),
+          ),
+        ),
     ),
-  ),
-  RM.orElseW(error =>
-    match(error)
-      .with('not-found', () => notFound)
-      .with('unavailable', () => serviceUnavailable)
-      .exhaustive(),
-  ),
-)
+  )
 
-const showCannotAddAuthorsForm = flow(
-  RM.fromReaderK(({ preprint, user }: { preprint: PreprintTitle; user: User }) => cannotAddAuthorsForm(preprint, user)),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainMiddlewareK(sendHtml),
-)
-
-const handleCannotAddAuthorsForm = ({ form, preprint }: { form: Form; preprint: PreprintTitle }) =>
-  redirectToNextForm(preprint.id)(form)
-
-function cannotAddAuthorsForm(preprint: PreprintTitle, user: User) {
-  return page({
+function cannotAddAuthorsForm({ preprint }: { preprint: PreprintTitle }) {
+  return StreamlinePageResponse({
     title: plainText`Add more authors – PREreview of “${preprint.title}”`,
-    content: html`
-      <nav>
-        <a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back">Back</a>
-      </nav>
+    nav: html`<a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back">Back</a>`,
+    main: html`
+      <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}" novalidate>
+        <h1>Add more authors</h1>
 
-      <main id="form">
-        <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}" novalidate>
-          <h1>Add more authors</h1>
+        <p>Unfortunately, we’re unable to add more authors now.</p>
 
-          <p>Unfortunately, we’re unable to add more authors now.</p>
+        <p>
+          Please email us at <a href="mailto:help@prereview.org">help@prereview.org</a> to let us know their details,
+          and we’ll add them on your behalf.
+        </p>
 
-          <p>
-            Please email us at <a href="mailto:help@prereview.org">help@prereview.org</a> to let us know their details,
-            and we’ll add them on your behalf.
-          </p>
+        <p>We’ll remind you to do this once you have published your PREreview.</p>
 
-          <p>We’ll remind you to do this once you have published your PREreview.</p>
-
-          <button>Continue</button>
-        </form>
-      </main>
+        <button>Continue</button>
+      </form>
     `,
+    canonical: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }),
+    skipToLabel: 'form',
     js: ['error-summary.js'],
-    skipLinks: [[html`Skip to form`, '#form']],
-    type: 'streamline',
-    user,
   })
 }
