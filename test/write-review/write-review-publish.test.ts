@@ -518,7 +518,9 @@ describe('writeReviewPublish', () => {
         fc.constant(secret),
       ),
     ),
-    fc.tuple(fc.incompleteForm(), fc.completedForm().map(CompletedFormC.encode)).map(parts => merge(...parts)),
+    fc
+      .tuple(fc.incompleteForm(), fc.completedForm().map(CompletedFormC.encode))
+      .map(parts => merge.withOptions({ mergeArrays: false }, ...parts)),
     fc.user(),
   ])(
     'when the PREreview cannot be published',

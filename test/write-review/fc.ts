@@ -233,7 +233,7 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
         fc.constant({}),
       ),
     )
-    .map(parts => merge(...parts))
+    .map(parts => merge.withOptions({ mergeArrays: false }, ...parts))
 
 export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'freeform' }> =>
   fc
@@ -280,12 +280,12 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
         fc.constant({}),
       ),
     )
-    .map(parts => merge(...parts))
+    .map(parts => merge.withOptions({ mergeArrays: false }, ...parts))
 
 export const incompleteForm = (model: { [K in keyof Form]: fc.Arbitrary<Form[K]> } = {}): fc.Arbitrary<Form> =>
   fc
     .tuple(fc.oneof(incompleteQuestionsForm(), incompleteFreeformForm(), unknownFormType()), fc.record(model))
-    .map(parts => merge(...parts))
+    .map(parts => merge.withOptions({ mergeArrays: false }, ...parts))
 
 export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { reviewType: 'questions' }>> =>
   fc
@@ -401,7 +401,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         { requiredKeys: ['readyFullReview'] },
       ),
     )
-    .map(parts => merge(...(parts as never)))
+    .map(parts => merge.withOptions({ mergeArrays: false }, ...(parts as never)))
 
 export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { reviewType: 'freeform' }>> =>
   fc
@@ -432,14 +432,14 @@ export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { r
         }),
       ),
     )
-    .map(parts => merge(...parts))
+    .map(parts => merge.withOptions({ mergeArrays: false }, ...parts))
 
 export const completedForm = <F extends Form>(model?: {
   [K in keyof F]: fc.Arbitrary<F[K]>
 }): fc.Arbitrary<CompletedForm & F> =>
   fc
     .tuple(fc.oneof(completedFreeformForm(), completedQuestionsForm()), model ? fc.record(model) : fc.constant({}))
-    .map(parts => merge(...(parts as never)))
+    .map(parts => merge.withOptions({ mergeArrays: false }, ...(parts as never)))
 
 export const unknownFormType = () =>
   fc.oneof(
@@ -476,4 +476,4 @@ export const form = (
 ): fc.Arbitrary<Form> =>
   fc
     .tuple(fc.oneof(completedForm().map(CompletedFormC.encode), incompleteForm()), fc.record(model as never))
-    .map(parts => merge(...parts))
+    .map(parts => merge.withOptions({ mergeArrays: false }, ...parts))

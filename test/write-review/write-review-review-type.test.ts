@@ -52,7 +52,7 @@ describe('writeReviewReviewType', () => {
         fc.completedFreeformForm().map(CompletedFormC.encode),
         fc.completedQuestionsForm().map(CompletedFormC.encode),
       )
-      .map(parts => merge(...parts)),
+      .map(parts => merge.withOptions({ mergeArrays: false }, ...parts)),
   ])('when the form is completed', async (preprintId, preprint, reviewType, user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprint.id), FormC.encode(newReview))
