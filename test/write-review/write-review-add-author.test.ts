@@ -10,6 +10,7 @@ import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
 import { FormC, formKey } from '../../src/write-review/form'
+import { shouldNotBeCalled } from '../should-not-be-called'
 import * as fc from './fc'
 
 describe('writeReviewAddAuthor', () => {
@@ -75,7 +76,7 @@ describe('writeReviewAddAuthor', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: Status.SeeOther,
-          location: format(writeReviewMatch.formatter, { id }),
+          location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
         })
       },
     )
@@ -113,7 +114,7 @@ describe('writeReviewAddAuthor', () => {
         const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.left('unavailable'))
 
         const actual = await _.writeReviewAddAuthor({ body, id, method, user })({
-          canInviteAuthors: () => true,
+          canInviteAuthors: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle,
         })()
@@ -134,7 +135,7 @@ describe('writeReviewAddAuthor', () => {
       'when the preprint cannot be found',
       async (id, body, method, user) => {
         const actual = await _.writeReviewAddAuthor({ body, id, method, user })({
-          canInviteAuthors: () => true,
+          canInviteAuthors: shouldNotBeCalled,
           formStore: new Keyv(),
           getPreprintTitle: () => TE.left('not-found'),
         })()
@@ -186,7 +187,7 @@ describe('writeReviewAddAuthor', () => {
       expect(actual).toStrictEqual({
         _tag: 'RedirectResponse',
         status: Status.SeeOther,
-        location: format(writeReviewMatch.formatter, { id }),
+        location: format(writeReviewMatch.formatter, { id: preprintTitle.id }),
       })
     },
   )

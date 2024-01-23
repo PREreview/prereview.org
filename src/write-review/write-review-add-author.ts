@@ -37,52 +37,65 @@ export const writeReviewAddAuthor = ({
   PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
-    RTE.Do,
-    RTE.apS(
-      'user',
-      pipe(
-        RTE.fromNullable('no-session' as const)(user),
-        RTE.chainFirstW(
-          flow(
-            RTE.fromReaderK(canInviteAuthors),
-            RTE.filterOrElse(
-              (canInviteAuthors): canInviteAuthors is true => canInviteAuthors,
-              () => 'not-found' as const,
-            ),
-          ),
-        ),
-      ),
-    ),
-    RTE.apSW('preprint', getPreprintTitle(id)),
-    RTE.let('method', () => method),
-    RTE.let('body', () => body),
-    RTE.bindW('form', ({ preprint, user }) => getForm(user.orcid, preprint.id)),
-    RTE.matchEW(
+    getPreprintTitle(id),
+    RTE.matchE(
       error =>
         RT.of(
           match(error)
-            .with('no-form', 'no-session', () =>
-              RedirectResponse({ location: format(writeReviewMatch.formatter, { id }) }),
-            )
             .with('not-found', () => pageNotFound)
-            .with('form-unavailable', 'unavailable', () => havingProblemsPage)
+            .with('unavailable', () => havingProblemsPage)
             .exhaustive(),
         ),
-      state =>
-        match(state)
-          .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleAddAuthorForm)
-          .with({ form: { moreAuthors: 'yes' } }, ({ preprint }) =>
-            RT.of(
-              addAuthorForm({
-                form: {
-                  name: E.right(undefined),
-                  emailAddress: E.right(undefined),
-                },
-                preprint,
-              }),
+      preprint =>
+        pipe(
+          RTE.Do,
+          RTE.apS(
+            'user',
+            pipe(
+              RTE.fromNullable('no-session' as const)(user),
+              RTE.chainFirstW(
+                flow(
+                  RTE.fromReaderK(canInviteAuthors),
+                  RTE.filterOrElse(
+                    (canInviteAuthors): canInviteAuthors is true => canInviteAuthors,
+                    () => 'not-found' as const,
+                  ),
+                ),
+              ),
             ),
-          )
-          .otherwise(() => RT.of(pageNotFound)),
+          ),
+          RTE.let('preprint', () => preprint),
+          RTE.let('method', () => method),
+          RTE.let('body', () => body),
+          RTE.bindW('form', ({ preprint, user }) => getForm(user.orcid, preprint.id)),
+          RTE.matchEW(
+            error =>
+              RT.of(
+                match(error)
+                  .with('no-form', 'no-session', () =>
+                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .with('not-found', () => pageNotFound)
+                  .with('form-unavailable', () => havingProblemsPage)
+                  .exhaustive(),
+              ),
+            state =>
+              match(state)
+                .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleAddAuthorForm)
+                .with({ form: { moreAuthors: 'yes' } }, ({ preprint }) =>
+                  RT.of(
+                    addAuthorForm({
+                      form: {
+                        name: E.right(undefined),
+                        emailAddress: E.right(undefined),
+                      },
+                      preprint,
+                    }),
+                  ),
+                )
+                .otherwise(() => RT.of(pageNotFound)),
+          ),
+        ),
     ),
   )
 
