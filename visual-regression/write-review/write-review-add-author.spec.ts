@@ -47,7 +47,11 @@ test('content looks right', async ({ page }) => {
     throw new Error('incorrect page response')
   }
 
-  const content = html` <main id="${response.skipToLabel}">${response.main}</main>`
+  const content = html`
+    ${response.nav ? html` <nav data-testid="nav">${response.nav}</nav>` : ''}
+
+    <main id="${response.skipToLabel}">${response.main}</main>
+  `
 
   const pageHtml = templatePage({
     content,
@@ -56,6 +60,7 @@ test('content looks right', async ({ page }) => {
 
   await page.setContent(pageHtml.toString())
 
+  await expect(page.getByTestId('nav')).toHaveScreenshot()
   await expect(page.getByRole('main')).toHaveScreenshot()
 })
 
