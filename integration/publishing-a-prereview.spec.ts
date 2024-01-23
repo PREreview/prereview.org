@@ -355,6 +355,8 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.waitForLoadState()
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
+
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Paste your PREreview')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
