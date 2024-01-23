@@ -83,6 +83,5 @@ function cannotAddAuthorsForm({ preprint }: { preprint: PreprintTitle }) {
     `,
     canonical: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }),
     skipToLabel: 'form',
-    js: ['error-summary.js'],
   })
 }
