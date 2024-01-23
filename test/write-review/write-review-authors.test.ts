@@ -40,6 +40,7 @@ describe('writeReviewAuthors', () => {
       expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({
         moreAuthors: 'yes',
         moreAuthorsApproved: 'yes',
+        otherAuthors: newReview.otherAuthors ?? [],
       })
       expect(actual).toStrictEqual(
         E.right([
