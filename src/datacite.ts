@@ -249,7 +249,6 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
   pipe(
     D.fromStruct({
       doi: D.fromRefinement(hasRegistrant('5281'), 'DOI'),
-      publisher: D.literal('Zenodo'),
     }),
     D.map(
       work =>

@@ -778,7 +778,7 @@ describe('getPreprintFromDatacite', () => {
       )
     })
 
-    test.prop([fc.zenodoPreprintId(), fc.plainDate()])('from Zenodo', async (id, posted) => {
+    test.prop([fc.zenodoPreprintId(), fc.plainDate(), fc.string()])('from Zenodo', async (id, posted, publisher) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
         body: {
           data: {
@@ -794,7 +794,7 @@ describe('getPreprintFromDatacite', () => {
                 { name: 'Ding, Keyang', givenName: 'Keyang', familyName: 'Ding', affiliation: [], nameIdentifiers: [] },
               ],
               titles: [{ title: 'The Counting Functions of Prime Pairs' }],
-              publisher: 'Zenodo',
+              publisher,
               container: {},
               publicationYear: 2023,
               subjects: [{ subject: 'The counting functions of prime pairs, prime number' }],
