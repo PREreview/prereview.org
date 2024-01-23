@@ -348,7 +348,7 @@ test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn).extend(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can paste an already-written PREreview',
-  async ({ browserName, context, contextOptions, javaScriptEnabled, page }, testInfo) => {
+  async ({ context, contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('I’ve already written the review').check()
@@ -386,8 +386,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.keyboard.press('Control+V')
 
     if (javaScriptEnabled) {
-      testInfo.fail(browserName === 'firefox', 'https://github.com/microsoft/playwright/issues/18339')
-
       await expect(page.getByLabel('Paste your PREreview').getByRole('heading', { level: 1 })).toHaveText('Lorem ipsum')
       await expect(page.getByLabel('Paste your PREreview').getByRole('listitem')).toHaveText([
         'Sed id nibh in felis porta ultricies.',
