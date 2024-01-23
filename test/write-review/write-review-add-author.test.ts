@@ -6,7 +6,7 @@ import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
 import type { CanInviteAuthorsEnv } from '../../src/feature-flags'
 import type { GetPreprintTitleEnv } from '../../src/preprint'
-import { writeReviewAddAuthorMatch, writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
+import { writeReviewMatch, writeReviewPublishMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
 import { CompletedFormC } from '../../src/write-review/completed-form'
 import { FormC, formKey } from '../../src/write-review/form'
@@ -184,8 +184,9 @@ describe('writeReviewAddAuthor', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'LogInResponse',
-        location: format(writeReviewAddAuthorMatch.formatter, { id }),
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(writeReviewMatch.formatter, { id }),
       })
     },
   )

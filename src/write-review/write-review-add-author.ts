@@ -14,7 +14,7 @@ import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE 
 import { html, plainText, rawHtml } from '../html'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../preprint'
-import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
+import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
 import { writeReviewAddAuthorMatch, writeReviewAuthorsMatch, writeReviewMatch } from '../routes'
 import { type EmailAddress, EmailAddressC } from '../types/email-address'
 import type { IndeterminatePreprintId } from '../types/preprint-id'
@@ -34,7 +34,7 @@ export const writeReviewAddAuthor = ({
   user?: User
 }): RT.ReaderTask<
   CanInviteAuthorsEnv & FormStoreEnv & GetPreprintTitleEnv,
-  LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
+  PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
     RTE.Do,
@@ -61,8 +61,9 @@ export const writeReviewAddAuthor = ({
       error =>
         RT.of(
           match(error)
-            .with('no-form', () => RedirectResponse({ location: format(writeReviewMatch.formatter, { id }) }))
-            .with('no-session', () => LogInResponse({ location: format(writeReviewAddAuthorMatch.formatter, { id }) }))
+            .with('no-form', 'no-session', () =>
+              RedirectResponse({ location: format(writeReviewMatch.formatter, { id }) }),
+            )
             .with('not-found', () => pageNotFound)
             .with('form-unavailable', 'unavailable', () => havingProblemsPage)
             .exhaustive(),
