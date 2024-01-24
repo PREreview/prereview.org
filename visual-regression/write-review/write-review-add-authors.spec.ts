@@ -1,11 +1,8 @@
-import type { Page } from '@playwright/test'
 import type { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
 import { missingE } from '../../src/form'
-import { html, plainText } from '../../src/html'
-import { page as templatePage } from '../../src/page'
+import { html } from '../../src/html'
 import type { PreprintTitle } from '../../src/preprint'
-import type { StreamlinePageResponse } from '../../src/response'
 import { addAuthorsForm } from '../../src/write-review/add-authors-page/add-authors-form'
 import { cannotAddAuthorsForm } from '../../src/write-review/add-authors-page/cannot-add-authors-form'
 import { expect, test } from '../base'
@@ -19,16 +16,16 @@ const preprint = {
   language: 'en',
 } satisfies PreprintTitle
 
-test('content looks right', async ({ page }) => {
+test('content looks right', async ({ showPage }) => {
   const response = cannotAddAuthorsForm({ preprint })
 
-  const { nav, main } = await showPage(response, page)
+  const { nav, main } = await showPage(response)
 
   await expect(nav).toHaveScreenshot()
   await expect(main).toHaveScreenshot()
 })
 
-test('content looks right when there are other authors', async ({ page }) => {
+test('content looks right when there are other authors', async ({ showPage }) => {
   const response = addAuthorsForm({
     form: {
       anotherAuthor: E.right(undefined),
@@ -36,13 +33,13 @@ test('content looks right when there are other authors', async ({ page }) => {
     preprint,
   })
 
-  const { nav, main } = await showPage(response, page)
+  const { nav, main } = await showPage(response)
 
   await expect(nav).toHaveScreenshot()
   await expect(main).toHaveScreenshot()
 })
 
-test('content looks right when fields are missing', async ({ page }) => {
+test('content looks right when fields are missing', async ({ showPage }) => {
   const response = addAuthorsForm({
     form: {
       anotherAuthor: E.left(missingE()),
@@ -50,27 +47,7 @@ test('content looks right when fields are missing', async ({ page }) => {
     preprint,
   })
 
-  const { main } = await showPage(response, page)
+  const { main } = await showPage(response)
 
   await expect(main).toHaveScreenshot()
 })
-
-async function showPage(response: StreamlinePageResponse, page: Page) {
-  const content = html`
-    ${response.nav ? html` <nav data-testid="nav">${response.nav}</nav>` : ''}
-
-    <main id="${response.skipToLabel}">${response.main}</main>
-  `
-
-  const pageHtml = templatePage({
-    content,
-    title: plainText('Something'),
-  })({})
-
-  await page.setContent(pageHtml.toString())
-
-  return {
-    nav: page.getByTestId('nav'),
-    main: page.getByRole('main'),
-  }
-}
