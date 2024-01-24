@@ -3,9 +3,19 @@ import * as E from 'fp-ts/Either'
 import { invalidE, missingE } from '../../src/form'
 import { html, plainText } from '../../src/html'
 import { page as templatePage } from '../../src/page'
+import type { PreprintTitle } from '../../src/preprint'
 import type { NonEmptyString } from '../../src/types/string'
 import { addAuthorForm } from '../../src/write-review/add-author-page/add-author-form'
 import { expect, test } from '../base'
+
+const preprint = {
+  id: {
+    type: 'biorxiv',
+    value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+  },
+  title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
+  language: 'en',
+} satisfies PreprintTitle
 
 test('content looks right', async ({ page }) => {
   const response = addAuthorForm({
@@ -13,14 +23,7 @@ test('content looks right', async ({ page }) => {
       name: E.right(undefined),
       emailAddress: E.right(undefined),
     },
-    preprint: {
-      id: {
-        type: 'biorxiv',
-        value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
-      },
-      title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
-      language: 'en',
-    },
+    preprint,
   })
 
   const content = html`
@@ -46,14 +49,7 @@ test('content looks right when fields are missing', async ({ page }) => {
       name: E.left(missingE()),
       emailAddress: E.left(missingE()),
     },
-    preprint: {
-      id: {
-        type: 'biorxiv',
-        value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
-      },
-      title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
-      language: 'en',
-    },
+    preprint,
   })
 
   const content = html` <main id="${response.skipToLabel}">${response.main}</main>`
@@ -74,14 +70,7 @@ test('content looks right when fields are invalid', async ({ page }) => {
       name: E.right('a name' as NonEmptyString),
       emailAddress: E.left(invalidE('not an email address')),
     },
-    preprint: {
-      id: {
-        type: 'biorxiv',
-        value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
-      },
-      title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
-      language: 'en',
-    },
+    preprint,
   })
 
   const content = html` <main id="${response.skipToLabel}">${response.main}</main>`
