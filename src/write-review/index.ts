@@ -14,7 +14,7 @@ export { writeReviewMethodsAppropriate } from './write-review-methods-appropriat
 export { writeReviewNeedToVerifyEmailAddress } from './write-review-need-to-verify-email-address'
 export { writeReviewNovel } from './write-review-novel'
 export { writeReviewPersona } from './write-review-persona'
-export { NewPrereview, PublishPrereviewEnv, writeReviewPublish } from './write-review-publish'
+export { NewPrereview, PublishPrereviewEnv, writeReviewPublish } from './publish-page'
 export { writeReviewPublished } from './write-review-published'
 export { writeReviewReadyFullReview } from './write-review-ready-full-review'
 export { writeReviewResultsSupported } from './write-review-results-supported'
