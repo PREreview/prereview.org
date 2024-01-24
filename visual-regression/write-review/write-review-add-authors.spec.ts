@@ -19,10 +19,9 @@ const preprint = {
 test('content looks right', async ({ showPage }) => {
   const response = cannotAddAuthorsForm({ preprint })
 
-  const { nav, main } = await showPage(response)
+  const content = await showPage(response)
 
-  await expect(nav).toHaveScreenshot()
-  await expect(main).toHaveScreenshot()
+  await expect(content).toHaveScreenshot()
 })
 
 test('content looks right when there are other authors', async ({ showPage }) => {
@@ -33,10 +32,9 @@ test('content looks right when there are other authors', async ({ showPage }) =>
     preprint,
   })
 
-  const { nav, main } = await showPage(response)
+  const content = await showPage(response)
 
-  await expect(nav).toHaveScreenshot()
-  await expect(main).toHaveScreenshot()
+  await expect(content).toHaveScreenshot()
 })
 
 test('content looks right when fields are missing', async ({ showPage }) => {
@@ -47,7 +45,7 @@ test('content looks right when fields are missing', async ({ showPage }) => {
     preprint,
   })
 
-  const { main } = await showPage(response)
+  const content = await showPage(response)
 
-  await expect(main).toHaveScreenshot()
+  await expect(content).toHaveScreenshot()
 })

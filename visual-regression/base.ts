@@ -7,7 +7,7 @@ import type { StreamlinePageResponse } from '../src/response'
 export { expect } from '@playwright/test'
 
 interface ShowPage {
-  showPage: (response: StreamlinePageResponse) => Promise<{ nav: Locator; main: Locator }>
+  showPage: (response: StreamlinePageResponse) => Promise<Locator>
 }
 
 export const test = baseTest.extend<ShowPage>({
@@ -27,7 +27,7 @@ export const test = baseTest.extend<ShowPage>({
   showPage: async ({ page }, use) => {
     await use(async function showPage(response) {
       const content = html`
-        ${response.nav ? html` <nav data-testid="nav">${response.nav}</nav>` : ''}
+        ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 
         <main id="${response.skipToLabel}">${response.main}</main>
       `
@@ -39,10 +39,7 @@ export const test = baseTest.extend<ShowPage>({
 
       await page.setContent(pageHtml.toString())
 
-      return {
-        nav: page.getByTestId('nav'),
-        main: page.getByRole('main'),
-      }
+      return page.locator('.contents')
     })
   },
 })
