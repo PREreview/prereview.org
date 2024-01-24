@@ -471,7 +471,7 @@ nav {
 }
 
 header {
-  :not(.contents) > & {
+  :not(body, .contents) > & {
     & :any-link {
       color: inherit;
     }
@@ -1893,6 +1893,11 @@ skip-link {
       margin-inline-start: calc(50% + var(--space-m-xl) - var(--space-s-m));
     }
 
+    & > header > .navigation {
+      max-inline-size: 75rem;
+      padding-inline: var(--space-s-m);
+    }
+
     & > .contents {
       & > main {
         &,
@@ -1901,15 +1906,9 @@ skip-link {
         }
       }
 
-      & > :not(aside, header),
-      & > header > * {
+      & > :not(aside) {
         inline-size: calc(100% - var(--space-m-xl));
         margin-inline-start: calc(var(--space-m-xl) - var(--space-s-m));
-      }
-
-      & > header > .navigation {
-        max-inline-size: 75rem;
-        padding-inline: var(--space-s-m);
       }
 
       & > aside > * {

@@ -115,124 +115,122 @@ export function page({
             ? html` <skip-link>${skipLinks.map(([text, link]) => html`<a href="${link}">${text}</a>`)}</skip-link>`
             : ''}
 
-          <div class="contents">
-            <header>
-              <div class="navigation">
-                ${phase
-                  ? html`
-                      <div class="phase-banner">
-                        <strong class="tag">${phase.tag}</strong>
-                        <span>${phase.text}</span>
-                      </div>
-                    `
-                  : ''}
-                ${user || type !== 'streamline'
-                  ? html`
-                      <nav>
-                        <ul>
-                          ${type !== 'streamline'
-                            ? html`
-                                <li><a href="https://content.prereview.org/">Blog</a></li>
-                                <li>
-                                  <a
-                                    href="${format(aboutUsMatch.formatter, {})}"
-                                    ${current === 'about-us' ? html`aria-current="page"` : ''}
-                                    >About</a
-                                  >
-                                </li>
-                                <li><a href="https://donorbox.org/prereview">Donate</a></li>
-                              `
-                            : ''}
-                          ${user && type !== 'streamline'
-                            ? html` <li>
+          <header>
+            <div class="navigation">
+              ${phase
+                ? html`
+                    <div class="phase-banner">
+                      <strong class="tag">${phase.tag}</strong>
+                      <span>${phase.text}</span>
+                    </div>
+                  `
+                : ''}
+              ${user || type !== 'streamline'
+                ? html`
+                    <nav>
+                      <ul>
+                        ${type !== 'streamline'
+                          ? html`
+                              <li><a href="https://content.prereview.org/">Blog</a></li>
+                              <li>
                                 <a
-                                  href="${format(myDetailsMatch.formatter, {})}"
-                                  ${current === 'my-details' ? html`aria-current="page"` : ''}
-                                  >My
-                                  details${match(userOnboarding)
-                                    .with(
-                                      { seenMyDetailsPage: false },
-                                      () =>
-                                        html` <span role="status"
-                                          ><span class="visually-hidden">New notification</span></span
-                                        >`,
-                                    )
-                                    .otherwise(() => '')}</a
+                                  href="${format(aboutUsMatch.formatter, {})}"
+                                  ${current === 'about-us' ? html`aria-current="page"` : ''}
+                                  >About</a
                                 >
-                              </li>`
-                            : ''}
-                          ${user ? html` <li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
-                          ${!user && current === 'home'
-                            ? html` <li><a href="${format(logInMatch.formatter, {})}">Log in</a></li>`
-                            : ''}
-                        </ul>
-                      </nav>
-                    `
-                  : ''}
+                              </li>
+                              <li><a href="https://donorbox.org/prereview">Donate</a></li>
+                            `
+                          : ''}
+                        ${user && type !== 'streamline'
+                          ? html` <li>
+                              <a
+                                href="${format(myDetailsMatch.formatter, {})}"
+                                ${current === 'my-details' ? html`aria-current="page"` : ''}
+                                >My
+                                details${match(userOnboarding)
+                                  .with(
+                                    { seenMyDetailsPage: false },
+                                    () =>
+                                      html` <span role="status"
+                                        ><span class="visually-hidden">New notification</span></span
+                                      >`,
+                                  )
+                                  .otherwise(() => '')}</a
+                              >
+                            </li>`
+                          : ''}
+                        ${user ? html` <li><a href="${format(logOutMatch.formatter, {})}">Log out</a></li>` : ''}
+                        ${!user && current === 'home'
+                          ? html` <li><a href="${format(logInMatch.formatter, {})}">Log in</a></li>`
+                          : ''}
+                      </ul>
+                    </nav>
+                  `
+                : ''}
+            </div>
+
+            <div class="header">
+              <div class="logo">
+                <a href="${format(homeMatch.formatter, {})}" ${current === 'home' ? html`aria-current="page"` : ''}>
+                  <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
+                </a>
               </div>
 
-              <div class="header">
-                <div class="logo">
-                  <a href="${format(homeMatch.formatter, {})}" ${current === 'home' ? html`aria-current="page"` : ''}>
-                    <img src="${assets['prereview.svg']}" width="570" height="147" alt="PREreview" />
-                  </a>
-                </div>
+              ${type !== 'streamline'
+                ? html`
+                    <nav>
+                      <ul>
+                        <li>
+                          <a
+                            href="${format(reviewsMatch.formatter, { page: 1 })}"
+                            ${current === 'reviews' ? html`aria-current="page"` : ''}
+                            >Reviews</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="${format(trainingsMatch.formatter, {})}"
+                            ${current === 'trainings' ? html`aria-current="page"` : ''}
+                            >Trainings</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="${format(liveReviewsMatch.formatter, {})}"
+                            ${current === 'live-reviews' ? html`aria-current="page"` : ''}
+                            >Live Reviews</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="${format(resourcesMatch.formatter, {})}"
+                            ${current === 'resources' ? html`aria-current="page"` : ''}
+                            >Resources</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="${format(clubsMatch.formatter, {})}"
+                            ${current === 'clubs' ? html`aria-current="page"` : ''}
+                            >Clubs</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="${format(partnersMatch.formatter, {})}"
+                            ${current === 'partners' ? html`aria-current="page"` : ''}
+                            >Partners</a
+                          >
+                        </li>
+                      </ul>
+                    </nav>
+                  `
+                : ''}
+            </div>
+          </header>
 
-                ${type !== 'streamline'
-                  ? html`
-                      <nav>
-                        <ul>
-                          <li>
-                            <a
-                              href="${format(reviewsMatch.formatter, { page: 1 })}"
-                              ${current === 'reviews' ? html`aria-current="page"` : ''}
-                              >Reviews</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="${format(trainingsMatch.formatter, {})}"
-                              ${current === 'trainings' ? html`aria-current="page"` : ''}
-                              >Trainings</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="${format(liveReviewsMatch.formatter, {})}"
-                              ${current === 'live-reviews' ? html`aria-current="page"` : ''}
-                              >Live Reviews</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="${format(resourcesMatch.formatter, {})}"
-                              ${current === 'resources' ? html`aria-current="page"` : ''}
-                              >Resources</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="${format(clubsMatch.formatter, {})}"
-                              ${current === 'clubs' ? html`aria-current="page"` : ''}
-                              >Clubs</a
-                            >
-                          </li>
-                          <li>
-                            <a
-                              href="${format(partnersMatch.formatter, {})}"
-                              ${current === 'partners' ? html`aria-current="page"` : ''}
-                              >Partners</a
-                            >
-                          </li>
-                        </ul>
-                      </nav>
-                    `
-                  : ''}
-              </div>
-            </header>
-
-            ${content}
-          </div>
+          <div class="contents">${content}</div>
 
           <footer>
             ${type !== 'streamline'
