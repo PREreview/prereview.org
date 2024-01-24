@@ -54,7 +54,7 @@ const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   authorInviteStore: new Keyv({ namespace: 'author-invite', store: keyvStore }),
-  canInviteAuthors: () => false,
+  canInviteAuthors: () => env.CAN_INVITE_AUTHORS,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
   contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: keyvStore }),
   fathomId: env.FATHOM_SITE_ID,
