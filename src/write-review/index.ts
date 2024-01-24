@@ -1,7 +1,7 @@
 export { FormStoreEnv } from './form'
 export { writeReview } from './write-review'
 export { writeReviewAddAuthor } from './add-author-page'
-export { writeReviewAddAuthors } from './write-review-add-authors'
+export { writeReviewAddAuthors } from './add-authors-page'
 export { writeReviewAuthors } from './write-review-authors'
 export { writeReviewCompetingInterests } from './write-review-competing-interests'
 export { writeReviewConduct } from './write-review-conduct'
