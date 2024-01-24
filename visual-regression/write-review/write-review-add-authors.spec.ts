@@ -1,53 +1,24 @@
 import type { Doi } from 'doi-ts'
-import type { JsonRecord } from 'fp-ts/Json'
-import * as TE from 'fp-ts/TaskEither'
-import Keyv from 'keyv'
-import type { Orcid } from 'orcid-id-ts'
+import * as E from 'fp-ts/Either'
+import { missingE } from '../../src/form'
 import { html, plainText } from '../../src/html'
 import { page as templatePage } from '../../src/page'
-import type { EmailAddress } from '../../src/types/email-address'
-import type { Pseudonym } from '../../src/types/pseudonym'
-import type { NonEmptyString } from '../../src/types/string'
-import { writeReviewAddAuthors } from '../../src/write-review'
-import { saveForm } from '../../src/write-review/form'
+import type { PreprintTitle } from '../../src/preprint'
+import { addAuthorsForm } from '../../src/write-review/add-authors-page/add-authors-form'
+import { cannotAddAuthorsForm } from '../../src/write-review/add-authors-page/cannot-add-authors-form'
 import { expect, test } from '../base'
 
-test('content looks right', async ({ page }) => {
-  const formStore = new Keyv<JsonRecord>()
-  await saveForm('0000-0002-1825-0097' as Orcid, {
+const preprint = {
+  id: {
     type: 'biorxiv',
     value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
-  })({ moreAuthors: 'yes' })({ formStore })()
+  },
+  title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
+  language: 'en',
+} satisfies PreprintTitle
 
-  const response = await writeReviewAddAuthors({
-    body: '',
-    id: {
-      type: 'biorxiv-medrxiv',
-      value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
-    },
-    method: 'GET',
-    user: {
-      name: 'Josiah Carberry',
-      orcid: '0000-0002-1825-0097' as Orcid,
-      pseudonym: 'Orange Panda' as Pseudonym,
-    },
-  })({
-    canInviteAuthors: () => false,
-    formStore,
-    getPreprintTitle: () =>
-      TE.right({
-        id: {
-          type: 'biorxiv',
-          value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
-        },
-        title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
-        language: 'en',
-      }),
-  })()
-
-  if (response._tag !== 'StreamlinePageResponse') {
-    throw new Error('incorrect page response')
-  }
+test('content looks right', async ({ page }) => {
+  const response = cannotAddAuthorsForm({ preprint })
 
   const content = html`
     ${response.nav ? html` <nav data-testid="nav">${response.nav}</nav>` : ''}
@@ -67,47 +38,12 @@ test('content looks right', async ({ page }) => {
 })
 
 test('content looks right when there are other authors', async ({ page }) => {
-  const formStore = new Keyv<JsonRecord>()
-  await saveForm('0000-0002-1825-0097' as Orcid, {
-    type: 'biorxiv',
-    value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
-  })({
-    moreAuthors: 'yes',
-    otherAuthors: [
-      { name: 'Jean-Baptiste Botul' as NonEmptyString, emailAddress: 'jbbotul@example.com' as EmailAddress },
-      { name: 'Arne Saknussemm' as NonEmptyString, emailAddress: 'asaknussemm@example.com' as EmailAddress },
-    ],
-  })({ formStore })()
-
-  const response = await writeReviewAddAuthors({
-    body: '',
-    id: {
-      type: 'biorxiv-medrxiv',
-      value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+  const response = addAuthorsForm({
+    form: {
+      anotherAuthor: E.right(undefined),
     },
-    method: 'GET',
-    user: {
-      name: 'Josiah Carberry',
-      orcid: '0000-0002-1825-0097' as Orcid,
-      pseudonym: 'Orange Panda' as Pseudonym,
-    },
-  })({
-    canInviteAuthors: () => true,
-    formStore,
-    getPreprintTitle: () =>
-      TE.right({
-        id: {
-          type: 'biorxiv',
-          value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
-        },
-        title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
-        language: 'en',
-      }),
-  })()
-
-  if (response._tag !== 'StreamlinePageResponse') {
-    throw new Error('incorrect page response')
-  }
+    preprint,
+  })
 
   const content = html`
     ${response.nav ? html` <nav data-testid="nav">${response.nav}</nav>` : ''}
@@ -127,48 +63,12 @@ test('content looks right when there are other authors', async ({ page }) => {
 })
 
 test('content looks right when fields are missing', async ({ page }) => {
-  const formStore = new Keyv<JsonRecord>()
-  await saveForm('0000-0002-1825-0097' as Orcid, {
-    type: 'biorxiv',
-    value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
-  })({
-    moreAuthors: 'yes',
-    otherAuthors: [
-      { name: 'Jean-Baptiste Botul' as NonEmptyString, emailAddress: 'jbbotul@example.com' as EmailAddress },
-      { name: 'Arne Saknussemm' as NonEmptyString, emailAddress: 'asaknussemm@example.com' as EmailAddress },
-    ],
-  })({ formStore })()
-
-  const response = await writeReviewAddAuthors({
-    body: '',
-    id: {
-      type: 'biorxiv-medrxiv',
-      value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
+  const response = addAuthorsForm({
+    form: {
+      anotherAuthor: E.left(missingE()),
     },
-    method: 'POST',
-    user: {
-      name: 'Josiah Carberry',
-      orcid: '0000-0002-1825-0097' as Orcid,
-      pseudonym: 'Orange Panda' as Pseudonym,
-    },
-  })({
-    canInviteAuthors: () => true,
-    formStore,
-    getPreprintTitle: () =>
-      TE.right({
-        id: {
-          type: 'biorxiv',
-          value: '10.1101/2022.01.13.476201' as Doi<'1101'>,
-        },
-        title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
-        language: 'en',
-      }),
-  })()
-
-  if (response._tag !== 'StreamlinePageResponse') {
-    throw new Error('incorrect page response')
-  }
-
+    preprint,
+  })
   const content = html` <main id="${response.skipToLabel}">${response.main}</main>`
 
   const pageHtml = templatePage({
