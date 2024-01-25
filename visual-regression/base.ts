@@ -2,12 +2,12 @@ import { type Locator, test as baseTest } from '@playwright/test'
 import path from 'path'
 import { html, plainText } from '../src/html'
 import { page as templatePage } from '../src/page'
-import type { StreamlinePageResponse } from '../src/response'
+import type { PageResponse, StreamlinePageResponse } from '../src/response'
 
 export { expect } from '@playwright/test'
 
 interface ShowPage {
-  showPage: (response: StreamlinePageResponse) => Promise<Locator>
+  showPage: (response: PageResponse | StreamlinePageResponse) => Promise<Locator>
 }
 
 export const test = baseTest.extend<ShowPage>({
