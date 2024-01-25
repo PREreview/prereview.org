@@ -668,7 +668,16 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn).extend(willPu
     await expect(page.getByRole('main')).toContainText('Your published name Josiah Carberry')
     await expect(page.getByRole('main')).toContainText('Invited author Jean-Baptiste Botul')
 
-    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+    await page.getByRole('link', { name: 'Add an author' }).click()
+    await page.getByLabel('Name').fill('Arne Saknussemm')
+    await page.getByLabel('Email address').fill('asaknussemm@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText('Invited authors Jean-Baptiste Botul and Arne Saknussemm')
+
+    fetch.post('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
