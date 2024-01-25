@@ -1,5 +1,4 @@
 import { format } from 'fp-ts-routing'
-import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
@@ -27,30 +26,11 @@ import { isPseudonym } from '../../types/pseudonym'
 import type { User } from '../../user'
 import type { CompletedForm } from '../completed-form'
 
-export function publishForm(
-  preprint: PreprintTitle,
-  review: CompletedForm,
-  user: User,
-  message?: D.TypeOf<typeof FlashMessageD>,
-) {
+export function publishForm(preprint: PreprintTitle, review: CompletedForm, user: User) {
   return StreamlinePageResponse({
     title: plainText`Publish your PREreview of “${preprint.title}”`,
     nav: html` <a href="${format(writeReviewConductMatch.formatter, { id: preprint.id })}" class="back">Back</a>`,
     main: html`
-      ${match(message)
-        .with(
-          'contact-email-verified',
-          () => html`
-            <notification-banner aria-labelledby="notification-banner-title" role="alert">
-              <h2 id="notification-banner-title">Success</h2>
-
-              <p>Your email address has been verified.</p>
-            </notification-banner>
-          `,
-        )
-        .with(undefined, () => '')
-        .exhaustive()}
-
       <single-use-form>
         <form method="post" action="${format(writeReviewPublishMatch.formatter, { id: preprint.id })}" novalidate>
           <h1>Check your PREreview</h1>
@@ -360,7 +340,7 @@ export function publishForm(
     js: ['single-use-form.js', 'error-summary.js', 'notification-banner.js'],
   })
 }
-export const FlashMessageD = D.literal('contact-email-verified')
+
 export function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
   if (orcid) {
     return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"

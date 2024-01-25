@@ -146,7 +146,10 @@ export const handlePageResponse = ({
 }): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
   pipe(
     RM.of({}),
-    RM.apS('message', RM.fromMiddleware(getFlashMessage(D.literal('logged-out', 'logged-in', 'blocked')))),
+    RM.apS(
+      'message',
+      RM.fromMiddleware(getFlashMessage(D.literal('logged-out', 'logged-in', 'blocked', 'contact-email-verified'))),
+    ),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
     RM.chainReaderKW(({ message, userOnboarding }) =>
       templatePage({
@@ -183,6 +186,16 @@ export const handlePageResponse = ({
                     <h2 id="notification-banner-title">Access denied</h2>
 
                     <p>You are not allowed to log in.</p>
+                  </notification-banner>
+                `,
+              )
+              .with(
+                'contact-email-verified',
+                () => html`
+                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                    <h2 id="notification-banner-title">Success</h2>
+
+                    <p>Your email address has been verified.</p>
                   </notification-banner>
                 `,
               )
@@ -230,7 +243,10 @@ const handleTwoUpPageResponse = ({
 }): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
   pipe(
     RM.of({}),
-    RM.apS('message', RM.fromMiddleware(getFlashMessage(D.literal('logged-out', 'logged-in', 'blocked')))),
+    RM.apS(
+      'message',
+      RM.fromMiddleware(getFlashMessage(D.literal('logged-out', 'logged-in', 'blocked', 'contact-email-verified'))),
+    ),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
     RM.chainReaderKW(({ message, userOnboarding }) =>
       templatePage({
@@ -269,6 +285,16 @@ const handleTwoUpPageResponse = ({
                     <h2 id="notification-banner-title">Access denied</h2>
 
                     <p>You are not allowed to log in.</p>
+                  </notification-banner>
+                `,
+              )
+              .with(
+                'contact-email-verified',
+                () => html`
+                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
+                    <h2 id="notification-banner-title">Success</h2>
+
+                    <p>Your email address has been verified.</p>
                   </notification-banner>
                 `,
               )
