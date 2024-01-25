@@ -3,9 +3,7 @@ import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
 import type { LanguageCode } from 'iso-639-1'
-import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import {
@@ -14,13 +12,14 @@ import {
   type SaveAuthorInviteEnv,
   getAuthorInvite,
   saveAuthorInvite,
-} from '../author-invite'
-import { type Html, html, plainText } from '../html'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
-import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
-import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch, profileMatch } from '../routes'
-import { isPseudonym } from '../types/pseudonym'
-import type { User } from '../user'
+} from '../../author-invite'
+import type { Html } from '../../html'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
+import { authorInviteMatch, authorInvitePublishedMatch } from '../../routes'
+import type { User } from '../../user'
+import { checkPage } from './check-page'
+import { failureMessage } from './failure-message'
 
 export interface Prereview {
   preprint: {
@@ -135,68 +134,3 @@ const handlePublishForm = ({ invite, inviteId, user }: { invite: AssignedAuthorI
         }),
     ),
   )
-
-const failureMessage = StreamlinePageResponse({
-  status: Status.ServiceUnavailable,
-  title: plainText`Sorry, we’re having problems`,
-  main: html`
-    <h1>Sorry, we’re having problems</h1>
-
-    <p>We were unable to add your name to the PREreview. We saved your work.</p>
-
-    <p>Please try again later by coming back to this page.</p>
-
-    <p>If this problem persists, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
-  `,
-})
-
-function checkPage({ inviteId, persona, user }: { inviteId: Uuid; persona: 'public' | 'pseudonym'; user: User }) {
-  return StreamlinePageResponse({
-    title: plainText`Check your details`,
-    main: html`
-      <single-use-form>
-        <form method="post" action="${format(authorInviteCheckMatch.formatter, { id: inviteId })}" novalidate>
-          <h1>Check your details</h1>
-
-          <div class="summary-card">
-            <div>
-              <h2>Your details</h2>
-            </div>
-
-            <dl class="summary-list">
-              <div>
-                <dt>Published name</dt>
-                <dd>${displayAuthor(persona === 'public' ? user : { name: user.pseudonym })}</dd>
-              </div>
-            </dl>
-          </div>
-
-          <h2>Now publish your updated PREreview</h2>
-
-          <p>We will add your name to the author list.</p>
-
-          <button>Update PREreview</button>
-        </form>
-      </single-use-form>
-    `,
-    canonical: format(authorInviteCheckMatch.formatter, { id: inviteId }),
-    skipToLabel: 'form',
-    js: ['single-use-form.js'],
-  })
-}
-
-export function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
-  if (orcid) {
-    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
-      >${name}</a
-    >`
-  }
-
-  if (isPseudonym(name)) {
-    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: name } })}"
-      >${name}</a
-    >`
-  }
-
-  return name
-}

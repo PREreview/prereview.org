@@ -1,4 +1,4 @@
 export { authorInvite } from './author-invite'
-export { authorInviteCheck } from './author-invite-check'
+export { authorInviteCheck } from './check-page'
 export { authorInvitePublished } from './author-invite-published'
 export { authorInviteStart } from './author-invite-start'
