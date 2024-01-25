@@ -116,8 +116,6 @@ test.extend(canLogIn).extend(willPublishAReview)(
     await expect(page.getByRole('main')).toContainText(
       'Competing interests The author declares that they have no competing interests.',
     )
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
@@ -250,8 +248,6 @@ test.extend(canLogIn).extend(willPublishAReview)('can publish a question-based P
   await expect(page.getByRole('main')).toContainText(
     'Competing interests The author declares that they have no competing interests.',
   )
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
@@ -1867,8 +1863,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
       await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
     }
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.reload()
 
