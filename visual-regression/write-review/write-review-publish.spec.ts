@@ -2,6 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html'
 import type { PreprintTitle } from '../../src/preprint'
+import type { EmailAddress } from '../../src/types/email-address'
 import type { Pseudonym } from '../../src/types/pseudonym'
 import type { NonEmptyString } from '../../src/types/string'
 import type { User } from '../../src/user'
@@ -99,7 +100,11 @@ test('content looks right when there are other authors', async ({ showPage }) =>
       review: html`<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>`,
       persona: 'public',
       moreAuthors: 'yes',
-      otherAuthors: [],
+      otherAuthors: [
+        { name: 'Jean-Baptiste Botul' as NonEmptyString, emailAddress: 'jbbotul@example.com' as EmailAddress },
+        { name: 'Arne Saknussemm' as NonEmptyString, emailAddress: 'asaknussemm@example.com' as EmailAddress },
+        { name: 'Otto Lidenbrock' as NonEmptyString, emailAddress: 'olidenbrock@example.com' as EmailAddress },
+      ],
       competingInterests: 'no',
       conduct: 'yes',
     },

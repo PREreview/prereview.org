@@ -1,8 +1,12 @@
 import { format } from 'fp-ts-routing'
+import * as RA from 'fp-ts/ReadonlyArray'
+import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
+import { flow, pipe } from 'fp-ts/function'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
+import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { fixHeadingLevels, html, plainText, rawHtml } from '../../html'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../../html'
 import type { PreprintTitle } from '../../preprint'
 import { StreamlinePageResponse } from '../../response'
 import {
@@ -103,6 +107,15 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                   >
                 </dd>
               </div>
+
+              ${review.moreAuthors === 'yes' && RA.isNonEmpty(review.otherAuthors)
+                ? html`
+                    <div>
+                      <dt>Invited author${review.otherAuthors.length !== 1 ? 's' : ''}</dt>
+                      <dd>${pipe(review.otherAuthors, RNEA.map(get('name')), formatList('en'))}</dd>
+                    </div>
+                  `
+                : ''}
 
               <div>
                 <dt>Competing interests</dt>
@@ -366,6 +379,19 @@ export function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) 
 
   return name
 }
+
+function formatList(
+  ...args: ConstructorParameters<typeof Intl.ListFormat>
+): (list: RNEA.ReadonlyNonEmptyArray<Html | string>) => Html {
+  const formatter = new Intl.ListFormat(...args)
+
+  return flow(
+    RNEA.map(item => html`${item}`.toString()),
+    list => formatter.format(list),
+    rawHtml,
+  )
+}
+
 export const getCompetingInterests = (form: CompletedForm) =>
   match(form)
     .with({ competingInterests: 'yes' }, form => form.competingInterestsDetails)

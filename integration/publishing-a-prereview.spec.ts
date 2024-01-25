@@ -666,6 +666,7 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn).extend(willPu
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('Your published name Josiah Carberry')
+    await expect(page.getByRole('main')).toContainText('Invited author Jean-Baptiste Botul')
 
     fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
