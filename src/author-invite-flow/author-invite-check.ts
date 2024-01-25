@@ -19,6 +19,7 @@ import { type Html, html, plainText } from '../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
 import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch, profileMatch } from '../routes'
+import { isPseudonym } from '../types/pseudonym'
 import type { User } from '../user'
 
 export interface Prereview {
@@ -81,6 +82,7 @@ export const authorInviteCheck = ({
     ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.let('method', () => method),
+    RTE.let('persona', ({ invite }) => invite.persona ?? 'public'),
     RTE.matchEW(
       error =>
         RT.of(
@@ -111,7 +113,7 @@ export const authorInviteCheck = ({
 
 const handlePublishForm = ({ invite, inviteId, user }: { invite: AssignedAuthorInvite; inviteId: Uuid; user: User }) =>
   pipe(
-    saveAuthorInvite(inviteId, { ...invite, status: 'completed' }),
+    saveAuthorInvite(inviteId, { status: 'completed', orcid: invite.orcid, review: invite.review }),
     RTE.chainW(() =>
       pipe(
         addAuthorToPrereview(invite.review, user, 'public'),
@@ -148,7 +150,7 @@ const failureMessage = StreamlinePageResponse({
   `,
 })
 
-function checkPage({ inviteId, user }: { inviteId: Uuid; user: User }) {
+function checkPage({ inviteId, persona, user }: { inviteId: Uuid; persona: 'public' | 'pseudonym'; user: User }) {
   return StreamlinePageResponse({
     title: plainText`Check your details`,
     main: html`
@@ -164,7 +166,7 @@ function checkPage({ inviteId, user }: { inviteId: Uuid; user: User }) {
             <dl class="summary-list">
               <div>
                 <dt>Published name</dt>
-                <dd>${displayAuthor(user)}</dd>
+                <dd>${displayAuthor(persona === 'public' ? user : { name: user.pseudonym })}</dd>
               </div>
             </dl>
           </div>
@@ -183,8 +185,18 @@ function checkPage({ inviteId, user }: { inviteId: Uuid; user: User }) {
   })
 }
 
-function displayAuthor({ name, orcid }: { name: string; orcid: Orcid }) {
-  return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
-    >${name}</a
-  >`
+export function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
+  if (orcid) {
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
+      >${name}</a
+    >`
+  }
+
+  if (isPseudonym(name)) {
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: name } })}"
+      >${name}</a
+    >`
+  }
+
+  return name
 }

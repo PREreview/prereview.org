@@ -1,5 +1,6 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
+import { pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
@@ -16,6 +17,7 @@ export interface OpenAuthorInvite {
 export interface AssignedAuthorInvite {
   readonly status: 'assigned'
   readonly orcid: Orcid
+  readonly persona?: 'public' | 'pseudonym'
   readonly review: number
 }
 
@@ -44,11 +46,18 @@ const OpenAuthorInviteC = C.struct({
   review: C.number,
 }) satisfies C.Codec<unknown, unknown, OpenAuthorInvite>
 
-const AssignedAuthorInviteC = C.struct({
-  status: C.literal('assigned'),
-  orcid: OrcidC,
-  review: C.number,
-}) satisfies C.Codec<unknown, unknown, AssignedAuthorInvite>
+const AssignedAuthorInviteC = pipe(
+  C.struct({
+    status: C.literal('assigned'),
+    orcid: OrcidC,
+    review: C.number,
+  }),
+  C.intersect(
+    C.partial({
+      persona: C.literal('public', 'pseudonym'),
+    }),
+  ),
+) satisfies C.Codec<unknown, unknown, AssignedAuthorInvite>
 
 const CompletedAuthorInviteC = C.struct({
   status: C.literal('completed'),

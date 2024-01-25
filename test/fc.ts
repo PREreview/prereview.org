@@ -766,7 +766,15 @@ export const openAuthorInvite = (): fc.Arbitrary<OpenAuthorInvite> =>
 export const assignedAuthorInvite = ({
   orcid: _orcid,
 }: { orcid?: fc.Arbitrary<Orcid> } = {}): fc.Arbitrary<AssignedAuthorInvite> =>
-  fc.record({ status: fc.constant('assigned'), orcid: _orcid ?? orcid(), review: fc.integer({ min: 1 }) })
+  fc.record(
+    {
+      status: fc.constant('assigned'),
+      orcid: _orcid ?? orcid(),
+      persona: fc.constantFrom('public', 'pseudonym'),
+      review: fc.integer({ min: 1 }),
+    },
+    { requiredKeys: ['status', 'orcid', 'review'] },
+  )
 
 export const completedAuthorInvite = ({
   orcid: _orcid,
