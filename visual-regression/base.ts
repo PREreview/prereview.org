@@ -35,6 +35,7 @@ export const test = baseTest.extend<ShowPage>({
       const pageHtml = templatePage({
         content,
         title: plainText('Something'),
+        js: response.js,
       })({})
 
       await page.setContent(pageHtml.toString())
