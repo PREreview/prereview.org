@@ -137,6 +137,8 @@ export function handleResponse(response: {
     .exhaustive()
 }
 
+const FlashMessageD = D.literal('logged-out', 'logged-in', 'blocked', 'contact-email-verified')
+
 export const handlePageResponse = ({
   response,
   user,
@@ -146,10 +148,7 @@ export const handlePageResponse = ({
 }): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
   pipe(
     RM.of({}),
-    RM.apS(
-      'message',
-      RM.fromMiddleware(getFlashMessage(D.literal('logged-out', 'logged-in', 'blocked', 'contact-email-verified'))),
-    ),
+    RM.apS('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
     RM.chainReaderKW(({ message, userOnboarding }) =>
       templatePage({
@@ -157,52 +156,7 @@ export const handlePageResponse = ({
         content: html`
           ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 
-          <main id="${response.skipToLabel}">
-            ${match(message)
-              .with(
-                'logged-out',
-                () => html`
-                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
-                    <h2 id="notification-banner-title">Success</h2>
-
-                    <p>You have been logged out.</p>
-                  </notification-banner>
-                `,
-              )
-              .with(
-                'logged-in',
-                () => html`
-                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
-                    <h2 id="notification-banner-title">Success</h2>
-
-                    <p>You have been logged in.</p>
-                  </notification-banner>
-                `,
-              )
-              .with(
-                'blocked',
-                () => html`
-                  <notification-banner aria-labelledby="notification-banner-title" type="failure" role="alert">
-                    <h2 id="notification-banner-title">Access denied</h2>
-
-                    <p>You are not allowed to log in.</p>
-                  </notification-banner>
-                `,
-              )
-              .with(
-                'contact-email-verified',
-                () => html`
-                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
-                    <h2 id="notification-banner-title">Success</h2>
-
-                    <p>Your email address has been verified.</p>
-                  </notification-banner>
-                `,
-              )
-              .with(undefined, () => '')
-              .exhaustive()}
-            ${response.main}
-          </main>
+          <main id="${response.skipToLabel}">${message ? showFlashMessage(message) : ''} ${response.main}</main>
         `,
         skipLinks: [
           [
@@ -243,10 +197,7 @@ const handleTwoUpPageResponse = ({
 }): RM.ReaderMiddleware<GetUserOnboardingEnv & TemplatePageEnv, StatusOpen, ResponseEnded, never, void> =>
   pipe(
     RM.of({}),
-    RM.apS(
-      'message',
-      RM.fromMiddleware(getFlashMessage(D.literal('logged-out', 'logged-in', 'blocked', 'contact-email-verified'))),
-    ),
+    RM.apS('message', RM.fromMiddleware(getFlashMessage(FlashMessageD))),
     RM.apS('userOnboarding', user ? RM.fromReaderTaskEither(maybeGetUserOnboarding(user.orcid)) : RM.of(undefined)),
     RM.chainReaderKW(({ message, userOnboarding }) =>
       templatePage({
@@ -256,52 +207,7 @@ const handleTwoUpPageResponse = ({
 
           <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
 
-          <main id="prereviews">
-            ${match(message)
-              .with(
-                'logged-out',
-                () => html`
-                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
-                    <h2 id="notification-banner-title">Success</h2>
-
-                    <p>You have been logged out.</p>
-                  </notification-banner>
-                `,
-              )
-              .with(
-                'logged-in',
-                () => html`
-                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
-                    <h2 id="notification-banner-title">Success</h2>
-
-                    <p>You have been logged in.</p>
-                  </notification-banner>
-                `,
-              )
-              .with(
-                'blocked',
-                () => html`
-                  <notification-banner aria-labelledby="notification-banner-title" type="failure" role="alert">
-                    <h2 id="notification-banner-title">Access denied</h2>
-
-                    <p>You are not allowed to log in.</p>
-                  </notification-banner>
-                `,
-              )
-              .with(
-                'contact-email-verified',
-                () => html`
-                  <notification-banner aria-labelledby="notification-banner-title" role="alert">
-                    <h2 id="notification-banner-title">Success</h2>
-
-                    <p>Your email address has been verified.</p>
-                  </notification-banner>
-                `,
-              )
-              .with(undefined, () => '')
-              .exhaustive()}
-            ${response.main}
-          </main>
+          <main id="prereviews">${message ? showFlashMessage(message) : ''} ${response.main}</main>
         `,
         skipLinks: [
           [html`Skip to preprint details`, '#preprint-details'],
@@ -354,6 +260,51 @@ const handleLogInResponse = ({
     RM.ichainW(requestAuthorizationCode('/authenticate')),
     R.local(addRedirectUri()),
   )
+
+function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>) {
+  return match(message)
+    .with(
+      'logged-out',
+      () => html`
+        <notification-banner aria-labelledby="notification-banner-title" role="alert">
+          <h2 id="notification-banner-title">Success</h2>
+
+          <p>You have been logged out.</p>
+        </notification-banner>
+      `,
+    )
+    .with(
+      'logged-in',
+      () => html`
+        <notification-banner aria-labelledby="notification-banner-title" role="alert">
+          <h2 id="notification-banner-title">Success</h2>
+
+          <p>You have been logged in.</p>
+        </notification-banner>
+      `,
+    )
+    .with(
+      'blocked',
+      () => html`
+        <notification-banner aria-labelledby="notification-banner-title" type="failure" role="alert">
+          <h2 id="notification-banner-title">Access denied</h2>
+
+          <p>You are not allowed to log in.</p>
+        </notification-banner>
+      `,
+    )
+    .with(
+      'contact-email-verified',
+      () => html`
+        <notification-banner aria-labelledby="notification-banner-title" role="alert">
+          <h2 id="notification-banner-title">Success</h2>
+
+          <p>Your email address has been verified.</p>
+        </notification-banner>
+      `,
+    )
+    .exhaustive()
+}
 
 function addRedirectUri<R extends OrcidOAuthEnv & PublicUrlEnv>(): (env: R) => R & OAuthEnv {
   return env => ({
