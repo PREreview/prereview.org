@@ -318,6 +318,7 @@ export const getPrereviewsForPreprintFromZenodo = flow(
 export const addAuthorToRecordOnZenodo = (
   id: number,
   user: User,
+  persona: 'public' | 'pseudonym',
 ): ReaderTaskEither<ZenodoAuthenticatedEnv, 'unavailable', void> =>
   pipe(
     getDeposition(id),
@@ -327,7 +328,10 @@ export const addAuthorToRecordOnZenodo = (
       updateDeposition(
         {
           ...deposition.metadata,
-          creators: pipe(deposition.metadata.creators, A.appendW({ name: user.name, orcid: user.orcid })),
+          creators: pipe(
+            deposition.metadata.creators,
+            A.appendW(persona === 'public' ? { name: user.name, orcid: user.orcid } : { name: user.pseudonym }),
+          ),
         },
         deposition,
       ),

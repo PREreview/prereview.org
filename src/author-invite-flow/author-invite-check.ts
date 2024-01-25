@@ -29,12 +29,18 @@ export interface Prereview {
 }
 
 export interface AddAuthorToPrereviewEnv {
-  addAuthorToPrereview: (prereview: number, author: User) => TE.TaskEither<'unavailable', void>
+  addAuthorToPrereview: (
+    prereview: number,
+    author: User,
+    persona: 'public' | 'pseudonym',
+  ) => TE.TaskEither<'unavailable', void>
 }
 
-const addAuthorToPrereview = (prereview: number, author: User) =>
+const addAuthorToPrereview = (prereview: number, author: User, persona: 'public' | 'pseudonym') =>
   RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ addAuthorToPrereview }: AddAuthorToPrereviewEnv) => addAuthorToPrereview(prereview, author)),
+    RTE.fromTaskEitherK(({ addAuthorToPrereview }: AddAuthorToPrereviewEnv) =>
+      addAuthorToPrereview(prereview, author, persona),
+    ),
   )
 
 export interface GetPrereviewEnv {
@@ -108,7 +114,7 @@ const handlePublishForm = ({ invite, inviteId, user }: { invite: AssignedAuthorI
     saveAuthorInvite(inviteId, { ...invite, status: 'completed' }),
     RTE.chainW(() =>
       pipe(
-        addAuthorToPrereview(invite.review, user),
+        addAuthorToPrereview(invite.review, user, 'public'),
         RTE.orElseFirstW(error =>
           match(error)
             .with('unavailable', () => saveAuthorInvite(inviteId, invite))
