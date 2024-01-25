@@ -137,7 +137,7 @@ export function handleResponse(response: {
     .exhaustive()
 }
 
-const handlePageResponse = ({
+export const handlePageResponse = ({
   response,
   user,
 }: {

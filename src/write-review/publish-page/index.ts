@@ -4,23 +4,26 @@ import * as E from 'fp-ts/Either'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
+import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import type * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { maybeGetContactEmailAddress } from '../../contact-email-address'
 import { requiresVerifiedEmailAddress } from '../../feature-flags'
-import { deleteFlashMessage, getFlashMessage } from '../../flash-message'
+import { getFlashMessage } from '../../flash-message'
 import { type Html, fixHeadingLevels, html, plainText, sendHtml } from '../../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware'
-import { page } from '../../page'
+import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page } from '../../page'
 import { type PreprintTitle, getPreprintTitle } from '../../preprint'
+import { handlePageResponse } from '../../response'
 import { writeReviewEnterEmailAddressMatch, writeReviewMatch, writeReviewPublishedMatch } from '../../routes'
 import type { EmailAddress } from '../../types/email-address'
 import type { NonEmptyString } from '../../types/string'
 import { type User, getUser } from '../../user'
+import type { GetUserOnboardingEnv } from '../../user-onboarding'
 import { type CompletedForm, CompletedFormC } from '../completed-form'
-import { type Form, deleteForm, getForm, redirectToNextForm, saveForm } from '../form'
+import { type Form, type FormStoreEnv, deleteForm, getForm, redirectToNextForm, saveForm } from '../form'
 import { storeInformationForWriteReviewPublishedPage } from '../published-review'
 import { FlashMessageD, getCompetingInterests, publishForm } from './publish-form'
 
@@ -89,6 +92,15 @@ const decideNextStep = (state: {
   user: User
 }) =>
   match(state)
+    .returnType<
+      RM.ReaderMiddleware<
+        GetUserOnboardingEnv & FathomEnv & PhaseEnv & TemplatePageEnv & FormStoreEnv & PublishPrereviewEnv & SessionEnv,
+        StatusOpen,
+        ResponseEnded,
+        never,
+        void
+      >
+    >()
     .with(
       P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
       ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm)),
@@ -147,24 +159,23 @@ const handlePublishForm = ({
     RM.orElseW(() => showFailureMessage(user)),
   )
 
-const showPublishForm = flow(
-  RM.fromReaderK(
-    ({
-      form,
-      message,
-      preprint,
-      user,
-    }: {
-      form: CompletedForm
-      message?: D.TypeOf<typeof FlashMessageD>
-      preprint: PreprintTitle
-      user: User
-    }) => publishForm(preprint, form, user, message),
-  ),
-  RM.ichainFirst(() => RM.status(Status.OK)),
-  RM.ichainFirst(RM.fromMiddlewareK(() => deleteFlashMessage)),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showPublishForm = ({
+  form,
+  message,
+  preprint,
+  user,
+}: {
+  form: CompletedForm
+  message?: D.TypeOf<typeof FlashMessageD>
+  preprint: PreprintTitle
+  user: User
+}) =>
+  pipe(
+    RM.of({}),
+    RM.apS('user', RM.of(user)),
+    RM.apS('response', RM.of(publishForm(preprint, form, user, message))),
+    RM.ichainW(handlePageResponse),
+  )
 
 const publishPrereview = (newPrereview: NewPrereview) =>
   RTE.asksReaderTaskEither(
