@@ -1,6 +1,6 @@
 import { type Locator, test as baseTest } from '@playwright/test'
 import path from 'path'
-import { html, plainText } from '../src/html'
+import { html } from '../src/html'
 import { page as templatePage } from '../src/page'
 import type { PageResponse, StreamlinePageResponse } from '../src/response'
 
@@ -34,7 +34,7 @@ export const test = baseTest.extend<ShowPage>({
 
       const pageHtml = templatePage({
         content,
-        title: plainText('Something'),
+        title: response.title,
         js: response.js,
       })({})
 
