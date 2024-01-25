@@ -17,7 +17,13 @@ import { match } from 'ts-pattern'
 import { aboutUs } from './about-us'
 import type { ConfigEnv } from './app'
 import { type OpenAuthorInvite, createAuthorInvite } from './author-invite'
-import { authorInvite, authorInviteCheck, authorInvitePublished, authorInviteStart } from './author-invite-flow'
+import {
+  authorInvite,
+  authorInviteCheck,
+  authorInvitePersona,
+  authorInvitePublished,
+  authorInviteStart,
+} from './author-invite-flow'
 import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
@@ -103,6 +109,7 @@ import {
   aboutUsMatch,
   authorInviteCheckMatch,
   authorInviteMatch,
+  authorInvitePersonaMatch,
   authorInvitePublishedMatch,
   authorInviteStartMatch,
   changeCareerStageMatch,
@@ -1227,6 +1234,36 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.of({ id }),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(authorInviteStart)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getAuthorInvite: withEnv(getAuthorInvite, env),
+          getPrereview: withEnv(
+            flow(
+              getPrereviewFromZenodo,
+              RTE.mapLeft(() => 'unavailable' as const),
+            ),
+            env,
+          ),
+          saveAuthorInvite: withEnv(saveAuthorInvite, env),
+        })),
+      ),
+    ),
+    pipe(
+      authorInvitePersonaMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS('user', maybeGetUser),
+          RM.apS(
+            'body',
+            RM.gets(c => c.getBody()),
+          ),
+          RM.apS('method', RM.fromMiddleware(getMethod)),
+          RM.bindW('response', RM.fromReaderTaskK(authorInvitePersona)),
           RM.ichainW(handleResponse),
         ),
       ),

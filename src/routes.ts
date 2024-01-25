@@ -355,6 +355,13 @@ export const authorInviteStartMatch = pipe(
   P.then(P.end),
 )
 
+export const authorInvitePersonaMatch = pipe(
+  P.lit('author-invite'),
+  P.then(type('id', UuidC)),
+  P.then(P.lit('choose-name')),
+  P.then(P.end),
+)
+
 export const authorInviteCheckMatch = pipe(
   P.lit('author-invite'),
   P.then(type('id', UuidC)),
