@@ -16,7 +16,7 @@ import {
 import type { Html } from '../../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
-import { authorInviteMatch, authorInvitePublishedMatch } from '../../routes'
+import { authorInviteMatch, authorInvitePersonaMatch, authorInvitePublishedMatch } from '../../routes'
 import type { User } from '../../user'
 import { checkPage } from './check-page'
 import { failureMessage } from './failure-message'
@@ -81,13 +81,19 @@ export const authorInviteCheck = ({
     ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.let('method', () => method),
-    RTE.let('persona', ({ invite }) => invite.persona ?? 'public'),
+    RTE.bindW(
+      'persona',
+      RTE.fromNullableK('no-persona' as const)(({ invite }) => invite.persona),
+    ),
     RTE.matchEW(
       error =>
         RT.of(
           match(error)
             .with('already-completed', () =>
               RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
+            )
+            .with('no-persona', () =>
+              RedirectResponse({ location: format(authorInvitePersonaMatch.formatter, { id }) }),
             )
             .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))

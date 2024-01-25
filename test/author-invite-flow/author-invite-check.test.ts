@@ -7,7 +7,12 @@ import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow'
 import type { AddAuthorToPrereviewEnv, GetPrereviewEnv } from '../../src/author-invite-flow/check-page'
-import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch } from '../../src/routes'
+import {
+  authorInviteCheckMatch,
+  authorInviteMatch,
+  authorInvitePersonaMatch,
+  authorInvitePublishedMatch,
+} from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
@@ -16,9 +21,15 @@ describe('authorInvite', () => {
     describe('when the form is submitted', () => {
       test.prop([
         fc.uuid(),
-        fc
-          .user()
-          .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.user().chain(user =>
+          fc.tuple(
+            fc.constant(user),
+            fc.assignedAuthorInvite({
+              orcid: fc.constant(user.orcid),
+              persona: fc.constantFrom('public', 'pseudonym'),
+            }),
+          ),
+        ),
         fc.record({
           preprint: fc.record({
             language: fc.languageCode(),
@@ -55,9 +66,15 @@ describe('authorInvite', () => {
 
       test.prop([
         fc.uuid(),
-        fc
-          .user()
-          .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.user().chain(user =>
+          fc.tuple(
+            fc.constant(user),
+            fc.assignedAuthorInvite({
+              orcid: fc.constant(user.orcid),
+              persona: fc.constantFrom('public', 'pseudonym'),
+            }),
+          ),
+        ),
         fc.record({
           preprint: fc.record({
             language: fc.languageCode(),
@@ -88,7 +105,15 @@ describe('authorInvite', () => {
 
     test.prop([
       fc.uuid(),
-      fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+      fc.user().chain(user =>
+        fc.tuple(
+          fc.constant(user),
+          fc.assignedAuthorInvite({
+            orcid: fc.constant(user.orcid),
+            persona: fc.constantFrom('public', 'pseudonym'),
+          }),
+        ),
+      ),
       fc.string().filter(method => method !== 'POST'),
       fc.record({
         preprint: fc.record({
@@ -118,6 +143,39 @@ describe('authorInvite', () => {
       })
       expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
       expect(getPrereview).toHaveBeenCalledWith(invite.review)
+    })
+
+    test.prop([
+      fc.uuid(),
+      fc.user().chain(user =>
+        fc.tuple(
+          fc.constant(user),
+          fc.assignedAuthorInvite({
+            orcid: fc.constant(user.orcid),
+            persona: fc.constant(undefined),
+          }),
+        ),
+      ),
+      fc.string().filter(method => method !== 'POST'),
+      fc.record({
+        preprint: fc.record({
+          language: fc.languageCode(),
+          title: fc.html(),
+        }),
+      }),
+    ])('when the invite is incomplete', async (inviteId, [user, invite], method, prereview) => {
+      const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
+        addAuthorToPrereview: shouldNotBeCalled,
+        getAuthorInvite: () => TE.right(invite),
+        getPrereview: () => TE.right(prereview),
+        saveAuthorInvite: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(authorInvitePersonaMatch.formatter, { id: inviteId }),
+      })
     })
 
     test.prop([
