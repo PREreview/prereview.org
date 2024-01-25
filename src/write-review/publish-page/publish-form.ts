@@ -80,12 +80,22 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
 
           <div class="summary-card">
             <div>
-              <h2>Your details</h2>
+              <h2>
+                ${match(review.moreAuthors)
+                  .with('yes', () => 'Author details')
+                  .with('no', 'yes-private', () => 'Your details')
+                  .exhaustive()}
+              </h2>
             </div>
 
             <dl class="summary-list">
               <div>
-                <dt>Published name</dt>
+                <dt>
+                  ${match(review.moreAuthors)
+                    .with('yes', () => 'Your published name')
+                    .with('no', 'yes-private', () => 'Published name')
+                    .exhaustive()}
+                </dt>
                 <dd>${displayAuthor(review.persona === 'public' ? user : { name: user.pseudonym })}</dd>
                 <dd>
                   <a href="${format(writeReviewPersonaMatch.formatter, { id: preprint.id })}"

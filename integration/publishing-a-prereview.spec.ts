@@ -665,6 +665,8 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn).extend(willPu
     await page.getByLabel('I’m following the Code of Conduct').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
+    await expect(page.getByRole('main')).toContainText('Your published name Josiah Carberry')
+
     fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
