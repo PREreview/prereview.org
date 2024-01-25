@@ -3,7 +3,7 @@ import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { html, plainText } from '../../html'
 import { StreamlinePageResponse } from '../../response'
-import { authorInviteCheckMatch, profileMatch } from '../../routes'
+import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../routes'
 import { isPseudonym } from '../../types/pseudonym'
 import type { User } from '../../user'
 
@@ -32,6 +32,11 @@ export function checkPage({
               <div>
                 <dt>Published name</dt>
                 <dd>${displayAuthor(persona === 'public' ? user : { name: user.pseudonym })}</dd>
+                <dd>
+                  <a href="${format(authorInvitePersonaMatch.formatter, { id: inviteId })}"
+                    >Change <span class="visually-hidden">name</span></a
+                  >
+                </dd>
               </div>
             </dl>
           </div>

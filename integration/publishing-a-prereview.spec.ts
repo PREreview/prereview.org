@@ -750,7 +750,7 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn).extend(willPu
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
     await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
-    await page.goto(`${page.url()}/../choose-name`)
+    await page.getByRole('link', { name: 'Change name' }).click()
     await page.getByLabel('Orange Panda').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -3199,7 +3199,7 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn).extend(willPu
     await page.setContent(getLastMailjetEmailBody(fetch))
     await page.getByRole('link', { name: 'Respond' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.goto(`${page.url()}/../choose-name`)
+    await page.getByRole('link', { name: 'Change name' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
