@@ -3,12 +3,11 @@ import * as TE from 'fp-ts/TaskEither'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { authorInvitePublished } from '../../src/author-invite-flow'
-import { html, plainText } from '../../src/html'
-import { page as templatePage } from '../../src/page'
+import { html } from '../../src/html'
 import type { Pseudonym } from '../../src/types/pseudonym'
 import { expect, test } from '../base'
 
-test('content looks right', async ({ page }) => {
+test('content looks right', async ({ showPage }) => {
   const response = await authorInvitePublished({
     id: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid,
     user: {
@@ -32,14 +31,7 @@ test('content looks right', async ({ page }) => {
     throw new Error('incorrect page response')
   }
 
-  const content = html`<main id="${response.skipToLabel}">${response.main}</main>`
+  const content = await showPage(response)
 
-  const pageHtml = templatePage({
-    content,
-    title: plainText('Something'),
-  })({})
-
-  await page.setContent(pageHtml.toString())
-
-  await expect(page.getByRole('main')).toHaveScreenshot()
+  await expect(content).toHaveScreenshot()
 })
