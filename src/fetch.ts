@@ -7,6 +7,10 @@ export function useStaleCache<E extends F.FetchEnv>(): (env: E) => E {
   return env => ({ ...env, fetch: (url, init) => env.fetch(url, { cache: 'force-cache', ...init }) })
 }
 
+export function reloadCache<E extends F.FetchEnv>(): (env: E) => E {
+  return env => ({ ...env, fetch: (url, init) => env.fetch(url, { ...init, cache: 'reload' }) })
+}
+
 export function revalidateIfStale<E extends F.FetchEnv>(): (env: E) => E {
   const openRequests = new Set<string>()
 

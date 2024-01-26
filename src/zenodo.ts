@@ -41,7 +41,7 @@ import {
   uploadFile,
 } from 'zenodo-ts'
 import { getClubByName, getClubName } from './club-details'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
+import { reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
 import type { RecentPrereview } from './home'
 import { plainText, sanitizeHtml } from './html'
 import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
@@ -313,6 +313,12 @@ export const getPrereviewsForPreprintFromZenodo = flow(
     ),
   ),
   RTE.mapLeft(() => 'unavailable' as const),
+)
+
+export const refreshPrereview = flow(
+  getPrereviewFromZenodo,
+  RTE.chainFirstW(review => getPrereviewsForPreprintFromZenodo(review.preprint.id)),
+  RTE.local(reloadCache()),
 )
 
 export const addAuthorToRecordOnZenodo = (

@@ -3,8 +3,10 @@ import * as P from 'fp-ts-routing'
 import { concatAll } from 'fp-ts/Monoid'
 import * as O from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
+import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
+import * as T from 'fp-ts/Task'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
@@ -184,7 +186,7 @@ import type { SlackUserId } from './slack-user-id'
 import { trainings } from './trainings'
 import type { PreprintId } from './types/preprint-id'
 import { type GenerateUuidEnv, generateUuid } from './types/uuid'
-import { type GetUserEnv, maybeGetUser } from './user'
+import { type GetUserEnv, type User, maybeGetUser } from './user'
 import type { GetUserOnboardingEnv } from './user-onboarding'
 import {
   type NewPrereview,
@@ -221,6 +223,7 @@ import {
   getPrereviewsForPreprintFromZenodo,
   getPrereviewsForProfileFromZenodo,
   getRecentPrereviewsFromZenodo,
+  refreshPrereview,
 } from './zenodo'
 
 const isSlackUser = flow(
@@ -257,6 +260,14 @@ export type RouterEnv = ConfigEnv &
 const getRapidPrereviews = (id: PreprintId) =>
   isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])
 
+const triggerRefreshOfPrereview = (id: number) =>
+  RIO.asks((env: Parameters<ReturnType<typeof refreshPrereview>>[0]) => {
+    void pipe(
+      RTE.fromTask(T.delay(2000)(T.of(undefined))),
+      RTE.chainW(() => refreshPrereview(id)),
+    )(env)()
+  })
+
 const publishPrereview = (newPrereview: NewPrereview) =>
   pipe(
     createRecordOnZenodo(newPrereview),
@@ -285,6 +296,13 @@ const publishPrereview = (newPrereview: NewPrereview) =>
         ),
       ),
     ),
+    RTE.chainFirstReaderIOKW(([, review]) => triggerRefreshOfPrereview(review)),
+  )
+
+const addAuthorToPrereview = (id: number, user: User, persona: 'public' | 'pseudonym') =>
+  pipe(
+    addAuthorToRecordOnZenodo(id, user, persona),
+    RTE.chainFirstReaderIOKW(() => triggerRefreshOfPrereview(id)),
   )
 
 const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded, never, void>> = pipe(
@@ -1304,7 +1322,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          addAuthorToPrereview: withEnv(addAuthorToRecordOnZenodo, env),
+          addAuthorToPrereview: withEnv(addAuthorToPrereview, env),
           getAuthorInvite: withEnv(getAuthorInvite, env),
           getPrereview: withEnv(
             flow(
