@@ -47,7 +47,7 @@ const getRecentPrereviews = (page: number) =>
     RTE.chainTaskEitherK(({ getRecentPrereviews }) => getRecentPrereviews(page)),
   )
 
-export const reviews: (currentPage: number) => RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> = flow(
+export const reviewsPage: (currentPage: number) => RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> = flow(
   getRecentPrereviews,
   RTE.matchW(
     error =>

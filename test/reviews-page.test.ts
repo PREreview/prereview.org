@@ -3,11 +3,11 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import * as _ from '../src/reviews'
+import * as _ from '../src/reviews-page'
 import { reviewsMatch } from '../src/routes'
 import * as fc from './fc'
 
-describe('reviews', () => {
+describe('reviewsPage', () => {
   test.prop([
     fc.integer(),
     fc.record({
@@ -27,7 +27,7 @@ describe('reviews', () => {
       TE.right(recentPrereviews),
     )
 
-    const actual = await _.reviews(page)({ getRecentPrereviews })()
+    const actual = await _.reviewsPage(page)({ getRecentPrereviews })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -43,7 +43,7 @@ describe('reviews', () => {
   })
 
   test.prop([fc.integer()])('when the page is not found', async page => {
-    const actual = await _.reviews(page)({ getRecentPrereviews: () => TE.left('not-found') })()
+    const actual = await _.reviewsPage(page)({ getRecentPrereviews: () => TE.left('not-found') })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',
@@ -56,7 +56,7 @@ describe('reviews', () => {
   })
 
   test.prop([fc.integer()])('when the recent reviews cannot be loaded', async page => {
-    const actual = await _.reviews(page)({ getRecentPrereviews: () => TE.left('unavailable') })()
+    const actual = await _.reviewsPage(page)({ getRecentPrereviews: () => TE.left('unavailable') })()
 
     expect(actual).toStrictEqual({
       _tag: 'PageResponse',

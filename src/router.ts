@@ -104,7 +104,7 @@ import { resources } from './resources'
 import { handleResponse } from './response'
 import { reviewAPreprint } from './review-a-preprint'
 import { reviewPage } from './review-page'
-import { reviews } from './reviews'
+import { reviewsPage } from './reviews-page'
 import {
   aboutUsMatch,
   authorInviteCheckMatch,
@@ -322,7 +322,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(reviews(page))),
+          RM.apSW('response', RM.fromReaderTask(reviewsPage(page))),
           RM.ichainW(handleResponse),
         ),
       ),
