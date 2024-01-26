@@ -102,8 +102,8 @@ import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
 import { resources } from './resources'
 import { handleResponse } from './response'
-import { review } from './review'
 import { reviewAPreprint } from './review-a-preprint'
+import { reviewPage } from './review-page'
 import { reviews } from './reviews'
 import {
   aboutUsMatch,
@@ -606,7 +606,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(review(id))),
+          RM.apSW('response', RM.fromReaderTask(reviewPage(id))),
           RM.ichainW(handleResponse),
         ),
       ),

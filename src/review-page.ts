@@ -50,7 +50,7 @@ const getPrereview = (
 ): RTE.ReaderTaskEither<GetPrereviewEnv, 'unavailable' | 'not-found' | 'removed', Prereview> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereview }) => getPrereview(id)))
 
-export const review = (id: number): RT.ReaderTask<GetPrereviewEnv, PageResponse> =>
+export const reviewPage = (id: number): RT.ReaderTask<GetPrereviewEnv, PageResponse> =>
   pipe(
     RTE.Do,
     RTE.let('id', () => id),
