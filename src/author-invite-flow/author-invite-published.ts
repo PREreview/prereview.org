@@ -11,7 +11,7 @@ import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
 import { type Html, html, plainText } from '../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
-import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch } from '../routes'
+import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch, reviewMatch } from '../routes'
 import type { User } from '../user'
 
 export interface Prereview {
@@ -56,7 +56,8 @@ export const authorInvitePublished = ({
         ),
       ),
     ),
-    RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
+    RTE.let('reviewId', ({ invite }) => invite.review),
+    RTE.bindW('review', ({ reviewId }) => getPrereview(reviewId)),
     RTE.matchW(
       error =>
         match(error)
@@ -71,7 +72,7 @@ export const authorInvitePublished = ({
     ),
   )
 
-function publishedPage({ inviteId, review }: { inviteId: Uuid; review: Prereview }) {
+function publishedPage({ inviteId, review, reviewId }: { inviteId: Uuid; review: Prereview; reviewId: number }) {
   return StreamlinePageResponse({
     title: plainText`Name added`,
     main: html`
@@ -87,6 +88,11 @@ function publishedPage({ inviteId, review }: { inviteId: Uuid; review: Prereview
       <h2>What happens next</h2>
 
       <p>You’ll be able to see your name on the PREreview shortly.</p>
+
+      <p>
+        You can close this window, or
+        <a href="${format(reviewMatch.formatter, { id: reviewId })}">see the PREreview</a>.
+      </p>
     `,
     canonical: format(authorInvitePublishedMatch.formatter, { id: inviteId }),
   })
