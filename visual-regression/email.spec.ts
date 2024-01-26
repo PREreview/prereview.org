@@ -17,3 +17,17 @@ test('author-invite HTML looks right', async ({ page }) => {
 
   await expect(page).toHaveScreenshot({ fullPage: true })
 })
+
+test('author-invite text looks right', async ({ page }) => {
+  const email = createAuthorInviteEmail(
+    {
+      name: 'Josiah Carberry' as NonEmptyString,
+      emailAddress: 'jcarberry@example.com' as EmailAddress,
+    },
+    'cda07004-01ec-4d48-8ff0-87bb32c6e81d' as Uuid,
+  )({ publicUrl: new URL('http://example.com') })
+
+  await page.setContent(`<pre>${email.text}</pre>`)
+
+  await expect(page).toHaveScreenshot({ fullPage: true })
+})
