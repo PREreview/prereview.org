@@ -7,7 +7,7 @@ import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-start'
-import { authorInviteCheckMatch, authorInvitePublishedMatch, authorInviteStartMatch } from '../../src/routes'
+import { authorInvitePersonaMatch, authorInvitePublishedMatch, authorInviteStartMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
@@ -38,7 +38,7 @@ describe('authorInviteStart', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: Status.SeeOther,
-          location: format(authorInviteCheckMatch.formatter, { id: inviteId }),
+          location: format(authorInvitePersonaMatch.formatter, { id: inviteId }),
         })
         expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
         expect(getPrereview).toHaveBeenCalledWith(invite.review)

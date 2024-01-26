@@ -6,11 +6,22 @@ import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type GetAuthorInviteEnv, type SaveAuthorInviteEnv, getAuthorInvite, saveAuthorInvite } from '../author-invite'
+import {
+  type AssignedAuthorInvite,
+  type GetAuthorInviteEnv,
+  type SaveAuthorInviteEnv,
+  getAuthorInvite,
+  saveAuthorInvite,
+} from '../author-invite'
 import { type Html, html, plainText } from '../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
-import { authorInviteCheckMatch, authorInvitePublishedMatch, authorInviteStartMatch } from '../routes'
+import {
+  authorInviteCheckMatch,
+  authorInvitePersonaMatch,
+  authorInvitePublishedMatch,
+  authorInviteStartMatch,
+} from '../routes'
 import type { User } from '../user'
 
 export interface Prereview {
@@ -60,15 +71,26 @@ export const authorInviteStart = ({
           .with('wrong-user', () => noPermissionPage)
           .exhaustive(),
       ({ invite }) =>
-        match(invite.status)
-          .with('open', () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }))
-          .with('assigned', () => carryOnPage(id))
-          .with('completed', () => RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }))
+        match(invite)
+          .with({ status: 'open' }, () =>
+            RedirectResponse({ location: format(authorInvitePersonaMatch.formatter, { id }) }),
+          )
+          .with({ status: 'assigned' }, invite => carryOnPage(id, invite))
+          .with({ status: 'completed' }, () =>
+            RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
+          )
           .exhaustive(),
     ),
   )
 
-function carryOnPage(inviteId: Uuid) {
+function nextFormMatch(invite: AssignedAuthorInvite) {
+  return match(invite)
+    .with({ persona: P.optional(undefined) }, () => authorInvitePersonaMatch)
+    .with({ persona: P.string }, () => authorInviteCheckMatch)
+    .exhaustive()
+}
+
+function carryOnPage(inviteId: Uuid, invite: AssignedAuthorInvite) {
   return StreamlinePageResponse({
     title: plainText`Be listed as an author`,
     main: html`
@@ -76,7 +98,7 @@ function carryOnPage(inviteId: Uuid) {
 
       <p>As you’ve already started, we’ll take you to the next step so you can carry&nbsp;on.</p>
 
-      <a href="${format(authorInviteCheckMatch.formatter, { id: inviteId })}" role="button" draggable="false"
+      <a href="${format(nextFormMatch(invite).formatter, { id: inviteId })}" role="button" draggable="false"
         >Continue</a
       >
     `,
