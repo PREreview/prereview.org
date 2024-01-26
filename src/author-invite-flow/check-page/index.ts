@@ -116,12 +116,22 @@ export const authorInviteCheck = ({
     ),
   )
 
-const handlePublishForm = ({ invite, inviteId, user }: { invite: AssignedAuthorInvite; inviteId: Uuid; user: User }) =>
+const handlePublishForm = ({
+  invite,
+  inviteId,
+  persona,
+  user,
+}: {
+  invite: AssignedAuthorInvite
+  inviteId: Uuid
+  persona: 'public' | 'pseudonym'
+  user: User
+}) =>
   pipe(
     saveAuthorInvite(inviteId, { status: 'completed', orcid: invite.orcid, review: invite.review }),
     RTE.chainW(() =>
       pipe(
-        addAuthorToPrereview(invite.review, user, 'public'),
+        addAuthorToPrereview(invite.review, user, persona),
         RTE.orElseFirstW(error =>
           match(error)
             .with('unavailable', () => saveAuthorInvite(inviteId, invite))
