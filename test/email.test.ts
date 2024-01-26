@@ -89,17 +89,24 @@ describe('sendContactEmailAddressVerificationEmailForReview', () => {
   )
 })
 
-test.prop([fc.origin(), fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }), fc.uuid()])(
-  'createAuthorInviteEmail',
-  (publicUrl, person, authorInviteId) => {
-    const actual = _.createAuthorInviteEmail(person, authorInviteId)({ publicUrl })
+test.prop([
+  fc.origin(),
+  fc.record({
+    name: fc.nonEmptyString(),
+    emailAddress: fc.emailAddress(),
+  }),
+  fc.uuid(),
+  fc.record({
+    preprint: fc.preprintTitle(),
+  }),
+])('createAuthorInviteEmail', (publicUrl, person, authorInviteId, newPrereview) => {
+  const actual = _.createAuthorInviteEmail(person, authorInviteId, newPrereview)({ publicUrl })
 
-    expect(actual).toStrictEqual(
-      expect.objectContaining({
-        from: { address: 'help@prereview.org', name: 'PREreview' },
-        to: { address: person.emailAddress, name: person.name },
-        subject: 'Be listed as a PREreview author',
-      }),
-    )
-  },
-)
+  expect(actual).toStrictEqual(
+    expect.objectContaining({
+      from: { address: 'help@prereview.org', name: 'PREreview' },
+      to: { address: person.emailAddress, name: person.name },
+      subject: 'Be listed as a PREreview author',
+    }),
+  )
+})

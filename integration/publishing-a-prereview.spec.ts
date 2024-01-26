@@ -744,7 +744,7 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn).extend(willPu
       })
 
     await page.setContent(getLastMailjetEmailBody(fetch))
-    await page.getByRole('link', { name: 'Respond' }).click()
+    await page.getByRole('link', { name: 'Be listed as an author' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -3199,7 +3199,7 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn).extend(willPu
       })
 
     await page.setContent(getLastMailjetEmailBody(fetch))
-    await page.getByRole('link', { name: 'Respond' }).click()
+    await page.getByRole('link', { name: 'Be listed as an author' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()

@@ -4,7 +4,8 @@ import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import type { Uuid } from 'uuid-ts'
 import type { UnverifiedContactEmailAddress } from './contact-email-address'
-import { type Html, html, mjmlToHtml } from './html'
+import { type Html, html, mjmlToHtml, plainText } from './html'
+import type { PreprintTitle } from './preprint'
 import { type PublicUrlEnv, toUrl } from './public-url'
 import { authorInviteMatch, verifyContactEmailAddressMatch, writeReviewVerifyEmailAddressMatch } from './routes'
 import type { EmailAddress } from './types/email-address'
@@ -95,6 +96,7 @@ export const sendContactEmailAddressVerificationEmailForReview = (
 export const createAuthorInviteEmail = (
   person: { name: NonEmptyString; emailAddress: EmailAddress },
   authorInviteId: Uuid,
+  newPrereview: { preprint: PreprintTitle },
 ): R.Reader<PublicUrlEnv, Email> =>
   pipe(
     toUrl(authorInviteMatch.formatter, { id: authorInviteId }),
@@ -107,7 +109,12 @@ export const createAuthorInviteEmail = (
           text: `
 Hi ${person.name},
 
-You’ve been invited to appear as an author on a PREreview. Respond by going to ${inviteUrl.href}
+Thank you for contributing to a recent review of “${plainText(newPrereview.preprint.title).toString()}” published on PREreview.org!
+
+You’ve been invited to appear as an author on the PREreview. You can be listed by going to ${inviteUrl.href}
+
+All the best,
+PREreview
 `.trim(),
           html: mjmlToHtml(html`
             <mjml>
@@ -115,8 +122,17 @@ You’ve been invited to appear as an author on a PREreview. Respond by going to
                 <mj-section>
                   <mj-column>
                     <mj-text>Hi ${person.name},</mj-text>
-                    <mj-text>You’ve been invited to appear as an author on a PREreview.</mj-text>
-                    <mj-button href="${inviteUrl.href}" target="_self">Respond</mj-button>
+                    <mj-text
+                      >Thank you for contributing to a recent review of “${newPrereview.preprint.title}” published on
+                      <a href="https://prereview.org/">PREreview.org</a>!
+                    </mj-text>
+                    <mj-text>You’ve been invited to appear as an author on the PREreview:</mj-text>
+                    <mj-button href="${inviteUrl.href}" target="_self">Be listed as an author</mj-button>
+                    <mj-text>
+                      If you have any questions, please let us know at
+                      <a href="mailto:help@prereview.org">help@prereview.org</a>.
+                    </mj-text>
+                    <mj-text>All the best,<br />PREreview</mj-text>
                   </mj-column>
                 </mj-section>
               </mj-body>
