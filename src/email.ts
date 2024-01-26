@@ -104,7 +104,11 @@ export const createAuthorInviteEmail = (
           from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
           to: { address: person.emailAddress, name: person.name },
           subject: 'Be listed as a PREreview author',
-          text: `Hi ${person.name},\n\nYou’ve been invited to appear as an author on a PREreview. Respond by going to ${inviteUrl.href}`,
+          text: `
+Hi ${person.name},
+
+You’ve been invited to appear as an author on a PREreview. Respond by going to ${inviteUrl.href}
+`.trim(),
           html: mjmlToHtml(html`
             <mjml>
               <mj-body>
