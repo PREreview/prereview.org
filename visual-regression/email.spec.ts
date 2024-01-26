@@ -14,6 +14,7 @@ test('author-invite HTML looks right', async ({ page }) => {
     },
     'cda07004-01ec-4d48-8ff0-87bb32c6e81d' as Uuid,
     {
+      author: 'Jean-Baptiste Botul',
       preprint: {
         id: {
           type: 'biorxiv',
@@ -38,6 +39,7 @@ test('author-invite text looks right', async ({ page }) => {
     },
     'cda07004-01ec-4d48-8ff0-87bb32c6e81d' as Uuid,
     {
+      author: 'Jean-Baptiste Botul',
       preprint: {
         id: {
           type: 'biorxiv',

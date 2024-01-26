@@ -96,7 +96,7 @@ export const sendContactEmailAddressVerificationEmailForReview = (
 export const createAuthorInviteEmail = (
   person: { name: NonEmptyString; emailAddress: EmailAddress },
   authorInviteId: Uuid,
-  newPrereview: { preprint: PreprintTitle },
+  newPrereview: { author: string; preprint: PreprintTitle },
 ): R.Reader<PublicUrlEnv, Email> =>
   pipe(
     toUrl(authorInviteMatch.formatter, { id: authorInviteId }),
@@ -111,7 +111,7 @@ Hi ${person.name},
 
 Thank you for contributing to a recent review of “${plainText(newPrereview.preprint.title).toString()}” published on PREreview.org!
 
-You’ve been invited to appear as an author on the PREreview. You can be listed by going to ${inviteUrl.href}
+${newPrereview.author} has invited you to appear as an author on the PREreview. You can be listed by going to ${inviteUrl.href}
 
 All the best,
 PREreview
@@ -126,7 +126,7 @@ PREreview
                       >Thank you for contributing to a recent review of “${newPrereview.preprint.title}” published on
                       <a href="https://prereview.org/">PREreview.org</a>!
                     </mj-text>
-                    <mj-text>You’ve been invited to appear as an author on the PREreview:</mj-text>
+                    <mj-text>${newPrereview.author} has invited you to appear as an author on the PREreview:</mj-text>
                     <mj-button href="${inviteUrl.href}" target="_self">Be listed as an author</mj-button>
                     <mj-text>
                       If you have any questions, please let us know at

@@ -271,7 +271,15 @@ const publishPrereview = (newPrereview: NewPrereview) =>
         RTE.traverseArray(otherAuthor =>
           pipe(
             createAuthorInvite({ status: 'open', review }),
-            RTE.chainReaderKW(authorInvite => createAuthorInviteEmail(otherAuthor, authorInvite, newPrereview)),
+            RTE.chainReaderKW(authorInvite =>
+              createAuthorInviteEmail(otherAuthor, authorInvite, {
+                ...newPrereview,
+                author: match(newPrereview.persona)
+                  .with('public', () => newPrereview.user.name)
+                  .with('pseudonym', () => newPrereview.user.pseudonym)
+                  .exhaustive(),
+              }),
+            ),
             RTE.chainW(sendEmail),
           ),
         ),

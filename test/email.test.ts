@@ -97,6 +97,7 @@ test.prop([
   }),
   fc.uuid(),
   fc.record({
+    author: fc.string(),
     preprint: fc.preprintTitle(),
   }),
 ])('createAuthorInviteEmail', (publicUrl, person, authorInviteId, newPrereview) => {
