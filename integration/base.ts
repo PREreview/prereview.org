@@ -1148,6 +1148,23 @@ export const willPublishAReview: Fixtures<
         }),
         status: Status.Accepted,
       })
+      .getOnce(
+        {
+          name: 'reload-review',
+          url: 'http://zenodo.test/api/records/1055806',
+          functionMatcher: (_, req) => req.cache === 'reload',
+        },
+        { status: Status.ServiceUnavailable },
+      )
+      .getOnce(
+        {
+          name: 'reload-preprint-reviews',
+          url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+          query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+          functionMatcher: (_, req) => req.cache === 'reload',
+        },
+        { status: Status.ServiceUnavailable },
+      )
 
     await use(fetch)
   },
