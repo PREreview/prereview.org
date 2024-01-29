@@ -2,8 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/connect-orcid'
-import { connectOrcid } from '../../src/connect-orcid/connect-orcid'
+import * as _ from '../../src/connect-orcid/connect-orcid'
 import type { CanConnectOrcidProfileEnv } from '../../src/feature-flags'
 import { connectOrcidMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -31,7 +30,7 @@ describe('connectOrcid', () => {
     })
 
     test.prop([fc.user()])('when ORCID cannot be connected', async user => {
-      const actual = await connectOrcid({ user })({
+      const actual = await _.connectOrcid({ user })({
         canConnectOrcidProfile: () => false,
       })()
 
@@ -47,7 +46,7 @@ describe('connectOrcid', () => {
   })
 
   test('when the user is not logged in', async () => {
-    const actual = await connectOrcid({})({
+    const actual = await _.connectOrcid({})({
       canConnectOrcidProfile: shouldNotBeCalled,
     })()
 
