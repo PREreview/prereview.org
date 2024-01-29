@@ -30,6 +30,7 @@ import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
+import { connectOrcid } from './connect-orcid'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from './connect-slack'
 import { disconnectSlack } from './disconnect-slack'
 import { ediaStatement } from './edia-statement'
@@ -40,10 +41,12 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from './email'
+import type { CanConnectOrcidProfileEnv } from './feature-flags'
 import { getFlashMessage } from './flash-message'
 import { funding } from './funding'
 import { home } from './home'
 import { howToUse } from './how-to-use'
+import { havingProblemsPage } from './http-error'
 import * as Keyv from './keyv'
 import {
   createPrereviewOnLegacyPrereview,
@@ -104,6 +107,8 @@ import {
   clubProfileMatch,
   clubsMatch,
   codeOfConductMatch,
+  connectOrcidMatch,
+  connectOrcidStartMatch,
   connectSlackCodeMatch,
   connectSlackErrorMatch,
   connectSlackMatch,
@@ -224,6 +229,7 @@ const withEnv =
     f(...a)(env)
 
 export type RouterEnv = ConfigEnv &
+  CanConnectOrcidProfileEnv &
   DoesPreprintExistEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
@@ -494,6 +500,28 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       orcidErrorMatch.parser,
       P.map(({ error }) => authenticateError(error)),
+    ),
+    pipe(
+      connectOrcidMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(connectOrcid)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+    ),
+    pipe(
+      connectOrcidStartMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apS('response', RM.of(havingProblemsPage)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       connectSlackMatch.parser,

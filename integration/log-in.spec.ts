@@ -6,6 +6,7 @@ import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import {
   areLoggedIn,
+  canConnectOrcidProfile,
   canLogIn,
   expect,
   hasAVerifiedEmailAddress,
@@ -112,6 +113,16 @@ test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ 
 
   await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
 })
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
+  'can connect my ORCID profile',
+  async ({ page }) => {
+    await page.getByRole('link', { name: 'My details' }).click()
+    await page.goto('/connect-orcid')
+
+    await page.getByRole('button', { name: 'Start now' }).click()
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
   'can connect my Slack Community account',

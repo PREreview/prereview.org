@@ -29,7 +29,11 @@ import {
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { type ConfigEnv, app } from '../src/app'
-import type { CanInviteAuthorsEnv, RequiresVerifiedEmailAddressEnv } from '../src/feature-flags'
+import type {
+  CanConnectOrcidProfileEnv,
+  CanInviteAuthorsEnv,
+  RequiresVerifiedEmailAddressEnv,
+} from '../src/feature-flags'
 import type {
   AuthorInviteStoreEnv,
   ContactEmailAddressStoreEnv,
@@ -69,6 +73,7 @@ interface AppFixtures {
   requiresVerifiedEmailAddress: RequiresVerifiedEmailAddressEnv['requiresVerifiedEmailAddress']
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
+  canConnectOrcidProfile: CanConnectOrcidProfileEnv['canConnectOrcidProfile']
   canInviteAuthors: CanInviteAuthorsEnv['canInviteAuthors']
 }
 
@@ -84,6 +89,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     }
 
     await use(`http://localhost:${address.port}`)
+  },
+  canConnectOrcidProfile: async ({}, use) => {
+    await use(() => false)
   },
   canInviteAuthors: async ({}, use) => {
     await use(() => false)
@@ -842,6 +850,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       wasPrereviewRemoved,
       requiresVerifiedEmailAddress,
       authorInviteStore,
+      canConnectOrcidProfile,
       canInviteAuthors,
     },
     use,
@@ -849,6 +858,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     const server = app({
       allowSiteCrawlers: true,
       authorInviteStore,
+      canConnectOrcidProfile,
       canInviteAuthors,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
@@ -1167,6 +1177,16 @@ export const willPublishAReview: Fixtures<
       )
 
     await use(fetch)
+  },
+}
+
+export const canConnectOrcidProfile: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canConnectOrcidProfile'>
+> = {
+  canConnectOrcidProfile: async ({}, use) => {
+    await use(() => true)
   },
 }
 

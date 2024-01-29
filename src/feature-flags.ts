@@ -8,6 +8,13 @@ export interface CanInviteAuthorsEnv {
 export const canInviteAuthors = (user: User) =>
   R.asks(({ canInviteAuthors }: CanInviteAuthorsEnv) => canInviteAuthors(user))
 
+export interface CanConnectOrcidProfileEnv {
+  canConnectOrcidProfile: (user: User) => boolean
+}
+
+export const canConnectOrcidProfile = (user: User) =>
+  R.asks(({ canConnectOrcidProfile }: CanConnectOrcidProfileEnv) => canConnectOrcidProfile(user))
+
 export interface RequiresVerifiedEmailAddressEnv {
   requiresVerifiedEmailAddress: (user: User) => boolean
 }
