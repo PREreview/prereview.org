@@ -44,31 +44,7 @@ import { getFlashMessage } from './flash-message'
 import { funding } from './funding'
 import { home } from './home'
 import { howToUse } from './how-to-use'
-import {
-  deleteCareerStage,
-  deleteContactEmailAddress,
-  deleteLanguages,
-  deleteLocation,
-  deleteResearchInterests,
-  deleteSlackUserId,
-  getAuthorInvite,
-  getCareerStage,
-  getContactEmailAddress,
-  getLanguages,
-  getLocation,
-  getResearchInterests,
-  getSlackUserId,
-  isOpenForRequests,
-  saveAuthorInvite,
-  saveCareerStage,
-  saveContactEmailAddress,
-  saveLanguages,
-  saveLocation,
-  saveOpenForRequests,
-  saveResearchInterests,
-  saveSlackUserId,
-  saveUserOnboarding,
-} from './keyv'
+import * as Keyv from './keyv'
 import {
   createPrereviewOnLegacyPrereview,
   getPseudonymFromLegacyPrereview,
@@ -227,7 +203,7 @@ import {
 } from './zenodo'
 
 const isSlackUser = flow(
-  getSlackUserId,
+  Keyv.getSlackUserId,
   RTE.map(() => true),
   RTE.orElseW(error =>
     match(error)
@@ -238,7 +214,7 @@ const isSlackUser = flow(
 )
 
 const getSlackUser = flow(
-  getSlackUserId,
+  Keyv.getSlackUserId,
   RTE.chainW(({ userId }) => getUserFromSlack(userId)),
 )
 
@@ -550,7 +526,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           saveSlackUserId: withEnv(
             (orcid: Orcid, slackUser: SlackUserId) =>
               pipe(
-                saveSlackUserId(orcid, slackUser),
+                Keyv.saveSlackUserId(orcid, slackUser),
                 RTE.chainFirstW(() => addOrcidToSlackProfile(slackUser, orcid)),
               ),
             env,
@@ -587,12 +563,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
                 RTE.of(orcid),
                 RTE.chainFirst(
                   flow(
-                    getSlackUserId,
+                    Keyv.getSlackUserId,
                     RTE.chainW(removeOrcidFromSlackProfile),
                     RTE.orElseW(() => RTE.right(undefined)),
                   ),
                 ),
-                RTE.chainW(deleteSlackUserId),
+                RTE.chainW(Keyv.deleteSlackUserId),
               ),
             env,
           ),
@@ -650,14 +626,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           canConnectSlack: () => true,
-          getCareerStage: withEnv(getCareerStage, env),
-          getContactEmailAddress: withEnv(getContactEmailAddress, env),
-          getLanguages: withEnv(getLanguages, env),
-          getLocation: withEnv(getLocation, env),
-          getResearchInterests: withEnv(getResearchInterests, env),
+          getCareerStage: withEnv(Keyv.getCareerStage, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
+          getLanguages: withEnv(Keyv.getLanguages, env),
+          getLocation: withEnv(Keyv.getLocation, env),
+          getResearchInterests: withEnv(Keyv.getResearchInterests, env),
           getSlackUser: withEnv(getSlackUser, env),
-          isOpenForRequests: withEnv(isOpenForRequests, env),
-          saveUserOnboarding: withEnv(saveUserOnboarding, env),
+          isOpenForRequests: withEnv(Keyv.isOpenForRequests, env),
+          saveUserOnboarding: withEnv(Keyv.saveUserOnboarding, env),
         })),
       ),
     ),
@@ -682,9 +658,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteCareerStage: withEnv(deleteCareerStage, env),
-          getCareerStage: withEnv(getCareerStage, env),
-          saveCareerStage: withEnv(saveCareerStage, env),
+          deleteCareerStage: withEnv(Keyv.deleteCareerStage, env),
+          getCareerStage: withEnv(Keyv.getCareerStage, env),
+          saveCareerStage: withEnv(Keyv.saveCareerStage, env),
         })),
       ),
     ),
@@ -709,9 +685,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteCareerStage: withEnv(deleteCareerStage, env),
-          getCareerStage: withEnv(getCareerStage, env),
-          saveCareerStage: withEnv(saveCareerStage, env),
+          deleteCareerStage: withEnv(Keyv.deleteCareerStage, env),
+          getCareerStage: withEnv(Keyv.getCareerStage, env),
+          saveCareerStage: withEnv(Keyv.saveCareerStage, env),
         })),
       ),
     ),
@@ -736,8 +712,8 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          isOpenForRequests: withEnv(isOpenForRequests, env),
-          saveOpenForRequests: withEnv(saveOpenForRequests, env),
+          isOpenForRequests: withEnv(Keyv.isOpenForRequests, env),
+          saveOpenForRequests: withEnv(Keyv.saveOpenForRequests, env),
         })),
       ),
     ),
@@ -762,8 +738,8 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          isOpenForRequests: withEnv(isOpenForRequests, env),
-          saveOpenForRequests: withEnv(saveOpenForRequests, env),
+          isOpenForRequests: withEnv(Keyv.isOpenForRequests, env),
+          saveOpenForRequests: withEnv(Keyv.saveOpenForRequests, env),
         })),
       ),
     ),
@@ -788,9 +764,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteResearchInterests: withEnv(deleteResearchInterests, env),
-          getResearchInterests: withEnv(getResearchInterests, env),
-          saveResearchInterests: withEnv(saveResearchInterests, env),
+          deleteResearchInterests: withEnv(Keyv.deleteResearchInterests, env),
+          getResearchInterests: withEnv(Keyv.getResearchInterests, env),
+          saveResearchInterests: withEnv(Keyv.saveResearchInterests, env),
         })),
       ),
     ),
@@ -815,9 +791,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteResearchInterests: withEnv(deleteResearchInterests, env),
-          getResearchInterests: withEnv(getResearchInterests, env),
-          saveResearchInterests: withEnv(saveResearchInterests, env),
+          deleteResearchInterests: withEnv(Keyv.deleteResearchInterests, env),
+          getResearchInterests: withEnv(Keyv.getResearchInterests, env),
+          saveResearchInterests: withEnv(Keyv.saveResearchInterests, env),
         })),
       ),
     ),
@@ -842,9 +818,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteLocation: withEnv(deleteLocation, env),
-          getLocation: withEnv(getLocation, env),
-          saveLocation: withEnv(saveLocation, env),
+          deleteLocation: withEnv(Keyv.deleteLocation, env),
+          getLocation: withEnv(Keyv.getLocation, env),
+          saveLocation: withEnv(Keyv.saveLocation, env),
         })),
       ),
     ),
@@ -869,9 +845,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteLanguages: withEnv(deleteLanguages, env),
-          getLanguages: withEnv(getLanguages, env),
-          saveLanguages: withEnv(saveLanguages, env),
+          deleteLanguages: withEnv(Keyv.deleteLanguages, env),
+          getLanguages: withEnv(Keyv.getLanguages, env),
+          saveLanguages: withEnv(Keyv.saveLanguages, env),
         })),
       ),
     ),
@@ -896,9 +872,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteLocation: withEnv(deleteLocation, env),
-          getLocation: withEnv(getLocation, env),
-          saveLocation: withEnv(saveLocation, env),
+          deleteLocation: withEnv(Keyv.deleteLocation, env),
+          getLocation: withEnv(Keyv.getLocation, env),
+          saveLocation: withEnv(Keyv.saveLocation, env),
         })),
       ),
     ),
@@ -923,9 +899,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteLanguages: withEnv(deleteLanguages, env),
-          getLanguages: withEnv(getLanguages, env),
-          saveLanguages: withEnv(saveLanguages, env),
+          deleteLanguages: withEnv(Keyv.deleteLanguages, env),
+          getLanguages: withEnv(Keyv.getLanguages, env),
+          saveLanguages: withEnv(Keyv.saveLanguages, env),
         })),
       ),
     ),
@@ -950,9 +926,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteContactEmailAddress: withEnv(deleteContactEmailAddress, env),
-          getContactEmailAddress: withEnv(getContactEmailAddress, env),
-          saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
+          deleteContactEmailAddress: withEnv(Keyv.deleteContactEmailAddress, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
+          saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, env),
           verifyContactEmailAddress: withEnv(sendContactEmailAddressVerificationEmail, env),
         })),
       ),
@@ -970,9 +946,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteContactEmailAddress: withEnv(deleteContactEmailAddress, env),
-          getContactEmailAddress: withEnv(getContactEmailAddress, env),
-          saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
+          deleteContactEmailAddress: withEnv(Keyv.deleteContactEmailAddress, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
+          saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, env),
         })),
       ),
     ),
@@ -990,14 +966,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getAvatar: withEnv(getAvatarFromCloudinary, env),
-          getCareerStage: withEnv(getCareerStage, env),
-          getLanguages: withEnv(getLanguages, env),
-          getLocation: withEnv(getLocation, env),
+          getCareerStage: withEnv(Keyv.getCareerStage, env),
+          getLanguages: withEnv(Keyv.getLanguages, env),
+          getLocation: withEnv(Keyv.getLocation, env),
           getName: withEnv(getNameFromOrcid, env),
           getPrereviews: withEnv(getPrereviewsForProfileFromZenodo, env),
-          getResearchInterests: withEnv(getResearchInterests, env),
+          getResearchInterests: withEnv(Keyv.getResearchInterests, env),
           getSlackUser: withEnv(getSlackUser, env),
-          isOpenForRequests: withEnv(isOpenForRequests, env),
+          isOpenForRequests: withEnv(Keyv.isOpenForRequests, env),
         })),
       ),
     ),
@@ -1174,9 +1150,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteContactEmailAddress: withEnv(deleteContactEmailAddress, env),
-          getContactEmailAddress: withEnv(getContactEmailAddress, env),
-          saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
+          deleteContactEmailAddress: withEnv(Keyv.deleteContactEmailAddress, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
+          saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, env),
           verifyContactEmailAddressForReview: withEnv(sendContactEmailAddressVerificationEmailForReview, env),
         })),
       ),
@@ -1187,7 +1163,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getContactEmailAddress: withEnv(getContactEmailAddress, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
           verifyContactEmailAddressForReview: withEnv(sendContactEmailAddressVerificationEmailForReview, env),
         })),
       ),
@@ -1198,9 +1174,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteContactEmailAddress: withEnv(deleteContactEmailAddress, env),
-          getContactEmailAddress: withEnv(getContactEmailAddress, env),
-          saveContactEmailAddress: withEnv(saveContactEmailAddress, env),
+          deleteContactEmailAddress: withEnv(Keyv.deleteContactEmailAddress, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
+          saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, env),
         })),
       ),
     ),
@@ -1210,14 +1186,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getContactEmailAddress: withEnv(getContactEmailAddress, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
           publishPrereview: withEnv(publishPrereview, {
             ...env,
             createAuthorInvite: withEnv(
               (authorInvite: OpenAuthorInvite) =>
                 pipe(
                   RTE.rightReaderIO(generateUuid),
-                  RTE.chainFirstW(uuid => saveAuthorInvite(uuid, authorInvite)),
+                  RTE.chainFirstW(uuid => Keyv.saveAuthorInvite(uuid, authorInvite)),
                 ),
               env,
             ),
@@ -1242,7 +1218,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getAuthorInvite: withEnv(getAuthorInvite, env),
+          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
           getPrereview: withEnv(
             flow(
               getPrereviewFromZenodo,
@@ -1266,7 +1242,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getAuthorInvite: withEnv(getAuthorInvite, env),
+          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
           getPrereview: withEnv(
             flow(
               getPrereviewFromZenodo,
@@ -1274,7 +1250,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             ),
             env,
           ),
-          saveAuthorInvite: withEnv(saveAuthorInvite, env),
+          saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, env),
         })),
       ),
     ),
@@ -1296,7 +1272,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getAuthorInvite: withEnv(getAuthorInvite, env),
+          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
           getPrereview: withEnv(
             flow(
               getPrereviewFromZenodo,
@@ -1304,7 +1280,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             ),
             env,
           ),
-          saveAuthorInvite: withEnv(saveAuthorInvite, env),
+          saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, env),
         })),
       ),
     ),
@@ -1323,7 +1299,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           addAuthorToPrereview: withEnv(addAuthorToPrereview, env),
-          getAuthorInvite: withEnv(getAuthorInvite, env),
+          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
           getPrereview: withEnv(
             flow(
               getPrereviewFromZenodo,
@@ -1331,7 +1307,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             ),
             env,
           ),
-          saveAuthorInvite: withEnv(saveAuthorInvite, env),
+          saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, env),
         })),
       ),
     ),
@@ -1349,7 +1325,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getAuthorInvite: withEnv(getAuthorInvite, env),
+          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
           getPrereview: withEnv(
             flow(
               getPrereviewFromZenodo,
