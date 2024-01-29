@@ -4,7 +4,7 @@ import * as J from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
-import { flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
@@ -17,6 +17,7 @@ import { type NonEmptyString, NonEmptyStringC } from './types/string'
 
 export interface OrcidApiEnv {
   readonly orcidApiUrl: URL
+  readonly orcidApiToken?: string
 }
 
 const JsonD = {
@@ -50,7 +51,9 @@ const PersonDetailsResponseD = pipe(JsonD, D.compose(D.union(PersonalDetailsD, P
 
 const getPersonalDetails = flow(
   RTE.fromReaderK((orcid: Orcid) => orcidApiUrl(`${orcid}/personal-details`)),
-  RTE.chainW(flow(F.Request('GET'), F.setHeader('Accept', 'application/json'), F.send)),
+  RTE.map(F.Request('GET')),
+  RTE.chainReaderK(addOrcidApiHeaders),
+  RTE.chainW(flow(F.setHeader('Accept', 'application/json'), F.send)),
   RTE.mapLeft(() => 'network-error' as const),
   RTE.filterOrElseW(F.hasStatus(Status.OK, Status.Conflict), response => `${response.status} status code` as const),
   RTE.chainTaskEitherKW(flow(F.decode(PersonDetailsResponseD), TE.mapLeft(D.draw))),
@@ -75,5 +78,17 @@ export const getNameFromOrcid = flow(
         .exhaustive(),
   ),
 )
+
+function addOrcidApiHeaders(request: F.Request) {
+  return R.asks(({ orcidApiToken }: OrcidApiEnv) =>
+    pipe(
+      request,
+      match(orcidApiToken)
+        .with(P.string, token => F.setHeader('Authorization', `Bearer ${token}`))
+        .with(undefined, () => identity)
+        .exhaustive(),
+    ),
+  )
+}
 
 const orcidApiUrl = (path: string) => R.asks(({ orcidApiUrl }: OrcidApiEnv) => new URL(`/v3.0/${path}`, orcidApiUrl))

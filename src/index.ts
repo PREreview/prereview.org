@@ -81,6 +81,7 @@ const server = app({
   locationStore: new Keyv({ namespace: 'location', store: keyvStore }),
   ...sendMailEnv,
   orcidApiUrl: env.ORCID_API_URL,
+  orcidApiToken: env.ORCID_API_READ_PUBLIC_TOKEN,
   orcidOauth: {
     authorizeUrl: new URL(`${env.ORCID_URL.origin}/oauth/authorize`),
     clientId: env.ORCID_CLIENT_ID,

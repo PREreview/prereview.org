@@ -88,6 +88,25 @@ describe('getNameFromOrcid', () => {
     expect(actual).toStrictEqual(E.right(undefined))
   })
 
+  test.prop([fc.origin(), fc.orcid(), fc.string()])('uses an API token', async (url, orcid, token) => {
+    const fetch = fetchMock
+      .sandbox()
+      .getOnce(
+        { url: `${url.origin}/v3.0/${orcid}/personal-details`, headers: { Authorization: `Bearer ${token}` } },
+        { status: Status.NotFound },
+      )
+
+    await _.getNameFromOrcid(orcid)({
+      clock: SystemClock,
+      fetch,
+      logger: () => IO.of(undefined),
+      orcidApiUrl: url,
+      orcidApiToken: token,
+    })()
+
+    expect(fetch.done()).toBeTruthy()
+  })
+
   test.prop([fc.origin(), fc.orcid()])('revalidates if the response is stale', async (url, orcid) => {
     const fetch = fetchMock
       .sandbox()

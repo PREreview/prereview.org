@@ -94,6 +94,7 @@ const EnvD = pipe(
     D.partial({
       FATHOM_SITE_ID: D.string,
       LOG_FORMAT: D.literal('json'),
+      ORCID_API_READ_PUBLIC_TOKEN: D.string,
       PHASE_TAG: D.string,
       PHASE_TEXT: HtmlD,
       REDIS_URI: UrlD,
