@@ -1,10 +1,8 @@
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { pipe } from 'fp-ts/function'
-import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { type CareerStage, maybeGetCareerStage } from '../career-stage'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../contact-email-address'
@@ -38,9 +36,7 @@ import { type UserOnboarding, getUserOnboarding, saveUserOnboarding } from '../u
 
 export type Env = EnvFor<typeof myDetails>
 
-const FlashMessageD = D.literal('verify-contact-email', 'slack-connected', 'slack-disconnected')
-
-export const myDetails = ({ message, user }: { message?: string; user?: User }) =>
+export const myDetails = ({ user }: { user?: User }) =>
   pipe(
     RTE.fromNullable('no-session' as const)(user),
     RTE.chainW(user =>
@@ -55,12 +51,6 @@ export const myDetails = ({ message, user }: { message?: string; user?: User }) 
         RTE.apSW('researchInterests', pipe(maybeGetResearchInterests(user.orcid), RTE.map(O.fromNullable))),
         RTE.apSW('location', pipe(maybeGetLocation(user.orcid), RTE.map(O.fromNullable))),
         RTE.apSW('languages', pipe(maybeGetLanguages(user.orcid), RTE.map(O.fromNullable))),
-        RTE.let('message', () =>
-          pipe(
-            FlashMessageD.decode(message),
-            E.getOrElseW(() => undefined),
-          ),
-        ),
       ),
     ),
     RTE.chainFirstW(({ user, userOnboarding }) =>
@@ -81,7 +71,6 @@ export const myDetails = ({ message, user }: { message?: string; user?: User }) 
 function createPage({
   user,
   userOnboarding,
-  message,
   slackUser,
   contactEmailAddress,
   openForRequests,
@@ -92,7 +81,6 @@ function createPage({
 }: {
   user: User
   userOnboarding: UserOnboarding
-  message?: D.TypeOf<typeof FlashMessageD>
   slackUser: O.Option<SlackUser>
   contactEmailAddress: O.Option<ContactEmailAddress>
   openForRequests: O.Option<IsOpenForRequests>
@@ -104,40 +92,6 @@ function createPage({
   return PageResponse({
     title: plainText`My details`,
     main: html`
-      ${match(message)
-        .with(
-          'verify-contact-email',
-          () => html`
-            <notification-banner aria-labelledby="notification-banner-title" type="notice" role="alert">
-              <h2 id="notification-banner-title">Important</h2>
-
-              <p>We’re sending you an email. Please open it and follow the link to verify your address.</p>
-            </notification-banner>
-          `,
-        )
-        .with(
-          'slack-connected',
-          () => html`
-            <notification-banner aria-labelledby="notification-banner-title" role="alert">
-              <h2 id="notification-banner-title">Success</h2>
-
-              <p>Your Community Slack account has been connected.</p>
-            </notification-banner>
-          `,
-        )
-        .with(
-          'slack-disconnected',
-          () => html`
-            <notification-banner aria-labelledby="notification-banner-title" role="alert">
-              <h2 id="notification-banner-title">Success</h2>
-
-              <p>Your Community Slack account has been disconnected.</p>
-            </notification-banner>
-          `,
-        )
-        .with(undefined, () => '')
-        .exhaustive()}
-
       <h1>My details</h1>
 
       <div class="inset">
@@ -468,7 +422,6 @@ function createPage({
         </div>
       </dl>
     `,
-    js: message ? ['notification-banner.js'] : [],
     current: 'my-details',
     canonical: format(myDetailsMatch.formatter, {}),
   })

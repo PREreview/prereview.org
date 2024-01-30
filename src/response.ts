@@ -137,7 +137,16 @@ export function handleResponse(response: {
     .exhaustive()
 }
 
-const FlashMessageD = D.literal('logged-out', 'logged-in', 'blocked', 'contact-email-verified', 'orcid-connected')
+const FlashMessageD = D.literal(
+  'logged-out',
+  'logged-in',
+  'blocked',
+  'verify-contact-email',
+  'contact-email-verified',
+  'orcid-connected',
+  'slack-connected',
+  'slack-disconnected',
+)
 
 export const handlePageResponse = ({
   response,
@@ -294,6 +303,16 @@ function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>) {
       `,
     )
     .with(
+      'verify-contact-email',
+      () => html`
+        <notification-banner aria-labelledby="notification-banner-title" type="notice" role="alert">
+          <h2 id="notification-banner-title">Important</h2>
+
+          <p>We’re sending you an email. Please open it and follow the link to verify your address.</p>
+        </notification-banner>
+      `,
+    )
+    .with(
       'contact-email-verified',
       () => html`
         <notification-banner aria-labelledby="notification-banner-title" role="alert">
@@ -310,6 +329,26 @@ function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>) {
           <h2 id="notification-banner-title">Success</h2>
 
           <p>Your ORCID profile has been connected.</p>
+        </notification-banner>
+      `,
+    )
+    .with(
+      'slack-connected',
+      () => html`
+        <notification-banner aria-labelledby="notification-banner-title" role="alert">
+          <h2 id="notification-banner-title">Success</h2>
+
+          <p>Your Community Slack account has been connected.</p>
+        </notification-banner>
+      `,
+    )
+    .with(
+      'slack-disconnected',
+      () => html`
+        <notification-banner aria-labelledby="notification-banner-title" role="alert">
+          <h2 id="notification-banner-title">Success</h2>
+
+          <p>Your Community Slack account has been disconnected.</p>
         </notification-banner>
       `,
     )

@@ -511,8 +511,8 @@ describe('myDetails', () => {
     )
   })
 
-  test.prop([fc.option(fc.string(), { nil: undefined })])('when the user is not logged in', async message => {
-    const actual = await _.myDetails({ message, user: undefined })({
+  test('when the user is not logged in', async () => {
+    const actual = await _.myDetails({})({
       getCareerStage: shouldNotBeCalled,
       getContactEmailAddress: shouldNotBeCalled,
       getLanguages: shouldNotBeCalled,

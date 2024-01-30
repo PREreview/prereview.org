@@ -13,7 +13,6 @@ import { NotFound } from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
 import * as RM from 'hyper-ts/ReaderMiddleware'
-import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import { aboutUs } from './about-us'
@@ -42,7 +41,6 @@ import {
   sendEmail,
 } from './email'
 import type { CanConnectOrcidProfileEnv } from './feature-flags'
-import { getFlashMessage } from './flash-message'
 import { funding } from './funding'
 import { home } from './home'
 import { howToUse } from './how-to-use'
@@ -673,7 +671,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(() =>
         pipe(
           RM.of({}),
-          RM.apS('message', RM.fromMiddleware(getFlashMessage(D.string))),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(myDetails)),
           RM.ichainW(handleResponse),
