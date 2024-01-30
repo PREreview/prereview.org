@@ -133,6 +133,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
       url.searchParams.set('error', 'access_denied')
     })
     await page.getByRole('button', { name: 'Start now' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t connect your profile')
   },
 )
 
