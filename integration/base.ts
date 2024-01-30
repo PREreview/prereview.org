@@ -966,6 +966,7 @@ export const canLogIn: Fixtures<
         token_type: 'Bearer',
         name: 'Josiah Carberry',
         orcid: '0000-0002-1825-0097',
+        scope: '/authenticate',
       },
     })
 

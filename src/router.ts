@@ -7,6 +7,7 @@ import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as T from 'fp-ts/Task'
+import * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
@@ -30,7 +31,7 @@ import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
-import { connectOrcid, connectOrcidError, connectOrcidStart } from './connect-orcid'
+import { connectOrcid, connectOrcidCode, connectOrcidError, connectOrcidStart } from './connect-orcid'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from './connect-slack'
 import { disconnectSlack } from './disconnect-slack'
 import { ediaStatement } from './edia-statement'
@@ -46,7 +47,6 @@ import { getFlashMessage } from './flash-message'
 import { funding } from './funding'
 import { home } from './home'
 import { howToUse } from './how-to-use'
-import { havingProblemsPage } from './http-error'
 import * as Keyv from './keyv'
 import {
   createPrereviewOnLegacyPrereview,
@@ -527,13 +527,19 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       connectOrcidCodeMatch.parser,
-      P.map(() =>
+      P.map(({ code }) =>
         pipe(
-          RM.of({}),
+          RM.of({ code }),
           RM.apS('user', maybeGetUser),
-          RM.apS('response', RM.of(havingProblemsPage)),
+          RM.bindW('response', RM.fromReaderTaskK(connectOrcidCode)),
           RM.ichainW(handleResponse),
         ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          saveOrcidToken: () => TE.left('unavailable'),
+        })),
       ),
     ),
     pipe(
