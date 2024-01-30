@@ -7,6 +7,7 @@ import { html, plainText } from '../html'
 import type { IsOpenForRequests } from '../is-open-for-requests'
 import type { Languages } from '../languages'
 import type { Location } from '../location'
+import type { OrcidToken } from '../orcid-token'
 import type { ResearchInterests } from '../research-interests'
 import { PageResponse } from '../response'
 import {
@@ -21,6 +22,7 @@ import {
   changeOpenForRequestsVisibilityMatch,
   changeResearchInterestsMatch,
   changeResearchInterestsVisibilityMatch,
+  connectOrcidMatch,
   connectSlackMatch,
   disconnectSlackMatch,
   myDetailsMatch,
@@ -33,6 +35,7 @@ import type { UserOnboarding } from '../user-onboarding'
 export function createPage({
   user,
   userOnboarding,
+  orcidToken,
   slackUser,
   contactEmailAddress,
   openForRequests,
@@ -43,6 +46,7 @@ export function createPage({
 }: {
   user: User
   userOnboarding: UserOnboarding
+  orcidToken?: O.Option<OrcidToken>
   slackUser: O.Option<SlackUser>
   contactEmailAddress: O.Option<ContactEmailAddress>
   openForRequests: O.Option<IsOpenForRequests>
@@ -101,6 +105,29 @@ export function createPage({
           <dd>${user.pseudonym}</dd>
         </div>
 
+        ${match(orcidToken)
+          .with(undefined, () => '')
+          .when(
+            O.isNone,
+            () => html`
+              <div>
+                <dt>ORCID profile</dt>
+                <dd>
+                  <a href="${format(connectOrcidMatch.formatter, {})}">Connect ORCID profile</a>
+                </dd>
+              </div>
+            `,
+          )
+          .when(
+            O.isSome,
+            () => html`
+              <div>
+                <dt>ORCID profile</dt>
+                <dd>Connected</dd>
+              </div>
+            `,
+          )
+          .exhaustive()}
         ${match(slackUser)
           .when(
             O.isNone,

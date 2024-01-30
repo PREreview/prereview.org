@@ -6,10 +6,12 @@ import { pipe } from 'fp-ts/function'
 import { match } from 'ts-pattern'
 import { maybeGetCareerStage } from '../career-stage'
 import { maybeGetContactEmailAddress } from '../contact-email-address'
+import { canConnectOrcidProfile } from '../feature-flags'
 import { havingProblemsPage } from '../http-error'
 import { maybeIsOpenForRequests } from '../is-open-for-requests'
 import { maybeGetLanguages } from '../languages'
 import { maybeGetLocation } from '../location'
+import { maybeGetOrcidToken } from '../orcid-token'
 import { maybeGetResearchInterests } from '../research-interests'
 import { LogInResponse } from '../response'
 import { myDetailsMatch } from '../routes'
@@ -28,6 +30,18 @@ export const myDetails = ({ user }: { user?: User }) =>
         RTE.Do,
         RTE.let('user', () => user),
         RTE.apSW('userOnboarding', getUserOnboarding(user.orcid)),
+        RTE.apSW(
+          'orcidToken',
+          pipe(
+            RTE.fromReader(canConnectOrcidProfile(user)),
+            RTE.chainW(canConnectOrcidProfile =>
+              match(canConnectOrcidProfile)
+                .with(true, () => pipe(maybeGetOrcidToken(user.orcid), RTE.map(O.fromNullable)))
+                .with(false, () => RTE.of(undefined))
+                .exhaustive(),
+            ),
+          ),
+        ),
         RTE.apSW('slackUser', pipe(maybeGetSlackUser(user.orcid), RTE.map(O.fromNullable))),
         RTE.apSW('contactEmailAddress', pipe(maybeGetContactEmailAddress(user.orcid), RTE.map(O.fromNullable))),
         RTE.apSW('openForRequests', pipe(maybeIsOpenForRequests(user.orcid), RTE.map(O.fromNullable))),

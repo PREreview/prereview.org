@@ -494,6 +494,46 @@ describe('saveResearchInterests', () => {
   )
 })
 
+describe('getOrcidToken', () => {
+  test.prop([fc.orcid(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, getOrcidToken) => {
+    const store = new Keyv()
+    await store.set(orcid, OrcidTokenC.encode(getOrcidToken))
+
+    const actual = await _.getOrcidToken(orcid)({ orcidTokenStore: store })()
+
+    expect(actual).toStrictEqual(E.right(getOrcidToken))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])(
+    'when the key contains something other than an ORCID token',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.getOrcidToken(orcid)({ orcidTokenStore: store })()
+
+      expect(actual).toStrictEqual(E.left('not-found'))
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.getOrcidToken(orcid)({ orcidTokenStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.get = (): Promise<never> => Promise.reject(error)
+
+    const actual = await _.getOrcidToken(orcid)({ orcidTokenStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
 describe('saveOrcidToken', () => {
   test.prop([fc.orcid(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, orcidToken) => {
     const store = new Keyv()

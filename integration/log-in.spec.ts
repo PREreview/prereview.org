@@ -97,8 +97,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
   'can connect my ORCID profile',
   async ({ javaScriptEnabled, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
-    await page.goto('/connect-orcid')
-
+    await page.getByRole('link', { name: 'Connect ORCID profile' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
 
     if (javaScriptEnabled) {
@@ -106,6 +105,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
     } else {
       await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
     }
+    await expect(page.getByRole('main')).toContainText('ORCID profile Connected')
 
     await page.reload()
 
