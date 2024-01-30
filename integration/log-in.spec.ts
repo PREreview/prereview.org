@@ -116,13 +116,21 @@ test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ 
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
   'can connect my ORCID profile',
-  async ({ page }) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
     await page.goto('/connect-orcid')
 
     await page.getByRole('button', { name: 'Start now' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My details')
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+    }
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
   },
 )
 

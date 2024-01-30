@@ -56,9 +56,9 @@ describe('connectOrcidCode', () => {
     })()
 
     expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: Status.SeeOther,
+      _tag: 'FlashMessageResponse',
       location: format(myDetailsMatch.formatter, {}),
+      message: 'orcid-connected',
     })
     expect(saveOrcidToken).toHaveBeenCalledWith(user.orcid, { accessToken, scopes })
     expect(fetch.done()).toBeTruthy()

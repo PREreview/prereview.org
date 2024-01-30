@@ -12,7 +12,7 @@ import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { saveOrcidToken } from '../orcid-token'
 import { toUrl } from '../public-url'
-import { RedirectResponse } from '../response'
+import { FlashMessageResponse } from '../response'
 import { connectOrcidMatch, myDetailsMatch } from '../routes'
 import { NonEmptyStringC, ordNonEmptyString } from '../types/string'
 import type { User } from '../user'
@@ -40,7 +40,7 @@ export const connectOrcidCode = ({ code, user }: { code: string; user?: User }) 
     ),
     RTE.matchW(
       () => failureMessage,
-      () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
+      () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'orcid-connected' }),
     ),
   )
 

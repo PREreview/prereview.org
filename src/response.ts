@@ -137,7 +137,7 @@ export function handleResponse(response: {
     .exhaustive()
 }
 
-const FlashMessageD = D.literal('logged-out', 'logged-in', 'blocked', 'contact-email-verified')
+const FlashMessageD = D.literal('logged-out', 'logged-in', 'blocked', 'contact-email-verified', 'orcid-connected')
 
 export const handlePageResponse = ({
   response,
@@ -300,6 +300,16 @@ function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>) {
           <h2 id="notification-banner-title">Success</h2>
 
           <p>Your email address has been verified.</p>
+        </notification-banner>
+      `,
+    )
+    .with(
+      'orcid-connected',
+      () => html`
+        <notification-banner aria-labelledby="notification-banner-title" role="alert">
+          <h2 id="notification-banner-title">Success</h2>
+
+          <p>Your ORCID profile has been connected.</p>
         </notification-banner>
       `,
     )
