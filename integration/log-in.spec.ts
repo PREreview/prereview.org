@@ -124,6 +124,18 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
   },
 )
 
+test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
+  'have to grant access to your ORCID profile',
+  async ({ oauthServer, page }) => {
+    await page.goto('/connect-orcid')
+    oauthServer.service.once('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
+      url.searchParams.delete('code')
+      url.searchParams.set('error', 'access_denied')
+    })
+    await page.getByRole('button', { name: 'Start now' }).click()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
   'can connect my Slack Community account',
   async ({ javaScriptEnabled, page }) => {

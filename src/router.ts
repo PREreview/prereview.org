@@ -30,7 +30,7 @@ import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
-import { connectOrcid } from './connect-orcid'
+import { connectOrcid, connectOrcidStart } from './connect-orcid'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from './connect-slack'
 import { disconnectSlack } from './disconnect-slack'
 import { ediaStatement } from './edia-statement'
@@ -107,6 +107,8 @@ import {
   clubProfileMatch,
   clubsMatch,
   codeOfConductMatch,
+  connectOrcidCodeMatch,
+  connectOrcidErrorMatch,
   connectOrcidMatch,
   connectOrcidStartMatch,
   connectSlackCodeMatch,
@@ -514,6 +516,28 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       connectOrcidStartMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderK(connectOrcidStart)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+    ),
+    pipe(
+      connectOrcidCodeMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apS('response', RM.of(havingProblemsPage)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+    ),
+    pipe(
+      connectOrcidErrorMatch.parser,
       P.map(() =>
         pipe(
           RM.of({}),
