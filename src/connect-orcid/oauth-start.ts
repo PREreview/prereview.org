@@ -1,10 +1,11 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as R from 'fp-ts/Reader'
-import * as RE from 'fp-ts/ReaderEither'
-import { pipe } from 'fp-ts/function'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
-import { havingProblemsPage } from '../http-error'
+import { canConnectOrcidProfile } from '../feature-flags'
+import { havingProblemsPage, pageNotFound } from '../http-error'
 import type { OrcidOAuthEnv } from '../log-in'
 import { toUrl } from '../public-url'
 import { LogInResponse, RedirectResponse } from '../response'
@@ -13,13 +14,24 @@ import type { User } from '../user'
 
 export const connectOrcidStart = ({ user }: { user?: User }) =>
   pipe(
-    RE.Do,
-    RE.apS('user', RE.fromEither(E.fromNullable('no-session' as const)(user))),
-    RE.apSW('authorizationRequestUrl', RE.fromReader(authorizationRequestUrl)),
-    RE.matchW(
+    RTE.Do,
+    RTE.apS('user', RTE.fromEither(E.fromNullable('no-session' as const)(user))),
+    RTE.bindW(
+      'canConnectOrcidProfile',
+      flow(
+        RTE.fromReaderK(({ user }) => canConnectOrcidProfile(user)),
+        RTE.filterOrElse(
+          canConnectOrcidProfile => canConnectOrcidProfile,
+          () => 'not-found' as const,
+        ),
+      ),
+    ),
+    RTE.apSW('authorizationRequestUrl', RTE.fromReader(authorizationRequestUrl)),
+    RTE.matchW(
       error =>
         match(error)
           .with('no-session', () => LogInResponse({ location: format(connectOrcidMatch.formatter, {}) }))
+          .with('not-found', () => pageNotFound)
           .with(P.instanceOf(Error), () => havingProblemsPage)
           .exhaustive(),
       ({ authorizationRequestUrl }) => RedirectResponse({ location: authorizationRequestUrl }),
