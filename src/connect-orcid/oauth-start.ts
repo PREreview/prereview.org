@@ -3,9 +3,9 @@ import * as E from 'fp-ts/Either'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { P, match } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import { canConnectOrcidProfile } from '../feature-flags'
-import { havingProblemsPage, pageNotFound } from '../http-error'
+import { pageNotFound } from '../http-error'
 import type { OrcidOAuthEnv } from '../log-in'
 import { toUrl } from '../public-url'
 import { LogInResponse, RedirectResponse } from '../response'
@@ -32,7 +32,6 @@ export const connectOrcidStart = ({ user }: { user?: User }) =>
         match(error)
           .with('no-session', () => LogInResponse({ location: format(connectOrcidMatch.formatter, {}) }))
           .with('not-found', () => pageNotFound)
-          .with(P.instanceOf(Error), () => havingProblemsPage)
           .exhaustive(),
       ({ authorizationRequestUrl }) => RedirectResponse({ location: authorizationRequestUrl }),
     ),
