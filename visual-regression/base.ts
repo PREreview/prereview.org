@@ -13,6 +13,9 @@ interface ShowPage {
 export const test = baseTest.extend<ShowPage>({
   page: async ({ page }, use) => {
     await page.route('**/*', (route, request) => {
+      if (request.url().startsWith('https://placehold.co/')) {
+        return route.continue()
+      }
       if (request.url() === 'http://example.com/') {
         return route.fulfill({ status: 200, headers: { 'Content-type': 'text/html; charset=utf-8' } })
       }
