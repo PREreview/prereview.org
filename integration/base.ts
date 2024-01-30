@@ -959,18 +959,15 @@ export const canLogIn: Fixtures<
     await use(true)
   },
   page: async ({ fetch, hasSeenMyDetailsPage, page, userOnboardingStore }, use) => {
-    fetch.postOnce(
-      { url: 'http://orcid.test/token', name: 'log-in-token' },
-      {
-        status: Status.OK,
-        body: {
-          access_token: 'access-token',
-          token_type: 'Bearer',
-          name: 'Josiah Carberry',
-          orcid: '0000-0002-1825-0097',
-        },
+    fetch.post('http://orcid.test/token', {
+      status: Status.OK,
+      body: {
+        access_token: 'access-token',
+        token_type: 'Bearer',
+        name: 'Josiah Carberry',
+        orcid: '0000-0002-1825-0097',
       },
-    )
+    })
 
     await userOnboardingStore.set('0000-0002-1825-0097', { seenMyDetailsPage: hasSeenMyDetailsPage })
 
