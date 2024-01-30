@@ -360,6 +360,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
+  await expect(page.getByRole('main')).toContainText('Location Vivamus in convallis urna. Only visible to PREreview')
+
   await page.getByRole('link', { name: 'Change location' }).click()
 
   await expect(page.getByLabel('Where are you based?')).toHaveValue('Vivamus in convallis urna.')
@@ -379,6 +381,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }
   await expect(page).toHaveScreenshot()
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Location Vivamus in convallis urna. Shown on your public profile')
 })
 
 test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page }) => {
@@ -391,6 +395,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page 
   await expect(page).toHaveScreenshot()
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Languages English and Spanish Only visible to PREreview')
+
   await page.getByRole('link', { name: 'Change languages' }).click()
 
   await expect(page.getByLabel('What languages can you review in?')).toHaveValue('English and Spanish')
@@ -410,6 +417,8 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page 
   await expect(page).toHaveScreenshot()
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Languages English and Spanish Shown on your public profile')
 })
 
 test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnabled, page }) => {
