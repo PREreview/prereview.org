@@ -32,6 +32,7 @@ import {
   type IsOpenForRequestsStoreEnv,
   type LanguagesStoreEnv,
   type LocationStoreEnv,
+  type OrcidTokenStoreEnv,
   type ResearchInterestsStoreEnv,
   type SlackUserIdStoreEnv,
   type UserOnboardingStoreEnv,
@@ -76,6 +77,7 @@ export type ConfigEnv = AuthorInviteStoreEnv &
   (MailjetApiEnv | NodemailerEnv) &
   OrcidApiEnv &
   CanConnectOrcidProfileEnv &
+  OrcidTokenStoreEnv &
   OrcidOAuthEnv &
   PhaseEnv &
   PublicUrlEnv &

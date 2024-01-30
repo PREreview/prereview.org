@@ -892,6 +892,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         clientSecret: 'client-secret',
         tokenUrl: new URL('http://orcid.test/token'),
       },
+      orcidTokenStore: new Keyv(),
       publicUrl: new URL(`http://localhost:${port}`),
       requiresVerifiedEmailAddress,
       researchInterestsStore,

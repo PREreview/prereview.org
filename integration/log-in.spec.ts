@@ -121,6 +121,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
     await page.goto('/connect-orcid')
 
     await page.getByRole('button', { name: 'Start now' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('My details')
   },
 )
 

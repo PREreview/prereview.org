@@ -5,6 +5,7 @@ import Keyv from 'keyv'
 import { get } from 'spectacles-ts'
 import { ContactEmailAddressC } from '../src/contact-email-address'
 import * as _ from '../src/keyv'
+import { OrcidTokenC } from '../src/orcid-token'
 import { SlackUserIdC } from '../src/slack-user-id'
 import { UserOnboardingC } from '../src/user-onboarding'
 import * as fc from './fc'
@@ -487,6 +488,52 @@ describe('saveResearchInterests', () => {
       store.set = () => Promise.reject(error)
 
       const actual = await _.saveResearchInterests(orcid, researchInterests)({ researchInterestsStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})
+
+describe('saveOrcidToken', () => {
+  test.prop([fc.orcid(), fc.orcidToken()])('when the key contains an ORCID token', async (orcid, orcidToken) => {
+    const store = new Keyv()
+    await store.set(orcid, OrcidTokenC.encode(orcidToken))
+
+    const actual = await _.saveOrcidToken(orcid, orcidToken)({ orcidTokenStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
+  })
+
+  test.prop([fc.orcid(), fc.anything(), fc.orcidToken()])(
+    'when the key already contains something other than an ORCID token',
+    async (orcid, value, orcidToken) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveOrcidToken(orcid, orcidToken)({ orcidTokenStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.orcidToken()])('when the key is not set', async (orcid, orcidToken) => {
+    const store = new Keyv()
+
+    const actual = await _.saveOrcidToken(orcid, orcidToken)({ orcidTokenStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
+  })
+
+  test.prop([fc.orcid(), fc.orcidToken(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, orcidToken, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveOrcidToken(orcid, orcidToken)({ orcidTokenStore: store })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },

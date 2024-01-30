@@ -41,6 +41,7 @@ import type { IsOpenForRequests } from '../src/is-open-for-requests'
 import type { Languages } from '../src/languages'
 import type { Location } from '../src/location'
 import * as assets from '../src/manifest.json'
+import type { OrcidToken } from '../src/orcid-token'
 import type { Preprint, PreprintTitle } from '../src/preprint'
 import type { ResearchInterests } from '../src/research-interests'
 import type {
@@ -823,6 +824,12 @@ export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.str
 
 export const slackUserId = (): fc.Arbitrary<SlackUserId> =>
   fc.record({ userId: nonEmptyString(), accessToken: nonEmptyString(), scopes: set(nonEmptyString()) })
+
+export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
+  fc.record({
+    accessToken: nonEmptyString(),
+    scopes: set(nonEmptyString()),
+  })
 
 export const clubId = (): fc.Arbitrary<ClubId> => fc.constantFrom(...clubIds)
 

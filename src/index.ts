@@ -89,6 +89,7 @@ const server = app({
     clientSecret: env.ORCID_CLIENT_SECRET,
     tokenUrl: new URL(`${env.ORCID_URL.origin}/oauth/token`),
   },
+  orcidTokenStore: new Keyv({ namespace: 'orcid-token', store: keyvStore }),
   phase:
     typeof env.PHASE_TAG === 'string' && typeof env.PHASE_TEXT !== 'undefined'
       ? {

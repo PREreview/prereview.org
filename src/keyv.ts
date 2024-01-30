@@ -14,6 +14,7 @@ import { ContactEmailAddressC } from './contact-email-address'
 import { IsOpenForRequestsC } from './is-open-for-requests'
 import { LanguagesC } from './languages'
 import { LocationC } from './location'
+import { OrcidTokenC } from './orcid-token'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { SlackUserIdC } from './slack-user-id'
 import { NonEmptyStringC } from './types/string'
@@ -46,6 +47,10 @@ export interface LocationStoreEnv {
 
 export interface ResearchInterestsStoreEnv {
   researchInterestsStore: Keyv<unknown>
+}
+
+export interface OrcidTokenStoreEnv {
+  orcidTokenStore: Keyv<unknown>
 }
 
 export interface SlackUserIdStoreEnv {
@@ -164,6 +169,11 @@ export const getResearchInterests = flow(
 export const saveResearchInterests = flow(
   setKey(OrcidE, ResearchInterestsC),
   RTE.local((env: ResearchInterestsStoreEnv) => env.researchInterestsStore),
+)
+
+export const saveOrcidToken = flow(
+  setKey(OrcidE, OrcidTokenC),
+  RTE.local((env: OrcidTokenStoreEnv) => env.orcidTokenStore),
 )
 
 export const deleteSlackUserId = flow(
