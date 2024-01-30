@@ -10,25 +10,28 @@ import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('connectOrcidStart', () => {
   describe('when the user is logged in', () => {
-    test.prop([fc.oauth(), fc.origin(), fc.user()])('when ORCID can be connected', (orcidOauth, publicUrl, user) => {
-      const canConnectOrcidProfile = jest.fn<CanConnectOrcidProfileEnv['canConnectOrcidProfile']>(_ => true)
+    test.prop([fc.oauth(), fc.origin(), fc.user()])(
+      'when ORCID can be connected',
+      async (orcidOauth, publicUrl, user) => {
+        const canConnectOrcidProfile = jest.fn<CanConnectOrcidProfileEnv['canConnectOrcidProfile']>(_ => true)
 
-      const actual = _.connectOrcidStart({ user })({ canConnectOrcidProfile, orcidOauth, publicUrl })
+        const actual = await _.connectOrcidStart({ user })({ canConnectOrcidProfile, orcidOauth, publicUrl })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: new URL(
-          `?${new URLSearchParams({
-            client_id: orcidOauth.clientId,
-            response_type: 'code',
-            redirect_uri: new URL(format(connectOrcidMatch.formatter, {}), publicUrl).toString(),
-            scope: '/activities/update /read-limited',
-          }).toString()}`,
-          orcidOauth.authorizeUrl,
-        ),
-      })
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: new URL(
+            `?${new URLSearchParams({
+              client_id: orcidOauth.clientId,
+              response_type: 'code',
+              redirect_uri: new URL(format(connectOrcidMatch.formatter, {}), publicUrl).toString(),
+              scope: '/activities/update /read-limited',
+            }).toString()}`,
+            orcidOauth.authorizeUrl,
+          ),
+        })
+      },
+    )
 
     test.prop([fc.oauth(), fc.origin(), fc.user()])(
       'when ORCID cannot be connected',
@@ -51,8 +54,8 @@ describe('connectOrcidStart', () => {
     )
   })
 
-  test.prop([fc.oauth(), fc.origin()])('when the user is not logged in', (orcidOauth, publicUrl) => {
-    const actual = _.connectOrcidStart({})({ canConnectOrcidProfile: shouldNotBeCalled, orcidOauth, publicUrl })
+  test.prop([fc.oauth(), fc.origin()])('when the user is not logged in', async (orcidOauth, publicUrl) => {
+    const actual = await _.connectOrcidStart({})({ canConnectOrcidProfile: shouldNotBeCalled, orcidOauth, publicUrl })()
 
     expect(actual).toStrictEqual({
       _tag: 'LogInResponse',
