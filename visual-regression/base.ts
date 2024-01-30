@@ -1,5 +1,6 @@
 import { type Locator, test as baseTest } from '@playwright/test'
 import path from 'path'
+import { P, match } from 'ts-pattern'
 import { html } from '../src/html'
 import { page as templatePage } from '../src/page'
 import type { PageResponse, StreamlinePageResponse } from '../src/response'
@@ -13,18 +14,20 @@ interface ShowPage {
 export const test = baseTest.extend<ShowPage>({
   page: async ({ page }, use) => {
     await page.route('**/*', (route, request) => {
-      if (request.url().startsWith('https://placehold.co/')) {
-        return route.continue()
-      }
-      if (request.url() === 'http://example.com/') {
-        return route.fulfill({ status: 200, headers: { 'Content-type': 'text/html; charset=utf-8' } })
-      }
-      if (request.url().startsWith('https://fonts.googleapis.com/')) {
-        return route.fulfill({ status: 404 })
-      }
-      return route.fulfill({ path: path.join('dist/assets', new URL(request.url()).pathname) })
+      return match(request.url())
+        .with(P.string.startsWith('https://placehold.co/'), () => route.continue())
+        .with('http://example.com/', () =>
+          route.fulfill({
+            status: 200,
+            headers: { 'Content-type': 'text/html; charset=utf-8' },
+          }),
+        )
+        .with(P.string.startsWith('https://fonts.googleapis.com/'), () => route.fulfill({ status: 404 }))
+        .otherwise(url => route.fulfill({ path: path.join('dist/assets', new URL(url).pathname) }))
     })
+
     await page.goto('http://example.com')
+
     await use(page)
   },
   showPage: async ({ page }, use) => {
