@@ -510,6 +510,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.ichainW(handleResponse),
         ),
       ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getOrcidToken: withEnv(Keyv.getOrcidToken, env),
+        })),
+      ),
     ),
     pipe(
       connectOrcidStartMatch.parser,
