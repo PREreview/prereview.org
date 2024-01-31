@@ -541,6 +541,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          getOrcidToken: withEnv(Keyv.getOrcidToken, env),
           saveOrcidToken: withEnv(Keyv.saveOrcidToken, env),
         })),
       ),

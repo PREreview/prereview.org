@@ -99,6 +99,7 @@ const server = app({
     authorizeUrl: new URL(`${env.ORCID_URL.origin}/oauth/authorize`),
     clientId: env.ORCID_CLIENT_ID,
     clientSecret: env.ORCID_CLIENT_SECRET,
+    revokeUrl: new URL(`${env.ORCID_URL.origin}/oauth/revoke`),
     tokenUrl: new URL(`${env.ORCID_URL.origin}/oauth/token`),
   },
   orcidTokenStore: new Keyv({ namespace: 'orcid-token', store: keyvStore }),

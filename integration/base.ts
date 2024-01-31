@@ -890,6 +890,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
         authorizeUrl: new URL('/authorize', oauthServer.issuer.url),
         clientId: 'client-id',
         clientSecret: 'client-secret',
+        revokeUrl: new URL('http://orcid.test/revoke'),
         tokenUrl: new URL('http://orcid.test/token'),
       },
       orcidTokenStore: new Keyv(),

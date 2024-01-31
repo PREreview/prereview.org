@@ -17,6 +17,7 @@ import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import type { CloudinaryApiEnv } from './cloudinary'
+import type { OrcidOAuthEnv as ConnectOrcidOAuthEnv } from './connect-orcid'
 import type { SlackOAuthEnv } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
@@ -64,6 +65,7 @@ export type ConfigEnv = AuthorInviteStoreEnv &
   CanInviteAuthorsEnv &
   CareerStageStoreEnv &
   CloudinaryApiEnv &
+  ConnectOrcidOAuthEnv &
   ContactEmailAddressStoreEnv &
   FathomEnv &
   FormStoreEnv &

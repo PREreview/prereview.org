@@ -28,6 +28,7 @@ import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
 import type { AssignedAuthorInvite, AuthorInvite, CompletedAuthorInvite, OpenAuthorInvite } from '../src/author-invite'
 import type { CareerStage } from '../src/career-stage'
+import type { OrcidOAuthEnv } from '../src/connect-orcid/oauth-code'
 import type {
   ContactEmailAddress,
   UnverifiedContactEmailAddress,
@@ -325,11 +326,12 @@ export const sanitisedHtml = (): fc.Arbitrary<Html> => fc.string().map(sanitizeH
 
 export const plainText = (): fc.Arbitrary<PlainText> => fc.string().map(toPlainText)
 
-export const oauth = (): fc.Arbitrary<Omit<OAuthEnv['oauth'], 'redirectUri'>> =>
+export const oauth = (): fc.Arbitrary<Omit<OrcidOAuthEnv['orcidOauth'] & OAuthEnv['oauth'], 'redirectUri'>> =>
   fc.record({
     authorizeUrl: url(),
     clientId: fc.string(),
     clientSecret: fc.string(),
+    revokeUrl: url(),
     tokenUrl: url(),
   })
 

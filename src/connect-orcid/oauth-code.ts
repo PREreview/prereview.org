@@ -10,7 +10,7 @@ import { split } from 'fp-ts/string'
 import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
-import { saveOrcidToken } from '../orcid-token'
+import { maybeGetOrcidToken, saveOrcidToken } from '../orcid-token'
 import { toUrl } from '../public-url'
 import { FlashMessageResponse } from '../response'
 import { connectOrcidMatch, myDetailsMatch } from '../routes'
@@ -22,6 +22,7 @@ export interface OrcidOAuthEnv {
   orcidOauth: {
     clientId: string
     clientSecret: string
+    revokeUrl: URL
     tokenUrl: URL
   }
 }
@@ -32,11 +33,15 @@ export const connectOrcidCode = ({ code, user }: { code: string; user?: User }) 
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.let('code', () => code),
     RTE.bindW('orcidUser', exchangeAuthorizationCode),
+    RTE.bindW('oldOrcidToken', ({ user }) => maybeGetOrcidToken(user.orcid)),
     RTE.chainFirstW(({ user, orcidUser }) =>
       saveOrcidToken(user.orcid, {
         accessToken: orcidUser.access_token,
         scopes: orcidUser.scope,
       }),
+    ),
+    RTE.chainFirstW(({ oldOrcidToken }) =>
+      oldOrcidToken ? revokeAccessToken(oldOrcidToken.accessToken) : RTE.of(undefined),
     ),
     RTE.matchW(
       () => failureMessage,
@@ -67,6 +72,26 @@ const exchangeAuthorizationCode = ({ code, user }: { code: string; user: User })
     RTE.chainW(F.send),
     RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
     RTE.chainTaskEitherKW(F.decode(OrcidUserTokenD(user.orcid))),
+  )
+
+const revokeAccessToken = (token: string) =>
+  pipe(
+    RTE.asks(({ orcidOauth: { clientId, clientSecret, revokeUrl } }: OrcidOAuthEnv) =>
+      pipe(
+        F.Request('POST')(revokeUrl),
+        F.setBody(
+          new URLSearchParams({
+            client_id: clientId,
+            client_secret: clientSecret,
+            token,
+            token_type_hint: 'access_token',
+          }).toString(),
+          MediaType.applicationFormURLEncoded,
+        ),
+      ),
+    ),
+    RTE.chainW(F.send),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
   )
 
 const JsonD = {
