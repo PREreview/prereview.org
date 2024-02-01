@@ -27,11 +27,7 @@ import {
 } from 'zenodo-ts'
 import { type ConfigEnv, app } from '../src/app'
 import { ContactEmailAddressC } from '../src/contact-email-address'
-import type {
-  CanConnectOrcidProfileEnv,
-  CanInviteAuthorsEnv,
-  RequiresVerifiedEmailAddressEnv,
-} from '../src/feature-flags'
+import type { CanConnectOrcidProfileEnv, CanInviteAuthorsEnv } from '../src/feature-flags'
 import type {
   AuthorInviteStoreEnv,
   ContactEmailAddressStoreEnv,
@@ -69,7 +65,6 @@ interface AppFixtures {
   contactEmailAddressStore: ContactEmailAddressStoreEnv['contactEmailAddressStore']
   isUserBlocked: IsUserBlockedEnv['isUserBlocked']
   wasPrereviewRemoved: WasPrereviewRemovedEnv['wasPrereviewRemoved']
-  requiresVerifiedEmailAddress: RequiresVerifiedEmailAddressEnv['requiresVerifiedEmailAddress']
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   canConnectOrcidProfile: CanConnectOrcidProfileEnv['canConnectOrcidProfile']
@@ -823,9 +818,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   port: async ({}, use, workerInfo) => {
     await use(8000 + workerInfo.workerIndex)
   },
-  requiresVerifiedEmailAddress: async ({}, use) => {
-    await use(() => false)
-  },
   researchInterestsStore: async ({}, use) => {
     await use(new Keyv())
   },
@@ -847,7 +839,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       slackUserIdStore,
       userOnboardingStore,
       wasPrereviewRemoved,
-      requiresVerifiedEmailAddress,
       authorInviteStore,
       canConnectOrcidProfile,
       canInviteAuthors,
@@ -894,7 +885,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       },
       orcidTokenStore: new Keyv(),
       publicUrl: new URL(`http://localhost:${port}`),
-      requiresVerifiedEmailAddress,
       researchInterestsStore,
       scietyListToken: 'secret' as NonEmptyString,
       secret: '',
@@ -1198,16 +1188,6 @@ export const canInviteAuthors: Fixtures<
   Pick<AppFixtures, 'canInviteAuthors'>
 > = {
   canInviteAuthors: async ({}, use) => {
-    await use(() => true)
-  },
-}
-
-export const requiresVerifiedEmailAddress: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'requiresVerifiedEmailAddress'>
-> = {
-  requiresVerifiedEmailAddress: async ({}, use) => {
     await use(() => true)
   },
 }

@@ -13,7 +13,6 @@ import {
   hasAVerifiedEmailAddress,
   isANewUser,
   isASlackUser,
-  requiresVerifiedEmailAddress,
   test,
   userIsBlocked,
 } from './base'
@@ -420,7 +419,7 @@ test.extend(canLogIn).extend(userIsBlocked)("can't log in when blocked", async (
   await expect(page.getByRole('alert', { name: 'Access denied' })).toBeHidden()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress).extend(hasAVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'cannot remove an email address',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/my-details/change-email-address')

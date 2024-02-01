@@ -14,14 +14,14 @@ import {
   canInviteAuthors,
   canLogIn,
   expect,
+  hasAVerifiedEmailAddress,
   hasAnUnverifiedEmailAddress,
-  requiresVerifiedEmailAddress,
   test,
   updatesLegacyPrereview,
   willPublishAReview,
 } from './base'
 
-test.extend(canLogIn).extend(willPublishAReview)(
+test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview',
   async ({ contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/')
@@ -126,134 +126,137 @@ test.extend(canLogIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(canLogIn).extend(willPublishAReview)('can publish a question-based PREreview', async ({ page }) => {
-  await page.goto('/')
-  await page.getByRole('link', { name: 'Review a preprint' }).click()
-  await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await expect(page.getByRole('main')).toContainText('We will ask you to log in')
-  await page.getByRole('button', { name: 'Start now' }).click()
+test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
+  'can publish a question-based PREreview',
+  async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('link', { name: 'Review a preprint' }).click()
+    await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(page.getByRole('main')).toContainText('We will ask you to log in')
+    await page.getByRole('button', { name: 'Start now' }).click()
 
-  await page.getByLabel('With prompts').check()
+    await page.getByLabel('With prompts').check()
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.getByLabel('Partly', { exact: true }).check()
-  await page
-    .getByLabel('How does the introduction only partly explain the objective?')
-    .fill('Consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('Partly', { exact: true }).check()
+    await page
+      .getByLabel('How does the introduction only partly explain the objective?')
+      .fill('Consectetur adipiscing elit.')
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
-  await page.getByLabel('Why are they neither appropriate nor inappropriate?').fill('Sed egestas tincidunt lacus.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
+    await page.getByLabel('Why are they neither appropriate nor inappropriate?').fill('Sed egestas tincidunt lacus.')
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
-  await page.getByLabel('Why are they neither supported nor unsupported?').fill('At blandit est facilisis et.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
+    await page.getByLabel('Why are they neither supported nor unsupported?').fill('At blandit est facilisis et.')
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page
-    .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
-    .fill('Lorem ipsum dolor sit amet.')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
-  await page.getByLabel('How is it neither clear nor unclear?').fill('Cras lobortis quam vitae.')
+    await page
+      .getByLabel('Why are they neither appropriate and clear nor inappropriate and unclear?')
+      .fill('Lorem ipsum dolor sit amet.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
+    await page.getByLabel('How is it neither clear nor unclear?').fill('Cras lobortis quam vitae.')
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Moderately likely', { exact: true }).check()
-  await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Moderately likely', { exact: true }).check()
+    await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes, but it needs to be improved').check()
-  await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, but it needs to be improved').check()
+    await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes, after minor changes').check()
-  await page.getByLabel('What needs tweaking?').fill('Quisque in blandit arcu.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes, after minor changes').check()
+    await page.getByLabel('What needs tweaking?').fill('Quisque in blandit arcu.')
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
+    await page.mouse.move(0, 0)
+    await expect(page).toHaveScreenshot()
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No, I reviewed it alone').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I’m following the Code of Conduct').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByRole('region', { name: 'Your review' }).scrollIntoViewIfNeeded()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('region', { name: 'Your review' }).scrollIntoViewIfNeeded()
 
-  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'Does the introduction explain the objective of the research presented in the preprint? Partly Consectetur adipiscing elit.',
-  )
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'Are the methods well-suited for this research? Neither appropriate nor inappropriate Sed egestas tincidunt lacus.',
-  )
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'Are the conclusions supported by the data? Neither supported nor unsupported At blandit est facilisis et.',
-  )
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'Are the data presentations, including visualizations, well-suited to represent the data? Neither appropriate and clear nor inappropriate and unclear Lorem ipsum dolor sit amet.',
-  )
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research? Neither clearly nor unclearly Cras lobortis quam vitae.',
-  )
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'Is the preprint likely to advance academic knowledge? Moderately likely Aenean nisl eros.',
-  )
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'Would it benefit from language editing? No Condimentum in mi in.',
-  )
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'Would you recommend this preprint to others? Yes, but it needs to be improved Dignissim lobortis ligula.',
-  )
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'Is it ready for attention from an editor, publisher or broader audience? Yes, after minor changes Quisque in blandit arcu.',
-  )
-  await expect(page.getByRole('main')).toContainText(
-    'Competing interests The author declares that they have no competing interests.',
-  )
+    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Does the introduction explain the objective of the research presented in the preprint? Partly Consectetur adipiscing elit.',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Are the methods well-suited for this research? Neither appropriate nor inappropriate Sed egestas tincidunt lacus.',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Are the conclusions supported by the data? Neither supported nor unsupported At blandit est facilisis et.',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Are the data presentations, including visualizations, well-suited to represent the data? Neither appropriate and clear nor inappropriate and unclear Lorem ipsum dolor sit amet.',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'How clearly do the authors discuss, explain, and interpret their findings and potential next steps for the research? Neither clearly nor unclearly Cras lobortis quam vitae.',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Is the preprint likely to advance academic knowledge? Moderately likely Aenean nisl eros.',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Would it benefit from language editing? No Condimentum in mi in.',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Would you recommend this preprint to others? Yes, but it needs to be improved Dignissim lobortis ligula.',
+    )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Is it ready for attention from an editor, publisher or broader audience? Yes, after minor changes Quisque in blandit arcu.',
+    )
+    await expect(page.getByRole('main')).toContainText(
+      'Competing interests The author declares that they have no competing interests.',
+    )
 
-  await page.getByRole('button', { name: 'Publish PREreview' }).click()
+    await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-  await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
-})
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+    await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
+  },
+)
 
 test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ fetch, page }) => {
   fetch.get(
@@ -275,7 +278,7 @@ test.extend(canLogIn)('can write a PREreview for a specific preprint', async ({ 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('How would you like to start your PREreview?')
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'are taken to the start of the review process after successfully completing it',
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -303,44 +306,46 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(updatesLegacyPrereview).extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
-  'updates the legacy PREreview',
-  async ({ fetch, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('With a template').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No, I reviewed it alone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I’m following the Code of Conduct').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test
+  .extend(updatesLegacyPrereview)
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(willPublishAReview)('updates the legacy PREreview', async ({ fetch, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('With a template').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.waitForLoadState()
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, I reviewed it alone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    fetch
-      .getOnce('http://prereview.test/api/v2/resolve?identifier=10.1101/2022.01.13.476201', {
-        body: {
-          uuid: 'e7d28fbe-013a-4987-9faa-7f44a9f7683a',
-        },
-      })
-      .postOnce(
-        {
-          url: 'http://prereview.test/api/v2/full-reviews',
-          headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
-        },
-        { status: Status.Created },
-      )
+  fetch
+    .getOnce('http://prereview.test/api/v2/resolve?identifier=10.1101/2022.01.13.476201', {
+      body: {
+        uuid: 'e7d28fbe-013a-4987-9faa-7f44a9f7683a',
+      },
+    })
+    .postOnce(
+      {
+        url: 'http://prereview.test/api/v2/full-reviews',
+        headers: { 'X-Api-App': 'app', 'X-Api-Key': 'key' },
+      },
+      { status: Status.Created },
+    )
 
-    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+  await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-  },
-)
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+})
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'can paste an already-written PREreview',
@@ -397,7 +402,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can format a PREreview',
   async ({ browserName, contextOptions, javaScriptEnabled, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -594,7 +599,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview with more authors',
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -640,220 +645,222 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
-  'can invite other people to appear as authors',
-  async ({ fetch, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('With a template').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Yes, and some or all want to be listed as authors').check()
-    await page.getByLabel('They have read and approved the PREreview').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
-    await page.getByLabel('Email address').fill('jbbotul@example.com')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I’m following the Code of Conduct').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test
+  .extend(canInviteAuthors)
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(willPublishAReview)('can invite other people to appear as authors', async ({ fetch, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('With a template').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.waitForLoadState()
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Yes, and some or all want to be listed as authors').check()
+  await page.getByLabel('They have read and approved the PREreview').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Name').fill('Jean-Baptiste Botul')
+  await page.getByLabel('Email address').fill('jbbotul@example.com')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Your published name Josiah Carberry')
-    await expect(page.getByRole('main')).toContainText('Invited author Jean-Baptiste Botul')
+  await expect(page.getByRole('main')).toContainText('Your published name Josiah Carberry')
+  await expect(page.getByRole('main')).toContainText('Invited author Jean-Baptiste Botul')
 
-    await page.getByRole('link', { name: 'Add an author' }).click()
-    await page.getByLabel('Name').fill('Arne Saknussemm')
-    await page.getByLabel('Email address').fill('asaknussemm@example.com')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByRole('link', { name: 'Add an author' }).click()
+  await page.getByLabel('Name').fill('Arne Saknussemm')
+  await page.getByLabel('Email address').fill('asaknussemm@example.com')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Invited authors Jean-Baptiste Botul and Arne Saknussemm')
+  await expect(page.getByRole('main')).toContainText('Invited authors Jean-Baptiste Botul and Arne Saknussemm')
 
-    fetch.post('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+  fetch.post('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
-    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+  await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-    await expect(page.getByRole('main')).toContainText('We’ve sent emails to the other authors')
-    await expect(page.getByRole('main')).not.toContainText('other authors’ details')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+  await expect(page.getByRole('main')).toContainText('We’ve sent emails to the other authors')
+  await expect(page.getByRole('main')).not.toContainText('other authors’ details')
 
-    const record: ZenodoRecord = {
-      conceptdoi: '10.5072/zenodo.1055805' as Doi,
-      conceptrecid: 1055805,
-      files: [
+  const record: ZenodoRecord = {
+    conceptdoi: '10.5072/zenodo.1055805' as Doi,
+    conceptrecid: 1055805,
+    files: [
+      {
+        links: {
+          self: new URL('http://example.com/review.html/content'),
+        },
+        key: 'review.html',
+        size: 58,
+      },
+    ],
+    id: 1055806,
+    links: {
+      latest: new URL('http://example.com/latest'),
+      latest_html: new URL('http://example.com/latest_html'),
+    },
+    metadata: {
+      communities: [{ id: 'prereview-reviews' }],
+      creators: [
         {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
+          name: 'Josiah Carberry',
+          orcid: '0000-0002-1825-0097' as Orcid,
         },
       ],
-      id: 1055806,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
+      description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+      doi: '10.5072/zenodo.1055806' as Doi,
+      license: { id: 'cc-by-4.0' },
+      publication_date: new Date('2022-07-05'),
+      related_identifiers: [
+        {
+          identifier: '10.1101/2022.01.13.476201',
+          relation: 'reviews',
+          resource_type: 'publication-preprint',
+          scheme: 'doi',
+        },
+        {
+          identifier: '10.5072/zenodo.1061863',
+          relation: 'isVersionOf',
+          scheme: 'doi',
+        },
+      ],
+      resource_type: {
+        type: 'publication',
+        subtype: 'peerreview',
       },
-      metadata: {
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          {
-            name: 'Josiah Carberry',
-            orcid: '0000-0002-1825-0097' as Orcid,
+      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+    },
+  }
+
+  fetch
+    .get('http://zenodo.test/api/records/1055806', {
+      body: RecordC.encode(record),
+    })
+    .get('http://example.com/review.html/content', {
+      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+    })
+
+  await page.setContent(getLastMailjetEmailBody(fetch))
+  await page.getByRole('link', { name: 'Be listed as an author' }).click()
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
+  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+
+  await page.getByRole('link', { name: 'Change name' }).click()
+  await page.getByLabel('Orange Panda').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
+
+  fetch
+    .getOnce(
+      { name: 'get-published-deposition', url: 'http://zenodo.test/api/deposit/depositions/1055806' },
+      {
+        body: SubmittedDepositionC.encode({
+          ...record,
+          links: {
+            edit: new URL('http://example.com/edit'),
           },
-        ],
-        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
-        doi: '10.5072/zenodo.1055806' as Doi,
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            license: record.metadata.license.id,
+            upload_type: 'publication',
+            publication_type: 'peerreview',
           },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
-        },
-        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+          state: 'done',
+          submitted: true,
+        }),
       },
-    }
+    )
+    .postOnce(
+      { name: 'unlock-deposition', url: 'http://example.com/edit' },
+      {
+        body: InProgressDepositionC.encode({
+          ...record,
+          links: {
+            publish: new URL('http://example.com/publish'),
+            self: new URL('http://example.com/self'),
+          },
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            license: record.metadata.license.id,
+            prereserve_doi: { doi: record.metadata.doi },
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'inprogress',
+          submitted: true,
+        }),
+        status: Status.Created,
+      },
+    )
+    .putOnce(
+      { name: 'update-deposition', url: 'http://example.com/self' },
+      {
+        body: InProgressDepositionC.encode({
+          ...record,
+          links: {
+            publish: new URL('http://example.com/publish'),
+            self: new URL('http://example.com/self'),
+          },
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            license: record.metadata.license.id,
+            prereserve_doi: { doi: record.metadata.doi },
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'inprogress',
+          submitted: true,
+        }),
+        status: Status.OK,
+      },
+    )
+    .postOnce(
+      { name: 'publish-updated-deposition', url: 'http://example.com/publish' },
+      {
+        body: SubmittedDepositionC.encode({
+          ...record,
+          links: {
+            edit: new URL('http://example.com/edit'),
+          },
+          metadata: {
+            ...record.metadata,
+            communities: [{ identifier: 'prereview-reviews' }],
+            license: record.metadata.license.id,
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'done',
+          submitted: true,
+        }),
+        status: Status.Accepted,
+      },
+    )
 
-    fetch
-      .get('http://zenodo.test/api/records/1055806', {
-        body: RecordC.encode(record),
-      })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
+  await page.getByRole('button', { name: 'Update PREreview' }).click()
 
-    await page.setContent(getLastMailjetEmailBody(fetch))
-    await page.getByRole('link', { name: 'Be listed as an author' }).click()
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Name added')
+})
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
-    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
-
-    await page.getByRole('link', { name: 'Change name' }).click()
-    await page.getByLabel('Orange Panda').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
-
-    fetch
-      .getOnce(
-        { name: 'get-published-deposition', url: 'http://zenodo.test/api/deposit/depositions/1055806' },
-        {
-          body: SubmittedDepositionC.encode({
-            ...record,
-            links: {
-              edit: new URL('http://example.com/edit'),
-            },
-            metadata: {
-              ...record.metadata,
-              communities: [{ identifier: 'prereview-reviews' }],
-              license: record.metadata.license.id,
-              upload_type: 'publication',
-              publication_type: 'peerreview',
-            },
-            state: 'done',
-            submitted: true,
-          }),
-        },
-      )
-      .postOnce(
-        { name: 'unlock-deposition', url: 'http://example.com/edit' },
-        {
-          body: InProgressDepositionC.encode({
-            ...record,
-            links: {
-              publish: new URL('http://example.com/publish'),
-              self: new URL('http://example.com/self'),
-            },
-            metadata: {
-              ...record.metadata,
-              communities: [{ identifier: 'prereview-reviews' }],
-              license: record.metadata.license.id,
-              prereserve_doi: { doi: record.metadata.doi },
-              upload_type: 'publication',
-              publication_type: 'peerreview',
-            },
-            state: 'inprogress',
-            submitted: true,
-          }),
-          status: Status.Created,
-        },
-      )
-      .putOnce(
-        { name: 'update-deposition', url: 'http://example.com/self' },
-        {
-          body: InProgressDepositionC.encode({
-            ...record,
-            links: {
-              publish: new URL('http://example.com/publish'),
-              self: new URL('http://example.com/self'),
-            },
-            metadata: {
-              ...record.metadata,
-              communities: [{ identifier: 'prereview-reviews' }],
-              license: record.metadata.license.id,
-              prereserve_doi: { doi: record.metadata.doi },
-              upload_type: 'publication',
-              publication_type: 'peerreview',
-            },
-            state: 'inprogress',
-            submitted: true,
-          }),
-          status: Status.OK,
-        },
-      )
-      .postOnce(
-        { name: 'publish-updated-deposition', url: 'http://example.com/publish' },
-        {
-          body: SubmittedDepositionC.encode({
-            ...record,
-            links: {
-              edit: new URL('http://example.com/edit'),
-            },
-            metadata: {
-              ...record.metadata,
-              communities: [{ identifier: 'prereview-reviews' }],
-              license: record.metadata.license.id,
-              upload_type: 'publication',
-              publication_type: 'peerreview',
-            },
-            state: 'done',
-            submitted: true,
-          }),
-          status: Status.Accepted,
-        },
-      )
-
-    await page.getByRole('button', { name: 'Update PREreview' }).click()
-
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Name added')
-  },
-)
-
-test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   "can publish a PREreview with more authors who don't want to be listed as authors",
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -887,7 +894,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview with competing interests',
   async ({ contextOptions, page }, testInfo) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -926,7 +933,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview using a pseudonym',
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -954,98 +961,107 @@ test.extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)('can change the review after previewing', async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('With a template').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForLoadState()
-  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No, I reviewed it alone').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I’m following the Code of Conduct').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'can change the review after previewing',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  )
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+    )
 
-  await page.getByRole('link', { name: 'Change PREreview' }).click()
-  await page.waitForLoadState()
+    await page.getByRole('link', { name: 'Change PREreview' }).click()
+    await page.waitForLoadState()
 
-  await page
-    .getByLabel('Write your PREreview')
-    .fill('Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page
+      .getByLabel('Write your PREreview')
+      .fill('Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
-    'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
-  )
-})
+    await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
+      'Donec vestibulum consectetur nunc, non vestibulum felis gravida nec.',
+    )
+  },
+)
 
-test.extend(canLogIn).extend(areLoggedIn)('can change the name after previewing', async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('With a template').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForLoadState()
-  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No, I reviewed it alone').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I’m following the Code of Conduct').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'can change the name after previewing',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
-  await page.getByRole('link', { name: 'Change name' }).click()
+    await page.getByRole('link', { name: 'Change name' }).click()
 
-  await page.getByLabel('Orange Panda').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Orange Panda').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
-})
+    await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
+  },
+)
 
-test.extend(canLogIn).extend(areLoggedIn)('can change the competing interests after previewing', async ({ page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('With a template').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForLoadState()
-  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No, I reviewed it alone').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I’m following the Code of Conduct').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'can change the competing interests after previewing',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText(
-    'Competing interests The author declares that they have no competing interests.',
-  )
+    await expect(page.getByRole('main')).toContainText(
+      'Competing interests The author declares that they have no competing interests.',
+    )
 
-  await page.getByRole('link', { name: 'Change competing interests' }).click()
+    await page.getByRole('link', { name: 'Change competing interests' }).click()
 
-  await page.getByLabel('Yes').check()
-  await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByLabel('What are they?').fill('Maecenas sed dapibus massa.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Competing interests Maecenas sed dapibus massa.')
-})
+    await expect(page.getByRole('main')).toContainText('Competing interests Maecenas sed dapibus massa.')
+  },
+)
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'can change your answers when answering questions after previewing',
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -1218,61 +1234,64 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn)('can go back through the form', async ({ javaScriptEnabled, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('With a template').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForLoadState()
-  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No, I reviewed it alone').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I’m following the Code of Conduct').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
+  'can go back through the form',
+  async ({ javaScriptEnabled, page }) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No, I reviewed it alone').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('I’m following the Code of Conduct').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
 
-  await page.goBack()
+    await page.goBack()
 
-  await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
+    await expect(page.getByLabel('I’m following the Code of Conduct')).toBeChecked()
 
-  await page.goBack()
+    await page.goBack()
 
-  await expect(page.getByLabel('No')).toBeChecked()
+    await expect(page.getByLabel('No')).toBeChecked()
 
-  await page.goBack()
+    await page.goBack()
 
-  await expect(page.getByLabel('No, I reviewed it alone')).toBeChecked()
+    await expect(page.getByLabel('No, I reviewed it alone')).toBeChecked()
 
-  await page.goBack()
+    await page.goBack()
 
-  await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
+    await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
 
-  await page.goBack()
+    await page.goBack()
 
-  if (javaScriptEnabled) {
-    await expect(page.getByLabel('Write your PREreview')).toHaveText(
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-  } else {
-    await expect(page.getByLabel('Write your PREreview')).toHaveValue(
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    )
-  }
+    if (javaScriptEnabled) {
+      await expect(page.getByLabel('Write your PREreview')).toHaveText(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      )
+    } else {
+      await expect(page.getByLabel('Write your PREreview')).toHaveValue(
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      )
+    }
 
-  await page.goBack()
+    await page.goBack()
 
-  await expect(page.getByLabel('With a template')).toBeChecked()
+    await expect(page.getByLabel('With a template')).toBeChecked()
 
-  await page.goBack()
+    await page.goBack()
 
-  await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
-})
+    await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn)('can go back through the form when answering questions', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -1370,7 +1389,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can go back through the form when ans
   await expect(page.getByLabel('With prompts')).toBeChecked()
 })
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'see existing values when going back a step',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -1841,7 +1860,7 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to give your email address',
   async ({ fetch, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -1891,7 +1910,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress).extend(hasAnUnverifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
   'have to verify your email address',
   async ({ fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -1930,7 +1949,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress).e
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'can resend the verification email',
   async ({ fetch, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -2043,7 +2062,7 @@ test('might not authenticate with ORCID in time', async ({ fetch, javaScriptEnab
   await expect(page).toHaveScreenshot()
 })
 
-test.extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   'are told if Zenodo is unavailable',
   async ({ fetch, javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -2980,45 +2999,42 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
-  'have to enter an email address',
-  async ({ javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('With a template').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No, I reviewed it alone').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I’m following the Code of Conduct').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(areLoggedIn)('have to enter an email address', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('With a template').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.waitForLoadState()
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No, I reviewed it alone').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
 
-    await page.getByRole('link', { name: 'Enter your email address' }).click()
+  await page.getByRole('link', { name: 'Enter your email address' }).click()
 
-    await expect(page.getByLabel('What is your email address?')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-  },
-)
+  await expect(page.getByLabel('What is your email address?')).toBeFocused()
+  await page.mouse.move(0, 0)
+  await expect(page).toHaveScreenshot()
+})
 
-test.extend(canLogIn).extend(areLoggedIn).extend(requiresVerifiedEmailAddress)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to enter a valid email address',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -3095,130 +3111,132 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn).extend(willPublishAReview)(
-  'have to choose a name when invited',
-  async ({ fetch, javaScriptEnabled, page }) => {
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('With a template').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.waitForLoadState()
-    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Yes, and some or all want to be listed as authors').check()
-    await page.getByLabel('They have read and approved the PREreview').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
-    await page.getByLabel('Email address').fill('jbbotul@example.com')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('I’m following the Code of Conduct').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+test
+  .extend(canInviteAuthors)
+  .extend(canLogIn)
+  .extend(areLoggedIn)
+  .extend(hasAVerifiedEmailAddress)
+  .extend(willPublishAReview)('have to choose a name when invited', async ({ fetch, javaScriptEnabled, page }) => {
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('With a template').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.waitForLoadState()
+  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Yes, and some or all want to be listed as authors').check()
+  await page.getByLabel('They have read and approved the PREreview').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('Name').fill('Jean-Baptiste Botul')
+  await page.getByLabel('Email address').fill('jbbotul@example.com')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('I’m following the Code of Conduct').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Your published name Josiah Carberry')
-    await expect(page.getByRole('main')).toContainText('Invited author Jean-Baptiste Botul')
+  await expect(page.getByRole('main')).toContainText('Your published name Josiah Carberry')
+  await expect(page.getByRole('main')).toContainText('Invited author Jean-Baptiste Botul')
 
-    await page.getByRole('link', { name: 'Add an author' }).click()
-    await page.getByLabel('Name').fill('Arne Saknussemm')
-    await page.getByLabel('Email address').fill('asaknussemm@example.com')
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.getByLabel('No').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByRole('link', { name: 'Add an author' }).click()
+  await page.getByLabel('Name').fill('Arne Saknussemm')
+  await page.getByLabel('Email address').fill('asaknussemm@example.com')
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Invited authors Jean-Baptiste Botul and Arne Saknussemm')
+  await expect(page.getByRole('main')).toContainText('Invited authors Jean-Baptiste Botul and Arne Saknussemm')
 
-    fetch.post('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+  fetch.post('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
-    await page.getByRole('button', { name: 'Publish PREreview' }).click()
+  await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-    await expect(page.getByRole('main')).toContainText('We’ve sent emails to the other authors')
-    await expect(page.getByRole('main')).not.toContainText('other authors’ details')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
+  await expect(page.getByRole('main')).toContainText('We’ve sent emails to the other authors')
+  await expect(page.getByRole('main')).not.toContainText('other authors’ details')
 
-    const record: ZenodoRecord = {
-      conceptdoi: '10.5072/zenodo.1055805' as Doi,
-      conceptrecid: 1055805,
-      files: [
+  const record: ZenodoRecord = {
+    conceptdoi: '10.5072/zenodo.1055805' as Doi,
+    conceptrecid: 1055805,
+    files: [
+      {
+        links: {
+          self: new URL('http://example.com/review.html/content'),
+        },
+        key: 'review.html',
+        size: 58,
+      },
+    ],
+    id: 1055806,
+    links: {
+      latest: new URL('http://example.com/latest'),
+      latest_html: new URL('http://example.com/latest_html'),
+    },
+    metadata: {
+      communities: [{ id: 'prereview-reviews' }],
+      creators: [
         {
-          links: {
-            self: new URL('http://example.com/review.html/content'),
-          },
-          key: 'review.html',
-          size: 58,
+          name: 'Josiah Carberry',
+          orcid: '0000-0002-1825-0097' as Orcid,
         },
       ],
-      id: 1055806,
-      links: {
-        latest: new URL('http://example.com/latest'),
-        latest_html: new URL('http://example.com/latest_html'),
-      },
-      metadata: {
-        communities: [{ id: 'prereview-reviews' }],
-        creators: [
-          {
-            name: 'Josiah Carberry',
-            orcid: '0000-0002-1825-0097' as Orcid,
-          },
-        ],
-        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
-        doi: '10.5072/zenodo.1055806' as Doi,
-        license: { id: 'cc-by-4.0' },
-        publication_date: new Date('2022-07-05'),
-        related_identifiers: [
-          {
-            identifier: '10.1101/2022.01.13.476201',
-            relation: 'reviews',
-            resource_type: 'publication-preprint',
-            scheme: 'doi',
-          },
-          {
-            identifier: '10.5072/zenodo.1061863',
-            relation: 'isVersionOf',
-            scheme: 'doi',
-          },
-        ],
-        resource_type: {
-          type: 'publication',
-          subtype: 'peerreview',
+      description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+      doi: '10.5072/zenodo.1055806' as Doi,
+      license: { id: 'cc-by-4.0' },
+      publication_date: new Date('2022-07-05'),
+      related_identifiers: [
+        {
+          identifier: '10.1101/2022.01.13.476201',
+          relation: 'reviews',
+          resource_type: 'publication-preprint',
+          scheme: 'doi',
         },
-        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+        {
+          identifier: '10.5072/zenodo.1061863',
+          relation: 'isVersionOf',
+          scheme: 'doi',
+        },
+      ],
+      resource_type: {
+        type: 'publication',
+        subtype: 'peerreview',
       },
-    }
+      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+    },
+  }
 
-    fetch
-      .get('http://zenodo.test/api/records/1055806', {
-        body: RecordC.encode(record),
-      })
-      .get('http://example.com/review.html/content', {
-        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-      })
+  fetch
+    .get('http://zenodo.test/api/records/1055806', {
+      body: RecordC.encode(record),
+    })
+    .get('http://example.com/review.html/content', {
+      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+    })
 
-    await page.setContent(getLastMailjetEmailBody(fetch))
-    await page.getByRole('link', { name: 'Be listed as an author' }).click()
-    await page.getByRole('button', { name: 'Start now' }).click()
+  await page.setContent(getLastMailjetEmailBody(fetch))
+  await page.getByRole('link', { name: 'Be listed as an author' }).click()
+  await page.getByRole('button', { name: 'Start now' }).click()
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
-    } else {
-      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
-    }
-    await expect(page.getByRole('group', { name: 'What name would you like to use?' })).toHaveAttribute(
-      'aria-invalid',
-      'true',
-    )
+  if (javaScriptEnabled) {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+  } else {
+    await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  }
+  await expect(page.getByRole('group', { name: 'What name would you like to use?' })).toHaveAttribute(
+    'aria-invalid',
+    'true',
+  )
 
-    await page.getByRole('link', { name: 'Select the name that you would like to use' }).click()
+  await page.getByRole('link', { name: 'Select the name that you would like to use' }).click()
 
-    await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
-  },
-)
+  await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
+})
 
 const getLastMailjetEmailBody = (fetch: FetchMockSandbox) => {
   return pipe(

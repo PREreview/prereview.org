@@ -111,7 +111,6 @@ const server = app({
         }
       : undefined,
   publicUrl: env.PUBLIC_URL,
-  requiresVerifiedEmailAddress: () => true,
   researchInterestsStore: new Keyv({ namespace: 'research-interests', store: keyvStore }),
   scietyListToken: env.SCIETY_LIST_TOKEN,
   secret: env.SECRET,

@@ -22,7 +22,7 @@ import type { SlackOAuthEnv } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import type { Email } from './email'
-import type { CanConnectOrcidProfileEnv, CanInviteAuthorsEnv, RequiresVerifiedEmailAddressEnv } from './feature-flags'
+import type { CanConnectOrcidProfileEnv, CanInviteAuthorsEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
 import type { GhostApiEnv } from './ghost'
 import { pageNotFound } from './http-error'
@@ -83,7 +83,6 @@ export type ConfigEnv = AuthorInviteStoreEnv &
   OrcidOAuthEnv &
   PhaseEnv &
   PublicUrlEnv &
-  RequiresVerifiedEmailAddressEnv &
   ResearchInterestsStoreEnv &
   ScietyListEnv &
   SessionEnv &
