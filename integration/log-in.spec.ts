@@ -113,6 +113,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
 
     await page.goto('/disconnect-orcid')
     await page.getByRole('button', { name: 'Disconnect profile' }).click()
+
+    await expect(page.getByRole('link', { name: 'Connect ORCID profile' })).toBeVisible()
   },
 )
 

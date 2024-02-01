@@ -575,6 +575,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          deleteOrcidToken: withEnv(Keyv.deleteOrcidToken, env),
           getOrcidToken: withEnv(Keyv.getOrcidToken, env),
         })),
       ),

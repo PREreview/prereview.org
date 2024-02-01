@@ -1,9 +1,10 @@
 import { format } from 'fp-ts-routing'
+import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error'
-import { maybeGetOrcidToken } from '../orcid-token'
+import { deleteOrcidToken, maybeGetOrcidToken } from '../orcid-token'
 import { LogInResponse, RedirectResponse } from '../response'
 import { disconnectOrcidMatch, myDetailsMatch } from '../routes'
 import type { User } from '../user'
@@ -16,17 +17,33 @@ export const disconnectOrcid = ({ method, user }: { method: string; user?: User 
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.bindW('orcidToken', ({ user }) => maybeGetOrcidToken(user.orcid)),
     RTE.let('method', () => method),
+    RTE.matchEW(
+      error =>
+        RT.of(
+          match(error)
+            .with('no-session', () => LogInResponse({ location: format(disconnectOrcidMatch.formatter, {}) }))
+            .with('unavailable', () => havingProblemsPage)
+            .exhaustive(),
+        ),
+      state =>
+        match(state)
+          .with({ orcidToken: undefined }, () =>
+            RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })),
+          )
+          .with({ method: 'POST' }, handleForm)
+          .with({ method: P.string }, () => RT.of(disconnectOrcidPage))
+          .exhaustive(),
+    ),
+  )
+
+const handleForm = ({ user }: { user: User }) =>
+  pipe(
+    deleteOrcidToken(user.orcid),
     RTE.matchW(
       error =>
         match(error)
-          .with('no-session', () => LogInResponse({ location: format(disconnectOrcidMatch.formatter, {}) }))
-          .with('unavailable', () => havingProblemsPage)
+          .with('unavailable', () => disconnectFailureMessage)
           .exhaustive(),
-      state =>
-        match(state)
-          .with({ orcidToken: undefined }, () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }))
-          .with({ method: 'POST' }, () => disconnectFailureMessage)
-          .with({ method: P.string }, () => disconnectOrcidPage)
-          .exhaustive(),
+      () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
     ),
   )

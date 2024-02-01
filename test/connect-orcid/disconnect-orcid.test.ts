@@ -4,7 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/connect-orcid/disconnect-orcid'
-import type { GetOrcidTokenEnv } from '../../src/orcid-token'
+import type { DeleteOrcidTokenEnv, GetOrcidTokenEnv } from '../../src/orcid-token'
 import { disconnectOrcidMatch, myDetailsMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
@@ -12,18 +12,37 @@ import { shouldNotBeCalled } from '../should-not-be-called'
 describe('disconnectOrcid', () => {
   describe('when the user is logged in', () => {
     describe('when ORCID is connected', () => {
-      test.prop([fc.user(), fc.orcidToken()])('when the form is submitted', async (user, orcidToken) => {
-        const actual = await _.disconnectOrcid({ method: 'POST', user })({
-          getOrcidToken: () => TE.right(orcidToken),
-        })()
+      describe('when the form is submitted', () => {
+        test.prop([fc.user(), fc.orcidToken()])('when the token can be deleted', async (user, orcidToken) => {
+          const deleteOrcidToken = jest.fn<DeleteOrcidTokenEnv['deleteOrcidToken']>(_ => TE.right(undefined))
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
-          skipToLabel: 'main',
-          js: [],
+          const actual = await _.disconnectOrcid({ method: 'POST', user })({
+            deleteOrcidToken,
+            getOrcidToken: () => TE.right(orcidToken),
+          })()
+
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: Status.SeeOther,
+            location: format(myDetailsMatch.formatter, {}),
+          })
+          expect(deleteOrcidToken).toHaveBeenCalledWith(user.orcid)
+        })
+
+        test.prop([fc.user(), fc.orcidToken()])("when the token can't be deleted", async (user, orcidToken) => {
+          const actual = await _.disconnectOrcid({ method: 'POST', user })({
+            deleteOrcidToken: () => TE.left('unavailable'),
+            getOrcidToken: () => TE.right(orcidToken),
+          })()
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: Status.ServiceUnavailable,
+            title: expect.stringContaining('problems'),
+            main: expect.stringContaining('problems'),
+            skipToLabel: 'main',
+            js: [],
+          })
         })
       })
 
@@ -31,6 +50,7 @@ describe('disconnectOrcid', () => {
         'when the form is ready',
         async (user, method, orcidToken) => {
           const actual = await _.disconnectOrcid({ method, user })({
+            deleteOrcidToken: shouldNotBeCalled,
             getOrcidToken: () => TE.right(orcidToken),
           })()
 
@@ -51,6 +71,7 @@ describe('disconnectOrcid', () => {
       const getOrcidToken = jest.fn<GetOrcidTokenEnv['getOrcidToken']>(_ => TE.left('not-found'))
 
       const actual = await _.disconnectOrcid({ method, user })({
+        deleteOrcidToken: shouldNotBeCalled,
         getOrcidToken,
       })()
 
@@ -64,6 +85,7 @@ describe('disconnectOrcid', () => {
 
     test.prop([fc.user(), fc.string()])("when we can't load the ORCID token", async (user, method) => {
       const actual = await _.disconnectOrcid({ method, user })({
+        deleteOrcidToken: shouldNotBeCalled,
         getOrcidToken: () => TE.left('unavailable'),
       })()
 
@@ -80,6 +102,7 @@ describe('disconnectOrcid', () => {
 
   test.prop([fc.string()])('when the user is not logged in', async method => {
     const actual = await _.disconnectOrcid({ method })({
+      deleteOrcidToken: shouldNotBeCalled,
       getOrcidToken: shouldNotBeCalled,
     })()
 

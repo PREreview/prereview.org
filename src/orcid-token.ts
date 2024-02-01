@@ -21,6 +21,10 @@ export interface EditOrcidTokenEnv {
   saveOrcidToken: (orcid: Orcid, orcidToken: OrcidToken) => TE.TaskEither<'unavailable', void>
 }
 
+export interface DeleteOrcidTokenEnv {
+  deleteOrcidToken: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
+}
+
 const ReadonlySetC = <O, A>(item: C.Codec<unknown, O, A>, ordItem: Ord<A>) =>
   pipe(C.array(item), C.readonly, C.imap(RS.fromReadonlyArray(ordItem), RS.toReadonlyArray(ordItem)))
 
@@ -50,3 +54,9 @@ export const saveOrcidToken = (
   orcidToken: OrcidToken,
 ): RTE.ReaderTaskEither<EditOrcidTokenEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ saveOrcidToken }) => saveOrcidToken(orcid, orcidToken)))
+
+export const deleteOrcidToken = (orcid: Orcid) =>
+  pipe(
+    RTE.ask<DeleteOrcidTokenEnv>(),
+    RTE.chainTaskEitherK(({ deleteOrcidToken }) => deleteOrcidToken(orcid)),
+  )

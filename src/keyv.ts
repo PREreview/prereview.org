@@ -171,6 +171,11 @@ export const saveResearchInterests = flow(
   RTE.local((env: ResearchInterestsStoreEnv) => env.researchInterestsStore),
 )
 
+export const deleteOrcidToken = flow(
+  deleteKey(OrcidE),
+  RTE.local((env: OrcidTokenStoreEnv) => env.orcidTokenStore),
+)
+
 export const getOrcidToken = flow(
   getKey(OrcidE, OrcidTokenC),
   RTE.local((env: OrcidTokenStoreEnv) => env.orcidTokenStore),
