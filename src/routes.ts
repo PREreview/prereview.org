@@ -170,6 +170,8 @@ export const connectOrcidErrorMatch = pipe(
   P.then(P.end),
 )
 
+export const disconnectOrcidMatch = pipe(P.lit('disconnect-orcid'), P.then(P.end))
+
 export const connectSlackMatch = pipe(P.lit('connect-slack'), P.then(P.end))
 
 export const connectSlackStartMatch = pipe(P.lit('connect-slack'), P.then(P.lit('start-now')), P.then(P.end))

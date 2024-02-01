@@ -29,7 +29,7 @@ import { getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
-import { connectOrcid, connectOrcidCode, connectOrcidError, connectOrcidStart } from './connect-orcid'
+import { connectOrcid, connectOrcidCode, connectOrcidError, connectOrcidStart, disconnectOrcid } from './connect-orcid'
 import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from './connect-slack'
 import { disconnectSlack } from './disconnect-slack'
 import { ediaStatement } from './edia-statement'
@@ -112,6 +112,7 @@ import {
   connectSlackErrorMatch,
   connectSlackMatch,
   connectSlackStartMatch,
+  disconnectOrcidMatch,
   disconnectSlackMatch,
   ediaStatementMatch,
   fundingMatch,
@@ -555,6 +556,27 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.apS('response', RM.of(connectOrcidError({ error }))),
           RM.ichainW(handleResponse),
         ),
+      ),
+    ),
+    pipe(
+      disconnectOrcidMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS('user', maybeGetUser),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.bindW('response', RM.fromReaderTaskK(disconnectOrcid)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getOrcidToken: withEnv(Keyv.getOrcidToken, env),
+        })),
       ),
     ),
     pipe(
