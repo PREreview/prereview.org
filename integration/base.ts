@@ -8,19 +8,16 @@ import {
 import { SystemClock } from 'clock-ts'
 import type { Doi } from 'doi-ts'
 import fetchMock, { type FetchMockSandbox } from 'fetch-mock'
-import * as E from 'fp-ts/Either'
-import * as J from 'fp-ts/Json'
 import type { JsonRecord } from 'fp-ts/Json'
-import { pipe } from 'fp-ts/function'
 import * as fs from 'fs/promises'
 import type { Server } from 'http'
 import { Status } from 'hyper-ts'
-import * as D from 'io-ts/Decoder'
 import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
+import type { Uuid } from 'uuid-ts'
 import {
   EmptyDepositionC,
   RecordsC,
@@ -29,6 +26,7 @@ import {
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { type ConfigEnv, app } from '../src/app'
+import { ContactEmailAddressC } from '../src/contact-email-address'
 import type {
   CanConnectOrcidProfileEnv,
   CanInviteAuthorsEnv,
@@ -45,6 +43,7 @@ import type {
 } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
 import type { IsUserBlockedEnv } from '../src/log-in'
+import type { EmailAddress } from '../src/types/email-address'
 import type { NonEmptyString } from '../src/types/string'
 import type { WasPrereviewRemovedEnv } from '../src/zenodo'
 
@@ -1216,65 +1215,38 @@ export const requiresVerifiedEmailAddress: Fixtures<
 export const hasAnUnverifiedEmailAddress: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+  Pick<AppFixtures, 'contactEmailAddressStore'>
 > = {
-  page: async ({ fetch, page }, use) => {
-    await page.goto('/my-details/change-email-address')
-    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
-    fetch.postOnce(
-      { name: 'original-verification', url: 'https://api.mailjet.com/v3.1/send' },
-      { body: { Messages: [{ Status: 'success' }] } },
+  contactEmailAddressStore: async ({ contactEmailAddressStore }, use) => {
+    await contactEmailAddressStore.set(
+      '0000-0002-1825-0097',
+      ContactEmailAddressC.encode({
+        type: 'unverified',
+        value: 'jcarberry@example.com' as EmailAddress,
+        verificationToken: 'ff0d6f8e-7dca-4a26-b68b-93f2d2bc3c2a' as Uuid,
+      }),
     )
-    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await use(page)
+    await use(contactEmailAddressStore)
   },
 }
 
 export const hasAVerifiedEmailAddress: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+  Pick<AppFixtures, 'contactEmailAddressStore'>
 > = {
-  page: async ({ fetch, page }, use) => {
-    await page.goto('/my-details/change-email-address')
-    await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
-    fetch.postOnce(
-      { name: 'original-verification', url: 'https://api.mailjet.com/v3.1/send' },
-      { body: { Messages: [{ Status: 'success' }] } },
+  contactEmailAddressStore: async ({ contactEmailAddressStore }, use) => {
+    await contactEmailAddressStore.set(
+      '0000-0002-1825-0097',
+      ContactEmailAddressC.encode({
+        type: 'verified',
+        value: 'jcarberry@example.com' as EmailAddress,
+      }),
     )
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.setContent(getLastMailjetEmailBody(fetch))
-    await page.getByRole('link', { name: 'Verify email address' }).click()
 
-    await use(page)
+    await use(contactEmailAddressStore)
   },
 }
 
 export const test = baseTest.extend(appFixtures)
-
-const getLastMailjetEmailBody = (fetch: FetchMockSandbox) => {
-  return pipe(
-    MailjetEmailD.decode(String(fetch.lastOptions('https://api.mailjet.com/v3.1/send')?.body)),
-    E.match(
-      () => {
-        throw new Error('No email found')
-      },
-      email => email.HtmlPart,
-    ),
-  )
-}
-
-const JsonD = {
-  decode: (s: string) =>
-    pipe(
-      J.parse(s),
-      E.mapLeft(() => D.error(s, 'JSON')),
-    ),
-}
-
-const MailjetEmailD = pipe(
-  JsonD,
-  D.compose(D.struct({ Messages: D.tuple(D.struct({ HtmlPart: D.string })) })),
-  D.map(body => body.Messages[0]),
-)
