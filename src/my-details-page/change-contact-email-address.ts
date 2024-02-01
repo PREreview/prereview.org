@@ -11,16 +11,13 @@ import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
-  type DeleteContactEmailAddressEnv,
   type SaveContactEmailAddressEnv,
   type UnverifiedContactEmailAddress,
   type VerifyContactEmailAddressEnv,
-  deleteContactEmailAddress,
   getContactEmailAddress,
   saveContactEmailAddress,
   verifyContactEmailAddress,
 } from '../contact-email-address'
-import { requiresVerifiedEmailAddress } from '../feature-flags'
 import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form'
 import { html, plainText } from '../html'
 import { havingProblemsPage } from '../http-error'
@@ -75,24 +72,18 @@ const handleChangeContactEmailAddressForm = ({ body, user }: { body: unknown; us
         RTE.orElseW(() => RTE.right(undefined)),
       ),
     ),
-    RTE.apSW('requiresVerifiedEmailAddress', RTE.fromReader(requiresVerifiedEmailAddress(user))),
     RTE.matchEW(
       state => RT.of(createFormPage({ emailAddress: E.left(state) })),
-      ({ emailAddress, originalEmailAddress, requiresVerifiedEmailAddress }) =>
-        match([emailAddress, requiresVerifiedEmailAddress])
+      ({ emailAddress, originalEmailAddress }) =>
+        match(emailAddress)
           .returnType<
             RT.ReaderTask<
-              DeleteContactEmailAddressEnv &
-                GenerateUuidEnv &
-                SaveContactEmailAddressEnv &
-                VerifyContactEmailAddressEnv,
+              GenerateUuidEnv & SaveContactEmailAddressEnv & VerifyContactEmailAddressEnv,
               PageResponse | RedirectResponse | FlashMessageResponse
             >
           >()
-          .with([originalEmailAddress, P.boolean], () =>
-            RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })),
-          )
-          .with([P.select(P.string), P.boolean], emailAddress =>
+          .with(originalEmailAddress, () => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })))
+          .with(P.select(P.string), emailAddress =>
             pipe(
               RTE.rightReaderIO(generateUuid),
               RTE.map(
@@ -115,16 +106,7 @@ const handleChangeContactEmailAddressForm = ({ body, user }: { body: unknown; us
               ),
             ),
           )
-          .with([undefined, false], () =>
-            pipe(
-              deleteContactEmailAddress(user.orcid),
-              RTE.matchW(
-                () => havingProblemsPage,
-                () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
-              ),
-            ),
-          )
-          .with([undefined, true], () => RT.of(createFormPage({ emailAddress: E.left(missingE()) })))
+          .with(undefined, () => RT.of(createFormPage({ emailAddress: E.left(missingE()) })))
           .exhaustive(),
     ),
   )

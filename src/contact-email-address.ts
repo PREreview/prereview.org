@@ -28,10 +28,6 @@ export interface GetContactEmailAddressEnv {
   getContactEmailAddress: (orcid: Orcid) => TE.TaskEither<'not-found' | 'unavailable', ContactEmailAddress>
 }
 
-export interface DeleteContactEmailAddressEnv {
-  deleteContactEmailAddress: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
-}
-
 export interface SaveContactEmailAddressEnv {
   saveContactEmailAddress: (
     orcid: Orcid,
@@ -80,13 +76,6 @@ export const maybeGetContactEmailAddress = flow(
       .exhaustive(),
   ),
 )
-
-export const deleteContactEmailAddress = (orcid: Orcid) =>
-  RTE.asksReaderTaskEither(
-    RTE.fromTaskEitherK(({ deleteContactEmailAddress }: DeleteContactEmailAddressEnv) =>
-      deleteContactEmailAddress(orcid),
-    ),
-  )
 
 export const saveContactEmailAddress = (
   orcid: Orcid,

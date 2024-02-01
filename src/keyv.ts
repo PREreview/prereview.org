@@ -231,11 +231,6 @@ export const saveLanguages = flow(
   RTE.local((env: LanguagesStoreEnv) => env.languagesStore),
 )
 
-export const deleteContactEmailAddress = flow(
-  deleteKey(OrcidE),
-  RTE.local((env: ContactEmailAddressStoreEnv) => env.contactEmailAddressStore),
-)
-
 export const getContactEmailAddress = flow(
   getKey(OrcidE, ContactEmailAddressC),
   RTE.local((env: ContactEmailAddressStoreEnv) => env.contactEmailAddressStore),

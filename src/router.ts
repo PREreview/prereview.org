@@ -1011,9 +1011,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          deleteContactEmailAddress: withEnv(Keyv.deleteContactEmailAddress, env),
           getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
-          requiresVerifiedEmailAddress: () => true,
           saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, env),
           verifyContactEmailAddress: withEnv(sendContactEmailAddressVerificationEmail, env),
         })),

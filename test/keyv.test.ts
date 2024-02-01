@@ -1016,52 +1016,6 @@ describe('saveLanguages', () => {
   )
 })
 
-describe('deleteContactEmailAddress', () => {
-  test.prop([fc.orcid(), fc.contactEmailAddress()])(
-    'when the key contains an email address',
-    async (orcid, emailAddress) => {
-      const store = new Keyv()
-      await store.set(orcid, ContactEmailAddressC.encode(emailAddress))
-
-      const actual = await _.deleteContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
-
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.has(orcid)).toBeFalsy()
-    },
-  )
-
-  test.prop([fc.orcid(), fc.anything()])(
-    'when the key contains something other than an email address',
-    async (orcid, value) => {
-      const store = new Keyv()
-      await store.set(orcid, value)
-
-      const actual = await _.deleteContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
-
-      expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.has(orcid)).toBeFalsy()
-    },
-  )
-
-  test.prop([fc.orcid()])('when the key is not set', async orcid => {
-    const store = new Keyv()
-
-    const actual = await _.deleteContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
-
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.has(orcid)).toBeFalsy()
-  })
-
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.delete = () => Promise.reject(error)
-
-    const actual = await _.deleteContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
-
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
-})
-
 describe('getContactEmailAddress', () => {
   test.prop([fc.orcid(), fc.contactEmailAddress()])(
     'when the key contains an email address',
