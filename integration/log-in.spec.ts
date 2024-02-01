@@ -110,6 +110,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
     await page.reload()
 
     await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+
+    await page.goto('/disconnect-orcid')
+    await page.getByRole('button', { name: 'Disconnect profile' }).click()
   },
 )
 
