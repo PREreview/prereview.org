@@ -35,7 +35,7 @@ export interface GetPrereviewEnv {
   getPrereview: (id: number) => TE.TaskEither<'unavailable', Prereview>
 }
 
-const getPrereview = (id: number): RTE.ReaderTaskEither<GetPrereviewEnv, 'unavailable' | 'not-found', Prereview> =>
+const getPrereview = (id: number): RTE.ReaderTaskEither<GetPrereviewEnv, 'unavailable', Prereview> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereview }) => getPrereview(id)))
 
 export const authorInviteStart = ({
