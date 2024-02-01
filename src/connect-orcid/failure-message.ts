@@ -2,7 +2,7 @@ import { Status } from 'hyper-ts'
 import { html, plainText } from '../html'
 import { PageResponse } from '../response'
 
-export const failureMessage = PageResponse({
+export const connectFailureMessage = PageResponse({
   status: Status.ServiceUnavailable,
   title: plainText`Sorry, we’re having problems`,
   main: html`

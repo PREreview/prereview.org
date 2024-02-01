@@ -16,7 +16,7 @@ import { FlashMessageResponse } from '../response'
 import { connectOrcidMatch, myDetailsMatch } from '../routes'
 import { NonEmptyStringC, ordNonEmptyString } from '../types/string'
 import type { User } from '../user'
-import { failureMessage } from './failure-message'
+import { connectFailureMessage } from './failure-message'
 
 export interface OrcidOAuthEnv {
   orcidOauth: {
@@ -44,7 +44,7 @@ export const connectOrcidCode = ({ code, user }: { code: string; user?: User }) 
       oldOrcidToken ? revokeAccessToken(oldOrcidToken.accessToken) : RTE.of(undefined),
     ),
     RTE.matchW(
-      () => failureMessage,
+      () => connectFailureMessage,
       () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'orcid-connected' }),
     ),
   )

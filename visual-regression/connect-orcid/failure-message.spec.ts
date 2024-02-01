@@ -1,8 +1,8 @@
-import { failureMessage } from '../../src/connect-orcid/failure-message'
+import { connectFailureMessage } from '../../src/connect-orcid/failure-message'
 import { expect, test } from '../base'
 
-test('content looks right', async ({ showPage }) => {
-  const content = await showPage(failureMessage)
+test('content looks right when failing to connect', async ({ showPage }) => {
+  const content = await showPage(connectFailureMessage)
 
   await expect(content).toHaveScreenshot()
 })
