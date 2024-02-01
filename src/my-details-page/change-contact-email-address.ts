@@ -11,7 +11,8 @@ import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import {
-  type EditContactEmailAddressEnv,
+  type DeleteContactEmailAddressEnv,
+  type SaveContactEmailAddressEnv,
   type UnverifiedContactEmailAddress,
   type VerifyContactEmailAddressEnv,
   deleteContactEmailAddress,
@@ -81,7 +82,10 @@ const handleChangeContactEmailAddressForm = ({ body, user }: { body: unknown; us
         match([emailAddress, requiresVerifiedEmailAddress])
           .returnType<
             RT.ReaderTask<
-              GenerateUuidEnv & EditContactEmailAddressEnv & VerifyContactEmailAddressEnv,
+              DeleteContactEmailAddressEnv &
+                GenerateUuidEnv &
+                SaveContactEmailAddressEnv &
+                VerifyContactEmailAddressEnv,
               PageResponse | RedirectResponse | FlashMessageResponse
             >
           >()

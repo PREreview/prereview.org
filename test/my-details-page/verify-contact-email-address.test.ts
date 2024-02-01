@@ -16,7 +16,6 @@ describe('verifyContactEmailAddress', () => {
       const saveContactEmailAddress = jest.fn<_.Env['saveContactEmailAddress']>(_ => TE.right(undefined))
 
       const actual = await _.verifyContactEmailAddress({ verify: contactEmailAddress.verificationToken, user })({
-        deleteContactEmailAddress: shouldNotBeCalled,
         getContactEmailAddress,
         saveContactEmailAddress,
       })()
@@ -38,7 +37,6 @@ describe('verifyContactEmailAddress', () => {
     'when the email address is already verified',
     async (user, verify, contactEmailAddress) => {
       const actual = await _.verifyContactEmailAddress({ verify, user })({
-        deleteContactEmailAddress: shouldNotBeCalled,
         getContactEmailAddress: () => TE.right(contactEmailAddress),
         saveContactEmailAddress: shouldNotBeCalled,
       })()
@@ -58,7 +56,6 @@ describe('verifyContactEmailAddress', () => {
     "when the verification token doesn't match",
     async (user, verify, contactEmailAddress) => {
       const actual = await _.verifyContactEmailAddress({ verify, user })({
-        deleteContactEmailAddress: shouldNotBeCalled,
         getContactEmailAddress: () => TE.right(contactEmailAddress),
         saveContactEmailAddress: shouldNotBeCalled,
       })()
@@ -76,7 +73,6 @@ describe('verifyContactEmailAddress', () => {
 
   test.prop([fc.user(), fc.uuid()])('when there is no email address', async (user, verify) => {
     const actual = await _.verifyContactEmailAddress({ verify, user })({
-      deleteContactEmailAddress: shouldNotBeCalled,
       getContactEmailAddress: () => TE.left('not-found'),
       saveContactEmailAddress: shouldNotBeCalled,
     })()
@@ -93,7 +89,6 @@ describe('verifyContactEmailAddress', () => {
 
   test.prop([fc.user(), fc.uuid()])("when the email address can't be loaded", async (user, verify) => {
     const actual = await _.verifyContactEmailAddress({ verify, user })({
-      deleteContactEmailAddress: shouldNotBeCalled,
       getContactEmailAddress: () => TE.left('unavailable'),
       saveContactEmailAddress: shouldNotBeCalled,
     })()
@@ -110,7 +105,6 @@ describe('verifyContactEmailAddress', () => {
 
   test.prop([fc.uuid()])('when the user is not logged in', async verify => {
     const actual = await _.verifyContactEmailAddress({ verify, user: undefined })({
-      deleteContactEmailAddress: shouldNotBeCalled,
       getContactEmailAddress: shouldNotBeCalled,
       saveContactEmailAddress: shouldNotBeCalled,
     })()

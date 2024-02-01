@@ -6,7 +6,7 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
-import type { EditContactEmailAddressEnv, VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address'
+import type { SaveContactEmailAddressEnv, VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address'
 import type { RequiresVerifiedEmailAddressEnv } from '../../src/feature-flags'
 import { writeReviewMatch, writeReviewNeedToVerifyEmailAddressMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
@@ -35,7 +35,6 @@ describe('writeReviewEnterEmailAddress', () => {
 
         const actual = await runMiddleware(
           _.writeReviewEnterEmailAddress(preprintId)({
-            deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
             generateUuid: shouldNotBeCalled,
             getContactEmailAddress: () => TE.right(contactEmailAddress),
@@ -78,7 +77,6 @@ describe('writeReviewEnterEmailAddress', () => {
 
         const actual = await runMiddleware(
           _.writeReviewEnterEmailAddress(preprintId)({
-            deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
             generateUuid: shouldNotBeCalled,
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
@@ -129,7 +127,7 @@ describe('writeReviewEnterEmailAddress', () => {
       ) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
-        const saveContactEmailAddress = jest.fn<EditContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
+        const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
           TE.right(undefined),
         )
         const verifyContactEmailAddressForReview = jest.fn<
@@ -138,7 +136,6 @@ describe('writeReviewEnterEmailAddress', () => {
 
         const actual = await runMiddleware(
           _.writeReviewEnterEmailAddress(preprintId)({
-            deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             generateUuid: () => verificationToken,
@@ -201,7 +198,6 @@ describe('writeReviewEnterEmailAddress', () => {
 
         const actual = await runMiddleware(
           _.writeReviewEnterEmailAddress(preprintId)({
-            deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
             getContactEmailAddress: () => TE.left('not-found'),
             generateUuid: () => verificationToken,
@@ -229,7 +225,6 @@ describe('writeReviewEnterEmailAddress', () => {
       async (preprintId, preprintTitle, connection, user) => {
         const actual = await runMiddleware(
           _.writeReviewEnterEmailAddress(preprintId)({
-            deleteContactEmailAddress: shouldNotBeCalled,
             formStore: new Keyv(),
             getContactEmailAddress: shouldNotBeCalled,
             generateUuid: shouldNotBeCalled,
@@ -262,7 +257,6 @@ describe('writeReviewEnterEmailAddress', () => {
     async (preprintId, preprintTitle, connection, user) => {
       const actual = await runMiddleware(
         _.writeReviewEnterEmailAddress(preprintId)({
-          deleteContactEmailAddress: shouldNotBeCalled,
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           generateUuid: shouldNotBeCalled,
@@ -291,7 +285,6 @@ describe('writeReviewEnterEmailAddress', () => {
     async (preprintId, connection, user) => {
       const actual = await runMiddleware(
         _.writeReviewEnterEmailAddress(preprintId)({
-          deleteContactEmailAddress: shouldNotBeCalled,
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           generateUuid: shouldNotBeCalled,
@@ -320,7 +313,6 @@ describe('writeReviewEnterEmailAddress', () => {
     async (preprintId, connection, user) => {
       const actual = await runMiddleware(
         _.writeReviewEnterEmailAddress(preprintId)({
-          deleteContactEmailAddress: shouldNotBeCalled,
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           generateUuid: shouldNotBeCalled,
@@ -349,7 +341,6 @@ describe('writeReviewEnterEmailAddress', () => {
     async (preprintId, preprintTitle, connection) => {
       const actual = await runMiddleware(
         _.writeReviewEnterEmailAddress(preprintId)({
-          deleteContactEmailAddress: shouldNotBeCalled,
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           generateUuid: shouldNotBeCalled,

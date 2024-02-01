@@ -6,7 +6,7 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
-import type { EditContactEmailAddressEnv, GetContactEmailAddressEnv } from '../../src/contact-email-address'
+import type { GetContactEmailAddressEnv, SaveContactEmailAddressEnv } from '../../src/contact-email-address'
 import type { RequiresVerifiedEmailAddressEnv } from '../../src/feature-flags'
 import { writeReviewMatch, writeReviewVerifyEmailAddressMatch } from '../../src/routes'
 import * as _ from '../../src/write-review'
@@ -37,7 +37,7 @@ describe('writeReviewVerifyEmailAddress', () => {
         const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
           TE.right(contactEmailAddress),
         )
-        const saveContactEmailAddress = jest.fn<EditContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
+        const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
           TE.right(undefined),
         )
 
@@ -46,7 +46,6 @@ describe('writeReviewVerifyEmailAddress', () => {
             preprintId,
             contactEmailAddress.verificationToken,
           )({
-            deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
             getContactEmailAddress,
             getPreprintTitle: () => TE.right(preprintTitle),
@@ -110,7 +109,6 @@ describe('writeReviewVerifyEmailAddress', () => {
             preprintId,
             id,
           )({
-            deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
             getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
@@ -165,7 +163,6 @@ describe('writeReviewVerifyEmailAddress', () => {
             preprintId,
             id,
           )({
-            deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
             getContactEmailAddress: () => TE.right(contactEmailAddress),
             getPreprintTitle: () => TE.right(preprintTitle),
@@ -209,7 +206,6 @@ describe('writeReviewVerifyEmailAddress', () => {
             preprintId,
             id,
           )({
-            deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
             getContactEmailAddress: () => TE.left('not-found'),
             getPreprintTitle: () => TE.right(preprintTitle),
@@ -253,7 +249,6 @@ describe('writeReviewVerifyEmailAddress', () => {
             preprintId,
             id,
           )({
-            deleteContactEmailAddress: shouldNotBeCalled,
             formStore,
             getContactEmailAddress: () => TE.left('unavailable'),
             getPreprintTitle: () => TE.right(preprintTitle),
@@ -291,7 +286,6 @@ describe('writeReviewVerifyEmailAddress', () => {
           preprintId,
           id,
         )({
-          deleteContactEmailAddress: shouldNotBeCalled,
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
@@ -334,7 +328,6 @@ describe('writeReviewVerifyEmailAddress', () => {
           preprintId,
           id,
         )({
-          deleteContactEmailAddress: shouldNotBeCalled,
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
@@ -366,7 +359,6 @@ describe('writeReviewVerifyEmailAddress', () => {
           preprintId,
           id,
         )({
-          deleteContactEmailAddress: shouldNotBeCalled,
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.left('unavailable'),
@@ -398,7 +390,6 @@ describe('writeReviewVerifyEmailAddress', () => {
           preprintId,
           id,
         )({
-          deleteContactEmailAddress: shouldNotBeCalled,
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.left('not-found'),
@@ -430,7 +421,6 @@ describe('writeReviewVerifyEmailAddress', () => {
           preprintId,
           id,
         )({
-          deleteContactEmailAddress: shouldNotBeCalled,
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
@@ -485,7 +475,6 @@ describe('writeReviewVerifyEmailAddress', () => {
           preprintId,
           id,
         )({
-          deleteContactEmailAddress: shouldNotBeCalled,
           formStore: new Keyv(),
           getContactEmailAddress: shouldNotBeCalled,
           getPreprintTitle: () => TE.right(preprintTitle),
