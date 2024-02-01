@@ -8,7 +8,7 @@ import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
-import { maybeGetContactEmailAddress } from '../../contact-email-address'
+import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../../contact-email-address'
 import { requiresVerifiedEmailAddress } from '../../feature-flags'
 import { type Html, fixHeadingLevels, html, plainText, sendHtml } from '../../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware'
@@ -82,6 +82,7 @@ export const writeReviewPublish = flow(
 )
 
 const decideNextStep = (state: {
+  contactEmailAddress?: ContactEmailAddress
   form: E.Either<unknown, CompletedForm>
   originalForm: Form
   preprint: PreprintTitle
