@@ -24,6 +24,7 @@ import {
   changeResearchInterestsVisibilityMatch,
   connectOrcidMatch,
   connectSlackMatch,
+  disconnectOrcidMatch,
   disconnectSlackMatch,
   myDetailsMatch,
   profileMatch,
@@ -124,6 +125,11 @@ export function createPage({
               <div>
                 <dt>ORCID profile</dt>
                 <dd>Connected</dd>
+                <dd>
+                  <a href="${format(disconnectOrcidMatch.formatter, {})}"
+                    >Disconnect <span class="visually-hidden">ORCID profile</span></a
+                  >
+                </dd>
               </div>
             `,
           )

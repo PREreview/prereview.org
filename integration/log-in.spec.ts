@@ -114,7 +114,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
 
     fetch.postOnce('http://orcid.test/revoke', { status: Status.OK })
 
-    await page.goto('/disconnect-orcid')
+    await page.getByRole('link', { name: 'Disconnect ORCID profile' }).click()
     await page.getByRole('button', { name: 'Disconnect profile' }).click()
 
     if (javaScriptEnabled) {
