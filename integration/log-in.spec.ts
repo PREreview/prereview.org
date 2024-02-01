@@ -2,6 +2,7 @@ import type { FetchMockSandbox } from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
 import { pipe } from 'fp-ts/function'
+import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
 import {
@@ -95,7 +96,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ 
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
   'can connect my ORCID profile',
-  async ({ javaScriptEnabled, page }) => {
+  async ({ fetch, javaScriptEnabled, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
     await page.getByRole('link', { name: 'Connect ORCID profile' }).click()
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -110,6 +111,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
     await page.reload()
 
     await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+
+    fetch.postOnce('http://orcid.test/revoke', { status: Status.OK })
 
     await page.goto('/disconnect-orcid')
     await page.getByRole('button', { name: 'Disconnect profile' }).click()
