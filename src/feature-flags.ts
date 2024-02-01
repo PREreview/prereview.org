@@ -14,10 +14,3 @@ export interface CanConnectOrcidProfileEnv {
 
 export const canConnectOrcidProfile = (user: User) =>
   R.asks(({ canConnectOrcidProfile }: CanConnectOrcidProfileEnv) => canConnectOrcidProfile(user))
-
-export interface RequiresVerifiedEmailAddressEnv {
-  requiresVerifiedEmailAddress: (user: User) => boolean
-}
-
-export const requiresVerifiedEmailAddress = (user: User) =>
-  R.asks(({ requiresVerifiedEmailAddress }: RequiresVerifiedEmailAddressEnv) => requiresVerifiedEmailAddress(user))

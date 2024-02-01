@@ -57,7 +57,6 @@ describe('writeReviewPublish', () => {
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           publishPrereview: shouldNotBeCalled,
-          requiresVerifiedEmailAddress: () => true,
           secret,
           sessionCookie,
           sessionStore,
@@ -111,7 +110,6 @@ describe('writeReviewPublish', () => {
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           publishPrereview: shouldNotBeCalled,
-          requiresVerifiedEmailAddress: () => true,
           secret,
           sessionCookie,
           sessionStore,
@@ -150,6 +148,7 @@ describe('writeReviewPublish', () => {
     ),
     fc.completedQuestionsForm(),
     fc.user(),
+    fc.verifiedContactEmailAddress(),
     fc.doi(),
     fc.integer(),
   ])(
@@ -160,6 +159,7 @@ describe('writeReviewPublish', () => {
       [connection, sessionCookie, sessionId, secret],
       newReview,
       user,
+      contactEmailAddress,
       reviewDoi,
       reviewId,
     ) => {
@@ -176,8 +176,7 @@ describe('writeReviewPublish', () => {
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           publishPrereview,
-          requiresVerifiedEmailAddress: () => false,
-          getContactEmailAddress: shouldNotBeCalled,
+          getContactEmailAddress: () => TE.right(contactEmailAddress),
           secret,
           sessionCookie,
           sessionStore,
@@ -230,6 +229,7 @@ describe('writeReviewPublish', () => {
     ),
     fc.completedFreeformForm(),
     fc.user(),
+    fc.verifiedContactEmailAddress(),
     fc.doi(),
     fc.integer(),
   ])(
@@ -240,6 +240,7 @@ describe('writeReviewPublish', () => {
       [connection, sessionCookie, sessionId, secret],
       newReview,
       user,
+      contactEmailAddress,
       reviewDoi,
       reviewId,
     ) => {
@@ -252,12 +253,11 @@ describe('writeReviewPublish', () => {
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
           formStore,
-          getContactEmailAddress: shouldNotBeCalled,
+          getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           publishPrereview,
-          requiresVerifiedEmailAddress: () => false,
           secret,
           sessionCookie,
           sessionStore,
@@ -310,9 +310,17 @@ describe('writeReviewPublish', () => {
     ),
     fc.incompleteForm(),
     fc.user(),
+    fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
   ])(
     'when the form is incomplete',
-    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newPrereview, user) => {
+    async (
+      preprintId,
+      preprintTitle,
+      [connection, sessionCookie, sessionId, secret],
+      newPrereview,
+      user,
+      contactEmailAddress,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
@@ -320,13 +328,12 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
-          getContactEmailAddress: shouldNotBeCalled,
+          getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           formStore,
           publishPrereview: shouldNotBeCalled,
-          requiresVerifiedEmailAddress: () => false,
           secret,
           sessionCookie,
           sessionStore,
@@ -377,7 +384,6 @@ describe('writeReviewPublish', () => {
           getUserOnboarding: shouldNotBeCalled,
           formStore: new Keyv(),
           publishPrereview: shouldNotBeCalled,
-          requiresVerifiedEmailAddress: () => false,
           secret,
           sessionCookie,
           sessionStore,
@@ -425,7 +431,6 @@ describe('writeReviewPublish', () => {
         getUser: () => M.of(user),
         getUserOnboarding: shouldNotBeCalled,
         publishPrereview: shouldNotBeCalled,
-        requiresVerifiedEmailAddress: () => false,
         secret,
         sessionCookie,
         sessionStore,
@@ -469,7 +474,6 @@ describe('writeReviewPublish', () => {
         getUser: () => M.of(user),
         getUserOnboarding: shouldNotBeCalled,
         publishPrereview: shouldNotBeCalled,
-        requiresVerifiedEmailAddress: () => false,
         secret,
         sessionCookie,
         sessionStore,
@@ -499,7 +503,6 @@ describe('writeReviewPublish', () => {
           getUserOnboarding: shouldNotBeCalled,
           formStore: new Keyv(),
           publishPrereview: shouldNotBeCalled,
-          requiresVerifiedEmailAddress: () => false,
           secret,
           sessionCookie,
           sessionStore: new Keyv(),
@@ -540,9 +543,17 @@ describe('writeReviewPublish', () => {
       .tuple(fc.incompleteForm(), fc.completedForm().map(CompletedFormC.encode))
       .map(parts => merge.withOptions({ mergeArrays: false }, ...parts)),
     fc.user(),
+    fc.verifiedContactEmailAddress(),
   ])(
     'when the PREreview cannot be published',
-    async (preprintId, preprintTitle, [connection, sessionCookie, sessionId, secret], newReview, user) => {
+    async (
+      preprintId,
+      preprintTitle,
+      [connection, sessionCookie, sessionId, secret],
+      newReview,
+      user,
+      contactEmailAddress,
+    ) => {
       const sessionStore = new Keyv()
       await sessionStore.set(sessionId, { user: UserC.encode(user) })
       const formStore = new Keyv()
@@ -550,13 +561,12 @@ describe('writeReviewPublish', () => {
 
       const actual = await runMiddleware(
         _.writeReviewPublish(preprintId)({
-          getContactEmailAddress: shouldNotBeCalled,
+          getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPreprintTitle: () => TE.right(preprintTitle),
           getUser: () => M.of(user),
           getUserOnboarding: shouldNotBeCalled,
           formStore,
           publishPrereview: () => TE.left('unavailable'),
-          requiresVerifiedEmailAddress: () => false,
           secret,
           sessionCookie,
           sessionStore,

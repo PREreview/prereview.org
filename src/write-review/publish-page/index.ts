@@ -9,7 +9,6 @@ import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import { type ContactEmailAddress, maybeGetContactEmailAddress } from '../../contact-email-address'
-import { requiresVerifiedEmailAddress } from '../../feature-flags'
 import { type Html, fixHeadingLevels, html, plainText, sendHtml } from '../../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../../middleware'
 import { type FathomEnv, type PhaseEnv, type TemplatePageEnv, page } from '../../page'
@@ -51,15 +50,7 @@ export const writeReviewPublish = flow(
       ),
       RM.bind('form', ({ originalForm }) => RM.right(CompletedFormC.decode(originalForm))),
       RM.apSW('method', RM.fromMiddleware(getMethod)),
-      RM.bindW(
-        'requiresVerifiedEmailAddress',
-        RM.fromReaderK(({ user }) => requiresVerifiedEmailAddress(user)),
-      ),
-      RM.bindW('contactEmailAddress', ({ requiresVerifiedEmailAddress, user }) =>
-        requiresVerifiedEmailAddress
-          ? RM.fromReaderTaskEither(maybeGetContactEmailAddress(user.orcid))
-          : RM.of(undefined),
-      ),
+      RM.bindW('contactEmailAddress', ({ user }) => RM.fromReaderTaskEither(maybeGetContactEmailAddress(user.orcid))),
       RM.ichainW(decideNextStep),
       RM.orElseW(error =>
         match(error)
@@ -86,7 +77,6 @@ const decideNextStep = (state: {
   form: E.Either<unknown, CompletedForm>
   originalForm: Form
   preprint: PreprintTitle
-  requiresVerifiedEmailAddress: boolean
   user: User
 }) =>
   match(state)
@@ -103,7 +93,7 @@ const decideNextStep = (state: {
       P.union({ form: P.when(E.isLeft) }, { originalForm: { alreadyWritten: P.optional(undefined) } }),
       ({ originalForm }) => RM.fromMiddleware(redirectToNextForm(state.preprint.id)(originalForm)),
     )
-    .with({ requiresVerifiedEmailAddress: true, contactEmailAddress: P.optional({ type: 'unverified' }) }, () =>
+    .with({ contactEmailAddress: P.optional({ type: 'unverified' }) }, () =>
       RM.fromMiddleware(seeOther(format(writeReviewEnterEmailAddressMatch.formatter, { id: state.preprint.id }))),
     )
     .with({ method: 'POST', form: P.when(E.isRight) }, ({ form, ...state }) =>

@@ -9,7 +9,6 @@ import {
   maybeGetContactEmailAddress,
   verifyContactEmailAddressForReview,
 } from '../contact-email-address'
-import { requiresVerifiedEmailAddress } from '../feature-flags'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from '../flash-message'
 import { html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
@@ -31,16 +30,6 @@ export const writeReviewNeedToVerifyEmailAddress = flow(
     pipe(
       RM.right({ preprint }),
       RM.apS('user', getUser),
-      RM.bindW(
-        'requiresVerifiedEmailAddress',
-        flow(
-          RM.fromReaderK(({ user }) => requiresVerifiedEmailAddress(user)),
-          RM.filterOrElse(
-            requiresVerifiedEmailAddress => requiresVerifiedEmailAddress,
-            () => 'not-found' as const,
-          ),
-        ),
-      ),
       RM.bindW(
         'form',
         RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
@@ -64,7 +53,6 @@ export const writeReviewNeedToVerifyEmailAddress = flow(
       ),
       RM.orElseW(error =>
         match(error)
-          .with('not-found', () => notFound)
           .with(
             'no-form',
             'no-session',

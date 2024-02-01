@@ -5,7 +5,6 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { getContactEmailAddress, isUnverified, saveContactEmailAddress } from '../contact-email-address'
-import { requiresVerifiedEmailAddress } from '../feature-flags'
 import { type OrcidOAuthEnv, logInAndRedirect } from '../log-in'
 import { notFound, seeOther, serviceUnavailable } from '../middleware'
 import type { FathomEnv, PhaseEnv } from '../page'
@@ -23,16 +22,6 @@ export const writeReviewVerifyEmailAddress = (id: IndeterminatePreprintId, verif
       pipe(
         RM.right({ preprint }),
         RM.apS('user', getUser),
-        RM.bindW(
-          'requiresVerifiedEmailAddress',
-          flow(
-            RM.fromReaderK(({ user }) => requiresVerifiedEmailAddress(user)),
-            RM.filterOrElse(
-              requiresVerifiedEmailAddress => requiresVerifiedEmailAddress,
-              () => 'not-found' as const,
-            ),
-          ),
-        ),
         RM.bindW(
           'form',
           RM.fromReaderTaskEitherK(({ user }) => getForm(user.orcid, preprint.id)),
