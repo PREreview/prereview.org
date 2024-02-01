@@ -144,6 +144,7 @@ const FlashMessageD = D.literal(
   'verify-contact-email',
   'contact-email-verified',
   'orcid-connected',
+  'orcid-disconnected',
   'slack-connected',
   'slack-disconnected',
 )
@@ -329,6 +330,16 @@ function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>) {
           <h2 id="notification-banner-title">Success</h2>
 
           <p>Your ORCID profile has been connected.</p>
+        </notification-banner>
+      `,
+    )
+    .with(
+      'orcid-disconnected',
+      () => html`
+        <notification-banner aria-labelledby="notification-banner-title" role="alert">
+          <h2 id="notification-banner-title">Success</h2>
+
+          <p>Your ORCID profile has been disconnected.</p>
         </notification-banner>
       `,
     )

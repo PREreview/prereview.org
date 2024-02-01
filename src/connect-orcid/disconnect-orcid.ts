@@ -4,8 +4,8 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error'
-import { deleteOrcidToken, maybeGetOrcidToken } from '../orcid-token'
-import { LogInResponse, RedirectResponse } from '../response'
+import { type DeleteOrcidTokenEnv, deleteOrcidToken, maybeGetOrcidToken } from '../orcid-token'
+import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response'
 import { disconnectOrcidMatch, myDetailsMatch } from '../routes'
 import type { User } from '../user'
 import { disconnectOrcidPage } from './disconnect-orcid-page'
@@ -27,6 +27,7 @@ export const disconnectOrcid = ({ method, user }: { method: string; user?: User 
         ),
       state =>
         match(state)
+          .returnType<RT.ReaderTask<DeleteOrcidTokenEnv, FlashMessageResponse | RedirectResponse | PageResponse>>()
           .with({ orcidToken: undefined }, () =>
             RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) })),
           )
@@ -44,6 +45,6 @@ const handleForm = ({ user }: { user: User }) =>
         match(error)
           .with('unavailable', () => disconnectFailureMessage)
           .exhaustive(),
-      () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
+      () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'orcid-disconnected' }),
     ),
   )
