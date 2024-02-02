@@ -380,6 +380,13 @@ export const authorInvitePersonaMatch = pipe(
   P.then(P.end),
 )
 
+export const authorInviteEnterEmailAddressMatch = pipe(
+  P.lit('author-invite'),
+  P.then(type('id', UuidC)),
+  P.then(P.lit('enter-email-address')),
+  P.then(P.end),
+)
+
 export const authorInviteCheckMatch = pipe(
   P.lit('author-invite'),
   P.then(type('id', UuidC)),

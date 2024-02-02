@@ -23,6 +23,7 @@ import { type OpenAuthorInvite, createAuthorInvite } from './author-invite'
 import {
   authorInvite,
   authorInviteCheck,
+  authorInviteEnterEmailAddress,
   authorInvitePersona,
   authorInvitePublished,
   authorInviteStart,
@@ -104,6 +105,7 @@ import { reviewsPage } from './reviews-page'
 import {
   aboutUsMatch,
   authorInviteCheckMatch,
+  authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
@@ -1388,6 +1390,32 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             env,
           ),
           saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, env),
+        })),
+      ),
+    ),
+    pipe(
+      authorInviteEnterEmailAddressMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS('user', maybeGetUser),
+          RM.apS('method', RM.fromMiddleware(getMethod)),
+          RM.bindW('response', RM.fromReaderTaskK(authorInviteEnterEmailAddress)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
+          getPrereview: withEnv(
+            flow(
+              getPrereviewFromZenodo,
+              RTE.mapLeft(() => 'unavailable' as const),
+            ),
+            env,
+          ),
         })),
       ),
     ),
