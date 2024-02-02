@@ -20,12 +20,15 @@ import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
 import {
   EmptyDepositionC,
+  InProgressDepositionC,
+  RecordC,
   RecordsC,
   SubmittedDepositionC,
   UnsubmittedDepositionC,
   type Record as ZenodoRecord,
 } from 'zenodo-ts'
 import { type ConfigEnv, app } from '../src/app'
+import { AuthorInviteC } from '../src/author-invite'
 import { ContactEmailAddressC } from '../src/contact-email-address'
 import type { CanConnectOrcidProfileEnv, CanInviteAuthorsEnv } from '../src/feature-flags'
 import type {
@@ -1172,6 +1175,168 @@ export const willPublishAReview: Fixtures<
   },
 }
 
+export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'fetch'>> = {
+  fetch: async ({ fetch }, use) => {
+    const record: ZenodoRecord = {
+      conceptdoi: '10.5072/zenodo.1055805' as Doi,
+      conceptrecid: 1055805,
+      files: [
+        {
+          links: {
+            self: new URL('http://example.com/review.html/content'),
+          },
+          key: 'review.html',
+          size: 58,
+        },
+      ],
+      id: 1055806,
+      links: {
+        latest: new URL('http://example.com/latest'),
+        latest_html: new URL('http://example.com/latest_html'),
+      },
+      metadata: {
+        communities: [{ id: 'prereview-reviews' }],
+        creators: [
+          {
+            name: 'Josiah Carberry',
+            orcid: '0000-0002-1825-0097' as Orcid,
+          },
+        ],
+        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+        doi: '10.5072/zenodo.1055806' as Doi,
+        license: { id: 'cc-by-4.0' },
+        publication_date: new Date('2022-07-05'),
+        related_identifiers: [
+          {
+            identifier: '10.1101/2022.01.13.476201',
+            relation: 'reviews',
+            resource_type: 'publication-preprint',
+            scheme: 'doi',
+          },
+          {
+            identifier: '10.5072/zenodo.1061863',
+            relation: 'isVersionOf',
+            scheme: 'doi',
+          },
+        ],
+        resource_type: {
+          type: 'publication',
+          subtype: 'peerreview',
+        },
+        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      },
+    }
+
+    fetch
+      .getOnce(
+        { name: 'get-published-deposition', url: 'http://zenodo.test/api/deposit/depositions/1055806' },
+        {
+          body: SubmittedDepositionC.encode({
+            ...record,
+            links: {
+              edit: new URL('http://example.com/edit'),
+            },
+            metadata: {
+              ...record.metadata,
+              communities: [{ identifier: 'prereview-reviews' }],
+              license: record.metadata.license.id,
+              upload_type: 'publication',
+              publication_type: 'peerreview',
+            },
+            state: 'done',
+            submitted: true,
+          }),
+        },
+      )
+      .postOnce(
+        { name: 'unlock-deposition', url: 'http://example.com/edit' },
+        {
+          body: InProgressDepositionC.encode({
+            ...record,
+            links: {
+              publish: new URL('http://example.com/publish'),
+              self: new URL('http://example.com/self'),
+            },
+            metadata: {
+              ...record.metadata,
+              communities: [{ identifier: 'prereview-reviews' }],
+              license: record.metadata.license.id,
+              prereserve_doi: { doi: record.metadata.doi },
+              upload_type: 'publication',
+              publication_type: 'peerreview',
+            },
+            state: 'inprogress',
+            submitted: true,
+          }),
+          status: Status.Created,
+        },
+      )
+      .putOnce(
+        { name: 'update-deposition', url: 'http://example.com/self' },
+        {
+          body: InProgressDepositionC.encode({
+            ...record,
+            links: {
+              publish: new URL('http://example.com/publish'),
+              self: new URL('http://example.com/self'),
+            },
+            metadata: {
+              ...record.metadata,
+              communities: [{ identifier: 'prereview-reviews' }],
+              license: record.metadata.license.id,
+              prereserve_doi: { doi: record.metadata.doi },
+              upload_type: 'publication',
+              publication_type: 'peerreview',
+            },
+            state: 'inprogress',
+            submitted: true,
+          }),
+          status: Status.OK,
+        },
+      )
+      .postOnce(
+        { name: 'publish-updated-deposition', url: 'http://example.com/publish' },
+        {
+          body: SubmittedDepositionC.encode({
+            ...record,
+            links: {
+              edit: new URL('http://example.com/edit'),
+            },
+            metadata: {
+              ...record.metadata,
+              communities: [{ identifier: 'prereview-reviews' }],
+              license: record.metadata.license.id,
+              upload_type: 'publication',
+              publication_type: 'peerreview',
+            },
+            state: 'done',
+            submitted: true,
+          }),
+          status: Status.Accepted,
+        },
+      )
+      .getOnce(
+        {
+          name: 'reload-review',
+          url: 'http://zenodo.test/api/records/1055806',
+          functionMatcher: (_, req) => req.cache === 'reload',
+        },
+        { status: Status.ServiceUnavailable },
+      )
+      .getOnce(
+        {
+          name: 'reload-preprint-reviews',
+          url: 'http://zenodo.test/api/communities/prereview-reviews/records',
+          query: { q: 'related.identifier:"10.1101/2022.01.13.476201"' },
+          functionMatcher: (_, req) => req.cache === 'reload',
+        },
+        { status: Status.ServiceUnavailable },
+      )
+
+    await use(fetch)
+  },
+}
+
 export const canConnectOrcidProfile: Fixtures<
   Record<never, never>,
   Record<never, never>,
@@ -1226,6 +1391,85 @@ export const hasAVerifiedEmailAddress: Fixtures<
     )
 
     await use(contactEmailAddressStore)
+  },
+}
+
+export const invitedToBeAnAuthor: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'authorInviteStore' | 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+> = {
+  page: async ({ authorInviteStore, fetch, page }, use) => {
+    const record: ZenodoRecord = {
+      conceptdoi: '10.5072/zenodo.1055805' as Doi,
+      conceptrecid: 1055805,
+      files: [
+        {
+          links: {
+            self: new URL('http://example.com/review.html/content'),
+          },
+          key: 'review.html',
+          size: 58,
+        },
+      ],
+      id: 1055806,
+      links: {
+        latest: new URL('http://example.com/latest'),
+        latest_html: new URL('http://example.com/latest_html'),
+      },
+      metadata: {
+        communities: [{ id: 'prereview-reviews' }],
+        creators: [
+          {
+            name: 'Josiah Carberry',
+            orcid: '0000-0002-1825-0097' as Orcid,
+          },
+        ],
+        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+        doi: '10.5072/zenodo.1055806' as Doi,
+        license: { id: 'cc-by-4.0' },
+        publication_date: new Date('2022-07-05'),
+        related_identifiers: [
+          {
+            identifier: '10.1101/2022.01.13.476201',
+            relation: 'reviews',
+            resource_type: 'publication-preprint',
+            scheme: 'doi',
+          },
+          {
+            identifier: '10.5072/zenodo.1061863',
+            relation: 'isVersionOf',
+            scheme: 'doi',
+          },
+        ],
+        resource_type: {
+          type: 'publication',
+          subtype: 'peerreview',
+        },
+        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      },
+    }
+
+    fetch
+      .get('http://zenodo.test/api/records/1055806', {
+        body: RecordC.encode(record),
+      })
+      .get('http://example.com/review.html/content', {
+        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+      })
+
+    await authorInviteStore.set(
+      'bec5727e-9992-4f3b-85be-6712df617b9d',
+      AuthorInviteC.encode({
+        status: 'open',
+        emailAddress: 'jcarberry@example.com' as EmailAddress,
+        review: 1055806,
+      }),
+    )
+
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
+
+    await use(page)
   },
 }
 
