@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
-import type * as RT from 'fp-ts/ReaderTask'
+import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
@@ -11,7 +11,13 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite'
-import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../contact-email-address'
+import {
+  type ContactEmailAddress,
+  type GetContactEmailAddressEnv,
+  type SaveContactEmailAddressEnv,
+  maybeGetContactEmailAddress,
+  saveContactEmailAddress,
+} from '../../contact-email-address'
 import { getInput, invalidE, missingE } from '../../form'
 import type { Html } from '../../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error'
@@ -46,7 +52,7 @@ export const authorInviteEnterEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv,
+  GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveContactEmailAddressEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -70,32 +76,35 @@ export const authorInviteEnterEmailAddress = ({
     RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
     RTE.let('body', () => body),
     RTE.let('method', () => method),
-    RTE.matchW(
+    RTE.matchEW(
       error =>
-        match(error)
-          .with('already-completed', () =>
-            RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
-          )
-          .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-          .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
-          .with('not-found', () => pageNotFound)
-          .with('unavailable', () => havingProblemsPage)
-          .with('wrong-user', () => noPermissionPage)
-          .exhaustive(),
+        RT.of(
+          match(error)
+            .with('already-completed', () =>
+              RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
+            )
+            .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
+            .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
+            .with('not-found', () => pageNotFound)
+            .with('unavailable', () => havingProblemsPage)
+            .with('wrong-user', () => noPermissionPage)
+            .exhaustive(),
+        ),
       state =>
         match(state)
           .with({ contactEmailAddress: { type: 'verified' } }, () =>
-            RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }),
+            RT.of(RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) })),
           )
           .with({ method: 'POST' }, handleEnterEmailAddressForm)
           .with({ method: P.string }, ({ invite }) =>
-            enterEmailAddressForm({
-              form: { useInvitedAddress: E.right(undefined), otherEmailAddress: E.right(undefined) },
-              inviteId: id,
-              invitedEmailAddress: invite.emailAddress,
-            }),
+            RT.of(
+              enterEmailAddressForm({
+                form: { useInvitedAddress: E.right(undefined), otherEmailAddress: E.right(undefined) },
+                inviteId: id,
+                invitedEmailAddress: invite.emailAddress,
+              }),
+            ),
           )
-
           .exhaustive(),
     ),
   )
@@ -104,15 +113,17 @@ const handleEnterEmailAddressForm = ({
   body,
   invite,
   inviteId,
+  user,
 }: {
   body: unknown
   invite: AssignedAuthorInvite
   inviteId: Uuid
+  user: User
 }) =>
   pipe(
-    E.Do,
-    E.let('useInvitedAddress', () => pipe(UseInvitedAddressFieldD.decode(body), E.mapLeft(missingE))),
-    E.let('otherEmailAddress', ({ useInvitedAddress }) =>
+    RTE.Do,
+    RTE.let('useInvitedAddress', () => pipe(UseInvitedAddressFieldD.decode(body), E.mapLeft(missingE))),
+    RTE.let('otherEmailAddress', ({ useInvitedAddress }) =>
       match(useInvitedAddress)
         .with({ right: 'no' }, () =>
           pipe(
@@ -128,7 +139,7 @@ const handleEnterEmailAddressForm = ({
         .with({ right: 'yes' }, { left: { _tag: 'MissingE' } }, () => E.right(undefined))
         .exhaustive(),
     ),
-    E.chain(fields =>
+    RTE.chainEitherK(fields =>
       pipe(
         E.Do,
         E.apS('useInvitedAddress', fields.useInvitedAddress),
@@ -136,9 +147,19 @@ const handleEnterEmailAddressForm = ({
         E.mapLeft(() => fields),
       ),
     ),
-    E.matchW(
+    RTE.chainEitherKW(fields =>
+      match(fields)
+        .with({ useInvitedAddress: 'yes' }, () =>
+          E.right({ type: 'verified', value: invite.emailAddress } satisfies ContactEmailAddress),
+        )
+        .with({ useInvitedAddress: 'no' }, () => E.left('unavailable' as const))
+        .exhaustive(),
+    ),
+    RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
+    RTE.matchW(
       error =>
         match(error)
+          .with('unavailable', () => havingProblemsPage)
           .with({ useInvitedAddress: P.any }, form =>
             enterEmailAddressForm({
               form,
@@ -147,7 +168,7 @@ const handleEnterEmailAddressForm = ({
             }),
           )
           .exhaustive(),
-      () => havingProblemsPage,
+      () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
     ),
   )
 

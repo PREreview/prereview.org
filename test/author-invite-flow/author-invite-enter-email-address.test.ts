@@ -6,7 +6,7 @@ import { Status } from 'hyper-ts'
 import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow/enter-email-address-page'
-import type { GetContactEmailAddressEnv } from '../../src/contact-email-address'
+import type { GetContactEmailAddressEnv, SaveContactEmailAddressEnv } from '../../src/contact-email-address'
 import {
   authorInviteCheckMatch,
   authorInviteEnterEmailAddressMatch,
@@ -24,13 +24,6 @@ describe('authorInviteEnterEmailAddress', () => {
         fc
           .user()
           .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
-        fc.oneof(
-          fc.record(
-            { useInvitedAddress: fc.constant('yes'), otherEmailAddress: fc.anything() },
-            { requiredKeys: ['useInvitedAddress'] },
-          ),
-          fc.record({ useInvitedAddress: fc.constant('no'), otherEmailAddress: fc.emailAddress() }),
-        ),
         fc.record({
           preprint: fc.record({
             language: fc.languageCode(),
@@ -38,7 +31,56 @@ describe('authorInviteEnterEmailAddress', () => {
           }),
         }),
         fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
-      ])('when the form is valid', async (inviteId, [user, invite], body, prereview, contactEmailAddress) => {
+      ])('using the invite email address', async (inviteId, [user, invite], prereview, contactEmailAddress) => {
+        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+        const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
+          TE.fromEither(contactEmailAddress),
+        )
+        const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+        const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
+          TE.right(undefined),
+        )
+
+        const actual = await _.authorInviteEnterEmailAddress({
+          body: { useInvitedAddress: 'yes' },
+          id: inviteId,
+          method: 'POST',
+          user,
+        })({
+          getAuthorInvite,
+          getContactEmailAddress,
+          getPrereview,
+          saveContactEmailAddress,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(authorInviteCheckMatch.formatter, { id: inviteId }),
+        })
+        expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
+        expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
+        expect(getPrereview).toHaveBeenCalledWith(invite.review)
+        expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
+          type: 'verified',
+          value: invite.emailAddress,
+        })
+      })
+
+      test.prop([
+        fc.uuid(),
+        fc
+          .user()
+          .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.record({ useInvitedAddress: fc.constant('no'), otherEmailAddress: fc.emailAddress() }),
+        fc.record({
+          preprint: fc.record({
+            language: fc.languageCode(),
+            title: fc.html(),
+          }),
+        }),
+        fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+      ])('using a different email address', async (inviteId, [user, invite], body, prereview, contactEmailAddress) => {
         const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
         const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
           TE.fromEither(contactEmailAddress),
@@ -49,6 +91,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite,
           getContactEmailAddress,
           getPrereview,
+          saveContactEmailAddress: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -63,6 +106,43 @@ describe('authorInviteEnterEmailAddress', () => {
         expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
         expect(getPrereview).toHaveBeenCalledWith(invite.review)
       })
+
+      test.prop([
+        fc.uuid(),
+        fc
+          .user()
+          .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
+        fc.oneof(
+          fc.record({ useInvitedAddress: fc.constant('yes') }),
+          fc.record({ useInvitedAddress: fc.constant('no'), otherEmailAddress: fc.emailAddress() }),
+        ),
+        fc.record({
+          preprint: fc.record({
+            language: fc.languageCode(),
+            title: fc.html(),
+          }),
+        }),
+        fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+      ])(
+        "when the contact email address can't be saved",
+        async (inviteId, [user, invite], body, prereview, contactEmailAddress) => {
+          const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method: 'POST', user })({
+            getAuthorInvite: () => TE.right(invite),
+            getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
+            getPrereview: () => TE.right(prereview),
+            saveContactEmailAddress: () => TE.left('unavailable'),
+          })()
+
+          expect(actual).toStrictEqual({
+            _tag: 'PageResponse',
+            status: Status.ServiceUnavailable,
+            title: expect.stringContaining('problems'),
+            main: expect.stringContaining('problems'),
+            skipToLabel: 'main',
+            js: [],
+          })
+        },
+      )
 
       test.prop([
         fc.uuid(),
@@ -89,6 +169,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getPrereview: () => TE.right(prereview),
+          saveContactEmailAddress: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -125,6 +206,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite,
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getPrereview,
+          saveContactEmailAddress: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -160,6 +242,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPrereview: () => TE.right(prereview),
+          saveContactEmailAddress: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -180,6 +263,7 @@ describe('authorInviteEnterEmailAddress', () => {
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: () => TE.left('unavailable'),
+        saveContactEmailAddress: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -199,6 +283,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.left('unavailable'),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
+          saveContactEmailAddress: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -224,6 +309,7 @@ describe('authorInviteEnterEmailAddress', () => {
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
+        saveContactEmailAddress: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -245,6 +331,7 @@ describe('authorInviteEnterEmailAddress', () => {
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
+        saveContactEmailAddress: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -264,6 +351,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
+          saveContactEmailAddress: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -281,6 +369,7 @@ describe('authorInviteEnterEmailAddress', () => {
           getAuthorInvite: () => TE.left('not-found'),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
+          saveContactEmailAddress: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -302,6 +391,7 @@ describe('authorInviteEnterEmailAddress', () => {
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
+        saveContactEmailAddress: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({

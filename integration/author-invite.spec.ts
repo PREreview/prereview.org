@@ -76,6 +76,8 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use the invite email addr
 
   await page.getByLabel('jcarberry@example.com').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
 })
 
 test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use a different email address', async ({ page }) => {
