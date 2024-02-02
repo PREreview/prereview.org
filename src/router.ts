@@ -12,11 +12,13 @@ import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
+import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
+import type * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
+import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
 import { aboutUs } from './about-us'
-import type { ConfigEnv } from './app'
 import { type OpenAuthorInvite, createAuthorInvite } from './author-invite'
 import {
   authorInvite,
@@ -25,12 +27,25 @@ import {
   authorInvitePublished,
   authorInviteStart,
 } from './author-invite-flow'
-import { getAvatarFromCloudinary } from './cloudinary'
+import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
-import { connectOrcid, connectOrcidCode, connectOrcidError, connectOrcidStart, disconnectOrcid } from './connect-orcid'
-import { connectSlack, connectSlackCode, connectSlackError, connectSlackStart } from './connect-slack'
+import {
+  type OrcidOAuthEnv as ConnectOrcidOAuthEnv,
+  connectOrcid,
+  connectOrcidCode,
+  connectOrcidError,
+  connectOrcidStart,
+  disconnectOrcid,
+} from './connect-orcid'
+import {
+  type SlackOAuthEnv,
+  connectSlack,
+  connectSlackCode,
+  connectSlackError,
+  connectSlackStart,
+} from './connect-slack'
 import { disconnectSlack } from './disconnect-slack'
 import { ediaStatement } from './edia-statement'
 import {
@@ -40,12 +55,14 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from './email'
-import type { CanConnectOrcidProfileEnv } from './feature-flags'
+import type { CanConnectOrcidProfileEnv, CanInviteAuthorsEnv } from './feature-flags'
 import { funding } from './funding'
+import type { GhostApiEnv } from './ghost'
 import { home } from './home'
 import { howToUse } from './how-to-use'
 import * as Keyv from './keyv'
 import {
+  type LegacyPrereviewApiEnv,
   createPrereviewOnLegacyPrereview,
   getPseudonymFromLegacyPrereview,
   getRapidPreviewsFromLegacyPrereview,
@@ -53,7 +70,7 @@ import {
   isLegacyCompatiblePrereview,
 } from './legacy-prereview'
 import { liveReviews } from './live-reviews'
-import { authenticate, authenticateError, logIn, logOut } from './log-in'
+import { type IsUserBlockedEnv, type OrcidOAuthEnv, authenticate, authenticateError, logIn, logOut } from './log-in'
 import { getMethod } from './middleware'
 import {
   changeCareerStage,
@@ -70,14 +87,15 @@ import {
   myDetails,
   verifyContactEmailAddress,
 } from './my-details-page'
-import { getNameFromOrcid } from './orcid'
-import type { TemplatePageEnv } from './page'
+import { type OrcidApiEnv, getNameFromOrcid } from './orcid'
+import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page'
 import { partners } from './partners'
 import { people } from './people'
 import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv } from './preprint'
 import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
+import type { PublicUrlEnv } from './public-url'
 import { resources } from './resources'
 import { handleResponse } from './response'
 import { reviewAPreprint } from './review-a-preprint'
@@ -161,8 +179,14 @@ import {
   writeReviewStartMatch,
   writeReviewVerifyEmailAddressMatch,
 } from './routes'
-import { scietyList } from './sciety-list'
-import { addOrcidToSlackProfile, getUserFromSlack, removeOrcidFromSlackProfile } from './slack'
+import { type ScietyListEnv, scietyList } from './sciety-list'
+import {
+  type SlackApiEnv,
+  type SlackApiUpdateEnv,
+  addOrcidToSlackProfile,
+  getUserFromSlack,
+  removeOrcidFromSlackProfile,
+} from './slack'
 import type { SlackUserId } from './slack-user-id'
 import { trainings } from './trainings'
 import type { PreprintId } from './types/preprint-id'
@@ -170,6 +194,7 @@ import { type GenerateUuidEnv, generateUuid } from './types/uuid'
 import { type GetUserEnv, type User, maybeGetUser } from './user'
 import type { GetUserOnboardingEnv } from './user-onboarding'
 import {
+  type FormStoreEnv,
   type NewPrereview,
   writeReview,
   writeReviewAddAuthor,
@@ -197,6 +222,7 @@ import {
   writeReviewVerifyEmailAddress,
 } from './write-review'
 import {
+  type WasPrereviewRemovedEnv,
   addAuthorToRecordOnZenodo,
   createRecordOnZenodo,
   getPrereviewFromZenodo,
@@ -229,16 +255,45 @@ const withEnv =
   (...a: A) =>
     f(...a)(env)
 
-export type RouterEnv = ConfigEnv &
-  CanConnectOrcidProfileEnv &
+export type RouterEnv = CanConnectOrcidProfileEnv &
   DoesPreprintExistEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
   GetPreprintTitleEnv &
   GetUserEnv &
   GetUserOnboardingEnv &
+  Keyv.AuthorInviteStoreEnv &
+  CanInviteAuthorsEnv &
+  Keyv.CareerStageStoreEnv &
+  CloudinaryApiEnv &
+  ConnectOrcidOAuthEnv &
+  Keyv.ContactEmailAddressStoreEnv &
+  FathomEnv &
+  FormStoreEnv &
+  GhostApiEnv &
+  Keyv.IsOpenForRequestsStoreEnv &
+  IsUserBlockedEnv &
+  Keyv.LanguagesStoreEnv &
+  LegacyPrereviewApiEnv &
+  Keyv.LocationStoreEnv &
+  L.LoggerEnv &
+  OrcidApiEnv &
+  Keyv.OrcidTokenStoreEnv &
+  OrcidOAuthEnv &
+  PhaseEnv &
+  PublicUrlEnv &
+  Keyv.ResearchInterestsStoreEnv &
+  ScietyListEnv &
   SendEmailEnv &
-  TemplatePageEnv
+  SessionEnv &
+  SlackApiEnv &
+  SlackApiUpdateEnv &
+  SlackOAuthEnv &
+  Keyv.SlackUserIdStoreEnv &
+  TemplatePageEnv &
+  Keyv.UserOnboardingStoreEnv &
+  WasPrereviewRemovedEnv &
+  ZenodoAuthenticatedEnv
 
 const getRapidPrereviews = (id: PreprintId) =>
   isLegacyCompatiblePreprint(id) ? getRapidPreviewsFromLegacyPrereview(id) : RTE.right([])

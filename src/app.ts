@@ -8,91 +8,44 @@ import helmet from 'helmet'
 import http from 'http'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
-import { type SessionEnv, getSession } from 'hyper-ts-session'
+import { getSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import { toRequestHandler } from 'hyper-ts/express'
 import * as L from 'logger-fp-ts'
 import * as l from 'logging-ts/lib/IO'
 import { match, P as p } from 'ts-pattern'
 import * as uuid from 'uuid-ts'
-import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
-import type { CloudinaryApiEnv } from './cloudinary'
-import type { OrcidOAuthEnv as ConnectOrcidOAuthEnv } from './connect-orcid'
-import type { SlackOAuthEnv } from './connect-slack'
 import { getPreprintFromCrossref, isCrossrefPreprintDoi } from './crossref'
 import { getPreprintFromDatacite, isDatacitePreprintDoi } from './datacite'
 import type { Email } from './email'
-import type { CanConnectOrcidProfileEnv, CanInviteAuthorsEnv } from './feature-flags'
 import { collapseRequests, logFetch, useStaleCache } from './fetch'
-import type { GhostApiEnv } from './ghost'
 import { pageNotFound } from './http-error'
-import {
-  type AuthorInviteStoreEnv,
-  type CareerStageStoreEnv,
-  type ContactEmailAddressStoreEnv,
-  type IsOpenForRequestsStoreEnv,
-  type LanguagesStoreEnv,
-  type LocationStoreEnv,
-  type OrcidTokenStoreEnv,
-  type ResearchInterestsStoreEnv,
-  type SlackUserIdStoreEnv,
-  type UserOnboardingStoreEnv,
-  getUserOnboarding,
-} from './keyv'
-import {
-  type LegacyPrereviewApiEnv,
-  getPreprintIdFromLegacyPreviewUuid,
-  getProfileIdFromLegacyPreviewUuid,
-} from './legacy-prereview'
+import { getUserOnboarding } from './keyv'
+import { getPreprintIdFromLegacyPreviewUuid, getProfileIdFromLegacyPreviewUuid } from './legacy-prereview'
 import { type LegacyEnv, legacyRoutes } from './legacy-routes'
-import type { IsUserBlockedEnv, OrcidOAuthEnv } from './log-in'
 import { type MailjetApiEnv, sendEmailWithMailjet } from './mailjet'
 import { type NodemailerEnv, sendEmailWithNodemailer } from './nodemailer'
-import type { OrcidApiEnv } from './orcid'
-import { type FathomEnv, type PhaseEnv, page } from './page'
+import { page } from './page'
 import { getPreprintFromPhilsci } from './philsci'
-import type { PublicUrlEnv } from './public-url'
 import { handleResponse } from './response'
 import { type RouterEnv, routes } from './router'
-import type { ScietyListEnv } from './sciety-list'
-import type { SlackApiEnv, SlackApiUpdateEnv } from './slack'
 import type { IndeterminatePreprintId } from './types/preprint-id'
 import { getUserFromSession, maybeGetUser } from './user'
-import type { FormStoreEnv } from './write-review'
-import type { WasPrereviewRemovedEnv } from './zenodo'
 
-export type ConfigEnv = AuthorInviteStoreEnv &
-  CanInviteAuthorsEnv &
-  CareerStageStoreEnv &
-  CloudinaryApiEnv &
-  ConnectOrcidOAuthEnv &
-  ContactEmailAddressStoreEnv &
-  FathomEnv &
-  FormStoreEnv &
-  GhostApiEnv &
-  IsOpenForRequestsStoreEnv &
-  IsUserBlockedEnv &
-  LanguagesStoreEnv &
-  LegacyPrereviewApiEnv &
-  LocationStoreEnv &
-  L.LoggerEnv &
-  (MailjetApiEnv | NodemailerEnv) &
-  OrcidApiEnv &
-  CanConnectOrcidProfileEnv &
-  OrcidTokenStoreEnv &
-  OrcidOAuthEnv &
-  PhaseEnv &
-  PublicUrlEnv &
-  ResearchInterestsStoreEnv &
-  ScietyListEnv &
-  SessionEnv &
-  SlackApiEnv &
-  SlackApiUpdateEnv &
-  SlackOAuthEnv &
-  SlackUserIdStoreEnv &
-  UserOnboardingStoreEnv &
-  WasPrereviewRemovedEnv &
-  ZenodoAuthenticatedEnv & {
+export type ConfigEnv = Omit<
+  RouterEnv & LegacyEnv,
+  | 'doesPreprintExist'
+  | 'generateUuid'
+  | 'getUser'
+  | 'getUserOnboarding'
+  | 'getPreprint'
+  | 'getPreprintTitle'
+  | 'templatePage'
+  | 'getPreprintIdFromUuid'
+  | 'getProfileIdFromUuid'
+  | 'sendEmail'
+> &
+  (MailjetApiEnv | NodemailerEnv) & {
     allowSiteCrawlers: boolean
   }
 
