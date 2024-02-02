@@ -38,7 +38,7 @@ export function enterEmailAddressForm({
                   ${E.isLeft(form.useInvitedAddress)
                     ? html`
                         <li>
-                          <a href="#use-invited-address-no">
+                          <a href="#use-invited-address-yes">
                             ${match(form.useInvitedAddress.left)
                               .with({ _tag: 'MissingE' }, () => 'Select the email address that you would like to use')
                               .exhaustive()}
