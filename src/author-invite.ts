@@ -6,16 +6,19 @@ import * as D from 'io-ts/Decoder'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
+import { type EmailAddress, EmailAddressC } from './types/email-address'
 
 export type AuthorInvite = OpenAuthorInvite | AssignedAuthorInvite | CompletedAuthorInvite
 
 export interface OpenAuthorInvite {
   readonly status: 'open'
+  readonly emailAddress: EmailAddress
   readonly review: number
 }
 
 export interface AssignedAuthorInvite {
   readonly status: 'assigned'
+  readonly emailAddress: EmailAddress
   readonly orcid: Orcid
   readonly persona?: 'public' | 'pseudonym'
   readonly review: number
@@ -43,12 +46,14 @@ const OrcidC = C.fromDecoder(D.fromRefinement(isOrcid, 'ORCID'))
 
 const OpenAuthorInviteC = C.struct({
   status: C.literal('open'),
+  emailAddress: EmailAddressC,
   review: C.number,
 }) satisfies C.Codec<unknown, unknown, OpenAuthorInvite>
 
 const AssignedAuthorInviteC = pipe(
   C.struct({
     status: C.literal('assigned'),
+    emailAddress: EmailAddressC,
     orcid: OrcidC,
     review: C.number,
   }),

@@ -764,7 +764,7 @@ export const authorInvite = (): fc.Arbitrary<AuthorInvite> =>
   fc.oneof(openAuthorInvite(), assignedAuthorInvite(), completedAuthorInvite())
 
 export const openAuthorInvite = (): fc.Arbitrary<OpenAuthorInvite> =>
-  fc.record({ status: fc.constant('open'), review: fc.integer({ min: 1 }) })
+  fc.record({ status: fc.constant('open'), emailAddress: emailAddress(), review: fc.integer({ min: 1 }) })
 
 export const assignedAuthorInvite = ({
   orcid: _orcid,
@@ -776,11 +776,12 @@ export const assignedAuthorInvite = ({
   fc.record(
     {
       status: fc.constant('assigned'),
+      emailAddress: emailAddress(),
       orcid: _orcid ?? orcid(),
       persona: persona ?? fc.constantFrom('public', 'pseudonym'),
       review: fc.integer({ min: 1 }),
     },
-    !persona ? { requiredKeys: ['status', 'orcid', 'review'] } : {},
+    !persona ? { requiredKeys: ['status', 'emailAddress', 'orcid', 'review'] } : {},
   )
 
 export const completedAuthorInvite = ({

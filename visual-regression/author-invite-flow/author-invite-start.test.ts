@@ -3,6 +3,7 @@ import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { authorInviteStart } from '../../src/author-invite-flow'
 import { html } from '../../src/html'
+import type { EmailAddress } from '../../src/types/email-address'
 import type { Pseudonym } from '../../src/types/pseudonym'
 import { expect, test } from '../base'
 
@@ -15,7 +16,13 @@ test('content looks right when already started', async ({ showPage }) => {
       pseudonym: 'Orange Panda' as Pseudonym,
     },
   })({
-    getAuthorInvite: () => TE.right({ status: 'assigned', orcid: '0000-0002-1825-0097' as Orcid, review: 1234 }),
+    getAuthorInvite: () =>
+      TE.right({
+        status: 'assigned',
+        emailAddress: 'jcarberry@example.com' as EmailAddress,
+        orcid: '0000-0002-1825-0097' as Orcid,
+        review: 1234,
+      }),
     getPrereview: () =>
       TE.right({
         preprint: {

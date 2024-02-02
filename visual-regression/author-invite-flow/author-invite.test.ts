@@ -5,6 +5,7 @@ import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
 import { authorInvite } from '../../src/author-invite-flow'
 import { html } from '../../src/html'
+import type { EmailAddress } from '../../src/types/email-address'
 import type { Pseudonym } from '../../src/types/pseudonym'
 import { expect, test } from '../base'
 
@@ -12,7 +13,8 @@ import PlainDate = Temporal.PlainDate
 
 test('content looks right', async ({ showPage }) => {
   const response = await authorInvite({ id: 'ee9dd955-7b3b-4ad2-8a61-25dd42cb70f0' as Uuid })({
-    getAuthorInvite: () => TE.right({ status: 'open', review: 1234 }),
+    getAuthorInvite: () =>
+      TE.right({ status: 'open', emailAddress: 'jcarberry@example.com' as EmailAddress, review: 1234 }),
     getPrereview: () =>
       TE.right({
         authors: [
@@ -67,7 +69,8 @@ test('content looks right when logged in', async ({ showPage }) => {
       pseudonym: 'Orange Panda' as Pseudonym,
     },
   })({
-    getAuthorInvite: () => TE.right({ status: 'open', review: 1234 }),
+    getAuthorInvite: () =>
+      TE.right({ status: 'open', emailAddress: 'jcarberry@example.com' as EmailAddress, review: 1234 }),
     getPrereview: () =>
       TE.right({
         authors: [

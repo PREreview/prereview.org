@@ -44,6 +44,7 @@ describe('authorInviteStart', () => {
         expect(getPrereview).toHaveBeenCalledWith(invite.review)
         expect(saveAuthorInvite).toHaveBeenCalledWith(inviteId, {
           status: 'assigned',
+          emailAddress: invite.emailAddress,
           orcid: user.orcid,
           review: invite.review,
         })
