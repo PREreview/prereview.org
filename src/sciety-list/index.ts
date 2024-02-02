@@ -1,6 +1,8 @@
 import { Temporal } from '@js-temporal/polyfill'
 import { type Doi, isDoi } from 'doi-ts'
 import type { Json, JsonRecord } from 'fp-ts/Json'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import type * as TE from 'fp-ts/TaskEither'
 import { constVoid, flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as RM from 'hyper-ts/ReaderMiddleware'
@@ -10,7 +12,6 @@ import safeStableStringify from 'safe-stable-stringify'
 import { P, match } from 'ts-pattern'
 import type { IndeterminatePreprintId } from '../types/preprint-id'
 import type { NonEmptyString } from '../types/string'
-import { getPrereviewsForSciety } from '../zenodo'
 
 import PlainDate = Temporal.PlainDate
 
@@ -24,6 +25,13 @@ export interface Prereview {
   doi: Doi
   authors: ReadonlyArray<{ name: string }>
 }
+
+export interface GetPrereviewsEnv {
+  getPrereviews: () => TE.TaskEither<'unavailable', ReadonlyArray<Prereview>>
+}
+
+const getPrereviews = (): RTE.ReaderTaskEither<GetPrereviewsEnv, 'unavailable', ReadonlyArray<Prereview>> =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPrereviews }) => getPrereviews()))
 
 const ReadonlyArrayE = flow(E.array, E.readonly)
 
@@ -60,7 +68,7 @@ const isAllowed = pipe(
 
 export const scietyList = pipe(
   isAllowed,
-  RM.chainReaderTaskEitherKW(() => getPrereviewsForSciety),
+  RM.chainReaderTaskEitherKW(getPrereviews),
   RM.map(PrereviewsE.encode),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainFirst(() => RM.contentType('application/json')),

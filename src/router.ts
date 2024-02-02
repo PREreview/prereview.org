@@ -203,6 +203,7 @@ import {
   getPrereviewsForClubFromZenodo,
   getPrereviewsForPreprintFromZenodo,
   getPrereviewsForProfileFromZenodo,
+  getPrereviewsForSciety,
   getRecentPrereviewsFromZenodo,
   refreshPrereview,
 } from './zenodo'
@@ -1420,6 +1421,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       scietyListMatch.parser,
       P.map(() => scietyList),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getPrereviews: withEnv(() => getPrereviewsForSciety, env),
+        })),
+      ),
     ),
   ],
   concatAll(P.getParserMonoid()),
