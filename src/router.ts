@@ -24,6 +24,7 @@ import {
   authorInvite,
   authorInviteCheck,
   authorInviteEnterEmailAddress,
+  authorInviteNeedToVerifyEmailAddress,
   authorInvitePersona,
   authorInvitePublished,
   authorInviteStart,
@@ -107,6 +108,7 @@ import {
   authorInviteCheckMatch,
   authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
+  authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
   authorInviteStartMatch,
@@ -1421,6 +1423,31 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             env,
           ),
           saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, env),
+        })),
+      ),
+    ),
+    pipe(
+      authorInviteNeedToVerifyEmailAddressMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(authorInviteNeedToVerifyEmailAddress)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
+          getPrereview: withEnv(
+            flow(
+              getPrereviewFromZenodo,
+              RTE.mapLeft(() => 'unavailable' as const),
+            ),
+            env,
+          ),
         })),
       ),
     ),
