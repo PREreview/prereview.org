@@ -1,6 +1,7 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
+import * as RIO from 'fp-ts/ReaderIO'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
@@ -22,8 +23,14 @@ import { getInput, invalidE, missingE } from '../../form'
 import type { Html } from '../../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
-import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch } from '../../routes'
+import {
+  authorInviteCheckMatch,
+  authorInviteMatch,
+  authorInviteNeedToVerifyEmailAddressMatch,
+  authorInvitePublishedMatch,
+} from '../../routes'
 import { EmailAddressC } from '../../types/email-address'
+import { type GenerateUuidEnv, generateUuid } from '../../types/uuid'
 import type { User } from '../../user'
 import { enterEmailAddressForm } from './enter-email-address-form'
 
@@ -52,7 +59,7 @@ export const authorInviteEnterEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveContactEmailAddressEnv,
+  GenerateUuidEnv & GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveContactEmailAddressEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -147,13 +154,21 @@ const handleEnterEmailAddressForm = ({
         E.mapLeft(() => fields),
       ),
     ),
-    RTE.chainEitherKW(fields =>
+    RTE.chainReaderIOK(fields =>
       match(fields)
-        .with({ useInvitedAddress: 'yes' }, () =>
-          E.right({ type: 'verified', value: invite.emailAddress } satisfies ContactEmailAddress),
+        .returnType<RIO.ReaderIO<GenerateUuidEnv, ContactEmailAddress>>()
+        .with({ useInvitedAddress: 'yes' }, () => RIO.of({ type: 'verified', value: invite.emailAddress }))
+        .with({ useInvitedAddress: 'no', otherEmailAddress: P.select(P.string) }, emailAddress =>
+          pipe(
+            generateUuid,
+            RIO.map(verificationToken => ({
+              type: 'unverified',
+              value: emailAddress,
+              verificationToken,
+            })),
+          ),
         )
-        .with({ useInvitedAddress: 'no' }, () => E.left('unavailable' as const))
-        .exhaustive(),
+        .run(),
     ),
     RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
     RTE.matchW(
@@ -168,7 +183,17 @@ const handleEnterEmailAddressForm = ({
             }),
           )
           .exhaustive(),
-      () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
+      contactEmailAddress =>
+        match(contactEmailAddress)
+          .with({ type: 'verified' }, () =>
+            RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id: inviteId }) }),
+          )
+          .with({ type: 'unverified' }, () =>
+            RedirectResponse({
+              location: format(authorInviteNeedToVerifyEmailAddressMatch.formatter, { id: inviteId }),
+            }),
+          )
+          .exhaustive(),
     ),
   )
 

@@ -11,6 +11,7 @@ import {
   authorInviteCheckMatch,
   authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
+  authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePublishedMatch,
 } from '../../src/routes'
 import * as fc from '../fc'
@@ -47,6 +48,7 @@ describe('authorInviteEnterEmailAddress', () => {
           method: 'POST',
           user,
         })({
+          generateUuid: shouldNotBeCalled,
           getAuthorInvite,
           getContactEmailAddress,
           getPrereview,
@@ -72,7 +74,7 @@ describe('authorInviteEnterEmailAddress', () => {
         fc
           .user()
           .chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
-        fc.record({ useInvitedAddress: fc.constant('no'), otherEmailAddress: fc.emailAddress() }),
+        fc.emailAddress(),
         fc.record({
           preprint: fc.record({
             language: fc.languageCode(),
@@ -80,32 +82,47 @@ describe('authorInviteEnterEmailAddress', () => {
           }),
         }),
         fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
-      ])('using a different email address', async (inviteId, [user, invite], body, prereview, contactEmailAddress) => {
-        const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
-        const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
-          TE.fromEither(contactEmailAddress),
-        )
-        const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+        fc.uuid(),
+      ])(
+        'using a different email address',
+        async (inviteId, [user, invite], otherEmailAddress, prereview, contactEmailAddress, uuid) => {
+          const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
+          const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
+            TE.fromEither(contactEmailAddress),
+          )
+          const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
+          const saveContactEmailAddress = jest.fn<SaveContactEmailAddressEnv['saveContactEmailAddress']>(_ =>
+            TE.right(undefined),
+          )
 
-        const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method: 'POST', user })({
-          getAuthorInvite,
-          getContactEmailAddress,
-          getPrereview,
-          saveContactEmailAddress: shouldNotBeCalled,
-        })()
+          const actual = await _.authorInviteEnterEmailAddress({
+            body: { useInvitedAddress: 'no', otherEmailAddress },
+            id: inviteId,
+            method: 'POST',
+            user,
+          })({
+            generateUuid: () => uuid,
+            getAuthorInvite,
+            getContactEmailAddress,
+            getPrereview,
+            saveContactEmailAddress,
+          })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
-          skipToLabel: 'main',
-          js: [],
-        })
-        expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
-        expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
-        expect(getPrereview).toHaveBeenCalledWith(invite.review)
-      })
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: Status.SeeOther,
+            location: format(authorInviteNeedToVerifyEmailAddressMatch.formatter, { id: inviteId }),
+          })
+          expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
+          expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
+          expect(getPrereview).toHaveBeenCalledWith(invite.review)
+          expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
+            type: 'unverified',
+            value: otherEmailAddress,
+            verificationToken: uuid,
+          })
+        },
+      )
 
       test.prop([
         fc.uuid(),
@@ -123,10 +140,12 @@ describe('authorInviteEnterEmailAddress', () => {
           }),
         }),
         fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+        fc.uuid(),
       ])(
         "when the contact email address can't be saved",
-        async (inviteId, [user, invite], body, prereview, contactEmailAddress) => {
+        async (inviteId, [user, invite], body, prereview, contactEmailAddress, uuid) => {
           const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method: 'POST', user })({
+            generateUuid: () => uuid,
             getAuthorInvite: () => TE.right(invite),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getPrereview: () => TE.right(prereview),
@@ -166,6 +185,7 @@ describe('authorInviteEnterEmailAddress', () => {
         fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
       ])('when the form is invalid', async (inviteId, [user, invite], body, prereview, contactEmailAddress) => {
         const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method: 'POST', user })({
+          generateUuid: shouldNotBeCalled,
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getPrereview: () => TE.right(prereview),
@@ -203,6 +223,7 @@ describe('authorInviteEnterEmailAddress', () => {
         const getPrereview = jest.fn<_.GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
         const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method, user })({
+          generateUuid: shouldNotBeCalled,
           getAuthorInvite,
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getPrereview,
@@ -239,6 +260,7 @@ describe('authorInviteEnterEmailAddress', () => {
       'when the email address is already verified',
       async (inviteId, [user, invite], method, body, prereview, contactEmailAddress) => {
         const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method, user })({
+          generateUuid: shouldNotBeCalled,
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPrereview: () => TE.right(prereview),
@@ -260,6 +282,7 @@ describe('authorInviteEnterEmailAddress', () => {
       fc.anything(),
     ])('when the review cannot be loaded', async (inviteId, [user, invite], method, body) => {
       const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method, user })({
+        generateUuid: shouldNotBeCalled,
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: () => TE.left('unavailable'),
@@ -280,6 +303,7 @@ describe('authorInviteEnterEmailAddress', () => {
       'when the invite cannot be loaded',
       async (inviteId, user, method, body) => {
         const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method, user })({
+          generateUuid: shouldNotBeCalled,
           getAuthorInvite: () => TE.left('unavailable'),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
@@ -306,6 +330,7 @@ describe('authorInviteEnterEmailAddress', () => {
       fc.anything(),
     ])('when the invite is already complete', async (inviteId, [user, invite], method, body) => {
       const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method, user })({
+        generateUuid: shouldNotBeCalled,
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
@@ -328,6 +353,7 @@ describe('authorInviteEnterEmailAddress', () => {
       fc.anything(),
     ])('when the invite is assigned to someone else', async (inviteId, [user, invite], method, body) => {
       const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method, user })({
+        generateUuid: shouldNotBeCalled,
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
@@ -348,6 +374,7 @@ describe('authorInviteEnterEmailAddress', () => {
       'when the invite is not assigned',
       async (inviteId, user, method, body, invite) => {
         const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method, user })({
+          generateUuid: shouldNotBeCalled,
           getAuthorInvite: () => TE.right(invite),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
@@ -366,6 +393,7 @@ describe('authorInviteEnterEmailAddress', () => {
       'when the invite is not found',
       async (inviteId, user, method, body) => {
         const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method, user })({
+          generateUuid: shouldNotBeCalled,
           getAuthorInvite: () => TE.left('not-found'),
           getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
@@ -388,6 +416,7 @@ describe('authorInviteEnterEmailAddress', () => {
     'when the user is not logged in',
     async (inviteId, method, body, invite) => {
       const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method })({
+        generateUuid: shouldNotBeCalled,
         getAuthorInvite: () => TE.right(invite),
         getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,

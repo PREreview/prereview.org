@@ -91,6 +91,8 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use a different email add
   await page.getByLabel('A different one').check()
   await page.getByLabel('What is your email address?').fill('notjcarberry@example.com')
   await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 })
 
 test.extend(canLogIn).extend(invitedToBeAnAuthor)(
