@@ -1,4 +1,4 @@
-import merge from 'ts-deepmerge'
+import { merge } from 'ts-deepmerge'
 import { type CompletedForm, CompletedFormC } from '../../src/write-review/completed-form'
 import type { Form } from '../../src/write-review/form'
 import * as fc from '../fc'
