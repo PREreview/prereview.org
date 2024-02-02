@@ -52,7 +52,6 @@ const findImageOnCloudinary = (orcid: Orcid) =>
           api_key: cloudinaryApi.key,
           api_secret: cloudinaryApi.secret,
           cloud_name: cloudinaryApi.cloudName,
-          secure: true,
         }),
     ),
     RTE.map(F.Request('GET')),
@@ -75,7 +74,6 @@ export const getAvatarFromCloudinary = flow(
           cloudinary.url(imageId, {
             cloud_name: cloudinaryApi.cloudName,
             force_version: false,
-            secure: true,
             transformation: {
               crop: 'thumb',
               fetch_format: 'auto',
@@ -85,6 +83,7 @@ export const getAvatarFromCloudinary = flow(
               height: 300,
               zoom: 0.666,
             },
+            urlAnalytics: false,
           }),
         ),
     ),
