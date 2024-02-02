@@ -103,7 +103,16 @@ export const authorInviteEnterEmailAddress = ({
             RT.of(RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) })),
           )
           .with({ method: 'POST' }, handleEnterEmailAddressForm)
-          .with({ method: P.string }, ({ invite }) =>
+          .with({ contactEmailAddress: { type: 'unverified' } }, ({ contactEmailAddress, invite }) =>
+            RT.of(
+              enterEmailAddressForm({
+                form: { useInvitedAddress: E.right('no'), otherEmailAddress: E.right(contactEmailAddress.value) },
+                inviteId: id,
+                invitedEmailAddress: invite.emailAddress,
+              }),
+            ),
+          )
+          .with({ contactEmailAddress: undefined }, ({ invite }) =>
             RT.of(
               enterEmailAddressForm({
                 form: { useInvitedAddress: E.right(undefined), otherEmailAddress: E.right(undefined) },
