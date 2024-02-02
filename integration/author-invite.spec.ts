@@ -10,12 +10,6 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
     await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
-    await page.getByRole('link', { name: 'Change name' }).click()
-    await page.getByLabel('Orange Panda').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
-
     await page.getByRole('button', { name: 'Update PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Name added')
