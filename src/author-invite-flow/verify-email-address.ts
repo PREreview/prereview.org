@@ -16,7 +16,7 @@ import {
 } from '../contact-email-address'
 import type { Html } from '../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
-import { LogInResponse, type PageResponse, RedirectResponse } from '../response'
+import { FlashMessageResponse, LogInResponse, type PageResponse, RedirectResponse } from '../response'
 import {
   authorInviteCheckMatch,
   authorInviteMatch,
@@ -49,7 +49,7 @@ export const authorInviteVerifyEmailAddress = ({
   verify: Uuid
 }): RT.ReaderTask<
   GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveContactEmailAddressEnv,
-  LogInResponse | PageResponse | RedirectResponse
+  FlashMessageResponse | LogInResponse | PageResponse | RedirectResponse
 > =>
   pipe(
     RTE.Do,
@@ -101,6 +101,10 @@ export const authorInviteVerifyEmailAddress = ({
           .with('unavailable', () => havingProblemsPage)
           .with('wrong-user', () => noPermissionPage)
           .exhaustive(),
-      () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }),
+      () =>
+        FlashMessageResponse({
+          location: format(authorInviteCheckMatch.formatter, { id }),
+          message: 'contact-email-verified',
+        }),
     ),
   )

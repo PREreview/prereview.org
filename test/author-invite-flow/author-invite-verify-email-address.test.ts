@@ -48,9 +48,9 @@ describe('authorInviteVerifyEmailAddress', () => {
           })()
 
           expect(actual).toStrictEqual({
-            _tag: 'RedirectResponse',
-            status: Status.SeeOther,
+            _tag: 'FlashMessageResponse',
             location: format(authorInviteCheckMatch.formatter, { id: inviteId }),
+            message: 'contact-email-verified',
           })
           expect(saveContactEmailAddress).toHaveBeenCalledWith(user.orcid, {
             type: 'verified',

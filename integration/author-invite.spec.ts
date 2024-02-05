@@ -85,32 +85,44 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use the invite email addr
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
 })
 
-test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use a different email address', async ({ fetch, page }) => {
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address')
+test.extend(canLogIn).extend(invitedToBeAnAuthor)(
+  'can use a different email address',
+  async ({ fetch, javaScriptEnabled, page }) => {
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/enter-email-address')
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Contact details')
 
-  await page.getByLabel('A different one').check()
-  await page.getByLabel('What is your email address?').fill('notjcarberry@example.com')
+    await page.getByLabel('A different one').check()
+    await page.getByLabel('What is your email address?').fill('notjcarberry@example.com')
 
-  fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 
-  await page.setContent(getLastMailjetEmailBody(fetch))
-  await page.getByRole('link', { name: 'Verify email address' }).click()
+    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.getByRole('link', { name: 'Verify email address' }).click()
 
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your details')
-})
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+    }
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your details')
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+  },
+)
 
 test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAuthor)(
   'have to verify your email address',
-  async ({ fetch, page }) => {
+  async ({ fetch, javaScriptEnabled, page }) => {
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -130,7 +142,16 @@ test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAu
     await page.setContent(getLastMailjetEmailBody(fetch))
     await page.getByRole('link', { name: 'Verify email address' }).click()
 
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+    }
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your details')
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
   },
 )
 
