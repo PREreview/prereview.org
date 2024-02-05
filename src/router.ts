@@ -28,6 +28,7 @@ import {
   authorInvitePersona,
   authorInvitePublished,
   authorInviteStart,
+  authorInviteVerifyEmailAddress,
 } from './author-invite-flow'
 import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
@@ -112,6 +113,7 @@ import {
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
   authorInviteStartMatch,
+  authorInviteVerifyEmailAddressMatch,
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
   changeContactEmailAddressMatch,
@@ -1448,6 +1450,32 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             ),
             env,
           ),
+        })),
+      ),
+    ),
+    pipe(
+      authorInviteVerifyEmailAddressMatch.parser,
+      P.map(({ id, verify }) =>
+        pipe(
+          RM.of({ id, verify }),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(authorInviteVerifyEmailAddress)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
+          getPrereview: withEnv(
+            flow(
+              getPrereviewFromZenodo,
+              RTE.mapLeft(() => 'unavailable' as const),
+            ),
+            env,
+          ),
+          saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, env),
         })),
       ),
     ),

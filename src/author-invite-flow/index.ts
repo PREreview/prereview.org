@@ -5,3 +5,4 @@ export { authorInviteNeedToVerifyEmailAddress } from './need-to-verify-email-add
 export { authorInvitePersona } from './persona-page'
 export { authorInvitePublished } from './author-invite-published'
 export { authorInviteStart } from './author-invite-start'
+export { authorInviteVerifyEmailAddress } from './verify-email-address'
