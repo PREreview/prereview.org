@@ -54,6 +54,7 @@ import { ediaStatement } from './edia-statement'
 import {
   type SendEmailEnv,
   createAuthorInviteEmail,
+  createContactEmailAddressVerificationEmailForInvitedAuthor,
   sendContactEmailAddressVerificationEmail,
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
@@ -1425,6 +1426,10 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             env,
           ),
           saveContactEmailAddress: withEnv(Keyv.saveContactEmailAddress, env),
+          verifyContactEmailAddressForInvitedAuthor: withEnv(
+            flow(RTE.fromReaderK(createContactEmailAddressVerificationEmailForInvitedAuthor), RTE.chainW(sendEmail)),
+            env,
+          ),
         })),
       ),
     ),

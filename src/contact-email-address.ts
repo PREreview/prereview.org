@@ -50,6 +50,14 @@ export interface VerifyContactEmailAddressForReviewEnv {
   ) => TE.TaskEither<'unavailable', void>
 }
 
+export interface VerifyContactEmailAddressForInvitedAuthorEnv {
+  verifyContactEmailAddressForInvitedAuthor: (verify: {
+    user: User
+    emailAddress: UnverifiedContactEmailAddress
+    authorInvite: Uuid
+  }) => TE.TaskEither<'unavailable', void>
+}
+
 export const ContactEmailAddressC = C.sum('type')({
   verified: C.struct({
     type: C.literal('verified'),
@@ -101,6 +109,17 @@ export const verifyContactEmailAddressForReview = (
   RTE.asksReaderTaskEither(
     RTE.fromTaskEitherK(({ verifyContactEmailAddressForReview }) =>
       verifyContactEmailAddressForReview(user, emailAddress, preprint),
+    ),
+  )
+
+export const verifyContactEmailAddressForInvitedAuthor = (verify: {
+  user: User
+  emailAddress: UnverifiedContactEmailAddress
+  authorInvite: Uuid
+}): RTE.ReaderTaskEither<VerifyContactEmailAddressForInvitedAuthorEnv, 'unavailable', void> =>
+  RTE.asksReaderTaskEither(
+    RTE.fromTaskEitherK(({ verifyContactEmailAddressForInvitedAuthor }) =>
+      verifyContactEmailAddressForInvitedAuthor(verify),
     ),
   )
 

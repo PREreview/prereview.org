@@ -1,3 +1,8 @@
+import type { FetchMockSandbox } from 'fetch-mock'
+import * as E from 'fp-ts/Either'
+import * as J from 'fp-ts/Json'
+import { pipe } from 'fp-ts/function'
+import * as D from 'io-ts/Decoder'
 import { canLogIn, expect, hasAnUnverifiedEmailAddress, invitedToBeAnAuthor, test, willUpdateAReview } from './base'
 
 test.extend(canLogIn).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
@@ -80,7 +85,7 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use the invite email addr
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your details')
 })
 
-test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use a different email address', async ({ page }) => {
+test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use a different email address', async ({ fetch, page }) => {
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -90,14 +95,22 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use a different email add
 
   await page.getByLabel('A different one').check()
   await page.getByLabel('What is your email address?').fill('notjcarberry@example.com')
+
+  fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
+
+  await page.setContent(getLastMailjetEmailBody(fetch))
+  await page.getByRole('link', { name: 'Verify email address' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your details')
 })
 
 test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAuthor)(
   'have to verify your email address',
-  async ({ page }) => {
+  async ({ fetch, page }) => {
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -108,9 +121,16 @@ test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAu
     await expect(page.getByLabel('A different one')).toBeChecked()
     await expect(page.getByLabel('What is your email address?')).toHaveValue('jcarberry@example.com')
 
+    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
+
+    await page.setContent(getLastMailjetEmailBody(fetch))
+    await page.getByRole('link', { name: 'Verify email address' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your details')
   },
 )
 
@@ -179,4 +199,30 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
 
     await expect(page.getByLabel('What is your email address?')).toBeFocused()
   },
+)
+
+const getLastMailjetEmailBody = (fetch: FetchMockSandbox) => {
+  return pipe(
+    MailjetEmailD.decode(String(fetch.lastOptions('https://api.mailjet.com/v3.1/send')?.body)),
+    E.match(
+      () => {
+        throw new Error('No email found')
+      },
+      email => email.HtmlPart,
+    ),
+  )
+}
+
+const JsonD = {
+  decode: (s: string) =>
+    pipe(
+      J.parse(s),
+      E.mapLeft(() => D.error(s, 'JSON')),
+    ),
+}
+
+const MailjetEmailD = pipe(
+  JsonD,
+  D.compose(D.struct({ Messages: D.tuple(D.struct({ HtmlPart: D.string })) })),
+  D.map(body => body.Messages[0]),
 )

@@ -16,8 +16,10 @@ import {
   type ContactEmailAddress,
   type GetContactEmailAddressEnv,
   type SaveContactEmailAddressEnv,
+  type VerifyContactEmailAddressForInvitedAuthorEnv,
   maybeGetContactEmailAddress,
   saveContactEmailAddress,
+  verifyContactEmailAddressForInvitedAuthor,
 } from '../../contact-email-address'
 import { getInput, invalidE, missingE } from '../../form'
 import type { Html } from '../../html'
@@ -59,7 +61,12 @@ export const authorInviteEnterEmailAddress = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  GenerateUuidEnv & GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveContactEmailAddressEnv,
+  GenerateUuidEnv &
+    GetContactEmailAddressEnv &
+    GetPrereviewEnv &
+    GetAuthorInviteEnv &
+    SaveContactEmailAddressEnv &
+    VerifyContactEmailAddressForInvitedAuthorEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -180,6 +187,18 @@ const handleEnterEmailAddressForm = ({
         .run(),
     ),
     RTE.chainFirstW(contactEmailAddress => saveContactEmailAddress(user.orcid, contactEmailAddress)),
+    RTE.chainFirstW(contactEmailAddress =>
+      match(contactEmailAddress)
+        .with({ type: 'verified' }, () => RTE.of(undefined))
+        .with({ type: 'unverified' }, contactEmailAddress =>
+          verifyContactEmailAddressForInvitedAuthor({
+            user,
+            emailAddress: contactEmailAddress,
+            authorInvite: inviteId,
+          }),
+        )
+        .exhaustive(),
+    ),
     RTE.matchW(
       error =>
         match(error)

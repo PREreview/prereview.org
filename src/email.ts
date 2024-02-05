@@ -7,7 +7,12 @@ import type { UnverifiedContactEmailAddress } from './contact-email-address'
 import { type Html, html, mjmlToHtml, plainText } from './html'
 import type { PreprintTitle } from './preprint'
 import { type PublicUrlEnv, toUrl } from './public-url'
-import { authorInviteMatch, verifyContactEmailAddressMatch, writeReviewVerifyEmailAddressMatch } from './routes'
+import {
+  authorInviteMatch,
+  authorInviteVerifyEmailAddressMatch,
+  verifyContactEmailAddressMatch,
+  writeReviewVerifyEmailAddressMatch,
+} from './routes'
 import type { EmailAddress } from './types/email-address'
 import type { IndeterminatePreprintId } from './types/preprint-id'
 import type { NonEmptyString } from './types/string'
@@ -91,6 +96,41 @@ export const sendContactEmailAddressVerificationEmailForReview = (
         }) satisfies Email,
     ),
     RTE.chainW(sendEmail),
+  )
+
+export const createContactEmailAddressVerificationEmailForInvitedAuthor = ({
+  user,
+  emailAddress,
+  authorInvite,
+}: {
+  user: User
+  emailAddress: UnverifiedContactEmailAddress
+  authorInvite: Uuid
+}): R.Reader<PublicUrlEnv, Email> =>
+  pipe(
+    toUrl(authorInviteVerifyEmailAddressMatch.formatter, { id: authorInvite, verify: emailAddress.verificationToken }),
+    R.map(
+      verificationUrl =>
+        ({
+          from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
+          to: { address: emailAddress.value, name: user.name },
+          subject: 'Verify your email address on PREreview',
+          text: `Hi ${user.name},\n\nPlease verify your email address on PREreview by going to ${verificationUrl.href}`,
+          html: mjmlToHtml(html`
+            <mjml>
+              <mj-body>
+                <mj-section>
+                  <mj-column>
+                    <mj-text>Hi ${user.name},</mj-text>
+                    <mj-text>Please verify your email address on PREreview:</mj-text>
+                    <mj-button href="${verificationUrl.href}" target="_self">Verify email address</mj-button>
+                  </mj-column>
+                </mj-section>
+              </mj-body>
+            </mjml>
+          `),
+        }) satisfies Email,
+    ),
   )
 
 export const createAuthorInviteEmail = (
