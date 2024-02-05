@@ -752,7 +752,10 @@ test
     })
 
   await page.setContent(getLastMailjetEmailBody(fetch))
+
+  const opener = page.waitForEvent('popup')
   await page.getByRole('link', { name: 'Be listed as an author' }).click()
+  page = await opener
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Be listed as an author')
 })
@@ -1792,7 +1795,9 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
+    const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Verify email address' }).click()
+    page = await opener
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
@@ -1840,7 +1845,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAnUnverifiedEmailAddress)(
     await expect(page).toHaveScreenshot()
 
     await page.setContent(getLastMailjetEmailBody(fetch))
+
+    const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Verify email address' }).click()
+    page = await opener
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
   },
@@ -1893,7 +1901,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByRole('alert', { name: 'Important' })).toBeHidden()
 
     await page.setContent(getLastMailjetEmailBody(fetch))
+
+    const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Verify email address' }).click()
+    page = await opener
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your PREreview')
   },

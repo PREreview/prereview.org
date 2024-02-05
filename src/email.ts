@@ -54,7 +54,7 @@ export const sendContactEmailAddressVerificationEmail = (
                   <mj-column>
                     <mj-text>Hi ${user.name},</mj-text>
                     <mj-text>Please verify your email address on PREreview:</mj-text>
-                    <mj-button href="${verificationUrl.href}" target="_self">Verify email address</mj-button>
+                    <mj-button href="${verificationUrl.href}">Verify email address</mj-button>
                   </mj-column>
                 </mj-section>
               </mj-body>
@@ -89,7 +89,7 @@ export const sendContactEmailAddressVerificationEmailForReview = (
                   <mj-column>
                     <mj-text>Hi ${user.name},</mj-text>
                     <mj-text>Please verify your email address on PREreview:</mj-text>
-                    <mj-button href="${verificationUrl.href}" target="_self">Verify email address</mj-button>
+                    <mj-button href="${verificationUrl.href}">Verify email address</mj-button>
                   </mj-column>
                 </mj-section>
               </mj-body>
@@ -126,7 +126,7 @@ export const createContactEmailAddressVerificationEmailForInvitedAuthor = ({
                   <mj-column>
                     <mj-text>Hi ${user.name},</mj-text>
                     <mj-text>Please verify your email address on PREreview:</mj-text>
-                    <mj-button href="${verificationUrl.href}" target="_self">Verify email address</mj-button>
+                    <mj-button href="${verificationUrl.href}">Verify email address</mj-button>
                   </mj-column>
                 </mj-section>
               </mj-body>
@@ -171,7 +171,7 @@ PREreview
                       <a href="https://prereview.org/">PREreview.org</a>!
                     </mj-text>
                     <mj-text>${newPrereview.author} has invited you to appear as an author on the PREreview:</mj-text>
-                    <mj-button href="${inviteUrl.href}" target="_self">Be listed as an author</mj-button>
+                    <mj-button href="${inviteUrl.href}">Be listed as an author</mj-button>
                     <mj-text>
                       If you have any questions, please let us know at
                       <a href="mailto:help@prereview.org">help@prereview.org</a>.

@@ -75,7 +75,9 @@ test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ 
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
+  const opener = page.waitForEvent('popup')
   await page.getByRole('link', { name: 'Verify email address' }).click()
+  page = await opener
 
   if (javaScriptEnabled) {
     await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()

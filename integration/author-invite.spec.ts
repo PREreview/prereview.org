@@ -116,7 +116,10 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 
     await page.setContent(getLastMailjetEmailBody(fetch))
+
+    const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Verify email address' }).click()
+    page = await opener
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
@@ -151,7 +154,10 @@ test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAu
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Verify your email address')
 
     await page.setContent(getLastMailjetEmailBody(fetch))
+
+    const opener = page.waitForEvent('popup')
     await page.getByRole('link', { name: 'Verify email address' }).click()
+    page = await opener
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
