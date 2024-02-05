@@ -48,6 +48,7 @@ export const sendContactEmailAddressVerificationEmail = (
           text: `Hi ${user.name},\n\nPlease verify your email address on PREreview by going to ${verificationUrl.href}`,
           html: mjmlToHtml(html`
             <mjml>
+              <mj-head>${mjmlStyle}</mj-head>
               <mj-body>
                 <mj-section>
                   <mj-column>
@@ -82,6 +83,7 @@ export const sendContactEmailAddressVerificationEmailForReview = (
           text: `Hi ${user.name},\n\nPlease verify your email address on PREreview by going to ${verificationUrl.href}`,
           html: mjmlToHtml(html`
             <mjml>
+              <mj-head>${mjmlStyle}</mj-head>
               <mj-body>
                 <mj-section>
                   <mj-column>
@@ -118,6 +120,7 @@ export const createContactEmailAddressVerificationEmailForInvitedAuthor = ({
           text: `Hi ${user.name},\n\nPlease verify your email address on PREreview by going to ${verificationUrl.href}`,
           html: mjmlToHtml(html`
             <mjml>
+              <mj-head>${mjmlStyle}</mj-head>
               <mj-body>
                 <mj-section>
                   <mj-column>
@@ -158,6 +161,7 @@ PREreview
 `.trim(),
           html: mjmlToHtml(html`
             <mjml>
+              <mj-head>${mjmlStyle}</mj-head>
               <mj-body>
                 <mj-section>
                   <mj-column>
@@ -181,3 +185,9 @@ PREreview
         }) satisfies Email,
     ),
   )
+
+const mjmlStyle = html`
+  <mj-attributes>
+    <mj-button border="transparent solid"></mj-button>
+  </mj-attributes>
+`
