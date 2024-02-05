@@ -7,8 +7,10 @@ import { Eq as eqOrcid } from 'orcid-id-ts'
 import type { GetAuthorInviteEnv, SaveAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow'
 import type { AddAuthorToPrereviewEnv, GetPrereviewEnv } from '../../src/author-invite-flow/check-page'
+import type { GetContactEmailAddressEnv } from '../../src/contact-email-address'
 import {
   authorInviteCheckMatch,
+  authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
@@ -36,7 +38,8 @@ describe('authorInvite', () => {
             title: fc.html(),
           }),
         }),
-      ])('when the author can be added', async (inviteId, [user, invite], prereview) => {
+        fc.verifiedContactEmailAddress(),
+      ])('when the author can be added', async (inviteId, [user, invite], prereview, contactEmailAddress) => {
         const addAuthorToPrereview = jest.fn<AddAuthorToPrereviewEnv['addAuthorToPrereview']>(_ => TE.right(undefined))
         const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
         const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
@@ -45,6 +48,7 @@ describe('authorInvite', () => {
         const actual = await _.authorInviteCheck({ id: inviteId, method: 'POST', user })({
           addAuthorToPrereview,
           getAuthorInvite,
+          getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPrereview,
           saveAuthorInvite,
         })()
@@ -81,12 +85,14 @@ describe('authorInvite', () => {
             title: fc.html(),
           }),
         }),
-      ])("when the author can't be added", async (inviteId, [user, invite], prereview) => {
+        fc.verifiedContactEmailAddress(),
+      ])("when the author can't be added", async (inviteId, [user, invite], prereview, contactEmailAddress) => {
         const saveAuthorInvite = jest.fn<SaveAuthorInviteEnv['saveAuthorInvite']>(_ => TE.right(undefined))
 
         const actual = await _.authorInviteCheck({ id: inviteId, method: 'POST', user })({
           addAuthorToPrereview: () => TE.left('unavailable'),
           getAuthorInvite: () => TE.right(invite),
+          getContactEmailAddress: () => TE.right(contactEmailAddress),
           getPrereview: () => TE.right(prereview),
           saveAuthorInvite,
         })()
@@ -121,13 +127,15 @@ describe('authorInvite', () => {
           title: fc.html(),
         }),
       }),
-    ])('when the form needs checking', async (inviteId, [user, invite], method, prereview) => {
+      fc.verifiedContactEmailAddress(),
+    ])('when the form needs checking', async (inviteId, [user, invite], method, prereview, contactEmailAddress) => {
       const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
       const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
 
       const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
         addAuthorToPrereview: shouldNotBeCalled,
         getAuthorInvite,
+        getContactEmailAddress: () => TE.right(contactEmailAddress),
         getPrereview,
         saveAuthorInvite: shouldNotBeCalled,
       })()
@@ -152,6 +160,49 @@ describe('authorInvite', () => {
           fc.constant(user),
           fc.assignedAuthorInvite({
             orcid: fc.constant(user.orcid),
+            persona: fc.constantFrom('public', 'pseudonym'),
+          }),
+        ),
+      ),
+      fc.string(),
+      fc.record({
+        preprint: fc.record({
+          language: fc.languageCode(),
+          title: fc.html(),
+        }),
+      }),
+      fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+    ])(
+      "when there isn't a verified email address",
+      async (inviteId, [user, invite], method, prereview, contactEmailAddress) => {
+        const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
+          TE.fromEither(contactEmailAddress),
+        )
+
+        const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
+          addAuthorToPrereview: shouldNotBeCalled,
+          getAuthorInvite: () => TE.right(invite),
+          getContactEmailAddress,
+          getPrereview: () => TE.right(prereview),
+          saveAuthorInvite: shouldNotBeCalled,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(authorInviteEnterEmailAddressMatch.formatter, { id: inviteId }),
+        })
+        expect(getContactEmailAddress).toHaveBeenCalledWith(user.orcid)
+      },
+    )
+
+    test.prop([
+      fc.uuid(),
+      fc.user().chain(user =>
+        fc.tuple(
+          fc.constant(user),
+          fc.assignedAuthorInvite({
+            orcid: fc.constant(user.orcid),
             persona: fc.constant(undefined),
           }),
         ),
@@ -167,6 +218,7 @@ describe('authorInvite', () => {
       const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
         addAuthorToPrereview: shouldNotBeCalled,
         getAuthorInvite: () => TE.right(invite),
+        getContactEmailAddress: shouldNotBeCalled,
         getPrereview: () => TE.right(prereview),
         saveAuthorInvite: shouldNotBeCalled,
       })()
@@ -186,6 +238,7 @@ describe('authorInvite', () => {
       const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
         addAuthorToPrereview: shouldNotBeCalled,
         getAuthorInvite: () => TE.right(invite),
+        getContactEmailAddress: shouldNotBeCalled,
         getPrereview: () => TE.left('unavailable'),
         saveAuthorInvite: shouldNotBeCalled,
       })()
@@ -206,6 +259,7 @@ describe('authorInvite', () => {
         const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
           addAuthorToPrereview: shouldNotBeCalled,
           getAuthorInvite: () => TE.left('unavailable'),
+          getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
         })()
@@ -231,6 +285,7 @@ describe('authorInvite', () => {
       const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
         addAuthorToPrereview: shouldNotBeCalled,
         getAuthorInvite: () => TE.right(invite),
+        getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
       })()
@@ -252,6 +307,7 @@ describe('authorInvite', () => {
       const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
         addAuthorToPrereview: shouldNotBeCalled,
         getAuthorInvite: () => TE.right(invite),
+        getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
       })()
@@ -272,6 +328,7 @@ describe('authorInvite', () => {
         const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
           addAuthorToPrereview: shouldNotBeCalled,
           getAuthorInvite: () => TE.right(invite),
+          getContactEmailAddress: shouldNotBeCalled,
           getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
         })()
@@ -288,6 +345,7 @@ describe('authorInvite', () => {
       const actual = await _.authorInviteCheck({ id: inviteId, method, user })({
         addAuthorToPrereview: shouldNotBeCalled,
         getAuthorInvite: () => TE.left('not-found'),
+        getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
       })()
@@ -309,6 +367,7 @@ describe('authorInvite', () => {
       const actual = await _.authorInviteCheck({ id: inviteId, method })({
         addAuthorToPrereview: shouldNotBeCalled,
         getAuthorInvite: () => TE.right(invite),
+        getContactEmailAddress: shouldNotBeCalled,
         getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
       })()

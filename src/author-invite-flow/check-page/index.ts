@@ -13,10 +13,16 @@ import {
   getAuthorInvite,
   saveAuthorInvite,
 } from '../../author-invite'
+import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../contact-email-address'
 import type { Html } from '../../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
-import { authorInviteMatch, authorInvitePersonaMatch, authorInvitePublishedMatch } from '../../routes'
+import {
+  authorInviteEnterEmailAddressMatch,
+  authorInviteMatch,
+  authorInvitePersonaMatch,
+  authorInvitePublishedMatch,
+} from '../../routes'
 import type { User } from '../../user'
 import { checkPage } from './check-page'
 import { failureMessage } from './failure-message'
@@ -59,7 +65,7 @@ export const authorInviteCheck = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  AddAuthorToPrereviewEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
+  AddAuthorToPrereviewEnv & GetContactEmailAddressEnv & GetPrereviewEnv & GetAuthorInviteEnv & SaveAuthorInviteEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -85,6 +91,7 @@ export const authorInviteCheck = ({
       'persona',
       RTE.fromNullableK('no-persona' as const)(({ invite }) => invite.persona),
     ),
+    RTE.bindW('contactEmailAddress', ({ user }) => maybeGetContactEmailAddress(user.orcid)),
     RTE.matchEW(
       error =>
         RT.of(
@@ -110,6 +117,9 @@ export const authorInviteCheck = ({
               PageResponse | RedirectResponse | StreamlinePageResponse
             >
           >()
+          .with({ contactEmailAddress: P.optional({ type: 'unverified' }) }, () =>
+            RT.of(RedirectResponse({ location: format(authorInviteEnterEmailAddressMatch.formatter, { id }) })),
+          )
           .with({ method: 'POST' }, handlePublishForm)
           .with({ method: P.string }, state => RT.of(checkPage(state)))
           .exhaustive(),

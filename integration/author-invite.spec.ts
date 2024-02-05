@@ -3,9 +3,17 @@ import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
 import { pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
-import { canLogIn, expect, hasAnUnverifiedEmailAddress, invitedToBeAnAuthor, test, willUpdateAReview } from './base'
+import {
+  canLogIn,
+  expect,
+  hasAVerifiedEmailAddress,
+  hasAnUnverifiedEmailAddress,
+  invitedToBeAnAuthor,
+  test,
+  willUpdateAReview,
+} from './base'
 
-test.extend(canLogIn).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
+test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
   'can accept an invite',
   async ({ page }) => {
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -21,7 +29,7 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
   },
 )
 
-test.extend(canLogIn).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
+test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
   'can accept an invite using a pseudonym',
   async ({ page }) => {
     await page.getByRole('button', { name: 'Start now' }).click()
@@ -37,19 +45,22 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
   },
 )
 
-test.extend(canLogIn).extend(invitedToBeAnAuthor)('can change the name after previewing', async ({ page }) => {
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor)(
+  'can change the name after previewing',
+  async ({ page }) => {
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
-  await page.getByRole('link', { name: 'Change name' }).click()
-  await page.getByLabel('Orange Panda').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByRole('link', { name: 'Change name' }).click()
+    await page.getByLabel('Orange Panda').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
-})
+    await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
+  },
+)
 
 test.extend(canLogIn).extend(invitedToBeAnAuthor)('have to choose a name', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('button', { name: 'Start now' }).click()

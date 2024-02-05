@@ -1530,6 +1530,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           addAuthorToPrereview: withEnv(addAuthorToPrereview, env),
           getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
+          getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
           getPrereview: withEnv(
             flow(
               getPrereviewFromZenodo,
