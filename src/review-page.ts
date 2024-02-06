@@ -27,6 +27,7 @@ export interface Prereview {
   addendum?: Html
   authors: {
     named: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+    anonymous: number
   }
   club?: ClubId
   doi: Doi
@@ -108,7 +109,16 @@ function createPage({ id, review }: { id: number; review: Prereview }) {
 
         <div class="byline">
           <span class="visually-hidden">Authored</span> by
-          ${pipe(review.authors.named, RNEA.map(displayAuthor), formatList('en'))}
+          ${pipe(
+            review.authors.named,
+            RNEA.map(displayAuthor),
+            RNEA.concatW(
+              review.authors.anonymous > 0
+                ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
+                : [],
+            ),
+            formatList('en'),
+          )}
           ${review.club
             ? html`of the
                 <a href="${format(clubProfileMatch.formatter, { id: review.club })}">${getClubName(review.club)}</a>`

@@ -13,6 +13,7 @@ describe('reviewPage', () => {
     fc.record({
       authors: fc.record({
         named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        anonymous: fc.integer({ min: 0 }),
       }),
       doi: fc.doi(),
       language: fc.option(fc.languageCode(), { nil: undefined }),
