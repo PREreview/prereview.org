@@ -409,11 +409,19 @@ function createDepositMetadata(deposition: EmptyDeposition, newPrereview: NewPre
           title: plainText`${newPrereview.structured ? 'Structured ' : ''}PREreview of “${
             newPrereview.preprint.title
           }”`.toString(),
-          creators: [
-            newPrereview.persona === 'public'
-              ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
-              : { name: newPrereview.user.pseudonym },
-          ],
+          creators: pipe(
+            NEA.of(
+              newPrereview.persona === 'public'
+                ? { name: newPrereview.user.name, orcid: newPrereview.user.orcid }
+                : { name: newPrereview.user.pseudonym },
+            ),
+            NEA.concatW(
+              match(newPrereview.otherAuthors.length)
+                .with(P.number.gt(1), anonymous => [{ name: `${anonymous} other authors` }])
+                .with(1, () => [{ name: '1 other author' }])
+                .otherwise(() => []),
+            ),
+          ),
           description: `<p><strong>This Zenodo record is a permanently preserved version of a ${
             newPrereview.structured ? 'Structured ' : ''
           }PREreview. You can view the complete PREreview at <a href="${url.href}">${url.href}</a>.</strong></p>

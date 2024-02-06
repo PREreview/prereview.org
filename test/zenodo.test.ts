@@ -3170,7 +3170,16 @@ describe('createRecordOnZenodo', () => {
                   upload_type: 'publication',
                   publication_type: 'peerreview',
                   title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                  creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+                  creators: [
+                    {
+                      name: newPrereview.user.name,
+                      orcid: newPrereview.user.orcid,
+                    },
+                    ...match(newPrereview.otherAuthors.length)
+                      .with(0, () => [])
+                      .with(1, () => [{ name: '1 other author' }])
+                      .otherwise(number => [{ name: `${number} other authors` }]),
+                  ],
                   communities: [{ identifier: 'prereview-reviews' }],
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
@@ -3306,7 +3315,16 @@ ${newPrereview.review.toString()}`,
                   upload_type: 'publication',
                   publication_type: 'peerreview',
                   title: plainText`Structured PREreview of “${newPrereview.preprint.title}”`.toString(),
-                  creators: [{ name: newPrereview.user.name, orcid: newPrereview.user.orcid }],
+                  creators: [
+                    {
+                      name: newPrereview.user.name,
+                      orcid: newPrereview.user.orcid,
+                    },
+                    ...match(newPrereview.otherAuthors.length)
+                      .with(0, () => [])
+                      .with(1, () => [{ name: '1 other author' }])
+                      .otherwise(number => [{ name: `${number} other authors` }]),
+                  ],
                   communities: [{ identifier: 'prereview-reviews' }],
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
@@ -3445,7 +3463,13 @@ ${newPrereview.review.toString()}`,
                   upload_type: 'publication',
                   publication_type: 'peerreview',
                   title: plainText`PREreview of “${newPrereview.preprint.title}”`.toString(),
-                  creators: [{ name: newPrereview.user.pseudonym }],
+                  creators: [
+                    { name: newPrereview.user.pseudonym },
+                    ...match(newPrereview.otherAuthors.length)
+                      .with(0, () => [])
+                      .with(1, () => [{ name: '1 other author' }])
+                      .otherwise(number => [{ name: `${number} other authors` }]),
+                  ],
                   communities: [{ identifier: 'prereview-reviews' }],
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
@@ -3581,7 +3605,13 @@ ${newPrereview.review.toString()}`,
                   upload_type: 'publication',
                   publication_type: 'peerreview',
                   title: plainText`Structured PREreview of “${newPrereview.preprint.title}”`.toString(),
-                  creators: [{ name: newPrereview.user.pseudonym }],
+                  creators: [
+                    { name: newPrereview.user.pseudonym },
+                    ...match(newPrereview.otherAuthors.length)
+                      .with(0, () => [])
+                      .with(1, () => [{ name: '1 other author' }])
+                      .otherwise(number => [{ name: `${number} other authors` }]),
+                  ],
                   communities: [{ identifier: 'prereview-reviews' }],
                   description: `<p><strong>This Zenodo record is a permanently preserved version of a Structured PREreview. You can view the complete PREreview at <a href="${reviewUrl}">${reviewUrl}</a>.</strong></p>
 
