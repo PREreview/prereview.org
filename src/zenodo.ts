@@ -465,10 +465,7 @@ function recordToPrereview(
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
         addendum: RTE.right(pipe(O.fromNullable(review.metadata.notes), O.map(sanitizeHtml), O.toUndefined)),
-        authors: RTE.right<F.FetchEnv & GetPreprintEnv & L.LoggerEnv>({
-          named: review.metadata.creators,
-          anonymous: 0,
-        } as never),
+        authors: RTE.right<F.FetchEnv & GetPreprintEnv & L.LoggerEnv>(getAuthors(review) as never),
         club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         doi: RTE.right(review.metadata.doi),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
@@ -500,7 +497,7 @@ function recordToPreprintPrereview(
     RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
-        authors: RTE.right({ named: review.metadata.creators, anonymous: 0 }),
+        authors: RTE.right(getAuthors(review)),
         club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         id: RTE.right(review.id),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
@@ -557,6 +554,13 @@ const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
   }),
   D.map(get('metadata.license.id')),
 )
+
+function getAuthors(record: Record): Prereview['authors'] {
+  return {
+    named: record.metadata.creators,
+    anonymous: 0,
+  }
+}
 
 function isInCommunity(record: Record) {
   return pipe(
