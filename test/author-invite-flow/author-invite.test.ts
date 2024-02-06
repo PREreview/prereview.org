@@ -17,7 +17,9 @@ describe('authorInvite', () => {
     fc.constant(undefined),
     fc.authorInvite(),
     fc.record({
-      authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+      authors: fc.record({
+        named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+      }),
       doi: fc.doi(),
       language: fc.option(fc.languageCode(), { nil: undefined }),
       license: fc.constant('CC-BY-4.0' as const),
@@ -59,7 +61,9 @@ describe('authorInvite', () => {
       fc.user(),
       fc.openAuthorInvite(),
       fc.record({
-        authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        authors: fc.record({
+          named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        }),
         doi: fc.doi(),
         language: fc.option(fc.languageCode(), { nil: undefined }),
         license: fc.constant('CC-BY-4.0' as const),
@@ -99,7 +103,9 @@ describe('authorInvite', () => {
       fc.uuid(),
       fc.user().chain(user => fc.tuple(fc.constant(user), fc.assignedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
       fc.record({
-        authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        authors: fc.record({
+          named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        }),
         doi: fc.doi(),
         language: fc.option(fc.languageCode(), { nil: undefined }),
         license: fc.constant('CC-BY-4.0' as const),
@@ -132,7 +138,9 @@ describe('authorInvite', () => {
         .user()
         .chain(user => fc.tuple(fc.constant(user), fc.completedAuthorInvite({ orcid: fc.constant(user.orcid) }))),
       fc.record({
-        authors: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        authors: fc.record({
+          named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        }),
         doi: fc.doi(),
         language: fc.option(fc.languageCode(), { nil: undefined }),
         license: fc.constant('CC-BY-4.0' as const),

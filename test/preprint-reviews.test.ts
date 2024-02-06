@@ -14,15 +14,17 @@ describe('preprintReviews', () => {
     fc.preprint(),
     fc.array(
       fc.record({
-        authors: fc.nonEmptyArray(
-          fc.record(
-            {
-              name: fc.string(),
-              orcid: fc.orcid(),
-            },
-            { requiredKeys: ['name'] },
+        authors: fc.record({
+          named: fc.nonEmptyArray(
+            fc.record(
+              {
+                name: fc.string(),
+                orcid: fc.orcid(),
+              },
+              { requiredKeys: ['name'] },
+            ),
           ),
-        ),
+        }),
         id: fc.integer(),
         language: fc.option(fc.languageCode(), { nil: undefined }),
         text: fc.html(),
@@ -161,15 +163,17 @@ describe('preprintReviews', () => {
     fc.preprint(),
     fc.array(
       fc.record({
-        authors: fc.nonEmptyArray(
-          fc.record(
-            {
-              name: fc.string(),
-              orcid: fc.orcid(),
-            },
-            { requiredKeys: ['name'] },
+        authors: fc.record({
+          named: fc.nonEmptyArray(
+            fc.record(
+              {
+                name: fc.string(),
+                orcid: fc.orcid(),
+              },
+              { requiredKeys: ['name'] },
+            ),
           ),
-        ),
+        }),
         id: fc.integer(),
         language: fc.option(fc.languageCode(), { nil: undefined }),
         text: fc.html(),

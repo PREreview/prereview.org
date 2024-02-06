@@ -17,14 +17,16 @@ test('content looks right', async ({ showPage }) => {
       TE.right({ status: 'open', emailAddress: 'jcarberry@example.com' as EmailAddress, review: 1234 }),
     getPrereview: () =>
       TE.right({
-        authors: [
-          { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
-          { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
-          { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
-          { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
-          { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
-          { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
-        ],
+        authors: {
+          named: [
+            { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
+            { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
+            { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
+            { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
+            { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
+            { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
+          ],
+        },
         doi: '10.5072/zenodo.1061864' as Doi,
         license: 'CC-BY-4.0',
         preprint: {
@@ -73,14 +75,16 @@ test('content looks right when logged in', async ({ showPage }) => {
       TE.right({ status: 'open', emailAddress: 'jcarberry@example.com' as EmailAddress, review: 1234 }),
     getPrereview: () =>
       TE.right({
-        authors: [
-          { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
-          { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
-          { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
-          { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
-          { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
-          { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
-        ],
+        authors: {
+          named: [
+            { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
+            { name: 'Pierrick Bru', orcid: '0000-0001-5854-0905' as Orcid },
+            { name: 'Alizée Malnoë', orcid: '0000-0002-8777-3174' as Orcid },
+            { name: 'Aurélie Crepin', orcid: '0000-0002-4754-6823' as Orcid },
+            { name: 'Jack Forsman', orcid: '0000-0002-5111-8901' as Orcid },
+            { name: 'Domenica Farci', orcid: '0000-0002-3691-2699' as Orcid },
+          ],
+        },
         doi: '10.5072/zenodo.1061864' as Doi,
         license: 'CC-BY-4.0',
         preprint: {

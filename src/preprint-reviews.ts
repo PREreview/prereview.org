@@ -27,7 +27,7 @@ import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id'
 import { isPseudonym } from './types/pseudonym'
 
 export interface Prereview {
-  authors: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+  authors: { named: ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }> }
   club?: ClubId
   id: number
   language?: LanguageCode
@@ -230,13 +230,13 @@ function showReview(review: Prereview) {
       <article aria-labelledby="prereview-${review.id}-title">
         <header>
           <h3 class="visually-hidden" id="prereview-${review.id}-title">
-            PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
+            PREreview by ${review.authors.named[0].name} ${review.authors.named.length > 1 ? 'et al.' : ''}
             ${review.club ? html`of the ${getClubName(review.club)}` : ''}
           </h3>
 
           <div class="byline">
             <span class="visually-hidden">Authored</span> by
-            ${pipe(review.authors, RNEA.map(get('name')), formatList('en'))}
+            ${pipe(review.authors.named, RNEA.map(get('name')), formatList('en'))}
             ${review.club ? html`of the ${getClubName(review.club)}` : ''}
           </div>
         </header>
@@ -251,7 +251,7 @@ function showReview(review: Prereview) {
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">
           Read
           <span class="visually-hidden">
-            the PREreview by ${review.authors[0].name} ${review.authors.length > 1 ? 'et al.' : ''}
+            the PREreview by ${review.authors.named[0].name} ${review.authors.named.length > 1 ? 'et al.' : ''}
             ${review.club ? html`of the ${getClubName(review.club)}` : ''}
           </span>
         </a>

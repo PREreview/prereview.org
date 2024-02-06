@@ -465,7 +465,9 @@ function recordToPrereview(
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
         addendum: RTE.right(pipe(O.fromNullable(review.metadata.notes), O.map(sanitizeHtml), O.toUndefined)),
-        authors: RTE.right<F.FetchEnv & GetPreprintEnv & L.LoggerEnv>(review.metadata.creators as never),
+        authors: RTE.right<F.FetchEnv & GetPreprintEnv & L.LoggerEnv>({
+          named: review.metadata.creators,
+        } as never),
         club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         doi: RTE.right(review.metadata.doi),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
@@ -497,7 +499,7 @@ function recordToPreprintPrereview(
     RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
     RTE.chainW(review =>
       sequenceS(RTE.ApplyPar)({
-        authors: RTE.right(review.metadata.creators),
+        authors: RTE.right({ named: review.metadata.creators }),
         club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
         id: RTE.right(review.id),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),

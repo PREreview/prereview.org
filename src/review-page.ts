@@ -25,7 +25,9 @@ import PlainDate = Temporal.PlainDate
 
 export interface Prereview {
   addendum?: Html
-  authors: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+  authors: {
+    named: RNEA.ReadonlyNonEmptyArray<{ name: string; orcid?: Orcid }>
+  }
   club?: ClubId
   doi: Doi
   language?: LanguageCode
@@ -106,7 +108,7 @@ function createPage({ id, review }: { id: number; review: Prereview }) {
 
         <div class="byline">
           <span class="visually-hidden">Authored</span> by
-          ${pipe(review.authors, RNEA.map(displayAuthor), formatList('en'))}
+          ${pipe(review.authors.named, RNEA.map(displayAuthor), formatList('en'))}
           ${review.club
             ? html`of the
                 <a href="${format(clubProfileMatch.formatter, { id: review.club })}">${getClubName(review.club)}</a>`

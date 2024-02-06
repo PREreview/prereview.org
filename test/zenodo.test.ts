@@ -678,7 +678,7 @@ describe('getPrereviewFromZenodo', () => {
       expect(actual).toStrictEqual(
         E.right({
           addendum: rawHtml('<p>Some note.</p>'),
-          authors: [{ name: 'PREreviewer' }],
+          authors: { named: [{ name: 'PREreviewer' }] },
           club,
           doi: '10.5281/zenodo.1061864' as Doi,
           language: 'en',
@@ -760,7 +760,7 @@ describe('getPrereviewFromZenodo', () => {
     expect(actual).toStrictEqual(
       E.right({
         addendum: undefined,
-        authors: [{ name: 'PREreviewer' }],
+        authors: { named: [{ name: 'PREreviewer' }] },
         club: undefined,
         doi: '10.5281/zenodo.1061864' as Doi,
         language: undefined,
@@ -2408,7 +2408,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
       expect(actual).toStrictEqual(
         E.right([
           {
-            authors: [{ name: 'PREreviewer' }],
+            authors: { named: [{ name: 'PREreviewer' }] },
             club,
             id: 1061864,
             language: 'en',
@@ -2497,7 +2497,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
     expect(actual).toStrictEqual(
       E.right([
         {
-          authors: [{ name: 'PREreviewer' }],
+          authors: { named: [{ name: 'PREreviewer' }] },
           club: undefined,
           id: 1061864,
           language: undefined,
