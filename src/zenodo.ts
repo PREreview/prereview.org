@@ -4,6 +4,7 @@ import * as F from 'fetch-fp-ts'
 import { sequenceS } from 'fp-ts/Apply'
 import * as A from 'fp-ts/Array'
 import * as E from 'fp-ts/Either'
+import * as NEA from 'fp-ts/NonEmptyArray'
 import * as O from 'fp-ts/Option'
 import { and } from 'fp-ts/Predicate'
 import * as R from 'fp-ts/Reader'
@@ -28,6 +29,7 @@ import { URL } from 'url'
 import {
   type DepositMetadata,
   type EmptyDeposition,
+  type InProgressDeposition,
   type Record,
   type ZenodoAuthenticatedEnv,
   createEmptyDeposition,
@@ -334,9 +336,17 @@ export const addAuthorToRecordOnZenodo = (
       updateDeposition(
         {
           ...deposition.metadata,
-          creators: pipe(
-            deposition.metadata.creators,
-            A.appendW(persona === 'public' ? { name: user.name, orcid: user.orcid } : { name: user.pseudonym }),
+          creators: pipe(getAuthors(deposition), ({ named, anonymous }) =>
+            pipe(
+              NEA.fromReadonlyNonEmptyArray(named),
+              A.appendW(persona === 'public' ? { name: user.name, orcid: user.orcid } : { name: user.pseudonym }),
+              NEA.concatW(
+                match(anonymous)
+                  .with(P.number.gt(2), anonymous => [{ name: `${anonymous - 1} other authors` }])
+                  .with(2, () => [{ name: '1 other author' }])
+                  .otherwise(() => []),
+              ),
+            ),
           ),
         },
         deposition,
@@ -555,7 +565,7 @@ const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
   D.map(get('metadata.license.id')),
 )
 
-function getAuthors(record: Record): Prereview['authors'] {
+function getAuthors(record: Record | InProgressDeposition): Prereview['authors'] {
   const [named, last] = RNEA.unappend(record.metadata.creators)
 
   if (!RA.isNonEmpty(named)) {

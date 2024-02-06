@@ -2776,6 +2776,248 @@ describe('addAuthorToRecordOnZenodo', () => {
         expect(fetch.done()).toBeTruthy()
       },
     )
+
+    test.prop([fc.string(), fc.integer({ min: 1 }), fc.user(), fc.user(), fc.doi(), fc.integer({ min: 3 })])(
+      'when there are multiple other authors',
+      async (zenodoApiKey, id, user, creator, doi, otherAuthors) => {
+        const submittedDeposition: SubmittedDeposition = {
+          id: 1,
+          links: {
+            edit: new URL('http://example.com/edit'),
+          },
+          metadata: {
+            creators: [{ name: creator.name, orcid: creator.orcid }, { name: `${otherAuthors} other authors` }],
+            description: 'Description',
+            doi,
+            title: 'Title',
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'done',
+          submitted: true,
+        }
+        const inProgressDeposition: InProgressDeposition = {
+          id: 1,
+          links: {
+            publish: new URL('http://example.com/publish'),
+            self: new URL('http://example.com/self'),
+          },
+          metadata: {
+            creators: [{ name: creator.name, orcid: creator.orcid }, { name: `${otherAuthors} other authors` }],
+            description: 'Description',
+            doi,
+            title: 'Title',
+            upload_type: 'publication',
+            prereserve_doi: { doi },
+            publication_type: 'peerreview',
+          },
+          state: 'inprogress',
+          submitted: true,
+        }
+
+        const fetch = fetchMock
+          .sandbox()
+          .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+          })
+          .postOnce('http://example.com/edit', {
+            body: InProgressDepositionC.encode(inProgressDeposition),
+            status: Status.Created,
+          })
+          .putOnce(
+            {
+              url: 'http://example.com/self',
+              body: {
+                metadata: {
+                  creators: [
+                    { name: creator.name, orcid: creator.orcid },
+                    { name: user.name, orcid: user.orcid },
+                    { name: `${otherAuthors - 1} other authors` },
+                  ],
+                  description: 'Description',
+                  title: 'Title',
+                  upload_type: 'publication',
+                  publication_type: 'peerreview',
+                },
+              },
+            },
+            {
+              body: InProgressDepositionC.encode(inProgressDeposition),
+              status: Status.OK,
+            },
+          )
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
+          })
+
+        const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
+
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(fetch.done()).toBeTruthy()
+      },
+    )
+
+    test.prop([fc.string(), fc.integer({ min: 1 }), fc.user(), fc.user(), fc.doi()])(
+      'when there are 2 other authors',
+      async (zenodoApiKey, id, user, creator, doi) => {
+        const submittedDeposition: SubmittedDeposition = {
+          id: 1,
+          links: {
+            edit: new URL('http://example.com/edit'),
+          },
+          metadata: {
+            creators: [{ name: creator.name, orcid: creator.orcid }, { name: '2 other authors' }],
+            description: 'Description',
+            doi,
+            title: 'Title',
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'done',
+          submitted: true,
+        }
+        const inProgressDeposition: InProgressDeposition = {
+          id: 1,
+          links: {
+            publish: new URL('http://example.com/publish'),
+            self: new URL('http://example.com/self'),
+          },
+          metadata: {
+            creators: [{ name: creator.name, orcid: creator.orcid }, { name: '2 other authors' }],
+            description: 'Description',
+            doi,
+            title: 'Title',
+            upload_type: 'publication',
+            prereserve_doi: { doi },
+            publication_type: 'peerreview',
+          },
+          state: 'inprogress',
+          submitted: true,
+        }
+
+        const fetch = fetchMock
+          .sandbox()
+          .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+          })
+          .postOnce('http://example.com/edit', {
+            body: InProgressDepositionC.encode(inProgressDeposition),
+            status: Status.Created,
+          })
+          .putOnce(
+            {
+              url: 'http://example.com/self',
+              body: {
+                metadata: {
+                  creators: [
+                    { name: creator.name, orcid: creator.orcid },
+                    { name: user.name, orcid: user.orcid },
+                    { name: '1 other author' },
+                  ],
+                  description: 'Description',
+                  title: 'Title',
+                  upload_type: 'publication',
+                  publication_type: 'peerreview',
+                },
+              },
+            },
+            {
+              body: InProgressDepositionC.encode(inProgressDeposition),
+              status: Status.OK,
+            },
+          )
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
+          })
+
+        const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
+
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(fetch.done()).toBeTruthy()
+      },
+    )
+
+    test.prop([fc.string(), fc.integer({ min: 1 }), fc.user(), fc.user(), fc.doi()])(
+      'when there is 1 other author',
+      async (zenodoApiKey, id, user, creator, doi) => {
+        const submittedDeposition: SubmittedDeposition = {
+          id: 1,
+          links: {
+            edit: new URL('http://example.com/edit'),
+          },
+          metadata: {
+            creators: [{ name: creator.name, orcid: creator.orcid }, { name: '1 other authors' }],
+            description: 'Description',
+            doi,
+            title: 'Title',
+            upload_type: 'publication',
+            publication_type: 'peerreview',
+          },
+          state: 'done',
+          submitted: true,
+        }
+        const inProgressDeposition: InProgressDeposition = {
+          id: 1,
+          links: {
+            publish: new URL('http://example.com/publish'),
+            self: new URL('http://example.com/self'),
+          },
+          metadata: {
+            creators: [{ name: creator.name, orcid: creator.orcid }, { name: '1 other authors' }],
+            description: 'Description',
+            doi,
+            title: 'Title',
+            upload_type: 'publication',
+            prereserve_doi: { doi },
+            publication_type: 'peerreview',
+          },
+          state: 'inprogress',
+          submitted: true,
+        }
+
+        const fetch = fetchMock
+          .sandbox()
+          .getOnce(`https://zenodo.org/api/deposit/depositions/${id}`, {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+          })
+          .postOnce('http://example.com/edit', {
+            body: InProgressDepositionC.encode(inProgressDeposition),
+            status: Status.Created,
+          })
+          .putOnce(
+            {
+              url: 'http://example.com/self',
+              body: {
+                metadata: {
+                  creators: [
+                    { name: creator.name, orcid: creator.orcid },
+                    { name: user.name, orcid: user.orcid },
+                  ],
+                  description: 'Description',
+                  title: 'Title',
+                  upload_type: 'publication',
+                  publication_type: 'peerreview',
+                },
+              },
+            },
+            {
+              body: InProgressDepositionC.encode(inProgressDeposition),
+              status: Status.OK,
+            },
+          )
+          .postOnce('http://example.com/publish', {
+            body: SubmittedDepositionC.encode(submittedDeposition),
+            status: Status.Accepted,
+          })
+
+        const actual = await _.addAuthorToRecordOnZenodo(id, user, 'public')({ fetch, zenodoApiKey })()
+
+        expect(actual).toStrictEqual(E.right(undefined))
+        expect(fetch.done()).toBeTruthy()
+      },
+    )
   })
 
   test.prop([
