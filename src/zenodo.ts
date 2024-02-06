@@ -556,10 +556,24 @@ const PrereviewLicenseD: D.Decoder<Record, Prereview['license']> = pipe(
 )
 
 function getAuthors(record: Record): Prereview['authors'] {
-  return {
-    named: record.metadata.creators,
-    anonymous: 0,
+  const [named, last] = RNEA.unappend(record.metadata.creators)
+
+  if (!RA.isNonEmpty(named)) {
+    return { named: record.metadata.creators, anonymous: 0 }
   }
+
+  const anonymous = pipe(
+    O.fromNullable(last.name.match(/^([1-9][0-9]*) other authors?$/)),
+    O.chain(RA.lookup(1)),
+    O.match(
+      () => 0,
+      number => parseInt(number, 10),
+    ),
+  )
+
+  return match(anonymous)
+    .with(P.number.positive(), anonymous => ({ named, anonymous }))
+    .otherwise(() => ({ named: record.metadata.creators, anonymous: 0 }))
 }
 
 function isInCommunity(record: Record) {
