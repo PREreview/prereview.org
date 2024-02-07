@@ -135,6 +135,25 @@ describe('authorInvite', () => {
       },
     )
 
+    test.prop([fc.uuid(), fc.user(), fc.declinedAuthorInvite()])(
+      'when the invite has been declined',
+      async (inviteId, user, invite) => {
+        const actual = await _.authorInvitePublished({ id: inviteId, user })({
+          getAuthorInvite: () => TE.right(invite),
+          getPrereview: shouldNotBeCalled,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.NotFound,
+          title: expect.stringContaining('not found'),
+          main: expect.stringContaining('not found'),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
+
     test.prop([fc.uuid(), fc.user()])('when the invite is not found', async (inviteId, user) => {
       const actual = await _.authorInvitePublished({ id: inviteId, user })({
         getAuthorInvite: () => TE.left('not-found'),

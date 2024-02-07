@@ -8,11 +8,16 @@ import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
 import { type EmailAddress, EmailAddressC } from './types/email-address'
 
-export type AuthorInvite = OpenAuthorInvite | AssignedAuthorInvite | CompletedAuthorInvite
+export type AuthorInvite = OpenAuthorInvite | DeclinedAuthorInvite | AssignedAuthorInvite | CompletedAuthorInvite
 
 export interface OpenAuthorInvite {
   readonly status: 'open'
   readonly emailAddress: EmailAddress
+  readonly review: number
+}
+
+export interface DeclinedAuthorInvite {
+  readonly status: 'declined'
   readonly review: number
 }
 
@@ -50,6 +55,11 @@ const OpenAuthorInviteC = C.struct({
   review: C.number,
 }) satisfies C.Codec<unknown, unknown, OpenAuthorInvite>
 
+const DeclinedAuthorInviteC = C.struct({
+  status: C.literal('declined'),
+  review: C.number,
+}) satisfies C.Codec<unknown, unknown, DeclinedAuthorInvite>
+
 const AssignedAuthorInviteC = pipe(
   C.struct({
     status: C.literal('assigned'),
@@ -72,14 +82,18 @@ const CompletedAuthorInviteC = C.struct({
 
 // Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
 // Refs https://github.com/gcanti/io-ts/issues/625#issuecomment-1007478009
-export const AuthorInviteC = C.make(D.union(OpenAuthorInviteC, AssignedAuthorInviteC, CompletedAuthorInviteC), {
-  encode: authorInvite =>
-    match(authorInvite)
-      .with({ status: 'open' }, OpenAuthorInviteC.encode)
-      .with({ status: 'assigned' }, AssignedAuthorInviteC.encode)
-      .with({ status: 'completed' }, CompletedAuthorInviteC.encode)
-      .exhaustive(),
-}) satisfies C.Codec<unknown, unknown, AuthorInvite>
+export const AuthorInviteC = C.make(
+  D.union(OpenAuthorInviteC, DeclinedAuthorInviteC, AssignedAuthorInviteC, CompletedAuthorInviteC),
+  {
+    encode: authorInvite =>
+      match(authorInvite)
+        .with({ status: 'open' }, OpenAuthorInviteC.encode)
+        .with({ status: 'declined' }, DeclinedAuthorInviteC.encode)
+        .with({ status: 'assigned' }, AssignedAuthorInviteC.encode)
+        .with({ status: 'completed' }, CompletedAuthorInviteC.encode)
+        .exhaustive(),
+  },
+) satisfies C.Codec<unknown, unknown, AuthorInvite>
 
 export const createAuthorInvite = (
   authorInvite: OpenAuthorInvite,

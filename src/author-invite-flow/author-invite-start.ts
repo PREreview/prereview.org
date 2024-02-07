@@ -50,7 +50,17 @@ export const authorInviteStart = ({
 > =>
   pipe(
     RTE.Do,
-    RTE.apS('invite', getAuthorInvite(id)),
+    RTE.apS(
+      'invite',
+      pipe(
+        getAuthorInvite(id),
+        RTE.chainW(invite =>
+          match(invite)
+            .with({ status: 'declined' }, () => RTE.left('not-found' as const))
+            .otherwise(RTE.right),
+        ),
+      ),
+    ),
     RTE.bindW('review', ({ invite }) => getPrereview(invite.review)),
     RTE.apSW('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.chainFirstW(({ invite, user }) =>

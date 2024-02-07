@@ -26,7 +26,13 @@ import {
 } from 'node-mocks-http'
 import { type Orcid, isOrcid } from 'orcid-id-ts'
 import { type Uuid, isUuid } from 'uuid-ts'
-import type { AssignedAuthorInvite, AuthorInvite, CompletedAuthorInvite, OpenAuthorInvite } from '../src/author-invite'
+import type {
+  AssignedAuthorInvite,
+  AuthorInvite,
+  CompletedAuthorInvite,
+  DeclinedAuthorInvite,
+  OpenAuthorInvite,
+} from '../src/author-invite'
 import type { CareerStage } from '../src/career-stage'
 import type { OrcidOAuthEnv } from '../src/connect-orcid/oauth-code'
 import type {
@@ -761,10 +767,13 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .filter(isOrcid)
 
 export const authorInvite = (): fc.Arbitrary<AuthorInvite> =>
-  fc.oneof(openAuthorInvite(), assignedAuthorInvite(), completedAuthorInvite())
+  fc.oneof(openAuthorInvite(), declinedAuthorInvite(), assignedAuthorInvite(), completedAuthorInvite())
 
 export const openAuthorInvite = (): fc.Arbitrary<OpenAuthorInvite> =>
   fc.record({ status: fc.constant('open'), emailAddress: emailAddress(), review: fc.integer({ min: 1 }) })
+
+export const declinedAuthorInvite = (): fc.Arbitrary<DeclinedAuthorInvite> =>
+  fc.record({ status: fc.constant('declined'), review: fc.integer({ min: 1 }) })
 
 export const assignedAuthorInvite = ({
   orcid: _orcid,

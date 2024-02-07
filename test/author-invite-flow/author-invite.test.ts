@@ -15,7 +15,7 @@ describe('authorInvite', () => {
   test.prop([
     fc.uuid(),
     fc.constant(undefined),
-    fc.authorInvite(),
+    fc.authorInvite().filter(invite => invite.status !== 'declined'),
     fc.record({
       authors: fc.record({
         named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
@@ -175,7 +175,10 @@ describe('authorInvite', () => {
   test.prop([
     fc.uuid(),
     fc.oneof(
-      fc.tuple(fc.constant(undefined), fc.authorInvite()),
+      fc.tuple(
+        fc.constant(undefined),
+        fc.authorInvite().filter(invite => invite.status !== 'declined'),
+      ),
       fc
         .user()
         .chain(user =>
@@ -244,6 +247,25 @@ describe('authorInvite', () => {
       js: [],
     })
   })
+
+  test.prop([fc.uuid(), fc.option(fc.user(), { nil: undefined }), fc.declinedAuthorInvite()])(
+    'when the invite has been declined',
+    async (inviteId, user, invite) => {
+      const actual = await _.authorInvite({ id: inviteId, user })({
+        getAuthorInvite: () => TE.right(invite),
+        getPrereview: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.stringContaining('not found'),
+        main: expect.stringContaining('not found'),
+        skipToLabel: 'main',
+        js: [],
+      })
+    },
+  )
 
   test.prop([fc.uuid(), fc.option(fc.user(), { nil: undefined })])(
     'when the invite is not found',

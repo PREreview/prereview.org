@@ -61,6 +61,7 @@ export const authorInviteVerifyEmailAddress = ({
         RTE.chainW(invite =>
           match(invite)
             .with({ status: 'open' }, () => RTE.left('not-assigned' as const))
+            .with({ status: 'declined' }, () => RTE.left('not-found' as const))
             .with({ orcid: P.not(user.orcid) }, () => RTE.left('wrong-user' as const))
             .with({ status: 'completed' }, () => RTE.left('already-completed' as const))
             .with({ status: 'assigned' }, RTE.of)

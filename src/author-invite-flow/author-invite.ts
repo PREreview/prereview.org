@@ -69,7 +69,17 @@ export const authorInvite = ({
     RTE.Do,
     RTE.let('user', () => user),
     RTE.let('inviteId', () => id),
-    RTE.apS('invite', getAuthorInvite(id)),
+    RTE.apS(
+      'invite',
+      pipe(
+        getAuthorInvite(id),
+        RTE.chainW(invite =>
+          match(invite)
+            .with({ status: 'declined' }, () => RTE.left('not-found' as const))
+            .otherwise(RTE.right),
+        ),
+      ),
+    ),
     RTE.filterOrElseW(
       ({ user, invite }) => !user || !('orcid' in invite) || eqOrcid.equals(user.orcid, invite.orcid),
       () => 'wrong-user' as const,

@@ -145,7 +145,7 @@ describe('authorInviteStart', () => {
 
     test.prop([
       fc.uuid(),
-      fc.authorInvite(),
+      fc.authorInvite().filter(invite => invite.status !== 'declined'),
       fc.record({
         preprint: fc.record({
           language: fc.languageCode(),
@@ -171,20 +171,41 @@ describe('authorInviteStart', () => {
     })
   })
 
-  test.prop([fc.uuid(), fc.option(fc.user(), { nil: undefined }), fc.authorInvite()])(
-    'when the review cannot be loaded',
+  test.prop([
+    fc.uuid(),
+    fc.option(fc.user(), { nil: undefined }),
+    fc.authorInvite().filter(invite => invite.status !== 'declined'),
+  ])('when the review cannot be loaded', async (inviteId, user, invite) => {
+    const actual = await _.authorInviteStart({ id: inviteId, user })({
+      getAuthorInvite: () => TE.right(invite),
+      getPrereview: () => TE.left('unavailable'),
+      saveAuthorInvite: shouldNotBeCalled,
+    })()
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.ServiceUnavailable,
+      title: expect.stringContaining('problems'),
+      main: expect.stringContaining('problems'),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
+
+  test.prop([fc.uuid(), fc.option(fc.user(), { nil: undefined }), fc.declinedAuthorInvite()])(
+    'when the invite has been declined',
     async (inviteId, user, invite) => {
       const actual = await _.authorInviteStart({ id: inviteId, user })({
         getAuthorInvite: () => TE.right(invite),
-        getPrereview: () => TE.left('unavailable'),
+        getPrereview: shouldNotBeCalled,
         saveAuthorInvite: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
+        status: Status.NotFound,
+        title: expect.stringContaining('not found'),
+        main: expect.stringContaining('not found'),
         skipToLabel: 'main',
         js: [],
       })

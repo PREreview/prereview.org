@@ -320,6 +320,27 @@ describe('authorInviteVerifyEmailAddress', () => {
       },
     )
 
+    test.prop([fc.uuid(), fc.user(), fc.uuid(), fc.declinedAuthorInvite()])(
+      'when the invite has been declined',
+      async (inviteId, user, verifyToken, invite) => {
+        const actual = await _.authorInviteVerifyEmailAddress({ id: inviteId, user, verify: verifyToken })({
+          getAuthorInvite: () => TE.right(invite),
+          getContactEmailAddress: shouldNotBeCalled,
+          getPrereview: shouldNotBeCalled,
+          saveContactEmailAddress: shouldNotBeCalled,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.NotFound,
+          title: expect.stringContaining('not found'),
+          main: expect.stringContaining('not found'),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
+
     test.prop([fc.uuid(), fc.user(), fc.uuid()])(
       'when the invite is not found',
       async (inviteId, user, verifyToken) => {
