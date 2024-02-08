@@ -23,6 +23,7 @@ import { type OpenAuthorInvite, createAuthorInvite } from './author-invite'
 import {
   authorInvite,
   authorInviteCheck,
+  authorInviteDecline,
   authorInviteEnterEmailAddress,
   authorInviteNeedToVerifyEmailAddress,
   authorInvitePersona,
@@ -108,6 +109,7 @@ import { reviewsPage } from './reviews-page'
 import {
   aboutUsMatch,
   authorInviteCheckMatch,
+  authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
   authorInviteNeedToVerifyEmailAddressMatch,
@@ -1370,6 +1372,24 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             ),
             env,
           ),
+        })),
+      ),
+    ),
+    pipe(
+      authorInviteDeclineMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ id }),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(authorInviteDecline)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
+          saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, env),
         })),
       ),
     ),

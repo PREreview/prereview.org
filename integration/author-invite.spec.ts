@@ -54,6 +54,15 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
 )
 
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor)(
+  'can decline an invite',
+  async ({ page }) => {
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d/decline')
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Invitation declined')
+  },
+)
+
+test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor)(
   'can change the name after previewing',
   async ({ page }) => {
     await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')

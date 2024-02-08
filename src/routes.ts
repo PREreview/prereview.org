@@ -366,6 +366,13 @@ export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit
 
 export const authorInviteMatch = pipe(P.lit('author-invite'), P.then(type('id', UuidC)), P.then(P.end))
 
+export const authorInviteDeclineMatch = pipe(
+  P.lit('author-invite'),
+  P.then(type('id', UuidC)),
+  P.then(P.lit('decline')),
+  P.then(P.end),
+)
+
 export const authorInviteStartMatch = pipe(
   P.lit('author-invite'),
   P.then(type('id', UuidC)),

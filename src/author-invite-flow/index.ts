@@ -1,5 +1,6 @@
 export { authorInvite } from './author-invite'
 export { authorInviteCheck } from './check-page'
+export { authorInviteDecline } from './decline-page'
 export { authorInviteEnterEmailAddress } from './enter-email-address-page'
 export { authorInviteNeedToVerifyEmailAddress } from './need-to-verify-email-address-page'
 export { authorInvitePersona } from './persona-page'
