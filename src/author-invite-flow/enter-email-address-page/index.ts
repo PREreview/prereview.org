@@ -27,6 +27,7 @@ import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-e
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import {
   authorInviteCheckMatch,
+  authorInviteDeclineMatch,
   authorInviteMatch,
   authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePublishedMatch,
@@ -79,7 +80,7 @@ export const authorInviteEnterEmailAddress = ({
         RTE.chainW(invite =>
           match(invite)
             .with({ status: 'open' }, () => RTE.left('not-assigned' as const))
-            .with({ status: 'declined' }, () => RTE.left('not-found' as const))
+            .with({ status: 'declined' }, () => RTE.left('declined' as const))
             .with({ orcid: P.not(user.orcid) }, () => RTE.left('wrong-user' as const))
             .with({ status: 'completed' }, () => RTE.left('already-completed' as const))
             .with({ status: 'assigned' }, RTE.of)
@@ -98,6 +99,7 @@ export const authorInviteEnterEmailAddress = ({
             .with('already-completed', () =>
               RedirectResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }),
             )
+            .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
             .with('no-session', () => LogInResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
             .with('not-found', () => pageNotFound)

@@ -10,6 +10,7 @@ import type { AddAuthorToPrereviewEnv, GetPrereviewEnv } from '../../src/author-
 import type { GetContactEmailAddressEnv } from '../../src/contact-email-address'
 import {
   authorInviteCheckMatch,
+  authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
   authorInvitePersonaMatch,
@@ -353,12 +354,9 @@ describe('authorInvite', () => {
         })()
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
         })
       },
     )

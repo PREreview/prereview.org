@@ -11,7 +11,13 @@ import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
 import { type Html, html, plainText } from '../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
-import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch, reviewMatch } from '../routes'
+import {
+  authorInviteCheckMatch,
+  authorInviteDeclineMatch,
+  authorInviteMatch,
+  authorInvitePublishedMatch,
+  reviewMatch,
+} from '../routes'
 import type { User } from '../user'
 
 export interface Prereview {
@@ -49,7 +55,7 @@ export const authorInvitePublished = ({
         RTE.chainW(invite =>
           match(invite)
             .with({ status: 'open' }, () => RTE.left('not-assigned' as const))
-            .with({ status: 'declined' }, () => RTE.left('not-found' as const))
+            .with({ status: 'declined' }, () => RTE.left('declined' as const))
             .with({ orcid: P.not(user.orcid) }, () => RTE.left('wrong-user' as const))
             .with({ status: 'assigned' }, () => RTE.left('not-completed' as const))
             .with({ status: 'completed' }, RTE.of)
@@ -62,6 +68,7 @@ export const authorInvitePublished = ({
     RTE.matchW(
       error =>
         match(error)
+          .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
           .with('no-session', () => LogInResponse({ location: format(authorInvitePublishedMatch.formatter, { id }) }))
           .with('not-assigned', () => RedirectResponse({ location: format(authorInviteMatch.formatter, { id }) }))
           .with('not-completed', () => RedirectResponse({ location: format(authorInviteCheckMatch.formatter, { id }) }))

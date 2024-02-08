@@ -8,6 +8,7 @@ import type { GetAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow/need-to-verify-email-address-page'
 import {
   authorInviteCheckMatch,
+  authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
   authorInviteNeedToVerifyEmailAddressMatch,
@@ -209,12 +210,9 @@ describe('authorInviteNeedToVerifyEmailAddress', () => {
         })()
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
         })
       },
     )

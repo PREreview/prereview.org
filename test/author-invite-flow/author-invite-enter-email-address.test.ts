@@ -13,6 +13,7 @@ import type {
 } from '../../src/contact-email-address'
 import {
   authorInviteCheckMatch,
+  authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
   authorInviteNeedToVerifyEmailAddressMatch,
@@ -484,12 +485,9 @@ describe('authorInviteEnterEmailAddress', () => {
         })()
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
         })
       },
     )

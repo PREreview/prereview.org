@@ -6,7 +6,12 @@ import { Status } from 'hyper-ts'
 import type { GetAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/author-invite-published'
-import { authorInviteCheckMatch, authorInviteMatch, authorInvitePublishedMatch } from '../../src/routes'
+import {
+  authorInviteCheckMatch,
+  authorInviteDeclineMatch,
+  authorInviteMatch,
+  authorInvitePublishedMatch,
+} from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
@@ -144,12 +149,9 @@ describe('authorInvite', () => {
         })()
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
         })
       },
     )

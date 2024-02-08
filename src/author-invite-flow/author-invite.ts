@@ -17,6 +17,7 @@ import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html'
 import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
 import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
 import {
+  authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
   authorInviteStartMatch,
@@ -75,7 +76,7 @@ export const authorInvite = ({
         getAuthorInvite(id),
         RTE.chainW(invite =>
           match(invite)
-            .with({ status: 'declined' }, () => RTE.left('not-found' as const))
+            .with({ status: 'declined' }, () => RTE.left('declined' as const))
             .otherwise(RTE.right),
         ),
       ),
@@ -88,6 +89,7 @@ export const authorInvite = ({
     RTE.matchW(
       error =>
         match(error)
+          .with('declined', () => RedirectResponse({ location: format(authorInviteDeclineMatch.formatter, { id }) }))
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .with('wrong-user', () => noPermissionPage)

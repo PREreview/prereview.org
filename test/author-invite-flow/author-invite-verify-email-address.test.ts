@@ -9,6 +9,7 @@ import * as _ from '../../src/author-invite-flow/verify-email-address'
 import type { GetContactEmailAddressEnv, SaveContactEmailAddressEnv } from '../../src/contact-email-address'
 import {
   authorInviteCheckMatch,
+  authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
   authorInviteVerifyEmailAddressMatch,
@@ -331,12 +332,9 @@ describe('authorInviteVerifyEmailAddress', () => {
         })()
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
         })
       },
     )

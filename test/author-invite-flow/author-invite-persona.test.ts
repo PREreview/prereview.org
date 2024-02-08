@@ -9,6 +9,7 @@ import * as _ from '../../src/author-invite-flow'
 import type { GetPrereviewEnv } from '../../src/author-invite-flow/check-page'
 import {
   authorInviteCheckMatch,
+  authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
@@ -258,12 +259,9 @@ describe('authorInvitePersona', () => {
         })()
 
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
         })
       },
     )
