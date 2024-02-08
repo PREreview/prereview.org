@@ -8,6 +8,7 @@ import { type Html, html, mjmlToHtml, plainText } from './html'
 import type { PreprintTitle } from './preprint'
 import { type PublicUrlEnv, toUrl } from './public-url'
 import {
+  authorInviteDeclineMatch,
   authorInviteMatch,
   authorInviteVerifyEmailAddressMatch,
   verifyContactEmailAddressMatch,
@@ -142,9 +143,11 @@ export const createAuthorInviteEmail = (
   newPrereview: { author: string; preprint: PreprintTitle },
 ): R.Reader<PublicUrlEnv, Email> =>
   pipe(
-    toUrl(authorInviteMatch.formatter, { id: authorInviteId }),
+    R.Do,
+    R.apS('inviteUrl', toUrl(authorInviteMatch.formatter, { id: authorInviteId })),
+    R.apS('declineUrl', toUrl(authorInviteDeclineMatch.formatter, { id: authorInviteId })),
     R.map(
-      inviteUrl =>
+      ({ inviteUrl, declineUrl }) =>
         ({
           from: { address: 'help@prereview.org' as EmailAddress, name: 'PREreview' },
           to: { address: person.emailAddress, name: person.name },
@@ -154,7 +157,15 @@ Hi ${person.name},
 
 Thank you for contributing to a recent review of “${plainText(newPrereview.preprint.title).toString()}” published on PREreview.org!
 
-${newPrereview.author} has invited you to appear as an author on the PREreview. You can be listed by going to ${inviteUrl.href}
+${newPrereview.author} has invited you to appear as an author on the PREreview.
+
+You can be listed by going to:
+
+  ${inviteUrl.href}
+
+You can also choose not to be listed by ignoring this email or going to:
+
+  ${declineUrl.href}
 
 If you have any questions, please let us know at help@prereview.org.
 
@@ -174,6 +185,10 @@ PREreview
                     </mj-text>
                     <mj-text>${newPrereview.author} has invited you to appear as an author on the PREreview:</mj-text>
                     <mj-button href="${inviteUrl.href}">Be listed as an author</mj-button>
+                    <mj-text
+                      >You can also choose not to be listed by
+                      <a href="${declineUrl.href}">declining this invitation</a> or ignoring this email.
+                    </mj-text>
                     <mj-text>
                       If you have any questions, please let us know at
                       <a href="mailto:help@prereview.org">help@prereview.org</a>.
