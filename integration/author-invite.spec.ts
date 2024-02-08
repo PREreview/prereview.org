@@ -16,6 +16,10 @@ import {
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
   'can accept an invite',
   async ({ page }) => {
+    const opener = page.waitForEvent('popup')
+    await page.getByRole('link', { name: 'Be listed as an author' }).click()
+    page = await opener
+
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -32,6 +36,10 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor).extend(willUpdateAReview)(
   'can accept an invite using a pseudonym',
   async ({ page }) => {
+    const opener = page.waitForEvent('popup')
+    await page.getByRole('link', { name: 'Be listed as an author' }).click()
+    page = await opener
+
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Orange Panda').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -48,6 +56,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
 test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAuthor)(
   'can change the name after previewing',
   async ({ page }) => {
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -63,6 +72,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
 )
 
 test.extend(canLogIn).extend(invitedToBeAnAuthor)('have to choose a name', async ({ javaScriptEnabled, page }) => {
+  await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
   await page.getByRole('button', { name: 'Start now' }).click()
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -83,6 +93,7 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)('have to choose a name', async
 })
 
 test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use the invite email address', async ({ page }) => {
+  await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByLabel('Josiah Carberry').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -99,6 +110,7 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)('can use the invite email addr
 test.extend(canLogIn).extend(invitedToBeAnAuthor)(
   'can use a different email address',
   async ({ fetch, javaScriptEnabled, page }) => {
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -137,6 +149,7 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
 test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAuthor)(
   'have to verify your email address',
   async ({ fetch, javaScriptEnabled, page }) => {
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -175,6 +188,7 @@ test.extend(canLogIn).extend(hasAnUnverifiedEmailAddress).extend(invitedToBeAnAu
 test.extend(canLogIn).extend(invitedToBeAnAuthor)(
   'have to enter an email address',
   async ({ javaScriptEnabled, page }) => {
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -215,6 +229,7 @@ test.extend(canLogIn).extend(invitedToBeAnAuthor)(
 test.extend(canLogIn).extend(invitedToBeAnAuthor)(
   'have to enter a valid email address',
   async ({ javaScriptEnabled, page }) => {
+    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('Josiah Carberry').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()

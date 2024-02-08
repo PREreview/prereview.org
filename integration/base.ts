@@ -16,6 +16,7 @@ import Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import { type MutableRedirectUri, OAuth2Server } from 'oauth2-mock-server'
 import type { Orcid } from 'orcid-id-ts'
+import type { BrowserContextOptions } from 'playwright-core'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
 import {
@@ -30,7 +31,9 @@ import {
 import { type ConfigEnv, app } from '../src/app'
 import { AuthorInviteC } from '../src/author-invite'
 import { ContactEmailAddressC } from '../src/contact-email-address'
+import { createAuthorInviteEmail } from '../src/email'
 import type { CanConnectOrcidProfileEnv, CanInviteAuthorsEnv } from '../src/feature-flags'
+import { rawHtml } from '../src/html'
 import type {
   AuthorInviteStoreEnv,
   ContactEmailAddressStoreEnv,
@@ -1397,9 +1400,11 @@ export const hasAVerifiedEmailAddress: Fixtures<
 export const invitedToBeAnAuthor: Fixtures<
   Record<never, never>,
   Record<never, never>,
-  Pick<AppFixtures, 'authorInviteStore' | 'fetch'> & Pick<PlaywrightTestArgs, 'page'>
+  Pick<AppFixtures, 'authorInviteStore' | 'fetch'> &
+    Pick<PlaywrightTestArgs, 'page'> &
+    Pick<BrowserContextOptions, 'baseURL'>
 > = {
-  page: async ({ authorInviteStore, fetch, page }, use) => {
+  page: async ({ authorInviteStore, baseURL, fetch, page }, use) => {
     const record: ZenodoRecord = {
       conceptdoi: '10.5072/zenodo.1055805' as Doi,
       conceptrecid: 1055805,
@@ -1467,7 +1472,23 @@ export const invitedToBeAnAuthor: Fixtures<
       }),
     )
 
-    await page.goto('/author-invite/bec5727e-9992-4f3b-85be-6712df617b9d')
+    const email = createAuthorInviteEmail(
+      {
+        name: 'Josiah Carberry' as NonEmptyString,
+        emailAddress: 'jcarberry@example.com' as EmailAddress,
+      },
+      'bec5727e-9992-4f3b-85be-6712df617b9d' as Uuid,
+      {
+        author: 'Josiah Carberry',
+        preprint: {
+          id: { type: 'biorxiv', value: '10.1101/2022.01.13.476201' as Doi<'1101'> },
+          language: 'en',
+          title: rawHtml('The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>'),
+        },
+      },
+    )({ publicUrl: new URL(String(baseURL)) })
+
+    await page.setContent(email.html.toString())
 
     await use(page)
   },
