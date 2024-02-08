@@ -156,6 +156,8 @@ Thank you for contributing to a recent review of “${plainText(newPrereview.pre
 
 ${newPrereview.author} has invited you to appear as an author on the PREreview. You can be listed by going to ${inviteUrl.href}
 
+If you have any questions, please let us know at help@prereview.org.
+
 All the best,
 PREreview
 `.trim(),
