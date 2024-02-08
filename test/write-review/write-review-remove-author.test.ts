@@ -18,12 +18,12 @@ describe('writeReviewRemoveAuthor', () => {
       test.prop([
         fc.indeterminatePreprintId(),
         fc.preprintTitle(),
-        fc.record({ removeAuthor: fc.constantFrom('yes', 'no') }),
+        fc.record({ removeAuthor: fc.constant('yes') }),
         fc.user(),
         fc
           .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
           .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),
-      ])('when the form is valid', async (id, preprintTitle, body, user, [newReview, number]) => {
+      ])('when the answer is yes', async (id, preprintTitle, body, user, [newReview, number]) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
@@ -40,6 +40,31 @@ describe('writeReviewRemoveAuthor', () => {
           main: expect.stringContaining('problems'),
           skipToLabel: 'main',
           js: [],
+        })
+      })
+
+      test.prop([
+        fc.indeterminatePreprintId(),
+        fc.preprintTitle(),
+        fc.record({ removeAuthor: fc.constant('no') }),
+        fc.user(),
+        fc
+          .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
+          .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),
+      ])('when the answer is no', async (id, preprintTitle, body, user, [newReview, number]) => {
+        const formStore = new Keyv()
+        await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+
+        const actual = await _.writeReviewRemoveAuthor({ body, id, method: 'POST', number, user })({
+          canInviteAuthors: () => true,
+          formStore,
+          getPreprintTitle: () => TE.right(preprintTitle),
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
         })
       })
 

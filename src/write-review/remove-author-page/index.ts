@@ -7,7 +7,7 @@ import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { type CanInviteAuthorsEnv, canInviteAuthors } from '../../feature-flags'
 import { missingE } from '../../form'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
@@ -129,9 +129,17 @@ const handleRemoveAuthorForm = ({
         E.mapLeft(() => fields),
       ),
     ),
+    E.filterOrElseW(
+      fields => fields.removeAuthor === 'no',
+      () => 'form-unavailable' as const,
+    ),
     E.matchW(
-      error => removeAuthorForm({ author: author, form: error, number, preprint }),
-      () => havingProblemsPage,
+      error =>
+        match(error)
+          .with('form-unavailable', () => havingProblemsPage)
+          .with({ removeAuthor: P.any }, error => removeAuthorForm({ author, form: error, number, preprint }))
+          .exhaustive(),
+      () => RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
     ),
   )
 
