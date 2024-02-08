@@ -7,7 +7,12 @@ import { type MissingE, hasAnError } from '../../form'
 import { html, plainText, rawHtml } from '../../html'
 import type { PreprintTitle } from '../../preprint'
 import { StreamlinePageResponse } from '../../response'
-import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes'
+import {
+  writeReviewAddAuthorMatch,
+  writeReviewAddAuthorsMatch,
+  writeReviewAuthorsMatch,
+  writeReviewRemoveAuthorMatch,
+} from '../../routes'
 import type { EmailAddress } from '../../types/email-address'
 import type { NonEmptyString } from '../../types/string'
 
@@ -60,6 +65,10 @@ export function addAuthorsForm({
             <div class="summary-card">
               <div>
                 <h2>Author ${index + 1}</h2>
+
+                <a href="${format(writeReviewRemoveAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
+                  >Remove <span class="visually-hidden">${author.name}</span></a
+                >
               </div>
 
               <dl class="summary-list">
