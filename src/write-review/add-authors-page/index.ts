@@ -1,12 +1,13 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import * as O from 'fp-ts/Option'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import * as RA from 'fp-ts/ReadonlyArray'
-import { pipe } from 'fp-ts/function'
+import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
+import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { P, match } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import { type CanInviteAuthorsEnv, canInviteAuthors } from '../../feature-flags'
 import { missingE } from '../../form'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
@@ -52,7 +53,13 @@ export const writeReviewAddAuthors = ({
           RTE.let('body', () => body),
           RTE.bindW('form', ({ preprint, user }) => getForm(user.orcid, preprint.id)),
           RTE.bindW('canInviteAuthors', ({ user }) => RTE.fromReader(canInviteAuthors(user))),
-          RTE.let('authors', ({ form }) => form.otherAuthors ?? []),
+          RTE.let(
+            'authors',
+            flow(
+              O.fromNullableK(({ form }) => form.otherAuthors),
+              O.chain(RNEA.fromReadonlyArray),
+            ),
+          ),
           RTE.matchW(
             error =>
               match(error)
@@ -67,12 +74,19 @@ export const writeReviewAddAuthors = ({
                   RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
                 )
                 .with({ canInviteAuthors: false, form: { moreAuthors: 'yes' } }, cannotAddAuthorsForm)
-                .with({ canInviteAuthors: true, form: { moreAuthors: 'yes' }, authors: P.when(RA.isEmpty) }, () =>
+                .with({ canInviteAuthors: true, form: { moreAuthors: 'yes' }, authors: { _tag: 'None' } }, () =>
                   RedirectResponse({ location: format(writeReviewAddAuthorMatch.formatter, { id: preprint.id }) }),
                 )
-                .with({ canInviteAuthors: true, form: { moreAuthors: 'yes' }, method: 'POST' }, handleAddAuthorsForm)
-                .with({ canInviteAuthors: true, form: { moreAuthors: 'yes' } }, state =>
-                  addAuthorsForm({ ...state, form: { anotherAuthor: E.right(undefined) } }),
+                .with(
+                  { canInviteAuthors: true, form: { moreAuthors: 'yes' }, authors: { _tag: 'Some' }, method: 'POST' },
+                  handleAddAuthorsForm,
+                )
+                .with({ canInviteAuthors: true, form: { moreAuthors: 'yes' }, authors: { _tag: 'Some' } }, state =>
+                  addAuthorsForm({
+                    ...state,
+                    authors: state.authors.value,
+                    form: { anotherAuthor: E.right(undefined) },
+                  }),
                 )
                 .otherwise(() => pageNotFound),
           ),
@@ -80,7 +94,17 @@ export const writeReviewAddAuthors = ({
     ),
   )
 
-const handleAddAuthorsForm = ({ body, form, preprint }: { body: unknown; form: Form; preprint: PreprintTitle }) =>
+const handleAddAuthorsForm = ({
+  authors,
+  body,
+  form,
+  preprint,
+}: {
+  authors: O.Some<RNEA.ReadonlyNonEmptyArray<NonNullable<Form['otherAuthors']>[number]>>
+  body: unknown
+  form: Form
+  preprint: PreprintTitle
+}) =>
   pipe(
     E.Do,
     E.let('anotherAuthor', () => pipe(AnotherAuthorFieldD.decode(body), E.mapLeft(missingE))),
@@ -92,7 +116,7 @@ const handleAddAuthorsForm = ({ body, form, preprint }: { body: unknown; form: F
       ),
     ),
     E.matchW(
-      error => addAuthorsForm({ form: error, preprint }),
+      error => addAuthorsForm({ authors: authors.value, form: error, preprint }),
       state =>
         match(state)
           .with({ anotherAuthor: 'yes' }, () =>

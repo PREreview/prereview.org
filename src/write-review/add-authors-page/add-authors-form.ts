@@ -1,5 +1,6 @@
 import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
+import type { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
 import { type MissingE, hasAnError } from '../../form'
@@ -7,17 +8,27 @@ import { html, plainText, rawHtml } from '../../html'
 import type { PreprintTitle } from '../../preprint'
 import { StreamlinePageResponse } from '../../response'
 import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes'
+import type { EmailAddress } from '../../types/email-address'
+import type { NonEmptyString } from '../../types/string'
 
 interface AddAuthorsForm {
   readonly anotherAuthor: E.Either<MissingE, 'yes' | 'no' | undefined>
 }
 
-export function addAuthorsForm({ form, preprint }: { form: AddAuthorsForm; preprint: PreprintTitle }) {
+export function addAuthorsForm({
+  authors,
+  form,
+  preprint,
+}: {
+  authors: ReadonlyNonEmptyArray<{ name: NonEmptyString; emailAddress: EmailAddress }>
+  form: AddAuthorsForm
+  preprint: PreprintTitle
+}) {
   const error = hasAnError(form)
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
-    title: plainText`${error ? 'Error: ' : ''}Do you need to add another author? – PREreview of “${preprint.title}”`,
+    title: plainText`${error ? 'Error: ' : ''}You have added ${authors.length} other author${authors.length !== 1 ? 's' : ''} – PREreview of “${preprint.title}”`,
     nav: html`<a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back">Back</a>`,
     main: html`
       <form method="post" action="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}" novalidate>
@@ -42,6 +53,29 @@ export function addAuthorsForm({ form, preprint }: { form: AddAuthorsForm; prepr
             `
           : ''}
 
+        <h1>You have added ${authors.length} other author${authors.length !== 1 ? 's' : ''}</h1>
+
+        ${authors.map(
+          (author, index) => html`
+            <div class="summary-card">
+              <div>
+                <h2>Author ${index + 1}</h2>
+              </div>
+
+              <dl class="summary-list">
+                <div>
+                  <dt>Name</dt>
+                  <dd>${author.name}</dd>
+                </div>
+                <div>
+                  <dt>Email address</dt>
+                  <dd>${author.emailAddress}</dd>
+                </div>
+              </dl>
+            </div>
+          `,
+        )}
+
         <div ${rawHtml(E.isLeft(form.anotherAuthor) ? 'class="error"' : '')}>
           <fieldset
             role="group"
@@ -49,7 +83,7 @@ export function addAuthorsForm({ form, preprint }: { form: AddAuthorsForm; prepr
               E.isLeft(form.anotherAuthor) ? 'aria-invalid="true" aria-errormessage="another-author-error"' : '',
             )}
           >
-            <legend><h1>Do you need to add another author?</h1></legend>
+            <legend><h2>Do you need to add another author?</h2></legend>
 
             ${E.isLeft(form.anotherAuthor)
               ? html`
