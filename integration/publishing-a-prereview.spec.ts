@@ -685,6 +685,12 @@ test
 
   await expect(page.getByRole('main')).toContainText('Invited authors Jean-Baptiste Botul and Arne Saknussemm')
 
+  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/remove-author?number=1')
+  await page.getByLabel('Yes').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.goBack()
+  await page.goBack()
+
   fetch.post('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
@@ -2745,6 +2751,48 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
     )
 
     await page.getByRole('link', { name: 'Select yes if you need to add another author' }).click()
+
+    await expect(page.getByLabel('No')).toBeFocused()
+  },
+)
+
+test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
+  'have to say if you want to remove an author',
+  async ({ javaScriptEnabled, page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('With a template').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.waitForLoadState()
+    await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByLabel('Yes, and some or all want to be listed as authors').click()
+    await page.getByLabel('They have read and approved the PREreview').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
+    await page.getByLabel('Email address').fill('jbbotul@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/remove-author?number=1')
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    testInfo.fail()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(
+      page.getByRole('group', { name: 'Are you sure you want to remove Jean-Baptiste Botul?' }),
+    ).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Select yes if you want to remove Jean-Baptiste Botul' }).click()
 
     await expect(page.getByLabel('No')).toBeFocused()
   },

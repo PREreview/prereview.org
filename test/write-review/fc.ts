@@ -181,8 +181,9 @@ export const moreAuthorsApproved = (): fc.Arbitrary<Required<Form>['moreAuthorsA
 
 export const persona = (): fc.Arbitrary<Required<Form>['persona']> => fc.constantFrom('public', 'pseudonym')
 
-export const otherAuthors = (): fc.Arbitrary<Required<Form>['otherAuthors']> =>
-  fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }))
+export const otherAuthors = ({ minLength }: { minLength?: number } = {}): fc.Arbitrary<
+  Required<Form>['otherAuthors']
+> => fc.array(fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }), { minLength })
 
 export const competingInterests = (): fc.Arbitrary<Required<Form>['competingInterests']> => fc.constantFrom('yes', 'no')
 
