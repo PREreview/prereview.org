@@ -60,6 +60,8 @@ export function addAuthorForm({ form, preprint }: { form: AddAuthorForm; preprin
         <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
           <h2><label for="name">Name</label></h2>
 
+          <p id="name-tip" role="note">They will be able to choose their published name.</p>
+
           ${E.isLeft(form.name)
             ? html`
                 <div class="error-message" id="name-error">
@@ -76,6 +78,7 @@ export function addAuthorForm({ form, preprint }: { form: AddAuthorForm; preprin
             id="name"
             type="text"
             spellcheck="false"
+            aria-describedby="name-tip"
             ${match(form.name)
               .with({ right: P.select(P.string) }, value => html`value="${value}"`)
               .with({ right: undefined }, () => '')
@@ -87,6 +90,8 @@ export function addAuthorForm({ form, preprint }: { form: AddAuthorForm; preprin
 
         <div ${rawHtml(E.isLeft(form.name) ? 'class="error"' : '')}>
           <h2><label for="email-address">Email address</label></h2>
+
+          <p id="email-address-tip" role="note">We’ll only use this to contact them about this PREreview.</p>
 
           ${E.isLeft(form.emailAddress)
             ? html`
@@ -110,6 +115,7 @@ export function addAuthorForm({ form, preprint }: { form: AddAuthorForm; preprin
             inputmode="email"
             spellcheck="false"
             autocomplete="email"
+            aria-describedby="email-address-tip"
             ${match(form.emailAddress)
               .with({ right: P.select(P.string) }, value => html`value="${value}"`)
               .with({ right: undefined }, () => '')
