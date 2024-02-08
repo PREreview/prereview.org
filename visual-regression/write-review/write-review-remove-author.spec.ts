@@ -1,5 +1,6 @@
 import type { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
+import { missingE } from '../../src/form'
 import { html } from '../../src/html'
 import type { PreprintTitle } from '../../src/preprint'
 import type { NonEmptyString } from '../../src/types/string'
@@ -19,6 +20,19 @@ test('content looks right', async ({ showPage }) => {
   const response = removeAuthorForm({
     author: { name: 'Josiah Carberry' as NonEmptyString },
     form: { removeAuthor: E.right(undefined) },
+    number: 1,
+    preprint,
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when fields are missing', async ({ showPage }) => {
+  const response = removeAuthorForm({
+    author: { name: 'Josiah Carberry' as NonEmptyString },
+    form: { removeAuthor: E.left(missingE()) },
     number: 1,
     preprint,
   })

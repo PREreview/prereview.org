@@ -2758,7 +2758,7 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
 
 test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
   'have to say if you want to remove an author',
-  async ({ javaScriptEnabled, page }, testInfo) => {
+  async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -2780,8 +2780,6 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/remove-author?number=1')
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    testInfo.fail()
 
     if (javaScriptEnabled) {
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()

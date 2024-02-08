@@ -5,23 +5,29 @@ import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
+import * as D from 'io-ts/Decoder'
+import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { type CanInviteAuthorsEnv, canInviteAuthors } from '../../feature-flags'
+import { missingE } from '../../form'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes'
 import type { IndeterminatePreprintId } from '../../types/preprint-id'
+import type { NonEmptyString } from '../../types/string'
 import type { User } from '../../user'
 import { type FormStoreEnv, getForm } from '../form'
 import { removeAuthorForm } from './remove-author-form'
 
 export const writeReviewRemoveAuthor = ({
+  body,
   id,
   method,
   number,
   user,
 }: {
+  body: unknown
   id: IndeterminatePreprintId
   method: string
   number: number
@@ -60,6 +66,7 @@ export const writeReviewRemoveAuthor = ({
           ),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
+          RTE.let('body', () => body),
           RTE.let('number', () => number),
           RTE.bindW(
             'form',
@@ -94,9 +101,43 @@ export const writeReviewRemoveAuthor = ({
                 .exhaustive(),
             state =>
               match(state)
-                .with({ method: 'POST' }, () => havingProblemsPage)
+                .with({ method: 'POST' }, handleRemoveAuthorForm)
                 .otherwise(state => removeAuthorForm({ ...state, form: { removeAuthor: E.right(undefined) } })),
           ),
         ),
     ),
   )
+
+const handleRemoveAuthorForm = ({
+  author,
+  body,
+  number,
+  preprint,
+}: {
+  author: { name: NonEmptyString }
+  body: unknown
+  number: number
+  preprint: PreprintTitle
+}) =>
+  pipe(
+    E.Do,
+    E.let('removeAuthor', () => pipe(RemoveAuthorFieldD.decode(body), E.mapLeft(missingE))),
+    E.chain(fields =>
+      pipe(
+        E.Do,
+        E.apS('removeAuthor', fields.removeAuthor),
+        E.mapLeft(() => fields),
+      ),
+    ),
+    E.matchW(
+      error => removeAuthorForm({ author: author, form: error, number, preprint }),
+      () => havingProblemsPage,
+    ),
+  )
+
+const RemoveAuthorFieldD = pipe(
+  D.struct({
+    removeAuthor: D.literal('yes', 'no'),
+  }),
+  D.map(get('removeAuthor')),
+)
