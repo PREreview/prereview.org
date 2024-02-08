@@ -688,10 +688,12 @@ test
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/remove-author?number=1')
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.goBack()
-  await page.goBack()
+  await page.getByLabel('No').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
 
-  fetch.post('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
+  await expect(page.getByRole('main')).toContainText('Invited author Arne Saknussemm')
+
+  fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
   await page.getByRole('button', { name: 'Publish PREreview' }).click()
 

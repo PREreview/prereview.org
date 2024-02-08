@@ -33,14 +33,15 @@ describe('writeReviewRemoveAuthor', () => {
           getPreprintTitle: () => TE.right(preprintTitle),
         })()
 
+        const otherAuthors = [...(newReview.otherAuthors ?? [])]
+        otherAuthors.splice(number - 1, 1)
+
         expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
-          skipToLabel: 'main',
-          js: [],
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
         })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toMatchObject({ otherAuthors })
       })
 
       test.prop([
@@ -66,6 +67,7 @@ describe('writeReviewRemoveAuthor', () => {
           status: Status.SeeOther,
           location: format(writeReviewAddAuthorsMatch.formatter, { id: preprintTitle.id }),
         })
+        expect(await formStore.get(formKey(user.orcid, preprintTitle.id))).toStrictEqual(FormC.encode(newReview))
       })
 
       test.prop([

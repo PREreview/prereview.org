@@ -17,7 +17,7 @@ import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes'
 import type { IndeterminatePreprintId } from '../../types/preprint-id'
 import type { NonEmptyString } from '../../types/string'
 import type { User } from '../../user'
-import { type FormStoreEnv, getForm } from '../form'
+import { type Form, type FormStoreEnv, getForm, saveForm, updateForm } from '../form'
 import { removeAuthorForm } from './remove-author-form'
 
 export const writeReviewRemoveAuthor = ({
@@ -87,22 +87,24 @@ export const writeReviewRemoveAuthor = ({
               ),
             ),
           ),
-          RTE.matchW(
+          RTE.matchEW(
             error =>
-              match(error)
-                .with('no-author', () =>
-                  RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
-                )
-                .with('no-form', 'no-session', () =>
-                  RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
-                )
-                .with('not-found', () => pageNotFound)
-                .with('form-unavailable', () => havingProblemsPage)
-                .exhaustive(),
+              RT.of(
+                match(error)
+                  .with('no-author', () =>
+                    RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .with('no-form', 'no-session', () =>
+                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .with('not-found', () => pageNotFound)
+                  .with('form-unavailable', () => havingProblemsPage)
+                  .exhaustive(),
+              ),
             state =>
               match(state)
                 .with({ method: 'POST' }, handleRemoveAuthorForm)
-                .otherwise(state => removeAuthorForm({ ...state, form: { removeAuthor: E.right(undefined) } })),
+                .otherwise(state => RT.of(removeAuthorForm({ ...state, form: { removeAuthor: E.right(undefined) } }))),
           ),
         ),
     ),
@@ -111,29 +113,45 @@ export const writeReviewRemoveAuthor = ({
 const handleRemoveAuthorForm = ({
   author,
   body,
+  form,
   number,
   preprint,
+  user,
 }: {
   author: { name: NonEmptyString }
   body: unknown
+  form: Form
   number: number
   preprint: PreprintTitle
+  user: User
 }) =>
   pipe(
-    E.Do,
-    E.let('removeAuthor', () => pipe(RemoveAuthorFieldD.decode(body), E.mapLeft(missingE))),
-    E.chain(fields =>
+    RTE.Do,
+    RTE.let('removeAuthor', () => pipe(RemoveAuthorFieldD.decode(body), E.mapLeft(missingE))),
+    RTE.chainEitherK(fields =>
       pipe(
         E.Do,
         E.apS('removeAuthor', fields.removeAuthor),
         E.mapLeft(() => fields),
       ),
     ),
-    E.filterOrElseW(
-      fields => fields.removeAuthor === 'no',
-      () => 'form-unavailable' as const,
+    RTE.chainW(({ removeAuthor }) =>
+      match(removeAuthor)
+        .with('yes', () =>
+          pipe(
+            RTE.Do,
+            RTE.apS(
+              'otherAuthors',
+              RTE.fromOption(() => 'form-unavailable' as const)(RA.deleteAt(number - 1)(form.otherAuthors ?? [])),
+            ),
+            RTE.map(updateForm(form)),
+            RTE.chainFirst(saveForm(user.orcid, preprint.id)),
+          ),
+        )
+        .with('no', () => RTE.of(form))
+        .exhaustive(),
     ),
-    E.matchW(
+    RTE.matchW(
       error =>
         match(error)
           .with('form-unavailable', () => havingProblemsPage)
