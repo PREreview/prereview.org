@@ -1233,6 +1233,10 @@ fieldset {
   flex-direction: column;
   margin-block-start: var(--space-s-m);
   border: 0;
+
+  .summary-card + div > & {
+    margin-block-start: var(--space-m-l);
+  }
 }
 
 legend {
