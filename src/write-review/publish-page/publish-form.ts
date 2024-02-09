@@ -11,7 +11,7 @@ import type { PreprintTitle } from '../../preprint'
 import { StreamlinePageResponse } from '../../response'
 import {
   profileMatch,
-  writeReviewAddAuthorMatch,
+  writeReviewAddAuthorsMatch,
   writeReviewCompetingInterestsMatch,
   writeReviewConductMatch,
   writeReviewDataPresentationMatch,
@@ -115,8 +115,8 @@ export function publishForm(preprint: PreprintTitle, review: CompletedForm, user
                       <dt>Invited author${review.otherAuthors.length !== 1 ? 's' : ''}</dt>
                       <dd>${pipe(review.otherAuthors, RNEA.map(get('name')), formatList('en'))}</dd>
                       <dd>
-                        <a href="${format(writeReviewAddAuthorMatch.formatter, { id: preprint.id })}"
-                          >Add <span class="visually-hidden">an author</span></a
+                        <a href="${format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id })}"
+                          >Change <span class="visually-hidden">invited authors</span></a
                         >
                       </dd>
                     </div>

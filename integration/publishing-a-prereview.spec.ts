@@ -676,7 +676,9 @@ test
   await expect(page.getByRole('main')).toContainText('Your published name Josiah Carberry')
   await expect(page.getByRole('main')).toContainText('Invited author Jean-Baptiste Botul')
 
-  await page.getByRole('link', { name: 'Add an author' }).click()
+  await page.getByRole('link', { name: 'Change invited authors' }).click()
+  await page.getByLabel('Yes').check()
+  await page.getByRole('button', { name: 'Continue' }).click()
   await page.getByLabel('Name').fill('Arne Saknussemm')
   await page.getByLabel('Email address').fill('asaknussemm@example.com')
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -685,7 +687,7 @@ test
 
   await expect(page.getByRole('main')).toContainText('Invited authors Jean-Baptiste Botul and Arne Saknussemm')
 
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/add-more-authors')
+  await page.getByRole('link', { name: 'Change invited authors' }).click()
   await page.getByRole('link', { name: 'Remove Jean-Baptiste Botul' }).click()
   await page.getByLabel('Yes').check()
   await page.getByRole('button', { name: 'Save and continue' }).click()
