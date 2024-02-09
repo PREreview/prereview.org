@@ -2,6 +2,7 @@ import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
+import { encode } from 'html-entities'
 import { Status } from 'hyper-ts'
 import { getClubName } from '../src/club-details'
 import * as _ from '../src/club-profile'
@@ -29,7 +30,7 @@ describe('clubProfile', () => {
       canonical: format(clubProfileMatch.formatter, { id: clubId }),
       status: Status.OK,
       title: expect.stringContaining(getClubName(clubId)),
-      main: expect.stringContaining(getClubName(clubId)),
+      main: expect.stringContaining(encode(getClubName(clubId))),
       skipToLabel: 'main',
       js: [],
     })
