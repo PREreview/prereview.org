@@ -46,7 +46,7 @@ describe('writeReviewAddAuthors', () => {
         fc.indeterminatePreprintId(),
         fc.preprintTitle(),
         fc.user(),
-        fc.completedForm({ moreAuthors: fc.constant('yes' as const), otherAuthors: fc.otherAuthors() }),
+        fc.completedForm({ moreAuthors: fc.constant('yes' as const), otherAuthors: fc.otherAuthors({ minLength: 1 }) }),
       ])('when the form is completed', async (preprintId, preprintTitle, user, newReview) => {
         const formStore = new Keyv()
         await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))
@@ -57,7 +57,7 @@ describe('writeReviewAddAuthors', () => {
           method: 'POST',
           user,
         })({
-          canInviteAuthors: () => false,
+          canInviteAuthors: () => true,
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
         })()
@@ -84,7 +84,7 @@ describe('writeReviewAddAuthors', () => {
           method: 'POST',
           user,
         })({
-          canInviteAuthors: () => false,
+          canInviteAuthors: () => true,
           formStore,
           getPreprintTitle: () => TE.right(preprintTitle),
         })()
