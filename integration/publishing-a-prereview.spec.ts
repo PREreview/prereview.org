@@ -11,7 +11,6 @@ import { URL } from 'url'
 import { RecordC, RecordsC, type Record as ZenodoRecord } from 'zenodo-ts'
 import {
   areLoggedIn,
-  canInviteAuthors,
   canLogIn,
   expect,
   hasAVerifiedEmailAddress,
@@ -601,7 +600,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview with more authors',
-  async ({ page }) => {
+  async ({ fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -615,8 +614,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByLabel('They have read and approved the PREreview').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('main')).toContainText('Add more authors')
+    await expect(page.getByRole('main')).toContainText('Add an author')
 
+    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
+    await page.getByLabel('Email address').fill('jbbotul@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
@@ -634,142 +637,107 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await expect(page.getByRole('region', { name: 'Your review' })).toContainText(
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     )
+    await expect(page.getByRole('main')).toContainText('Your published name Josiah Carberry')
+    await expect(page.getByRole('main')).toContainText('Invited author Jean-Baptiste Botul')
+
+    await page.getByRole('link', { name: 'Change invited authors' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByLabel('Name').fill('Arne Saknussemm')
+    await page.getByLabel('Email address').fill('asaknussemm@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText('Invited authors Jean-Baptiste Botul and Arne Saknussemm')
+
+    await page.getByRole('link', { name: 'Change invited authors' }).click()
+    await page.getByRole('link', { name: 'Remove Jean-Baptiste Botul' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText('Invited author Arne Saknussemm')
+
+    fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
     await page.getByRole('button', { name: 'Publish PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
     await expect(page.getByRole('main')).toContainText('Your DOI 10.5072/zenodo.1055806')
-    await expect(page.getByRole('main')).toContainText('other authors’ details')
+    await expect(page.getByRole('main')).toContainText('We’ve sent emails to the other authors')
+    await expect(page.getByRole('main')).not.toContainText('other authors’ details')
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
+
+    const record: ZenodoRecord = {
+      conceptdoi: '10.5072/zenodo.1055805' as Doi,
+      conceptrecid: 1055805,
+      files: [
+        {
+          links: {
+            self: new URL('http://example.com/review.html/content'),
+          },
+          key: 'review.html',
+          size: 58,
+        },
+      ],
+      id: 1055806,
+      links: {
+        latest: new URL('http://example.com/latest'),
+        latest_html: new URL('http://example.com/latest_html'),
+      },
+      metadata: {
+        communities: [{ id: 'prereview-reviews' }],
+        creators: [
+          {
+            name: 'Josiah Carberry',
+            orcid: '0000-0002-1825-0097' as Orcid,
+          },
+        ],
+        description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
+        doi: '10.5072/zenodo.1055806' as Doi,
+        license: { id: 'cc-by-4.0' },
+        publication_date: new Date('2022-07-05'),
+        related_identifiers: [
+          {
+            identifier: '10.1101/2022.01.13.476201',
+            relation: 'reviews',
+            resource_type: 'publication-preprint',
+            scheme: 'doi',
+          },
+          {
+            identifier: '10.5072/zenodo.1061863',
+            relation: 'isVersionOf',
+            scheme: 'doi',
+          },
+        ],
+        resource_type: {
+          type: 'publication',
+          subtype: 'peerreview',
+        },
+        title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
+      },
+    }
+
+    fetch
+      .get('http://zenodo.test/api/records/1055806', {
+        body: RecordC.encode(record),
+      })
+      .get('http://example.com/review.html/content', {
+        body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
+      })
+
+    await page.setContent(getLastMailjetEmailBody(fetch))
+
+    const opener = page.waitForEvent('popup')
+    await page.getByRole('link', { name: 'Be listed as an author' }).click()
+    page = await opener
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Be listed as an author')
   },
 )
-
-test
-  .extend(canInviteAuthors)
-  .extend(canLogIn)
-  .extend(areLoggedIn)
-  .extend(hasAVerifiedEmailAddress)
-  .extend(willPublishAReview)('can invite other people to appear as authors', async ({ fetch, page }) => {
-  await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
-  await page.getByRole('button', { name: 'Start now' }).click()
-  await page.getByLabel('With a template').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.waitForLoadState()
-  await page.getByLabel('Write your PREreview').fill('Lorem ipsum dolor sit amet, consectetur adipiscing elit.')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Josiah Carberry').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Yes, and some or all want to be listed as authors').check()
-  await page.getByLabel('They have read and approved the PREreview').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('Name').fill('Jean-Baptiste Botul')
-  await page.getByLabel('Email address').fill('jbbotul@example.com')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('I’m following the Code of Conduct').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-
-  await expect(page.getByRole('main')).toContainText('Your published name Josiah Carberry')
-  await expect(page.getByRole('main')).toContainText('Invited author Jean-Baptiste Botul')
-
-  await page.getByRole('link', { name: 'Change invited authors' }).click()
-  await page.getByLabel('Yes').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.getByLabel('Name').fill('Arne Saknussemm')
-  await page.getByLabel('Email address').fill('asaknussemm@example.com')
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-
-  await expect(page.getByRole('main')).toContainText('Invited authors Jean-Baptiste Botul and Arne Saknussemm')
-
-  await page.getByRole('link', { name: 'Change invited authors' }).click()
-  await page.getByRole('link', { name: 'Remove Jean-Baptiste Botul' }).click()
-  await page.getByLabel('Yes').check()
-  await page.getByRole('button', { name: 'Save and continue' }).click()
-  await page.getByLabel('No').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
-
-  await expect(page.getByRole('main')).toContainText('Invited author Arne Saknussemm')
-
-  fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
-
-  await page.getByRole('button', { name: 'Publish PREreview' }).click()
-
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('PREreview published')
-  await expect(page.getByRole('main')).toContainText('We’ve sent emails to the other authors')
-  await expect(page.getByRole('main')).not.toContainText('other authors’ details')
-
-  const record: ZenodoRecord = {
-    conceptdoi: '10.5072/zenodo.1055805' as Doi,
-    conceptrecid: 1055805,
-    files: [
-      {
-        links: {
-          self: new URL('http://example.com/review.html/content'),
-        },
-        key: 'review.html',
-        size: 58,
-      },
-    ],
-    id: 1055806,
-    links: {
-      latest: new URL('http://example.com/latest'),
-      latest_html: new URL('http://example.com/latest_html'),
-    },
-    metadata: {
-      communities: [{ id: 'prereview-reviews' }],
-      creators: [
-        {
-          name: 'Josiah Carberry',
-          orcid: '0000-0002-1825-0097' as Orcid,
-        },
-      ],
-      description: '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>',
-      doi: '10.5072/zenodo.1055806' as Doi,
-      license: { id: 'cc-by-4.0' },
-      publication_date: new Date('2022-07-05'),
-      related_identifiers: [
-        {
-          identifier: '10.1101/2022.01.13.476201',
-          relation: 'reviews',
-          resource_type: 'publication-preprint',
-          scheme: 'doi',
-        },
-        {
-          identifier: '10.5072/zenodo.1061863',
-          relation: 'isVersionOf',
-          scheme: 'doi',
-        },
-      ],
-      resource_type: {
-        type: 'publication',
-        subtype: 'peerreview',
-      },
-      title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
-    },
-  }
-
-  fetch
-    .get('http://zenodo.test/api/records/1055806', {
-      body: RecordC.encode(record),
-    })
-    .get('http://example.com/review.html/content', {
-      body: '<h1>Some title</h1><p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
-    })
-
-  await page.setContent(getLastMailjetEmailBody(fetch))
-
-  const opener = page.waitForEvent('popup')
-  await page.getByRole('link', { name: 'Be listed as an author' }).click()
-  page = await opener
-
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Be listed as an author')
-})
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   "can publish a PREreview with more authors who don't want to be listed as authors",
@@ -2664,7 +2632,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn)(
   "have to give the other author's details",
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -2721,7 +2689,7 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you need to add another author',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -2761,7 +2729,7 @@ test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test.extend(canInviteAuthors).extend(canLogIn).extend(areLoggedIn)(
+test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you want to remove an author',
   async ({ javaScriptEnabled, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
@@ -2875,6 +2843,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Yes, and some or all want to be listed as authors').check()
     await page.getByLabel('They have read and approved the PREreview').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Name').fill('Jean-Baptiste Botul')
+    await page.getByLabel('Email address').fill('jbbotul@example.com')
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()

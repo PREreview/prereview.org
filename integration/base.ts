@@ -32,7 +32,7 @@ import { type ConfigEnv, app } from '../src/app'
 import { AuthorInviteC } from '../src/author-invite'
 import { ContactEmailAddressC } from '../src/contact-email-address'
 import { createAuthorInviteEmail } from '../src/email'
-import type { CanConnectOrcidProfileEnv, CanInviteAuthorsEnv } from '../src/feature-flags'
+import type { CanConnectOrcidProfileEnv } from '../src/feature-flags'
 import { rawHtml } from '../src/html'
 import type {
   AuthorInviteStoreEnv,
@@ -74,7 +74,6 @@ interface AppFixtures {
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   canConnectOrcidProfile: CanConnectOrcidProfileEnv['canConnectOrcidProfile']
-  canInviteAuthors: CanInviteAuthorsEnv['canInviteAuthors']
 }
 
 const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArgs & PlaywrightTestOptions> = {
@@ -91,9 +90,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(`http://localhost:${address.port}`)
   },
   canConnectOrcidProfile: async ({}, use) => {
-    await use(() => false)
-  },
-  canInviteAuthors: async ({}, use) => {
     await use(() => false)
   },
   careerStageStore: async ({}, use) => {
@@ -847,7 +843,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       wasPrereviewRemoved,
       authorInviteStore,
       canConnectOrcidProfile,
-      canInviteAuthors,
     },
     use,
   ) => {
@@ -855,7 +850,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       allowSiteCrawlers: true,
       authorInviteStore,
       canConnectOrcidProfile,
-      canInviteAuthors,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,
@@ -1346,16 +1340,6 @@ export const canConnectOrcidProfile: Fixtures<
   Pick<AppFixtures, 'canConnectOrcidProfile'>
 > = {
   canConnectOrcidProfile: async ({}, use) => {
-    await use(() => true)
-  },
-}
-
-export const canInviteAuthors: Fixtures<
-  Record<never, never>,
-  Record<never, never>,
-  Pick<AppFixtures, 'canInviteAuthors'>
-> = {
-  canInviteAuthors: async ({}, use) => {
     await use(() => true)
   },
 }

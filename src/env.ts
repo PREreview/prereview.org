@@ -57,7 +57,6 @@ const EnvD = pipe(
   D.struct({
     ALLOW_SITE_CRAWLERS: withDefault(BooleanD, false),
     BLOCKED_USERS: withDefault(CommaSeparatedListD(OrcidD), []),
-    CAN_INVITE_AUTHORS: withDefault(BooleanD, false),
     CLOUDINARY_API_KEY: D.string,
     CLOUDINARY_API_SECRET: D.string,
     GHOST_API_KEY: D.string,
