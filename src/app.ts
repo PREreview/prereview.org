@@ -34,7 +34,6 @@ import { getUserFromSession, maybeGetUser } from './user'
 
 export type ConfigEnv = Omit<
   RouterEnv & LegacyEnv,
-  | 'canInviteAuthors'
   | 'doesPreprintExist'
   | 'generateUuid'
   | 'getUser'
@@ -244,7 +243,6 @@ export const app = (config: ConfigEnv) => {
         appMiddleware,
         R.local((env: ConfigEnv): RouterEnv & LegacyEnv => ({
           ...env,
-          canInviteAuthors: () => true,
           doesPreprintExist: withEnv(doesPreprintExist, env),
           generateUuid: uuid.v4(),
           getUser: withEnv(() => getUser, env),

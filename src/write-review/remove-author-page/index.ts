@@ -8,7 +8,6 @@ import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { type CanInviteAuthorsEnv, canInviteAuthors } from '../../feature-flags'
 import { missingE } from '../../form'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint'
@@ -32,10 +31,7 @@ export const writeReviewRemoveAuthor = ({
   method: string
   number: number
   user?: User
-}): RT.ReaderTask<
-  CanInviteAuthorsEnv & FormStoreEnv & GetPreprintTitleEnv,
-  PageResponse | RedirectResponse | StreamlinePageResponse
-> =>
+}): RT.ReaderTask<FormStoreEnv & GetPreprintTitleEnv, PageResponse | RedirectResponse | StreamlinePageResponse> =>
   pipe(
     getPreprintTitle(id),
     RTE.matchE(
@@ -49,21 +45,7 @@ export const writeReviewRemoveAuthor = ({
       preprint =>
         pipe(
           RTE.Do,
-          RTE.apS(
-            'user',
-            pipe(
-              RTE.fromNullable('no-session' as const)(user),
-              RTE.chainFirstW(
-                flow(
-                  RTE.fromReaderK(canInviteAuthors),
-                  RTE.filterOrElse(
-                    (canInviteAuthors): canInviteAuthors is true => canInviteAuthors,
-                    () => 'not-found' as const,
-                  ),
-                ),
-              ),
-            ),
-          ),
+          RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
           RTE.let('body', () => body),

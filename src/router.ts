@@ -60,7 +60,7 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from './email'
-import type { CanConnectOrcidProfileEnv, CanInviteAuthorsEnv } from './feature-flags'
+import type { CanConnectOrcidProfileEnv } from './feature-flags'
 import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
@@ -274,7 +274,6 @@ export type RouterEnv = CanConnectOrcidProfileEnv &
   GetUserEnv &
   GetUserOnboardingEnv &
   Keyv.AuthorInviteStoreEnv &
-  CanInviteAuthorsEnv &
   Keyv.CareerStageStoreEnv &
   CloudinaryApiEnv &
   ConnectOrcidOAuthEnv &
