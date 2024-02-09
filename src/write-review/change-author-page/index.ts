@@ -18,7 +18,7 @@ import { EmailAddressC } from '../../types/email-address'
 import type { IndeterminatePreprintId } from '../../types/preprint-id'
 import { type NonEmptyString, NonEmptyStringC } from '../../types/string'
 import type { User } from '../../user'
-import { type FormStoreEnv, getForm } from '../form'
+import { type Form, type FormStoreEnv, getForm, saveForm, updateForm } from '../form'
 import { changeAuthorForm } from './change-author-form'
 
 export const writeReviewChangeAuthor = ({
@@ -71,26 +71,30 @@ export const writeReviewChangeAuthor = ({
               ),
             ),
           ),
-          RTE.matchW(
+          RTE.matchEW(
             error =>
-              match(error)
-                .with('no-author', () =>
-                  RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
-                )
-                .with('no-form', 'no-session', () =>
-                  RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
-                )
-                .with('not-found', () => pageNotFound)
-                .with('form-unavailable', () => havingProblemsPage)
-                .exhaustive(),
+              RT.of(
+                match(error)
+                  .with('no-author', () =>
+                    RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .with('no-form', 'no-session', () =>
+                    RedirectResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
+                  )
+                  .with('not-found', () => pageNotFound)
+                  .with('form-unavailable', () => havingProblemsPage)
+                  .exhaustive(),
+              ),
             state =>
               match(state)
                 .with({ method: 'POST' }, handleChangeAuthorForm)
                 .otherwise(state =>
-                  changeAuthorForm({
-                    ...state,
-                    form: { name: E.right(state.author.name), emailAddress: E.right(state.author.emailAddress) },
-                  }),
+                  RT.of(
+                    changeAuthorForm({
+                      ...state,
+                      form: { name: E.right(state.author.name), emailAddress: E.right(state.author.emailAddress) },
+                    }),
+                  ),
                 ),
           ),
         ),
@@ -100,18 +104,22 @@ export const writeReviewChangeAuthor = ({
 const handleChangeAuthorForm = ({
   author,
   body,
+  form,
   number,
   preprint,
+  user,
 }: {
   author: { name: NonEmptyString }
   body: unknown
+  form: Form
   number: number
   preprint: PreprintTitle
+  user: User
 }) =>
   pipe(
-    E.Do,
-    E.let('name', () => pipe(NameFieldD.decode(body), E.mapLeft(missingE))),
-    E.let('emailAddress', () =>
+    RTE.Do,
+    RTE.let('name', () => pipe(NameFieldD.decode(body), E.mapLeft(missingE))),
+    RTE.let('emailAddress', () =>
       pipe(
         EmailAddressFieldD.decode(body),
         E.mapLeft(error =>
@@ -122,7 +130,7 @@ const handleChangeAuthorForm = ({
         ),
       ),
     ),
-    E.chain(fields =>
+    RTE.chainEitherK(fields =>
       pipe(
         E.Do,
         E.apS('name', fields.name),
@@ -130,12 +138,24 @@ const handleChangeAuthorForm = ({
         E.mapLeft(() => fields),
       ),
     ),
-    E.matchW(
+    RTE.chainW(author =>
+      pipe(
+        RTE.Do,
+        RTE.apS(
+          'otherAuthors',
+          RTE.fromOption(() => 'form-unavailable' as const)(RA.updateAt(number - 1, author)(form.otherAuthors ?? [])),
+        ),
+        RTE.map(updateForm(form)),
+        RTE.chainFirst(saveForm(user.orcid, preprint.id)),
+      ),
+    ),
+    RTE.matchW(
       error =>
         match(error)
+          .with('form-unavailable', () => havingProblemsPage)
           .with({ name: P.any }, error => changeAuthorForm({ author, form: error, number, preprint }))
           .exhaustive(),
-      () => havingProblemsPage,
+      () => RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
     ),
   )
 

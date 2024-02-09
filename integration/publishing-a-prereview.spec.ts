@@ -600,7 +600,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview)(
   'can publish a PREreview with more authors',
-  async ({ fetch, page }, testInfo) => {
+  async ({ fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.getByLabel('With a template').check()
@@ -665,8 +665,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.getByLabel('Name').fill('Axel Lidenbrock')
     await page.getByLabel('Email address').fill('alidenbrock@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    testInfo.fail()
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('You have added 1 other author')
     await page.getByLabel('No').check()
     await page.getByRole('button', { name: 'Continue' }).click()
 
