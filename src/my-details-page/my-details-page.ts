@@ -235,23 +235,34 @@ export function createPage({
                           .exhaustive()}
                       </dd>
                       <dd>
-                        <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
-                          >Change <span class="visually-hidden">open for review requests</span></a
-                        >
-                      </dd>
-                      ${match(openForRequests)
-                        .with(
-                          { value: true },
-                          () => html`
-                            <dd>
-                              <a href="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}"
-                                >Set <span class="visually-hidden">open-for-review-requests</span> visibility</a
+                        ${match(openForRequests)
+                          .with(
+                            { value: true },
+                            () => html`
+                              <ul>
+                                <li>
+                                  <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
+                                    >Change <span class="visually-hidden">open for review requests</span></a
+                                  >
+                                </li>
+                                <li>
+                                  <a href="${format(changeOpenForRequestsVisibilityMatch.formatter, {})}"
+                                    >Set <span class="visually-hidden">open-for-review-requests</span> visibility</a
+                                  >
+                                </li>
+                              </ul>
+                            `,
+                          )
+                          .with(
+                            { value: false },
+                            () => html`
+                              <a href="${format(changeOpenForRequestsMatch.formatter, {})}"
+                                >Change <span class="visually-hidden">open for review requests</span></a
                               >
-                            </dd>
-                          `,
-                        )
-                        .with({ value: false }, () => '')
-                        .exhaustive()}
+                            `,
+                          )
+                          .exhaustive()}
+                      </dd>
                     `,
                   )
                   .exhaustive()}
@@ -288,14 +299,18 @@ export function createPage({
                   >
                 </dd>
                 <dd>
-                  <a href="${format(changeCareerStageMatch.formatter, {})}"
-                    >Change <span class="visually-hidden">career stage</span></a
-                  >
-                </dd>
-                <dd>
-                  <a href="${format(changeCareerStageVisibilityMatch.formatter, {})}"
-                    >Set <span class="visually-hidden">career-stage</span> visibility</a
-                  >
+                  <ul>
+                    <li>
+                      <a href="${format(changeCareerStageMatch.formatter, {})}"
+                        >Change <span class="visually-hidden">career stage</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="${format(changeCareerStageVisibilityMatch.formatter, {})}"
+                        >Set <span class="visually-hidden">career-stage</span> visibility</a
+                      >
+                    </li>
+                  </ul>
                 </dd>
               `,
             )
@@ -326,14 +341,18 @@ export function createPage({
                   >
                 </dd>
                 <dd>
-                  <a href="${format(changeResearchInterestsMatch.formatter, {})}"
-                    >Change <span class="visually-hidden">research interests</span></a
-                  >
-                </dd>
-                <dd>
-                  <a href="${format(changeResearchInterestsVisibilityMatch.formatter, {})}"
-                    >Set <span class="visually-hidden">research-interests</span> visibility</a
-                  >
+                  <ul>
+                    <li>
+                      <a href="${format(changeResearchInterestsMatch.formatter, {})}"
+                        >Change <span class="visually-hidden">research interests</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="${format(changeResearchInterestsVisibilityMatch.formatter, {})}"
+                        >Set <span class="visually-hidden">research-interests</span> visibility</a
+                      >
+                    </li>
+                  </ul>
                 </dd>
               `,
             )
@@ -364,14 +383,18 @@ export function createPage({
                   >
                 </dd>
                 <dd>
-                  <a href="${format(changeLocationMatch.formatter, {})}"
-                    >Change <span class="visually-hidden">location</span></a
-                  >
-                </dd>
-                <dd>
-                  <a href="${format(changeLocationVisibilityMatch.formatter, {})}"
-                    >Set <span class="visually-hidden">location</span> visibility</a
-                  >
+                  <ul>
+                    <li>
+                      <a href="${format(changeLocationMatch.formatter, {})}"
+                        >Change <span class="visually-hidden">location</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="${format(changeLocationVisibilityMatch.formatter, {})}"
+                        >Set <span class="visually-hidden">location</span> visibility</a
+                      >
+                    </li>
+                  </ul>
                 </dd>
               `,
             )
@@ -402,14 +425,18 @@ export function createPage({
                   >
                 </dd>
                 <dd>
-                  <a href="${format(changeLanguagesMatch.formatter, {})}"
-                    >Change <span class="visually-hidden">languages</span></a
-                  >
-                </dd>
-                <dd>
-                  <a href="${format(changeLanguagesVisibilityMatch.formatter, {})}"
-                    >Set <span class="visually-hidden">languages</span> visibility</a
-                  >
+                  <ul>
+                    <li>
+                      <a href="${format(changeLanguagesMatch.formatter, {})}"
+                        >Change <span class="visually-hidden">languages</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="${format(changeLanguagesVisibilityMatch.formatter, {})}"
+                        >Set <span class="visually-hidden">languages</span> visibility</a
+                      >
+                    </li>
+                  </ul>
                 </dd>
               `,
             )

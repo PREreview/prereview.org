@@ -760,6 +760,7 @@ math {
   & > div {
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
     row-gap: var(--space-4xs);
     column-gap: var(--space-xs-m);
 
@@ -808,6 +809,27 @@ math {
           + dd:not(:last-child) {
             grid-column: 2/-1;
           }
+        }
+      }
+    }
+  }
+
+  & dd {
+    & + dd:last-of-type {
+      flex-shrink: 1;
+
+      & > ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        margin-block-start: 0;
+        padding-inline-start: 0;
+        column-gap: var(--space-xs-m);
+        list-style-type: none;
+        row-gap: var(--space-3xs-2xs);
+
+        & li {
+          margin-block-start: 0;
         }
       }
     }
