@@ -6,17 +6,26 @@ import { type InvalidE, type MissingE, hasAnError } from '../../form'
 import { html, plainText, rawHtml } from '../../html'
 import type { PreprintTitle } from '../../preprint'
 import { StreamlinePageResponse } from '../../response'
-import { writeReviewAddAuthorMatch, writeReviewAuthorsMatch } from '../../routes'
+import { writeReviewAddAuthorMatch, writeReviewAddAuthorsMatch, writeReviewAuthorsMatch } from '../../routes'
 import type { EmailAddress } from '../../types/email-address'
 import type { NonEmptyString } from '../../types/string'
 
-export function addAuthorForm({ form, preprint }: { form: AddAuthorForm; preprint: PreprintTitle }) {
+export function addAuthorForm({
+  form,
+  preprint,
+  otherAuthors = false,
+}: {
+  form: AddAuthorForm
+  preprint: PreprintTitle
+  otherAuthors?: boolean
+}) {
   const error = hasAnError(form)
+  const backMatch = otherAuthors ? writeReviewAddAuthorsMatch : writeReviewAuthorsMatch
 
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: plainText`${error ? 'Error: ' : ''}Add an author – PREreview of “${preprint.title}”`,
-    nav: html`<a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back">Back</a>`,
+    nav: html`<a href="${format(backMatch.formatter, { id: preprint.id })}" class="back">Back</a>`,
     main: html`
       <form method="post" action="${format(writeReviewAddAuthorMatch.formatter, { id: preprint.id })}" novalidate>
         ${error

@@ -1344,6 +1344,12 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByLabel('Yes, and some or all want to be listed as authors').click()
     await page.getByLabel('They have read and approved the PREreview').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Yes, and some or all want to be listed as authors')).toBeChecked()
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Name').fill('Jean-Baptiste Botul')
     await page.getByLabel('Email address').fill('jbbotul@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1359,6 +1365,13 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await expect(page.getByLabel('Yes, and some or all want to be listed as authors')).toBeChecked()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
+    await page.getByLabel('Yes').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('You have added 1 other author')
+
     await page.getByRole('link', { name: 'Remove Jean-Baptiste Botul' }).click()
 
     await page.getByRole('link', { name: 'Back' }).click()

@@ -62,7 +62,7 @@ export const writeReviewAddAuthor = ({
             state =>
               match(state)
                 .with({ form: { moreAuthors: 'yes' }, method: 'POST' }, handleAddAuthorForm)
-                .with({ form: { moreAuthors: 'yes' } }, ({ preprint }) =>
+                .with({ form: { moreAuthors: 'yes' } }, ({ form, preprint }) =>
                   RT.of(
                     addAuthorForm({
                       form: {
@@ -70,6 +70,7 @@ export const writeReviewAddAuthor = ({
                         emailAddress: E.right(undefined),
                       },
                       preprint,
+                      otherAuthors: (form.otherAuthors ?? []).length > 0,
                     }),
                   ),
                 )
@@ -119,7 +120,9 @@ const handleAddAuthorForm = ({
       error =>
         match(error)
           .with('form-unavailable', () => havingProblemsPage)
-          .with({ name: P.any }, form => addAuthorForm({ form, preprint }))
+          .with({ name: P.any }, error =>
+            addAuthorForm({ form: error, preprint, otherAuthors: (form.otherAuthors ?? []).length > 0 }),
+          )
           .exhaustive(),
       () => RedirectResponse({ location: format(writeReviewAddAuthorsMatch.formatter, { id: preprint.id }) }),
     ),
