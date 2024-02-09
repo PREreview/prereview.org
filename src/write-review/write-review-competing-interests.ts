@@ -12,7 +12,12 @@ import { html, plainText, rawHtml, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
-import { writeReviewAuthorsMatch, writeReviewCompetingInterestsMatch, writeReviewMatch } from '../routes'
+import {
+  writeReviewAddAuthorsMatch,
+  writeReviewAuthorsMatch,
+  writeReviewCompetingInterestsMatch,
+  writeReviewMatch,
+} from '../routes'
 import { type NonEmptyString, NonEmptyStringC } from '../types/string'
 import { type User, getUser } from '../user'
 import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
@@ -60,16 +65,16 @@ const showCompetingInterestsForm = flow(
         competingInterestsDetails: E.right(form.competingInterestsDetails),
       },
       user,
-      form.moreAuthors !== 'no',
+      form.moreAuthors,
     ),
   ),
   RM.ichainFirst(() => RM.status(Status.OK)),
   RM.ichainMiddlewareK(sendHtml),
 )
 
-const showCompetingInterestsErrorForm = (preprint: PreprintTitle, user: User, otherAuthors: boolean) =>
+const showCompetingInterestsErrorForm = (preprint: PreprintTitle, user: User, moreAuthors: Form['moreAuthors']) =>
   flow(
-    RM.fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form, user, otherAuthors)),
+    RM.fromReaderK((form: CompetingInterestsForm) => competingInterestsForm(preprint, form, user, moreAuthors)),
     RM.ichainFirst(() => RM.status(Status.BadRequest)),
     RM.ichainMiddlewareK(sendHtml),
   )
@@ -102,7 +107,7 @@ const handleCompetingInterestsForm = ({ form, preprint, user }: { form: Form; pr
     RM.orElseW(error =>
       match(error)
         .with('form-unavailable', () => serviceUnavailable)
-        .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, user, form.moreAuthors !== 'no'))
+        .with({ competingInterests: P.any }, showCompetingInterestsErrorForm(preprint, user, form.moreAuthors))
         .exhaustive(),
     ),
   )
@@ -126,9 +131,11 @@ function competingInterestsForm(
   preprint: PreprintTitle,
   form: CompetingInterestsForm,
   user: User,
-  otherAuthors: boolean,
+  moreAuthors?: 'yes' | 'yes-private' | 'no',
 ) {
   const error = hasAnError(form)
+  const otherAuthors = moreAuthors !== 'no'
+  const backMatch = moreAuthors === 'yes' ? writeReviewAddAuthorsMatch : writeReviewAuthorsMatch
 
   return page({
     title: plainText`${error ? 'Error: ' : ''}Do you${
@@ -136,7 +143,7 @@ function competingInterestsForm(
     } have any competing interests? – PREreview of “${preprint.title}”`,
     content: html`
       <nav>
-        <a href="${format(writeReviewAuthorsMatch.formatter, { id: preprint.id })}" class="back">Back</a>
+        <a href="${format(backMatch.formatter, { id: preprint.id })}" class="back">Back</a>
       </nav>
 
       <main id="form">
