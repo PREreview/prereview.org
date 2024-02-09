@@ -189,6 +189,26 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       'https://docs.google.com/forms/d/e/1FAIpQLScamu28Lkm2pBS1n-g0UpMmp8trCeGPVVdAxJ8MIauhlwx7Dw/viewform',
     ),
   },
+  'nsa-utd': {
+    name: 'Neuroscience Student Association at UTD',
+    description: html`
+      <p>
+        The Neuroscience Student Association is an organization that provides a place for neuroscience majors at the
+        University of Texas at Dallas to gather, meet, share insights and ideas, and help each other.
+      </p>
+      <p>
+        The NSA PREreview club is the hub of NSA’s journal club activities. NSA members may meet in groups to discuss a
+        paper and write a PREreview as a group or do the whole process individually.
+      </p>
+    `,
+    leads: [
+      { name: 'Madison Jiang', orcid: '0009-0007-1653-0072' as Orcid },
+      { name: 'Safa Adookkattil', orcid: '0009-0000-1565-8583' as Orcid },
+      { name: 'Emma Unger', orcid: '0009-0000-6854-2621' as Orcid },
+      { name: 'Mohammad Khan', orcid: '0009-0007-7940-1964' as Orcid },
+    ],
+    contact: 'msj220001@utdallas.edu' as EmailAddress,
+  },
   'open-box-science': {
     name: 'Open Box Science',
     description: html`

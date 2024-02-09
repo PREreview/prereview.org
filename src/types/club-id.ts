@@ -12,6 +12,7 @@ export const clubIds = [
   'cara',
   'hhmi-training-pilot',
   'language-club',
+  'nsa-utd',
   'open-box-science',
   'open-science-community-iraqi',
   'rr-id-student-reviewer-club',
