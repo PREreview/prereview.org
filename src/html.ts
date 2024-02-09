@@ -178,8 +178,8 @@ export function plainText(
 ): PlainText {
   const isTemplateStringsArray = Array.isArray as unknown as Refinement<unknown, TemplateStringsArray>
 
-  return stripTags(
-    mathmlToTex((isTemplateStringsArray(input) ? html(input, ...placeholders) : input).toString()),
+  return decode(
+    stripTags(mathmlToTex((isTemplateStringsArray(input) ? html(input, ...placeholders) : input).toString())),
   ) as unknown as PlainText
 }
 

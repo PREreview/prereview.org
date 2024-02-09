@@ -611,6 +611,7 @@ describe('plainText', () => {
   test.each([
     ['tag', 'a b<a>c</a>d e', 'a bcd e'],
     ['tag with attributes', '<a href="http://example.com/" lang="en" dir="ltr" id="a" foo>a</a>', 'a'],
+    ['entities', _.html`&amp;&lt;&gt;&copy;`, '&<>©'],
     ['mismatched tags', '<b><i>bold italic</b> plain</i>', 'bold italic plain'],
     ['comment', 'a<!-- comment -->b', 'ab'],
     [
@@ -632,6 +633,7 @@ describe('plainText', () => {
   test.each([
     ['tag', _.html`a b<a>c</a>d e`, 'a bcd e'],
     ['tag with attributes', _.html`<a href="http://example.com/" lang="en" dir="ltr" id="a" foo>a</a>`, 'a'],
+    ['entities', _.html`&amp;&lt;&gt;&copy;`, '&<>©'],
     ['mismatched tags', _.html`<b><i>bold italic</b> plain</i`, 'bold italic plain'],
     ['comment', _.html`a<!-- comment -->b`, 'ab'],
     [
@@ -651,12 +653,12 @@ describe('plainText', () => {
   })
 
   test('with a template literal', () => {
-    const actual = _.plainText`a b${_.html`<a>c</a>`}${[_.html`<b>d </b>`, _.html`<i> e</i>`]}${'<p>f</p>'}${[
+    const actual = _.plainText`a b${_.html`<a>c&amp;</a>`}${[_.html`<b>d </b>`, _.html`<i> e</i>`]}${'<p>f&amp;</p>'}${[
       _.plainText`g `,
       _.plainText` h`,
     ]}${1}i j`
 
-    expect(actual.toString()).toBe('a bcd  e&lt;p&gt;f&lt;/p&gt;g  h1i j')
+    expect(actual.toString()).toBe('a bc&d  e<p>f&amp;</p>g  h1i j')
   })
 })
 
