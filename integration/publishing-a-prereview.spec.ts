@@ -661,7 +661,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await expect(page.getByRole('main')).toContainText('Invited author Arne Saknussemm')
 
     await page.getByRole('link', { name: 'Change invited authors' }).click()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/change-author?number=1')
+    await page.getByRole('link', { name: 'Change Arne Saknussemm’s details' }).click()
     await page.getByLabel('Name').fill('Axel Lidenbrock')
     await page.getByLabel('Email address').fill('alidenbrock@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -1382,7 +1382,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('You have added 1 other author')
 
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/change-author?number=1')
+    await page.getByRole('link', { name: 'Change Jean-Baptiste Botul’s details' }).click()
 
     await page.getByRole('link', { name: 'Back' }).click()
 
@@ -2756,7 +2756,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
 
     await page.getByLabel('Email address').fill('email@example.com')
     await page.getByRole('button', { name: 'Save and continue' }).click()
-    await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview/change-author?number=1')
+    await page.getByRole('link', { name: 'Change a name’s details' }).click()
 
     await page.getByLabel('Name').clear()
     await page.getByLabel('Email address').clear()

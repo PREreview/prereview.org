@@ -11,6 +11,7 @@ import {
   writeReviewAddAuthorMatch,
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
+  writeReviewChangeAuthorMatch,
   writeReviewRemoveAuthorMatch,
 } from '../../routes'
 import type { EmailAddress } from '../../types/email-address'
@@ -66,6 +67,9 @@ export function addAuthorsForm({
               <div>
                 <h2>Author ${index + 1}</h2>
 
+                <a href="${format(writeReviewChangeAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
+                  >Change <span class="visually-hidden">${author.name}’s details</span></a
+                >
                 <a href="${format(writeReviewRemoveAuthorMatch.formatter, { id: preprint.id, number: index + 1 })}"
                   >Remove <span class="visually-hidden">${author.name}</span></a
                 >
