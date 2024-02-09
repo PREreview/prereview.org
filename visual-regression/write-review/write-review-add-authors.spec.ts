@@ -6,7 +6,6 @@ import type { PreprintTitle } from '../../src/preprint'
 import type { EmailAddress } from '../../src/types/email-address'
 import type { NonEmptyString } from '../../src/types/string'
 import { addAuthorsForm } from '../../src/write-review/add-authors-page/add-authors-form'
-import { cannotAddAuthorsForm } from '../../src/write-review/add-authors-page/cannot-add-authors-form'
 import { expect, test } from '../base'
 
 const preprint = {
@@ -17,14 +16,6 @@ const preprint = {
   title: html`The role of LHCBM1 in non-photochemical quenching in <i>Chlamydomonas reinhardtii</i>`,
   language: 'en',
 } satisfies PreprintTitle
-
-test('content looks right', async ({ showPage }) => {
-  const response = cannotAddAuthorsForm({ preprint })
-
-  const content = await showPage(response)
-
-  await expect(content).toHaveScreenshot()
-})
 
 test('content looks right when there is another author', async ({ showPage }) => {
   const response = addAuthorsForm({

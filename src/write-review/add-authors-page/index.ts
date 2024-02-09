@@ -8,7 +8,6 @@ import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
-import { type CanInviteAuthorsEnv, canInviteAuthors } from '../../feature-flags'
 import { missingE } from '../../form'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
 import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint'
@@ -18,7 +17,6 @@ import type { IndeterminatePreprintId } from '../../types/preprint-id'
 import type { User } from '../../user'
 import { type Form, type FormStoreEnv, getForm, nextFormMatch } from '../form'
 import { addAuthorsForm } from './add-authors-form'
-import { cannotAddAuthorsForm } from './cannot-add-authors-form'
 
 export const writeReviewAddAuthors = ({
   body,
@@ -31,7 +29,7 @@ export const writeReviewAddAuthors = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  CanInviteAuthorsEnv & FormStoreEnv & GetPreprintTitleEnv,
+  FormStoreEnv & GetPreprintTitleEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -52,7 +50,6 @@ export const writeReviewAddAuthors = ({
           RTE.let('method', () => method),
           RTE.let('body', () => body),
           RTE.bindW('form', ({ preprint, user }) => getForm(user.orcid, preprint.id)),
-          RTE.bindW('canInviteAuthors', ({ user }) => RTE.fromReader(canInviteAuthors(user))),
           RTE.let(
             'authors',
             flow(
@@ -70,18 +67,11 @@ export const writeReviewAddAuthors = ({
                 .exhaustive(),
             state =>
               match(state)
-                .with({ canInviteAuthors: false, form: { moreAuthors: 'yes' }, method: 'POST' }, ({ form }) =>
-                  RedirectResponse({ location: format(nextFormMatch(form).formatter, { id: preprint.id }) }),
-                )
-                .with({ canInviteAuthors: false, form: { moreAuthors: 'yes' } }, cannotAddAuthorsForm)
-                .with({ canInviteAuthors: true, form: { moreAuthors: 'yes' }, authors: { _tag: 'None' } }, () =>
+                .with({ form: { moreAuthors: 'yes' }, authors: { _tag: 'None' } }, () =>
                   RedirectResponse({ location: format(writeReviewAddAuthorMatch.formatter, { id: preprint.id }) }),
                 )
-                .with(
-                  { canInviteAuthors: true, form: { moreAuthors: 'yes' }, authors: { _tag: 'Some' }, method: 'POST' },
-                  handleAddAuthorsForm,
-                )
-                .with({ canInviteAuthors: true, form: { moreAuthors: 'yes' }, authors: { _tag: 'Some' } }, state =>
+                .with({ form: { moreAuthors: 'yes' }, authors: { _tag: 'Some' }, method: 'POST' }, handleAddAuthorsForm)
+                .with({ form: { moreAuthors: 'yes' }, authors: { _tag: 'Some' } }, state =>
                   addAuthorsForm({
                     ...state,
                     authors: state.authors.value,
