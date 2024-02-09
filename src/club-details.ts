@@ -189,6 +189,30 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       'https://docs.google.com/forms/d/e/1FAIpQLScamu28Lkm2pBS1n-g0UpMmp8trCeGPVVdAxJ8MIauhlwx7Dw/viewform',
     ),
   },
+  'marine-invertebrates': {
+    name: 'Biology of Marine Invertebrates & Friends',
+    description: html`
+      <p>
+        We are a department focused on mainly marine larvae and their perception of and reaction to the environment,
+        employing both descriptive and experimental methods to better understand behaviour. The main research organism
+        is the larva of the marine ragworm <i>Platynereis dumerilii</i>, where the group (stationed in the UK and
+        Germany) has acquired a detailed ultrastructural atlas of several stages, traced the connectome and
+        experimentally tested some of the many interactions between them.
+      </p>
+      <p>
+        This club aims to review manuscripts dealing with diverse aspects of marine invertebrates (including
+        non-metazoan eukaryotes), whichever topic is more or less in our field of expertise and which will inspire our
+        research and/or cause us to rethink our approaches. We want the club to serve as a more active journal club of
+        preprints between the two locations of our working group, but also to invite ECRs from other groups and with
+        expertise in other disciplines to broaden our horizons.
+      </p>
+    `,
+    leads: [
+      { name: 'Luis Alberto Bezares Calderón', orcid: '0000-0001-6678-6876' as Orcid },
+      { name: 'Alexandra Kerbl', orcid: '0000-0002-9454-6359' as Orcid },
+    ],
+    contact: 'lab239@exeter.ac.uk' as EmailAddress,
+  },
   'nsa-utd': {
     name: 'Neuroscience Student Association at UTD',
     description: html`
