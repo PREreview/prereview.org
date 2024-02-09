@@ -144,7 +144,7 @@ describe('writeReviewRemoveAuthor', () => {
           fc.tuple(
             fc.constant(form),
             form.otherAuthors
-              ? fc.oneof(fc.integer({ max: 0 }), fc.integer({ min: form.otherAuthors.length }))
+              ? fc.oneof(fc.integer({ max: 0 }), fc.integer({ min: form.otherAuthors.length + 1 }))
               : fc.integer(),
           ),
         ),
