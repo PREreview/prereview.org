@@ -11,45 +11,87 @@ import { FormC, formKey } from '../../src/write-review/form'
 import * as fc from './fc'
 
 describe('writeReviewChangeAuthor', () => {
-  test.prop([
-    fc.indeterminatePreprintId(),
-    fc.preprintTitle(),
-    fc.user(),
-    fc
-      .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
-      .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),
-  ])('when the form is submitted', async (id, preprintTitle, user, [newReview, number]) => {
-    const formStore = new Keyv()
-    await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+  describe('when the form is submitted', () => {
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.user(),
+      fc.record({ name: fc.nonEmptyString(), emailAddress: fc.emailAddress() }),
+      fc
+        .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
+        .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),
+    ])('when the form is valid', async (id, preprintTitle, user, body, [newReview, number]) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewChangeAuthor({ id, method: 'POST', number, user })({
-      formStore,
-      getPreprintTitle: () => TE.right(preprintTitle),
-    })()
+      const actual = await _.writeReviewChangeAuthor({ body, id, method: 'POST', number, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      status: Status.ServiceUnavailable,
-      title: expect.stringContaining('problems'),
-      main: expect.stringContaining('problems'),
-      skipToLabel: 'main',
-      js: [],
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
+    })
+
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.preprintTitle(),
+      fc.user(),
+      fc.oneof(
+        fc.anything(),
+        fc.record(
+          {
+            name: fc.anything().filter(value => typeof value !== 'string' || value === ''),
+            emailAddress: fc.anything().filter(value => typeof value !== 'string' || !value.includes('@')),
+          },
+          { withDeletedKeys: true },
+        ),
+      ),
+      fc
+        .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
+        .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),
+    ])('when the form is invalid', async (id, preprintTitle, user, body, [newReview, number]) => {
+      const formStore = new Keyv()
+      await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
+
+      const actual = await _.writeReviewChangeAuthor({ body, id, method: 'POST', number, user })({
+        formStore,
+        getPreprintTitle: () => TE.right(preprintTitle),
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'StreamlinePageResponse',
+        canonical: format(writeReviewChangeAuthorMatch.formatter, { id: preprintTitle.id, number }),
+        status: Status.BadRequest,
+        title: expect.stringContaining('Error:'),
+        nav: expect.stringContaining('Back'),
+        main: expect.stringContaining('Error:'),
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
+      })
     })
   })
 
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
+    fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
     fc
       .form({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) })
       .chain(form => fc.tuple(fc.constant(form), fc.integer({ min: 1, max: form.otherAuthors?.length }))),
-  ])('when the form needs submitting', async (id, preprintTitle, method, user, [newReview, number]) => {
+  ])('when the form needs submitting', async (id, preprintTitle, body, method, user, [newReview, number]) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewChangeAuthor({ id, method, number, user })({
+    const actual = await _.writeReviewChangeAuthor({ body, id, method, number, user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
     })()
@@ -69,6 +111,7 @@ describe('writeReviewChangeAuthor', () => {
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
+    fc.anything(),
     fc.string(),
     fc.user(),
     fc
@@ -81,11 +124,11 @@ describe('writeReviewChangeAuthor', () => {
             : fc.integer(),
         ),
       ),
-  ])("when the number doesn't match", async (id, preprintTitle, method, user, [newReview, number]) => {
+  ])("when the number doesn't match", async (id, preprintTitle, body, method, user, [newReview, number]) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewChangeAuthor({ id, method, number, user })({
+    const actual = await _.writeReviewChangeAuthor({ body, id, method, number, user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
     })()
@@ -97,10 +140,10 @@ describe('writeReviewChangeAuthor', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.integer(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.integer(), fc.user()])(
     'when there is no form',
-    async (id, preprintTitle, method, number, user) => {
-      const actual = await _.writeReviewChangeAuthor({ id, method, number, user })({
+    async (id, preprintTitle, body, method, number, user) => {
+      const actual = await _.writeReviewChangeAuthor({ body, id, method, number, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
       })()
@@ -116,15 +159,16 @@ describe('writeReviewChangeAuthor', () => {
   test.prop([
     fc.indeterminatePreprintId(),
     fc.preprintTitle(),
+    fc.anything(),
     fc.string(),
     fc.integer(),
     fc.user(),
     fc.form({ moreAuthors: fc.constantFrom('yes-private', 'no') }),
-  ])('when there are no more authors', async (id, preprintTitle, method, number, user, newReview) => {
+  ])('when there are no more authors', async (id, preprintTitle, body, method, number, user, newReview) => {
     const formStore = new Keyv()
     await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(newReview))
 
-    const actual = await _.writeReviewChangeAuthor({ id, method, number, user })({
+    const actual = await _.writeReviewChangeAuthor({ body, id, method, number, user })({
       formStore,
       getPreprintTitle: () => TE.right(preprintTitle),
     })()
@@ -139,12 +183,12 @@ describe('writeReviewChangeAuthor', () => {
     })
   })
 
-  test.prop([fc.indeterminatePreprintId(), fc.string(), fc.integer(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.integer(), fc.user()])(
     'when the preprint cannot be loaded',
-    async (id, method, number, user) => {
+    async (id, body, method, number, user) => {
       const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.left('unavailable'))
 
-      const actual = await _.writeReviewChangeAuthor({ id, method, number, user })({
+      const actual = await _.writeReviewChangeAuthor({ body, id, method, number, user })({
         formStore: new Keyv(),
         getPreprintTitle,
       })()
@@ -161,10 +205,10 @@ describe('writeReviewChangeAuthor', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.string(), fc.integer(), fc.user()])(
+  test.prop([fc.indeterminatePreprintId(), fc.anything(), fc.string(), fc.integer(), fc.user()])(
     'when the preprint cannot be found',
-    async (id, method, number, user) => {
-      const actual = await _.writeReviewChangeAuthor({ id, method, number, user })({
+    async (id, body, method, number, user) => {
+      const actual = await _.writeReviewChangeAuthor({ body, id, method, number, user })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.left('not-found'),
       })()
@@ -180,10 +224,10 @@ describe('writeReviewChangeAuthor', () => {
     },
   )
 
-  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.string(), fc.integer()])(
+  test.prop([fc.indeterminatePreprintId(), fc.preprintTitle(), fc.anything(), fc.string(), fc.integer()])(
     "when there isn't a session",
-    async (id, preprintTitle, method, number) => {
-      const actual = await _.writeReviewChangeAuthor({ id, method, number })({
+    async (id, preprintTitle, body, method, number) => {
+      const actual = await _.writeReviewChangeAuthor({ body, id, method, number })({
         formStore: new Keyv(),
         getPreprintTitle: () => TE.right(preprintTitle),
       })()

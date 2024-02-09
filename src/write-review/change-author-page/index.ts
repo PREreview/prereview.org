@@ -5,22 +5,30 @@ import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
-import { match } from 'ts-pattern'
+import * as s from 'fp-ts/string'
+import * as D from 'io-ts/Decoder'
+import { get } from 'spectacles-ts'
+import { P, match } from 'ts-pattern'
+import { getInput, invalidE, missingE } from '../../form'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
-import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../../preprint'
 import { type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import { writeReviewAddAuthorsMatch, writeReviewMatch } from '../../routes'
+import { EmailAddressC } from '../../types/email-address'
 import type { IndeterminatePreprintId } from '../../types/preprint-id'
+import { type NonEmptyString, NonEmptyStringC } from '../../types/string'
 import type { User } from '../../user'
 import { type FormStoreEnv, getForm } from '../form'
 import { changeAuthorForm } from './change-author-form'
 
 export const writeReviewChangeAuthor = ({
+  body,
   id,
   method,
   number,
   user,
 }: {
+  body: unknown
   id: IndeterminatePreprintId
   method: string
   number: number
@@ -42,6 +50,7 @@ export const writeReviewChangeAuthor = ({
           RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
           RTE.let('preprint', () => preprint),
           RTE.let('method', () => method),
+          RTE.let('body', () => body),
           RTE.let('number', () => number),
           RTE.bindW(
             'form',
@@ -76,7 +85,7 @@ export const writeReviewChangeAuthor = ({
                 .exhaustive(),
             state =>
               match(state)
-                .with({ method: 'POST' }, () => havingProblemsPage)
+                .with({ method: 'POST' }, handleChangeAuthorForm)
                 .otherwise(state =>
                   changeAuthorForm({
                     ...state,
@@ -87,3 +96,52 @@ export const writeReviewChangeAuthor = ({
         ),
     ),
   )
+
+const handleChangeAuthorForm = ({
+  author,
+  body,
+  number,
+  preprint,
+}: {
+  author: { name: NonEmptyString }
+  body: unknown
+  number: number
+  preprint: PreprintTitle
+}) =>
+  pipe(
+    E.Do,
+    E.let('name', () => pipe(NameFieldD.decode(body), E.mapLeft(missingE))),
+    E.let('emailAddress', () =>
+      pipe(
+        EmailAddressFieldD.decode(body),
+        E.mapLeft(error =>
+          match(getInput('emailAddress')(error))
+            .with(P.union(P.when(O.isNone), { value: '' }), () => missingE())
+            .with({ value: P.select() }, invalidE)
+            .exhaustive(),
+        ),
+      ),
+    ),
+    E.chain(fields =>
+      pipe(
+        E.Do,
+        E.apS('name', fields.name),
+        E.apS('emailAddress', fields.emailAddress),
+        E.mapLeft(() => fields),
+      ),
+    ),
+    E.matchW(
+      error =>
+        match(error)
+          .with({ name: P.any }, error => changeAuthorForm({ author, form: error, number, preprint }))
+          .exhaustive(),
+      () => havingProblemsPage,
+    ),
+  )
+
+const NameFieldD = pipe(D.struct({ name: NonEmptyStringC }), D.map(get('name')))
+
+const EmailAddressFieldD = pipe(
+  D.struct({ emailAddress: pipe(D.string, D.map(s.trim), D.compose(EmailAddressC)) }),
+  D.map(get('emailAddress')),
+)
