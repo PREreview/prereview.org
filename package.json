@@ -13,7 +13,7 @@
     "cacache": "^18.0.2",
     "capital-case": "^1.0.4",
     "clock-ts": "^0.1.2",
-    "cloudinary": "^2.0.0",
+    "cloudinary": "^2.0.1",
     "connect-slashes": "^1.4.0",
     "cookie": "^0.6.0",
     "cookie-signature": "^1.2.1",
