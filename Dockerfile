@@ -17,14 +17,14 @@ COPY .npmrc \
 FROM npm AS npm-dev
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 
-RUN npm ci
+RUN npm ci --ignore-scripts
 
 #
 # Stage: Production NPM install
 #
 FROM npm AS npm-prod
 
-RUN npm ci --production
+RUN npm ci --ignore-scripts --production
 
 #
 # Stage: Production build

@@ -6,7 +6,7 @@ INTEGRATION_TEST_IMAGE_TAG=prereview.org-integration-tests
 	cp .env.dist .env
 
 node_modules: package.json package-lock.json
-	npm install
+	npm install --ignore-scripts
 	touch node_modules
 
 check: format lint-ts lint-css typecheck test-fast
