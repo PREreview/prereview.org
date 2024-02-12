@@ -1,0 +1,37 @@
+name: Fix Playwright versions
+
+on:
+  push:
+    branches:
+      - 'dependabot/npm_and_yarn/playwright/test-*'
+
+jobs:
+  fix-playwright-versions:
+    name: 'Fix Playwright versions'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    steps:
+      - name: 'Checkout code'
+        uses: actions/checkout@v4.1.1
+
+      - name: 'Set up Node.js'
+        uses: actions/setup-node@v4.0.2
+        with:
+          node-version-file: package.json
+          cache: ${{ !env.ACT && 'npm' || '' }}
+
+      - name: 'Install dependencies'
+        run: npm ci
+
+      - name: 'Fix Playwright versions'
+        run: scripts/fix-playwright-versions.sh
+
+      - name: 'Upload assets'
+        uses: stefanzweifel/git-auto-commit-action@v5.0.0
+        if: ${{ !env.ACT }}
+        with:
+          commit_message: '[dependabot skip] Fix Playwright versions'
+          commit_user_name: 'prereview-bot'
+          commit_user_email: 'engineering@prereview.org'
+          commit_author: 'prereview-bot <engineering@prereview.org>'
