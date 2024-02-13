@@ -13,7 +13,6 @@ import nodemailer from 'nodemailer'
 import { P, match } from 'ts-pattern'
 import { app } from './app'
 import { decodeEnv } from './env'
-import type { User } from './user'
 
 const env = decodeEnv(process)()
 
@@ -51,22 +50,11 @@ const sendMailEnv = match(env)
   }))
   .exhaustive()
 
-const isPrereviewTeam = (user: User) =>
-  [
-    '0000-0001-8511-8689',
-    '0000-0002-1472-1824',
-    '0000-0002-3708-3546',
-    '0000-0002-6109-0367',
-    '0000-0002-6750-9341',
-    '0000-0003-4921-6155',
-    '0000-0002-5753-2556',
-  ].includes(user.orcid)
-
 const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   authorInviteStore: new Keyv({ namespace: 'author-invite', store: keyvStore }),
-  canConnectOrcidProfile: isPrereviewTeam,
+  canConnectOrcidProfile: () => true,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
   contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: keyvStore }),
   fathomId: env.FATHOM_SITE_ID,
