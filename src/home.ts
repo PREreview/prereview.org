@@ -173,6 +173,7 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
                               .with('scielo', () => 'SciELO Preprints')
                               .with('science-open', () => 'ScienceOpen Preprints')
                               .with('socarxiv', () => 'SocArXiv')
+                              .with('techrxiv', () => 'TechRxiv')
                               .with('zenodo', () => 'Zenodo')
                               .exhaustive()}
                           </dd>

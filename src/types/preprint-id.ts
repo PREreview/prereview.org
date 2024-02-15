@@ -26,6 +26,7 @@ export type PreprintId =
   | ScieloPreprintId
   | ScienceOpenPreprintId
   | SocarxivPreprintId
+  | TechrxivPreprintId
   | ZenodoPreprintId
 
 export type IndeterminatePreprintId = PreprintId | BiorxivOrMedrxivPreprintId | ZenodoOrAfricarxivPreprintId
@@ -142,6 +143,11 @@ export interface SocarxivPreprintId {
   readonly value: Doi<'31235'>
 }
 
+export interface TechrxivPreprintId {
+  readonly type: 'techrxiv'
+  readonly value: Doi<'36227'>
+}
+
 export interface ZenodoPreprintId {
   readonly type: 'zenodo'
   readonly value: Doi<'5281'>
@@ -177,6 +183,7 @@ export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { v
   '31730',
   '32942',
   '35542',
+  '36227',
   '48550',
 )
 
@@ -215,6 +222,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('31730'), doi => ({ type: 'africarxiv', value: doi }) satisfies AfricarxivOsfPreprintId)
     .when(hasRegistrant('32942'), doi => ({ type: 'ecoevorxiv', value: doi }) satisfies EcoevorxivPreprintId)
     .when(hasRegistrant('35542'), doi => ({ type: 'edarxiv', value: doi }) satisfies EdarxivPreprintId)
+    .when(hasRegistrant('36227'), doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId)
     .when(hasRegistrant('48550'), doi => ({ type: 'arxiv', value: doi }) satisfies ArxivPreprintId)
     .exhaustive()
 }

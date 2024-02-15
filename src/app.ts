@@ -51,6 +51,7 @@ export type ConfigEnv = Omit<
 
 const getPreprintFromSource = (id: IndeterminatePreprintId) =>
   match(id)
+    .with({ type: 'techrxiv' }, () => RTE.left('unavailable' as const))
     .with({ type: 'philsci' }, getPreprintFromPhilsci)
     .with({ value: p.when(isCrossrefPreprintDoi) }, getPreprintFromCrossref)
     .with({ value: p.when(isDatacitePreprintDoi) }, getPreprintFromDatacite)

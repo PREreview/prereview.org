@@ -244,6 +244,7 @@ function createUnknownPreprintWithDoiPage(preprint: Extract<IndeterminatePreprin
           .with('scielo', () => 'a SciELO')
           .with('science-open', () => 'a ScienceOpen')
           .with('socarxiv', () => 'a SocArXiv')
+          .with('techrxiv', () => 'a TechRxiv')
           .with('zenodo', () => 'a Zenodo')
           .with('zenodo-africarxiv', () => 'a Zenodo or AfricArXiv')
           .exhaustive()}

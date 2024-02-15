@@ -66,6 +66,7 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyStr
                         .with('scielo', () => 'SciELO Preprints')
                         .with('science-open', () => 'ScienceOpen Preprints')
                         .with('socarxiv', () => 'SocArXiv')
+                        .with('techrxiv', () => 'TechRxiv')
                         .with('zenodo', () => 'Zenodo')
                         .exhaustive()}
                     </dd>

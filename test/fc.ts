@@ -90,6 +90,7 @@ import {
   type ScieloPreprintId,
   type ScienceOpenPreprintId,
   type SocarxivPreprintId,
+  type TechrxivPreprintId,
   type ZenodoOrAfricarxivPreprintId,
   type ZenodoPreprintId,
   isPreprintDoi,
@@ -672,6 +673,12 @@ export const socarxivPreprintUrl = (): fc.Arbitrary<[URL, SocarxivPreprintId]> =
       { type: 'socarxiv', value: `10.31235/osf.io/${id}` as Doi<'31235'> },
     ])
 
+export const techrxivPreprintId = (): fc.Arbitrary<TechrxivPreprintId> =>
+  fc.record({
+    type: fc.constant('techrxiv'),
+    value: doi(fc.constant('36227')),
+  })
+
 export const zenodoPreprintId = (): fc.Arbitrary<ZenodoPreprintId> =>
   fc.record({
     type: fc.constant('zenodo'),
@@ -721,6 +728,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
     scieloPreprintId(),
     scienceOpenPreprintId(),
     socarxivPreprintId(),
+    techrxivPreprintId(),
     zenodoPreprintId(),
   )
 
