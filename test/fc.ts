@@ -379,6 +379,7 @@ export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
     scieloPreprintUrl(),
     scienceOpenPreprintUrl(),
     socarxivPreprintUrl(),
+    techrxivPreprintUrl(),
   )
 
 export const unsupportedPreprintUrl = (): fc.Arbitrary<URL> =>
@@ -678,6 +679,9 @@ export const techrxivPreprintId = (): fc.Arbitrary<TechrxivPreprintId> =>
     type: fc.constant('techrxiv'),
     value: doi(fc.constant('36227')),
   })
+
+export const techrxivPreprintUrl = (): fc.Arbitrary<[URL, TechrxivPreprintId]> =>
+  techrxivPreprintId().map(id => [new URL(`https://www.techrxiv.org/doi/full/${encodeURIComponent(id.value)}`), id])
 
 export const zenodoPreprintId = (): fc.Arbitrary<ZenodoPreprintId> =>
   fc.record({

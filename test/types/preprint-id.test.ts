@@ -540,6 +540,57 @@ describe('fromUrl', () => {
     expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'socarxiv', value: doi }))
   })
 
+  test.prop([fc.techrxivPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
+    examples: [
+      [
+        [
+          new URL('https://www.techrxiv.org/doi/full/10.36227/techrxiv.170794036.66542348'),
+          '10.36227/techrxiv.170794036.66542348' as Doi<'36227'>,
+        ],
+      ],
+      [
+        [
+          new URL('http://www.techrxiv.org/doi/full/10.36227/techrxiv.170794036.66542348'), // http
+          '10.36227/techrxiv.170794036.66542348' as Doi<'36227'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://techrxiv.org/doi/full/10.36227/techrxiv.170794036.66542348'), // no www.
+          '10.36227/techrxiv.170794036.66542348' as Doi<'36227'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://www.techrxiv.org/doi/full/10.36227/techrxiv.170794036.66542348/v1'), // with version
+          '10.36227/techrxiv.170794036.66542348/v1' as Doi<'36227'>,
+        ],
+      ],
+      [
+        [
+          new URL(
+            'https://www.techrxiv.org/doi/full/10.36227/techrxiv.170794036.66542348?commit=5545b39f226ecbb6a796058e63464f5b4772a78d',
+          ), // with a commit
+          '10.36227/techrxiv.170794036.66542348' as Doi<'36227'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://www.techrxiv.org/doi/pdf/10.36227/techrxiv.170794036.66542348'), // pdf
+          '10.36227/techrxiv.170794036.66542348' as Doi<'36227'>,
+        ],
+      ],
+      [
+        [
+          new URL('https://www.techrxiv.org/doi/xml/10.36227/techrxiv.170794036.66542348'), // xml
+          '10.36227/techrxiv.170794036.66542348' as Doi<'36227'>,
+        ],
+      ],
+    ],
+  })('with an techrxiv.org URL', ([url, doi]) => {
+    expect(_.fromUrl(url)).toStrictEqual(O.some({ type: 'techrxiv', value: doi }))
+  })
+
   test.prop([fc.zenodoPreprintUrl().map(([url, id]) => [url, id.value] as const)], {
     examples: [
       [[new URL('https://zenodo.org/record/4290795'), '10.5281/zenodo.4290795' as Doi<'5281'>]],

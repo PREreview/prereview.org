@@ -244,6 +244,7 @@ export function fromUrl(url: URL): O.Option<IndeterminatePreprintId> {
     .with([P.union('researchsquare.com', 'assets.researchsquare.com'), P.select()], extractFromResearchSquarePath)
     .with(['preprints.scielo.org', P.select()], extractFromScieloPath)
     .with(['scienceopen.com', 'hosted-document'], () => extractFromScienceOpenQueryString(url.searchParams))
+    .with(['techrxiv.org', P.select()], extractFromTechrxivPath)
     .with(['zenodo.org', P.select()], extractFromZenodoPath)
     .otherwise(() => O.none)
 }
@@ -342,6 +343,13 @@ const extractFromScieloPath = flow(
 const extractFromScienceOpenQueryString = flow(
   O.fromNullableK((query: URLSearchParams) => query.get('doi')),
   O.chain(parsePreprintDoi),
+)
+
+const extractFromTechrxivPath = flow(
+  decodeURIComponent,
+  O.fromNullableK(s => s.match(/^doi\/(?:full|pdf|xml)\/(.+?)$/i)?.[1]),
+  O.filter(pipe(isDoi, compose(hasRegistrant('36227')))),
+  O.map(doi => ({ type: 'techrxiv', value: doi }) satisfies TechrxivPreprintId),
 )
 
 const extractFromZenodoPath = flow(
