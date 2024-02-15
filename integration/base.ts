@@ -776,8 +776,6 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       body: { data: [] },
     })
 
-    fetch.get('begin:https://res.cloudinary.com/prereview/search/', { body: { resources: [] } })
-
     await use(fetch)
   },
   formStore: async ({}, use) => {
@@ -849,6 +847,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     const server = app({
       allowSiteCrawlers: true,
       authorInviteStore,
+      avatarStore: new Keyv(),
       canConnectOrcidProfile,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,

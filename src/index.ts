@@ -50,10 +50,16 @@ const sendMailEnv = match(env)
   }))
   .exhaustive()
 
+const avatarStore = new Keyv()
+void avatarStore.set('0000-0002-1472-1824', 'mnl0zzuncxmdbg96iqx1')
+void avatarStore.set('0000-0002-6109-0367', 'c4a5fhc4arzb2chn6txg')
+void avatarStore.set('0000-0003-4921-6155', 'dvyalmcsaz6bwri1iux4')
+
 const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   authorInviteStore: new Keyv({ namespace: 'author-invite', store: keyvStore }),
+  avatarStore,
   canConnectOrcidProfile: () => true,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
   contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: keyvStore }),

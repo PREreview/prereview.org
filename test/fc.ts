@@ -980,6 +980,9 @@ export const nonEmptyArray = <T>(
 
 export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ minLength: 1 }).filter(isNonEmptyString)
 
+export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<NonEmptyString> =>
+  fc.stringOf(charArb, { minLength: 1 }).filter(isNonEmptyString)
+
 export const languageCode = (): fc.Arbitrary<LanguageCode> => fc.constantFrom(...ISO6391.getAllCodes())
 
 export const user = (): fc.Arbitrary<User> =>

@@ -25,6 +25,10 @@ export interface AuthorInviteStoreEnv {
   authorInviteStore: Keyv<unknown>
 }
 
+export interface AvatarStoreEnv {
+  avatarStore: Keyv<unknown>
+}
+
 export interface CareerStageStoreEnv {
   careerStageStore: Keyv<unknown>
 }
@@ -255,4 +259,9 @@ export const getUserOnboarding = flow(
 export const saveUserOnboarding = flow(
   setKey(OrcidE, UserOnboardingC),
   RTE.local((env: UserOnboardingStoreEnv) => env.userOnboardingStore),
+)
+
+export const getAvatar = flow(
+  getKey(OrcidE, NonEmptyStringC),
+  RTE.local((env: AvatarStoreEnv) => env.avatarStore),
 )

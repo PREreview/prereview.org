@@ -268,7 +268,8 @@ const withEnv =
   (...a: A) =>
     f(...a)(env)
 
-export type RouterEnv = CanConnectOrcidProfileEnv &
+export type RouterEnv = Keyv.AvatarStoreEnv &
+  CanConnectOrcidProfileEnv &
   DoesPreprintExistEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
@@ -1116,7 +1117,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getAvatar: withEnv(getAvatarFromCloudinary, env),
+          getAvatar: withEnv(getAvatarFromCloudinary, { ...env, getCloudinaryAvatar: withEnv(Keyv.getAvatar, env) }),
           getCareerStage: withEnv(Keyv.getCareerStage, env),
           getLanguages: withEnv(Keyv.getLanguages, env),
           getLocation: withEnv(Keyv.getLocation, env),
