@@ -112,15 +112,15 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
 
         <ul class="statistics">
           <li>
-            <data value="822">822</data>
+            <data value="826">826</data>
             PREreviews
           </li>
           <li>
-            <data value="20">20</data>
+            <data value="21">21</data>
             preprint servers
           </li>
           <li>
-            <data value="2577">2,577</data>
+            <data value="2600">2,600</data>
             PREreviewers
           </li>
         </ul>
