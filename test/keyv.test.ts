@@ -7,6 +7,7 @@ import { ContactEmailAddressC } from '../src/contact-email-address'
 import * as _ from '../src/keyv'
 import { OrcidTokenC } from '../src/orcid-token'
 import { SlackUserIdC } from '../src/slack-user-id'
+import { isNonEmptyString } from '../src/types/string'
 import { UserOnboardingC } from '../src/user-onboarding'
 import * as fc from './fc'
 
@@ -1198,4 +1199,44 @@ describe('saveUserOnboarding', () => {
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
   )
+})
+
+describe('getAvatar', () => {
+  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key contains an avatar', async (orcid, avatar) => {
+    const store = new Keyv()
+    await store.set(orcid, avatar)
+
+    const actual = await _.getAvatar(orcid)({ avatarStore: store })()
+
+    expect(actual).toStrictEqual(E.right(avatar))
+  })
+
+  test.prop([fc.orcid(), fc.anything().filter(value => typeof value !== 'string' || !isNonEmptyString(value))])(
+    'when the key contains something other than an avatar',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.getAvatar(orcid)({ avatarStore: store })()
+
+      expect(actual).toStrictEqual(E.left('not-found'))
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.getAvatar(orcid)({ avatarStore: store })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.get = (): Promise<never> => Promise.reject(error)
+
+    const actual = await _.getAvatar(orcid)({ avatarStore: store })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
 })
