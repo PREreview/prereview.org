@@ -2353,6 +2353,100 @@ describe('getPreprintFromCrossref', () => {
       )
     })
 
+    test.prop([fc.techrxivPreprintId(), fc.plainDate()])('from TechRxiv', async (id, posted) => {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.crossref.org/works/${encodeURIComponent(id.value)}`, {
+        body: {
+          status: 'ok',
+          'message-type': 'work',
+          'message-version': '1.0.0',
+          message: {
+            institution: [{ name: 'Authorea, Inc.' }],
+            indexed: { 'date-parts': [[2024, 2, 15]], 'date-time': '2024-02-15T00:45:09Z', timestamp: 1707957909760 },
+            posted: { 'date-parts': [[posted.year, posted.month, posted.day]] },
+            'group-title': 'Preprints',
+            'reference-count': 0,
+            publisher: 'Institute of Electrical and Electronics Engineers (IEEE)',
+            license: [
+              {
+                start: { 'date-parts': [[2024, 2, 14]], 'date-time': '2024-02-14T00:00:00Z', timestamp: 1707868800000 },
+                'content-version': 'unspecified',
+                'delay-in-days': 0,
+                URL: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+              },
+            ],
+            'content-domain': { domain: [], 'crossmark-restriction': false },
+            'short-container-title': [],
+            accepted: { 'date-parts': [[2024, 2, 14]] },
+            DOI: id.value,
+            type: 'posted-content',
+            created: { 'date-parts': [[2024, 2, 14]], 'date-time': '2024-02-14T19:52:51Z', timestamp: 1707940371000 },
+            source: 'Crossref',
+            'is-referenced-by-count': 0,
+            title: [
+              'Maximum Likelihood Estimation of State Variables and Line Parameters in Distribution Grid with a Non-Linear Model',
+            ],
+            prefix: '10.36227',
+            author: [
+              {
+                ORCID: 'http://orcid.org/0009-0002-1293-2377',
+                'authenticated-orcid': true,
+                given: 'Shubhankar',
+                family: 'Kapoor',
+                sequence: 'first',
+                affiliation: [],
+              },
+              { given: 'Adrian G', family: 'Wills', sequence: 'additional', affiliation: [] },
+              { given: 'Johannes', family: 'Hendriks', sequence: 'additional', affiliation: [] },
+              { given: 'Lachlan', family: 'Blackhall', sequence: 'additional', affiliation: [] },
+            ],
+            member: '263',
+            'container-title': [],
+            'original-title': [],
+            deposited: { 'date-parts': [[2024, 2, 14]], 'date-time': '2024-02-14T19:52:51Z', timestamp: 1707940371000 },
+            score: 1,
+            resource: {
+              primary: {
+                URL: 'https://www.techrxiv.org/users/742533/articles/717019-maximum-likelihood-estimation-of-state-variables-and-line-parameters-in-distribution-grid-with-a-non-linear-model?commit=5545b39f226ecbb6a796058e63464f5b4772a78d',
+              },
+            },
+            subtitle: [],
+            'short-title': [],
+            issued: { 'date-parts': [[2024, 2, 14]] },
+            'references-count': 0,
+            URL: 'http://dx.doi.org/10.36227/techrxiv.170794036.66542348/v1',
+            relation: {},
+            published: { 'date-parts': [[2024, 2, 14]] },
+            subtype: 'preprint',
+          },
+        },
+      })
+
+      const actual = await _.getPreprintFromCrossref(id)({ fetch })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          abstract: undefined,
+          authors: [
+            { name: 'Shubhankar Kapoor', orcid: '0009-0002-1293-2377' },
+            { name: 'Adrian G Wills', orcid: undefined },
+            { name: 'Johannes Hendriks', orcid: undefined },
+            { name: 'Lachlan Blackhall', orcid: undefined },
+          ],
+          id,
+          posted,
+          title: {
+            language: 'en',
+            text: rawHtml(
+              'Maximum Likelihood Estimation of State Variables and Line Parameters in Distribution Grid with a Non-Linear Model',
+            ),
+          },
+          url: new URL(
+            'https://www.techrxiv.org/users/742533/articles/717019-maximum-likelihood-estimation-of-state-variables-and-line-parameters-in-distribution-grid-with-a-non-linear-model?commit=5545b39f226ecbb6a796058e63464f5b4772a78d',
+          ),
+        }),
+      )
+    })
+
     test.prop([fc.scieloPreprintId(), fc.plainDate()])('when the response is stale', async (id, posted) => {
       const fetch = fetchMock
         .sandbox()

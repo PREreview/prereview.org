@@ -33,6 +33,7 @@ import type {
   ScieloPreprintId,
   ScienceOpenPreprintId,
   SocarxivPreprintId,
+  TechrxivPreprintId,
 } from './types/preprint-id'
 
 export type CrossrefPreprintId =
@@ -53,6 +54,7 @@ export type CrossrefPreprintId =
   | ScieloPreprintId
   | ScienceOpenPreprintId
   | SocarxivPreprintId
+  | TechrxivPreprintId
 
 export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']> = hasRegistrant(
   '1101',
@@ -71,6 +73,7 @@ export const isCrossrefPreprintDoi: Refinement<Doi, CrossrefPreprintId['value']>
   '31730',
   '32942',
   '35542',
+  '36227',
 )
 
 export const getPreprintFromCrossref = flow(
@@ -140,6 +143,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
               .with({ type: 'science-open', text: P.select() }, detectLanguage)
               .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
+              .with({ type: 'techrxiv' }, () => O.some('en' as const))
               .exhaustive(),
           ),
         ),
@@ -177,6 +181,7 @@ function workToPreprint(work: Work): E.Either<D.DecodeError | string, Preprint> 
               .with({ type: 'scielo', text: P.select() }, detectLanguageFrom('en', 'es', 'pt'))
               .with({ type: 'science-open', text: P.select() }, detectLanguage)
               .with({ type: 'socarxiv', text: P.select() }, detectLanguage)
+              .with({ type: 'techrxiv' }, () => O.some('en' as const))
               .exhaustive(),
           ),
         ),
@@ -430,5 +435,12 @@ const PreprintIdD: D.Decoder<Work, CrossrefPreprintId> = D.union(
           value: work.DOI,
         }) satisfies SocarxivPreprintId,
     ),
+  ),
+  pipe(
+    D.fromStruct({
+      DOI: D.fromRefinement(hasRegistrant('36227'), 'DOI'),
+      publisher: D.literal('Institute of Electrical and Electronics Engineers (IEEE)'),
+    }),
+    D.map(work => ({ type: 'techrxiv', value: work.DOI }) satisfies TechrxivPreprintId),
   ),
 )

@@ -754,6 +754,7 @@ export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
     scieloPreprintId(),
     scienceOpenPreprintId(),
     socarxivPreprintId(),
+    techrxivPreprintId(),
   )
 
 export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
