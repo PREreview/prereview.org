@@ -68,6 +68,7 @@
   --width-divider-narrow: calc(var(--width-divider) / 1.5);
   --width-divider: 4px;
   --width-divider-wide: calc(var(--width-divider) * 1.5);
+  --radius-divider-narrow: calc(var(--radius-divider) / 1.5);
   --radius-divider: calc(var(--width-divider) * 5);
 
   font-family: var(--font-sans-serif);
@@ -1521,6 +1522,22 @@ html-editor {
   & label {
     margin-block-start: 0;
   }
+}
+
+[type='file'] {
+  display: block;
+  max-inline-size: 100%;
+  color: inherit;
+  font: inherit;
+
+  :--heading + & {
+    margin-block-start: var(--space-xs-s);
+  }
+}
+
+::file-selector-button {
+  color: inherit;
+  font: inherit;
 }
 
 [type='checkbox'],

@@ -192,6 +192,8 @@ export const disconnectSlackMatch = pipe(P.lit('disconnect-slack'), P.then(P.end
 
 export const myDetailsMatch = pipe(P.lit('my-details'), P.then(P.end))
 
+export const changeAvatarMatch = pipe(P.lit('my-details'), P.then(P.lit('change-avatar')), P.then(P.end))
+
 export const changeCareerStageMatch = pipe(P.lit('my-details'), P.then(P.lit('change-career-stage')), P.then(P.end))
 
 export const changeCareerStageVisibilityMatch = pipe(

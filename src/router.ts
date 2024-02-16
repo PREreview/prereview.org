@@ -78,6 +78,7 @@ import { liveReviews } from './live-reviews'
 import { type IsUserBlockedEnv, type OrcidOAuthEnv, authenticate, authenticateError, logIn, logOut } from './log-in'
 import { getMethod } from './middleware'
 import {
+  changeAvatar,
   changeCareerStage,
   changeCareerStageVisibility,
   changeContactEmailAddress,
@@ -117,6 +118,7 @@ import {
   authorInvitePublishedMatch,
   authorInviteStartMatch,
   authorInviteVerifyEmailAddressMatch,
+  changeAvatarMatch,
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
   changeContactEmailAddressMatch,
@@ -791,6 +793,21 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           isOpenForRequests: withEnv(Keyv.isOpenForRequests, env),
           saveUserOnboarding: withEnv(Keyv.saveUserOnboarding, env),
         })),
+      ),
+    ),
+    pipe(
+      changeAvatarMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(changeAvatar)),
+          RM.ichainW(handleResponse),
+        ),
       ),
     ),
     pipe(

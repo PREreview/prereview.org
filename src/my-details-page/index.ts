@@ -1,3 +1,4 @@
+export { changeAvatar } from './change-avatar'
 export { changeCareerStage } from './change-career-stage'
 export { changeCareerStageVisibility } from './change-career-stage-visibility'
 export { changeContactEmailAddress } from './change-contact-email-address'
