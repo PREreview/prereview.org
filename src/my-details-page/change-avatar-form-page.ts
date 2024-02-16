@@ -8,7 +8,7 @@ import { PageResponse } from '../response'
 import { changeAvatarMatch, myDetailsMatch } from '../routes'
 
 export interface UploadAvatarForm {
-  readonly avatar: E.Either<MissingE | WrongTypeE | TooBigE, undefined>
+  readonly avatar: E.Either<MissingE | WrongTypeE | TooBigE, unknown>
 }
 
 export function createPage({ form }: { form: UploadAvatarForm }) {

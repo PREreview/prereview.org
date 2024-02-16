@@ -1,5 +1,6 @@
 import cookieSignature from 'cookie-signature'
 import * as P from 'fp-ts-routing'
+import * as E from 'fp-ts/Either'
 import { concatAll } from 'fp-ts/Monoid'
 import * as O from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
@@ -14,7 +15,9 @@ import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
 import type { SessionEnv } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
+import { fromRequestHandler } from 'hyper-ts/express'
 import type * as L from 'logger-fp-ts'
+import multer, { MulterError } from 'multer'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { ZenodoAuthenticatedEnv } from 'zenodo-ts'
@@ -321,6 +324,8 @@ const triggerRefreshOfPrereview = (id: number) =>
       RTE.chainW(() => refreshPrereview(id)),
     )(env)()
   })
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5_242_880 } })
 
 const publishPrereview = (newPrereview: NewPrereview) =>
   pipe(
@@ -800,6 +805,21 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(() =>
         pipe(
           RM.of({}),
+          RM.apS(
+            'body',
+            pipe(
+              RM.fromMiddleware(
+                fromRequestHandler(
+                  upload.fields([{ name: 'avatar', maxCount: 1 }]),
+                  req => E.right(req.files),
+                  error => ({
+                    avatar: error instanceof MulterError && error.code === 'LIMIT_FILE_SIZE' ? 'TOO_BIG' : 'ERROR',
+                  }),
+                ),
+              ),
+              RM.orElseW(RM.right),
+            ),
+          ),
           RM.apS(
             'method',
             RM.gets(c => c.getMethod()),

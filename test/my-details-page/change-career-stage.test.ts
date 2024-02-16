@@ -9,25 +9,65 @@ import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('changeAvatar', () => {
   describe('when avatars can be uploaded', () => {
-    test.prop([fc.user()])('when the form has been submitted', async user => {
-      const actual = await _.changeAvatar({ method: 'POST', user })({
+    test.prop([fc.record({ buffer: fc.string().map(string => Buffer.from(string)) }), fc.user()])(
+      'when the form has been submitted',
+      async (file, user) => {
+        const actual = await _.changeAvatar({ body: { avatar: [file] }, method: 'POST', user })({
+          canUploadAvatar: () => true,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.ServiceUnavailable,
+          title: expect.stringContaining('problems'),
+          main: expect.stringContaining('problems'),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
+
+    test.prop([fc.user()])('when the avatar is too big', async user => {
+      const actual = await _.changeAvatar({ body: { avatar: 'TOO_BIG' }, method: 'POST', user })({
         canUploadAvatar: () => true,
       })()
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.ServiceUnavailable,
-        title: expect.stringContaining('problems'),
-        main: expect.stringContaining('problems'),
-        skipToLabel: 'main',
-        js: [],
+        canonical: format(changeAvatarMatch.formatter, {}),
+        status: Status.BadRequest,
+        title: expect.stringContaining('Error: Upload an avatar'),
+        nav: expect.stringContaining('Back'),
+        main: expect.stringContaining('avatar'),
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
       })
     })
 
-    test.prop([fc.string().filter(method => method !== 'POST'), fc.user()])(
+    test.prop([
+      fc.oneof(fc.anything(), fc.record({ avatar: fc.constant('ERROR') }, { withDeletedKeys: true })),
+      fc.user(),
+    ])('when the avatar is missing', async (body, user) => {
+      const actual = await _.changeAvatar({ body, method: 'POST', user })({
+        canUploadAvatar: () => true,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(changeAvatarMatch.formatter, {}),
+        status: Status.BadRequest,
+        title: expect.stringContaining('Error: Upload an avatar'),
+        nav: expect.stringContaining('Back'),
+        main: expect.stringContaining('avatar'),
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
+      })
+    })
+
+    test.prop([fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user()])(
       'when the form needs to be submitted',
-      async (method, user) => {
-        const actual = await _.changeAvatar({ method, user })({
+      async (body, method, user) => {
+        const actual = await _.changeAvatar({ body, method, user })({
           canUploadAvatar: () => true,
         })()
 
@@ -45,10 +85,10 @@ describe('changeAvatar', () => {
     )
   })
 
-  test.prop([fc.string(), fc.user()])("when avatars can't be uploaded", async (method, user) => {
+  test.prop([fc.anything(), fc.string(), fc.user()])("when avatars can't be uploaded", async (body, method, user) => {
     const canUploadAvatar = jest.fn<_.Env['canUploadAvatar']>(_ => false)
 
-    const actual = await _.changeAvatar({ method, user })({
+    const actual = await _.changeAvatar({ body, method, user })({
       canUploadAvatar,
     })()
 
@@ -63,8 +103,8 @@ describe('changeAvatar', () => {
     expect(canUploadAvatar).toHaveBeenCalledWith(user)
   })
 
-  test.prop([fc.string()])('when the user is not logged in', async method => {
-    const actual = await _.changeAvatar({ method })({
+  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
+    const actual = await _.changeAvatar({ body, method })({
       canUploadAvatar: shouldNotBeCalled,
     })()
 

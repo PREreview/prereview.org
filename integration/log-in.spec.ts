@@ -483,6 +483,51 @@ test.extend(canLogIn).extend(areLoggedIn)('have to give a valid email address', 
   await expect(page).toHaveScreenshot()
 })
 
+test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
+  'have to upload an avatar',
+  async ({ javaScriptEnabled, page }) => {
+    await page.getByRole('link', { name: 'My details' }).click()
+    await page.goto('/my-details/change-avatar')
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('Upload an avatar')).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'Select an image' }).click()
+
+    await expect(page.getByLabel('Upload an avatar')).toBeFocused()
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
+  'have to upload an avatar of a reasonable size',
+  async ({ javaScriptEnabled, page }) => {
+    await page.getByRole('link', { name: 'My details' }).click()
+    await page.goto('/my-details/change-avatar')
+    await page
+      .getByLabel('Upload an avatar')
+      .setInputFiles({ name: 'some-file', mimeType: 'application/octet-stream', buffer: Buffer.alloc(5_242_880) })
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('Upload an avatar')).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'The selected file must be smaller than 5 MB' }).click()
+
+    await expect(page.getByLabel('Upload an avatar')).toBeFocused()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you are open for requests',
   async ({ javaScriptEnabled, page }) => {
