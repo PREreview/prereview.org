@@ -7,7 +7,7 @@ import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
 import { canUploadAvatar } from '../feature-flags'
-import { type MissingE, type TooBigE, missingE, tooBigE } from '../form'
+import { type MissingE, type TooBigE, type WrongTypeE, missingE, tooBigE, wrongTypeE } from '../form'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import { LogInResponse } from '../response'
 import { myDetailsMatch } from '../routes'
@@ -57,9 +57,10 @@ const handleChangeAvatarForm = ({ body }: { body: unknown }) =>
           () => E.left(missingE()),
           avatar =>
             match(avatar)
-              .returnType<E.Either<TooBigE | MissingE, D.TypeOf<typeof FileD>>>()
+              .returnType<E.Either<TooBigE | MissingE | WrongTypeE, D.TypeOf<typeof FileD>>>()
               .with('TOO_BIG', () => E.left(tooBigE()))
               .with('ERROR', () => E.left(missingE()))
+              .with({ mimetype: P.not('image/jpeg') }, () => E.left(wrongTypeE()))
               .with({ buffer: P.instanceOf(Buffer) }, E.right)
               .exhaustive(),
         ),
@@ -82,6 +83,7 @@ const BufferD = D.fromRefinement((value): value is Buffer => value instanceof Bu
 
 const FileD = D.struct({
   buffer: BufferD,
+  mimetype: D.string,
 })
 
 const AvatarFieldD = pipe(

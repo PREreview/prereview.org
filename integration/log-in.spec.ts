@@ -528,6 +528,28 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
   },
 )
 
+test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
+  'have to upload an image as an avatar',
+  async ({ javaScriptEnabled, page }) => {
+    await page.getByRole('link', { name: 'My details' }).click()
+    await page.goto('/my-details/change-avatar')
+    await page.getByLabel('Upload an avatar').setInputFiles(__filename)
+
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+    }
+    await expect(page.getByLabel('Upload an avatar')).toHaveAttribute('aria-invalid', 'true')
+
+    await page.getByRole('link', { name: 'The selected file must be a JPG' }).click()
+
+    await expect(page.getByLabel('Upload an avatar')).toBeFocused()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to say if you are open for requests',
   async ({ javaScriptEnabled, page }) => {

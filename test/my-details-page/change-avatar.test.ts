@@ -9,23 +9,49 @@ import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('changeAvatar', () => {
   describe('when avatars can be uploaded', () => {
-    test.prop([fc.record({ buffer: fc.string().map(string => Buffer.from(string)) }), fc.user()])(
-      'when the form has been submitted',
-      async (file, user) => {
-        const actual = await _.changeAvatar({ body: { avatar: [file] }, method: 'POST', user })({
-          canUploadAvatar: () => true,
-        })()
+    test.prop([
+      fc.record({
+        buffer: fc.string().map(string => Buffer.from(string)),
+        mimetype: fc.constant('image/jpeg'),
+      }),
+      fc.user(),
+    ])('when the form has been submitted', async (file, user) => {
+      const actual = await _.changeAvatar({ body: { avatar: [file] }, method: 'POST', user })({
+        canUploadAvatar: () => true,
+      })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
-          skipToLabel: 'main',
-          js: [],
-        })
-      },
-    )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
+    })
+
+    test.prop([
+      fc.record({
+        buffer: fc.string().map(string => Buffer.from(string)),
+        mimetype: fc.string().filter(string => string !== 'image/jpeg'),
+      }),
+      fc.user(),
+    ])('when it is not an image', async (file, user) => {
+      const actual = await _.changeAvatar({ body: { avatar: [file] }, method: 'POST', user })({
+        canUploadAvatar: () => true,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(changeAvatarMatch.formatter, {}),
+        status: Status.BadRequest,
+        title: expect.stringContaining('Error: Upload an avatar'),
+        nav: expect.stringContaining('Back'),
+        main: expect.stringContaining('avatar'),
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
+      })
+    })
 
     test.prop([fc.user()])('when the avatar is too big', async user => {
       const actual = await _.changeAvatar({ body: { avatar: 'TOO_BIG' }, method: 'POST', user })({
