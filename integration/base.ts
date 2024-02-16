@@ -849,6 +849,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       authorInviteStore,
       avatarStore: new Keyv(),
       canConnectOrcidProfile,
+      canUploadAvatar: () => false,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
       fetch,

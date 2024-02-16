@@ -13,6 +13,7 @@ test('content looks right when publicly visible', async ({ showPage }) => {
   const response = createPage({
     user,
     userOnboarding,
+    avatar: O.some(new URL('https://placehold.co/300x300')),
     orcidToken: O.some({
       accessToken: 'some-token' as NonEmptyString,
       scopes: new Set(['some-scope' as NonEmptyString]),
@@ -50,6 +51,7 @@ test('content looks right when restricted visible', async ({ showPage }) => {
     user,
     userOnboarding,
     orcidToken: O.none,
+    avatar: O.none,
     slackUser: O.some({
       name: 'jcarberry',
       image: new URL('https://placehold.co/48x48'),

@@ -16,6 +16,7 @@ describe('myDetails', () => {
         fc.user(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(true) }),
         fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+        fc.either(fc.constant('not-found' as const), fc.url()),
         fc.either(fc.constant('not-found' as const), fc.slackUser()),
         fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -24,12 +25,14 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found' as const), fc.location()),
         fc.either(fc.constant('not-found' as const), fc.languages()),
         fc.boolean(),
+        fc.boolean(),
       ])(
         'when the user has visited before',
         async (
           user,
           userOnboarding,
           orcidToken,
+          avatar,
           slackUser,
           contactEmailAddress,
           isOpenForRequests,
@@ -38,9 +41,12 @@ describe('myDetails', () => {
           location,
           languages,
           canConnectOrcidProfile,
+          canUploadAvatar,
         ) => {
           const actual = await _.myDetails({ user })({
             canConnectOrcidProfile: () => canConnectOrcidProfile,
+            canUploadAvatar: () => canUploadAvatar,
+            getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getLanguages: () => TE.fromEither(languages),
@@ -70,6 +76,7 @@ describe('myDetails', () => {
         fc.user(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(false) }),
         fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+        fc.either(fc.constant('not-found' as const), fc.url()),
         fc.either(fc.constant('not-found' as const), fc.slackUser()),
         fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -78,12 +85,14 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found' as const), fc.location()),
         fc.either(fc.constant('not-found' as const), fc.languages()),
         fc.boolean(),
+        fc.boolean(),
       ])(
         "when the user hasn't visited before",
         async (
           user,
           userOnboarding,
           orcidToken,
+          avatar,
           slackUser,
           contactEmailAddress,
           isOpenForRequests,
@@ -92,11 +101,14 @@ describe('myDetails', () => {
           location,
           languages,
           canConnectOrcidProfile,
+          canUploadAvatar,
         ) => {
           const saveUserOnboarding = jest.fn<SaveUserOnboardingEnv['saveUserOnboarding']>(_ => TE.right(undefined))
 
           const actual = await _.myDetails({ user })({
             canConnectOrcidProfile: () => canConnectOrcidProfile,
+            canUploadAvatar: () => canUploadAvatar,
+            getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getLanguages: () => TE.fromEither(languages),
@@ -127,6 +139,7 @@ describe('myDetails', () => {
         fc.user(),
         fc.userOnboarding({ seenMyDetailsPage: fc.constant(false) }),
         fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+        fc.either(fc.constant('not-found' as const), fc.url()),
         fc.either(fc.constant('not-found' as const), fc.slackUser()),
         fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
         fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -135,12 +148,14 @@ describe('myDetails', () => {
         fc.either(fc.constant('not-found' as const), fc.location()),
         fc.either(fc.constant('not-found' as const), fc.languages()),
         fc.boolean(),
+        fc.boolean(),
       ])(
         'when the user onboarding cannot be updated',
         async (
           user,
           userOnboarding,
           orcidToken,
+          avatar,
           slackUser,
           contactEmailAddress,
           isOpenForRequests,
@@ -149,9 +164,12 @@ describe('myDetails', () => {
           location,
           languages,
           canConnectOrcidProfile,
+          canUploadAvatar,
         ) => {
           const actual = await _.myDetails({ user })({
             canConnectOrcidProfile: () => canConnectOrcidProfile,
+            canUploadAvatar: () => canUploadAvatar,
+            getAvatar: () => TE.fromEither(avatar),
             getCareerStage: () => TE.fromEither(careerStage),
             getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
             getLanguages: () => TE.fromEither(languages),
@@ -179,6 +197,7 @@ describe('myDetails', () => {
     test.prop([
       fc.user(),
       fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+      fc.either(fc.constant('not-found' as const), fc.url()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -187,11 +206,13 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.location()),
       fc.either(fc.constant('not-found' as const), fc.languages()),
       fc.boolean(),
+      fc.boolean(),
     ])(
       'when the user onboarding cannot be loaded',
       async (
         user,
         orcidToken,
+        avatar,
         slackUser,
         contactEmailAddress,
         isOpenForRequests,
@@ -200,9 +221,12 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
+        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
+          canUploadAvatar: () => canUploadAvatar,
+          getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getLanguages: () => TE.fromEither(languages),
@@ -229,6 +253,7 @@ describe('myDetails', () => {
     test.prop([
       fc.user(),
       fc.userOnboarding(),
+      fc.either(fc.constant('not-found' as const), fc.url()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -236,11 +261,13 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.location()),
       fc.either(fc.constant('not-found' as const), fc.languages()),
+      fc.boolean(),
     ])(
       'when the ORCID token cannot be loaded',
       async (
         user,
         userOnboarding,
+        avatar,
         slackUser,
         contactEmailAddress,
         isOpenForRequests,
@@ -248,9 +275,12 @@ describe('myDetails', () => {
         researchInterests,
         location,
         languages,
+        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => true,
+          canUploadAvatar: () => canUploadAvatar,
+          getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getLanguages: () => TE.fromEither(languages),
@@ -278,6 +308,7 @@ describe('myDetails', () => {
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+      fc.either(fc.constant('not-found' as const), fc.url()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
@@ -285,12 +316,14 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.location()),
       fc.either(fc.constant('not-found' as const), fc.languages()),
       fc.boolean(),
+      fc.boolean(),
     ])(
       'when the Slack user cannot be loaded',
       async (
         user,
         userOnboarding,
         orcidToken,
+        avatar,
         contactEmailAddress,
         isOpenForRequests,
         careerStage,
@@ -298,9 +331,12 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
+        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
+          canUploadAvatar: () => canUploadAvatar,
+          getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getLanguages: () => TE.fromEither(languages),
@@ -328,6 +364,7 @@ describe('myDetails', () => {
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+      fc.either(fc.constant('not-found' as const), fc.url()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
@@ -335,12 +372,14 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.location()),
       fc.either(fc.constant('not-found' as const), fc.languages()),
       fc.boolean(),
+      fc.boolean(),
     ])(
       'when the contact email address cannot be loaded',
       async (
         user,
         userOnboarding,
         orcidToken,
+        avatar,
         slackUser,
         isOpenForRequests,
         careerStage,
@@ -348,9 +387,12 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
+        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
+          canUploadAvatar: () => canUploadAvatar,
+          getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.left('unavailable'),
           getLanguages: () => TE.fromEither(languages),
@@ -378,6 +420,7 @@ describe('myDetails', () => {
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+      fc.either(fc.constant('not-found' as const), fc.url()),
       fc.slackUser(),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.careerStage()),
@@ -385,12 +428,14 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.location()),
       fc.either(fc.constant('not-found' as const), fc.languages()),
       fc.boolean(),
+      fc.boolean(),
     ])(
       'when being open for requests is unavailable',
       async (
         user,
         userOnboarding,
         orcidToken,
+        avatar,
         slackUser,
         contactEmailAddress,
         careerStage,
@@ -398,9 +443,12 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
+        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
+          canUploadAvatar: () => canUploadAvatar,
+          getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getLanguages: () => TE.fromEither(languages),
@@ -428,6 +476,7 @@ describe('myDetails', () => {
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+      fc.either(fc.constant('not-found' as const), fc.url()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -435,12 +484,14 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.location()),
       fc.either(fc.constant('not-found' as const), fc.languages()),
       fc.boolean(),
+      fc.boolean(),
     ])(
       'when the career stage cannot be loaded',
       async (
         user,
         userOnboarding,
         orcidToken,
+        avatar,
         slackUser,
         contactEmailAddress,
         isOpenForRequests,
@@ -448,9 +499,12 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
+        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
+          canUploadAvatar: () => canUploadAvatar,
+          getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.left('unavailable'),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getLanguages: () => TE.fromEither(languages),
@@ -478,6 +532,7 @@ describe('myDetails', () => {
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+      fc.either(fc.constant('not-found' as const), fc.url()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -485,12 +540,14 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.location()),
       fc.either(fc.constant('not-found' as const), fc.languages()),
       fc.boolean(),
+      fc.boolean(),
     ])(
       'when the research interests cannot be loaded',
       async (
         user,
         userOnboarding,
         orcidToken,
+        avatar,
         slackUser,
         contactEmailAddress,
         isOpenForRequests,
@@ -498,9 +555,12 @@ describe('myDetails', () => {
         location,
         languages,
         canConnectOrcidProfile,
+        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
+          canUploadAvatar: () => canUploadAvatar,
+          getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getLanguages: () => TE.fromEither(languages),
@@ -528,6 +588,7 @@ describe('myDetails', () => {
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+      fc.either(fc.constant('not-found' as const), fc.url()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -535,12 +596,14 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.languages()),
       fc.boolean(),
+      fc.boolean(),
     ])(
       'when the location cannot be loaded',
       async (
         user,
         userOnboarding,
         orcidToken,
+        avatar,
         slackUser,
         contactEmailAddress,
         isOpenForRequests,
@@ -548,9 +611,12 @@ describe('myDetails', () => {
         researchInterests,
         languages,
         canConnectOrcidProfile,
+        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
+          canUploadAvatar: () => canUploadAvatar,
+          getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getLanguages: () => TE.fromEither(languages),
@@ -578,6 +644,7 @@ describe('myDetails', () => {
       fc.user(),
       fc.userOnboarding(),
       fc.either(fc.constant('not-found' as const), fc.orcidToken()),
+      fc.either(fc.constant('not-found' as const), fc.url()),
       fc.either(fc.constant('not-found' as const), fc.slackUser()),
       fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
       fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
@@ -585,12 +652,14 @@ describe('myDetails', () => {
       fc.either(fc.constant('not-found' as const), fc.researchInterests()),
       fc.either(fc.constant('not-found' as const), fc.location()),
       fc.boolean(),
+      fc.boolean(),
     ])(
       'when the languages cannot be loaded',
       async (
         user,
         userOnboarding,
         orcidToken,
+        avatar,
         slackUser,
         contactEmailAddress,
         isOpenForRequests,
@@ -598,9 +667,12 @@ describe('myDetails', () => {
         researchInterests,
         location,
         canConnectOrcidProfile,
+        canUploadAvatar,
       ) => {
         const actual = await _.myDetails({ user })({
           canConnectOrcidProfile: () => canConnectOrcidProfile,
+          canUploadAvatar: () => canUploadAvatar,
+          getAvatar: () => TE.fromEither(avatar),
           getCareerStage: () => TE.fromEither(careerStage),
           getContactEmailAddress: () => TE.fromEither(contactEmailAddress),
           getLanguages: () => TE.left('unavailable'),
@@ -628,6 +700,8 @@ describe('myDetails', () => {
   test('when the user is not logged in', async () => {
     const actual = await _.myDetails({})({
       canConnectOrcidProfile: shouldNotBeCalled,
+      canUploadAvatar: shouldNotBeCalled,
+      getAvatar: shouldNotBeCalled,
       getCareerStage: shouldNotBeCalled,
       getContactEmailAddress: shouldNotBeCalled,
       getLanguages: shouldNotBeCalled,

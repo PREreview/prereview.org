@@ -60,7 +60,7 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from './email'
-import type { CanConnectOrcidProfileEnv } from './feature-flags'
+import type { CanConnectOrcidProfileEnv, CanUploadAvatarEnv } from './feature-flags'
 import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
@@ -270,6 +270,7 @@ const withEnv =
 
 export type RouterEnv = Keyv.AvatarStoreEnv &
   CanConnectOrcidProfileEnv &
+  CanUploadAvatarEnv &
   DoesPreprintExistEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
@@ -779,6 +780,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           canConnectSlack: () => true,
+          getAvatar: withEnv(getAvatarFromCloudinary, { ...env, getCloudinaryAvatar: withEnv(Keyv.getAvatar, env) }),
           getCareerStage: withEnv(Keyv.getCareerStage, env),
           getContactEmailAddress: withEnv(Keyv.getContactEmailAddress, env),
           getLanguages: withEnv(Keyv.getLanguages, env),

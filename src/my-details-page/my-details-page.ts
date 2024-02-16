@@ -37,6 +37,7 @@ export function createPage({
   user,
   userOnboarding,
   orcidToken,
+  avatar,
   slackUser,
   contactEmailAddress,
   openForRequests,
@@ -48,6 +49,7 @@ export function createPage({
   user: User
   userOnboarding: UserOnboarding
   orcidToken?: O.Option<OrcidToken>
+  avatar?: O.Option<URL>
   slackUser: O.Option<SlackUser>
   contactEmailAddress: O.Option<ContactEmailAddress>
   openForRequests: O.Option<IsOpenForRequests>
@@ -130,6 +132,19 @@ export function createPage({
                     >Disconnect <span class="visually-hidden">ORCID profile</span></a
                   >
                 </dd>
+              </div>
+            `,
+          )
+          .exhaustive()}
+        ${match(avatar)
+          .with(undefined, () => '')
+          .when(O.isNone, () => '')
+          .with(
+            { value: P.select() },
+            avatar => html`
+              <div>
+                <dt>Avatar</dt>
+                <dd><img src="${avatar.href}" width="300" height="300" alt="" /></dd>
               </div>
             `,
           )

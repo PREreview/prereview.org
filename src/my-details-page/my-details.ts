@@ -4,9 +4,10 @@ import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { pipe } from 'fp-ts/function'
 import { match } from 'ts-pattern'
+import { maybeGetAvatar } from '../avatar'
 import { maybeGetCareerStage } from '../career-stage'
 import { maybeGetContactEmailAddress } from '../contact-email-address'
-import { canConnectOrcidProfile } from '../feature-flags'
+import { canConnectOrcidProfile, canUploadAvatar } from '../feature-flags'
 import { havingProblemsPage } from '../http-error'
 import { maybeIsOpenForRequests } from '../is-open-for-requests'
 import { maybeGetLanguages } from '../languages'
@@ -37,6 +38,18 @@ export const myDetails = ({ user }: { user?: User }) =>
             RTE.chainW(canConnectOrcidProfile =>
               match(canConnectOrcidProfile)
                 .with(true, () => pipe(maybeGetOrcidToken(user.orcid), RTE.map(O.fromNullable)))
+                .with(false, () => RTE.of(undefined))
+                .exhaustive(),
+            ),
+          ),
+        ),
+        RTE.apSW(
+          'avatar',
+          pipe(
+            RTE.fromReader(canUploadAvatar(user)),
+            RTE.chainW(canUploadAvatar =>
+              match(canUploadAvatar)
+                .with(true, () => pipe(maybeGetAvatar(user.orcid), RTE.map(O.fromNullable)))
                 .with(false, () => RTE.of(undefined))
                 .exhaustive(),
             ),

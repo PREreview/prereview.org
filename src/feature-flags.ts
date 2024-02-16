@@ -7,3 +7,10 @@ export interface CanConnectOrcidProfileEnv {
 
 export const canConnectOrcidProfile = (user: User) =>
   R.asks(({ canConnectOrcidProfile }: CanConnectOrcidProfileEnv) => canConnectOrcidProfile(user))
+
+export interface CanUploadAvatarEnv {
+  canUploadAvatar: (user: User) => boolean
+}
+
+export const canUploadAvatar = (user: User) =>
+  R.asks(({ canUploadAvatar }: CanUploadAvatarEnv) => canUploadAvatar(user))

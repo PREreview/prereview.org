@@ -833,6 +833,14 @@ math {
         }
       }
     }
+
+    & > img:only-child {
+      inline-size: 10em;
+      max-inline-size: 25vi;
+      border: var(--width-divider-wide) solid var(--color-black-900);
+      border-radius: 50%;
+      object-fit: cover;
+    }
   }
 
   & small {
