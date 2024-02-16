@@ -5,10 +5,12 @@ import { pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
+import path from 'path'
 import {
   areLoggedIn,
   canConnectOrcidProfile,
   canLogIn,
+  canUploadAvatar,
   expect,
   hasAVerifiedEmailAddress,
   isANewUser,
@@ -142,6 +144,20 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
     await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t connect your profile')
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
+  'can upload an avatar',
+  async ({ page }, testInfo) => {
+    await page.getByRole('link', { name: 'My details' }).click()
+    await page.goto('/my-details/change-avatar')
+    await page.getByLabel('Upload an avatar').setInputFiles(path.join(__dirname, 'fixtures', '600x400.png'))
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    testInfo.fail()
+
+    await expect(page.getByRole('main')).toContainText('Avatar')
   },
 )
 
