@@ -1533,6 +1533,10 @@ html-editor {
   :--heading + & {
     margin-block-start: var(--space-xs-s);
   }
+
+  .error-message + & {
+    margin-block-start: var(--space-2xs-xs);
+  }
 }
 
 ::file-selector-button {

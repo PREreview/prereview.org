@@ -1,4 +1,5 @@
 import { format } from 'fp-ts-routing'
+import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
@@ -36,7 +37,7 @@ export const changeAvatar = ({ method, user }: { method: string; user?: User }) 
       state =>
         match(state)
           .with({ method: 'POST' }, () => havingProblemsPage)
-          .otherwise(createPage),
+          .otherwise(() => createPage({ form: { avatar: E.right(undefined) } })),
     ),
   )
 

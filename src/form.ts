@@ -27,6 +27,14 @@ export interface MissingE {
   readonly _tag: 'MissingE'
 }
 
+export interface TooBigE {
+  readonly _tag: 'TooBigE'
+}
+
+export interface WrongTypeE {
+  readonly _tag: 'WrongTypeE'
+}
+
 export const decodeFields = <T extends FieldDecoders>(fields: T) =>
   flow(
     (body: unknown) =>
@@ -61,6 +69,14 @@ export const missingE = (): MissingE => ({
 export const invalidE = (actual: string): InvalidE => ({
   _tag: 'InvalidE',
   actual,
+})
+
+export const tooBigE = (): TooBigE => ({
+  _tag: 'TooBigE',
+})
+
+export const wrongTypeE = (): WrongTypeE => ({
+  _tag: 'WrongTypeE',
 })
 
 export const hasAnError: <K extends string>(form: RR.ReadonlyRecord<K, E.Either<unknown, unknown>>) => boolean =
