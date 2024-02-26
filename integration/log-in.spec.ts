@@ -149,10 +149,13 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
   'can upload an avatar',
-  async ({ page }, testInfo) => {
+  async ({ fetch, page }, testInfo) => {
     await page.getByRole('link', { name: 'My details' }).click()
     await page.goto('/my-details/change-avatar')
     await page.getByLabel('Upload an avatar').setInputFiles(path.join(__dirname, 'fixtures', '600x400.png'))
+
+    fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/upload', { body: { public_id: 'an-avatar' } })
+
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
     testInfo.fail()

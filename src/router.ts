@@ -35,7 +35,7 @@ import {
   authorInviteStart,
   authorInviteVerifyEmailAddress,
 } from './author-invite-flow'
-import { type CloudinaryApiEnv, getAvatarFromCloudinary } from './cloudinary'
+import { type CloudinaryApiEnv, getAvatarFromCloudinary, saveAvatarOnCloudinary } from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
@@ -833,7 +833,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          saveAvatar: () => TE.left('unavailable'),
+          saveAvatar: withEnv(saveAvatarOnCloudinary, { ...env, saveCloudinaryAvatar: () => TE.left('unavailable') }),
         })),
       ),
     ),

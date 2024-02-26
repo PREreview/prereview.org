@@ -114,6 +114,7 @@ export const {
   boolean,
   constant,
   constantFrom,
+  date,
   dictionary,
   integer,
   lorem,
