@@ -6,10 +6,11 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
+import { saveAvatar } from '../avatar'
 import { canUploadAvatar } from '../feature-flags'
 import { type MissingE, type TooBigE, type WrongTypeE, missingE, tooBigE, wrongTypeE } from '../form'
 import { havingProblemsPage, pageNotFound } from '../http-error'
-import { LogInResponse } from '../response'
+import { LogInResponse, RedirectResponse } from '../response'
 import { myDetailsMatch } from '../routes'
 import type { User } from '../user'
 import { createPage } from './change-avatar-form-page'
@@ -47,7 +48,7 @@ export const changeAvatar = ({ body, method, user }: { body: unknown; method: st
     ),
   )
 
-const handleChangeAvatarForm = ({ body }: { body: unknown }) =>
+const handleChangeAvatarForm = ({ body, user }: { body: unknown; user: User }) =>
   pipe(
     RTE.Do,
     RTE.let('avatar', () =>
@@ -73,9 +74,14 @@ const handleChangeAvatarForm = ({ body }: { body: unknown }) =>
         E.mapLeft(() => fields),
       ),
     ),
-    RTE.match(
-      error => createPage({ form: error }),
-      () => havingProblemsPage,
+    RTE.chainFirstW(fields => saveAvatar(user.orcid, fields.avatar)),
+    RTE.matchW(
+      error =>
+        match(error)
+          .with('unavailable', () => havingProblemsPage)
+          .with({ avatar: P.any }, error => createPage({ form: error }))
+          .exhaustive(),
+      () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
     ),
   )
 

@@ -1,6 +1,7 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
+import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/my-details-page/change-avatar'
 import { changeAvatarMatch, myDetailsMatch } from '../../src/routes'
@@ -15,9 +16,31 @@ describe('changeAvatar', () => {
         mimetype: fc.constant('image/jpeg'),
       }),
       fc.user(),
-    ])('when the form has been submitted', async (file, user) => {
+    ])('when the avatar can be saved', async (file, user) => {
       const actual = await _.changeAvatar({ body: { avatar: [file] }, method: 'POST', user })({
         canUploadAvatar: () => true,
+        saveAvatar: () => TE.right(undefined),
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(myDetailsMatch.formatter, {}),
+      })
+    })
+
+    test.prop([
+      fc.record({
+        buffer: fc.string().map(string => Buffer.from(string)),
+        mimetype: fc.constant('image/jpeg'),
+      }),
+      fc.user(),
+    ])("when the avatar can't be saved", async (file, user) => {
+      const saveAvatar = jest.fn<_.Env['saveAvatar']>(_ => TE.left('unavailable'))
+
+      const actual = await _.changeAvatar({ body: { avatar: [file] }, method: 'POST', user })({
+        canUploadAvatar: () => true,
+        saveAvatar,
       })()
 
       expect(actual).toStrictEqual({
@@ -28,6 +51,7 @@ describe('changeAvatar', () => {
         skipToLabel: 'main',
         js: [],
       })
+      expect(saveAvatar).toHaveBeenCalledWith(user.orcid, file)
     })
 
     test.prop([
@@ -39,6 +63,7 @@ describe('changeAvatar', () => {
     ])('when it is not an image', async (file, user) => {
       const actual = await _.changeAvatar({ body: { avatar: [file] }, method: 'POST', user })({
         canUploadAvatar: () => true,
+        saveAvatar: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -56,6 +81,7 @@ describe('changeAvatar', () => {
     test.prop([fc.user()])('when the avatar is too big', async user => {
       const actual = await _.changeAvatar({ body: { avatar: 'TOO_BIG' }, method: 'POST', user })({
         canUploadAvatar: () => true,
+        saveAvatar: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -76,6 +102,7 @@ describe('changeAvatar', () => {
     ])('when the avatar is missing', async (body, user) => {
       const actual = await _.changeAvatar({ body, method: 'POST', user })({
         canUploadAvatar: () => true,
+        saveAvatar: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -95,6 +122,7 @@ describe('changeAvatar', () => {
       async (body, method, user) => {
         const actual = await _.changeAvatar({ body, method, user })({
           canUploadAvatar: () => true,
+          saveAvatar: shouldNotBeCalled,
         })()
 
         expect(actual).toStrictEqual({
@@ -116,6 +144,7 @@ describe('changeAvatar', () => {
 
     const actual = await _.changeAvatar({ body, method, user })({
       canUploadAvatar,
+      saveAvatar: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({
@@ -132,6 +161,7 @@ describe('changeAvatar', () => {
   test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
     const actual = await _.changeAvatar({ body, method })({
       canUploadAvatar: shouldNotBeCalled,
+      saveAvatar: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({
