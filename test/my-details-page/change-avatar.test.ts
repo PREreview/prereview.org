@@ -74,7 +74,7 @@ describe('changeAvatar', () => {
         nav: expect.stringContaining('Back'),
         main: expect.stringContaining('avatar'),
         skipToLabel: 'form',
-        js: ['error-summary.js'],
+        js: ['error-summary.js', 'single-use-form.js'],
       })
     })
 
@@ -92,7 +92,7 @@ describe('changeAvatar', () => {
         nav: expect.stringContaining('Back'),
         main: expect.stringContaining('avatar'),
         skipToLabel: 'form',
-        js: ['error-summary.js'],
+        js: ['error-summary.js', 'single-use-form.js'],
       })
     })
 
@@ -113,7 +113,7 @@ describe('changeAvatar', () => {
         nav: expect.stringContaining('Back'),
         main: expect.stringContaining('avatar'),
         skipToLabel: 'form',
-        js: ['error-summary.js'],
+        js: ['error-summary.js', 'single-use-form.js'],
       })
     })
 
@@ -133,7 +133,7 @@ describe('changeAvatar', () => {
           nav: expect.stringContaining('Back'),
           main: expect.stringContaining('avatar'),
           skipToLabel: 'form',
-          js: [],
+          js: ['single-use-form.js'],
         })
       },
     )
