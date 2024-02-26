@@ -147,22 +147,19 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
-  'can upload an avatar',
-  async ({ fetch, page }, testInfo) => {
-    await page.getByRole('link', { name: 'My details' }).click()
-    await page.goto('/my-details/change-avatar')
-    await page.getByLabel('Upload an avatar').setInputFiles(path.join(__dirname, 'fixtures', '600x400.png'))
+test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)('can upload an avatar', async ({ fetch, page }) => {
+  await page.getByRole('link', { name: 'My details' }).click()
+  await page.goto('/my-details/change-avatar')
+  await page.getByLabel('Upload an avatar').setInputFiles(path.join(__dirname, 'fixtures', '600x400.png'))
 
-    fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/upload', { body: { public_id: 'an-avatar' } })
+  fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/upload', { body: { public_id: 'an-avatar' } })
+  await page.route('https://res.cloudinary.com/**/*', route =>
+    route.fulfill({ path: path.join(__dirname, 'fixtures', '300x300.png') }),
+  )
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await page.getByRole('button', { name: 'Save and continue' }).click()
-
-    testInfo.fail()
-
-    await expect(page.getByRole('main')).toContainText('Avatar')
-  },
-)
+  await expect(page.getByRole('main')).toContainText('Avatar')
+})
 
 test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
   'can connect my Slack Community account',

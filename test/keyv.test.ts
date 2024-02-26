@@ -7,7 +7,7 @@ import { ContactEmailAddressC } from '../src/contact-email-address'
 import * as _ from '../src/keyv'
 import { OrcidTokenC } from '../src/orcid-token'
 import { SlackUserIdC } from '../src/slack-user-id'
-import { isNonEmptyString } from '../src/types/string'
+import { NonEmptyStringC, isNonEmptyString } from '../src/types/string'
 import { UserOnboardingC } from '../src/user-onboarding'
 import * as fc from './fc'
 
@@ -1239,4 +1239,50 @@ describe('getAvatar', () => {
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
+})
+
+describe('saveAvatar', () => {
+  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key contains an avatar', async (orcid, avatar) => {
+    const store = new Keyv()
+    await store.set(orcid, NonEmptyStringC.encode(avatar))
+
+    const actual = await _.saveAvatar(orcid, avatar)({ avatarStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
+  })
+
+  test.prop([fc.orcid(), fc.anything(), fc.nonEmptyString()])(
+    'when the key already contains something other than an avatar',
+    async (orcid, value, avatar) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveAvatar(orcid, avatar)({ avatarStore: store })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.nonEmptyString()])('when the key is not set', async (orcid, avatar) => {
+    const store = new Keyv()
+
+    const actual = await _.saveAvatar(orcid, avatar)({ avatarStore: store })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
+  })
+
+  test.prop([fc.orcid(), fc.nonEmptyString(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, avatar, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveAvatar(orcid, avatar)({ avatarStore: store })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
 })

@@ -265,3 +265,8 @@ export const getAvatar = flow(
   getKey(OrcidE, NonEmptyStringC),
   RTE.local((env: AvatarStoreEnv) => env.avatarStore),
 )
+
+export const saveAvatar = flow(
+  setKey(OrcidE, NonEmptyStringC),
+  RTE.local((env: AvatarStoreEnv) => env.avatarStore),
+)
