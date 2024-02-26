@@ -11,6 +11,7 @@ import type { OrcidToken } from '../orcid-token'
 import type { ResearchInterests } from '../research-interests'
 import { PageResponse } from '../response'
 import {
+  changeAvatarMatch,
   changeCareerStageMatch,
   changeCareerStageVisibilityMatch,
   changeContactEmailAddressMatch,
@@ -138,7 +139,17 @@ export function createPage({
           .exhaustive()}
         ${match(avatar)
           .with(undefined, () => '')
-          .when(O.isNone, () => '')
+          .when(
+            O.isNone,
+            () => html`
+              <div>
+                <dt>Avatar</dt>
+                <dd>
+                  <a href="${format(changeAvatarMatch.formatter, {})}">Upload avatar</a>
+                </dd>
+              </div>
+            `,
+          )
           .with(
             { value: P.select() },
             avatar => html`
