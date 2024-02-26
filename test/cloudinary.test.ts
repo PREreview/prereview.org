@@ -78,13 +78,14 @@ describe('saveAvatarOnCloudinary', () => {
       key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
       secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
     }),
+    fc.origin(),
     fc.orcid(),
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
       mimetype: fc.constant('image/jpeg' as const),
     }),
     fc.nonEmptyStringOf(fc.alphanumeric()),
-  ])('when the avatar can be saved', async (date, cloudinaryApi, orcid, avatar, imageId) => {
+  ])('when the avatar can be saved', async (date, cloudinaryApi, publicUrl, orcid, avatar, imageId) => {
     const fetch = fetchMock.sandbox().postOnce(
       {
         url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`,
@@ -93,6 +94,7 @@ describe('saveAvatarOnCloudinary', () => {
           isMatching(
             {
               api_key: cloudinaryApi.key,
+              context: `orcid_id=${orcid}|instance=${publicUrl.hostname}`,
               file: `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`,
               folder: 'prereview-profile',
               signature: P.string,
@@ -112,6 +114,7 @@ describe('saveAvatarOnCloudinary', () => {
       clock: FixedClock(date),
       cloudinaryApi,
       fetch,
+      publicUrl,
       saveCloudinaryAvatar,
     })()
 
@@ -126,13 +129,14 @@ describe('saveAvatarOnCloudinary', () => {
       key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
       secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
     }),
+    fc.origin(),
     fc.orcid(),
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
       mimetype: fc.constant('image/jpeg' as const),
     }),
     fc.nonEmptyStringOf(fc.alphanumeric()),
-  ])('when the avatar cannot be saved locally', async (date, cloudinaryApi, orcid, avatar, imageId) => {
+  ])('when the avatar cannot be saved locally', async (date, cloudinaryApi, publicUrl, orcid, avatar, imageId) => {
     const fetch = fetchMock
       .sandbox()
       .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`, {
@@ -148,6 +152,7 @@ describe('saveAvatarOnCloudinary', () => {
       clock: FixedClock(date),
       cloudinaryApi,
       fetch,
+      publicUrl,
       saveCloudinaryAvatar,
     })()
 
@@ -162,28 +167,33 @@ describe('saveAvatarOnCloudinary', () => {
       key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
       secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
     }),
+    fc.origin(),
     fc.orcid(),
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
       mimetype: fc.constant('image/jpeg' as const),
     }),
     fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
-  ])('when the avatar cannot be saved on Cloudinary', async (date, cloudinaryApi, orcid, avatar, response) => {
-    const fetch = fetchMock
-      .sandbox()
-      .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`, response)
+  ])(
+    'when the avatar cannot be saved on Cloudinary',
+    async (date, cloudinaryApi, publicUrl, orcid, avatar, response) => {
+      const fetch = fetchMock
+        .sandbox()
+        .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/upload`, response)
 
-    const actual = await _.saveAvatarOnCloudinary(
-      orcid,
-      avatar,
-    )({
-      clock: FixedClock(date),
-      cloudinaryApi,
-      fetch,
-      saveCloudinaryAvatar: shouldNotBeCalled,
-    })()
+      const actual = await _.saveAvatarOnCloudinary(
+        orcid,
+        avatar,
+      )({
+        clock: FixedClock(date),
+        cloudinaryApi,
+        fetch,
+        publicUrl,
+        saveCloudinaryAvatar: shouldNotBeCalled,
+      })()
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-    expect(fetch.done()).toBeTruthy()
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+      expect(fetch.done()).toBeTruthy()
+    },
+  )
 })

@@ -12,6 +12,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
+import type { PublicUrlEnv } from './public-url'
 import { type NonEmptyString, NonEmptyStringC } from './types/string'
 
 export interface CloudinaryApiEnv {
@@ -93,7 +94,7 @@ export const saveAvatarOnCloudinary = (
   pipe(
     RTE.rightReaderIO(now),
     RTE.chainW(now =>
-      RTE.asks(({ cloudinaryApi }: CloudinaryApiEnv) =>
+      RTE.asks(({ cloudinaryApi, publicUrl }: CloudinaryApiEnv & PublicUrlEnv) =>
         pipe(
           cloudinary.utils.api_url('upload', {
             cloud_name: cloudinaryApi.cloudName,
@@ -105,6 +106,7 @@ export const saveAvatarOnCloudinary = (
               ...cloudinary.utils.sign_request(
                 {
                   folder: 'prereview-profile',
+                  context: `orcid_id=${orcid}|instance=${publicUrl.hostname}`,
                   timestamp: Math.round(now.getTime() / 1000),
                 },
                 { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
