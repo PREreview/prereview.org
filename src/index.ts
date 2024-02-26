@@ -51,11 +51,6 @@ const sendMailEnv = match(env)
   }))
   .exhaustive()
 
-const avatarStore = new Keyv()
-void avatarStore.set('0000-0002-1472-1824', 'mnl0zzuncxmdbg96iqx1')
-void avatarStore.set('0000-0002-6109-0367', 'c4a5fhc4arzb2chn6txg')
-void avatarStore.set('0000-0003-4921-6155', 'dvyalmcsaz6bwri1iux4')
-
 const isPrereviewTeam = (user: User) =>
   [
     '0000-0001-8511-8689',
@@ -71,7 +66,7 @@ const server = app({
   ...loggerEnv,
   allowSiteCrawlers: env.ALLOW_SITE_CRAWLERS,
   authorInviteStore: new Keyv({ namespace: 'author-invite', store: keyvStore }),
-  avatarStore,
+  avatarStore: new Keyv({ namespace: 'avatar-store', store: keyvStore }),
   canConnectOrcidProfile: () => true,
   canUploadAvatar: isPrereviewTeam,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
