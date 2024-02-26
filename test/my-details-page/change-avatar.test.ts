@@ -13,7 +13,7 @@ describe('changeAvatar', () => {
     test.prop([
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
-        mimetype: fc.constant('image/jpeg'),
+        mimetype: fc.constantFrom('image/jpeg', 'image/png'),
       }),
       fc.user(),
     ])('when the avatar can be saved', async (file, user) => {
@@ -32,7 +32,7 @@ describe('changeAvatar', () => {
     test.prop([
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
-        mimetype: fc.constant('image/jpeg'),
+        mimetype: fc.constantFrom('image/jpeg', 'image/png'),
       }),
       fc.user(),
     ])("when the avatar can't be saved", async (file, user) => {
@@ -57,7 +57,7 @@ describe('changeAvatar', () => {
     test.prop([
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
-        mimetype: fc.string().filter(string => string !== 'image/jpeg'),
+        mimetype: fc.string().filter(string => string !== 'image/jpeg' && string !== 'image/png'),
       }),
       fc.user(),
     ])('when it is not an image', async (file, user) => {
