@@ -486,7 +486,6 @@ test.extend(canLogIn).extend(areLoggedIn)('have to give a valid email address', 
 test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
   'have to upload an avatar',
   async ({ javaScriptEnabled, page }) => {
-    await page.getByRole('link', { name: 'My details' }).click()
     await page.goto('/my-details/change-avatar')
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -507,7 +506,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
 test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
   'have to upload an avatar of a reasonable size',
   async ({ javaScriptEnabled, page }) => {
-    await page.getByRole('link', { name: 'My details' }).click()
     await page.goto('/my-details/change-avatar')
     await page
       .getByLabel('Upload an avatar')
@@ -531,7 +529,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
 test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
   'have to upload an image as an avatar',
   async ({ javaScriptEnabled, page }) => {
-    await page.getByRole('link', { name: 'My details' }).click()
     await page.goto('/my-details/change-avatar')
     await page.getByLabel('Upload an avatar').setInputFiles(__filename)
 
