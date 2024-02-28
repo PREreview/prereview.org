@@ -48,7 +48,7 @@ describe('getPage', () => {
       expect(actual).toStrictEqual(
         E.right(
           rawHtml(
-            '<img src="https://content.prereview.org/content/images/2021/09/Screen-Shot-2021-09-30-at-11.52.02-AM.png" width="1464" height="192" />',
+            '<img src="https://content.prereview.org/content/images/2021/09/Screen-Shot-2021-09-30-at-11.52.02-AM.png" alt="" width="1464" height="192" />',
           ),
         ),
       )
