@@ -190,6 +190,7 @@ export const getPrereviewFromZenodo = (id: number) =>
             match(error)
               .with(P.intersection(P.instanceOf(Error), { status: P.number }), () => O.none)
               .with(P.instanceOf(Error), error => O.some(error.message))
+              .with({ status: Status.NotFound }, () => O.none)
               .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
               .with({ _tag: P.string }, error => O.some(D.draw(error)))
               .with('unknown-license', 'text-unavailable', 'unavailable', O.some)
