@@ -90,29 +90,30 @@ export function page({
     ({ fathomId, phase }) => html`
       <!doctype html>
       <html lang="en" dir="ltr" prefix="og: https://ogp.me/ns#">
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <head>
+          <meta charset="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <title>${title}${current !== 'home' ? ' | PREreview' : ''}</title>
-        <meta property="og:title" content="${title}" />
-        ${description ? html`<meta property="og:description" content="${description}" />` : ''}
-        ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
+          <title>${title}${current !== 'home' ? ' | PREreview' : ''}</title>
 
-        <link href="${assets['style.css']}" rel="stylesheet" />
+          <link href="${assets['style.css']}" rel="stylesheet" />
 
-        ${scripts.flatMap(
-          flow(
-            file => assets[file].preload as ReadonlyArray<string>,
-            RA.map(preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
-          ),
-        )}
-        ${typeof fathomId === 'string'
-          ? html` <script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
-          : ''}
+          ${scripts.flatMap(
+            flow(
+              file => assets[file].preload as ReadonlyArray<string>,
+              RA.map(preload => html` <link href="${preload}" rel="preload" fetchpriority="low" as="script" />`),
+            ),
+          )}
+          ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
+          ${typeof fathomId === 'string'
+            ? html` <script src="https://cdn.usefathom.com/script.js" data-site="${fathomId}" defer></script>`
+            : ''}
 
-        <link rel="icon" href="${assets['favicon.ico']}" sizes="32x32" />
-        <link rel="icon" href="${assets['favicon.svg']}" type="image/svg+xml" />
-
+          <meta property="og:title" content="${title}" />
+          ${description ? html`<meta property="og:description" content="${description}" />` : ''}
+          <link rel="icon" href="${assets['favicon.ico']}" sizes="32x32" />
+          <link rel="icon" href="${assets['favicon.svg']}" type="image/svg+xml" />
+        </head>
         <body ${rawHtml(type === 'two-up' ? `class="${type}"` : '')}>
           ${skipLinks.length > 0
             ? html` <skip-link>${skipLinks.map(([text, link]) => html`<a href="${link}">${text}</a>`)}</skip-link>`
