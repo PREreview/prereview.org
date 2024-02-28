@@ -120,7 +120,7 @@ function createPage({
   rapidPrereviews: ReadonlyArray<RapidPrereview>
 }) {
   return TwoUpPageResponse({
-    title: plainText`PREreviews of "${preprint.title.text}"`,
+    title: plainText`PREreviews of “${preprint.title.text}”`,
     description: plainText`Authored by ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList('en'))}.
     ${
       preprint.abstract
