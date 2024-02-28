@@ -121,6 +121,17 @@ function createPage({
 }) {
   return TwoUpPageResponse({
     title: plainText`PREreviews of "${preprint.title.text}"`,
+    description: plainText`Authored by ${pipe(preprint.authors, RNEA.map(displayAuthor), formatList('en'))}.
+    ${
+      preprint.abstract
+        ? plainText`
+            Abstract
+
+            ${preprint.abstract.text}
+          `
+        : ''
+    }
+    `,
     h1: html`PREreviews of
       <cite lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
         >${preprint.title.text}</cite

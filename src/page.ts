@@ -42,6 +42,7 @@ export interface PhaseEnv {
 
 export interface Page {
   readonly title: PlainText
+  readonly description?: PlainText
   readonly type?: 'two-up' | 'streamline'
   readonly content: Html
   readonly skipLinks?: ReadonlyArray<[Html, string]>
@@ -74,6 +75,7 @@ export const templatePage = (page: Page) => R.asks(({ templatePage }: TemplatePa
 
 export function page({
   title,
+  description,
   type,
   content,
   skipLinks = [],
@@ -93,7 +95,7 @@ export function page({
 
         <title>${title}${current !== 'home' ? ' | PREreview' : ''}</title>
         <meta property="og:title" content="${title}" />
-
+        ${description ? html`<meta property="og:description" content="${description}" />` : ''}
         ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
 
         <link href="${assets['style.css']}" rel="stylesheet" />

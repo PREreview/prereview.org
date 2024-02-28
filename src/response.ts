@@ -52,6 +52,7 @@ export interface TwoUpPageResponse {
   readonly _tag: 'TwoUpPageResponse'
   readonly canonical: string
   readonly title: Page['title']
+  readonly description: Page['description']
   readonly h1: Html
   readonly aside: Html
   readonly main: Html
@@ -212,6 +213,7 @@ const handleTwoUpPageResponse = ({
     RM.chainReaderKW(({ message, userOnboarding }) =>
       templatePage({
         title: response.title,
+        description: response.description,
         content: html`
           <h1 class="visually-hidden">${response.h1}</h1>
 

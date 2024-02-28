@@ -73,6 +73,7 @@ describe('preprintReviews', () => {
         id: preprint.id,
       }),
       title: expect.stringContaining('PREreviews of'),
+      description: expect.stringContaining('Authored by'),
       h1: expect.stringContaining('PREreviews of'),
       aside: expect.stringContaining('Server'),
       main: expect.stringContaining('PREreview'),

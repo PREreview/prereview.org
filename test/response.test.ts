@@ -316,6 +316,7 @@ describe('handleResponse', () => {
       expect(getUserOnboarding).toHaveBeenCalledWith(user.orcid)
       expect(templatePage).toHaveBeenCalledWith({
         title: response.title,
+        description: response.description,
         content: expect.stringContaining(response.main.toString()),
         skipLinks: [
           [rawHtml('Skip to preprint details'), '#preprint-details'],
@@ -351,6 +352,7 @@ describe('handleResponse', () => {
         )
         expect(templatePage).toHaveBeenCalledWith({
           title: response.title,
+          description: response.description,
           content: expect.stringContaining(response.main.toString()),
           skipLinks: [
             [rawHtml('Skip to preprint details'), '#preprint-details'],

@@ -275,6 +275,7 @@ export const twoUpPageResponse = (): fc.Arbitrary<TwoUpPageResponse> =>
     _tag: fc.constant('TwoUpPageResponse' as const),
     canonical: fc.string(),
     title: plainText(),
+    description: fc.oneof(plainText(), fc.constant(undefined)),
     h1: html(),
     aside: html(),
     main: html(),
