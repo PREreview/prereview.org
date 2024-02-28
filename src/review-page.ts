@@ -94,6 +94,16 @@ const removedMessage = PageResponse({
 function createPage({ id, review }: { id: number; review: Prereview }) {
   return PageResponse({
     title: plainText`${review.structured ? 'Structured ' : ''}PREreview of “${review.preprint.title}”`,
+    description: plainText`Authored by ${pipe(
+      review.authors.named,
+      RNEA.map(displayAuthor),
+      RNEA.concatW(
+        review.authors.anonymous > 0
+          ? [`${review.authors.anonymous} other author${review.authors.anonymous !== 1 ? 's' : ''}`]
+          : [],
+      ),
+      formatList('en'),
+    )}${review.club ? plainText` of the ${getClubName(review.club)}` : ''}.`,
     nav: html`
       <a href="${format(preprintReviewsMatch.formatter, { id: review.preprint.id })}" class="back">See other reviews</a>
       <a href="${review.preprint.url.href}" class="forward">Read the preprint</a>

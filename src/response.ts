@@ -30,6 +30,7 @@ export interface PageResponse {
   readonly current?: Page['current']
   readonly status: Status
   readonly title: Page['title']
+  readonly description?: Page['description']
   readonly nav?: Html
   readonly main: Html
   readonly skipToLabel: 'form' | 'main' | 'prereview'
@@ -42,6 +43,7 @@ export interface StreamlinePageResponse {
   readonly current?: Page['current']
   readonly status: Status
   readonly title: Page['title']
+  readonly description?: Page['description']
   readonly nav?: Html
   readonly main: Html
   readonly skipToLabel: 'form' | 'main'
@@ -164,6 +166,7 @@ export const handlePageResponse = ({
     RM.chainReaderKW(({ message, userOnboarding }) =>
       templatePage({
         title: response.title,
+        description: response.description,
         content: html`
           ${response.nav ? html` <nav>${response.nav}</nav>` : ''}
 

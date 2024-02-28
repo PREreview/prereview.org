@@ -228,6 +228,7 @@ export const pageResponse = ({
     skipToLabel: fc.constant('main' as const),
     status: statusCode(),
     title: plainText(),
+    description: fc.option(plainText(), { nil: undefined }),
     main: html(),
     js: fc.array(
       js().filter((js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'skip-link.js'> => js !== 'skip-link.js'),
@@ -264,6 +265,7 @@ export const streamlinePageResponse = ({
     skipToLabel: fc.constant('main' as const),
     status: statusCode(),
     title: plainText(),
+    description: fc.option(plainText(), { nil: undefined }),
     main: html(),
     js: fc.array(
       js().filter((js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'skip-link.js'> => js !== 'skip-link.js'),

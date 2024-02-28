@@ -38,6 +38,7 @@ describe('reviewPage', () => {
       canonical: format(reviewMatch.formatter, { id }),
       status: Status.OK,
       title: expect.stringContaining('PREreview of'),
+      description: expect.stringContaining('Authored by'),
       nav: expect.stringContaining('See other reviews'),
       main: expect.stringContaining('PREreview of'),
       skipToLabel: 'prereview',
