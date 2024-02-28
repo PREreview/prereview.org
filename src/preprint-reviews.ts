@@ -120,7 +120,7 @@ function createPage({
   rapidPrereviews: ReadonlyArray<RapidPrereview>
 }) {
   return TwoUpPageResponse({
-    title: plainText`PREreviews of “${preprint.title.text}”`,
+    title: plainText`PREreviews of "${preprint.title.text}"`,
     h1: html`PREreviews of
       <cite lang="${preprint.title.language}" dir="${getLangDir(preprint.title.language)}"
         >${preprint.title.text}</cite

@@ -87,11 +87,12 @@ export function page({
   return R.asks(
     ({ fathomId, phase }) => html`
       <!doctype html>
-      <html lang="en" dir="ltr">
+      <html lang="en" dir="ltr" prefix="og: https://ogp.me/ns#">
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <title>${title}${current !== 'home' ? ' | PREreview' : ''}</title>
+        <meta property="og:title" content="${title}" />
 
         ${scripts.map(file => html` <script src="${assets[file].path}" type="module"></script>`)}
 
