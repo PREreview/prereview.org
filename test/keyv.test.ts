@@ -1,6 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import * as E from 'fp-ts/Either'
+import * as IO from 'fp-ts/IO'
 import Keyv from 'keyv'
 import { get } from 'spectacles-ts'
 import { ContactEmailAddressC } from '../src/contact-email-address'
@@ -16,7 +18,11 @@ describe('getAuthorInvite', () => {
     const store = new Keyv()
     await store.set(uuid, authorInvite)
 
-    const actual = await _.getAuthorInvite(uuid)({ authorInviteStore: store })()
+    const actual = await _.getAuthorInvite(uuid)({
+      authorInviteStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(authorInvite))
   })
@@ -27,7 +33,11 @@ describe('getAuthorInvite', () => {
       const store = new Keyv()
       await store.set(uuid, value)
 
-      const actual = await _.getAuthorInvite(uuid)({ authorInviteStore: store })()
+      const actual = await _.getAuthorInvite(uuid)({
+        authorInviteStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
     },
@@ -36,7 +46,11 @@ describe('getAuthorInvite', () => {
   test.prop([fc.uuid()])('when the key is not found', async uuid => {
     const store = new Keyv()
 
-    const actual = await _.getAuthorInvite(uuid)({ authorInviteStore: store })()
+    const actual = await _.getAuthorInvite(uuid)({
+      authorInviteStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -45,7 +59,11 @@ describe('getAuthorInvite', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getAuthorInvite(uuid)({ authorInviteStore: store })()
+    const actual = await _.getAuthorInvite(uuid)({
+      authorInviteStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -56,7 +74,14 @@ describe('saveAuthorInvite', () => {
     const store = new Keyv()
     await store.set(uuid, authorInvite)
 
-    const actual = await _.saveAuthorInvite(uuid, authorInvite)({ authorInviteStore: store })()
+    const actual = await _.saveAuthorInvite(
+      uuid,
+      authorInvite,
+    )({
+      authorInviteStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(uuid)).toStrictEqual(authorInvite)
@@ -68,7 +93,14 @@ describe('saveAuthorInvite', () => {
       const store = new Keyv()
       await store.set(uuid, value)
 
-      const actual = await _.saveAuthorInvite(uuid, authorInvite)({ authorInviteStore: store })()
+      const actual = await _.saveAuthorInvite(
+        uuid,
+        authorInvite,
+      )({
+        authorInviteStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(uuid)).toStrictEqual(authorInvite)
@@ -78,7 +110,14 @@ describe('saveAuthorInvite', () => {
   test.prop([fc.uuid(), fc.authorInvite()])('when the key is not set', async (uuid, authorInvite) => {
     const store = new Keyv()
 
-    const actual = await _.saveAuthorInvite(uuid, authorInvite)({ authorInviteStore: store })()
+    const actual = await _.saveAuthorInvite(
+      uuid,
+      authorInvite,
+    )({
+      authorInviteStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(uuid)).toStrictEqual(authorInvite)
@@ -90,7 +129,14 @@ describe('saveAuthorInvite', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveAuthorInvite(uuid, authorInvite)({ authorInviteStore: store })()
+      const actual = await _.saveAuthorInvite(
+        uuid,
+        authorInvite,
+      )({
+        authorInviteStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
@@ -102,7 +148,11 @@ describe('deleteCareerStage', () => {
     const store = new Keyv()
     await store.set(orcid, careerStage)
 
-    const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
+    const actual = await _.deleteCareerStage(orcid)({
+      careerStageStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -114,7 +164,11 @@ describe('deleteCareerStage', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
+      const actual = await _.deleteCareerStage(orcid)({
+        careerStageStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.has(orcid)).toBeFalsy()
@@ -124,7 +178,11 @@ describe('deleteCareerStage', () => {
   test.prop([fc.orcid()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
+    const actual = await _.deleteCareerStage(orcid)({
+      careerStageStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -134,7 +192,11 @@ describe('deleteCareerStage', () => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
-    const actual = await _.deleteCareerStage(orcid)({ careerStageStore: store })()
+    const actual = await _.deleteCareerStage(orcid)({
+      careerStageStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -145,7 +207,11 @@ describe('getCareerStage', () => {
     const store = new Keyv()
     await store.set(orcid, careerStage)
 
-    const actual = await _.getCareerStage(orcid)({ careerStageStore: store })()
+    const actual = await _.getCareerStage(orcid)({
+      careerStageStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(careerStage))
   })
@@ -156,7 +222,11 @@ describe('getCareerStage', () => {
       const store = new Keyv()
       await store.set(orcid, careerStage)
 
-      const actual = await _.getCareerStage(orcid)({ careerStageStore: store })()
+      const actual = await _.getCareerStage(orcid)({
+        careerStageStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right({ value: careerStage, visibility: 'restricted' }))
     },
@@ -168,7 +238,11 @@ describe('getCareerStage', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.getCareerStage(orcid)({ careerStageStore: store })()
+      const actual = await _.getCareerStage(orcid)({
+        careerStageStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
     },
@@ -177,7 +251,11 @@ describe('getCareerStage', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.getCareerStage(orcid)({ careerStageStore: store })()
+    const actual = await _.getCareerStage(orcid)({
+      careerStageStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -186,7 +264,11 @@ describe('getCareerStage', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getCareerStage(orcid)({ careerStageStore: store })()
+    const actual = await _.getCareerStage(orcid)({
+      careerStageStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -197,7 +279,14 @@ describe('saveCareerStage', () => {
     const store = new Keyv()
     await store.set(orcid, careerStage)
 
-    const actual = await _.saveCareerStage(orcid, careerStage)({ careerStageStore: store })()
+    const actual = await _.saveCareerStage(
+      orcid,
+      careerStage,
+    )({
+      careerStageStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(careerStage)
@@ -209,7 +298,14 @@ describe('saveCareerStage', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveCareerStage(orcid, careerStage)({ careerStageStore: store })()
+      const actual = await _.saveCareerStage(
+        orcid,
+        careerStage,
+      )({
+        careerStageStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(careerStage)
@@ -219,7 +315,14 @@ describe('saveCareerStage', () => {
   test.prop([fc.orcid(), fc.careerStage()])('when the key is not set', async (orcid, careerStage) => {
     const store = new Keyv()
 
-    const actual = await _.saveCareerStage(orcid, careerStage)({ careerStageStore: store })()
+    const actual = await _.saveCareerStage(
+      orcid,
+      careerStage,
+    )({
+      careerStageStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(careerStage)
@@ -231,7 +334,14 @@ describe('saveCareerStage', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveCareerStage(orcid, careerStage)({ careerStageStore: store })()
+      const actual = await _.saveCareerStage(
+        orcid,
+        careerStage,
+      )({
+        careerStageStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
@@ -245,7 +355,11 @@ describe('isOpenForRequests', () => {
       const store = new Keyv()
       await store.set(orcid, isOpenForRequests)
 
-      const actual = await _.isOpenForRequests(orcid)({ isOpenForRequestsStore: store })()
+      const actual = await _.isOpenForRequests(orcid)({
+        isOpenForRequestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(isOpenForRequests))
     },
@@ -257,7 +371,11 @@ describe('isOpenForRequests', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.isOpenForRequests(orcid)({ isOpenForRequestsStore: store })()
+      const actual = await _.isOpenForRequests(orcid)({
+        isOpenForRequestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
     },
@@ -266,7 +384,11 @@ describe('isOpenForRequests', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.isOpenForRequests(orcid)({ isOpenForRequestsStore: store })()
+    const actual = await _.isOpenForRequests(orcid)({
+      isOpenForRequestsStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -275,7 +397,11 @@ describe('isOpenForRequests', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.isOpenForRequests(orcid)({ isOpenForRequestsStore: store })()
+    const actual = await _.isOpenForRequests(orcid)({
+      isOpenForRequestsStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -288,7 +414,14 @@ describe('saveOpenForRequests', () => {
       const store = new Keyv()
       await store.set(orcid, isOpenForRequests)
 
-      const actual = await _.saveOpenForRequests(orcid, isOpenForRequests)({ isOpenForRequestsStore: store })()
+      const actual = await _.saveOpenForRequests(
+        orcid,
+        isOpenForRequests,
+      )({
+        isOpenForRequestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
@@ -301,7 +434,14 @@ describe('saveOpenForRequests', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveOpenForRequests(orcid, isOpenForRequests)({ isOpenForRequestsStore: store })()
+      const actual = await _.saveOpenForRequests(
+        orcid,
+        isOpenForRequests,
+      )({
+        isOpenForRequestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
@@ -311,7 +451,14 @@ describe('saveOpenForRequests', () => {
   test.prop([fc.orcid(), fc.isOpenForRequests()])('when the key is not set', async (orcid, isOpenForRequests) => {
     const store = new Keyv()
 
-    const actual = await _.saveOpenForRequests(orcid, isOpenForRequests)({ isOpenForRequestsStore: store })()
+    const actual = await _.saveOpenForRequests(
+      orcid,
+      isOpenForRequests,
+    )({
+      isOpenForRequestsStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
@@ -323,7 +470,14 @@ describe('saveOpenForRequests', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveOpenForRequests(orcid, isOpenForRequests)({ isOpenForRequestsStore: store })()
+      const actual = await _.saveOpenForRequests(
+        orcid,
+        isOpenForRequests,
+      )({
+        isOpenForRequestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
@@ -337,7 +491,11 @@ describe('deleteResearchInterests', () => {
       const store = new Keyv()
       await store.set(orcid, researchInterests)
 
-      const actual = await _.deleteResearchInterests(orcid)({ researchInterestsStore: store })()
+      const actual = await _.deleteResearchInterests(orcid)({
+        researchInterestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.has(orcid)).toBeFalsy()
@@ -350,7 +508,11 @@ describe('deleteResearchInterests', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.deleteResearchInterests(orcid)({ researchInterestsStore: store })()
+      const actual = await _.deleteResearchInterests(orcid)({
+        researchInterestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.has(orcid)).toBeFalsy()
@@ -360,7 +522,11 @@ describe('deleteResearchInterests', () => {
   test.prop([fc.orcid()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.deleteResearchInterests(orcid)({ researchInterestsStore: store })()
+    const actual = await _.deleteResearchInterests(orcid)({
+      researchInterestsStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -370,7 +536,11 @@ describe('deleteResearchInterests', () => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
-    const actual = await _.deleteResearchInterests(orcid)({ researchInterestsStore: store })()
+    const actual = await _.deleteResearchInterests(orcid)({
+      researchInterestsStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -383,7 +553,11 @@ describe('getResearchInterests', () => {
       const store = new Keyv()
       await store.set(orcid, researchInterests)
 
-      const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+      const actual = await _.getResearchInterests(orcid)({
+        researchInterestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(researchInterests))
     },
@@ -395,7 +569,11 @@ describe('getResearchInterests', () => {
       const store = new Keyv()
       await store.set(orcid, { value: researchInterests })
 
-      const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+      const actual = await _.getResearchInterests(orcid)({
+        researchInterestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right({ value: researchInterests, visibility: 'restricted' }))
     },
@@ -407,7 +585,11 @@ describe('getResearchInterests', () => {
       const store = new Keyv()
       await store.set(orcid, researchInterests)
 
-      const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+      const actual = await _.getResearchInterests(orcid)({
+        researchInterestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right({ value: researchInterests, visibility: 'restricted' }))
     },
@@ -423,7 +605,11 @@ describe('getResearchInterests', () => {
     const store = new Keyv()
     await store.set(orcid, value)
 
-    const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+    const actual = await _.getResearchInterests(orcid)({
+      researchInterestsStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -431,7 +617,11 @@ describe('getResearchInterests', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+    const actual = await _.getResearchInterests(orcid)({
+      researchInterestsStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -440,7 +630,11 @@ describe('getResearchInterests', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getResearchInterests(orcid)({ researchInterestsStore: store })()
+    const actual = await _.getResearchInterests(orcid)({
+      researchInterestsStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -453,7 +647,14 @@ describe('saveResearchInterests', () => {
       const store = new Keyv()
       await store.set(orcid, researchInterests)
 
-      const actual = await _.saveResearchInterests(orcid, researchInterests)({ researchInterestsStore: store })()
+      const actual = await _.saveResearchInterests(
+        orcid,
+        researchInterests,
+      )({
+        researchInterestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(researchInterests)
@@ -466,7 +667,14 @@ describe('saveResearchInterests', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveResearchInterests(orcid, researchInterests)({ researchInterestsStore: store })()
+      const actual = await _.saveResearchInterests(
+        orcid,
+        researchInterests,
+      )({
+        researchInterestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(researchInterests)
@@ -476,7 +684,14 @@ describe('saveResearchInterests', () => {
   test.prop([fc.orcid(), fc.researchInterests()])('when the key is not set', async (orcid, researchInterests) => {
     const store = new Keyv()
 
-    const actual = await _.saveResearchInterests(orcid, researchInterests)({ researchInterestsStore: store })()
+    const actual = await _.saveResearchInterests(
+      orcid,
+      researchInterests,
+    )({
+      researchInterestsStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(researchInterests)
@@ -488,7 +703,14 @@ describe('saveResearchInterests', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveResearchInterests(orcid, researchInterests)({ researchInterestsStore: store })()
+      const actual = await _.saveResearchInterests(
+        orcid,
+        researchInterests,
+      )({
+        researchInterestsStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
@@ -500,7 +722,11 @@ describe('deleteOrcidToken', () => {
     const store = new Keyv()
     await store.set(orcid, OrcidTokenC.encode(orcidToken))
 
-    const actual = await _.deleteOrcidToken(orcid)({ orcidTokenStore: store })()
+    const actual = await _.deleteOrcidToken(orcid)({
+      orcidTokenStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -512,7 +738,11 @@ describe('deleteOrcidToken', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.deleteOrcidToken(orcid)({ orcidTokenStore: store })()
+      const actual = await _.deleteOrcidToken(orcid)({
+        orcidTokenStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.has(orcid)).toBeFalsy()
@@ -522,7 +752,11 @@ describe('deleteOrcidToken', () => {
   test.prop([fc.orcid()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.deleteOrcidToken(orcid)({ orcidTokenStore: store })()
+    const actual = await _.deleteOrcidToken(orcid)({
+      orcidTokenStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -532,7 +766,11 @@ describe('deleteOrcidToken', () => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
-    const actual = await _.deleteOrcidToken(orcid)({ orcidTokenStore: store })()
+    const actual = await _.deleteOrcidToken(orcid)({
+      orcidTokenStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -543,7 +781,11 @@ describe('getOrcidToken', () => {
     const store = new Keyv()
     await store.set(orcid, OrcidTokenC.encode(getOrcidToken))
 
-    const actual = await _.getOrcidToken(orcid)({ orcidTokenStore: store })()
+    const actual = await _.getOrcidToken(orcid)({
+      orcidTokenStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(getOrcidToken))
   })
@@ -554,7 +796,11 @@ describe('getOrcidToken', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.getOrcidToken(orcid)({ orcidTokenStore: store })()
+      const actual = await _.getOrcidToken(orcid)({
+        orcidTokenStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
     },
@@ -563,7 +809,11 @@ describe('getOrcidToken', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.getOrcidToken(orcid)({ orcidTokenStore: store })()
+    const actual = await _.getOrcidToken(orcid)({
+      orcidTokenStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -572,7 +822,11 @@ describe('getOrcidToken', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getOrcidToken(orcid)({ orcidTokenStore: store })()
+    const actual = await _.getOrcidToken(orcid)({
+      orcidTokenStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -583,7 +837,14 @@ describe('saveOrcidToken', () => {
     const store = new Keyv()
     await store.set(orcid, OrcidTokenC.encode(orcidToken))
 
-    const actual = await _.saveOrcidToken(orcid, orcidToken)({ orcidTokenStore: store })()
+    const actual = await _.saveOrcidToken(
+      orcid,
+      orcidToken,
+    )({
+      orcidTokenStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
@@ -595,7 +856,14 @@ describe('saveOrcidToken', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveOrcidToken(orcid, orcidToken)({ orcidTokenStore: store })()
+      const actual = await _.saveOrcidToken(
+        orcid,
+        orcidToken,
+      )({
+        orcidTokenStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
@@ -605,7 +873,14 @@ describe('saveOrcidToken', () => {
   test.prop([fc.orcid(), fc.orcidToken()])('when the key is not set', async (orcid, orcidToken) => {
     const store = new Keyv()
 
-    const actual = await _.saveOrcidToken(orcid, orcidToken)({ orcidTokenStore: store })()
+    const actual = await _.saveOrcidToken(
+      orcid,
+      orcidToken,
+    )({
+      orcidTokenStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
@@ -617,7 +892,14 @@ describe('saveOrcidToken', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveOrcidToken(orcid, orcidToken)({ orcidTokenStore: store })()
+      const actual = await _.saveOrcidToken(
+        orcid,
+        orcidToken,
+      )({
+        orcidTokenStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
@@ -629,7 +911,11 @@ describe('deleteSlackUserId', () => {
     const store = new Keyv()
     await store.set(orcid, SlackUserIdC.encode(slackUserId))
 
-    const actual = await _.deleteSlackUserId(orcid)({ slackUserIdStore: store })()
+    const actual = await _.deleteSlackUserId(orcid)({
+      slackUserIdStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -641,7 +927,11 @@ describe('deleteSlackUserId', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.deleteSlackUserId(orcid)({ slackUserIdStore: store })()
+      const actual = await _.deleteSlackUserId(orcid)({
+        slackUserIdStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.has(orcid)).toBeFalsy()
@@ -651,7 +941,11 @@ describe('deleteSlackUserId', () => {
   test.prop([fc.orcid()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.deleteSlackUserId(orcid)({ slackUserIdStore: store })()
+    const actual = await _.deleteSlackUserId(orcid)({
+      slackUserIdStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -661,7 +955,11 @@ describe('deleteSlackUserId', () => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
-    const actual = await _.deleteSlackUserId(orcid)({ slackUserIdStore: store })()
+    const actual = await _.deleteSlackUserId(orcid)({
+      slackUserIdStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -672,7 +970,11 @@ describe('getSlackUserId', () => {
     const store = new Keyv()
     await store.set(orcid, SlackUserIdC.encode(getSlackUserId))
 
-    const actual = await _.getSlackUserId(orcid)({ slackUserIdStore: store })()
+    const actual = await _.getSlackUserId(orcid)({
+      slackUserIdStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(getSlackUserId))
   })
@@ -683,7 +985,11 @@ describe('getSlackUserId', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.getSlackUserId(orcid)({ slackUserIdStore: store })()
+      const actual = await _.getSlackUserId(orcid)({
+        slackUserIdStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
     },
@@ -692,7 +998,11 @@ describe('getSlackUserId', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.getSlackUserId(orcid)({ slackUserIdStore: store })()
+    const actual = await _.getSlackUserId(orcid)({
+      slackUserIdStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -701,7 +1011,11 @@ describe('getSlackUserId', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getSlackUserId(orcid)({ slackUserIdStore: store })()
+    const actual = await _.getSlackUserId(orcid)({
+      slackUserIdStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -712,7 +1026,14 @@ describe('saveSlackUserId', () => {
     const store = new Keyv()
     await store.set(orcid, SlackUserIdC.encode(slackUserId))
 
-    const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
+    const actual = await _.saveSlackUserId(
+      orcid,
+      slackUserId,
+    )({
+      slackUserIdStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
@@ -724,7 +1045,14 @@ describe('saveSlackUserId', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
+      const actual = await _.saveSlackUserId(
+        orcid,
+        slackUserId,
+      )({
+        slackUserIdStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
@@ -734,7 +1062,14 @@ describe('saveSlackUserId', () => {
   test.prop([fc.orcid(), fc.slackUserId()])('when the key is not set', async (orcid, slackUserId) => {
     const store = new Keyv()
 
-    const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
+    const actual = await _.saveSlackUserId(
+      orcid,
+      slackUserId,
+    )({
+      slackUserIdStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
@@ -746,7 +1081,14 @@ describe('saveSlackUserId', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveSlackUserId(orcid, slackUserId)({ slackUserIdStore: store })()
+      const actual = await _.saveSlackUserId(
+        orcid,
+        slackUserId,
+      )({
+        slackUserIdStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
@@ -758,7 +1100,11 @@ describe('deleteLocation', () => {
     const store = new Keyv()
     await store.set(orcid, location)
 
-    const actual = await _.deleteLocation(orcid)({ locationStore: store })()
+    const actual = await _.deleteLocation(orcid)({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -770,7 +1116,11 @@ describe('deleteLocation', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.deleteLocation(orcid)({ locationStore: store })()
+      const actual = await _.deleteLocation(orcid)({
+        locationStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.has(orcid)).toBeFalsy()
@@ -780,7 +1130,11 @@ describe('deleteLocation', () => {
   test.prop([fc.orcid()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.deleteLocation(orcid)({ locationStore: store })()
+    const actual = await _.deleteLocation(orcid)({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -790,7 +1144,11 @@ describe('deleteLocation', () => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
-    const actual = await _.deleteLocation(orcid)({ locationStore: store })()
+    const actual = await _.deleteLocation(orcid)({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -801,7 +1159,11 @@ describe('getLocation', () => {
     const store = new Keyv()
     await store.set(orcid, location)
 
-    const actual = await _.getLocation(orcid)({ locationStore: store })()
+    const actual = await _.getLocation(orcid)({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(location))
   })
@@ -816,7 +1178,11 @@ describe('getLocation', () => {
     const store = new Keyv()
     await store.set(orcid, value)
 
-    const actual = await _.getLocation(orcid)({ locationStore: store })()
+    const actual = await _.getLocation(orcid)({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -824,7 +1190,11 @@ describe('getLocation', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.getLocation(orcid)({ locationStore: store })()
+    const actual = await _.getLocation(orcid)({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -833,7 +1203,11 @@ describe('getLocation', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getLocation(orcid)({ locationStore: store })()
+    const actual = await _.getLocation(orcid)({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -844,7 +1218,14 @@ describe('saveLocation', () => {
     const store = new Keyv()
     await store.set(orcid, location)
 
-    const actual = await _.saveLocation(orcid, location)({ locationStore: store })()
+    const actual = await _.saveLocation(
+      orcid,
+      location,
+    )({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(location)
@@ -856,7 +1237,14 @@ describe('saveLocation', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveLocation(orcid, location)({ locationStore: store })()
+      const actual = await _.saveLocation(
+        orcid,
+        location,
+      )({
+        locationStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(location)
@@ -866,7 +1254,14 @@ describe('saveLocation', () => {
   test.prop([fc.orcid(), fc.location()])('when the key is not set', async (orcid, location) => {
     const store = new Keyv()
 
-    const actual = await _.saveLocation(orcid, location)({ locationStore: store })()
+    const actual = await _.saveLocation(
+      orcid,
+      location,
+    )({
+      locationStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(location)
@@ -878,7 +1273,14 @@ describe('saveLocation', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveLocation(orcid, location)({ locationStore: store })()
+      const actual = await _.saveLocation(
+        orcid,
+        location,
+      )({
+        locationStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
@@ -890,7 +1292,11 @@ describe('deleteLanguages', () => {
     const store = new Keyv()
     await store.set(orcid, languages)
 
-    const actual = await _.deleteLanguages(orcid)({ languagesStore: store })()
+    const actual = await _.deleteLanguages(orcid)({
+      languagesStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -902,7 +1308,11 @@ describe('deleteLanguages', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.deleteLanguages(orcid)({ languagesStore: store })()
+      const actual = await _.deleteLanguages(orcid)({
+        languagesStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.has(orcid)).toBeFalsy()
@@ -912,7 +1322,11 @@ describe('deleteLanguages', () => {
   test.prop([fc.orcid()])('when the key is not set', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.deleteLanguages(orcid)({ languagesStore: store })()
+    const actual = await _.deleteLanguages(orcid)({
+      languagesStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.has(orcid)).toBeFalsy()
@@ -922,7 +1336,11 @@ describe('deleteLanguages', () => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
-    const actual = await _.deleteLanguages(orcid)({ languagesStore: store })()
+    const actual = await _.deleteLanguages(orcid)({
+      languagesStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -933,7 +1351,11 @@ describe('getLanguages', () => {
     const store = new Keyv()
     await store.set(orcid, languages)
 
-    const actual = await _.getLanguages(orcid)({ languagesStore: store })()
+    const actual = await _.getLanguages(orcid)({
+      languagesStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(languages))
   })
@@ -948,7 +1370,11 @@ describe('getLanguages', () => {
     const store = new Keyv()
     await store.set(orcid, value)
 
-    const actual = await _.getLanguages(orcid)({ languagesStore: store })()
+    const actual = await _.getLanguages(orcid)({
+      languagesStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -956,7 +1382,11 @@ describe('getLanguages', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.getLanguages(orcid)({ languagesStore: store })()
+    const actual = await _.getLanguages(orcid)({
+      languagesStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -965,7 +1395,11 @@ describe('getLanguages', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getLanguages(orcid)({ languagesStore: store })()
+    const actual = await _.getLanguages(orcid)({
+      languagesStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -976,7 +1410,14 @@ describe('saveLanguages', () => {
     const store = new Keyv()
     await store.set(orcid, languages)
 
-    const actual = await _.saveLanguages(orcid, languages)({ languagesStore: store })()
+    const actual = await _.saveLanguages(
+      orcid,
+      languages,
+    )({
+      languagesStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(languages)
@@ -988,7 +1429,14 @@ describe('saveLanguages', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveLanguages(orcid, languages)({ languagesStore: store })()
+      const actual = await _.saveLanguages(
+        orcid,
+        languages,
+      )({
+        languagesStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(languages)
@@ -998,7 +1446,14 @@ describe('saveLanguages', () => {
   test.prop([fc.orcid(), fc.languages()])('when the key is not set', async (orcid, languages) => {
     const store = new Keyv()
 
-    const actual = await _.saveLanguages(orcid, languages)({ languagesStore: store })()
+    const actual = await _.saveLanguages(
+      orcid,
+      languages,
+    )({
+      languagesStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(languages)
@@ -1010,7 +1465,14 @@ describe('saveLanguages', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveLanguages(orcid, languages)({ languagesStore: store })()
+      const actual = await _.saveLanguages(
+        orcid,
+        languages,
+      )({
+        languagesStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
@@ -1024,7 +1486,11 @@ describe('getContactEmailAddress', () => {
       const store = new Keyv()
       await store.set(orcid, ContactEmailAddressC.encode(emailAddress))
 
-      const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
+      const actual = await _.getContactEmailAddress(orcid)({
+        contactEmailAddressStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(emailAddress))
     },
@@ -1036,7 +1502,11 @@ describe('getContactEmailAddress', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
+      const actual = await _.getContactEmailAddress(orcid)({
+        contactEmailAddressStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
     },
@@ -1045,7 +1515,11 @@ describe('getContactEmailAddress', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
+    const actual = await _.getContactEmailAddress(orcid)({
+      contactEmailAddressStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -1054,7 +1528,11 @@ describe('getContactEmailAddress', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getContactEmailAddress(orcid)({ contactEmailAddressStore: store })()
+    const actual = await _.getContactEmailAddress(orcid)({
+      contactEmailAddressStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -1067,7 +1545,14 @@ describe('saveContactEmailAddress', () => {
       const store = new Keyv()
       await store.set(orcid, ContactEmailAddressC.encode(emailAddress))
 
-      const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
+      const actual = await _.saveContactEmailAddress(
+        orcid,
+        emailAddress,
+      )({
+        contactEmailAddressStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
@@ -1080,7 +1565,14 @@ describe('saveContactEmailAddress', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
+      const actual = await _.saveContactEmailAddress(
+        orcid,
+        emailAddress,
+      )({
+        contactEmailAddressStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
@@ -1090,7 +1582,14 @@ describe('saveContactEmailAddress', () => {
   test.prop([fc.orcid(), fc.contactEmailAddress()])('when the key is not set', async (orcid, emailAddress) => {
     const store = new Keyv()
 
-    const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
+    const actual = await _.saveContactEmailAddress(
+      orcid,
+      emailAddress,
+    )({
+      contactEmailAddressStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
@@ -1102,7 +1601,14 @@ describe('saveContactEmailAddress', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveContactEmailAddress(orcid, emailAddress)({ contactEmailAddressStore: store })()
+      const actual = await _.saveContactEmailAddress(
+        orcid,
+        emailAddress,
+      )({
+        contactEmailAddressStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
@@ -1116,7 +1622,11 @@ describe('getUserOnboarding', () => {
       const store = new Keyv()
       await store.set(orcid, UserOnboardingC.encode(userOnboarding))
 
-      const actual = await _.getUserOnboarding(orcid)({ userOnboardingStore: store })()
+      const actual = await _.getUserOnboarding(orcid)({
+        userOnboardingStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(userOnboarding))
     },
@@ -1128,7 +1638,11 @@ describe('getUserOnboarding', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.getUserOnboarding(orcid)({ userOnboardingStore: store })()
+      const actual = await _.getUserOnboarding(orcid)({
+        userOnboardingStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right({ seenMyDetailsPage: false }))
     },
@@ -1137,7 +1651,11 @@ describe('getUserOnboarding', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.getUserOnboarding(orcid)({ userOnboardingStore: store })()
+    const actual = await _.getUserOnboarding(orcid)({
+      userOnboardingStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right({ seenMyDetailsPage: false }))
   })
@@ -1146,7 +1664,11 @@ describe('getUserOnboarding', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getUserOnboarding(orcid)({ userOnboardingStore: store })()
+    const actual = await _.getUserOnboarding(orcid)({
+      userOnboardingStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -1159,7 +1681,14 @@ describe('saveUserOnboarding', () => {
       const store = new Keyv()
       await store.set(orcid, UserOnboardingC.encode(userOnboarding))
 
-      const actual = await _.saveUserOnboarding(orcid, userOnboarding)({ userOnboardingStore: store })()
+      const actual = await _.saveUserOnboarding(
+        orcid,
+        userOnboarding,
+      )({
+        userOnboardingStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
@@ -1172,7 +1701,14 @@ describe('saveUserOnboarding', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveUserOnboarding(orcid, userOnboarding)({ userOnboardingStore: store })()
+      const actual = await _.saveUserOnboarding(
+        orcid,
+        userOnboarding,
+      )({
+        userOnboardingStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
@@ -1182,7 +1718,14 @@ describe('saveUserOnboarding', () => {
   test.prop([fc.orcid(), fc.userOnboarding()])('when the key is not set', async (orcid, userOnboarding) => {
     const store = new Keyv()
 
-    const actual = await _.saveUserOnboarding(orcid, userOnboarding)({ userOnboardingStore: store })()
+    const actual = await _.saveUserOnboarding(
+      orcid,
+      userOnboarding,
+    )({
+      userOnboardingStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
@@ -1194,7 +1737,14 @@ describe('saveUserOnboarding', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveUserOnboarding(orcid, userOnboarding)({ userOnboardingStore: store })()
+      const actual = await _.saveUserOnboarding(
+        orcid,
+        userOnboarding,
+      )({
+        userOnboardingStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },
@@ -1206,7 +1756,11 @@ describe('getAvatar', () => {
     const store = new Keyv()
     await store.set(orcid, avatar)
 
-    const actual = await _.getAvatar(orcid)({ avatarStore: store })()
+    const actual = await _.getAvatar(orcid)({
+      avatarStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(avatar))
   })
@@ -1217,7 +1771,11 @@ describe('getAvatar', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.getAvatar(orcid)({ avatarStore: store })()
+      const actual = await _.getAvatar(orcid)({
+        avatarStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.left('not-found'))
     },
@@ -1226,7 +1784,11 @@ describe('getAvatar', () => {
   test.prop([fc.orcid()])('when the key is not found', async orcid => {
     const store = new Keyv()
 
-    const actual = await _.getAvatar(orcid)({ avatarStore: store })()
+    const actual = await _.getAvatar(orcid)({
+      avatarStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('not-found'))
   })
@@ -1235,7 +1797,11 @@ describe('getAvatar', () => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getAvatar(orcid)({ avatarStore: store })()
+    const actual = await _.getAvatar(orcid)({
+      avatarStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
@@ -1246,7 +1812,14 @@ describe('saveAvatar', () => {
     const store = new Keyv()
     await store.set(orcid, NonEmptyStringC.encode(avatar))
 
-    const actual = await _.saveAvatar(orcid, avatar)({ avatarStore: store })()
+    const actual = await _.saveAvatar(
+      orcid,
+      avatar,
+    )({
+      avatarStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
@@ -1258,7 +1831,14 @@ describe('saveAvatar', () => {
       const store = new Keyv()
       await store.set(orcid, value)
 
-      const actual = await _.saveAvatar(orcid, avatar)({ avatarStore: store })()
+      const actual = await _.saveAvatar(
+        orcid,
+        avatar,
+      )({
+        avatarStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
       expect(actual).toStrictEqual(E.right(undefined))
       expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
@@ -1268,7 +1848,14 @@ describe('saveAvatar', () => {
   test.prop([fc.orcid(), fc.nonEmptyString()])('when the key is not set', async (orcid, avatar) => {
     const store = new Keyv()
 
-    const actual = await _.saveAvatar(orcid, avatar)({ avatarStore: store })()
+    const actual = await _.saveAvatar(
+      orcid,
+      avatar,
+    )({
+      avatarStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
@@ -1280,7 +1867,10 @@ describe('saveAvatar', () => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
-      const actual = await _.saveAvatar(orcid, avatar)({ avatarStore: store })()
+      const actual = await _.saveAvatar(
+        orcid,
+        avatar,
+      )({ avatarStore: store, clock: SystemClock, logger: () => IO.of(undefined) })()
 
       expect(actual).toStrictEqual(E.left('unavailable'))
     },

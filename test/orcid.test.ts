@@ -31,10 +31,10 @@ describe('getNameFromOrcid', () => {
       },
     )('with a family name', async (url, orcid, [givenName, familyName, expected]) => {
       const actual = await _.getNameFromOrcid(orcid)({
-        clock: SystemClock,
         fetch: fetchMock.sandbox().get(`${url.origin}/v3.0/${orcid}/personal-details`, {
           body: { name: { 'given-names': { value: givenName }, 'family-name': { value: familyName } } },
         }),
+        clock: SystemClock,
         logger: () => IO.of(undefined),
         orcidApiUrl: url,
       })()
