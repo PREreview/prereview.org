@@ -130,7 +130,7 @@
     "oauth2-mock-server": "^7.1.1",
     "postcss": "^8.4.35",
     "postcss-font-display": "^0.3.0",
-    "postcss-loader": "^8.1.0",
+    "postcss-loader": "^8.1.1",
     "postcss-preset-env": "^9.4.0",
     "prettier": "^3.2.5",
     "prettier-plugin-sh": "^0.14.0",
