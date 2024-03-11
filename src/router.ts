@@ -1468,6 +1468,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({ id }),
           RM.apS('user', maybeGetUser),
+          RM.apS('method', RM.fromMiddleware(getMethod)),
           RM.bindW('response', RM.fromReaderTaskK(authorInviteDecline)),
           RM.ichainW(handleResponse),
         ),

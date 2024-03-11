@@ -58,6 +58,8 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(invitedToBeAnAutho
   async ({ page }) => {
     await page.getByRole('link', { name: 'declining this invitation' }).click()
 
+    await page.getByRole('button', { name: 'Decline the invitation' }).click()
+
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Invitation declined')
   },
 )
