@@ -1477,6 +1477,13 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getAuthorInvite: withEnv(Keyv.getAuthorInvite, env),
+          getPrereview: withEnv(
+            flow(
+              getPrereviewFromZenodo,
+              RTE.mapLeft(() => 'unavailable' as const),
+            ),
+            env,
+          ),
           saveAuthorInvite: withEnv(Keyv.saveAuthorInvite, env),
         })),
       ),

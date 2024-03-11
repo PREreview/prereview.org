@@ -5,6 +5,7 @@ import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import type { SaveAuthorInviteEnv } from '../../src/author-invite'
 import * as _ from '../../src/author-invite-flow'
+import type { GetPrereviewEnv } from '../../src/author-invite-flow/decline-page/index'
 import { authorInviteDeclineMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
@@ -16,6 +17,7 @@ describe('authorInviteDecline', () => {
       async (inviteId, invite) => {
         const actual = await _.authorInviteDecline({ id: inviteId, method: 'POST' })({
           getAuthorInvite: () => TE.right(invite),
+          getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
         })()
 
@@ -33,6 +35,7 @@ describe('authorInviteDecline', () => {
 
         const actual = await _.authorInviteDecline({ id: inviteId, method: 'POST' })({
           getAuthorInvite: () => TE.right(invite),
+          getPrereview: shouldNotBeCalled,
           saveAuthorInvite,
         })()
 
@@ -49,6 +52,7 @@ describe('authorInviteDecline', () => {
 
         const actual = await _.authorInviteDecline({ id: inviteId, method: 'POST' })({
           getAuthorInvite: () => TE.right(invite),
+          getPrereview: shouldNotBeCalled,
           saveAuthorInvite,
         })()
 
@@ -69,6 +73,7 @@ describe('authorInviteDecline', () => {
       async (inviteId, method, invite) => {
         const actual = await _.authorInviteDecline({ id: inviteId, method })({
           getAuthorInvite: () => TE.right(invite),
+          getPrereview: shouldNotBeCalled,
           saveAuthorInvite: shouldNotBeCalled,
         })()
 
@@ -85,21 +90,64 @@ describe('authorInviteDecline', () => {
     )
   })
 
+  test.prop([
+    fc.uuid(),
+    fc.string().filter(method => method !== 'POST'),
+    fc.openAuthorInvite(),
+    fc.record({
+      authors: fc.record({
+        named: fc.nonEmptyArray(fc.record({ name: fc.string(), orcid: fc.orcid() }, { requiredKeys: ['name'] })),
+        anonymous: fc.integer({ min: 0 }),
+      }),
+      doi: fc.doi(),
+      language: fc.option(fc.languageCode(), { nil: undefined }),
+      license: fc.constant('CC-BY-4.0' as const),
+      preprint: fc.record({
+        id: fc.preprintId(),
+        language: fc.languageCode(),
+        title: fc.html(),
+        url: fc.url(),
+      }),
+      published: fc.plainDate(),
+      structured: fc.boolean(),
+      text: fc.html(),
+    }),
+  ])('when the invite is open', async (inviteId, method, invite, review) => {
+    const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(() => TE.right(review))
+
+    const actual = await _.authorInviteDecline({ id: inviteId, method })({
+      getAuthorInvite: () => TE.right(invite),
+      getPrereview,
+      saveAuthorInvite: shouldNotBeCalled,
+    })()
+
+    expect(actual).toStrictEqual({
+      _tag: 'StreamlinePageResponse',
+      canonical: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
+      status: Status.OK,
+      title: expect.stringContaining('Decline the invitation'),
+      main: expect.stringContaining('Decline the invitation'),
+      skipToLabel: 'form',
+      js: [],
+    })
+    expect(getPrereview).toHaveBeenCalledWith(invite.review)
+  })
+
   test.prop([fc.uuid(), fc.string().filter(method => method !== 'POST'), fc.openAuthorInvite()])(
-    'when the invite is open',
+    "when the review can't be loaded",
     async (inviteId, method, invite) => {
       const actual = await _.authorInviteDecline({ id: inviteId, method })({
         getAuthorInvite: () => TE.right(invite),
+        getPrereview: () => TE.left('unavailable'),
         saveAuthorInvite: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
-        status: Status.OK,
-        title: expect.stringContaining('Decline the invitation'),
-        main: expect.stringContaining('Decline the invitation'),
-        skipToLabel: 'form',
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
         js: [],
       })
     },
@@ -112,6 +160,7 @@ describe('authorInviteDecline', () => {
   ])('when the invite is not open or declined', async (inviteId, method, invite) => {
     const actual = await _.authorInviteDecline({ id: inviteId, method })({
       getAuthorInvite: () => TE.right(invite),
+      getPrereview: shouldNotBeCalled,
       saveAuthorInvite: shouldNotBeCalled,
     })()
 
@@ -128,6 +177,7 @@ describe('authorInviteDecline', () => {
   test.prop([fc.uuid(), fc.string()])('when the invite is not found', async (inviteId, method) => {
     const actual = await _.authorInviteDecline({ id: inviteId, method })({
       getAuthorInvite: () => TE.left('not-found'),
+      getPrereview: shouldNotBeCalled,
       saveAuthorInvite: shouldNotBeCalled,
     })()
 
