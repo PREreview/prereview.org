@@ -111,6 +111,16 @@ export function page({
 
           <meta property="og:title" content="${title}" />
           ${description ? html`<meta property="og:description" content="${description}" />` : ''}
+          ${current === 'home'
+            ? html`
+                <meta
+                  property="og:image"
+                  content="https://raw.githubusercontent.com/PREreview/assets/160314b3fa0aae15edb6e3bb4a2c72f51121a7d0/logo/logo-horizontal-white.png"
+                />
+                <meta property="og:image:width" content="2013" />
+                <meta property="og:image:height" content="675" />
+              `
+            : ''}
           <link rel="icon" href="${assets['favicon.ico']}" sizes="32x32" />
           <link rel="icon" href="${assets['favicon.svg']}" type="image/svg+xml" />
         </head>
