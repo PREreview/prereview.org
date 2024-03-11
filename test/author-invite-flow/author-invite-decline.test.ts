@@ -85,6 +85,7 @@ describe('authorInviteDecline', () => {
           main: expect.stringContaining('Invitation declined'),
           skipToLabel: 'main',
           js: [],
+          allowRobots: false,
         })
       },
     )
@@ -129,6 +130,7 @@ describe('authorInviteDecline', () => {
       main: expect.stringContaining('Decline the invitation'),
       skipToLabel: 'form',
       js: [],
+      allowRobots: false,
     })
     expect(getPrereview).toHaveBeenCalledWith(invite.review)
   })

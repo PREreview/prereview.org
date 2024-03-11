@@ -236,8 +236,10 @@ export const pageResponse = ({
   })
 
 export const streamlinePageResponse = ({
+  allowRobots,
   canonical,
 }: {
+  allowRobots?: fc.Arbitrary<StreamlinePageResponse['allowRobots']>
   canonical?: fc.Arbitrary<StreamlinePageResponse['canonical']>
 } = {}): fc.Arbitrary<StreamlinePageResponse> =>
   fc.record({
@@ -270,6 +272,7 @@ export const streamlinePageResponse = ({
     js: fc.array(
       js().filter((js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'skip-link.js'> => js !== 'skip-link.js'),
     ),
+    allowRobots: allowRobots ?? fc.option(fc.constant(false), { nil: undefined }),
   })
 
 export const twoUpPageResponse = (): fc.Arbitrary<TwoUpPageResponse> =>

@@ -207,6 +207,7 @@ function startPage({ inviteId, review, user }: { inviteId: Uuid; review: Prerevi
       >
     `,
     canonical: format(authorInviteMatch.formatter, { id: inviteId }),
+    allowRobots: false,
   })
 }
 

@@ -259,6 +259,28 @@ describe('handleResponse', () => {
     })
 
     test.prop([
+      fc.connection(),
+      fc.streamlinePageResponse({ allowRobots: fc.constant(false) }),
+      fc.option(fc.user(), { nil: undefined }),
+      fc.userOnboarding(),
+      fc.html(),
+      fc.oauth(),
+      fc.origin(),
+    ])("doesn't allow robots", async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
+      const actual = await runMiddleware(
+        _.handleResponse({
+          response,
+          user,
+        })({ getUserOnboarding: () => TE.right(userOnboarding), orcidOauth, publicUrl, templatePage: () => page }),
+        connection,
+      )()
+
+      expect(actual).toStrictEqual(
+        E.right(expect.arrayContaining([{ type: 'setHeader', name: 'X-Robots-Tag', value: 'none, noarchive' }])),
+      )
+    })
+
+    test.prop([
       fc.string().chain(message => fc.connection({ headers: fc.constant({ Cookie: `flash-message=${message}` }) })),
       fc.streamlinePageResponse(),
       fc.option(fc.user(), { nil: undefined }),

@@ -17,4 +17,5 @@ export const inviteDeclinedPage = (inviteId: Uuid) =>
       <p>You can close this window.</p>
     `,
     canonical: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
+    allowRobots: false,
   })

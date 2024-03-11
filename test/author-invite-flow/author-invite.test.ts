@@ -56,6 +56,7 @@ describe('authorInvite', () => {
       main: expect.stringContaining('Be listed as an author'),
       skipToLabel: 'main',
       js: [],
+      allowRobots: false,
     })
     expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
     expect(getPrereview).toHaveBeenCalledWith(invite.review)
@@ -101,6 +102,7 @@ describe('authorInvite', () => {
         main: expect.stringContaining('Be listed as an author'),
         skipToLabel: 'main',
         js: [],
+        allowRobots: false,
       })
       expect(getAuthorInvite).toHaveBeenCalledWith(inviteId)
       expect(getPrereview).toHaveBeenCalledWith(invite.review)

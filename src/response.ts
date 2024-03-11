@@ -48,6 +48,7 @@ export interface StreamlinePageResponse {
   readonly main: Html
   readonly skipToLabel: 'form' | 'main'
   readonly js: Required<Page>['js']
+  readonly allowRobots?: false
 }
 
 export interface TwoUpPageResponse {
@@ -195,6 +196,14 @@ export const handlePageResponse = ({
       RM.fromMiddleware(
         match(response.canonical)
           .with(P.string, canonical => M.header('Link', `<${canonical}>; rel="canonical"`))
+          .with(undefined, M.of<HeadersOpen>)
+          .exhaustive(),
+      ),
+    ),
+    RM.ichainFirst(() =>
+      RM.fromMiddleware(
+        match(response._tag === 'StreamlinePageResponse' ? response.allowRobots : undefined)
+          .with(false, () => M.header('X-Robots-Tag', 'none, noarchive'))
           .with(undefined, M.of<HeadersOpen>)
           .exhaustive(),
       ),

@@ -102,6 +102,7 @@ export const declinePage = ({ inviteId, review }: { inviteId: Uuid; review: Prer
     `,
     skipToLabel: 'form',
     canonical: format(authorInviteDeclineMatch.formatter, { id: inviteId }),
+    allowRobots: false,
   })
 
 function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
