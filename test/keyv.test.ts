@@ -55,7 +55,7 @@ describe('getAuthorInvite', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.uuid(), fc.anything()])('when the key cannot be accessed', async (uuid, error) => {
+  test.prop([fc.uuid(), fc.error()])('when the key cannot be accessed', async (uuid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -123,7 +123,7 @@ describe('saveAuthorInvite', () => {
     expect(await store.get(uuid)).toStrictEqual(authorInvite)
   })
 
-  test.prop([fc.uuid(), fc.authorInvite(), fc.anything()])(
+  test.prop([fc.uuid(), fc.authorInvite(), fc.error()])(
     'when the key cannot be accessed',
     async (uuid, authorInvite, error) => {
       const store = new Keyv()
@@ -188,7 +188,7 @@ describe('deleteCareerStage', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -260,7 +260,7 @@ describe('getCareerStage', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -328,7 +328,7 @@ describe('saveCareerStage', () => {
     expect(await store.get(orcid)).toStrictEqual(careerStage)
   })
 
-  test.prop([fc.orcid(), fc.careerStage(), fc.anything()])(
+  test.prop([fc.orcid(), fc.careerStage(), fc.error()])(
     'when the key cannot be accessed',
     async (orcid, careerStage, error) => {
       const store = new Keyv()
@@ -393,7 +393,7 @@ describe('isOpenForRequests', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -464,7 +464,7 @@ describe('saveOpenForRequests', () => {
     expect(await store.get(orcid)).toStrictEqual(isOpenForRequests)
   })
 
-  test.prop([fc.orcid(), fc.isOpenForRequests(), fc.anything()])(
+  test.prop([fc.orcid(), fc.isOpenForRequests(), fc.error()])(
     'when the key cannot be accessed',
     async (orcid, isOpenForRequests, error) => {
       const store = new Keyv()
@@ -532,7 +532,7 @@ describe('deleteResearchInterests', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -626,7 +626,7 @@ describe('getResearchInterests', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -697,7 +697,7 @@ describe('saveResearchInterests', () => {
     expect(await store.get(orcid)).toStrictEqual(researchInterests)
   })
 
-  test.prop([fc.orcid(), fc.researchInterests(), fc.anything()])(
+  test.prop([fc.orcid(), fc.researchInterests(), fc.error()])(
     'when the key cannot be accessed',
     async (orcid, researchInterests, error) => {
       const store = new Keyv()
@@ -762,7 +762,7 @@ describe('deleteOrcidToken', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -818,7 +818,7 @@ describe('getOrcidToken', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -886,7 +886,7 @@ describe('saveOrcidToken', () => {
     expect(await store.get(orcid)).toStrictEqual(OrcidTokenC.encode(orcidToken))
   })
 
-  test.prop([fc.orcid(), fc.orcidToken(), fc.anything()])(
+  test.prop([fc.orcid(), fc.orcidToken(), fc.error()])(
     'when the key cannot be accessed',
     async (orcid, orcidToken, error) => {
       const store = new Keyv()
@@ -951,7 +951,7 @@ describe('deleteSlackUserId', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -1007,7 +1007,7 @@ describe('getSlackUserId', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1075,7 +1075,7 @@ describe('saveSlackUserId', () => {
     expect(await store.get(orcid)).toStrictEqual(SlackUserIdC.encode(slackUserId))
   })
 
-  test.prop([fc.orcid(), fc.slackUserId(), fc.anything()])(
+  test.prop([fc.orcid(), fc.slackUserId(), fc.error()])(
     'when the key cannot be accessed',
     async (orcid, slackUserId, error) => {
       const store = new Keyv()
@@ -1140,7 +1140,7 @@ describe('deleteLocation', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -1199,7 +1199,7 @@ describe('getLocation', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1267,7 +1267,7 @@ describe('saveLocation', () => {
     expect(await store.get(orcid)).toStrictEqual(location)
   })
 
-  test.prop([fc.orcid(), fc.location(), fc.anything()])(
+  test.prop([fc.orcid(), fc.location(), fc.error()])(
     'when the key cannot be accessed',
     async (orcid, location, error) => {
       const store = new Keyv()
@@ -1332,7 +1332,7 @@ describe('deleteLanguages', () => {
     expect(await store.has(orcid)).toBeFalsy()
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.delete = () => Promise.reject(error)
 
@@ -1391,7 +1391,7 @@ describe('getLanguages', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1459,7 +1459,7 @@ describe('saveLanguages', () => {
     expect(await store.get(orcid)).toStrictEqual(languages)
   })
 
-  test.prop([fc.orcid(), fc.languages(), fc.anything()])(
+  test.prop([fc.orcid(), fc.languages(), fc.error()])(
     'when the key cannot be accessed',
     async (orcid, languages, error) => {
       const store = new Keyv()
@@ -1524,7 +1524,7 @@ describe('getContactEmailAddress', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1595,7 +1595,7 @@ describe('saveContactEmailAddress', () => {
     expect(await store.get(orcid)).toStrictEqual(ContactEmailAddressC.encode(emailAddress))
   })
 
-  test.prop([fc.orcid(), fc.contactEmailAddress(), fc.anything()])(
+  test.prop([fc.orcid(), fc.contactEmailAddress(), fc.error()])(
     'when the key cannot be accessed',
     async (orcid, emailAddress, error) => {
       const store = new Keyv()
@@ -1660,7 +1660,7 @@ describe('getUserOnboarding', () => {
     expect(actual).toStrictEqual(E.right({ seenMyDetailsPage: false }))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1731,7 +1731,7 @@ describe('saveUserOnboarding', () => {
     expect(await store.get(orcid)).toStrictEqual(UserOnboardingC.encode(userOnboarding))
   })
 
-  test.prop([fc.orcid(), fc.userOnboarding(), fc.anything()])(
+  test.prop([fc.orcid(), fc.userOnboarding(), fc.error()])(
     'when the key cannot be accessed',
     async (orcid, userOnboarding, error) => {
       const store = new Keyv()
@@ -1793,7 +1793,7 @@ describe('getAvatar', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+  test.prop([fc.orcid(), fc.error()])('when the key cannot be accessed', async (orcid, error) => {
     const store = new Keyv()
     store.get = (): Promise<never> => Promise.reject(error)
 
@@ -1861,7 +1861,7 @@ describe('saveAvatar', () => {
     expect(await store.get(orcid)).toStrictEqual(NonEmptyStringC.encode(avatar))
   })
 
-  test.prop([fc.orcid(), fc.nonEmptyString(), fc.anything()])(
+  test.prop([fc.orcid(), fc.nonEmptyString(), fc.error()])(
     'when the key cannot be accessed',
     async (orcid, avatar, error) => {
       const store = new Keyv()
