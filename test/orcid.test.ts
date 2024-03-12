@@ -74,19 +74,22 @@ describe('getNameFromOrcid', () => {
     })
   })
 
-  test.prop([fc.origin(), fc.orcid()])('when the profile is locked', async (url, orcid) => {
-    const actual = await _.getNameFromOrcid(orcid)({
-      clock: SystemClock,
-      fetch: fetchMock.sandbox().get(`${url.origin}/v3.0/${orcid}/personal-details`, {
-        body: { 'error-code': 9018 },
-        status: Status.Conflict,
-      }),
-      logger: () => IO.of(undefined),
-      orcidApiUrl: url,
-    })()
+  test.prop([fc.origin(), fc.orcid(), fc.constantFrom(9018, 9044)])(
+    'when the profile is locked or deactivated',
+    async (url, orcid, errorCode) => {
+      const actual = await _.getNameFromOrcid(orcid)({
+        clock: SystemClock,
+        fetch: fetchMock.sandbox().get(`${url.origin}/v3.0/${orcid}/personal-details`, {
+          body: { 'error-code': errorCode },
+          status: Status.Conflict,
+        }),
+        logger: () => IO.of(undefined),
+        orcidApiUrl: url,
+      })()
 
-    expect(actual).toStrictEqual(E.right(undefined))
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+    },
+  )
 
   test.prop([fc.origin(), fc.orcid(), fc.string()])('uses an API token', async (url, orcid, token) => {
     const fetch = fetchMock

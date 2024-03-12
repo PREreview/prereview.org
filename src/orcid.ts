@@ -29,7 +29,7 @@ const JsonD = {
 }
 
 const ProfileLockedD = D.struct({
-  'error-code': D.literal(9018),
+  'error-code': D.literal(9018, 9044),
 })
 
 const PersonalDetailsD = D.struct({
@@ -74,7 +74,7 @@ export const getNameFromOrcid = flow(
           ({ name }) => `${name['given-names'].value} ${name['family-name'].value}` as NonEmptyString,
         )
         .with({ name: { 'given-names': { value: P.string } } }, ({ name }) => name['given-names'].value)
-        .with({ name: null }, { 'error-code': 9018 }, () => undefined)
+        .with({ name: null }, { 'error-code': P.union(9018, 9044) }, () => undefined)
         .exhaustive(),
   ),
 )
