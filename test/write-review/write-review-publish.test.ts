@@ -310,7 +310,7 @@ describe('writeReviewPublish', () => {
     ),
     fc.incompleteForm(),
     fc.user(),
-    fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+    fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
   ])(
     'when the form is incomplete',
     async (

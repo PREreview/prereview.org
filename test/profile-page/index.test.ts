@@ -23,12 +23,12 @@ describe('profile', () => {
           preprint: fc.preprintTitle(),
         }),
       ),
-      fc.either(fc.constant('not-found' as const), fc.careerStage()),
-      fc.either(fc.constant('not-found' as const), fc.researchInterests()),
-      fc.either(fc.constant('not-found' as const), fc.location()),
-      fc.either(fc.constant('not-found' as const), fc.languages()),
-      fc.either(fc.constant('not-found' as const), fc.slackUser()),
-      fc.either(fc.constant('not-found' as const), fc.isOpenForRequests()),
+      fc.either(fc.constant('not-found'), fc.careerStage()),
+      fc.either(fc.constant('not-found'), fc.researchInterests()),
+      fc.either(fc.constant('not-found'), fc.location()),
+      fc.either(fc.constant('not-found'), fc.languages()),
+      fc.either(fc.constant('not-found'), fc.slackUser()),
+      fc.either(fc.constant('not-found'), fc.isOpenForRequests()),
     ])(
       'when the data can be loaded',
       async (

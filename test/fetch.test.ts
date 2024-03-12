@@ -143,14 +143,7 @@ describe('collapseRequests', () => {
       fc.webUrl(),
       fc.record(
         {
-          cache: fc.constantFrom(
-            'default' as const,
-            'no-store' as const,
-            'reload' as const,
-            'no-cache' as const,
-            'force-cache' as const,
-            'only-if-cached' as const,
-          ),
+          cache: fc.constantFrom('default', 'no-store', 'reload', 'no-cache', 'force-cache', 'only-if-cached'),
           headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
           method: fc.constant('GET'),
         },
@@ -183,14 +176,7 @@ describe('collapseRequests', () => {
       fc.webUrl(),
       fc.record(
         {
-          cache: fc.constantFrom(
-            'default' as const,
-            'no-store' as const,
-            'reload' as const,
-            'no-cache' as const,
-            'force-cache' as const,
-            'only-if-cached' as const,
-          ),
+          cache: fc.constantFrom('default', 'no-store', 'reload', 'no-cache', 'force-cache', 'only-if-cached'),
           headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
           method: fc.constant('GET'),
         },
@@ -227,14 +213,7 @@ describe('collapseRequests', () => {
       fc.webUrl(),
       fc.record(
         {
-          cache: fc.constantFrom(
-            'default' as const,
-            'no-store' as const,
-            'reload' as const,
-            'no-cache' as const,
-            'force-cache' as const,
-            'only-if-cached' as const,
-          ),
+          cache: fc.constantFrom('default', 'no-store', 'reload', 'no-cache', 'force-cache', 'only-if-cached'),
           headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
           method: fc.requestMethod(),
         },
@@ -245,14 +224,7 @@ describe('collapseRequests', () => {
       fc.webUrl(),
       fc.record(
         {
-          cache: fc.constantFrom(
-            'default' as const,
-            'no-store' as const,
-            'reload' as const,
-            'no-cache' as const,
-            'force-cache' as const,
-            'only-if-cached' as const,
-          ),
+          cache: fc.constantFrom('default', 'no-store', 'reload', 'no-cache', 'force-cache', 'only-if-cached'),
           headers: fc.headers().map(headers => Object.fromEntries(headers.entries())),
           method: fc.requestMethod(),
         },

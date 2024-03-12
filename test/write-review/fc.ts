@@ -194,9 +194,9 @@ export const incompleteQuestionsForm = (): fc.Arbitrary<Form & { alreadyWritten:
     .tuple(
       fc.partialRecord(
         {
-          alreadyWritten: fc.constant('no' as const),
+          alreadyWritten: fc.constant('no'),
           introductionMatches: introductionMatches(),
-          reviewType: fc.constant('questions' as const),
+          reviewType: fc.constant('questions'),
           persona: persona(),
           methodsAppropriate: methodsAppropriate(),
           resultsSupported: resultsSupported(),
@@ -273,7 +273,7 @@ export const incompleteFreeformForm = (): fc.Arbitrary<Form & { reviewType?: 'fr
             shouldReadDetails: shouldReadDetails(),
             readyFullReview: readyFullReview(),
             readyFullReviewDetails: readyFullReviewDetails(),
-            reviewType: fc.constant('freeform' as const),
+            reviewType: fc.constant('freeform'),
             otherAuthors: otherAuthors(),
           },
           { withDeletedKeys: true },
@@ -292,7 +292,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
   fc
     .tuple(
       fc.record({
-        alreadyWritten: fc.constant('no' as const),
+        alreadyWritten: fc.constant('no'),
         conduct: conduct(),
         resultsSupported: resultsSupported(),
         dataPresentation: dataPresentation(),
@@ -300,15 +300,15 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
         novel: novel(),
         readyFullReview: readyFullReview(),
         persona: persona(),
-        reviewType: fc.constant('questions' as const),
+        reviewType: fc.constant('questions'),
       }),
       fc.oneof(
         fc.record({
-          moreAuthors: fc.constant('yes' as const),
+          moreAuthors: fc.constant('yes'),
           otherAuthors: otherAuthors(),
         }),
         fc.record({
-          moreAuthors: fc.constantFrom('yes-private' as const, 'no' as const),
+          moreAuthors: fc.constantFrom('yes-private', 'no'),
         }),
       ),
       fc.oneof(

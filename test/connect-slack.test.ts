@@ -498,7 +498,7 @@ describe('connectSlackCode', () => {
 })
 
 describe('connectSlackError', () => {
-  test.prop([fc.either(fc.oneof(fc.error(), fc.constant('no-session' as const)), fc.user()), fc.connection()])(
+  test.prop([fc.either(fc.oneof(fc.error(), fc.constant('no-session')), fc.user()), fc.connection()])(
     'with an access_denied error',
     async (user, connection) => {
       const actual = await runMiddleware(
@@ -518,21 +518,23 @@ describe('connectSlackError', () => {
     },
   )
 
-  test.prop([
-    fc.either(fc.oneof(fc.error(), fc.constant('no-session' as const)), fc.user()),
-    fc.string(),
-    fc.connection(),
-  ])('with an unknown error', async (user, error, connection) => {
-    const actual = await runMiddleware(_.connectSlackError(error)({ getUser: () => M.fromEither(user) }), connection)()
+  test.prop([fc.either(fc.oneof(fc.error(), fc.constant('no-session')), fc.user()), fc.string(), fc.connection()])(
+    'with an unknown error',
+    async (user, error, connection) => {
+      const actual = await runMiddleware(
+        _.connectSlackError(error)({ getUser: () => M.fromEither(user) }),
+        connection,
+      )()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.ServiceUnavailable },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  })
+      expect(actual).toStrictEqual(
+        E.right([
+          { type: 'setStatus', status: Status.ServiceUnavailable },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'clearCookie', name: 'slack-state', options: { httpOnly: true } },
+          { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+          { type: 'setBody', body: expect.anything() },
+        ]),
+      )
+    },
+  )
 })

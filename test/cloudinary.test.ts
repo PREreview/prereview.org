@@ -82,7 +82,7 @@ describe('saveAvatarOnCloudinary', () => {
     fc.orcid(),
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
-      mimetype: fc.constant('image/jpeg' as const),
+      mimetype: fc.constant('image/jpeg'),
     }),
     fc.nonEmptyStringOf(fc.alphanumeric()),
   ])('when the avatar can be saved', async (date, cloudinaryApi, publicUrl, orcid, avatar, imageId) => {
@@ -133,7 +133,7 @@ describe('saveAvatarOnCloudinary', () => {
     fc.orcid(),
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
-      mimetype: fc.constant('image/jpeg' as const),
+      mimetype: fc.constant('image/jpeg'),
     }),
     fc.nonEmptyStringOf(fc.alphanumeric()),
   ])('when the avatar cannot be saved locally', async (date, cloudinaryApi, publicUrl, orcid, avatar, imageId) => {
@@ -171,7 +171,7 @@ describe('saveAvatarOnCloudinary', () => {
     fc.orcid(),
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
-      mimetype: fc.constant('image/jpeg' as const),
+      mimetype: fc.constant('image/jpeg'),
     }),
     fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
   ])(

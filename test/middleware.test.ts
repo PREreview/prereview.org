@@ -31,23 +31,20 @@ test.prop([fc.connection(), fc.string()])('movedPermanently', async (connection,
   )
 })
 
-test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user())])(
-  'notFound',
-  async (connection, user) => {
-    const actual = await runMiddleware(_.notFound({ getUser: () => M.fromEither(user) }), connection)()
+test.prop([fc.connection(), fc.either(fc.constant('no-session'), fc.user())])('notFound', async (connection, user) => {
+  const actual = await runMiddleware(_.notFound({ getUser: () => M.fromEither(user) }), connection)()
 
-    expect(actual).toStrictEqual(
-      E.right([
-        { type: 'setStatus', status: Status.NotFound },
-        { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
-      ]),
-    )
-  },
-)
+  expect(actual).toStrictEqual(
+    E.right([
+      { type: 'setStatus', status: Status.NotFound },
+      { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+      { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+      { type: 'setBody', body: expect.anything() },
+    ]),
+  )
+})
 
-test.prop([fc.connection(), fc.either(fc.constant('no-session' as const), fc.user())])(
+test.prop([fc.connection(), fc.either(fc.constant('no-session'), fc.user())])(
   'serviceUnavailable',
   async (connection, user) => {
     const actual = await runMiddleware(_.serviceUnavailable({ getUser: () => M.fromEither(user) }), connection)()

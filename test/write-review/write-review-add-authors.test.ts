@@ -43,7 +43,7 @@ describe('writeReviewAddAuthors', () => {
       fc.indeterminatePreprintId(),
       fc.preprintTitle(),
       fc.user(),
-      fc.completedForm({ moreAuthors: fc.constant('yes' as const), otherAuthors: fc.otherAuthors({ minLength: 1 }) }),
+      fc.completedForm({ moreAuthors: fc.constant('yes'), otherAuthors: fc.otherAuthors({ minLength: 1 }) }),
     ])('when the form is completed', async (preprintId, preprintTitle, user, newReview) => {
       const formStore = new Keyv()
       await formStore.set(formKey(user.orcid, preprintTitle.id), FormC.encode(CompletedFormC.encode(newReview)))

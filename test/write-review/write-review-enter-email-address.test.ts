@@ -61,7 +61,7 @@ describe('writeReviewEnterEmailAddress', () => {
     fc.connection({ method: fc.requestMethod().filter(method => method !== 'POST') }),
     fc.form(),
     fc.user(),
-    fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+    fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
   ])(
     'when the user needs to verify their email address',
     async (preprintId, preprintTitle, connection, newReview, user, contactEmailAddress) => {

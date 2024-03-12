@@ -103,7 +103,7 @@ describe('legacyRoutes', () => {
   describe("with an '/about/{uuid}' path", () => {
     test.prop([
       fc.uuid().chain(uuid => fc.tuple(fc.constant(uuid), fc.connection({ path: fc.constant(`/about/${uuid}`) }))),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
       fc.profileId(),
     ])('when the profile ID is found', async ([uuid, connection], user, profile) => {
       const getProfileIdFromUuid = jest.fn<_.GetProfileIdFromUuidEnv['getProfileIdFromUuid']>(_ => TE.right(profile))
@@ -133,7 +133,7 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/about/${uuid}`) })),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
     ])('when the profile ID is not found', async (connection, user) => {
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -156,7 +156,7 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/about/${uuid}`) })),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
     ])('when the profile ID is unavailable', async (connection, user) => {
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -181,7 +181,7 @@ describe('legacyRoutes', () => {
   describe("with a '/preprints/{uuid}' path", () => {
     test.prop([
       fc.uuid().chain(uuid => fc.tuple(fc.constant(uuid), fc.connection({ path: fc.constant(`/preprints/${uuid}`) }))),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
       fc.indeterminatePreprintId(),
     ])('when the ID is found', async ([uuid, connection], user, id) => {
       const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
@@ -211,7 +211,7 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/preprints/${uuid}`) })),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
     ])('when the ID is not found', async (connection, user) => {
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -234,7 +234,7 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/preprints/${uuid}`) })),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
     ])('when the ID is unavailable', async (connection, user) => {
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -266,7 +266,7 @@ describe('legacyRoutes', () => {
             fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) }),
           ),
         ),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
       fc.indeterminatePreprintId(),
     ])('when the ID is found', async ([uuid, connection], user, id) => {
       const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
@@ -298,7 +298,7 @@ describe('legacyRoutes', () => {
       fc
         .tuple(fc.uuid(), fc.uuid())
         .chain(([uuid1, uuid2]) => fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) })),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
     ])('when the ID is not found', async (connection, user) => {
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -323,7 +323,7 @@ describe('legacyRoutes', () => {
       fc
         .tuple(fc.uuid(), fc.uuid())
         .chain(([uuid1, uuid2]) => fc.connection({ path: fc.constant(`/preprints/${uuid1}/full-reviews/${uuid2}`) })),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
     ])('when the ID is unavailable', async (connection, user) => {
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -348,7 +348,7 @@ describe('legacyRoutes', () => {
   describe("with a '/validate/{uuid}' path", () => {
     test.prop([
       fc.uuid().chain(uuid => fc.tuple(fc.constant(uuid), fc.connection({ path: fc.constant(`/validate/${uuid}`) }))),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
       fc.indeterminatePreprintId(),
     ])('when the ID is found', async ([uuid, connection], user, id) => {
       const getPreprintIdFromUuid = jest.fn<_.GetPreprintIdFromUuidEnv['getPreprintIdFromUuid']>(_ => TE.right(id))
@@ -378,7 +378,7 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/validate/${uuid}`) })),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
     ])('when the ID is not found', async (connection, user) => {
       const actual = await runMiddleware(
         _.legacyRoutes({
@@ -401,7 +401,7 @@ describe('legacyRoutes', () => {
 
     test.prop([
       fc.uuid().chain(uuid => fc.connection({ path: fc.constant(`/validate/${uuid}`) })),
-      fc.either(fc.constant('no-session' as const), fc.user()),
+      fc.either(fc.constant('no-session'), fc.user()),
     ])('when the ID is unavailable', async (connection, user) => {
       const actual = await runMiddleware(
         _.legacyRoutes({

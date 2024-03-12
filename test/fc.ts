@@ -112,8 +112,6 @@ export const {
   anything,
   array,
   boolean,
-  constant,
-  constantFrom,
   date,
   dictionary,
   integer,
@@ -127,6 +125,14 @@ export const {
   uniqueArray,
   webUrl,
 } = fc
+
+export function constant<const T>(value: T): Arbitrary<T> {
+  return fc.constant(value)
+}
+
+export function constantFrom<const T>(...values: Array<T>): Arbitrary<T> {
+  return fc.constantFrom(...values)
+}
 
 export const set = <A>(arb: fc.Arbitrary<A>, constraints?: fc.UniqueArraySharedConstraints): fc.Arbitrary<Set<A>> =>
   fc.uniqueArray(arb, constraints).map(values => new Set(values))
@@ -150,10 +156,10 @@ export const alphanumeric = (): fc.Arbitrary<string> =>
 
 export const invisibleCharacter = (): fc.Arbitrary<string> => fc.oneof(lineTerminator(), whiteSpaceCharacter())
 
-export const lineTerminator = (): fc.Arbitrary<string> => fc.constantFrom('\n', '\r', '\u2028', '\u2029')
+export const lineTerminator = (): fc.Arbitrary<string> => constantFrom('\n', '\r', '\u2028', '\u2029')
 
 export const whiteSpaceCharacter = (): fc.Arbitrary<string> =>
-  fc.constantFrom(
+  constantFrom(
     '\t',
     '\v',
     '\f',
@@ -204,28 +210,28 @@ export const pageResponse = ({
   canonical?: fc.Arbitrary<PageResponse['canonical']>
 } = {}): fc.Arbitrary<PageResponse> =>
   fc.record({
-    _tag: fc.constant('PageResponse' as const),
+    _tag: constant('PageResponse'),
     canonical: canonical ?? fc.option(fc.string(), { nil: undefined }),
     current: fc.option(
-      fc.constantFrom(
-        'about-us' as const,
-        'clubs' as const,
-        'code-of-conduct' as const,
-        'edia-statement' as const,
-        'funding' as const,
-        'home' as const,
-        'how-to-use' as const,
-        'live-reviews' as const,
-        'my-details' as const,
-        'partners' as const,
-        'people' as const,
-        'privacy-policy' as const,
-        'reviews' as const,
-        'trainings' as const,
+      constantFrom(
+        'about-us',
+        'clubs',
+        'code-of-conduct',
+        'edia-statement',
+        'funding',
+        'home',
+        'how-to-use',
+        'live-reviews',
+        'my-details',
+        'partners',
+        'people',
+        'privacy-policy',
+        'reviews',
+        'trainings',
       ),
       { nil: undefined },
     ),
-    skipToLabel: fc.constant('main' as const),
+    skipToLabel: constant('main'),
     status: statusCode(),
     title: plainText(),
     description: fc.option(plainText(), { nil: undefined }),
@@ -243,28 +249,28 @@ export const streamlinePageResponse = ({
   canonical?: fc.Arbitrary<StreamlinePageResponse['canonical']>
 } = {}): fc.Arbitrary<StreamlinePageResponse> =>
   fc.record({
-    _tag: fc.constant('StreamlinePageResponse' as const),
+    _tag: constant('StreamlinePageResponse'),
     canonical: canonical ?? fc.option(fc.string(), { nil: undefined }),
     current: fc.option(
-      fc.constantFrom(
-        'about-us' as const,
-        'clubs' as const,
-        'code-of-conduct' as const,
-        'edia-statement' as const,
-        'funding' as const,
-        'home' as const,
-        'how-to-use' as const,
-        'live-reviews' as const,
-        'my-details' as const,
-        'partners' as const,
-        'people' as const,
-        'privacy-policy' as const,
-        'reviews' as const,
-        'trainings' as const,
+      constantFrom(
+        'about-us',
+        'clubs',
+        'code-of-conduct',
+        'edia-statement',
+        'funding',
+        'home',
+        'how-to-use',
+        'live-reviews',
+        'my-details',
+        'partners',
+        'people',
+        'privacy-policy',
+        'reviews',
+        'trainings',
       ),
       { nil: undefined },
     ),
-    skipToLabel: fc.constant('main' as const),
+    skipToLabel: constant('main'),
     status: statusCode(),
     title: plainText(),
     description: fc.option(plainText(), { nil: undefined }),
@@ -272,15 +278,15 @@ export const streamlinePageResponse = ({
     js: fc.array(
       js().filter((js): js is Exclude<EndsWith<keyof typeof assets, '.js'>, 'skip-link.js'> => js !== 'skip-link.js'),
     ),
-    allowRobots: allowRobots ?? fc.option(fc.constant(false), { nil: undefined }),
+    allowRobots: allowRobots ?? fc.option(constant(false), { nil: undefined }),
   })
 
 export const twoUpPageResponse = (): fc.Arbitrary<TwoUpPageResponse> =>
   fc.record({
-    _tag: fc.constant('TwoUpPageResponse' as const),
+    _tag: constant('TwoUpPageResponse'),
     canonical: fc.string(),
     title: plainText(),
-    description: fc.oneof(plainText(), fc.constant(undefined)),
+    description: fc.oneof(plainText(), constant(undefined)),
     h1: html(),
     aside: html(),
     main: html(),
@@ -288,26 +294,26 @@ export const twoUpPageResponse = (): fc.Arbitrary<TwoUpPageResponse> =>
 
 export const redirectResponse = (): fc.Arbitrary<RedirectResponse> =>
   fc.record({
-    _tag: fc.constant('RedirectResponse' as const),
-    status: fc.constantFrom(Status.SeeOther, Status.Found),
+    _tag: constant('RedirectResponse'),
+    status: constantFrom(Status.SeeOther, Status.Found),
     location: fc.oneof(fc.webPath(), url()),
   })
 
 export const flashMessageResponse = (): fc.Arbitrary<FlashMessageResponse> =>
   fc.record({
-    _tag: fc.constant('FlashMessageResponse' as const),
+    _tag: constant('FlashMessageResponse'),
     location: fc.webPath(),
     message: fc.string(),
   })
 
 export const logInResponse = (): fc.Arbitrary<LogInResponse> =>
   fc.record({
-    _tag: fc.constant('LogInResponse' as const),
+    _tag: constant('LogInResponse'),
     location: fc.webPath(),
   })
 
 const asset = (): fc.Arbitrary<keyof typeof assets> =>
-  fc.constantFrom(...(Object.keys(assets) as Array<keyof typeof assets>))
+  constantFrom(...(Object.keys(assets) as Array<keyof typeof assets>))
 
 const js = (): fc.Arbitrary<EndsWith<keyof typeof assets, '.js'>> =>
   asset().filter((asset): asset is EndsWith<typeof asset, '.js'> => asset.endsWith('.js'))
@@ -319,14 +325,14 @@ export const contactEmailAddress = (): fc.Arbitrary<ContactEmailAddress> =>
 
 export const unverifiedContactEmailAddress = (): fc.Arbitrary<UnverifiedContactEmailAddress> =>
   fc.record({
-    type: fc.constant('unverified'),
+    type: constant('unverified'),
     value: emailAddress(),
     verificationToken: uuid(),
   })
 
 export const verifiedContactEmailAddress = (): fc.Arbitrary<VerifiedContactEmailAddress> =>
   fc.record({
-    type: fc.constant('verified'),
+    type: constant('verified'),
     value: emailAddress(),
   })
 
@@ -352,8 +358,8 @@ export const oauth = (): fc.Arbitrary<Omit<OrcidOAuthEnv['orcidOauth'] & OAuthEn
 export const doiRegistrant = (): fc.Arbitrary<string> =>
   fc
     .tuple(
-      fc.stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), { minLength: 2 }),
-      fc.array(fc.stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), { minLength: 1 })),
+      fc.stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), { minLength: 2 }),
+      fc.array(fc.stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), { minLength: 1 })),
     )
     .map(([one, two]) => [one, ...two].join('.'))
 
@@ -406,15 +412,15 @@ export const africarxivPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivPreprintId
 
 export const africarxivFigsharePreprintId = (): fc.Arbitrary<AfricarxivFigsharePreprintId> =>
   fc.record({
-    type: fc.constant('africarxiv'),
-    value: doi(fc.constant('6084')),
+    type: constant('africarxiv'),
+    value: doi(constant('6084')),
   })
 
 export const africarxivFigsharePreprintUrl = (): fc.Arbitrary<[URL, AfricarxivFigsharePreprintId]> =>
   fc
     .tuple(
-      fc.stringOf(fc.oneof(alphanumeric(), fc.constant('-')), { minLength: 1 }),
-      fc.stringOf(fc.oneof(alphanumeric(), fc.constantFrom('_')), { minLength: 1 }),
+      fc.stringOf(fc.oneof(alphanumeric(), constant('-')), { minLength: 1 }),
+      fc.stringOf(fc.oneof(alphanumeric(), constantFrom('_')), { minLength: 1 }),
       fc.integer({ min: 1 }),
     )
     .map(([type, title, id]) => [
@@ -424,8 +430,8 @@ export const africarxivFigsharePreprintUrl = (): fc.Arbitrary<[URL, AfricarxivFi
 
 export const africarxivOsfPreprintId = (): fc.Arbitrary<AfricarxivOsfPreprintId> =>
   fc.record({
-    type: fc.constant('africarxiv'),
-    value: doi(fc.constant('31730')),
+    type: constant('africarxiv'),
+    value: doi(constant('31730')),
   })
 
 export const africarxivOsfPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivOsfPreprintId]> =>
@@ -438,19 +444,19 @@ export const africarxivOsfPreprintUrl = (): fc.Arbitrary<[URL, AfricarxivOsfPrep
 
 export const africarxivZenodoPreprintId = (): fc.Arbitrary<AfricarxivZenodoPreprintId> =>
   fc.record({
-    type: fc.constant('africarxiv'),
-    value: doi(fc.constant('5281')),
+    type: constant('africarxiv'),
+    value: doi(constant('5281')),
   })
 
 export const arxivPreprintId = (): fc.Arbitrary<ArxivPreprintId> =>
   fc.record({
-    type: fc.constant('arxiv'),
-    value: doi(fc.constant('48550')),
+    type: constant('arxiv'),
+    value: doi(constant('48550')),
   })
 
 export const arxivPreprintUrl = (): fc.Arbitrary<[URL, ArxivPreprintId]> =>
   fc
-    .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
+    .stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
     .filter(suffix => isDoi(`10.48550/${suffix}`))
     .map(suffix => [
       new URL(`https://arxiv.org/abs/${suffix}`),
@@ -459,8 +465,8 @@ export const arxivPreprintUrl = (): fc.Arbitrary<[URL, ArxivPreprintId]> =>
 
 export const authoreaPreprintId = (): fc.Arbitrary<AuthoreaPreprintId> =>
   fc.record({
-    type: fc.constant('authorea'),
-    value: doi(fc.constant('22541')),
+    type: constant('authorea'),
+    value: doi(constant('22541')),
   })
 
 export const authoreaPreprintUrl = (): fc.Arbitrary<[URL, AuthoreaPreprintId]> =>
@@ -468,13 +474,13 @@ export const authoreaPreprintUrl = (): fc.Arbitrary<[URL, AuthoreaPreprintId]> =
 
 export const biorxivPreprintId = (): fc.Arbitrary<BiorxivPreprintId> =>
   fc.record({
-    type: fc.constant('biorxiv'),
-    value: doi(fc.constant('1101')),
+    type: constant('biorxiv'),
+    value: doi(constant('1101')),
   })
 
 export const biorxivPreprintUrl = (): fc.Arbitrary<[URL, BiorxivPreprintId]> =>
   fc
-    .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
+    .stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
     .filter(suffix => isDoi(`10.1101/${suffix}`))
     .map(suffix => [
       new URL(`https://www.biorxiv.org/content/10.1101/${suffix}`),
@@ -483,8 +489,8 @@ export const biorxivPreprintUrl = (): fc.Arbitrary<[URL, BiorxivPreprintId]> =>
 
 export const chemrxivPreprintId = (): fc.Arbitrary<ChemrxivPreprintId> =>
   fc.record({
-    type: fc.constant('chemrxiv'),
-    value: doi(fc.constant('26434')),
+    type: constant('chemrxiv'),
+    value: doi(constant('26434')),
   })
 
 export const chemrxivPreprintUrl = (): fc.Arbitrary<URL> =>
@@ -494,8 +500,8 @@ export const chemrxivPreprintUrl = (): fc.Arbitrary<URL> =>
 
 export const eartharxivPreprintId = (): fc.Arbitrary<EartharxivPreprintId> =>
   fc.record({
-    type: fc.constant('eartharxiv'),
-    value: doi(fc.constant('31223')),
+    type: constant('eartharxiv'),
+    value: doi(constant('31223')),
   })
 
 export const eartharxivPreprintUrl = (): fc.Arbitrary<URL> =>
@@ -503,8 +509,8 @@ export const eartharxivPreprintUrl = (): fc.Arbitrary<URL> =>
 
 export const ecoevorxivPreprintId = (): fc.Arbitrary<EcoevorxivPreprintId> =>
   fc.record({
-    type: fc.constant('ecoevorxiv'),
-    value: doi(fc.constant('32942')),
+    type: constant('ecoevorxiv'),
+    value: doi(constant('32942')),
   })
 
 export const ecoevorxivPreprintUrl = (): fc.Arbitrary<URL> =>
@@ -512,8 +518,8 @@ export const ecoevorxivPreprintUrl = (): fc.Arbitrary<URL> =>
 
 export const edarxivPreprintId = (): fc.Arbitrary<EdarxivPreprintId> =>
   fc.record({
-    type: fc.constant('edarxiv'),
-    value: doi(fc.constant('35542')),
+    type: constant('edarxiv'),
+    value: doi(constant('35542')),
   })
 
 export const edarxivPreprintUrl = (): fc.Arbitrary<[URL, EdarxivPreprintId]> =>
@@ -526,8 +532,8 @@ export const edarxivPreprintUrl = (): fc.Arbitrary<[URL, EdarxivPreprintId]> =>
 
 export const engrxivPreprintId = (): fc.Arbitrary<EngrxivPreprintId> =>
   fc.record({
-    type: fc.constant('engrxiv'),
-    value: doi(fc.constant('31224')),
+    type: constant('engrxiv'),
+    value: doi(constant('31224')),
   })
 
 export const engrxivPreprintUrl = (): fc.Arbitrary<[URL, EngrxivPreprintId]> =>
@@ -540,13 +546,13 @@ export const engrxivPreprintUrl = (): fc.Arbitrary<[URL, EngrxivPreprintId]> =>
 
 export const medrxivPreprintId = (): fc.Arbitrary<MedrxivPreprintId> =>
   fc.record({
-    type: fc.constant('medrxiv'),
-    value: doi(fc.constant('1101')),
+    type: constant('medrxiv'),
+    value: doi(constant('1101')),
   })
 
 export const medrxivPreprintUrl = (): fc.Arbitrary<[URL, MedrxivPreprintId]> =>
   fc
-    .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
+    .stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), { minLength: 1 })
     .filter(suffix => isDoi(`10.1101/${suffix}`))
     .map(suffix => [
       new URL(`https://www.medrxiv.org/content/10.1101/${suffix}`),
@@ -555,8 +561,8 @@ export const medrxivPreprintUrl = (): fc.Arbitrary<[URL, MedrxivPreprintId]> =>
 
 export const metaarxivPreprintId = (): fc.Arbitrary<MetaarxivPreprintId> =>
   fc.record({
-    type: fc.constant('metaarxiv'),
-    value: doi(fc.constant('31222')),
+    type: constant('metaarxiv'),
+    value: doi(constant('31222')),
   })
 
 export const metaarxivPreprintUrl = (): fc.Arbitrary<[URL, MetaarxivPreprintId]> =>
@@ -569,14 +575,14 @@ export const metaarxivPreprintUrl = (): fc.Arbitrary<[URL, MetaarxivPreprintId]>
 
 export const osfPreprintId = (): fc.Arbitrary<OsfPreprintId> =>
   fc.record({
-    type: fc.constant('osf'),
-    value: doi(fc.constant('17605')),
+    type: constant('osf'),
+    value: doi(constant('17605')),
   })
 
 export const osfPreprintsPreprintId = (): fc.Arbitrary<OsfPreprintsPreprintId> =>
   fc.record({
-    type: fc.constant('osf-preprints'),
-    value: doi(fc.constant('31219')),
+    type: constant('osf-preprints'),
+    value: doi(constant('31219')),
   })
 
 export const osfPreprintsPreprintUrl = (): fc.Arbitrary<[URL, OsfPreprintsPreprintId]> =>
@@ -589,7 +595,7 @@ export const osfPreprintsPreprintUrl = (): fc.Arbitrary<[URL, OsfPreprintsPrepri
 
 export const philsciPreprintId = (): fc.Arbitrary<PhilsciPreprintId> =>
   fc.record({
-    type: fc.constant('philsci'),
+    type: constant('philsci'),
     value: fc.integer({ min: 1 }),
   })
 
@@ -598,14 +604,14 @@ export const philsciPreprintUrl = (): fc.Arbitrary<[URL, PhilsciPreprintId]> =>
 
 export const preprintsorgPreprintId = (): fc.Arbitrary<PreprintsorgPreprintId> =>
   fc.record({
-    type: fc.constant('preprints.org'),
-    value: doi(fc.constant('20944')),
+    type: constant('preprints.org'),
+    value: doi(constant('20944')),
   })
 
 export const preprintsorgPreprintUrl = (): fc.Arbitrary<[URL, PreprintsorgPreprintId]> =>
   fc
     .tuple(
-      fc.stringOf(fc.oneof(alphanumeric(), fc.constant('.')), { minLength: 1 }).filter(id => !/^\.{1,2}$/.test(id)),
+      fc.stringOf(fc.oneof(alphanumeric(), constant('.')), { minLength: 1 }).filter(id => !/^\.{1,2}$/.test(id)),
       fc.integer({ min: 1 }),
     )
     .map(([id, version]) => [
@@ -615,8 +621,8 @@ export const preprintsorgPreprintUrl = (): fc.Arbitrary<[URL, PreprintsorgPrepri
 
 export const psyarxivPreprintId = (): fc.Arbitrary<PsyarxivPreprintId> =>
   fc.record({
-    type: fc.constant('psyarxiv'),
-    value: doi(fc.constant('31234')),
+    type: constant('psyarxiv'),
+    value: doi(constant('31234')),
   })
 
 export const psyarxivPreprintUrl = (): fc.Arbitrary<[URL, PsyarxivPreprintId]> =>
@@ -629,8 +635,8 @@ export const psyarxivPreprintUrl = (): fc.Arbitrary<[URL, PsyarxivPreprintId]> =
 
 export const researchSquarePreprintId = (): fc.Arbitrary<ResearchSquarePreprintId> =>
   fc.record({
-    type: fc.constant('research-square'),
-    value: doi(fc.constant('21203')),
+    type: constant('research-square'),
+    value: doi(constant('21203')),
   })
 
 export const researchSquarePreprintUrl = (): fc.Arbitrary<[URL, ResearchSquarePreprintId]> =>
@@ -643,8 +649,8 @@ export const researchSquarePreprintUrl = (): fc.Arbitrary<[URL, ResearchSquarePr
 
 export const scieloPreprintId = (): fc.Arbitrary<ScieloPreprintId> =>
   fc.record({
-    type: fc.constant('scielo'),
-    value: doi(fc.constant('1590')),
+    type: constant('scielo'),
+    value: doi(constant('1590')),
   })
 
 export const scieloPreprintUrl = (): fc.Arbitrary<[URL, ScieloPreprintId]> =>
@@ -657,8 +663,8 @@ export const scieloPreprintUrl = (): fc.Arbitrary<[URL, ScieloPreprintId]> =>
 
 export const scienceOpenPreprintId = (): fc.Arbitrary<ScienceOpenPreprintId> =>
   fc.record({
-    type: fc.constant('science-open'),
-    value: doi(fc.constant('14293')),
+    type: constant('science-open'),
+    value: doi(constant('14293')),
   })
 
 export const scienceOpenPreprintUrl = (): fc.Arbitrary<[URL, ScienceOpenPreprintId]> =>
@@ -669,8 +675,8 @@ export const scienceOpenPreprintUrl = (): fc.Arbitrary<[URL, ScienceOpenPreprint
 
 export const socarxivPreprintId = (): fc.Arbitrary<SocarxivPreprintId> =>
   fc.record({
-    type: fc.constant('socarxiv'),
-    value: doi(fc.constant('31235')),
+    type: constant('socarxiv'),
+    value: doi(constant('31235')),
   })
 
 export const socarxivPreprintUrl = (): fc.Arbitrary<[URL, SocarxivPreprintId]> =>
@@ -683,8 +689,8 @@ export const socarxivPreprintUrl = (): fc.Arbitrary<[URL, SocarxivPreprintId]> =
 
 export const techrxivPreprintId = (): fc.Arbitrary<TechrxivPreprintId> =>
   fc.record({
-    type: fc.constant('techrxiv'),
-    value: doi(fc.constant('36227')),
+    type: constant('techrxiv'),
+    value: doi(constant('36227')),
   })
 
 export const techrxivPreprintUrl = (): fc.Arbitrary<[URL, TechrxivPreprintId]> =>
@@ -692,8 +698,8 @@ export const techrxivPreprintUrl = (): fc.Arbitrary<[URL, TechrxivPreprintId]> =
 
 export const zenodoPreprintId = (): fc.Arbitrary<ZenodoPreprintId> =>
   fc.record({
-    type: fc.constant('zenodo'),
-    value: doi(fc.constant('5281')),
+    type: constant('zenodo'),
+    value: doi(constant('5281')),
   })
 
 export const zenodoPreprintUrl = (): fc.Arbitrary<[URL, ZenodoPreprintId]> =>
@@ -706,14 +712,14 @@ export const zenodoPreprintUrl = (): fc.Arbitrary<[URL, ZenodoPreprintId]> =>
 
 export const biorxivOrMedrxivPreprintId = (): fc.Arbitrary<BiorxivOrMedrxivPreprintId> =>
   fc.record({
-    type: fc.constant('biorxiv-medrxiv'),
-    value: doi(fc.constant('1101')),
+    type: constant('biorxiv-medrxiv'),
+    value: doi(constant('1101')),
   })
 
 export const zenodoOrAfricarxivPreprintId = (): fc.Arbitrary<ZenodoOrAfricarxivPreprintId> =>
   fc.record({
-    type: fc.constant('zenodo-africarxiv'),
-    value: doi(fc.constant('5281')),
+    type: constant('zenodo-africarxiv'),
+    value: doi(constant('5281')),
   })
 
 export const preprintId = (): fc.Arbitrary<PreprintId> => fc.oneof(philsciPreprintId(), preprintIdWithDoi())
@@ -779,7 +785,7 @@ export const datacitePreprintId = (): fc.Arbitrary<DatacitePreprintId> =>
 
 export const orcid = (): fc.Arbitrary<Orcid> =>
   fc
-    .stringOf(fc.constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), {
+    .stringOf(constantFrom('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), {
       minLength: 4 + 4 + 4 + 3,
       maxLength: 4 + 4 + 4 + 3,
     })
@@ -790,10 +796,10 @@ export const authorInvite = (): fc.Arbitrary<AuthorInvite> =>
   fc.oneof(openAuthorInvite(), declinedAuthorInvite(), assignedAuthorInvite(), completedAuthorInvite())
 
 export const openAuthorInvite = (): fc.Arbitrary<OpenAuthorInvite> =>
-  fc.record({ status: fc.constant('open'), emailAddress: emailAddress(), review: fc.integer({ min: 1 }) })
+  fc.record({ status: constant('open'), emailAddress: emailAddress(), review: fc.integer({ min: 1 }) })
 
 export const declinedAuthorInvite = (): fc.Arbitrary<DeclinedAuthorInvite> =>
-  fc.record({ status: fc.constant('declined'), review: fc.integer({ min: 1 }) })
+  fc.record({ status: constant('declined'), review: fc.integer({ min: 1 }) })
 
 export const assignedAuthorInvite = ({
   orcid: _orcid,
@@ -804,10 +810,10 @@ export const assignedAuthorInvite = ({
 } = {}): fc.Arbitrary<AssignedAuthorInvite> =>
   fc.record(
     {
-      status: fc.constant('assigned'),
+      status: constant('assigned'),
       emailAddress: emailAddress(),
       orcid: _orcid ?? orcid(),
-      persona: persona ?? fc.constantFrom('public', 'pseudonym'),
+      persona: persona ?? constantFrom('public', 'pseudonym'),
       review: fc.integer({ min: 1 }),
     },
     !persona ? { requiredKeys: ['status', 'emailAddress', 'orcid', 'review'] } : {},
@@ -816,41 +822,37 @@ export const assignedAuthorInvite = ({
 export const completedAuthorInvite = ({
   orcid: _orcid,
 }: { orcid?: fc.Arbitrary<Orcid> } = {}): fc.Arbitrary<CompletedAuthorInvite> =>
-  fc.record({ status: fc.constant('completed'), orcid: _orcid ?? orcid(), review: fc.integer({ min: 1 }) })
+  fc.record({ status: constant('completed'), orcid: _orcid ?? orcid(), review: fc.integer({ min: 1 }) })
 
 export const careerStage = (): fc.Arbitrary<CareerStage> =>
   fc.record({ value: careerStageValue(), visibility: careerStageVisibility() })
 
-export const careerStageValue = (): fc.Arbitrary<CareerStage['value']> => fc.constantFrom('early', 'mid', 'late')
+export const careerStageValue = (): fc.Arbitrary<CareerStage['value']> => constantFrom('early', 'mid', 'late')
 
-export const careerStageVisibility = (): fc.Arbitrary<CareerStage['visibility']> =>
-  fc.constantFrom('public', 'restricted')
+export const careerStageVisibility = (): fc.Arbitrary<CareerStage['visibility']> => constantFrom('public', 'restricted')
 
 export const languages = (): fc.Arbitrary<Languages> =>
   fc.record({ value: nonEmptyString(), visibility: languagesVisibility() })
 
-export const languagesVisibility = (): fc.Arbitrary<Languages['visibility']> => fc.constantFrom('public', 'restricted')
+export const languagesVisibility = (): fc.Arbitrary<Languages['visibility']> => constantFrom('public', 'restricted')
 
 export const location = (): fc.Arbitrary<Location> =>
   fc.record({ value: nonEmptyString(), visibility: locationVisibility() })
 
-export const locationVisibility = (): fc.Arbitrary<Location['visibility']> => fc.constantFrom('public', 'restricted')
+export const locationVisibility = (): fc.Arbitrary<Location['visibility']> => constantFrom('public', 'restricted')
 
 export const researchInterests = (): fc.Arbitrary<ResearchInterests> =>
   fc.record({ value: nonEmptyString(), visibility: researchInterestsVisibility() })
 
 export const researchInterestsVisibility = (): fc.Arbitrary<ResearchInterests['visibility']> =>
-  fc.constantFrom('public', 'restricted')
+  constantFrom('public', 'restricted')
 
 export const isOpenForRequests = (): fc.Arbitrary<IsOpenForRequests> =>
-  fc.oneof(
-    fc.constant({ value: false as const }),
-    fc.record({ value: fc.constant(true as const), visibility: isOpenForRequestsVisibility() }),
-  )
+  fc.oneof(constant({ value: false }), fc.record({ value: constant(true), visibility: isOpenForRequestsVisibility() }))
 
 export const isOpenForRequestsVisibility = (): fc.Arbitrary<
   Extract<IsOpenForRequests, { value: true }>['visibility']
-> => fc.constantFrom('public', 'restricted')
+> => constantFrom('public', 'restricted')
 
 export const slackUser = (): fc.Arbitrary<SlackUser> => fc.record({ name: fc.string(), image: url(), profile: url() })
 
@@ -863,24 +865,22 @@ export const orcidToken = (): fc.Arbitrary<OrcidToken> =>
     scopes: set(nonEmptyString()),
   })
 
-export const clubId = (): fc.Arbitrary<ClubId> => fc.constantFrom(...clubIds)
+export const clubId = (): fc.Arbitrary<ClubId> => constantFrom(...clubIds)
 
 export const pseudonym = (): fc.Arbitrary<Pseudonym> =>
-  fc
-    .tuple(fc.constantFrom(...colors), fc.constantFrom(...animals))
-    .map(parts => capitalCase(parts.join(' ')) as Pseudonym)
+  fc.tuple(constantFrom(...colors), constantFrom(...animals)).map(parts => capitalCase(parts.join(' ')) as Pseudonym)
 
 export const profileId = (): fc.Arbitrary<ProfileId> => fc.oneof(orcidProfileId(), pseudonymProfileId())
 
 export const orcidProfileId = (): fc.Arbitrary<OrcidProfileId> =>
   fc.record({
-    type: fc.constant('orcid'),
+    type: constant('orcid'),
     value: orcid(),
   })
 
 export const pseudonymProfileId = (): fc.Arbitrary<PseudonymProfileId> =>
   fc.record({
-    type: fc.constant('pseudonym'),
+    type: constant('pseudonym'),
     value: pseudonym(),
   })
 
@@ -911,7 +911,7 @@ export const origin = (): fc.Arbitrary<URL> => url().map(url => new URL(url.orig
 export const url = (): fc.Arbitrary<URL> => fc.webUrl().map(url => new URL(url))
 
 export const requestMethod = (): fc.Arbitrary<RequestMethod> =>
-  fc.constantFrom('CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE')
+  constantFrom('CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT', 'TRACE')
 
 const headerName = () =>
   fc.stringOf(
@@ -926,7 +926,7 @@ export const headers = () =>
     }),
   )
 
-export const statusCode = (): fc.Arbitrary<Status> => fc.constantFrom(...Object.values(Status))
+export const statusCode = (): fc.Arbitrary<Status> => constantFrom(...Object.values(Status))
 
 export const fetchResponse = ({ status }: { status?: fc.Arbitrary<number> } = {}): fc.Arbitrary<F.Response> =>
   fc
@@ -957,8 +957,8 @@ export const request = ({
 } = {}): fc.Arbitrary<Request> =>
   fc
     .record({
-      body: body ?? fc.constant(undefined),
-      headers: headers ?? fc.constant({}),
+      body: body ?? constant(undefined),
+      headers: headers ?? constant({}),
       method: method ?? requestMethod(),
       url: path ? fc.tuple(path, url()).map(([path, base]) => new URL(path, base).href) : fc.webUrl(),
     })
@@ -990,7 +990,7 @@ export const nonEmptyString = (): fc.Arbitrary<NonEmptyString> => fc.string({ mi
 export const nonEmptyStringOf = (charArb: fc.Arbitrary<string>): fc.Arbitrary<NonEmptyString> =>
   fc.stringOf(charArb, { minLength: 1 }).filter(isNonEmptyString)
 
-export const languageCode = (): fc.Arbitrary<LanguageCode> => fc.constantFrom(...ISO6391.getAllCodes())
+export const languageCode = (): fc.Arbitrary<LanguageCode> => constantFrom(...ISO6391.getAllCodes())
 
 export const user = (): fc.Arbitrary<User> =>
   fc.record({
