@@ -36,7 +36,7 @@ describe('authorInviteEnterEmailAddress', () => {
             title: fc.html(),
           }),
         }),
-        fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+        fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
       ])('using the invite email address', async (inviteId, [user, invite], prereview, contactEmailAddress) => {
         const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
         const getContactEmailAddress = jest.fn<GetContactEmailAddressEnv['getContactEmailAddress']>(_ =>
@@ -87,7 +87,7 @@ describe('authorInviteEnterEmailAddress', () => {
             title: fc.html(),
           }),
         }),
-        fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+        fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
         fc.uuid(),
       ])(
         'using a different email address',
@@ -151,7 +151,7 @@ describe('authorInviteEnterEmailAddress', () => {
             title: fc.html(),
           }),
         }),
-        fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+        fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
         fc.uuid(),
       ])(
         "ther verification email can't be sent",
@@ -213,7 +213,7 @@ describe('authorInviteEnterEmailAddress', () => {
             title: fc.html(),
           }),
         }),
-        fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+        fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
         fc.uuid(),
       ])(
         "when the contact email address can't be saved",
@@ -257,7 +257,7 @@ describe('authorInviteEnterEmailAddress', () => {
             title: fc.html(),
           }),
         }),
-        fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+        fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
       ])('when the form is invalid', async (inviteId, [user, invite], body, prereview, contactEmailAddress) => {
         const actual = await _.authorInviteEnterEmailAddress({ body, id: inviteId, method: 'POST', user })({
           generateUuid: shouldNotBeCalled,
@@ -291,7 +291,7 @@ describe('authorInviteEnterEmailAddress', () => {
           title: fc.html(),
         }),
       }),
-      fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+      fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
     ])(
       'when the form needs submitting',
       async (inviteId, [user, invite], method, body, prereview, contactEmailAddress) => {

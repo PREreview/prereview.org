@@ -894,7 +894,7 @@ describe('getPrereviewFromZenodo', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.integer(), fc.preprintDoi(), fc.constantFrom('not-found' as const, 'unavailable' as const)])(
+  test.prop([fc.integer(), fc.preprintDoi(), fc.constantFrom('not-found', 'unavailable')])(
     'when the preprint cannot be loaded',
     async (id, preprintDoi, error) => {
       const record: Record = {
@@ -1016,24 +1016,24 @@ describe('getPrereviewFromZenodo', () => {
     fc.integer(),
     fc.preprintDoi(),
     fc.constantFrom(
-      'annotationcollection' as const,
-      'article' as const,
-      'book' as const,
-      'conferencepaper' as const,
-      'datamanagementplan' as const,
-      'deliverable' as const,
-      'milestone' as const,
-      'other' as const,
-      'patent' as const,
-      'preprint' as const,
-      'proposal' as const,
-      'report' as const,
-      'section' as const,
-      'softwaredocumentation' as const,
-      'taxonomictreatment' as const,
-      'technicalnote' as const,
-      'thesis' as const,
-      'workingpaper' as const,
+      'annotationcollection',
+      'article',
+      'book',
+      'conferencepaper',
+      'datamanagementplan',
+      'deliverable',
+      'milestone',
+      'other',
+      'patent',
+      'preprint',
+      'proposal',
+      'report',
+      'section',
+      'softwaredocumentation',
+      'taxonomictreatment',
+      'technicalnote',
+      'thesis',
+      'workingpaper',
     ),
   ])('when the record is not a peer review', async (id, preprintDoi, publicationType) => {
     const record: Record = {
@@ -1646,7 +1646,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
     },
   )
 
-  test.prop([fc.profileId(), fc.preprintTitle(), fc.constantFrom('not-found' as const, 'unavailable' as const)])(
+  test.prop([fc.profileId(), fc.preprintTitle(), fc.constantFrom('not-found', 'unavailable')])(
     'when a preprint cannot be loaded',
     async (profile, preprint, error) => {
       const records: Records = {
@@ -2114,7 +2114,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
     expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.clubId(), fc.preprintTitle(), fc.constantFrom('not-found' as const, 'unavailable' as const)])(
+  test.prop([fc.clubId(), fc.preprintTitle(), fc.constantFrom('not-found', 'unavailable')])(
     'when a preprint cannot be loaded',
     async (club, preprint, error) => {
       const records: Records = {
@@ -2342,8 +2342,8 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
     fc.preprintId(),
     fc.option(fc.clubId(), { nil: undefined }),
     fc.oneof(
-      fc.constant([0, []] as const),
-      fc.constant([1, [{ name: '1 other author' }]] as const),
+      fc.constant([0, []]),
+      fc.constant([1, [{ name: '1 other author' }]]),
       fc.integer({ min: 2 }).map(number => [number, [{ name: `${number} other authors` }]] as const),
     ),
   ])('when the PREreviews can be loaded', async (preprint, club, [expectedAnonymous, otherAuthors]) => {
@@ -3023,7 +3023,7 @@ describe('addAuthorToRecordOnZenodo', () => {
     fc.string(),
     fc.integer({ min: 1 }),
     fc.user(),
-    fc.constantFrom('public' as const, 'pseudonym' as const),
+    fc.constantFrom('public', 'pseudonym'),
     fc.user(),
     fc.doi(),
   ])('when the deposition is not submitted', async (zenodoApiKey, id, user, persona, creator, doi) => {
@@ -3060,7 +3060,7 @@ describe('addAuthorToRecordOnZenodo', () => {
     fc.string(),
     fc.integer({ min: 1 }),
     fc.user(),
-    fc.constantFrom('public' as const, 'pseudonym' as const),
+    fc.constantFrom('public', 'pseudonym'),
     fc.oneof(
       fc.fetchResponse({ status: fc.integer({ min: 400 }) }).map(response => Promise.resolve(response)),
       fc.error().map(error => Promise.reject(error)),

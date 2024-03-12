@@ -31,7 +31,7 @@ describe('authorInvitePersona', () => {
             title: fc.html(),
           }),
         }),
-        fc.constantFrom('public' as const, 'pseudonym' as const),
+        fc.constantFrom('public', 'pseudonym'),
       ])('when the persona is set', async (inviteId, [user, invite], prereview, persona) => {
         const getAuthorInvite = jest.fn<GetAuthorInviteEnv['getAuthorInvite']>(_ => TE.right(invite))
         const getPrereview = jest.fn<GetPrereviewEnv['getPrereview']>(_ => TE.right(prereview))
@@ -64,7 +64,7 @@ describe('authorInvitePersona', () => {
             title: fc.html(),
           }),
         }),
-        fc.constantFrom('public' as const, 'pseudonym' as const),
+        fc.constantFrom('public', 'pseudonym'),
       ])("when the persona can't be set", async (inviteId, [user, invite], prereview, persona) => {
         const actual = await _.authorInvitePersona({ body: { persona }, id: inviteId, method: 'POST', user })({
           getAuthorInvite: () => TE.right(invite),

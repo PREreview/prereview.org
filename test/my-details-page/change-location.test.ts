@@ -13,7 +13,7 @@ describe('changeLocation', () => {
     fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.location()),
+    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.location()),
   ])('when there is a logged in user', async (body, method, user, location) => {
     const actual = await _.changeLocation({ body, method, user })({
       deleteLocation: shouldNotBeCalled,
@@ -78,7 +78,7 @@ describe('changeLocation', () => {
   test.prop([
     fc.record({ location: fc.nonEmptyString() }),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.location()),
+    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.location()),
   ])('when the form has been submitted but the location cannot be saved', async (body, user, existingLocation) => {
     const actual = await _.changeLocation({ body, method: 'POST', user })({
       deleteLocation: () => TE.left('unavailable'),

@@ -13,7 +13,7 @@ describe('changeOpenForRequests', () => {
     fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.isOpenForRequests()),
+    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.isOpenForRequests()),
   ])('when there is a logged in user', async (body, method, user, openForRequests) => {
     const actual = await _.changeOpenForRequests({ body, method, user })({
       isOpenForRequests: () => TE.fromEither(openForRequests),
@@ -33,7 +33,7 @@ describe('changeOpenForRequests', () => {
   })
 
   describe('when the form has been submitted', () => {
-    test.prop([fc.constantFrom('yes' as const, 'no' as const), fc.user(), fc.isOpenForRequests()])(
+    test.prop([fc.constantFrom('yes', 'no'), fc.user(), fc.isOpenForRequests()])(
       'there is open for requests already',
       async (openForRequests, user, existingOpenForRequests) => {
         const saveOpenForRequests = jest.fn<_.Env['saveOpenForRequests']>(_ => TE.right(undefined))
@@ -88,11 +88,7 @@ describe('changeOpenForRequests', () => {
     )
   })
 
-  test.prop([
-    fc.constantFrom('yes', 'no'),
-    fc.user(),
-    fc.either(fc.constantFrom('not-found' as const), fc.isOpenForRequests()),
-  ])(
+  test.prop([fc.constantFrom('yes', 'no'), fc.user(), fc.either(fc.constantFrom('not-found'), fc.isOpenForRequests())])(
     'when the form has been submitted but the career stage cannot be saved',
     async (openForRequests, user, existingOpenForRequests) => {
       const actual = await _.changeOpenForRequests({ body: { openForRequests }, method: 'POST', user })({

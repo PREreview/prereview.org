@@ -102,7 +102,7 @@ describe('authorInviteDecline', () => {
       }),
       doi: fc.doi(),
       language: fc.option(fc.languageCode(), { nil: undefined }),
-      license: fc.constant('CC-BY-4.0' as const),
+      license: fc.constant('CC-BY-4.0'),
       preprint: fc.record({
         id: fc.preprintId(),
         language: fc.languageCode(),

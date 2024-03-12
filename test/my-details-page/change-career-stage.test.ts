@@ -13,7 +13,7 @@ describe('changeCareerStage', () => {
     fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.careerStage()),
+    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.careerStage()),
   ])('when there is a logged in user', async (body, method, user, careerStage) => {
     const actual = await _.changeCareerStage({ body, method, user })({
       deleteCareerStage: shouldNotBeCalled,
@@ -81,7 +81,7 @@ describe('changeCareerStage', () => {
   test.prop([
     fc.oneof(fc.careerStageValue(), fc.constant('skip')),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.careerStage()),
+    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.careerStage()),
   ])(
     'when the form has been submitted but the career stage cannot be saved',
     async (careerStage, user, existingCareerStage) => {

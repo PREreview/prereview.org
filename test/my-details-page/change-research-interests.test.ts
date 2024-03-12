@@ -13,7 +13,7 @@ describe('changeResearchInterests', () => {
     fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.researchInterests()),
+    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.researchInterests()),
   ])('when there is a logged in user', async (body, method, user, researchInterests) => {
     const actual = await _.changeResearchInterests({ body, method, user })({
       deleteResearchInterests: shouldNotBeCalled,
@@ -84,7 +84,7 @@ describe('changeResearchInterests', () => {
   test.prop([
     fc.record({ researchInterests: fc.nonEmptyString() }),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.researchInterests()),
+    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.researchInterests()),
   ])(
     'when the form has been submitted but the research interests cannot be saved',
     async (body, user, existingResearchInterests) => {

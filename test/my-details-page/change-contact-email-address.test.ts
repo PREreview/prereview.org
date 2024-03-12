@@ -13,7 +13,7 @@ describe('changeContactEmailAddress', () => {
     fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.contactEmailAddress()),
+    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.contactEmailAddress()),
   ])('when there is a logged in user', async (body, method, user, emailAddress) => {
     const actual = await _.changeContactEmailAddress({ body, method, user })({
       generateUuid: shouldNotBeCalled,
@@ -39,7 +39,7 @@ describe('changeContactEmailAddress', () => {
       test.prop([
         fc.emailAddress(),
         fc.user(),
-        fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+        fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
         fc.uuid(),
       ])(
         'when it is different to the previous value',
@@ -102,7 +102,7 @@ describe('changeContactEmailAddress', () => {
           .filter(string => !string.includes('.') || !string.includes('@') || /\s/g.test(string)),
       }),
       fc.user(),
-      fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+      fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
     ])('it is not an email address', async (body, user, emailAddress) => {
       const actual = await _.changeContactEmailAddress({ body, method: 'POST', user })({
         generateUuid: shouldNotBeCalled,
@@ -126,7 +126,7 @@ describe('changeContactEmailAddress', () => {
     test.prop([
       fc.record({ emailAddress: fc.emailAddress() }),
       fc.user(),
-      fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+      fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
       fc.uuid(),
     ])('the email address cannot be saved', async (body, user, emailAddress, verificationToken) => {
       const actual = await _.changeContactEmailAddress({ body, method: 'POST', user })({
@@ -149,7 +149,7 @@ describe('changeContactEmailAddress', () => {
     test.prop([
       fc.record({ emailAddress: fc.emailAddress() }),
       fc.user(),
-      fc.either(fc.constant('not-found' as const), fc.contactEmailAddress()),
+      fc.either(fc.constant('not-found'), fc.contactEmailAddress()),
       fc.uuid(),
     ])('the verification email cannot be sent', async (body, user, emailAddress, verificationToken) => {
       const actual = await _.changeContactEmailAddress({ body, method: 'POST', user })({

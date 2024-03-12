@@ -13,7 +13,7 @@ describe('changeLanguages', () => {
     fc.anything(),
     fc.string().filter(method => method !== 'POST'),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.languages()),
+    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.languages()),
   ])('when there is a logged in user', async (body, method, user, languages) => {
     const actual = await _.changeLanguages({ body, method, user })({
       deleteLanguages: shouldNotBeCalled,
@@ -78,7 +78,7 @@ describe('changeLanguages', () => {
   test.prop([
     fc.record({ languages: fc.nonEmptyString() }),
     fc.user(),
-    fc.either(fc.constantFrom('not-found' as const, 'unavailable' as const), fc.languages()),
+    fc.either(fc.constantFrom('not-found', 'unavailable'), fc.languages()),
   ])('when the form has been submitted but languages cannot be saved', async (body, user, existingLanguages) => {
     const actual = await _.changeLanguages({ body, method: 'POST', user })({
       deleteLanguages: () => TE.left('unavailable'),

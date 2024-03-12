@@ -172,7 +172,7 @@ describe('authorInvite', () => {
           title: fc.html(),
         }),
       }),
-      fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+      fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
     ])(
       "when there isn't a verified email address",
       async (inviteId, [user, invite], method, prereview, contactEmailAddress) => {

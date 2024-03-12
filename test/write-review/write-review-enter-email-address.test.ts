@@ -104,7 +104,7 @@ describe('writeReviewEnterEmailAddress', () => {
       ),
     fc.uuid(),
     fc.user(),
-    fc.either(fc.constant('not-found' as const), fc.unverifiedContactEmailAddress()),
+    fc.either(fc.constant('not-found'), fc.unverifiedContactEmailAddress()),
     fc.form(),
   ])(
     'when an email address is given',

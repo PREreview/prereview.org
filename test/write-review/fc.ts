@@ -313,11 +313,11 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
       ),
       fc.oneof(
         fc.record({
-          competingInterests: fc.constant('yes' as const),
+          competingInterests: fc.constant('yes'),
           competingInterestsDetails: fc.nonEmptyString(),
         }),
         fc.record({
-          competingInterests: fc.constant('no' as const),
+          competingInterests: fc.constant('no'),
         }),
       ),
       fc.oneof(
@@ -328,7 +328,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           },
           { requiredKeys: ['introductionMatches'] },
         ),
-        fc.record({ introductionMatches: fc.constant('skip' as const) }),
+        fc.record({ introductionMatches: fc.constant('skip') }),
       ),
       fc.oneof(
         fc.record(
@@ -338,7 +338,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           },
           { requiredKeys: ['methodsAppropriate'] },
         ),
-        fc.record({ methodsAppropriate: fc.constant('skip' as const) }),
+        fc.record({ methodsAppropriate: fc.constant('skip') }),
       ),
       fc.oneof(
         fc.record(
@@ -348,7 +348,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           },
           { requiredKeys: ['resultsSupported'] },
         ),
-        fc.record({ resultsSupported: fc.constant('skip' as const) }),
+        fc.record({ resultsSupported: fc.constant('skip') }),
       ),
       fc.oneof(
         fc.record(
@@ -358,7 +358,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           },
           { requiredKeys: ['dataPresentation'] },
         ),
-        fc.record({ dataPresentation: fc.constant('skip' as const) }),
+        fc.record({ dataPresentation: fc.constant('skip') }),
       ),
       fc.oneof(
         fc.record(
@@ -368,7 +368,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           },
           { requiredKeys: ['findingsNextSteps'] },
         ),
-        fc.record({ findingsNextSteps: fc.constant('skip' as const) }),
+        fc.record({ findingsNextSteps: fc.constant('skip') }),
       ),
       fc.oneof(
         fc.record(
@@ -378,7 +378,7 @@ export const completedQuestionsForm = (): fc.Arbitrary<Extract<CompletedForm, { 
           },
           { requiredKeys: ['novel'] },
         ),
-        fc.record({ novel: fc.constant('skip' as const) }),
+        fc.record({ novel: fc.constant('skip') }),
       ),
       fc.record(
         {
@@ -412,24 +412,24 @@ export const completedFreeformForm = (): fc.Arbitrary<Extract<CompletedForm, { r
         conduct: conduct(),
         persona: persona(),
         review: fc.html(),
-        reviewType: fc.constant('freeform' as const),
+        reviewType: fc.constant('freeform'),
       }),
       fc.oneof(
         fc.record({
-          moreAuthors: fc.constant('yes' as const),
+          moreAuthors: fc.constant('yes'),
           otherAuthors: otherAuthors(),
         }),
         fc.record({
-          moreAuthors: fc.constantFrom('yes-private' as const, 'no' as const),
+          moreAuthors: fc.constantFrom('yes-private', 'no'),
         }),
       ),
       fc.oneof(
         fc.record({
-          competingInterests: fc.constant('yes' as const),
+          competingInterests: fc.constant('yes'),
           competingInterestsDetails: fc.nonEmptyString(),
         }),
         fc.record({
-          competingInterests: fc.constant('no' as const),
+          competingInterests: fc.constant('no'),
         }),
       ),
     )
