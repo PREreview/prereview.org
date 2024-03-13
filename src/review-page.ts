@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
-import type { Doi } from 'doi-ts'
+import { type Doi, toUrl } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -142,7 +142,7 @@ function createPage({ id, review }: { id: number; review: Prereview }) {
           </div>
           <div>
             <dt>DOI</dt>
-            <dd class="doi" translate="no">${review.doi}</dd>
+            <dd><a href="${toUrl(review.doi).href}" class="doi" translate="no">${review.doi}</a></dd>
           </div>
           <div>
             <dt>License</dt>

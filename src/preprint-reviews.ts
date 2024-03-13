@@ -1,4 +1,4 @@
-import { isDoi } from 'doi-ts'
+import { isDoi, toUrl } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as I from 'fp-ts/Identity'
 import type * as RT from 'fp-ts/ReaderTask'
@@ -197,7 +197,7 @@ function createPage({
                 id => html`
                   <div>
                     <dt>DOI</dt>
-                    <dd class="doi" translate="no">${id.value}</dd>
+                    <dd><a href="${toUrl(id.value).href}" class="doi" translate="no">${id.value}</a></dd>
                   </div>
                 `,
               )
