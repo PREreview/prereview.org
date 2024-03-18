@@ -299,6 +299,7 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
     .getByLabel('What are your research interests?')
     .fill('Nunc vestibulum sapien eu magna elementum consectetur.')
 
+  await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
   await page.mouse.move(0, 0)
   await expect(page).toHaveScreenshot()
 
