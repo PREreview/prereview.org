@@ -274,7 +274,8 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
   },
   'reviewing-dental-articles-club': {
     name: 'Reviewing Dental Articles Club',
-    description: html`<p>
+    description: html`
+      <p>
         The Reviewing Dental Articles Club exists to comprehensively train revolutionary professionals in Health
         Sciences, produce knowledge and technologies and innovations, and develop university extension and exercise
         methodological guidance of study plans and programs for postgraduate courses and modalities.
@@ -282,7 +283,8 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       <p>
         It also exists to help the authors of the stomatology union in improving the writing and publication of articles
         related to this science.
-      </p> `,
+      </p>
+    `,
     leads: [{ name: 'Alain Manuel Chaple Gil', orcid: '0000-0002-8571-4429' as Orcid }],
     contact: 'alain.chaple@uautonoma.cl' as EmailAddress,
   },
