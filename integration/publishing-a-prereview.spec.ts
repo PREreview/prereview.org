@@ -146,6 +146,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
       .getByLabel('How does the introduction only partly explain the objective?')
       .fill('Consectetur adipiscing elit.')
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -153,6 +154,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByLabel('Neither appropriate nor inappropriate', { exact: true }).check()
     await page.getByLabel('Why are they neither appropriate nor inappropriate?').fill('Sed egestas tincidunt lacus.')
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -160,12 +162,14 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByLabel('Neither supported nor unsupported', { exact: true }).check()
     await page.getByLabel('Why are they neither supported nor unsupported?').fill('At blandit est facilisis et.')
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
     await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.getByLabel('Neither appropriate and clear nor inappropriate and unclear', { exact: true }).check()
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -176,6 +180,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByLabel('Neither clearly nor unclearly', { exact: true }).check()
     await page.getByLabel('How is it neither clear nor unclear?').fill('Cras lobortis quam vitae.')
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -183,6 +188,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByLabel('Moderately likely', { exact: true }).check()
     await page.getByLabel('Why is it moderately likely?').fill('Aenean nisl eros.')
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -190,6 +196,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByLabel('No').check()
     await page.getByLabel('Why wouldn’t it?').fill('Condimentum in mi in.')
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -197,6 +204,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByLabel('Yes, but it needs to be improved').check()
     await page.getByLabel('What needs to be improved?').fill('Dignissim lobortis ligula.')
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -204,6 +212,7 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.getByLabel('Yes, after minor changes').check()
     await page.getByLabel('What needs tweaking?').fill('Quisque in blandit arcu.')
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
@@ -803,6 +812,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
 
     testInfo.skip(contextOptions.forcedColors === 'active', 'https://github.com/microsoft/playwright/issues/15211')
 
+    await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
