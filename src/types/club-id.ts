@@ -16,6 +16,7 @@ export const clubIds = [
   'nsa-utd',
   'open-box-science',
   'open-science-community-iraqi',
+  'reviewing-dental-articles-club',
   'rr-id-student-reviewer-club',
   'tsl-preprint-club',
 ] as const
