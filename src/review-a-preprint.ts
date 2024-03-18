@@ -294,7 +294,7 @@ const unsupportedDoiPage = PageResponse({
 
     <p>
       We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv,
-      engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO,
+      engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research&nbsp;Square, SciELO,
       ScienceOpen, SocArXiv and Zenodo.
     </p>
 
@@ -316,8 +316,8 @@ const unsupportedUrlPage = PageResponse({
 
     <p>
       We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv,
-      engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO,
-      ScienceOpen, SocArXiv and Zenodo.
+      engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research&nbsp;Square,
+      SciELO, ScienceOpen, SocArXiv and Zenodo.
     </p>
 
     <p>
@@ -339,8 +339,8 @@ const notAPreprintPage = PageResponse({
 
     <p>
       We support preprints from AfricArXiv, arXiv, Authorea, bioRxiv, ChemRxiv, EarthArXiv, EcoEvoRxiv, EdArXiv,
-      engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, Research&nbsp;Square, SciELO,
-      ScienceOpen, SocArXiv and Zenodo.
+      engrXiv, medRxiv, MetaArXiv, OSF, PhilSci-Archive, Preprints.org, PsyArXiv, PsychArchives, Research&nbsp;Square,
+      SciELO, ScienceOpen, SocArXiv and Zenodo.
     </p>
 
     <p>If this is a preprint, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
