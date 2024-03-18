@@ -65,7 +65,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
       () =>
         work.types.resourceType?.toLowerCase() === 'preprint' ||
         work.types.resourceTypeGeneral?.toLowerCase() === 'preprint' ||
-        work.types.resourceTypeGeneral?.toLowerCase() === 'text',
+        (work.types.resourceTypeGeneral?.toLowerCase() === 'text' && hasRegistrant('48550')(work.doi)),
       () => 'not a preprint',
     ),
     E.apSW(
