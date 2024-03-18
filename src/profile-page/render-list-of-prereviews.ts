@@ -62,6 +62,7 @@ export function renderListOfPrereviews(prereviews: Prereviews, name: NonEmptyStr
                         .with('philsci', () => 'PhilSci-Archive')
                         .with('preprints.org', () => 'Preprints.org')
                         .with('psyarxiv', () => 'PsyArXiv')
+                        .with('psycharchives', () => 'PsychArchives')
                         .with('research-square', () => 'Research Square')
                         .with('scielo', () => 'SciELO Preprints')
                         .with('science-open', () => 'ScienceOpen Preprints')

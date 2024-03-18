@@ -22,6 +22,7 @@ export type PreprintId =
   | PhilsciPreprintId
   | PreprintsorgPreprintId
   | PsyarxivPreprintId
+  | PsychArchivesPreprintId
   | ResearchSquarePreprintId
   | ScieloPreprintId
   | ScienceOpenPreprintId
@@ -123,6 +124,11 @@ export interface PsyarxivPreprintId {
   readonly value: Doi<'31234'>
 }
 
+export interface PsychArchivesPreprintId {
+  readonly type: 'psycharchives'
+  readonly value: Doi<'23668'>
+}
+
 export interface ResearchSquarePreprintId {
   readonly type: 'research-square'
   readonly value: Doi<'21203'>
@@ -174,6 +180,7 @@ export const isPreprintDoi: Refinement<Doi, Extract<IndeterminatePreprintId, { v
   '26434',
   '20944',
   '22541',
+  '23668',
   '31219',
   '31222',
   '31223',
@@ -211,6 +218,7 @@ export function fromPreprintDoi(
     .when(hasRegistrant('17605'), doi => ({ type: 'osf', value: doi }) satisfies OsfPreprintId)
     .when(hasRegistrant('21203'), doi => ({ type: 'research-square', value: doi }) satisfies ResearchSquarePreprintId)
     .when(hasRegistrant('22541'), doi => ({ type: 'authorea', value: doi }) satisfies AuthoreaPreprintId)
+    .when(hasRegistrant('23668'), doi => ({ type: 'psycharchives', value: doi }) satisfies PsychArchivesPreprintId)
     .when(hasRegistrant('26434'), doi => ({ type: 'chemrxiv', value: doi }) satisfies ChemrxivPreprintId)
     .when(hasRegistrant('20944'), doi => ({ type: 'preprints.org', value: doi }) satisfies PreprintsorgPreprintId)
     .when(hasRegistrant('31219'), doi => ({ type: 'osf-preprints', value: doi }) satisfies OsfPreprintsPreprintId)

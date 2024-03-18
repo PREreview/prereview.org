@@ -86,6 +86,7 @@ import {
   type PreprintId,
   type PreprintsorgPreprintId,
   type PsyarxivPreprintId,
+  type PsychArchivesPreprintId,
   type ResearchSquarePreprintId,
   type ScieloPreprintId,
   type ScienceOpenPreprintId,
@@ -633,6 +634,12 @@ export const psyarxivPreprintUrl = (): fc.Arbitrary<[URL, PsyarxivPreprintId]> =
       { type: 'psyarxiv', value: `10.31234/osf.io/${id}` as Doi<'31234'> },
     ])
 
+export const psychArchivesPreprintId = (): fc.Arbitrary<PsychArchivesPreprintId> =>
+  fc.record({
+    type: constant('psycharchives'),
+    value: doi(constant('23668')),
+  })
+
 export const researchSquarePreprintId = (): fc.Arbitrary<ResearchSquarePreprintId> =>
   fc.record({
     type: constant('research-square'),
@@ -741,6 +748,7 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
     osfPreprintsPreprintId(),
     preprintsorgPreprintId(),
     psyarxivPreprintId(),
+    psychArchivesPreprintId(),
     researchSquarePreprintId(),
     scieloPreprintId(),
     scienceOpenPreprintId(),

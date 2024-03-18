@@ -240,6 +240,7 @@ function createUnknownPreprintWithDoiPage(preprint: Extract<IndeterminatePreprin
           .with('osf', 'osf-preprints', () => 'an OSF')
           .with('preprints.org', () => 'a Preprints.org')
           .with('psyarxiv', () => 'a PsyArXiv')
+          .with('psycharchives', () => 'a PsychArchives')
           .with('research-square', () => 'a Research Square')
           .with('scielo', () => 'a SciELO')
           .with('science-open', () => 'a ScienceOpen')
