@@ -20,6 +20,7 @@ import type {
   AfricarxivZenodoPreprintId,
   ArxivPreprintId,
   OsfPreprintId,
+  PsychArchivesPreprintId,
   ZenodoPreprintId,
 } from './types/preprint-id'
 
@@ -32,12 +33,14 @@ export type DatacitePreprintId =
   | AfricarxivZenodoPreprintId
   | ArxivPreprintId
   | OsfPreprintId
+  | PsychArchivesPreprintId
   | ZenodoPreprintId
 
 export const isDatacitePreprintDoi: Refinement<Doi, DatacitePreprintId['value']> = hasRegistrant(
   '5281',
   '6084',
   '17605',
+  '23668',
   '48550',
 )
 
@@ -59,7 +62,10 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
   return pipe(
     E.Do,
     E.filterOrElse(
-      () => work.types.resourceTypeGeneral === 'Preprint' || work.types.resourceTypeGeneral === 'Text',
+      () =>
+        work.types.resourceType === 'preprint' ||
+        work.types.resourceTypeGeneral === 'Preprint' ||
+        work.types.resourceTypeGeneral === 'Text',
       () => 'not a preprint',
     ),
     E.apSW(
@@ -113,6 +119,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
+              .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
               .with({ type: 'zenodo', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
@@ -137,6 +144,7 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
               .with({ type: 'africarxiv', text: P.select() }, detectLanguageFrom('en', 'fr'))
               .with({ type: 'arxiv' }, () => O.some('en' as const))
               .with({ type: 'osf', text: P.select() }, detectLanguage)
+              .with({ type: 'psycharchives', text: P.select() }, detectLanguageFrom('de', 'en'))
               .with({ type: 'zenodo', text: P.select() }, detectLanguage)
               .exhaustive(),
           ),
@@ -245,6 +253,13 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
           value: work.doi,
         }) satisfies OsfPreprintId,
     ),
+  ),
+  pipe(
+    D.fromStruct({
+      doi: D.fromRefinement(hasRegistrant('23668'), 'DOI'),
+      publisher: D.literal('PsychArchives'),
+    }),
+    D.map(work => ({ type: 'psycharchives', value: work.doi }) satisfies PsychArchivesPreprintId),
   ),
   pipe(
     D.fromStruct({

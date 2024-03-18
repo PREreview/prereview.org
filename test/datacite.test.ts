@@ -778,6 +778,161 @@ describe('getPreprintFromDatacite', () => {
       )
     })
 
+    test.prop([fc.psychArchivesPreprintId(), fc.plainDate()])('from PsychArchives', async (id, posted) => {
+      const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
+        body: {
+          data: {
+            id: '10.23668/psycharchives.13965',
+            type: 'dois',
+            attributes: {
+              doi: id.value,
+              prefix: '10.23668',
+              suffix: 'psycharchives.13965',
+              identifiers: [{ identifier: 'https://hdl.handle.net/20.500.12034/8684.2', identifierType: 'uri' }],
+              alternateIdentifiers: [
+                { alternateIdentifierType: 'uri', alternateIdentifier: 'https://hdl.handle.net/20.500.12034/8684.2' },
+              ],
+              creators: [
+                {
+                  name: 'Ganster, Philipp',
+                  nameType: 'Personal',
+                  givenName: 'Philipp',
+                  familyName: 'Ganster',
+                  affiliation: [],
+                  nameIdentifiers: [],
+                },
+              ],
+              titles: [
+                {
+                  title:
+                    'Infinit wachsen - Welche Bedingungen müssen wir schaffen, um unser individuelles Wachstum optimal zu fördern?',
+                },
+              ],
+              publisher: 'PsychArchives',
+              container: {},
+              publicationYear: 2023,
+              subjects: [
+                { subject: 'Individualisierung' },
+                { subject: 'Wachstum' },
+                { subject: 'Aufklärung' },
+                { subject: '150', subjectScheme: 'ddc' },
+              ],
+              contributors: [
+                {
+                  name: 'Leibniz Institut Für Psychologie (ZPID)',
+                  affiliation: [],
+                  contributorType: 'DataManager',
+                  nameIdentifiers: [],
+                },
+                {
+                  name: 'Leibniz Institut Für Psychologie (ZPID)',
+                  affiliation: [],
+                  contributorType: 'HostingInstitution',
+                  nameIdentifiers: [],
+                },
+              ],
+              dates: [
+                { date: '2023-12-12', dateType: 'Accepted' },
+                { date: '2023-09-07', dateType: 'Available' },
+                { date: '2023-12-12', dateType: 'Available' },
+                { date: posted.toString(), dateType: 'Issued' },
+              ],
+              language: null,
+              types: {
+                ris: 'RPRT',
+                bibtex: 'article',
+                citeproc: 'article-journal',
+                schemaOrg: 'ScholarlyArticle',
+                resourceType: 'preprint',
+                resourceTypeGeneral: 'Text',
+              },
+              relatedIdentifiers: [],
+              relatedItems: [],
+              sizes: [],
+              formats: [],
+              version: null,
+              rightsList: [
+                { rights: 'CC-BY-SA 4.0' },
+                { rights: 'openAccess' },
+                {
+                  rights: 'Creative Commons Attribution Share Alike 4.0 International',
+                  rightsUri: 'https://creativecommons.org/licenses/by-sa/4.0/legalcode',
+                  schemeUri: 'https://spdx.org/licenses/',
+                  rightsIdentifier: 'cc-by-sa-4.0',
+                  rightsIdentifierScheme: 'SPDX',
+                },
+              ],
+              descriptions: [
+                {
+                  description:
+                    'Das Ziel dieser Arbeit ist es, bewusst und greifbar aufzuzeigen, wie und unter welchen Bedingungen wir unsere inneren Kräfte optimal entfalten können, um eine Antwort auf die Frage zu liefern: Wie können wir als Individuum infinit wachsen? Die Arbeit definiert ein mathematisches Modell, das die Dynamik des individuellen Wachstums aufzeigen soll und beschreibt detailliert und spekulativ die einzelnen dazugehörigen Größen. Es werden hypothetische Verläufe beschrieben: Unter welchen Bedingungen ein Individuum im Laufe der Zeit wächst und regressiert. Die Arbeit schließt mit einem ethischen Dilemma ab, was es bedeutet Mensch zu sein und zu bleiben, der in der Lage ist seine animalischen Triebe zu kontrollieren und wonach wir unser individuelles Wachstum im Kern ein Leben lang ausrichten sollten und für welche von zwei Optionen in dem ethischen Dilemma, sich künstliche Intelligenzen entscheiden würden.',
+                  descriptionType: 'Abstract',
+                },
+              ],
+              geoLocations: [],
+              fundingReferences: [],
+              xml: 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHJlc291cmNlIHhtbG5zPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtMyIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSIgeG1sbnM6ZHNwYWNlPSJodHRwOi8vd3d3LmRzcGFjZS5vcmcveG1sbnMvZHNwYWNlL2RpbSIgeHNpOnNjaGVtYUxvY2F0aW9uPSJodHRwOi8vZGF0YWNpdGUub3JnL3NjaGVtYS9rZXJuZWwtMyBodHRwOi8vc2NoZW1hLmRhdGFjaXRlLm9yZy9tZXRhL2tlcm5lbC0zL21ldGFkYXRhLnhzZCI+CiAgPGlkZW50aWZpZXIgaWRlbnRpZmllclR5cGU9IkRPSSI+MTAuMjM2NjgvUFNZQ0hBUkNISVZFUy4xMzk2NTwvaWRlbnRpZmllcj4KICA8Y3JlYXRvcnM+CiAgICA8Y3JlYXRvcj4KICAgICAgPGNyZWF0b3JOYW1lPkdhbnN0ZXIsIFBoaWxpcHA8L2NyZWF0b3JOYW1lPgogICAgPC9jcmVhdG9yPgogIDwvY3JlYXRvcnM+CiAgPHRpdGxlcz4KICAgIDx0aXRsZT5JbmZpbml0IHdhY2hzZW4gLSBXZWxjaGUgQmVkaW5ndW5nZW4gbcO8c3NlbiB3aXIgc2NoYWZmZW4sIHVtIHVuc2VyIGluZGl2aWR1ZWxsZXMgV2FjaHN0dW0gb3B0aW1hbCB6dSBmw7ZyZGVybj88L3RpdGxlPgogIDwvdGl0bGVzPgogIDxwdWJsaXNoZXI+UHN5Y2hBcmNoaXZlczwvcHVibGlzaGVyPgogIDxwdWJsaWNhdGlvblllYXI+MjAyMzwvcHVibGljYXRpb25ZZWFyPgogIDxzdWJqZWN0cz4KICAgIDxzdWJqZWN0PkluZGl2aWR1YWxpc2llcnVuZzwvc3ViamVjdD4KICAgIDxzdWJqZWN0PldhY2hzdHVtPC9zdWJqZWN0PgogICAgPHN1YmplY3Q+QXVma2zDpHJ1bmc8L3N1YmplY3Q+CiAgICA8c3ViamVjdCBzdWJqZWN0U2NoZW1lPSJkZGMiPjE1MDwvc3ViamVjdD4KICA8L3N1YmplY3RzPgogIDxjb250cmlidXRvcnM+CiAgICA8Y29udHJpYnV0b3IgY29udHJpYnV0b3JUeXBlPSJEYXRhTWFuYWdlciI+CiAgICAgIDxjb250cmlidXRvck5hbWU+TGVpYm5peiBJbnN0aXR1dCBmw7xyIFBzeWNob2xvZ2llIChaUElEKTwvY29udHJpYnV0b3JOYW1lPgogICAgPC9jb250cmlidXRvcj4KICAgIDxjb250cmlidXRvciBjb250cmlidXRvclR5cGU9Ikhvc3RpbmdJbnN0aXR1dGlvbiI+CiAgICAgIDxjb250cmlidXRvck5hbWU+TGVpYm5peiBJbnN0aXR1dCBmw7xyIFBzeWNob2xvZ2llIChaUElEKTwvY29udHJpYnV0b3JOYW1lPgogICAgPC9jb250cmlidXRvcj4KICA8L2NvbnRyaWJ1dG9ycz4KICA8ZGF0ZXM+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQWNjZXB0ZWQiPjIwMjMtMTItMTI8L2RhdGU+CiAgICA8ZGF0ZSBkYXRlVHlwZT0iQXZhaWxhYmxlIj4yMDIzLTA5LTA3PC9kYXRlPgogICAgPGRhdGUgZGF0ZVR5cGU9IkF2YWlsYWJsZSI+MjAyMy0xMi0xMjwvZGF0ZT4KICAgIDxkYXRlIGRhdGVUeXBlPSJJc3N1ZWQiPjIwMjMtMTItMTI8L2RhdGU+CiAgPC9kYXRlcz4KICA8cmVzb3VyY2VUeXBlIHJlc291cmNlVHlwZUdlbmVyYWw9IlRleHQiPnByZXByaW50PC9yZXNvdXJjZVR5cGU+CiAgPGFsdGVybmF0ZUlkZW50aWZpZXJzPgogICAgPGFsdGVybmF0ZUlkZW50aWZpZXIgYWx0ZXJuYXRlSWRlbnRpZmllclR5cGU9InVyaSI+aHR0cHM6Ly9oZGwuaGFuZGxlLm5ldC8yMC41MDAuMTIwMzQvODY4NC4yPC9hbHRlcm5hdGVJZGVudGlmaWVyPgogIDwvYWx0ZXJuYXRlSWRlbnRpZmllcnM+CiAgPHJpZ2h0c0xpc3Q+CiAgICA8cmlnaHRzPkNDLUJZLVNBIDQuMDwvcmlnaHRzPgogICAgPHJpZ2h0cz5vcGVuQWNjZXNzPC9yaWdodHM+CiAgICA8cmlnaHRzIHJpZ2h0c1VSST0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LXNhLzQuMC8iLz4KICA8L3JpZ2h0c0xpc3Q+CiAgPGRlc2NyaXB0aW9ucz4KICAgIDxkZXNjcmlwdGlvbiBkZXNjcmlwdGlvblR5cGU9IkFic3RyYWN0Ij5EYXMgWmllbCBkaWVzZXIgQXJiZWl0IGlzdCBlcywgYmV3dXNzdCB1bmQgZ3JlaWZiYXIgYXVmenV6ZWlnZW4sIHdpZSB1bmQgdW50ZXIgd2VsY2hlbiBCZWRpbmd1bmdlbiB3aXIgdW5zZXJlIGlubmVyZW4gS3LDpGZ0ZSBvcHRpbWFsIGVudGZhbHRlbiBrw7ZubmVuLCB1bSBlaW5lIEFudHdvcnQgYXVmIGRpZSBGcmFnZSB6dSBsaWVmZXJuOiBXaWUga8O2bm5lbiB3aXIgYWxzIEluZGl2aWR1dW0gaW5maW5pdCB3YWNoc2VuPyBEaWUgQXJiZWl0IGRlZmluaWVydCBlaW4gbWF0aGVtYXRpc2NoZXMgTW9kZWxsLCBkYXMgZGllIER5bmFtaWsgZGVzIGluZGl2aWR1ZWxsZW4gV2FjaHN0dW1zIGF1ZnplaWdlbiBzb2xsIHVuZCBiZXNjaHJlaWJ0IGRldGFpbGxpZXJ0IHVuZCBzcGVrdWxhdGl2IGRpZSBlaW56ZWxuZW4gZGF6dWdlaMO2cmlnZW4gR3LDtsOfZW4uIEVzIHdlcmRlbiBoeXBvdGhldGlzY2hlIFZlcmzDpHVmZSBiZXNjaHJpZWJlbjogVW50ZXIgd2VsY2hlbiBCZWRpbmd1bmdlbiBlaW4gSW5kaXZpZHV1bSBpbSBMYXVmZSBkZXIgWmVpdCB3w6RjaHN0IHVuZCByZWdyZXNzaWVydC4gRGllIEFyYmVpdCBzY2hsaWXDn3QgbWl0IGVpbmVtIGV0aGlzY2hlbiBEaWxlbW1hIGFiLCB3YXMgZXMgYmVkZXV0ZXQgTWVuc2NoIHp1IHNlaW4gdW5kIHp1IGJsZWliZW4sIGRlciBpbiBkZXIgTGFnZSBpc3Qgc2VpbmUgYW5pbWFsaXNjaGVuIFRyaWViZSB6dSBrb250cm9sbGllcmVuIHVuZCB3b25hY2ggd2lyIHVuc2VyIGluZGl2aWR1ZWxsZXMgV2FjaHN0dW0gaW0gS2VybiBlaW4gTGViZW4gbGFuZyBhdXNyaWNodGVuIHNvbGx0ZW4gdW5kIGbDvHIgd2VsY2hlIHZvbiB6d2VpIE9wdGlvbmVuIGluIGRlbSBldGhpc2NoZW4gRGlsZW1tYSwgc2ljaCBrw7xuc3RsaWNoZSBJbnRlbGxpZ2VuemVuIGVudHNjaGVpZGVuIHfDvHJkZW4uPC9kZXNjcmlwdGlvbj4KICA8L2Rlc2NyaXB0aW9ucz4KPC9yZXNvdXJjZT4=',
+              url: 'https://www.psycharchives.org/jspui/handle/20.500.12034/8684.2',
+              contentUrl: null,
+              metadataVersion: 1,
+              schemaVersion: 'http://datacite.org/schema/kernel-3',
+              source: 'mds',
+              isActive: true,
+              state: 'findable',
+              reason: null,
+              viewCount: 0,
+              viewsOverTime: [],
+              downloadCount: 0,
+              downloadsOverTime: [],
+              referenceCount: 0,
+              citationCount: 0,
+              citationsOverTime: [],
+              partCount: 0,
+              partOfCount: 0,
+              versionCount: 0,
+              versionOfCount: 0,
+              created: '2023-12-12T15:10:08.000Z',
+              registered: '2023-12-12T15:10:20.000Z',
+              published: '2023',
+              updated: '2023-12-12T15:20:09.000Z',
+            },
+            relationships: {
+              client: { data: { id: 'gesis.psycharc', type: 'clients' } },
+              provider: { data: { id: 'vpwd', type: 'providers' } },
+              media: { data: { id: '10.23668/psycharchives.13965', type: 'media' } },
+              references: { data: [] },
+              citations: { data: [] },
+              parts: { data: [] },
+              partOf: { data: [] },
+              versions: { data: [] },
+              versionOf: { data: [] },
+            },
+          },
+        },
+      })
+
+      const actual = await _.getPreprintFromDatacite(id)({ fetch })()
+
+      expect(actual).toStrictEqual(
+        E.right({
+          abstract: {
+            language: 'de',
+            text: expect.stringContaining('<p>Das Ziel dieser Arbeit ist es,'),
+          },
+          authors: [{ name: 'Philipp Ganster', orcid: undefined }],
+          id,
+          posted,
+          title: {
+            language: 'de',
+            text: rawHtml(
+              'Infinit wachsen - Welche Bedingungen müssen wir schaffen, um unser individuelles Wachstum optimal zu fördern?',
+            ),
+          },
+          url: new URL('https://www.psycharchives.org/jspui/handle/20.500.12034/8684.2'),
+        }),
+      )
+    })
+
     test.prop([fc.zenodoPreprintId(), fc.plainDate(), fc.string()])('from Zenodo', async (id, posted, publisher) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
         body: {
