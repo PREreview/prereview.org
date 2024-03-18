@@ -65,7 +65,8 @@ function dataciteWorkToPreprint(work: Work): E.Either<D.DecodeError | string, Pr
       () =>
         work.types.resourceType?.toLowerCase() === 'preprint' ||
         work.types.resourceTypeGeneral?.toLowerCase() === 'preprint' ||
-        (work.types.resourceTypeGeneral?.toLowerCase() === 'text' && hasRegistrant('48550')(work.doi)),
+        (work.types.resourceTypeGeneral?.toLowerCase() === 'text' && hasRegistrant('48550')(work.doi)) ||
+        (work.types.resourceTypeGeneral === undefined && hasRegistrant('23668')(work.doi)),
       () => 'not a preprint',
     ),
     E.apSW(
@@ -257,7 +258,7 @@ const PreprintIdD: D.Decoder<Work, DatacitePreprintId> = D.union(
   pipe(
     D.fromStruct({
       doi: D.fromRefinement(hasRegistrant('23668'), 'DOI'),
-      publisher: D.literal('PsychArchives'),
+      publisher: D.literal('PsychArchives', 'Leibniz Institut für Psychologie (ZPID)'),
     }),
     D.map(work => ({ type: 'psycharchives', value: work.doi }) satisfies PsychArchivesPreprintId),
   ),

@@ -781,7 +781,11 @@ describe('getPreprintFromDatacite', () => {
       )
     })
 
-    test.prop([fc.psychArchivesPreprintId(), fc.plainDate()])('from PsychArchives', async (id, posted) => {
+    test.prop([
+      fc.psychArchivesPreprintId(),
+      fc.plainDate(),
+      fc.constantFrom({ resourceType: 'preprint', resourceTypeGeneral: 'Text' }, {}),
+    ])('from PsychArchives', async (id, posted, type) => {
       const fetch = fetchMock.sandbox().getOnce(`https://api.datacite.org/dois/${encodeURIComponent(id.value)}`, {
         body: {
           data: {
@@ -846,8 +850,7 @@ describe('getPreprintFromDatacite', () => {
                 bibtex: 'article',
                 citeproc: 'article-journal',
                 schemaOrg: 'ScholarlyArticle',
-                resourceType: 'preprint',
-                resourceTypeGeneral: 'Text',
+                ...type,
               },
               relatedIdentifiers: [],
               relatedItems: [],
