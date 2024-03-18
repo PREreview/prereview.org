@@ -22,7 +22,7 @@
     "doi-ts": "^0.1.7",
     "express": "^4.18.3",
     "fetch-fp-ts": "^0.1.6",
-    "fp-ts": "^2.16.3",
+    "fp-ts": "^2.16.4",
     "fp-ts-routing": "^0.6.0",
     "helmet": "^7.1.0",
     "html-entities": "^2.5.2",
