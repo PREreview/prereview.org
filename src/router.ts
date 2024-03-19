@@ -8,7 +8,7 @@ import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as T from 'fp-ts/Task'
-import { constant, flow, pipe } from 'fp-ts/function'
+import { constVoid, constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
 import type { ResponseEnded, StatusOpen } from 'hyper-ts'
@@ -322,7 +322,7 @@ const triggerRefreshOfPrereview = (id: number) =>
     void pipe(
       RTE.fromTask(T.delay(2000)(T.of(undefined))),
       RTE.chainW(() => refreshPrereview(id)),
-    )(env)()
+    )(env)().catch(constVoid)
   })
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5_242_880 } })

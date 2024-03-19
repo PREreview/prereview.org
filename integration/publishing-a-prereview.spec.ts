@@ -2,7 +2,7 @@ import type { Doi } from 'doi-ts'
 import type { FetchMockSandbox } from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
-import { pipe } from 'fp-ts/function'
+import { constVoid, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import type { MutableRedirectUri } from 'oauth2-mock-server'
@@ -470,7 +470,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
     await page.keyboard.press('Shift+ArrowLeft')
 
     page.once('dialog', dialog => {
-      void dialog.accept('https://example.com')
+      void dialog.accept('https://example.com').catch(constVoid)
     })
     await page.getByRole('button', { name: 'Link' }).click()
 
