@@ -3,6 +3,7 @@ import KeyvRedis from '@keyv/redis'
 import { SystemClock } from 'clock-ts'
 import * as dns from 'dns'
 import * as C from 'fp-ts/Console'
+import * as E from 'fp-ts/Either'
 import * as RT from 'fp-ts/ReaderTask'
 import { pipe } from 'fp-ts/function'
 import Redis from 'ioredis'
@@ -162,7 +163,9 @@ createTerminus(server, {
     await redis
       .quit()
       .then(() => L.debug('Redis disconnected')(loggerEnv)())
-      .catch((error: Error) => L.warnP('Redis unable to disconnect')({ error: error.message })(loggerEnv)())
+      .catch((error: unknown) =>
+        L.warnP('Redis unable to disconnect')({ error: E.toError(error).message })(loggerEnv)(),
+      )
   },
   signals: ['SIGINT', 'SIGTERM'],
 })

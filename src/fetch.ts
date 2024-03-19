@@ -99,7 +99,7 @@ export function logFetch<E extends F.FetchEnv & L.LoggerEnv>(): (env: E) => E {
 
           return response
         })
-        .catch(error => {
+        .catch((error: unknown) => {
           const endTime = Date.now()
 
           L.debugP('Did not receive a HTTP response')({
