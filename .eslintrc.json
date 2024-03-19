@@ -46,6 +46,7 @@
     "@typescript-eslint/no-confusing-void-expression": "off",
     "@typescript-eslint/no-import-type-side-effects": "error",
     "@typescript-eslint/prefer-nullish-coalescing": ["error", { "ignoreConditionalTests": true }],
+    "@typescript-eslint/restrict-template-expressions": ["error", { "allowNumber": true }],
     "@typescript-eslint/strict-boolean-expressions": "error",
     "fp-ts/no-module-imports": "off",
     "import/no-cycle": "error",
