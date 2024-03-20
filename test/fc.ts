@@ -32,25 +32,25 @@ import type {
   CompletedAuthorInvite,
   DeclinedAuthorInvite,
   OpenAuthorInvite,
-} from '../src/author-invite'
-import type { CareerStage } from '../src/career-stage'
-import type { OrcidOAuthEnv } from '../src/connect-orcid/oauth-code'
+} from '../src/author-invite.js'
+import type { CareerStage } from '../src/career-stage.js'
+import type { OrcidOAuthEnv } from '../src/connect-orcid/oauth-code.js'
 import type {
   ContactEmailAddress,
   UnverifiedContactEmailAddress,
   VerifiedContactEmailAddress,
-} from '../src/contact-email-address'
-import type { CrossrefPreprintId } from '../src/crossref'
-import type { DatacitePreprintId } from '../src/datacite'
-import type { Email } from '../src/email'
-import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html'
-import type { IsOpenForRequests } from '../src/is-open-for-requests'
-import type { Languages } from '../src/languages'
-import type { Location } from '../src/location'
+} from '../src/contact-email-address.js'
+import type { CrossrefPreprintId } from '../src/crossref.js'
+import type { DatacitePreprintId } from '../src/datacite.js'
+import type { Email } from '../src/email.js'
+import { type Html, type PlainText, sanitizeHtml, html as toHtml, plainText as toPlainText } from '../src/html.js'
+import type { IsOpenForRequests } from '../src/is-open-for-requests.js'
+import type { Languages } from '../src/languages.js'
+import type { Location } from '../src/location.js'
 import * as assets from '../src/manifest.json'
-import type { OrcidToken } from '../src/orcid-token'
-import type { Preprint, PreprintTitle } from '../src/preprint'
-import type { ResearchInterests } from '../src/research-interests'
+import type { OrcidToken } from '../src/orcid-token.js'
+import type { Preprint, PreprintTitle } from '../src/preprint.js'
+import type { ResearchInterests } from '../src/research-interests.js'
 import type {
   FlashMessageResponse,
   LogInResponse,
@@ -58,11 +58,11 @@ import type {
   RedirectResponse,
   StreamlinePageResponse,
   TwoUpPageResponse,
-} from '../src/response'
-import type { SlackUser } from '../src/slack-user'
-import type { SlackUserId } from '../src/slack-user-id'
-import { type ClubId, clubIds } from '../src/types/club-id'
-import type { EmailAddress } from '../src/types/email-address'
+} from '../src/response.js'
+import type { SlackUser } from '../src/slack-user.js'
+import type { SlackUserId } from '../src/slack-user-id.js'
+import { type ClubId, clubIds } from '../src/types/club-id.js'
+import type { EmailAddress } from '../src/types/email-address.js'
 import {
   type AfricarxivFigsharePreprintId,
   type AfricarxivOsfPreprintId,
@@ -95,13 +95,13 @@ import {
   type ZenodoOrAfricarxivPreprintId,
   type ZenodoPreprintId,
   isPreprintDoi,
-} from '../src/types/preprint-id'
-import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/types/profile-id'
-import type { Pseudonym } from '../src/types/pseudonym'
-import { type NonEmptyString, isNonEmptyString } from '../src/types/string'
-import type { User } from '../src/user'
-import type { UserOnboarding } from '../src/user-onboarding'
-import { shouldNotBeCalled } from './should-not-be-called'
+} from '../src/types/preprint-id.js'
+import type { OrcidProfileId, ProfileId, PseudonymProfileId } from '../src/types/profile-id.js'
+import type { Pseudonym } from '../src/types/pseudonym.js'
+import { type NonEmptyString, isNonEmptyString } from '../src/types/string.js'
+import type { User } from '../src/user.js'
+import type { UserOnboarding } from '../src/user-onboarding.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 if (typeof process.env['FAST_CHECK_NUM_RUNS'] === 'string') {
   fc.configureGlobal({ ...fc.readConfigureGlobal(), numRuns: parseInt(process.env['FAST_CHECK_NUM_RUNS'], 10) })

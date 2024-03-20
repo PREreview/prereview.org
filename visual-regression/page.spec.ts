@@ -1,6 +1,6 @@
-import { html, plainText } from '../src/html'
-import { page as templatePage } from '../src/page'
-import { expect, test } from './base'
+import { html, plainText } from '../src/html.js'
+import { page as templatePage } from '../src/page.js'
+import { expect, test } from './base.js'
 
 test('page layout looks right', async ({ page }) => {
   const pageHtml = templatePage({

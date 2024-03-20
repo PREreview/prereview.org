@@ -6,20 +6,20 @@ import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite'
-import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../contact-email-address'
-import type { Html } from '../../html'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
+import { type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.js'
+import { type GetContactEmailAddressEnv, maybeGetContactEmailAddress } from '../../contact-email-address.js'
+import type { Html } from '../../html.js'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteEnterEmailAddressMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
-} from '../../routes'
-import type { User } from '../../user'
-import { needToVerifyEmailAddressPage } from './need-to-verify-email-address-page'
+} from '../../routes.js'
+import type { User } from '../../user.js'
+import { needToVerifyEmailAddressPage } from './need-to-verify-email-address-page.js'
 
 export interface Prereview {
   preprint: {

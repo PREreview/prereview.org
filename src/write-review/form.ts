@@ -12,8 +12,8 @@ import * as C from 'io-ts/Codec'
 import type Keyv from 'keyv'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
-import { setFlashMessage } from '../flash-message'
-import { RawHtmlC } from '../html'
+import { setFlashMessage } from '../flash-message.js'
+import { RawHtmlC } from '../html.js'
 import {
   writeReviewAuthorsMatch,
   writeReviewCompetingInterestsMatch,
@@ -31,10 +31,10 @@ import {
   writeReviewReviewMatch,
   writeReviewReviewTypeMatch,
   writeReviewShouldReadMatch,
-} from '../routes'
-import { EmailAddressC } from '../types/email-address'
-import type { PreprintId } from '../types/preprint-id'
-import { NonEmptyStringC } from '../types/string'
+} from '../routes.js'
+import { EmailAddressC } from '../types/email-address.js'
+import type { PreprintId } from '../types/preprint-id.js'
+import { NonEmptyStringC } from '../types/string.js'
 
 export type Form = C.TypeOf<typeof FormC>
 

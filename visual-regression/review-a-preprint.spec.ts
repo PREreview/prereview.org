@@ -1,6 +1,6 @@
 import * as TE from 'fp-ts/TaskEither'
-import { reviewAPreprint } from '../src/review-a-preprint'
-import { expect, test } from './base'
+import { reviewAPreprint } from '../src/review-a-preprint.js'
+import { expect, test } from './base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = await reviewAPreprint({ method: 'GET', body: undefined })({

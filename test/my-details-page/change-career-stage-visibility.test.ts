@@ -3,10 +3,10 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/my-details-page/change-career-stage-visibility'
-import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+import * as _ from '../../src/my-details-page/change-career-stage-visibility.js'
+import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('changeCareerStageVisibility', () => {
   test.prop([fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user(), fc.careerStage()])(

@@ -3,9 +3,9 @@ import { expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
-import * as _ from '../src/middleware'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
+import * as _ from '../src/middleware.js'
+import * as fc from './fc.js'
+import { runMiddleware } from './middleware.js'
 
 test.prop([fc.connection(), fc.cookieName(), fc.string()])('seeOther', async (connection, location) => {
   const actual = await runMiddleware(_.seeOther(location), connection)()

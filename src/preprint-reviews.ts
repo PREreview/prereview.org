@@ -13,18 +13,17 @@ import type { LanguageCode } from 'iso-639-1'
 import type { Orcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { get } from 'spectacles-ts'
-import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
-import { getClubName } from './club-details'
-import { type Html, fixHeadingLevels, html, plainText, rawHtml } from './html'
-import { pageNotFound } from './http-error'
-import { type GetPreprintEnv, type Preprint, getPreprint } from './preprint'
-import { PageResponse, TwoUpPageResponse } from './response'
-import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from './routes'
-import { renderDate } from './time'
-import type { ClubId } from './types/club-id'
-import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id'
-import { isPseudonym } from './types/pseudonym'
+import { getClubName } from './club-details.js'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml } from './html.js'
+import { pageNotFound } from './http-error.js'
+import { type GetPreprintEnv, type Preprint, getPreprint } from './preprint.js'
+import { PageResponse, TwoUpPageResponse } from './response.js'
+import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from './routes.js'
+import { renderDate } from './time.js'
+import type { ClubId } from './types/club-id.js'
+import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id.js'
+import { isPseudonym } from './types/pseudonym.js'
 
 export interface Prereview {
   authors: {
@@ -268,10 +267,7 @@ function showReview(review: Prereview) {
         </header>
 
         <div ${review.language ? html`lang="${review.language}" dir="${getLangDir(review.language)}"` : ''}>
-          ${fixHeadingLevels(
-            3,
-            rawHtml(textClipper(review.text.toString(), 300, { html: true, maxLines: 5, stripTags: ['a'] })),
-          )}
+          ${fixHeadingLevels(3, rawHtml(review.text.toString()))}
         </div>
 
         <a href="${format(reviewMatch.formatter, { id: review.id })}" class="more">

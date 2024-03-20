@@ -2,10 +2,10 @@ import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
-import { declinePage } from '../../src/author-invite-flow/decline-page/decline-page'
-import { inviteDeclinedPage } from '../../src/author-invite-flow/decline-page/invite-declined-page'
-import { html } from '../../src/html'
-import { expect, test } from '../base'
+import { declinePage } from '../../src/author-invite-flow/decline-page/decline-page.js'
+import { inviteDeclinedPage } from '../../src/author-invite-flow/decline-page/invite-declined-page.js'
+import { html } from '../../src/html.js'
+import { expect, test } from '../base.js'
 
 import PlainDate = Temporal.PlainDate
 

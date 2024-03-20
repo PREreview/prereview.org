@@ -1,5 +1,5 @@
-import { connectOrcidPage } from '../../src/connect-orcid/connect-orcid-page'
-import { expect, test } from '../base'
+import { connectOrcidPage } from '../../src/connect-orcid/connect-orcid-page.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const content = await showPage(connectOrcidPage)

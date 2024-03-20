@@ -1,12 +1,12 @@
 import type { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
-import { invalidE, missingE } from '../../src/form'
-import { html } from '../../src/html'
-import type { PreprintTitle } from '../../src/preprint'
-import type { EmailAddress } from '../../src/types/email-address'
-import type { NonEmptyString } from '../../src/types/string'
-import { changeAuthorForm } from '../../src/write-review/change-author-page/change-author-form'
-import { expect, test } from '../base'
+import { invalidE, missingE } from '../../src/form.js'
+import { html } from '../../src/html.js'
+import type { PreprintTitle } from '../../src/preprint.js'
+import type { EmailAddress } from '../../src/types/email-address.js'
+import type { NonEmptyString } from '../../src/types/string.js'
+import { changeAuthorForm } from '../../src/write-review/change-author-page/change-author-form.js'
+import { expect, test } from '../base.js'
 
 const preprint = {
   id: {

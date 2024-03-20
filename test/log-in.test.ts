@@ -10,12 +10,12 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import all from 'it-all'
 import Keyv from 'keyv'
-import * as _ from '../src/log-in'
-import { homeMatch, writeReviewMatch } from '../src/routes'
-import { UserC } from '../src/user'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
-import { shouldNotBeCalled } from './should-not-be-called'
+import * as _ from '../src/log-in.js'
+import { homeMatch, writeReviewMatch } from '../src/routes.js'
+import { UserC } from '../src/user.js'
+import * as fc from './fc.js'
+import { runMiddleware } from './middleware.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('logIn', () => {
   test.prop([

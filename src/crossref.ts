@@ -10,11 +10,11 @@ import { isString } from 'fp-ts/string'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { P, isMatching, match } from 'ts-pattern'
-import { detectLanguage, detectLanguageFrom } from './detect-language'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { sanitizeHtml } from './html'
-import { transformJatsToHtml } from './jats'
-import type { Preprint } from './preprint'
+import { detectLanguage, detectLanguageFrom } from './detect-language.js'
+import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { sanitizeHtml } from './html.js'
+import { transformJatsToHtml } from './jats.js'
+import type { Preprint } from './preprint.js'
 import type {
   AfricarxivOsfPreprintId,
   AuthoreaPreprintId,
@@ -34,7 +34,7 @@ import type {
   ScienceOpenPreprintId,
   SocarxivPreprintId,
   TechrxivPreprintId,
-} from './types/preprint-id'
+} from './types/preprint-id.js'
 
 export type CrossrefPreprintId =
   | AfricarxivOsfPreprintId

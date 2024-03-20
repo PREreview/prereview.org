@@ -3,11 +3,11 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import type { GetPreprintEnv } from '../src/preprint'
-import * as _ from '../src/preprint-reviews'
-import { preprintReviewsMatch } from '../src/routes'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import type { GetPreprintEnv } from '../src/preprint.js'
+import * as _ from '../src/preprint-reviews.js'
+import { preprintReviewsMatch } from '../src/routes.js'
+import * as fc from './fc.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('preprintReviews', () => {
   test.prop([

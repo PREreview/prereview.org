@@ -1,8 +1,8 @@
 import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
-import * as _ from '../../src/write-review/user-is-author'
-import * as fc from './fc'
+import * as _ from '../../src/write-review/user-is-author.js'
+import * as fc from './fc.js'
 
 describe('ensureUserIsNotAnAuthor', () => {
   test.prop([fc.user(), fc.preprint()])('when user is not an author', (user, preprint) => {

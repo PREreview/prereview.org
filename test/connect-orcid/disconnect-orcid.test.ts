@@ -4,11 +4,11 @@ import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
-import * as _ from '../../src/connect-orcid/disconnect-orcid'
-import type { DeleteOrcidTokenEnv, GetOrcidTokenEnv } from '../../src/orcid-token'
-import { disconnectOrcidMatch, myDetailsMatch } from '../../src/routes'
-import * as fc from '../fc'
-import { shouldNotBeCalled } from '../should-not-be-called'
+import * as _ from '../../src/connect-orcid/disconnect-orcid.js'
+import type { DeleteOrcidTokenEnv, GetOrcidTokenEnv } from '../../src/orcid-token.js'
+import { disconnectOrcidMatch, myDetailsMatch } from '../../src/routes.js'
+import * as fc from '../fc.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
 
 describe('disconnectOrcid', () => {
   describe('when the user is logged in', () => {

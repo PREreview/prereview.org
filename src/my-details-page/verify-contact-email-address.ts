@@ -4,11 +4,11 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { getContactEmailAddress, isUnverified, saveContactEmailAddress } from '../contact-email-address'
-import { havingProblemsPage, pageNotFound } from '../http-error'
-import { FlashMessageResponse, LogInResponse } from '../response'
-import { myDetailsMatch, verifyContactEmailAddressMatch } from '../routes'
-import type { User } from '../user'
+import { getContactEmailAddress, isUnverified, saveContactEmailAddress } from '../contact-email-address.js'
+import { havingProblemsPage, pageNotFound } from '../http-error.js'
+import { FlashMessageResponse, LogInResponse } from '../response.js'
+import { myDetailsMatch, verifyContactEmailAddressMatch } from '../routes.js'
+import type { User } from '../user.js'
 
 export type Env = EnvFor<ReturnType<typeof verifyContactEmailAddress>>
 

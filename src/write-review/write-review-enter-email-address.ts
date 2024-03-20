@@ -13,22 +13,22 @@ import {
   maybeGetContactEmailAddress,
   saveContactEmailAddress,
   verifyContactEmailAddressForReview,
-} from '../contact-email-address'
-import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form'
-import { html, plainText, sendHtml } from '../html'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
-import { type PreprintTitle, getPreprintTitle } from '../preprint'
+} from '../contact-email-address.js'
+import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form.js'
+import { html, plainText, sendHtml } from '../html.js'
+import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
+import { page } from '../page.js'
+import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
 import {
   writeReviewConductMatch,
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
-} from '../routes'
-import { type EmailAddress, EmailAddressC } from '../types/email-address'
-import { generateUuid } from '../types/uuid'
-import { type User, getUser } from '../user'
-import { getForm, redirectToNextForm } from './form'
+} from '../routes.js'
+import { type EmailAddress, EmailAddressC } from '../types/email-address.js'
+import { generateUuid } from '../types/uuid.js'
+import { type User, getUser } from '../user.js'
+import { getForm, redirectToNextForm } from './form.js'
 
 export const writeReviewEnterEmailAddress = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),

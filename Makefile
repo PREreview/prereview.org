@@ -47,3 +47,8 @@ update-snapshots: test-integration
 
 test-integration-image:
 	docker build --target test-integration --tag ${INTEGRATION_TEST_IMAGE_TAG} .
+
+esm-smoketest: FAST_CHECK_NUM_RUNS=1
+esm-smoketest:
+	docker build --target prod --tag esm-smoketest .
+	./scripts/smoke-test.sh esm-smoketest

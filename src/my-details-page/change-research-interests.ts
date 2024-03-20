@@ -7,18 +7,18 @@ import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { html, plainText, rawHtml } from '../html'
-import { havingProblemsPage } from '../http-error'
+import { html, plainText, rawHtml } from '../html.js'
+import { havingProblemsPage } from '../http-error.js'
 import {
   type ResearchInterests,
   deleteResearchInterests,
   getResearchInterests,
   saveResearchInterests,
-} from '../research-interests'
-import { LogInResponse, PageResponse, RedirectResponse } from '../response'
-import { changeResearchInterestsMatch, myDetailsMatch } from '../routes'
-import { NonEmptyStringC } from '../types/string'
-import type { User } from '../user'
+} from '../research-interests.js'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response.js'
+import { changeResearchInterestsMatch, myDetailsMatch } from '../routes.js'
+import { NonEmptyStringC } from '../types/string.js'
+import type { User } from '../user.js'
 
 export type Env = EnvFor<ReturnType<typeof changeResearchInterests>>
 

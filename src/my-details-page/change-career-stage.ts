@@ -8,12 +8,12 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { type CareerStage, deleteCareerStage, getCareerStage, saveCareerStage } from '../career-stage'
-import { html, plainText, rawHtml } from '../html'
-import { havingProblemsPage } from '../http-error'
-import { LogInResponse, PageResponse, RedirectResponse } from '../response'
-import { changeCareerStageMatch, myDetailsMatch } from '../routes'
-import type { User } from '../user'
+import { type CareerStage, deleteCareerStage, getCareerStage, saveCareerStage } from '../career-stage.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { havingProblemsPage } from '../http-error.js'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response.js'
+import { changeCareerStageMatch, myDetailsMatch } from '../routes.js'
+import type { User } from '../user.js'
 
 export type Env = EnvFor<ReturnType<typeof changeCareerStage>>
 

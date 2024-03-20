@@ -4,8 +4,8 @@ import * as O from 'fp-ts/Option'
 import { not } from 'fp-ts/Predicate'
 import * as RA from 'fp-ts/ReadonlyArray'
 import { Eq as eqOrcid } from 'orcid-id-ts'
-import type { Preprint } from '../preprint'
-import type { User } from '../user'
+import type { Preprint } from '../preprint.js'
+import type { User } from '../user.js'
 
 interface IsAuthor {
   readonly type: 'is-author'

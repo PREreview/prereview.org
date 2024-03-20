@@ -1,8 +1,9 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "no-comments"],
+  "plugins": ["@typescript-eslint", "no-comments", "require-extensions"],
   "extends": [
     "eslint:recommended",
+    "plugin:require-extensions/recommended",
     "plugin:@typescript-eslint/strict-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:import/recommended",
@@ -78,7 +79,8 @@
           "remixicon/**/*.svg",
           "tinyld/heavy",
           "integration/base",
-          "types/*"
+          "types/*",
+          "*/index.js"
         ]
       }
     ],

@@ -1,9 +1,9 @@
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
-import { checkPage } from '../../src/author-invite-flow/check-page/check-page'
-import { failureMessage } from '../../src/author-invite-flow/check-page/failure-message'
-import type { Pseudonym } from '../../src/types/pseudonym'
-import { expect, test } from '../base'
+import { checkPage } from '../../src/author-invite-flow/check-page/check-page.js'
+import { failureMessage } from '../../src/author-invite-flow/check-page/failure-message.js'
+import type { Pseudonym } from '../../src/types/pseudonym.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = checkPage({

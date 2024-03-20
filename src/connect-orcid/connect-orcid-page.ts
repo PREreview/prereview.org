@@ -1,7 +1,7 @@
 import { format } from 'fp-ts-routing'
-import { html, plainText } from '../html'
-import { PageResponse } from '../response'
-import { connectOrcidMatch, connectOrcidStartMatch } from '../routes'
+import { html, plainText } from '../html.js'
+import { PageResponse } from '../response.js'
+import { connectOrcidMatch, connectOrcidStartMatch } from '../routes.js'
 
 export const connectOrcidPage = PageResponse({
   title: plainText`Connect your ORCID profile`,

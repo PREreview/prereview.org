@@ -8,12 +8,12 @@ import { flow, identity, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
-import { type InvalidE, getInput, invalidE } from './form'
-import { html, plainText, rawHtml } from './html'
-import { type DoesPreprintExistEnv, doesPreprintExist } from './preprint'
-import { PageResponse, RedirectResponse } from './response'
-import { homeMatch, reviewAPreprintMatch, writeReviewMatch } from './routes'
-import { type IndeterminatePreprintId, type PhilsciPreprintId, fromUrl, parsePreprintDoi } from './types/preprint-id'
+import { type InvalidE, getInput, invalidE } from './form.js'
+import { html, plainText, rawHtml } from './html.js'
+import { type DoesPreprintExistEnv, doesPreprintExist } from './preprint.js'
+import { PageResponse, RedirectResponse } from './response.js'
+import { homeMatch, reviewAPreprintMatch, writeReviewMatch } from './routes.js'
+import { type IndeterminatePreprintId, type PhilsciPreprintId, fromUrl, parsePreprintDoi } from './types/preprint-id.js'
 
 export const reviewAPreprint = (state: {
   body: unknown

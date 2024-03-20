@@ -7,19 +7,19 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
-import { type MissingE, hasAnError, missingE } from '../form'
-import { html, plainText, rawHtml, sendHtml } from '../html'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
-import { type PreprintTitle, getPreprintTitle } from '../preprint'
+import { type MissingE, hasAnError, missingE } from '../form.js'
+import { html, plainText, rawHtml, sendHtml } from '../html.js'
+import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
+import { page } from '../page.js'
+import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
 import {
   writeReviewAddAuthorsMatch,
   writeReviewAuthorsMatch,
   writeReviewMatch,
   writeReviewPersonaMatch,
-} from '../routes'
-import { type User, getUser } from '../user'
-import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form'
+} from '../routes.js'
+import { type User, getUser } from '../user.js'
+import { type Form, getForm, redirectToNextForm, saveForm, updateForm } from './form.js'
 
 export const writeReviewAuthors = flow(
   RM.fromReaderTaskEitherK(getPreprintTitle),

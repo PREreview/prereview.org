@@ -8,7 +8,7 @@ import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { isOrcid } from 'orcid-id-ts'
-import { PseudonymC } from './types/pseudonym'
+import { PseudonymC } from './types/pseudonym.js'
 
 export type User = C.TypeOf<typeof UserC>
 

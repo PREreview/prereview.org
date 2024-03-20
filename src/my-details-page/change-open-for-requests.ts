@@ -7,17 +7,17 @@ import { flow, identity, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import { P, match } from 'ts-pattern'
-import { html, plainText, rawHtml } from '../html'
-import { havingProblemsPage } from '../http-error'
+import { html, plainText, rawHtml } from '../html.js'
+import { havingProblemsPage } from '../http-error.js'
 import {
   type IsOpenForRequests,
   type IsOpenForRequestsEnv,
   isOpenForRequests,
   saveOpenForRequests,
-} from '../is-open-for-requests'
-import { LogInResponse, PageResponse, RedirectResponse } from '../response'
-import { changeOpenForRequestsMatch, myDetailsMatch } from '../routes'
-import type { User } from '../user'
+} from '../is-open-for-requests.js'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response.js'
+import { changeOpenForRequestsMatch, myDetailsMatch } from '../routes.js'
+import type { User } from '../user.js'
 
 export type Env = EnvFor<ReturnType<typeof changeOpenForRequests>>
 

@@ -12,8 +12,8 @@ import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { URL } from 'url'
-import type { PublicUrlEnv } from './public-url'
-import { type NonEmptyString, NonEmptyStringC } from './types/string'
+import type { PublicUrlEnv } from './public-url.js'
+import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
 
 export interface CloudinaryApiEnv {
   cloudinaryApi: {

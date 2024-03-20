@@ -11,7 +11,7 @@ import type { LanguageCode } from 'iso-639-1'
 import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite'
+import { type AssignedAuthorInvite, type GetAuthorInviteEnv, getAuthorInvite } from '../../author-invite.js'
 import {
   type ContactEmailAddress,
   type GetContactEmailAddressEnv,
@@ -20,22 +20,22 @@ import {
   maybeGetContactEmailAddress,
   saveContactEmailAddress,
   verifyContactEmailAddressForInvitedAuthor,
-} from '../../contact-email-address'
-import { getInput, invalidE, missingE } from '../../form'
-import type { Html } from '../../html'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
+} from '../../contact-email-address.js'
+import { getInput, invalidE, missingE } from '../../form.js'
+import type { Html } from '../../html.js'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInviteNeedToVerifyEmailAddressMatch,
   authorInvitePublishedMatch,
-} from '../../routes'
-import { EmailAddressC } from '../../types/email-address'
-import { type GenerateUuidEnv, generateUuid } from '../../types/uuid'
-import type { User } from '../../user'
-import { enterEmailAddressForm } from './enter-email-address-form'
+} from '../../routes.js'
+import { EmailAddressC } from '../../types/email-address.js'
+import { type GenerateUuidEnv, generateUuid } from '../../types/uuid.js'
+import type { User } from '../../user.js'
+import { enterEmailAddressForm } from './enter-email-address-form.js'
 
 export interface Prereview {
   preprint: {

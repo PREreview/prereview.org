@@ -8,19 +8,19 @@ import {
   type UnverifiedContactEmailAddress,
   maybeGetContactEmailAddress,
   verifyContactEmailAddressForReview,
-} from '../contact-email-address'
-import { deleteFlashMessage, getFlashMessage, setFlashMessage } from '../flash-message'
-import { html, plainText, sendHtml } from '../html'
-import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
-import { page } from '../page'
-import { type PreprintTitle, getPreprintTitle } from '../preprint'
+} from '../contact-email-address.js'
+import { deleteFlashMessage, getFlashMessage, setFlashMessage } from '../flash-message.js'
+import { html, plainText, sendHtml } from '../html.js'
+import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware.js'
+import { page } from '../page.js'
+import { type PreprintTitle, getPreprintTitle } from '../preprint.js'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
-} from '../routes'
-import { type User, getUser } from '../user'
-import { getForm, redirectToNextForm } from './form'
+} from '../routes.js'
+import { type User, getUser } from '../user.js'
+import { getForm, redirectToNextForm } from './form.js'
 
 const FlashMessageD = D.literal('verify-contact-email-resend')
 

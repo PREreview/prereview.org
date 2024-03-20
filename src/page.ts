@@ -5,8 +5,8 @@ import * as RA from 'fp-ts/ReadonlyArray'
 import { flow, pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { match } from 'ts-pattern'
-import { type Html, type PlainText, html, rawHtml } from './html'
-import * as assets from './manifest.json'
+import { type Html, type PlainText, html, rawHtml } from './html.js'
+import { default as assets } from './manifest.json'
 import {
   aboutUsMatch,
   clubsMatch,
@@ -25,9 +25,9 @@ import {
   resourcesMatch,
   reviewsMatch,
   trainingsMatch,
-} from './routes'
-import type { User } from './user'
-import type { UserOnboarding } from './user-onboarding'
+} from './routes.js'
+import type { UserOnboarding } from './user-onboarding.js'
+import type { User } from './user.js'
 
 export interface FathomEnv {
   readonly fathomId?: string

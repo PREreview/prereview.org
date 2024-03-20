@@ -5,7 +5,7 @@ import { flow, pipe } from 'fp-ts/function'
 import type * as E from 'io-ts/Encoder'
 import * as L from 'logger-fp-ts'
 import type { SendMailOptions, Transporter } from 'nodemailer'
-import type { Email } from './email'
+import type { Email } from './email.js'
 
 export interface NodemailerEnv {
   nodemailer: Transporter<unknown>

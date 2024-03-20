@@ -1,10 +1,10 @@
 import * as E from 'fp-ts/Either'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
-import { personaForm } from '../../src/author-invite-flow/persona-page/persona-form'
-import { missingE } from '../../src/form'
-import type { Pseudonym } from '../../src/types/pseudonym'
-import { expect, test } from '../base'
+import { personaForm } from '../../src/author-invite-flow/persona-page/persona-form.js'
+import { missingE } from '../../src/form.js'
+import type { Pseudonym } from '../../src/types/pseudonym.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = personaForm({

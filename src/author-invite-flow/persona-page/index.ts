@@ -15,19 +15,19 @@ import {
   type SaveAuthorInviteEnv,
   getAuthorInvite,
   saveAuthorInvite,
-} from '../../author-invite'
-import { missingE } from '../../form'
-import type { Html } from '../../html'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
+} from '../../author-invite.js'
+import { missingE } from '../../form.js'
+import type { Html } from '../../html.js'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../../http-error.js'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response.js'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInvitePublishedMatch,
-} from '../../routes'
-import type { User } from '../../user'
-import { personaForm } from './persona-form'
+} from '../../routes.js'
+import type { User } from '../../user.js'
+import { personaForm } from './persona-form.js'
 
 export interface Prereview {
   preprint: {

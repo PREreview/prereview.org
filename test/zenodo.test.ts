@@ -24,13 +24,13 @@ import {
   type UnsubmittedDeposition,
   UnsubmittedDepositionC,
 } from 'zenodo-ts'
-import { getClubName } from '../src/club-details'
-import { plainText, rawHtml } from '../src/html'
-import { reviewMatch } from '../src/routes'
-import type { NewPrereview } from '../src/write-review'
-import * as _ from '../src/zenodo'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import { getClubName } from '../src/club-details.js'
+import { plainText, rawHtml } from '../src/html.js'
+import { reviewMatch } from '../src/routes.js'
+import type { NewPrereview } from '../src/write-review/index.js'
+import * as _ from '../src/zenodo.js'
+import * as fc from './fc.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 import PlainDate = Temporal.PlainDate
 

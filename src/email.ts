@@ -3,21 +3,21 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { pipe } from 'fp-ts/function'
 import type { Uuid } from 'uuid-ts'
-import type { UnverifiedContactEmailAddress } from './contact-email-address'
-import { type Html, html, mjmlToHtml, plainText } from './html'
-import type { PreprintTitle } from './preprint'
-import { type PublicUrlEnv, toUrl } from './public-url'
+import type { UnverifiedContactEmailAddress } from './contact-email-address.js'
+import { type Html, html, mjmlToHtml, plainText } from './html.js'
+import type { PreprintTitle } from './preprint.js'
+import { type PublicUrlEnv, toUrl } from './public-url.js'
 import {
   authorInviteDeclineMatch,
   authorInviteMatch,
   authorInviteVerifyEmailAddressMatch,
   verifyContactEmailAddressMatch,
   writeReviewVerifyEmailAddressMatch,
-} from './routes'
-import type { EmailAddress } from './types/email-address'
-import type { IndeterminatePreprintId } from './types/preprint-id'
-import type { NonEmptyString } from './types/string'
-import type { User } from './user'
+} from './routes.js'
+import type { EmailAddress } from './types/email-address.js'
+import type { IndeterminatePreprintId } from './types/preprint-id.js'
+import type { NonEmptyString } from './types/string.js'
+import type { User } from './user.js'
 
 export interface SendEmailEnv {
   sendEmail: (email: Email) => TE.TaskEither<'unavailable', void>

@@ -1,5 +1,5 @@
 import { defineCE, expect, fixture, waitUntil } from '@open-wc/testing'
-import * as _ from '../../assets/html-editor'
+import * as _ from '../../assets/html-editor.js'
 
 describe('while it loads', () => {
   it('shows a loading message', async () => {

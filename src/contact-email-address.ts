@@ -6,10 +6,10 @@ import * as C from 'io-ts/Codec'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type EmailAddress, EmailAddressC } from './types/email-address'
-import type { IndeterminatePreprintId } from './types/preprint-id'
-import { UuidC } from './types/uuid'
-import type { User } from './user'
+import { type EmailAddress, EmailAddressC } from './types/email-address.js'
+import type { IndeterminatePreprintId } from './types/preprint-id.js'
+import { UuidC } from './types/uuid.js'
+import type { User } from './user.js'
 
 export type ContactEmailAddress = VerifiedContactEmailAddress | UnverifiedContactEmailAddress
 

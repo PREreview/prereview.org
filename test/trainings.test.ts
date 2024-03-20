@@ -3,9 +3,9 @@ import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
-import { trainingsMatch } from '../src/routes'
-import * as _ from '../src/trainings'
-import * as fc from './fc'
+import { trainingsMatch } from '../src/routes.js'
+import * as _ from '../src/trainings.js'
+import * as fc from './fc.js'
 
 describe('trainings', () => {
   test.prop([fc.stringOf(fc.alphanumeric(), { minLength: 1 })])('when the page can be loaded', async key => {

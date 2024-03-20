@@ -6,12 +6,12 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
-import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes'
-import * as _ from '../../src/write-review'
-import { CompletedFormC } from '../../src/write-review/completed-form'
-import { FormC, formKey } from '../../src/write-review/form'
-import { runMiddleware } from '../middleware'
-import * as fc from './fc'
+import { writeReviewMatch, writeReviewPublishMatch, writeReviewReviewTypeMatch } from '../../src/routes.js'
+import * as _ from '../../src/write-review/index.js'
+import { CompletedFormC } from '../../src/write-review/completed-form.js'
+import { FormC, formKey } from '../../src/write-review/form.js'
+import { runMiddleware } from '../middleware.js'
+import * as fc from './fc.js'
 
 describe('writeReviewShouldRead', () => {
   test.prop([

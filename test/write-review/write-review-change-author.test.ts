@@ -4,11 +4,11 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import Keyv from 'keyv'
-import type { GetPreprintTitleEnv } from '../../src/preprint'
-import { writeReviewAddAuthorsMatch, writeReviewChangeAuthorMatch, writeReviewMatch } from '../../src/routes'
-import * as _ from '../../src/write-review'
-import { FormC, formKey } from '../../src/write-review/form'
-import * as fc from './fc'
+import type { GetPreprintTitleEnv } from '../../src/preprint.js'
+import { writeReviewAddAuthorsMatch, writeReviewChangeAuthorMatch, writeReviewMatch } from '../../src/routes.js'
+import * as _ from '../../src/write-review/index.js'
+import { FormC, formKey } from '../../src/write-review/form.js'
+import * as fc from './fc.js'
 
 describe('writeReviewChangeAuthor', () => {
   describe('when the form is submitted', () => {

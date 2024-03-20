@@ -5,12 +5,12 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
-import { type CareerStage, getCareerStage, saveCareerStage } from '../career-stage'
-import { html, plainText } from '../html'
-import { havingProblemsPage } from '../http-error'
-import { LogInResponse, PageResponse, RedirectResponse } from '../response'
-import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../routes'
-import type { User } from '../user'
+import { type CareerStage, getCareerStage, saveCareerStage } from '../career-stage.js'
+import { html, plainText } from '../html.js'
+import { havingProblemsPage } from '../http-error.js'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response.js'
+import { changeCareerStageVisibilityMatch, myDetailsMatch } from '../routes.js'
+import type { User } from '../user.js'
 
 export type Env = EnvFor<ReturnType<typeof changeCareerStageVisibility>>
 

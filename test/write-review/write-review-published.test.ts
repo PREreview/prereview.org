@@ -7,12 +7,12 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
-import { writeReviewMatch } from '../../src/routes'
-import { UserC } from '../../src/user'
-import * as _ from '../../src/write-review'
-import { PublishedReviewC } from '../../src/write-review/published-review'
-import { runMiddleware } from '../middleware'
-import * as fc from './fc'
+import { writeReviewMatch } from '../../src/routes.js'
+import { UserC } from '../../src/user.js'
+import * as _ from '../../src/write-review/index.js'
+import { PublishedReviewC } from '../../src/write-review/published-review.js'
+import { runMiddleware } from '../middleware.js'
+import * as fc from './fc.js'
 
 describe('writeReviewPublished', () => {
   test.prop([

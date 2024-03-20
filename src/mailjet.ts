@@ -9,9 +9,9 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import * as E from 'io-ts/Encoder'
 import * as L from 'logger-fp-ts'
-import type { Email } from './email'
-import { RawHtmlC } from './html'
-import { EmailAddressC } from './types/email-address'
+import type { Email } from './email.js'
+import { RawHtmlC } from './html.js'
+import { EmailAddressC } from './types/email-address.js'
 
 export interface MailjetApiEnv {
   mailjetApi: {

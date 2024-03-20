@@ -1,6 +1,6 @@
 import { defineCE, expect, fixture } from '@open-wc/testing'
 import { sendKeys } from '@web/test-runner-commands'
-import * as _ from '../../assets/editor-toolbar'
+import * as _ from '../../assets/editor-toolbar.js'
 
 describe('when it loads', () => {
   it('is a toolbar', async () => {

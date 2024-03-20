@@ -17,15 +17,15 @@ import {
   getContactEmailAddress,
   saveContactEmailAddress,
   verifyContactEmailAddress,
-} from '../contact-email-address'
-import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form'
-import { html, plainText } from '../html'
-import { havingProblemsPage } from '../http-error'
-import { FlashMessageResponse, LogInResponse, PageResponse, RedirectResponse } from '../response'
-import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes'
-import { type EmailAddress, EmailAddressC } from '../types/email-address'
-import { type GenerateUuidEnv, generateUuid } from '../types/uuid'
-import type { User } from '../user'
+} from '../contact-email-address.js'
+import { type InvalidE, type MissingE, getInput, hasAnError, invalidE, missingE } from '../form.js'
+import { html, plainText } from '../html.js'
+import { havingProblemsPage } from '../http-error.js'
+import { FlashMessageResponse, LogInResponse, PageResponse, RedirectResponse } from '../response.js'
+import { changeContactEmailAddressMatch, myDetailsMatch } from '../routes.js'
+import { type EmailAddress, EmailAddressC } from '../types/email-address.js'
+import { type GenerateUuidEnv, generateUuid } from '../types/uuid.js'
+import type { User } from '../user.js'
 
 export type Env = EnvFor<ReturnType<typeof changeContactEmailAddress>>
 

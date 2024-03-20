@@ -12,8 +12,8 @@ import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { type NonEmptyString, NonEmptyStringC } from './types/string'
+import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { type NonEmptyString, NonEmptyStringC } from './types/string.js'
 
 export interface OrcidApiEnv {
   readonly orcidApiUrl: URL

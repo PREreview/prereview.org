@@ -15,12 +15,12 @@ import { get } from 'spectacles-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { Uuid } from 'uuid-ts'
-import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import { type IndeterminatePreprintId, type PreprintId, parsePreprintDoi } from './types/preprint-id'
-import type { OrcidProfileId, ProfileId, PseudonymProfileId } from './types/profile-id'
-import { PseudonymC, isPseudonym } from './types/pseudonym'
-import { UuidC } from './types/uuid'
-import type { NewPrereview } from './write-review'
+import { revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import { type IndeterminatePreprintId, type PreprintId, parsePreprintDoi } from './types/preprint-id.js'
+import type { OrcidProfileId, ProfileId, PseudonymProfileId } from './types/profile-id.js'
+import { PseudonymC, isPseudonym } from './types/pseudonym.js'
+import { UuidC } from './types/uuid.js'
+import type { NewPrereview } from './write-review/index.js'
 
 export interface LegacyPrereviewApiEnv {
   legacyPrereviewApi: {

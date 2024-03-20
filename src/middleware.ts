@@ -4,8 +4,8 @@ import { NotFound, ServiceUnavailable } from 'http-errors'
 import { type HeadersOpen, type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import * as RM from 'hyper-ts/ReaderMiddleware'
-import { handleError } from './http-error'
-import { type PublicUrlEnv, toUrl } from './public-url'
+import { handleError } from './http-error.js'
+import { type PublicUrlEnv, toUrl } from './public-url.js'
 
 export const seeOther: <E = never>(location: string) => M.Middleware<StatusOpen, ResponseEnded, E, void> = location =>
   pipe(

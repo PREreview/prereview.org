@@ -5,12 +5,12 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html'
-import { havingProblemsPage } from '../http-error'
-import { type IsOpenForRequests, isOpenForRequests, saveOpenForRequests } from '../is-open-for-requests'
-import { LogInResponse, PageResponse, RedirectResponse } from '../response'
-import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../routes'
-import type { User } from '../user'
+import { html, plainText } from '../html.js'
+import { havingProblemsPage } from '../http-error.js'
+import { type IsOpenForRequests, isOpenForRequests, saveOpenForRequests } from '../is-open-for-requests.js'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response.js'
+import { changeOpenForRequestsVisibilityMatch, myDetailsMatch } from '../routes.js'
+import type { User } from '../user.js'
 
 export type Env = EnvFor<ReturnType<typeof changeOpenForRequestsVisibility>>
 

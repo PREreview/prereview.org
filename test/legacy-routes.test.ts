@@ -7,11 +7,11 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import { ExpressConnection } from 'hyper-ts/express'
 import { createRequest, createResponse } from 'node-mocks-http'
-import * as _ from '../src/legacy-routes'
-import { preprintReviewsMatch, profileMatch } from '../src/routes'
-import * as fc from './fc'
-import { runMiddleware } from './middleware'
-import { shouldNotBeCalled } from './should-not-be-called'
+import * as _ from '../src/legacy-routes.js'
+import { preprintReviewsMatch, profileMatch } from '../src/routes.js'
+import * as fc from './fc.js'
+import { runMiddleware } from './middleware.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('legacyRoutes', () => {
   test.each([

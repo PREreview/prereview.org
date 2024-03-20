@@ -6,9 +6,9 @@ import { flow, pipe } from 'fp-ts/function'
 import { Eq as stringEq } from 'fp-ts/string'
 import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
 import { get } from 'spectacles-ts'
-import { type Html, html } from './html'
-import type { ClubId } from './types/club-id'
-import type { EmailAddress } from './types/email-address'
+import { type Html, html } from './html.js'
+import type { ClubId } from './types/club-id.js'
+import type { EmailAddress } from './types/email-address.js'
 
 export interface Club {
   readonly name: string

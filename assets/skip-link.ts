@@ -1,4 +1,4 @@
-import { forceFocus, getTargetElement } from './dom'
+import { forceFocus, getTargetElement } from './dom.js'
 
 export class SkipLink extends HTMLElement {
   static element = 'skip-link' as const

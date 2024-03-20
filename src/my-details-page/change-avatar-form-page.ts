@@ -2,10 +2,10 @@ import { format } from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
 import { match } from 'ts-pattern'
-import { type MissingE, type TooBigE, type WrongTypeE, hasAnError } from '../form'
-import { html, plainText, rawHtml } from '../html'
-import { PageResponse } from '../response'
-import { changeAvatarMatch, myDetailsMatch } from '../routes'
+import { type MissingE, type TooBigE, type WrongTypeE, hasAnError } from '../form.js'
+import { html, plainText, rawHtml } from '../html.js'
+import { PageResponse } from '../response.js'
+import { changeAvatarMatch, myDetailsMatch } from '../routes.js'
 
 export interface UploadAvatarForm {
   readonly avatar: E.Either<MissingE | WrongTypeE | TooBigE, unknown>

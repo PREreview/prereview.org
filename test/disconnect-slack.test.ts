@@ -3,12 +3,12 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import * as _ from '../src/disconnect-slack'
-import { disconnectSlackMatch, myDetailsMatch } from '../src/routes'
-import type { IsSlackUserEnv } from '../src/slack-user'
-import type { DeleteSlackUserIdEnv } from '../src/slack-user-id'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import * as _ from '../src/disconnect-slack.js'
+import { disconnectSlackMatch, myDetailsMatch } from '../src/routes.js'
+import type { IsSlackUserEnv } from '../src/slack-user.js'
+import type { DeleteSlackUserIdEnv } from '../src/slack-user-id.js'
+import * as fc from './fc.js'
+import { shouldNotBeCalled } from './should-not-be-called.js'
 
 describe('disconnectSlack', () => {
   describe('when the user is logged in', () => {

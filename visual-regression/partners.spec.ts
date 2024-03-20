@@ -1,7 +1,7 @@
-import { html, plainText } from '../src/html'
-import { page as templatePage } from '../src/page'
-import { partners } from '../src/partners'
-import { expect, test } from './base'
+import { html, plainText } from '../src/html.js'
+import { page as templatePage } from '../src/page.js'
+import { partners } from '../src/partners.js'
+import { expect, test } from './base.js'
 
 test('main content looks right', async ({ page }) => {
   const partnersPage = partners

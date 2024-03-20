@@ -101,6 +101,9 @@ module.exports = (env, argv) => ({
   },
   resolve: {
     extensions: ['.ts'],
+    extensionAlias: {
+      '.js': ['.ts', '.js'],
+    },
   },
   output: {
     assetModuleFilename: '[name].[contenthash][ext]',

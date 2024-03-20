@@ -42,27 +42,27 @@ import {
   updateDeposition,
   uploadFile,
 } from 'zenodo-ts'
-import { getClubByName, getClubName } from './club-details'
-import { reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import type { RecentPrereview } from './home'
-import { plainText, sanitizeHtml } from './html'
-import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
-import type { Prereview as PreprintPrereview } from './preprint-reviews'
-import { type PublicUrlEnv, toUrl } from './public-url'
-import type { Prereview } from './review-page'
-import { reviewMatch } from './routes'
-import type { Prereview as ScietyPrereview } from './sciety-list'
-import type { ClubId } from './types/club-id'
+import { getClubByName, getClubName } from './club-details.js'
+import { reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch.js'
+import type { RecentPrereview } from './home.js'
+import { plainText, sanitizeHtml } from './html.js'
+import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint.js'
+import type { Prereview as PreprintPrereview } from './preprint-reviews.js'
+import { type PublicUrlEnv, toUrl } from './public-url.js'
+import type { Prereview } from './review-page.js'
+import { reviewMatch } from './routes.js'
+import type { Prereview as ScietyPrereview } from './sciety-list/index.js'
+import type { ClubId } from './types/club-id.js'
 import {
   type IndeterminatePreprintId,
   PreprintDoiD,
   type PreprintId,
   fromPreprintDoi,
   fromUrl,
-} from './types/preprint-id'
-import type { ProfileId } from './types/profile-id'
-import type { User } from './user'
-import type { NewPrereview } from './write-review'
+} from './types/preprint-id.js'
+import type { ProfileId } from './types/profile-id.js'
+import type { User } from './user.js'
+import type { NewPrereview } from './write-review/index.js'
 
 export interface WasPrereviewRemovedEnv {
   wasPrereviewRemoved: (id: number) => boolean

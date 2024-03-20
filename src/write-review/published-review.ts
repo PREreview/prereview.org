@@ -8,8 +8,8 @@ import { getSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
-import { type CompletedForm, CompletedFormC } from './completed-form'
-import { FormC } from './form'
+import { type CompletedForm, CompletedFormC } from './completed-form.js'
+import { FormC } from './form.js'
 
 export type PublishedReview = C.TypeOf<typeof PublishedReviewC>
 

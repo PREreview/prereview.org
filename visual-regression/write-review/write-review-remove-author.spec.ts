@@ -1,11 +1,11 @@
 import type { Doi } from 'doi-ts'
 import * as E from 'fp-ts/Either'
-import { missingE } from '../../src/form'
-import { html } from '../../src/html'
-import type { PreprintTitle } from '../../src/preprint'
-import type { NonEmptyString } from '../../src/types/string'
-import { removeAuthorForm } from '../../src/write-review/remove-author-page/remove-author-form'
-import { expect, test } from '../base'
+import { missingE } from '../../src/form.js'
+import { html } from '../../src/html.js'
+import type { PreprintTitle } from '../../src/preprint.js'
+import type { NonEmptyString } from '../../src/types/string.js'
+import { removeAuthorForm } from '../../src/write-review/remove-author-page/remove-author-form.js'
+import { expect, test } from '../base.js'
 
 const preprint = {
   id: {

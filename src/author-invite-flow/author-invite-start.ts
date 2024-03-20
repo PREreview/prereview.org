@@ -12,18 +12,18 @@ import {
   type SaveAuthorInviteEnv,
   getAuthorInvite,
   saveAuthorInvite,
-} from '../author-invite'
-import { type Html, html, plainText } from '../html'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
-import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
+} from '../author-invite.js'
+import { type Html, html, plainText } from '../html.js'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
+import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteCheckMatch,
   authorInviteDeclineMatch,
   authorInvitePersonaMatch,
   authorInvitePublishedMatch,
   authorInviteStartMatch,
-} from '../routes'
-import type { User } from '../user'
+} from '../routes.js'
+import type { User } from '../user.js'
 
 export interface Prereview {
   preprint: {

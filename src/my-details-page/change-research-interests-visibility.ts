@@ -5,12 +5,12 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { match } from 'ts-pattern'
-import { html, plainText } from '../html'
-import { havingProblemsPage } from '../http-error'
-import { type ResearchInterests, getResearchInterests, saveResearchInterests } from '../research-interests'
-import { LogInResponse, PageResponse, RedirectResponse } from '../response'
-import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../routes'
-import type { User } from '../user'
+import { html, plainText } from '../html.js'
+import { havingProblemsPage } from '../http-error.js'
+import { type ResearchInterests, getResearchInterests, saveResearchInterests } from '../research-interests.js'
+import { LogInResponse, PageResponse, RedirectResponse } from '../response.js'
+import { changeResearchInterestsVisibilityMatch, myDetailsMatch } from '../routes.js'
+import type { User } from '../user.js'
 
 export type Env = EnvFor<ReturnType<typeof changeResearchInterestsVisibility>>
 

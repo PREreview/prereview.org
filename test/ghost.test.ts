@@ -3,9 +3,9 @@ import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
-import * as _ from '../src/ghost'
-import { rawHtml } from '../src/html'
-import * as fc from './fc'
+import * as _ from '../src/ghost.js'
+import { rawHtml } from '../src/html.js'
+import * as fc from './fc.js'
 
 describe('getPage', () => {
   test.prop([

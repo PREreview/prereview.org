@@ -7,20 +7,16 @@ import { Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import markdownIt from 'markdown-it'
 import { P, match } from 'ts-pattern'
-import TurndownService from 'turndown'
-import { type InvalidE, type MissingE, hasAnError, invalidE, missingE } from '../form'
-import { type Html, html, plainText, rawHtml, sanitizeHtml } from '../html'
-import { havingProblemsPage, pageNotFound } from '../http-error'
-import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../preprint'
-import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
-import { writeReviewMatch, writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../routes'
-import type { IndeterminatePreprintId } from '../types/preprint-id'
-import { NonEmptyStringC } from '../types/string'
-import type { User } from '../user'
-import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form'
-
-const turndown = new TurndownService({ bulletListMarker: '-', emDelimiter: '*', headingStyle: 'atx' })
-turndown.keep(['sub', 'sup'])
+import { type InvalidE, type MissingE, hasAnError, invalidE, missingE } from '../form.js'
+import { type Html, html, plainText, rawHtml, sanitizeHtml } from '../html.js'
+import { havingProblemsPage, pageNotFound } from '../http-error.js'
+import { type GetPreprintTitleEnv, type PreprintTitle, getPreprintTitle } from '../preprint.js'
+import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
+import { writeReviewMatch, writeReviewReviewMatch, writeReviewReviewTypeMatch } from '../routes.js'
+import type { IndeterminatePreprintId } from '../types/preprint-id.js'
+import { NonEmptyStringC } from '../types/string.js'
+import type { User } from '../user.js'
+import { type Form, type FormStoreEnv, getForm, nextFormMatch, saveForm, updateForm } from './form.js'
 
 export const writeReviewReview = ({
   body,
@@ -276,7 +272,7 @@ function writeReviewForm(preprint: PreprintTitle, form: WriteReviewForm) {
                 { right: P.select(P.not(undefined)) },
                 review => html`
                   <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
-${turndown.turndown(review.toString())}</textarea
+${review.toString()}</textarea
                   >
                   <textarea hidden disabled>${review}</textarea>
                 `,
@@ -305,7 +301,7 @@ ${turndown.turndown(review.toString())}</textarea
                     aria-invalid="true"
                     aria-errormessage="review-error"
                   >
-${turndown.turndown(review)}</textarea
+${review}</textarea
                   >
                   <textarea hidden disabled>${rawHtml(review)}</textarea>
                 `,
@@ -381,7 +377,7 @@ function pasteReviewForm(preprint: PreprintTitle, form: PasteReviewForm) {
                 { right: P.select(P.not(undefined)) },
                 review => html`
                   <textarea id="review" name="review" rows="20" aria-describedby="review-tip">
-${turndown.turndown(review.toString())}</textarea
+${review.toString()}</textarea
                   >
                   <textarea hidden disabled>${review}</textarea>
                 `,
@@ -426,9 +422,6 @@ Write a short summary of the research’s main findings and how this work has mo
 
 function isSameMarkdownAs(reference: string) {
   return (input: Html) => {
-    return (
-      turndown.turndown(input.toString()).replaceAll(/\s+/g, ' ') !==
-      turndown.turndown(reference.replaceAll(/\s+/g, ' '))
-    )
+    return input.toString().replaceAll(/\s+/g, ' ') !== reference.replaceAll(/\s+/g, ' ')
   }
 }

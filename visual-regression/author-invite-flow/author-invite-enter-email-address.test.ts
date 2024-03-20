@@ -1,9 +1,9 @@
 import * as E from 'fp-ts/Either'
 import type { Uuid } from 'uuid-ts'
-import { enterEmailAddressForm } from '../../src/author-invite-flow/enter-email-address-page/enter-email-address-form'
-import { invalidE, missingE } from '../../src/form'
-import type { EmailAddress } from '../../src/types/email-address'
-import { expect, test } from '../base'
+import { enterEmailAddressForm } from '../../src/author-invite-flow/enter-email-address-page/enter-email-address-form.js'
+import { invalidE, missingE } from '../../src/form.js'
+import type { EmailAddress } from '../../src/types/email-address.js'
+import { expect, test } from '../base.js'
 
 test('content looks right', async ({ showPage }) => {
   const response = enterEmailAddressForm({

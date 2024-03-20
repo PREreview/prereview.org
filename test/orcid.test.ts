@@ -6,8 +6,8 @@ import * as E from 'fp-ts/Either'
 import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
 import type { Orcid } from 'orcid-id-ts'
-import * as _ from '../src/orcid'
-import * as fc from './fc'
+import * as _ from '../src/orcid.js'
+import * as fc from './fc.js'
 
 describe('getNameFromOrcid', () => {
   describe('when the request succeeds', () => {

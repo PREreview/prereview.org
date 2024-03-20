@@ -1,11 +1,11 @@
 import { format } from 'fp-ts-routing'
 import type { Orcid } from 'orcid-id-ts'
 import type { Uuid } from 'uuid-ts'
-import { html, plainText } from '../../html'
-import { StreamlinePageResponse } from '../../response'
-import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../routes'
-import { isPseudonym } from '../../types/pseudonym'
-import type { User } from '../../user'
+import { html, plainText } from '../../html.js'
+import { StreamlinePageResponse } from '../../response.js'
+import { authorInviteCheckMatch, authorInvitePersonaMatch, profileMatch } from '../../routes.js'
+import { isPseudonym } from '../../types/pseudonym.js'
+import type { User } from '../../user.js'
 
 export function checkPage({
   inviteId,

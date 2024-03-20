@@ -9,10 +9,10 @@ import {
   writeReviewPublishMatch,
   writeReviewReviewMatch,
   writeReviewReviewTypeMatch,
-} from '../../src/routes'
-import * as _ from '../../src/write-review'
-import { FormC, formKey } from '../../src/write-review/form'
-import * as fc from './fc'
+} from '../../src/routes.js'
+import * as _ from '../../src/write-review/index.js'
+import { FormC, formKey } from '../../src/write-review/form.js'
+import * as fc from './fc.js'
 
 describe('writeReviewReview', () => {
   test.prop([

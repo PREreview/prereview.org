@@ -4,8 +4,8 @@ import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
-import * as _ from '../src/user'
-import * as fc from './fc'
+import * as _ from '../src/user.js'
+import * as fc from './fc.js'
 
 describe('UserC', () => {
   test.prop([fc.user()])('when the user can be decoded', user => {

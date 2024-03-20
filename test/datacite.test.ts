@@ -3,9 +3,9 @@ import { describe, expect } from '@jest/globals'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
-import * as _ from '../src/datacite'
-import { rawHtml } from '../src/html'
-import * as fc from './fc'
+import * as _ from '../src/datacite.js'
+import { rawHtml } from '../src/html.js'
+import * as fc from './fc.js'
 
 describe('isDatacitePreprintDoi', () => {
   test.prop([fc.datacitePreprintDoi()])('with a DataCite DOI', doi => {

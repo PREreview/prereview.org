@@ -11,11 +11,11 @@ import { type Orcid, Eq as eqOrcid } from 'orcid-id-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite'
-import { getClubName } from '../club-details'
-import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html'
-import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error'
-import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
+import { type GetAuthorInviteEnv, getAuthorInvite } from '../author-invite.js'
+import { getClubName } from '../club-details.js'
+import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html.js'
+import { havingProblemsPage, noPermissionPage, pageNotFound } from '../http-error.js'
+import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response.js'
 import {
   authorInviteDeclineMatch,
   authorInviteMatch,
@@ -23,12 +23,12 @@ import {
   authorInviteStartMatch,
   clubProfileMatch,
   profileMatch,
-} from '../routes'
-import { renderDate } from '../time'
-import type { ClubId } from '../types/club-id'
-import type { PreprintId } from '../types/preprint-id'
-import { isPseudonym } from '../types/pseudonym'
-import type { User } from '../user'
+} from '../routes.js'
+import { renderDate } from '../time.js'
+import type { ClubId } from '../types/club-id.js'
+import type { PreprintId } from '../types/preprint-id.js'
+import { isPseudonym } from '../types/pseudonym.js'
+import type { User } from '../user.js'
 
 import PlainDate = Temporal.PlainDate
 

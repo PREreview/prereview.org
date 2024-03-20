@@ -6,17 +6,17 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import Keyv from 'keyv'
-import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address'
+import type { VerifyContactEmailAddressForReviewEnv } from '../../src/contact-email-address.js'
 import {
   writeReviewEnterEmailAddressMatch,
   writeReviewMatch,
   writeReviewNeedToVerifyEmailAddressMatch,
-} from '../../src/routes'
-import * as _ from '../../src/write-review'
-import { FormC, formKey } from '../../src/write-review/form'
-import { runMiddleware } from '../middleware'
-import { shouldNotBeCalled } from '../should-not-be-called'
-import * as fc from './fc'
+} from '../../src/routes.js'
+import * as _ from '../../src/write-review/index.js'
+import { FormC, formKey } from '../../src/write-review/form.js'
+import { runMiddleware } from '../middleware.js'
+import { shouldNotBeCalled } from '../should-not-be-called.js'
+import * as fc from './fc.js'
 
 describe('writeReviewNeedToVerifyEmailAddress', () => {
   test.prop([

@@ -3,9 +3,9 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import * as _ from '../src/review-page'
-import { reviewMatch } from '../src/routes'
-import * as fc from './fc'
+import * as _ from '../src/review-page.js'
+import { reviewMatch } from '../src/routes.js'
+import * as fc from './fc.js'
 
 describe('reviewPage', () => {
   test.prop([

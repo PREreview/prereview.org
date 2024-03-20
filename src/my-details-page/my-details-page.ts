@@ -1,15 +1,15 @@
 import { format } from 'fp-ts-routing'
 import * as O from 'fp-ts/Option'
 import { P, match } from 'ts-pattern'
-import type { CareerStage } from '../career-stage'
-import type { ContactEmailAddress } from '../contact-email-address'
-import { html, plainText } from '../html'
-import type { IsOpenForRequests } from '../is-open-for-requests'
-import type { Languages } from '../languages'
-import type { Location } from '../location'
-import type { OrcidToken } from '../orcid-token'
-import type { ResearchInterests } from '../research-interests'
-import { PageResponse } from '../response'
+import type { CareerStage } from '../career-stage.js'
+import type { ContactEmailAddress } from '../contact-email-address.js'
+import { html, plainText } from '../html.js'
+import type { IsOpenForRequests } from '../is-open-for-requests.js'
+import type { Languages } from '../languages.js'
+import type { Location } from '../location.js'
+import type { OrcidToken } from '../orcid-token.js'
+import type { ResearchInterests } from '../research-interests.js'
+import { PageResponse } from '../response.js'
 import {
   changeAvatarMatch,
   changeCareerStageMatch,
@@ -29,10 +29,10 @@ import {
   disconnectSlackMatch,
   myDetailsMatch,
   profileMatch,
-} from '../routes'
-import type { SlackUser } from '../slack-user'
-import type { User } from '../user'
-import type { UserOnboarding } from '../user-onboarding'
+} from '../routes.js'
+import type { SlackUser } from '../slack-user.js'
+import type { User } from '../user.js'
+import type { UserOnboarding } from '../user-onboarding.js'
 
 export function createPage({
   user,
