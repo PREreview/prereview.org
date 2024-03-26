@@ -151,6 +151,7 @@ const FlashMessageD = D.literal(
   'orcid-disconnected',
   'slack-connected',
   'slack-disconnected',
+  'avatar-changed',
 )
 
 export const handlePageResponse = ({
@@ -374,6 +375,16 @@ function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>) {
           <h2 id="notification-banner-title">Success</h2>
 
           <p>Your Community Slack account has been disconnected.</p>
+        </notification-banner>
+      `,
+    )
+    .with(
+      'avatar-changed',
+      () => html`
+        <notification-banner aria-labelledby="notification-banner-title" role="alert">
+          <h2 id="notification-banner-title">Success</h2>
+
+          <p>Your avatar has been changed.</p>
         </notification-banner>
       `,
     )

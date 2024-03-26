@@ -147,19 +147,31 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canConnectOrcidProfile)(
   },
 )
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)('can upload an avatar', async ({ fetch, page }) => {
-  await page.getByRole('link', { name: 'My details' }).click()
-  await page.getByRole('link', { name: 'Upload avatar' }).click()
-  await page.getByLabel('Upload an avatar').setInputFiles(path.join(__dirname, 'fixtures', '600x400.png'))
+test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
+  'can upload an avatar',
+  async ({ fetch, javaScriptEnabled, page }) => {
+    await page.getByRole('link', { name: 'My details' }).click()
+    await page.getByRole('link', { name: 'Upload avatar' }).click()
+    await page.getByLabel('Upload an avatar').setInputFiles(path.join(__dirname, 'fixtures', '600x400.png'))
 
-  fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/upload', { body: { public_id: 'an-avatar' } })
-  await page.route('https://res.cloudinary.com/**/*', route =>
-    route.fulfill({ path: path.join(__dirname, 'fixtures', '300x300.png') }),
-  )
-  await page.getByRole('button', { name: 'Save and continue' }).click()
+    fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/upload', { body: { public_id: 'an-avatar' } })
+    await page.route('https://res.cloudinary.com/**/*', route =>
+      route.fulfill({ path: path.join(__dirname, 'fixtures', '300x300.png') }),
+    )
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
-  await expect(page.getByRole('main')).toContainText('Avatar')
-})
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+    }
+    await expect(page.getByRole('main')).toContainText('Avatar')
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+  },
+)
 
 test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
   'can connect my Slack Community account',

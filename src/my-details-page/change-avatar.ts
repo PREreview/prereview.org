@@ -10,7 +10,7 @@ import { saveAvatar } from '../avatar'
 import { canUploadAvatar } from '../feature-flags'
 import { type MissingE, type TooBigE, type WrongTypeE, missingE, tooBigE, wrongTypeE } from '../form'
 import { havingProblemsPage, pageNotFound } from '../http-error'
-import { LogInResponse, RedirectResponse } from '../response'
+import { FlashMessageResponse, LogInResponse } from '../response'
 import { myDetailsMatch } from '../routes'
 import type { User } from '../user'
 import { createPage } from './change-avatar-form-page'
@@ -83,7 +83,7 @@ const handleChangeAvatarForm = ({ body, user }: { body: unknown; user: User }) =
           .with('unavailable', () => havingProblemsPage)
           .with({ avatar: P.any }, error => createPage({ form: error }))
           .exhaustive(),
-      () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
+      () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'avatar-changed' }),
     ),
   )
 
