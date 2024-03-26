@@ -156,6 +156,11 @@ export function createPage({
               <div>
                 <dt>Avatar</dt>
                 <dd><img src="${avatar.href}" width="300" height="300" alt="" /></dd>
+                <dd>
+                  <a href="${format(changeAvatarMatch.formatter, {})}"
+                    >Change <span class="visually-hidden">avatar</span></a
+                  >
+                </dd>
               </div>
             `,
           )

@@ -170,6 +170,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
     await page.reload()
 
     await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
+
+    await page.getByRole('link', { name: 'Change avatar' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Upload an avatar')
+
+    await page.getByRole('link', { name: 'Back' }).click()
   },
 )
 
