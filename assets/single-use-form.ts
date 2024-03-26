@@ -6,19 +6,33 @@ export class SingleUseForm extends HTMLElement {
   constructor() {
     super()
 
-    this.addEventListener('submit', event => {
-      const form = event.target
-      if (!(form instanceof HTMLFormElement)) {
-        return
-      }
+    this.addEventListener('submit', this.onSubmit)
+  }
 
-      if (form.dataset['submitted'] === 'true') {
-        event.preventDefault()
-      }
+  private onSubmit = (event: SubmitEvent) => {
+    const form = event.target
+    if (!(form instanceof HTMLFormElement)) {
+      return
+    }
 
-      form.dataset['submitted'] = 'true'
-      form.querySelectorAll('button').forEach(disableButton)
-    })
+    if (form.dataset['submitted'] === 'true') {
+      event.preventDefault()
+    } else {
+      const status = document.createElement('div')
+      status.classList.add('submitting', 'visually-hidden')
+      const statusText = document.createElement('span')
+      statusText.textContent = 'Please wait, we’re working on it.'
+      status.append(statusText)
+      this.append(status)
+
+      setTimeout(() => {
+        status.classList.remove('visually-hidden')
+        status.setAttribute('role', 'status')
+      }, 1_000)
+    }
+
+    form.dataset['submitted'] = 'true'
+    form.querySelectorAll('button').forEach(disableButton)
   }
 }
 

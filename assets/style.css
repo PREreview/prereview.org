@@ -1495,6 +1495,32 @@ html-editor {
   }
 }
 
+single-use-form {
+  .submitting {
+    display: flex;
+    align-items: center;
+    padding-block-start: var(--space-xs);
+    column-gap: var(--space-2xs-xs);
+    font-weight: 500;
+
+    @media (prefers-reduced-motion: no-preference) {
+      &::before {
+        content: '';
+        block-size: var(--space-m-l);
+        inline-size: var(--space-m-l);
+        animation: rotation 1s linear infinite;
+        border: var(--width-divider-wide) solid var(--color-text);
+        border-radius: 50%;
+        border-inline-end-color: transparent;
+
+        @media (forced-colors: active) {
+          border-inline-end-color: Field;
+        }
+      }
+    }
+  }
+}
+
 :--textarea {
   overflow-block: auto;
   resize: block;
