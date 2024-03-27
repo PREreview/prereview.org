@@ -29,6 +29,7 @@ import {
   disconnectSlackMatch,
   myDetailsMatch,
   profileMatch,
+  removeAvatarMatch,
 } from '../routes'
 import type { SlackUser } from '../slack-user'
 import type { User } from '../user'
@@ -157,9 +158,18 @@ export function createPage({
                 <dt>Avatar</dt>
                 <dd><img src="${avatar.href}" width="300" height="300" alt="" /></dd>
                 <dd>
-                  <a href="${format(changeAvatarMatch.formatter, {})}"
-                    >Change <span class="visually-hidden">avatar</span></a
-                  >
+                  <ul>
+                    <li>
+                      <a href="${format(changeAvatarMatch.formatter, {})}"
+                        >Change <span class="visually-hidden">avatar</span></a
+                      >
+                    </li>
+                    <li>
+                      <a href="${format(removeAvatarMatch.formatter, {})}"
+                        >Remove <span class="visually-hidden">avatar</span></a
+                      >
+                    </li>
+                  </ul>
                 </dd>
               </div>
             `,

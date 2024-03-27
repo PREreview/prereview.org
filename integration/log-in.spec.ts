@@ -176,8 +176,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Upload an avatar')
 
     await page.getByRole('link', { name: 'Back' }).click()
-
-    await page.goto('/my-details/remove-avatar')
+    await page.getByRole('link', { name: 'Remove avatar' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Remove your avatar')
 
