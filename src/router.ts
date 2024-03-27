@@ -34,7 +34,12 @@ import {
   authorInviteStart,
   authorInviteVerifyEmailAddress,
 } from './author-invite-flow'
-import { type CloudinaryApiEnv, getAvatarFromCloudinary, saveAvatarOnCloudinary } from './cloudinary'
+import {
+  type CloudinaryApiEnv,
+  getAvatarFromCloudinary,
+  removeAvatarFromCloudinary,
+  saveAvatarOnCloudinary,
+} from './cloudinary'
 import { clubProfile } from './club-profile'
 import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
@@ -94,6 +99,7 @@ import {
   changeResearchInterests,
   changeResearchInterestsVisibility,
   myDetails,
+  removeAvatar,
   verifyContactEmailAddress,
 } from './my-details-page'
 import { type OrcidApiEnv, getNameFromOrcid } from './orcid'
@@ -161,6 +167,7 @@ import {
   preprintReviewsMatch,
   privacyPolicyMatch,
   profileMatch,
+  removeAvatarMatch,
   resourcesMatch,
   reviewAPreprintMatch,
   reviewMatch,
@@ -833,6 +840,30 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           saveAvatar: withEnv(saveAvatarOnCloudinary, { ...env, saveCloudinaryAvatar: withEnv(Keyv.saveAvatar, env) }),
+        })),
+      ),
+    ),
+    pipe(
+      removeAvatarMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(removeAvatar)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          deleteAvatar: withEnv(removeAvatarFromCloudinary, {
+            ...env,
+            deleteCloudinaryAvatar: withEnv(Keyv.deleteAvatar, env),
+          }),
         })),
       ),
     ),

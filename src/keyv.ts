@@ -316,3 +316,8 @@ export const saveAvatar = flow(
   setKey(OrcidE, NonEmptyStringC),
   RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
 )
+
+export const deleteAvatar = flow(
+  deleteKey(OrcidE),
+  RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
+)

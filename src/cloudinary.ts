@@ -31,6 +31,10 @@ export interface SaveCloudinaryAvatarEnv {
   saveCloudinaryAvatar: (orcid: Orcid, id: NonEmptyString) => TE.TaskEither<'unavailable', void>
 }
 
+export interface DeleteCloudinaryAvatarEnv {
+  deleteCloudinaryAvatar: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
+}
+
 const JsonD = {
   decode: (s: string) =>
     pipe(
@@ -60,6 +64,12 @@ const saveCloudinaryAvatar = (orcid: Orcid, id: NonEmptyString) =>
   pipe(
     RTE.ask<SaveCloudinaryAvatarEnv>(),
     RTE.chainTaskEitherK(({ saveCloudinaryAvatar }) => saveCloudinaryAvatar(orcid, id)),
+  )
+
+const deleteCloudinaryAvatar = (orcid: Orcid) =>
+  pipe(
+    RTE.ask<DeleteCloudinaryAvatarEnv>(),
+    RTE.chainTaskEitherK(({ deleteCloudinaryAvatar }) => deleteCloudinaryAvatar(orcid)),
   )
 
 export const getAvatarFromCloudinary = flow(
@@ -124,3 +134,5 @@ export const saveAvatarOnCloudinary = (
     RTE.chainW(upload => saveCloudinaryAvatar(orcid, upload.public_id)),
     RTE.mapLeft(() => 'unavailable' as const),
   )
+
+export const removeAvatarFromCloudinary = deleteCloudinaryAvatar

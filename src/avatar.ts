@@ -15,6 +15,10 @@ export interface SaveAvatarEnv {
   ) => TE.TaskEither<'unavailable', void>
 }
 
+export interface DeleteAvatarEnv {
+  deleteAvatar: (orcid: Orcid) => TE.TaskEither<'unavailable', void>
+}
+
 export const getAvatar = (orcid: Orcid) =>
   pipe(
     RTE.ask<GetAvatarEnv>(),
@@ -35,4 +39,10 @@ export const saveAvatar = (orcid: Orcid, file: { buffer: Buffer; mimetype: 'imag
   pipe(
     RTE.ask<SaveAvatarEnv>(),
     RTE.chainTaskEitherK(({ saveAvatar }) => saveAvatar(orcid, file)),
+  )
+
+export const deleteAvatar = (orcid: Orcid) =>
+  pipe(
+    RTE.ask<DeleteAvatarEnv>(),
+    RTE.chainTaskEitherK(({ deleteAvatar }) => deleteAvatar(orcid)),
   )
