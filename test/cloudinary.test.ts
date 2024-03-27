@@ -197,3 +197,31 @@ describe('saveAvatarOnCloudinary', () => {
     },
   )
 })
+
+describe('removeAvatarFromCloudinary', () => {
+  test.prop([fc.orcid()])('when the avatar can be removed', async orcid => {
+    const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
+      TE.right(undefined),
+    )
+
+    const actual = await _.removeAvatarFromCloudinary(orcid)({
+      deleteCloudinaryAvatar,
+    })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
+  })
+
+  test.prop([fc.orcid()])('when the avatar cannot be removed locally', async orcid => {
+    const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
+      TE.left('unavailable'),
+    )
+
+    const actual = await _.removeAvatarFromCloudinary(orcid)({
+      deleteCloudinaryAvatar,
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
+  })
+})
