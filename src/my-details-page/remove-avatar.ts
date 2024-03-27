@@ -9,6 +9,7 @@ import { havingProblemsPage } from '../http-error'
 import { LogInResponse, RedirectResponse } from '../response'
 import { myDetailsMatch } from '../routes'
 import type { User } from '../user'
+import { page } from './remove-avatar-form-page'
 
 export type Env = EnvFor<ReturnType<typeof removeAvatar>>
 
@@ -27,7 +28,7 @@ export const removeAvatar = ({ method, user }: { method: string; user?: User }) 
       state =>
         match(state)
           .with({ method: 'POST' }, handleRemoveAvatarForm)
-          .otherwise(() => RT.of(RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }))),
+          .otherwise(() => RT.of(page)),
     ),
   )
 

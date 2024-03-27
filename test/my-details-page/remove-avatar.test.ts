@@ -4,7 +4,7 @@ import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/my-details-page/remove-avatar'
-import { myDetailsMatch } from '../../src/routes'
+import { myDetailsMatch, removeAvatarMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
@@ -56,9 +56,14 @@ describe('removeAvatar', () => {
       })()
 
       expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: format(myDetailsMatch.formatter, {}),
+        _tag: 'PageResponse',
+        canonical: format(removeAvatarMatch.formatter, {}),
+        status: Status.OK,
+        title: expect.stringContaining('avatar'),
+        nav: expect.stringContaining('Back'),
+        main: expect.stringContaining('avatar'),
+        skipToLabel: 'form',
+        js: [],
       })
     },
   )

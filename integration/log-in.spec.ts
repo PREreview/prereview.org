@@ -177,8 +177,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
 
     await page.getByRole('link', { name: 'Back' }).click()
 
-    await page.request.post('/my-details/remove-avatar', { failOnStatusCode: true })
-    await page.reload()
+    await page.goto('/my-details/remove-avatar')
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Remove your avatar')
+
+    await page.getByRole('button', { name: 'Remove avatar' }).click()
 
     await expect(page.getByRole('link', { name: 'Upload avatar' })).toBeVisible()
   },
