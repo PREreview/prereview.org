@@ -55,6 +55,18 @@ export function createPage({ form }: { form: UploadAvatarForm }) {
           <div ${rawHtml(E.isLeft(form.avatar) ? 'class="error"' : '')}>
             <h1><label for="avatar">Upload an avatar</label></h1>
 
+            <p id="avatar-tip" role="note">
+              You can upload a photo or image to use as your avatar. The selected file must be smaller than 5&nbsp;MB.
+            </p>
+
+            <details>
+              <summary><span>Where will it show?</span></summary>
+
+              <div>
+                <p>We’ll show your avatar on your public profile.</p>
+              </div>
+            </details>
+
             ${E.isLeft(form.avatar)
               ? html`
                   <div class="error-message" id="review-error">
@@ -73,6 +85,7 @@ export function createPage({ form }: { form: UploadAvatarForm }) {
               id="avatar"
               type="file"
               accept="image/*"
+              aria-describedby="avatar-tip"
               ${E.isLeft(form.avatar) ? html`aria-invalid="true" aria-errormessage="review-error"` : ''}
             />
           </div>

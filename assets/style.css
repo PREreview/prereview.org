@@ -1563,6 +1563,10 @@ single-use-form {
   .error-message + & {
     margin-block-start: var(--space-2xs-xs);
   }
+
+  details + & {
+    margin-block-start: var(--space-xs-s);
+  }
 }
 
 ::file-selector-button {
