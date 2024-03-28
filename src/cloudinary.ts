@@ -156,38 +156,8 @@ export const saveAvatarOnCloudinary = (
     ),
     RTE.apSW('existing', maybeGetCloudinaryAvatar(orcid)),
     RTE.chainFirstW(({ upload }) => saveCloudinaryAvatar(orcid, upload.public_id)),
-    RTE.chainFirstW(({ existing, now }) =>
-      match(existing)
-        .with(P.string, existing =>
-          pipe(
-            RTE.asks(({ cloudinaryApi }: CloudinaryApiEnv) =>
-              pipe(
-                cloudinary.utils.api_url('destroy', {
-                  cloud_name: cloudinaryApi.cloudName,
-                  resource_type: 'image',
-                }),
-                F.Request('POST'),
-                F.setBody(
-                  new URLSearchParams(
-                    cloudinary.utils.sign_request(
-                      {
-                        public_id: `prereview-profile/${existing}`,
-                        timestamp: Math.round(now.getTime() / 1000),
-                      },
-                      { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
-                    ),
-                  ).toString(),
-                  MediaType.applicationFormURLEncoded,
-                ),
-              ),
-            ),
-            RTE.chainW(F.send),
-            RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-            RTE.chainTaskEitherKW(F.decode(DestroyResponseD)),
-          ),
-        )
-        .with(undefined, RTE.right)
-        .exhaustive(),
+    RTE.chainFirstW(({ existing }) =>
+      match(existing).with(P.string, destroyImageOnCloudinary).with(undefined, RTE.right).exhaustive(),
     ),
     RTE.bimap(() => 'unavailable' as const, constVoid),
   )
@@ -197,35 +167,42 @@ export const removeAvatarFromCloudinary = (orcid: Orcid) =>
     RTE.Do,
     RTE.apS('publicId', getCloudinaryAvatar(orcid)),
     RTE.chainFirstW(() => deleteCloudinaryAvatar(orcid)),
-    RTE.apSW('now', RTE.rightReaderIO(now)),
-    RTE.apSW(
-      'cloudinaryApi',
-      RTE.asks(({ cloudinaryApi }: CloudinaryApiEnv) => cloudinaryApi),
+    RTE.chainW(({ publicId }) => destroyImageOnCloudinary(publicId)),
+    RTE.orElseW(error =>
+      match(error)
+        .with('not-found', () => RTE.right(constVoid()))
+        .otherwise(RTE.left),
     ),
-    RTE.chainW(({ cloudinaryApi, publicId, now }) =>
-      pipe(
-        cloudinary.utils.api_url('destroy', {
-          cloud_name: cloudinaryApi.cloudName,
-          resource_type: 'image',
-        }),
-        F.Request('POST'),
-        F.setBody(
-          new URLSearchParams(
-            cloudinary.utils.sign_request(
-              {
-                public_id: `prereview-profile/${publicId}`,
-                timestamp: Math.round(now.getTime() / 1000),
-              },
-              { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
-            ),
-          ).toString(),
-          MediaType.applicationFormURLEncoded,
+  )
+
+const destroyImageOnCloudinary = (publicId: NonEmptyString) =>
+  pipe(
+    RTE.rightReaderIO(now),
+    RTE.chainW(now =>
+      RTE.asks(({ cloudinaryApi }: CloudinaryApiEnv) =>
+        pipe(
+          cloudinary.utils.api_url('destroy', {
+            cloud_name: cloudinaryApi.cloudName,
+            resource_type: 'image',
+          }),
+          F.Request('POST'),
+          F.setBody(
+            new URLSearchParams(
+              cloudinary.utils.sign_request(
+                {
+                  public_id: `prereview-profile/${publicId}`,
+                  timestamp: Math.round(now.getTime() / 1000),
+                },
+                { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
+              ),
+            ).toString(),
+            MediaType.applicationFormURLEncoded,
+          ),
         ),
-        F.send,
       ),
     ),
+    RTE.chainW(F.send),
     RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
     RTE.chainTaskEitherKW(F.decode(DestroyResponseD)),
-    RTE.orElseW(error => match(error).with('not-found', RTE.right).otherwise(RTE.left)),
     RTE.bimap(() => 'unavailable' as const, constVoid),
   )
