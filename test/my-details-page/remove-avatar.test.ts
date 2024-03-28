@@ -25,14 +25,7 @@ describe('removeAvatar', () => {
     expect(deleteAvatar).toHaveBeenCalledWith(user.orcid)
   })
 
-  test.prop([
-    fc.record({
-      buffer: fc.string().map(string => Buffer.from(string)),
-      mimetype: fc.constantFrom('image/jpeg', 'image/png'),
-    }),
-    fc.user(),
-    fc.url(),
-  ])("when the avatar can't be deleted", async (file, user, avatar) => {
+  test.prop([fc.user(), fc.url()])("when the avatar can't be deleted", async (user, avatar) => {
     const deleteAvatar = jest.fn<_.Env['deleteAvatar']>(_ => TE.left('unavailable'))
 
     const actual = await _.removeAvatar({ method: 'POST', user })({
