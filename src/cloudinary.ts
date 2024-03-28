@@ -5,11 +5,12 @@ import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import type * as TE from 'fp-ts/TaskEither'
-import { constVoid, flow, identity, pipe } from 'fp-ts/function'
+import * as TE from 'fp-ts/TaskEither'
+import { constVoid, flow, pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
+import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
 import { P, match } from 'ts-pattern'
 import { URL } from 'url'
@@ -150,8 +151,12 @@ export const saveAvatarOnCloudinary = (
           ),
         ),
         RTE.chainW(F.send),
-        RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-        RTE.chainTaskEitherKW(F.decode(UploadResponseD)),
+        RTE.mapLeft(() => 'network-error' as const),
+        RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+        RTE.chainTaskEitherKW(flow(F.decode(UploadResponseD), TE.mapLeft(D.draw))),
+        RTE.orElseFirstW(
+          RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to upload image to Cloudinary'))),
+        ),
       ),
     ),
     RTE.apSW('existing', maybeGetCloudinaryAvatar(orcid)),
@@ -202,7 +207,11 @@ const destroyImageOnCloudinary = (publicId: NonEmptyString) =>
       ),
     ),
     RTE.chainW(F.send),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-    RTE.chainTaskEitherKW(F.decode(DestroyResponseD)),
+    RTE.mapLeft(() => 'network-error' as const),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+    RTE.chainTaskEitherKW(flow(F.decode(DestroyResponseD), TE.mapLeft(D.draw))),
+    RTE.orElseFirstW(
+      RTE.fromReaderIOK(flow(error => ({ error, publicId }), L.errorP('Failed to destroy image on Cloudinary'))),
+    ),
     RTE.bimap(() => 'unavailable' as const, constVoid),
   )

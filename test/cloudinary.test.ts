@@ -3,6 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { FixedClock } from 'clock-ts'
 import fetchMock from 'fetch-mock'
 import * as E from 'fp-ts/Either'
+import * as IO from 'fp-ts/IO'
 import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import { P, isMatching } from 'ts-pattern'
@@ -117,6 +118,7 @@ describe('saveAvatarOnCloudinary', () => {
         cloudinaryApi,
         fetch,
         getCloudinaryAvatar,
+        logger: () => IO.of(undefined),
         publicUrl,
         saveCloudinaryAvatar,
       })()
@@ -193,6 +195,7 @@ describe('saveAvatarOnCloudinary', () => {
         cloudinaryApi,
         fetch,
         getCloudinaryAvatar,
+        logger: () => IO.of(undefined),
         publicUrl,
         saveCloudinaryAvatar,
       })()
@@ -242,6 +245,7 @@ describe('saveAvatarOnCloudinary', () => {
           cloudinaryApi,
           fetch,
           getCloudinaryAvatar,
+          logger: () => IO.of(undefined),
           publicUrl,
           saveCloudinaryAvatar,
         })()
@@ -290,6 +294,7 @@ describe('saveAvatarOnCloudinary', () => {
         cloudinaryApi,
         fetch,
         getCloudinaryAvatar: () => TE.fromEither(existing),
+        logger: () => IO.of(undefined),
         publicUrl,
         saveCloudinaryAvatar,
       })()
@@ -329,6 +334,7 @@ describe('saveAvatarOnCloudinary', () => {
         cloudinaryApi,
         fetch,
         getCloudinaryAvatar: () => TE.fromEither(existing),
+        logger: () => IO.of(undefined),
         publicUrl,
         saveCloudinaryAvatar: shouldNotBeCalled,
       })()
@@ -377,6 +383,7 @@ describe('removeAvatarFromCloudinary', () => {
       deleteCloudinaryAvatar,
       fetch,
       getCloudinaryAvatar: () => TE.right(avatar),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.right(undefined))
@@ -408,6 +415,7 @@ describe('removeAvatarFromCloudinary', () => {
       deleteCloudinaryAvatar,
       fetch,
       getCloudinaryAvatar: () => TE.right(avatar),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -435,6 +443,7 @@ describe('removeAvatarFromCloudinary', () => {
       deleteCloudinaryAvatar,
       fetch: shouldNotBeCalled,
       getCloudinaryAvatar: () => TE.right(avatar),
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -458,6 +467,7 @@ describe('removeAvatarFromCloudinary', () => {
       deleteCloudinaryAvatar: shouldNotBeCalled,
       fetch: shouldNotBeCalled,
       getCloudinaryAvatar,
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
@@ -481,6 +491,7 @@ describe('removeAvatarFromCloudinary', () => {
       deleteCloudinaryAvatar: shouldNotBeCalled,
       fetch: shouldNotBeCalled,
       getCloudinaryAvatar,
+      logger: () => IO.of(undefined),
     })()
 
     expect(actual).toStrictEqual(E.right(undefined))
