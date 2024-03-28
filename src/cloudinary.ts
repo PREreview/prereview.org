@@ -119,7 +119,7 @@ export const getAvatarFromCloudinary = flow(
 
 export const saveAvatarOnCloudinary = (
   orcid: Orcid,
-  avatar: { buffer: Buffer; mimetype: 'image/jpeg' | 'image/png' },
+  avatar: { buffer: Buffer; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' },
 ) =>
   pipe(
     RTE.Do,

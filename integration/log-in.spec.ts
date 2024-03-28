@@ -578,7 +578,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
     }
     await expect(page.getByLabel('Upload an avatar')).toHaveAttribute('aria-invalid', 'true')
 
-    await page.getByRole('link', { name: 'The selected file must be a JPG or PNG' }).click()
+    await page.getByRole('link', { name: 'The selected file must be a AVIF, HEIC, JPG, PNG or WebP' }).click()
 
     await expect(page.getByLabel('Upload an avatar')).toBeFocused()
   },

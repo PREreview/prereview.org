@@ -59,11 +59,14 @@ const handleChangeAvatarForm = ({ body, user }: { body: unknown; user: User }) =
           avatar =>
             match(avatar)
               .returnType<
-                E.Either<TooBigE | MissingE | WrongTypeE, { buffer: Buffer; mimetype: 'image/jpeg' | 'image/png' }>
+                E.Either<
+                  TooBigE | MissingE | WrongTypeE,
+                  { buffer: Buffer; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' }
+                >
               >()
               .with('TOO_BIG', () => E.left(tooBigE()))
               .with('ERROR', () => E.left(missingE()))
-              .with({ mimetype: P.union('image/jpeg', 'image/png') }, E.right)
+              .with({ mimetype: P.union('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp') }, E.right)
               .with({ mimetype: P.string }, () => E.left(wrongTypeE()))
               .exhaustive(),
         ),

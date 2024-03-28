@@ -11,7 +11,7 @@ export interface GetAvatarEnv {
 export interface SaveAvatarEnv {
   saveAvatar: (
     orcid: Orcid,
-    file: { buffer: Buffer; mimetype: 'image/jpeg' | 'image/png' },
+    file: { buffer: Buffer; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' },
   ) => TE.TaskEither<'unavailable', void>
 }
 
@@ -35,7 +35,10 @@ export const maybeGetAvatar = flow(
   ),
 )
 
-export const saveAvatar = (orcid: Orcid, file: { buffer: Buffer; mimetype: 'image/jpeg' | 'image/png' }) =>
+export const saveAvatar = (
+  orcid: Orcid,
+  file: { buffer: Buffer; mimetype: 'image/avif' | 'image/heic' | 'image/jpeg' | 'image/png' | 'image/webp' },
+) =>
   pipe(
     RTE.ask<SaveAvatarEnv>(),
     RTE.chainTaskEitherK(({ saveAvatar }) => saveAvatar(orcid, file)),

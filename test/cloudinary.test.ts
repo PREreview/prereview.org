@@ -83,7 +83,7 @@ describe('saveAvatarOnCloudinary', () => {
       fc.orcid(),
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
-        mimetype: fc.constant('image/jpeg'),
+        mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
       }),
       fc.nonEmptyStringOf(fc.alphanumeric()),
     ])('when the avatar can be saved', async (date, cloudinaryApi, publicUrl, orcid, avatar, imageId) => {
@@ -140,7 +140,7 @@ describe('saveAvatarOnCloudinary', () => {
       fc.nonEmptyString(),
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
-        mimetype: fc.constant('image/jpeg'),
+        mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
       }),
       fc.nonEmptyStringOf(fc.alphanumeric()),
     ])('when the avatar can be saved', async (date, cloudinaryApi, publicUrl, orcid, existing, avatar, imageId) => {
@@ -215,7 +215,7 @@ describe('saveAvatarOnCloudinary', () => {
       fc.nonEmptyString(),
       fc.record({
         buffer: fc.string().map(string => Buffer.from(string)),
-        mimetype: fc.constant('image/jpeg'),
+        mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
       }),
       fc.nonEmptyStringOf(fc.alphanumeric()),
       fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
@@ -266,7 +266,7 @@ describe('saveAvatarOnCloudinary', () => {
     fc.either(fc.constant('not-found'), fc.nonEmptyString()),
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
-      mimetype: fc.constant('image/jpeg'),
+      mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
     }),
     fc.nonEmptyStringOf(fc.alphanumeric()),
   ])(
@@ -311,7 +311,7 @@ describe('saveAvatarOnCloudinary', () => {
     fc.either(fc.constant('not-found'), fc.nonEmptyString()),
     fc.record({
       buffer: fc.string().map(string => Buffer.from(string)),
-      mimetype: fc.constant('image/jpeg'),
+      mimetype: fc.constantFrom('image/avif', 'image/heic', 'image/jpeg', 'image/png', 'image/webp'),
     }),
     fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
   ])(

@@ -37,7 +37,10 @@ export function createPage({ form }: { form: UploadAvatarForm }) {
                             <a href="#avatar">
                               ${match(form.avatar.left)
                                 .with({ _tag: 'MissingE' }, () => 'Select an image')
-                                .with({ _tag: 'WrongTypeE' }, () => 'The selected file must be a JPG or PNG')
+                                .with(
+                                  { _tag: 'WrongTypeE' },
+                                  () => 'The selected file must be a AVIF, HEIC, JPG, PNG or WebP',
+                                )
                                 .with({ _tag: 'TooBigE' }, () => 'The selected file must be smaller than 5 MB')
                                 .exhaustive()}
                             </a>
@@ -58,7 +61,7 @@ export function createPage({ form }: { form: UploadAvatarForm }) {
                     <span class="visually-hidden">Error:</span>
                     ${match(form.avatar.left)
                       .with({ _tag: 'MissingE' }, () => 'Select an image')
-                      .with({ _tag: 'WrongTypeE' }, () => 'The selected file must be a JPG or PNG')
+                      .with({ _tag: 'WrongTypeE' }, () => 'The selected file must be a AVIF, HEIC, JPG, PNG or WebP')
                       .with({ _tag: 'TooBigE' }, () => 'The selected file must be smaller than 5 MB')
                       .exhaustive()}
                   </div>
