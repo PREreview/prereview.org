@@ -4,6 +4,8 @@ import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
+import type { Reader } from 'fp-ts/Reader'
+import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as TE from 'fp-ts/TaskEither'
 import { constVoid, flow, pipe } from 'fp-ts/function'
@@ -161,8 +163,15 @@ export const saveAvatarOnCloudinary = (
     ),
     RTE.apSW('existing', maybeGetCloudinaryAvatar(orcid)),
     RTE.chainFirstW(({ upload }) => saveCloudinaryAvatar(orcid, upload.public_id)),
-    RTE.chainFirstW(({ existing }) =>
-      match(existing).with(P.string, destroyImageOnCloudinary).with(undefined, RTE.right).exhaustive(),
+    RTE.chainFirstReaderIOKW(({ existing }) =>
+      match(existing)
+        .with(P.string, existing =>
+          RIO.asks((env: EnvFor<ReturnType<typeof destroyImageOnCloudinary>>) => {
+            void destroyImageOnCloudinary(existing)(env)().catch(constVoid)
+          }),
+        )
+        .with(undefined, RIO.of)
+        .exhaustive(),
     ),
     RTE.bimap(() => 'unavailable' as const, constVoid),
   )
@@ -172,7 +181,12 @@ export const removeAvatarFromCloudinary = (orcid: Orcid) =>
     RTE.Do,
     RTE.apS('publicId', getCloudinaryAvatar(orcid)),
     RTE.chainFirstW(() => deleteCloudinaryAvatar(orcid)),
-    RTE.chainW(({ publicId }) => destroyImageOnCloudinary(publicId)),
+    RTE.chainFirstReaderIOKW(({ publicId }) =>
+      RIO.asks((env: EnvFor<ReturnType<typeof destroyImageOnCloudinary>>) => {
+        void destroyImageOnCloudinary(publicId)(env)().catch(constVoid)
+      }),
+    ),
+    RTE.map(constVoid),
     RTE.orElseW(error =>
       match(error)
         .with('not-found', () => RTE.right(constVoid()))
@@ -215,3 +229,5 @@ const destroyImageOnCloudinary = (publicId: NonEmptyString) =>
     ),
     RTE.bimap(() => 'unavailable' as const, constVoid),
   )
+
+type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

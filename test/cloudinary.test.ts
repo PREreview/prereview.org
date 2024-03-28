@@ -200,6 +200,8 @@ describe('saveAvatarOnCloudinary', () => {
         saveCloudinaryAvatar,
       })()
 
+      await new Promise(r => setTimeout(r, 10))
+
       expect(actual).toStrictEqual(E.right(undefined))
       expect(saveCloudinaryAvatar).toHaveBeenCalledWith(orcid, imageId)
       expect(getCloudinaryAvatar).toHaveBeenCalledWith(orcid)
@@ -250,7 +252,9 @@ describe('saveAvatarOnCloudinary', () => {
           saveCloudinaryAvatar,
         })()
 
-        expect(actual).toStrictEqual(E.left('unavailable'))
+        await new Promise(r => setTimeout(r, 10))
+
+        expect(actual).toStrictEqual(E.right(undefined))
         expect(saveCloudinaryAvatar).toHaveBeenCalledWith(orcid, imageId)
         expect(getCloudinaryAvatar).toHaveBeenCalledWith(orcid)
         expect(fetch.done()).toBeTruthy()
@@ -386,6 +390,8 @@ describe('removeAvatarFromCloudinary', () => {
       logger: () => IO.of(undefined),
     })()
 
+    await new Promise(r => setTimeout(r, 10))
+
     expect(actual).toStrictEqual(E.right(undefined))
     expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
     expect(fetch.done()).toBeTruthy()
@@ -418,7 +424,9 @@ describe('removeAvatarFromCloudinary', () => {
       logger: () => IO.of(undefined),
     })()
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
+    await new Promise(r => setTimeout(r, 10))
+
+    expect(actual).toStrictEqual(E.right(undefined))
     expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
     expect(fetch.done()).toBeTruthy()
   })
