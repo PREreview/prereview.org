@@ -6,11 +6,12 @@ import * as J from 'fp-ts/Json'
 import * as R from 'fp-ts/Reader'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
-import { flow, identity, pipe } from 'fp-ts/function'
+import { constVoid, flow, identity, pipe } from 'fp-ts/function'
 import * as s from 'fp-ts/string'
 import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
+import { match } from 'ts-pattern'
 import { URL } from 'url'
 import type { PublicUrlEnv } from './public-url'
 import { type NonEmptyString, NonEmptyStringC } from './types/string'
@@ -50,6 +51,15 @@ const UploadResponseD = pipe(
   D.compose(
     D.struct({
       public_id: PublicIdD,
+    }),
+  ),
+)
+
+const DestroyResponseD = pipe(
+  JsonD,
+  D.compose(
+    D.struct({
+      result: D.literal('ok'),
     }),
   ),
 )
@@ -135,4 +145,40 @@ export const saveAvatarOnCloudinary = (
     RTE.mapLeft(() => 'unavailable' as const),
   )
 
-export const removeAvatarFromCloudinary = deleteCloudinaryAvatar
+export const removeAvatarFromCloudinary = (orcid: Orcid) =>
+  pipe(
+    RTE.Do,
+    RTE.apS('publicId', getCloudinaryAvatar(orcid)),
+    RTE.chainFirstW(() => deleteCloudinaryAvatar(orcid)),
+    RTE.apSW('now', RTE.rightReaderIO(now)),
+    RTE.apSW(
+      'cloudinaryApi',
+      RTE.asks(({ cloudinaryApi }: CloudinaryApiEnv) => cloudinaryApi),
+    ),
+    RTE.chainW(({ cloudinaryApi, publicId, now }) =>
+      pipe(
+        cloudinary.utils.api_url('destroy', {
+          cloud_name: cloudinaryApi.cloudName,
+          resource_type: 'image',
+        }),
+        F.Request('POST'),
+        F.setBody(
+          new URLSearchParams(
+            cloudinary.utils.sign_request(
+              {
+                public_id: `prereview-profile/${publicId}`,
+                timestamp: Math.round(now.getTime() / 1000),
+              },
+              { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
+            ),
+          ).toString(),
+          MediaType.applicationFormURLEncoded,
+        ),
+        F.send,
+      ),
+    ),
+    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+    RTE.chainTaskEitherKW(F.decode(DestroyResponseD)),
+    RTE.orElseW(error => match(error).with('not-found', RTE.right).otherwise(RTE.left)),
+    RTE.bimap(() => 'unavailable' as const, constVoid),
+  )

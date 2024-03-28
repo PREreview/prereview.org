@@ -180,6 +180,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Remove your avatar')
 
+    fetch.postOnce('https://api.cloudinary.com/v1_1/prereview/image/destroy', { body: { result: 'ok' } })
+
     await page.getByRole('button', { name: 'Remove avatar' }).click()
 
     await expect(page.getByRole('link', { name: 'Upload avatar' })).toBeVisible()

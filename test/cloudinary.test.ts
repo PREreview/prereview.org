@@ -199,29 +199,150 @@ describe('saveAvatarOnCloudinary', () => {
 })
 
 describe('removeAvatarFromCloudinary', () => {
-  test.prop([fc.orcid()])('when the avatar can be removed', async orcid => {
+  test.prop([
+    fc.date(),
+    fc.record({
+      cloudName: fc.lorem({ maxCount: 1 }),
+      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    }),
+    fc.orcid(),
+    fc.nonEmptyString(),
+  ])('when the avatar can be removed', async (date, cloudinaryApi, orcid, avatar) => {
     const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
       TE.right(undefined),
     )
+    const fetch = fetchMock.sandbox().postOnce(
+      {
+        url: `https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`,
+        headers: { 'Content-Type': MediaType.applicationFormURLEncoded },
+        matcher: (url, request) =>
+          isMatching(
+            {
+              api_key: cloudinaryApi.key,
+              public_id: `prereview-profile/${avatar}`,
+              signature: P.string,
+              timestamp: Math.round(date.getTime() / 1000).toString(),
+            },
+            Object.fromEntries(new URLSearchParams(request.body?.toString()).entries()),
+          ),
+      },
+      { status: Status.OK, body: { result: 'ok' } },
+    )
 
     const actual = await _.removeAvatarFromCloudinary(orcid)({
+      clock: FixedClock(date),
+      cloudinaryApi,
       deleteCloudinaryAvatar,
+      fetch,
+      getCloudinaryAvatar: () => TE.right(avatar),
     })()
 
     expect(actual).toStrictEqual(E.right(undefined))
     expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
+    expect(fetch.done()).toBeTruthy()
   })
 
-  test.prop([fc.orcid()])('when the avatar cannot be removed locally', async orcid => {
+  test.prop([
+    fc.date(),
+    fc.record({
+      cloudName: fc.lorem({ maxCount: 1 }),
+      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    }),
+    fc.orcid(),
+    fc.nonEmptyString(),
+    fc.record({ status: fc.integer({ min: 400, max: 599 }) }),
+  ])('when the avatar cannot be removed from Cloudinary', async (date, cloudinaryApi, orcid, avatar, response) => {
+    const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
+      TE.right(undefined),
+    )
+    const fetch = fetchMock
+      .sandbox()
+      .postOnce(`https://api.cloudinary.com/v1_1/${cloudinaryApi.cloudName}/image/destroy`, response)
+
+    const actual = await _.removeAvatarFromCloudinary(orcid)({
+      clock: FixedClock(date),
+      cloudinaryApi,
+      deleteCloudinaryAvatar,
+      fetch,
+      getCloudinaryAvatar: () => TE.right(avatar),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
+    expect(fetch.done()).toBeTruthy()
+  })
+
+  test.prop([
+    fc.date(),
+    fc.record({
+      cloudName: fc.lorem({ maxCount: 1 }),
+      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    }),
+    fc.orcid(),
+    fc.nonEmptyString(),
+  ])('when the avatar cannot be removed locally', async (date, cloudinaryApi, orcid, avatar) => {
     const deleteCloudinaryAvatar = jest.fn<_.DeleteCloudinaryAvatarEnv['deleteCloudinaryAvatar']>(_ =>
       TE.left('unavailable'),
     )
 
     const actual = await _.removeAvatarFromCloudinary(orcid)({
+      clock: FixedClock(date),
+      cloudinaryApi,
       deleteCloudinaryAvatar,
+      fetch: shouldNotBeCalled,
+      getCloudinaryAvatar: () => TE.right(avatar),
     })()
 
     expect(actual).toStrictEqual(E.left('unavailable'))
     expect(deleteCloudinaryAvatar).toHaveBeenCalledWith(orcid)
+  })
+
+  test.prop([
+    fc.date(),
+    fc.record({
+      cloudName: fc.lorem({ maxCount: 1 }),
+      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    }),
+    fc.orcid(),
+  ])('when the avatar cannot be loaded locally', async (date, cloudinaryApi, orcid) => {
+    const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('unavailable'))
+
+    const actual = await _.removeAvatarFromCloudinary(orcid)({
+      clock: FixedClock(date),
+      cloudinaryApi,
+      deleteCloudinaryAvatar: shouldNotBeCalled,
+      fetch: shouldNotBeCalled,
+      getCloudinaryAvatar,
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+    expect(getCloudinaryAvatar).toHaveBeenCalledWith(orcid)
+  })
+
+  test.prop([
+    fc.date(),
+    fc.record({
+      cloudName: fc.lorem({ maxCount: 1 }),
+      key: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+      secret: fc.stringOf(fc.alphanumeric(), { minLength: 1 }),
+    }),
+    fc.orcid(),
+  ])('when there is no avatar', async (date, cloudinaryApi, orcid) => {
+    const getCloudinaryAvatar = jest.fn<_.GetCloudinaryAvatarEnv['getCloudinaryAvatar']>(_ => TE.left('not-found'))
+
+    const actual = await _.removeAvatarFromCloudinary(orcid)({
+      clock: FixedClock(date),
+      cloudinaryApi,
+      deleteCloudinaryAvatar: shouldNotBeCalled,
+      fetch: shouldNotBeCalled,
+      getCloudinaryAvatar,
+    })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(getCloudinaryAvatar).toHaveBeenCalledWith(orcid)
   })
 })

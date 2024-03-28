@@ -863,6 +863,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           deleteAvatar: withEnv(removeAvatarFromCloudinary, {
             ...env,
             deleteCloudinaryAvatar: withEnv(Keyv.deleteAvatar, env),
+            getCloudinaryAvatar: withEnv(Keyv.getAvatar, env),
           }),
         })),
       ),
