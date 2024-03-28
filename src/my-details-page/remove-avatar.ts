@@ -6,7 +6,7 @@ import { pipe } from 'fp-ts/function'
 import { match } from 'ts-pattern'
 import { deleteAvatar, getAvatar } from '../avatar'
 import { havingProblemsPage } from '../http-error'
-import { LogInResponse, RedirectResponse } from '../response'
+import { FlashMessageResponse, LogInResponse, RedirectResponse } from '../response'
 import { myDetailsMatch } from '../routes'
 import type { User } from '../user'
 import { page } from './remove-avatar-form-page'
@@ -43,7 +43,7 @@ const handleRemoveAvatarForm = ({ user }: { user: User }) =>
         match(error)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
-      () => RedirectResponse({ location: format(myDetailsMatch.formatter, {}) }),
+      () => FlashMessageResponse({ location: format(myDetailsMatch.formatter, {}), message: 'avatar-removed' }),
     ),
   )
 

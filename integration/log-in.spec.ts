@@ -184,7 +184,16 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
 
     await page.getByRole('button', { name: 'Remove avatar' }).click()
 
+    if (javaScriptEnabled) {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeFocused()
+    } else {
+      await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
+    }
     await expect(page.getByRole('link', { name: 'Upload avatar' })).toBeVisible()
+
+    await page.reload()
+
+    await expect(page.getByRole('alert', { name: 'Success' })).toBeHidden()
   },
 )
 

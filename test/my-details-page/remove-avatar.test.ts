@@ -18,9 +18,9 @@ describe('removeAvatar', () => {
     })()
 
     expect(actual).toStrictEqual({
-      _tag: 'RedirectResponse',
-      status: Status.SeeOther,
+      _tag: 'FlashMessageResponse',
       location: format(myDetailsMatch.formatter, {}),
+      message: 'avatar-removed',
     })
     expect(deleteAvatar).toHaveBeenCalledWith(user.orcid)
   })
