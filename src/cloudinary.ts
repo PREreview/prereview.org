@@ -11,7 +11,7 @@ import * as s from 'fp-ts/string'
 import { MediaType, Status } from 'hyper-ts'
 import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { URL } from 'url'
 import type { PublicUrlEnv } from './public-url'
 import { type NonEmptyString, NonEmptyStringC } from './types/string'
@@ -70,6 +70,16 @@ const getCloudinaryAvatar = (orcid: Orcid) =>
     RTE.chainTaskEitherK(({ getCloudinaryAvatar }) => getCloudinaryAvatar(orcid)),
   )
 
+const maybeGetCloudinaryAvatar = flow(
+  getCloudinaryAvatar,
+  RTE.orElseW(error =>
+    match(error)
+      .with('not-found', () => RTE.right(undefined))
+      .with('unavailable', RTE.left)
+      .exhaustive(),
+  ),
+)
+
 const saveCloudinaryAvatar = (orcid: Orcid, id: NonEmptyString) =>
   pipe(
     RTE.ask<SaveCloudinaryAvatarEnv>(),
@@ -112,37 +122,74 @@ export const saveAvatarOnCloudinary = (
   avatar: { buffer: Buffer; mimetype: 'image/jpeg' | 'image/png' },
 ) =>
   pipe(
-    RTE.rightReaderIO(now),
-    RTE.chainW(now =>
-      RTE.asks(({ cloudinaryApi, publicUrl }: CloudinaryApiEnv & PublicUrlEnv) =>
-        pipe(
-          cloudinary.utils.api_url('upload', {
-            cloud_name: cloudinaryApi.cloudName,
-            resource_type: 'image',
-          }),
-          F.Request('POST'),
-          F.setBody(
-            new URLSearchParams({
-              ...cloudinary.utils.sign_request(
-                {
-                  folder: 'prereview-profile',
-                  context: `orcid_id=${orcid}|instance=${publicUrl.hostname}`,
-                  timestamp: Math.round(now.getTime() / 1000),
-                },
-                { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
-              ),
-              file: `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`,
-            }).toString(),
-            MediaType.applicationFormURLEncoded,
+    RTE.Do,
+    RTE.apS('now', RTE.rightReaderIO(now)),
+    RTE.bindW('upload', ({ now }) =>
+      pipe(
+        RTE.asks(({ cloudinaryApi, publicUrl }: CloudinaryApiEnv & PublicUrlEnv) =>
+          pipe(
+            cloudinary.utils.api_url('upload', {
+              cloud_name: cloudinaryApi.cloudName,
+              resource_type: 'image',
+            }),
+            F.Request('POST'),
+            F.setBody(
+              new URLSearchParams({
+                ...cloudinary.utils.sign_request(
+                  {
+                    folder: 'prereview-profile',
+                    context: `orcid_id=${orcid}|instance=${publicUrl.hostname}`,
+                    timestamp: Math.round(now.getTime() / 1000),
+                  },
+                  { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
+                ),
+                file: `data:${avatar.mimetype};base64,${avatar.buffer.toString('base64')}`,
+              }).toString(),
+              MediaType.applicationFormURLEncoded,
+            ),
           ),
         ),
+        RTE.chainW(F.send),
+        RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+        RTE.chainTaskEitherKW(F.decode(UploadResponseD)),
       ),
     ),
-    RTE.chainW(F.send),
-    RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-    RTE.chainTaskEitherKW(F.decode(UploadResponseD)),
-    RTE.chainW(upload => saveCloudinaryAvatar(orcid, upload.public_id)),
-    RTE.mapLeft(() => 'unavailable' as const),
+    RTE.apSW('existing', maybeGetCloudinaryAvatar(orcid)),
+    RTE.chainFirstW(({ upload }) => saveCloudinaryAvatar(orcid, upload.public_id)),
+    RTE.chainFirstW(({ existing, now }) =>
+      match(existing)
+        .with(P.string, existing =>
+          pipe(
+            RTE.asks(({ cloudinaryApi }: CloudinaryApiEnv) =>
+              pipe(
+                cloudinary.utils.api_url('destroy', {
+                  cloud_name: cloudinaryApi.cloudName,
+                  resource_type: 'image',
+                }),
+                F.Request('POST'),
+                F.setBody(
+                  new URLSearchParams(
+                    cloudinary.utils.sign_request(
+                      {
+                        public_id: `prereview-profile/${existing}`,
+                        timestamp: Math.round(now.getTime() / 1000),
+                      },
+                      { api_key: cloudinaryApi.key, api_secret: cloudinaryApi.secret },
+                    ),
+                  ).toString(),
+                  MediaType.applicationFormURLEncoded,
+                ),
+              ),
+            ),
+            RTE.chainW(F.send),
+            RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
+            RTE.chainTaskEitherKW(F.decode(DestroyResponseD)),
+          ),
+        )
+        .with(undefined, RTE.right)
+        .exhaustive(),
+    ),
+    RTE.bimap(() => 'unavailable' as const, constVoid),
   )
 
 export const removeAvatarFromCloudinary = (orcid: Orcid) =>

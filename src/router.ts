@@ -839,7 +839,11 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          saveAvatar: withEnv(saveAvatarOnCloudinary, { ...env, saveCloudinaryAvatar: withEnv(Keyv.saveAvatar, env) }),
+          saveAvatar: withEnv(saveAvatarOnCloudinary, {
+            ...env,
+            getCloudinaryAvatar: withEnv(Keyv.getAvatar, env),
+            saveCloudinaryAvatar: withEnv(Keyv.saveAvatar, env),
+          }),
         })),
       ),
     ),
