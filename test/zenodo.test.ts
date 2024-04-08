@@ -799,20 +799,23 @@ describe('getPrereviewFromZenodo', () => {
     expect(actual).toStrictEqual(E.left('removed'))
   })
 
-  test.prop([fc.integer()])('when the review is not found', async id => {
-    const actual = await _.getPrereviewFromZenodo(id)({
-      clock: SystemClock,
-      fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
-        body: undefined,
-        status: Status.NotFound,
-      }),
-      getPreprint: shouldNotBeCalled,
-      logger: () => IO.of(undefined),
-      wasPrereviewRemoved: () => false,
-    })()
+  test.prop([fc.integer(), fc.constantFrom(Status.NotFound, Status.Gone)])(
+    'when the review is not found',
+    async (id, status) => {
+      const actual = await _.getPrereviewFromZenodo(id)({
+        clock: SystemClock,
+        fetch: fetchMock.sandbox().getOnce(`https://zenodo.org/api/records/${id}`, {
+          body: undefined,
+          status,
+        }),
+        getPreprint: shouldNotBeCalled,
+        logger: () => IO.of(undefined),
+        wasPrereviewRemoved: () => false,
+      })()
 
-    expect(actual).toStrictEqual(E.left('not-found'))
-  })
+      expect(actual).toStrictEqual(E.left('not-found'))
+    },
+  )
 
   test.prop([fc.integer(), fc.preprint(), fc.integer({ min: 400, max: 599 })])(
     'when the review text cannot be loaded',

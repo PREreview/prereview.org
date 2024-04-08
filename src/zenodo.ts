@@ -190,7 +190,7 @@ export const getPrereviewFromZenodo = (id: number) =>
             match(error)
               .with(P.intersection(P.instanceOf(Error), { status: P.number }), () => O.none)
               .with(P.instanceOf(Error), error => O.some(error.message))
-              .with({ status: Status.NotFound }, () => O.none)
+              .with({ status: P.union(Status.NotFound, Status.Gone) }, () => O.none)
               .with({ status: P.number }, response => O.some(`${response.status} ${response.statusText}`))
               .with({ _tag: P.string }, error => O.some(D.draw(error)))
               .with('unknown-license', 'text-unavailable', 'unavailable', O.some)
@@ -206,7 +206,12 @@ export const getPrereviewFromZenodo = (id: number) =>
     RTE.mapLeft(error =>
       match(error)
         .with('removed', () => 'removed' as const)
-        .with('no reviewed preprint', 'not-found', { status: Status.NotFound }, () => 'not-found' as const)
+        .with(
+          'no reviewed preprint',
+          'not-found',
+          { status: P.union(Status.NotFound, Status.Gone) },
+          () => 'not-found' as const,
+        )
         .otherwise(() => 'unavailable' as const),
     ),
   )
