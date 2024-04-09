@@ -23,6 +23,7 @@ test('can find and view a review', async ({ fetch, page }) => {
       latest_html: new URL('http://example.com/latest_html'),
     },
     metadata: {
+      access_right: 'open',
       communities: [{ id: 'prereview-reviews' }],
       creators: [
         { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
@@ -101,6 +102,7 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
       latest_html: new URL('http://example.com/latest_html'),
     },
     metadata: {
+      access_right: 'open',
       communities: [{ id: 'prereview-reviews' }],
       creators: [
         { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
@@ -203,6 +205,7 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
       latest_html: new URL('http://example.com/latest_html'),
     },
     metadata: {
+      access_right: 'open',
       communities: [{ id: 'prereview-reviews' }],
       contributors: [{ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }],
       creators: [
@@ -282,6 +285,7 @@ test('can view a recent review', async ({ fetch, page }) => {
       latest_html: new URL('http://example.com/latest_html'),
     },
     metadata: {
+      access_right: 'open',
       communities: [{ id: 'prereview-reviews' }],
       creators: [
         { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
@@ -357,6 +361,7 @@ test("can view a recent review that's part of a club", async ({ fetch, page }) =
       latest_html: new URL('http://example.com/latest_html'),
     },
     metadata: {
+      access_right: 'open',
       communities: [{ id: 'prereview-reviews' }],
       contributors: [{ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }],
       creators: [
@@ -434,6 +439,7 @@ test('can view an older review', async ({ fetch, page }) => {
       latest_html: new URL('http://example.com/latest_html'),
     },
     metadata: {
+      access_right: 'open',
       communities: [{ id: 'prereview-reviews' }],
       creators: [
         { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },
@@ -521,6 +527,7 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
       latest_html: new URL('http://example.com/latest_html'),
     },
     metadata: {
+      access_right: 'open',
       communities: [{ id: 'prereview-reviews' }],
       contributors: [{ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }],
       creators: [
@@ -613,6 +620,7 @@ test('might not load the older reviews in time', async ({ fetch, javaScriptEnabl
                     latest_html: new URL('https://zenodo.org/record/7820084'),
                   },
                   metadata: {
+                    access_right: 'open',
                     communities: [{ id: 'prereview-reviews' }],
                     creators: [{ name: 'Jaeyoung Oh', orcid: '0009-0008-9257-4728' as Orcid }],
                     description:
@@ -656,6 +664,7 @@ test('might not load the older reviews in time', async ({ fetch, javaScriptEnabl
                     latest_html: new URL('https://zenodo.org/record/7747129'),
                   },
                   metadata: {
+                    access_right: 'open',
                     communities: [{ id: 'prereview-reviews' }],
                     creators: [{ name: 'CJ San Felipe', orcid: '0000-0002-2695-5951' as Orcid }],
                     description:
@@ -726,6 +735,7 @@ test('might not load the PREreview in time', async ({ fetch, javaScriptEnabled, 
       latest_html: new URL('http://example.com/latest_html'),
     },
     metadata: {
+      access_right: 'open',
       communities: [{ id: 'prereview-reviews' }],
       creators: [
         { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },

@@ -60,6 +60,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
@@ -100,6 +101,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Josiah Carberry' }],
                 description: 'Description',
@@ -201,6 +203,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
@@ -305,6 +308,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
@@ -345,6 +349,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Josiah Carberry' }],
                 description: 'Description',
@@ -440,6 +445,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               latest_html: new URL('http://example.com/latest_html'),
             },
             metadata: {
+              access_right: 'open',
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'PREreviewer' }],
               description: 'Description',
@@ -480,6 +486,7 @@ describe('getRecentPrereviewsFromZenodo', () => {
               latest_html: new URL('http://example.com/latest_html'),
             },
             metadata: {
+              access_right: 'open',
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'Josiah Carberry' }],
               description: 'Description',
@@ -631,6 +638,7 @@ describe('getPrereviewFromZenodo', () => {
         latest_html: new URL('http://example.com/latest_html'),
       },
       metadata: {
+        access_right: 'open',
         communities: [{ id: 'prereview-reviews' }],
         contributors: club
           ? [
@@ -723,6 +731,7 @@ describe('getPrereviewFromZenodo', () => {
         latest_html: new URL('http://example.com/latest_html'),
       },
       metadata: {
+        access_right: 'open',
         communities: [{ id: 'prereview-reviews' }],
         creators: [{ name: 'PREreviewer' }],
         description: 'Description',
@@ -838,6 +847,7 @@ describe('getPrereviewFromZenodo', () => {
           latest_html: new URL('http://example.com/latest_html'),
         },
         metadata: {
+          access_right: 'open',
           communities: [{ id: 'prereview-reviews' }],
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
@@ -918,6 +928,7 @@ describe('getPrereviewFromZenodo', () => {
           latest_html: new URL('http://example.com/latest_html'),
         },
         metadata: {
+          access_right: 'open',
           communities: [{ id: 'prereview-reviews' }],
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
@@ -980,6 +991,7 @@ describe('getPrereviewFromZenodo', () => {
         latest_html: new URL('http://example.com/latest_html'),
       },
       metadata: {
+        access_right: 'open',
         creators: [{ name: 'PREreviewer' }],
         description: 'Description',
         doi: '10.5281/zenodo.1061864' as Doi,
@@ -1057,6 +1069,7 @@ describe('getPrereviewFromZenodo', () => {
         latest_html: new URL('http://example.com/latest_html'),
       },
       metadata: {
+        access_right: 'open',
         communities: [{ id: 'prereview-reviews' }],
         creators: [{ name: 'PREreviewer' }],
         description: 'Description',
@@ -1114,6 +1127,7 @@ describe('getPrereviewFromZenodo', () => {
           latest_html: new URL('http://example.com/latest_html'),
         },
         metadata: {
+          access_right: 'open',
           communities: [{ id: 'prereview-reviews' }],
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
@@ -1175,6 +1189,7 @@ describe('getPrereviewFromZenodo', () => {
           latest_html: new URL('http://example.com/latest_html'),
         },
         metadata: {
+          access_right: 'open',
           communities: [{ id: 'prereview-reviews' }],
           creators: [{ name: 'PREreviewer' }],
           description: 'Description',
@@ -1237,6 +1252,7 @@ describe('getPrereviewFromZenodo', () => {
         latest_html: new URL('http://example.com/latest_html'),
       },
       metadata: {
+        access_right: 'open',
         communities: [{ id: 'prereview-reviews' }],
         creators: [{ name: 'PREreviewer' }],
         description: 'Description',
@@ -1303,6 +1319,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   latest_html: new URL('http://example.com/latest_html'),
                 },
                 metadata: {
+                  access_right: 'open',
                   communities: [{ id: 'prereview-reviews' }],
                   creators: [{ name: 'PREreviewer' }],
                   description: 'Description',
@@ -1343,6 +1360,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   latest_html: new URL('http://example.com/latest_html'),
                 },
                 metadata: {
+                  access_right: 'open',
                   communities: [{ id: 'prereview-reviews' }],
                   creators: [{ name: 'Josiah Carberry' }],
                   description: 'Description',
@@ -1440,6 +1458,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   latest_html: new URL('http://example.com/latest_html'),
                 },
                 metadata: {
+                  access_right: 'open',
                   communities: [{ id: 'prereview-reviews' }],
                   creators: [{ name: 'PREreviewer' }],
                   description: 'Description',
@@ -1480,6 +1499,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                   latest_html: new URL('http://example.com/latest_html'),
                 },
                 metadata: {
+                  access_right: 'open',
                   communities: [{ id: 'prereview-reviews' }],
                   contributors: [
                     {
@@ -1584,6 +1604,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
@@ -1674,6 +1695,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
@@ -1714,6 +1736,7 @@ describe('getPrereviewsForProfileFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Josiah Carberry' }],
                 description: 'Description',
@@ -1834,6 +1857,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 contributors: [
@@ -1880,6 +1904,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Josiah Carberry' }],
                 contributors: [
@@ -2006,6 +2031,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
               latest_html: new URL('http://example.com/latest_html'),
             },
             metadata: {
+              access_right: 'open',
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'PREreviewer' }],
               contributors: [
@@ -2142,6 +2168,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 contributors: [
@@ -2188,6 +2215,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Josiah Carberry' }],
                 contributors: [
@@ -2284,6 +2312,7 @@ describe('getPrereviewsForClubFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',
@@ -2372,6 +2401,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
               latest_html: new URL('http://example.com/latest_html'),
             },
             metadata: {
+              access_right: 'open',
               communities: [{ id: 'prereview-reviews' }],
               contributors: club
                 ? [
@@ -2456,6 +2486,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
               latest_html: new URL('http://example.com/latest_html'),
             },
             metadata: {
+              access_right: 'open',
               communities: [{ id: 'prereview-reviews' }],
               creators: [{ name: 'PREreviewer' }],
               description: 'Description',
@@ -2573,6 +2604,7 @@ describe('getPrereviewsForPreprintFromZenodo', () => {
                 latest_html: new URL('http://example.com/latest_html'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'PREreviewer' }],
                 description: 'Description',

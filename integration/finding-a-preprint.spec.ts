@@ -36,6 +36,7 @@ test('can find and view a preprint', async ({ fetch, page }) => {
                   latest_html: new URL('http://example.com/latest_html'),
                 },
                 metadata: {
+                  access_right: 'open',
                   communities: [{ id: 'prereview-reviews' }],
                   creators: [
                     { name: 'Jingfang Hao', orcid: '0000-0003-4436-3420' as Orcid },

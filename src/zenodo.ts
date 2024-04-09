@@ -37,6 +37,7 @@ import {
   getCommunityRecords,
   getDeposition,
   getRecord,
+  isOpenRecord,
   publishDeposition,
   unlockDeposition,
   updateDeposition,
@@ -616,9 +617,10 @@ const getReviewClub = flow(
 )
 
 const getReviewUrl = flow(
-  (record: Record) => record.files,
-  RA.findFirst(file => file.key.endsWith('.html')),
-  O.map(get('links.self')),
+  O.fromPredicate(isOpenRecord),
+  O.map(record => record.files),
+  O.chain(RA.findFirst(file => file.key.endsWith('.html'))),
+  O.map(file => file.links.self),
 )
 
 const getReviewText = flow(

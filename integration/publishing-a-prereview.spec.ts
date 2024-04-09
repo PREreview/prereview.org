@@ -708,6 +708,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
         latest_html: new URL('http://example.com/latest_html'),
       },
       metadata: {
+        access_right: 'open',
         communities: [{ id: 'prereview-reviews' }],
         creators: [
           {
