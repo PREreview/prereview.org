@@ -1043,7 +1043,7 @@ export const willPublishAReview: Fixtures<
   Pick<AppFixtures, 'fetch'>
 > = {
   fetch: async ({ fetch }, use) => {
-    const record: ZenodoRecord = {
+    const record = {
       conceptdoi: '10.5072/zenodo.1055805' as Doi,
       conceptrecid: 1055805,
       files: [
@@ -1091,7 +1091,7 @@ export const willPublishAReview: Fixtures<
         },
         title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
       },
-    }
+    } satisfies ZenodoRecord
 
     fetch
       .postOnce('http://zenodo.test/api/deposit/depositions', {
@@ -1179,7 +1179,7 @@ export const willPublishAReview: Fixtures<
 
 export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, never>, Pick<AppFixtures, 'fetch'>> = {
   fetch: async ({ fetch }, use) => {
-    const record: ZenodoRecord = {
+    const record = {
       conceptdoi: '10.5072/zenodo.1055805' as Doi,
       conceptrecid: 1055805,
       files: [
@@ -1227,7 +1227,7 @@ export const willUpdateAReview: Fixtures<Record<never, never>, Record<never, nev
         },
         title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
       },
-    }
+    } satisfies ZenodoRecord
 
     fetch
       .getOnce(
@@ -1404,7 +1404,7 @@ export const invitedToBeAnAuthor: Fixtures<
     Pick<BrowserContextOptions, 'baseURL'>
 > = {
   page: async ({ authorInviteStore, baseURL, fetch, page }, use) => {
-    const record: ZenodoRecord = {
+    const record = {
       conceptdoi: '10.5072/zenodo.1055805' as Doi,
       conceptrecid: 1055805,
       files: [
@@ -1452,7 +1452,7 @@ export const invitedToBeAnAuthor: Fixtures<
         },
         title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
       },
-    }
+    } satisfies ZenodoRecord
 
     fetch
       .get('http://zenodo.test/api/records/1055806', {

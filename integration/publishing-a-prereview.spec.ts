@@ -690,7 +690,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
     await page.mouse.move(0, 0)
     await expect(page).toHaveScreenshot()
 
-    const record: ZenodoRecord = {
+    const record = {
       conceptdoi: '10.5072/zenodo.1055805' as Doi,
       conceptrecid: 1055805,
       files: [
@@ -738,7 +738,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress).exten
         },
         title: 'PREreview of "The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii"',
       },
-    }
+    } satisfies ZenodoRecord
 
     fetch
       .get('http://zenodo.test/api/records/1055806', {
