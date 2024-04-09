@@ -474,31 +474,31 @@ function recordToPrereview(
   Prereview
 > {
   return pipe(
-    RTE.of(record),
-    RTE.bindW('preprintId', getReviewedPreprintId),
-    RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
-    RTE.bindW(
+    RTE.Do,
+    RTE.apS('preprintId', getReviewedPreprintId(record)),
+    RTE.apSW('reviewTextUrl', RTE.fromOption(() => new NotFound())(getReviewUrl(record))),
+    RTE.apSW(
       'license',
-      RTE.fromEitherK(
-        flow(
-          PrereviewLicenseD.decode,
+      RTE.fromEither(
+        pipe(
+          PrereviewLicenseD.decode(record),
           E.mapLeft(() => 'unknown-license' as const),
         ),
       ),
     ),
-    RTE.chainW(review =>
+    RTE.chainW(({ license, preprintId, reviewTextUrl }) =>
       sequenceS(RTE.ApplyPar)({
-        addendum: RTE.right(pipe(O.fromNullable(review.metadata.notes), O.map(sanitizeHtml), O.toUndefined)),
-        authors: RTE.right<F.FetchEnv & GetPreprintEnv & L.LoggerEnv>(getAuthors(review) as never),
-        club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
-        doi: RTE.right(review.metadata.doi),
+        addendum: RTE.right(pipe(O.fromNullable(record.metadata.notes), O.map(sanitizeHtml), O.toUndefined)),
+        authors: RTE.right<F.FetchEnv & GetPreprintEnv & L.LoggerEnv>(getAuthors(record) as never),
+        club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
+        doi: RTE.right(record.metadata.doi),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
-        license: RTE.right(review.license),
+        license: RTE.right(license),
         published: RTE.right(
-          toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
+          toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),
         preprint: pipe(
-          getPreprint(review.preprintId),
+          getPreprint(preprintId),
           RTE.map(preprint => ({
             id: preprint.id,
             title: preprint.title.text,
@@ -506,8 +506,8 @@ function recordToPrereview(
             url: preprint.url,
           })),
         ),
-        structured: RTE.right(review.metadata.keywords?.includes('Structured PREreview') === true),
-        text: getReviewText(review.reviewTextUrl),
+        structured: RTE.right(record.metadata.keywords?.includes('Structured PREreview') === true),
+        text: getReviewText(reviewTextUrl),
       }),
     ),
   )
@@ -517,15 +517,14 @@ function recordToPreprintPrereview(
   record: Record,
 ): RTE.ReaderTaskEither<F.FetchEnv & L.LoggerEnv, HttpError<404> | 'text-unavailable', PreprintPrereview> {
   return pipe(
-    RTE.of(record),
-    RTE.bindW('reviewTextUrl', RTE.fromOptionK(() => new NotFound())(getReviewUrl)),
-    RTE.chainW(review =>
+    RTE.fromOption(() => new NotFound())(getReviewUrl(record)),
+    RTE.chainW(reviewTextUrl =>
       sequenceS(RTE.ApplyPar)({
-        authors: RTE.right(getAuthors(review)),
-        club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
-        id: RTE.right(review.id),
+        authors: RTE.right(getAuthors(record)),
+        club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
+        id: RTE.right(record.id),
         language: RTE.right(pipe(O.fromNullable(record.metadata.language), O.chain(iso633To1), O.toUndefined)),
-        text: getReviewText(review.reviewTextUrl),
+        text: getReviewText(reviewTextUrl),
       }),
     ),
   )
@@ -554,17 +553,16 @@ function recordToRecentPrereview(
   RecentPrereview
 > {
   return pipe(
-    RTE.of(record),
-    RTE.bindW('preprintId', getReviewedPreprintId),
-    RTE.chainW(review =>
+    getReviewedPreprintId(record),
+    RTE.chainW(preprintId =>
       sequenceS(RTE.ApplyPar)({
-        club: RTE.right(pipe(getReviewClub(review), O.toUndefined)),
-        id: RTE.right(review.id),
-        reviewers: RTE.right(pipe(review.metadata.creators, RNEA.map(get('name')))),
+        club: RTE.right(pipe(getReviewClub(record), O.toUndefined)),
+        id: RTE.right(record.id),
+        reviewers: RTE.right(pipe(record.metadata.creators, RNEA.map(get('name')))),
         published: RTE.right(
-          toTemporalInstant.call(review.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
+          toTemporalInstant.call(record.metadata.publication_date).toZonedDateTimeISO('UTC').toPlainDate(),
         ),
-        preprint: getPreprintTitle(review.preprintId),
+        preprint: getPreprintTitle(preprintId),
       }),
     ),
   )
