@@ -25,6 +25,7 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
           latest_html: new URL('http://example.com/latest_html'),
         },
         metadata: {
+          access_right: 'open',
           communities: [{ id: 'prereview-reviews' }],
           creators: [{ name: 'CJ San Felipe', orcid: '0000-0002-2695-5951' as Orcid }],
           description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
@@ -97,6 +98,7 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
                 latest_html: new URL('https://zenodo.org/record/7820084'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Jaeyoung Oh', orcid: '0009-0008-9257-4728' as Orcid }],
                 description:
@@ -140,6 +142,7 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
                 latest_html: new URL('https://zenodo.org/record/7747129'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'CJ San Felipe', orcid: '0000-0002-2695-5951' as Orcid }],
                 description:
@@ -279,6 +282,7 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
           latest_html: new URL('http://example.com/latest_html'),
         },
         metadata: {
+          access_right: 'open',
           communities: [{ id: 'prereview-reviews' }],
           creators: [{ name: 'Blue Sheep' }],
           description: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
@@ -348,6 +352,7 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
                 latest_html: new URL('https://zenodo.org/record/7820084'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'Jaeyoung Oh', orcid: '0009-0008-9257-4728' as Orcid }],
                 description:
@@ -391,6 +396,7 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
                 latest_html: new URL('https://zenodo.org/record/7747129'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 creators: [{ name: 'CJ San Felipe', orcid: '0000-0002-2695-5951' as Orcid }],
                 description:

@@ -25,6 +25,7 @@ test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
           latest_html: new URL('https://zenodo.org/record/7820084'),
         },
         metadata: {
+          access_right: 'open',
           communities: [{ id: 'prereview-reviews' }],
           contributors: [{ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }],
           creators: [{ name: 'Jaeyoung Oh', orcid: '0009-0008-9257-4728' as Orcid }],
@@ -92,6 +93,7 @@ test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
                 latest_html: new URL('https://zenodo.org/record/7820084'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 contributors: [{ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }],
                 creators: [{ name: 'Jaeyoung Oh', orcid: '0009-0008-9257-4728' as Orcid }],
@@ -136,6 +138,7 @@ test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
                 latest_html: new URL('https://zenodo.org/record/7747129'),
               },
               metadata: {
+                access_right: 'open',
                 communities: [{ id: 'prereview-reviews' }],
                 contributors: [{ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }],
                 creators: [{ name: 'CJ San Felipe', orcid: '0000-0002-2695-5951' as Orcid }],
@@ -224,6 +227,7 @@ test('might not load the PREreviews in time', async ({ fetch, javaScriptEnabled,
                     latest_html: new URL('https://zenodo.org/record/7820084'),
                   },
                   metadata: {
+                    access_right: 'open',
                     communities: [{ id: 'prereview-reviews' }],
                     contributors: [{ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }],
                     creators: [{ name: 'Jaeyoung Oh', orcid: '0009-0008-9257-4728' as Orcid }],
@@ -268,6 +272,7 @@ test('might not load the PREreviews in time', async ({ fetch, javaScriptEnabled,
                     latest_html: new URL('https://zenodo.org/record/7747129'),
                   },
                   metadata: {
+                    access_right: 'open',
                     communities: [{ id: 'prereview-reviews' }],
                     contributors: [{ type: 'ResearchGroup', name: 'ASAPbio Metabolism Crowd' }],
                     creators: [{ name: 'CJ San Felipe', orcid: '0000-0002-2695-5951' as Orcid }],
