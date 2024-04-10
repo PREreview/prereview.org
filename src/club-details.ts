@@ -310,6 +310,18 @@ const clubs: RR.ReadonlyRecord<ClubId, Club> = {
       'https://docs.google.com/forms/d/e/1FAIpQLSdDfGS5BDYvHPX-UB20Z7CVC3uKmmBG0gKZVT2nqI1wxEmLXg/viewform',
     ),
   },
+  'sg-biofilms-microbiome': {
+    name: 'SG Biofilms and Microbiome Club',
+    description: html`
+      <p>
+        <a href="https://scelse.sg/">Singapore Centre for Environmental Life Sciences Engineering (SCELSE)</a> is a
+        research centre of excellence hosted by Nanyang Technological University and the National University of
+        Singapore.
+      </p>
+      <p>We are a group at SCELSE who are interested in microbial interactions in biofilms and microbiome.</p>
+    `,
+    leads: [{ name: 'Viduthalai Rasheedkhan Regina', orcid: '0000-0001-5457-8965' as Orcid }],
+  },
   'tsl-preprint-club': {
     name: 'TSL Preprint Club',
     description: html`

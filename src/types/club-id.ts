@@ -18,6 +18,7 @@ export const clubIds = [
   'open-science-community-iraqi',
   'reviewing-dental-articles-club',
   'rr-id-student-reviewer-club',
+  'sg-biofilms-microbiome',
   'tsl-preprint-club',
 ] as const
 
