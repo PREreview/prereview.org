@@ -1,5 +1,6 @@
 import type { Orcid } from 'orcid-id-ts'
 import { checkPage } from '../../src/request-review-flow/check-page/check-page'
+import { failureMessage } from '../../src/request-review-flow/check-page/failure-message'
 import type { Pseudonym } from '../../src/types/pseudonym'
 import { expect, test } from '../base'
 
@@ -13,6 +14,12 @@ test('content looks right', async ({ showPage }) => {
   })
 
   const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test("content looks right when the change can't be made", async ({ showPage }) => {
+  const content = await showPage(failureMessage)
 
   await expect(content).toHaveScreenshot()
 })
