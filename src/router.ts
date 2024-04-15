@@ -1492,7 +1492,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       requestReviewStartMatch.parser,
-      P.map(() => pipe(RM.of({ response: requestReviewStart }), RM.ichainW(handleResponse))),
+      P.map(
+        flow(
+          RM.of,
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(requestReviewStart)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       authorInviteMatch.parser,
