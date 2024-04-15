@@ -4,16 +4,16 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags'
-import { havingProblemsPage, pageNotFound } from '../../http-error'
-import { LogInResponse, type PageResponse, type StreamlinePageResponse } from '../../response'
-import { requestReviewStartMatch } from '../../routes'
+import { pageNotFound } from '../../http-error'
+import { LogInResponse, type PageResponse, RedirectResponse } from '../../response'
+import { requestReviewCheckMatch, requestReviewStartMatch } from '../../routes'
 import type { User } from '../../user'
 
 export const requestReviewStart = ({
   user,
 }: {
   user?: User
-}): RT.ReaderTask<CanRequestReviewsEnv, LogInResponse | PageResponse | StreamlinePageResponse> =>
+}): RT.ReaderTask<CanRequestReviewsEnv, LogInResponse | PageResponse | RedirectResponse> =>
   pipe(
     RTE.fromNullable('no-session' as const)(user),
     RTE.chainFirstW(
@@ -31,6 +31,6 @@ export const requestReviewStart = ({
           .with('no-session', () => LogInResponse({ location: format(requestReviewStartMatch.formatter, {}) }))
           .with('not-found', () => pageNotFound)
           .exhaustive(),
-      () => havingProblemsPage,
+      () => RedirectResponse({ location: format(requestReviewCheckMatch.formatter, {}) }),
     ),
   )

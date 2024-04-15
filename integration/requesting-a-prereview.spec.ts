@@ -6,4 +6,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)('can request
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request a PREreview')
 
   await page.getByRole('button', { name: 'Start now' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
+  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+
+  await page.getByRole('button', { name: 'Request PREreview' }).click()
 })

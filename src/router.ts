@@ -111,7 +111,7 @@ import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
 import type { PublicUrlEnv } from './public-url'
-import { requestReview, requestReviewStart } from './request-review-flow'
+import { requestReview, requestReviewCheck, requestReviewStart } from './request-review-flow'
 import { resources } from './resources'
 import { handleResponse } from './response'
 import { reviewAPreprint } from './review-a-preprint'
@@ -169,6 +169,7 @@ import {
   privacyPolicyMatch,
   profileMatch,
   removeAvatarMatch,
+  requestReviewCheckMatch,
   requestReviewMatch,
   requestReviewStartMatch,
   resourcesMatch,
@@ -1497,6 +1498,18 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.of,
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(requestReviewStart)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+    ),
+    pipe(
+      requestReviewCheckMatch.parser,
+      P.map(
+        flow(
+          RM.of,
+          RM.apS('user', maybeGetUser),
+          RM.apS('method', RM.fromMiddleware(getMethod)),
+          RM.bindW('response', RM.fromReaderTaskK(requestReviewCheck)),
           RM.ichainW(handleResponse),
         ),
       ),
