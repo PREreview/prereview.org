@@ -382,6 +382,16 @@ export const writeReviewPublishMatch = pipe(writeReviewBaseMatch, P.then(P.lit('
 
 export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit('prereview-published')), P.then(P.end))
 
+const requestReviewBaseMatch = pipe(
+  P.lit('preprints'),
+  P.then(P.lit('doi-10.1101-2024.02.07.578830')),
+  P.then(P.lit('request-a-prereview')),
+)
+
+export const requestReviewMatch = pipe(requestReviewBaseMatch, P.then(P.end))
+
+export const requestReviewStartMatch = pipe(requestReviewBaseMatch, P.then(P.lit('start-now')), P.then(P.end))
+
 export const authorInviteMatch = pipe(P.lit('author-invite'), P.then(type('id', UuidC)), P.then(P.end))
 
 export const authorInviteDeclineMatch = pipe(

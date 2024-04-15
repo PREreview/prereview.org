@@ -32,7 +32,7 @@ import { type ConfigEnv, app } from '../src/app'
 import { AuthorInviteC } from '../src/author-invite'
 import { ContactEmailAddressC } from '../src/contact-email-address'
 import { createAuthorInviteEmail } from '../src/email'
-import type { CanConnectOrcidProfileEnv, CanUploadAvatarEnv } from '../src/feature-flags'
+import type { CanConnectOrcidProfileEnv, CanRequestReviewsEnv, CanUploadAvatarEnv } from '../src/feature-flags'
 import { rawHtml } from '../src/html'
 import type {
   AuthorInviteStoreEnv,
@@ -74,6 +74,7 @@ interface AppFixtures {
   userOnboardingStore: UserOnboardingStoreEnv['userOnboardingStore']
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   canConnectOrcidProfile: CanConnectOrcidProfileEnv['canConnectOrcidProfile']
+  canRequestReviews: CanRequestReviewsEnv['canRequestReviews']
   canUploadAvatar: CanUploadAvatarEnv['canUploadAvatar']
 }
 
@@ -91,6 +92,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(`http://localhost:${address.port}`)
   },
   canConnectOrcidProfile: async ({}, use) => {
+    await use(() => false)
+  },
+  canRequestReviews: async ({}, use) => {
     await use(() => false)
   },
   canUploadAvatar: async ({}, use) => {
@@ -847,6 +851,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       wasPrereviewRemoved,
       authorInviteStore,
       canConnectOrcidProfile,
+      canRequestReviews,
       canUploadAvatar,
     },
     use,
@@ -856,6 +861,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       authorInviteStore,
       avatarStore: new Keyv(),
       canConnectOrcidProfile,
+      canRequestReviews,
       canUploadAvatar,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
@@ -1349,6 +1355,16 @@ export const canConnectOrcidProfile: Fixtures<
   Pick<AppFixtures, 'canConnectOrcidProfile'>
 > = {
   canConnectOrcidProfile: async ({}, use) => {
+    await use(() => true)
+  },
+}
+
+export const canRequestReviews: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canRequestReviews'>
+> = {
+  canRequestReviews: async ({}, use) => {
     await use(() => true)
   },
 }

@@ -68,7 +68,7 @@ import {
   sendContactEmailAddressVerificationEmailForReview,
   sendEmail,
 } from './email'
-import type { CanConnectOrcidProfileEnv, CanUploadAvatarEnv } from './feature-flags'
+import type { CanConnectOrcidProfileEnv, CanRequestReviewsEnv, CanUploadAvatarEnv } from './feature-flags'
 import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
 import { home } from './home'
@@ -111,6 +111,7 @@ import { preprintReviews } from './preprint-reviews'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
 import type { PublicUrlEnv } from './public-url'
+import { requestReview, requestReviewStart } from './request-review-flow'
 import { resources } from './resources'
 import { handleResponse } from './response'
 import { reviewAPreprint } from './review-a-preprint'
@@ -168,6 +169,8 @@ import {
   privacyPolicyMatch,
   profileMatch,
   removeAvatarMatch,
+  requestReviewMatch,
+  requestReviewStartMatch,
   resourcesMatch,
   reviewAPreprintMatch,
   reviewMatch,
@@ -282,6 +285,7 @@ const withEnv =
 
 export type RouterEnv = Keyv.AvatarStoreEnv &
   CanConnectOrcidProfileEnv &
+  CanRequestReviewsEnv &
   CanUploadAvatarEnv &
   DoesPreprintExistEnv &
   GenerateUuidEnv &
@@ -1474,6 +1478,21 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       writeReviewPublishedMatch.parser,
       P.map(({ id }) => writeReviewPublished(id)),
+    ),
+    pipe(
+      requestReviewMatch.parser,
+      P.map(
+        flow(
+          RM.of,
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(requestReview)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+    ),
+    pipe(
+      requestReviewStartMatch.parser,
+      P.map(() => pipe(RM.of({ response: requestReviewStart }), RM.ichainW(handleResponse))),
     ),
     pipe(
       authorInviteMatch.parser,
