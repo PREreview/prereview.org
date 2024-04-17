@@ -72,10 +72,18 @@ export const publishToPrereviewCoarNotifyInbox = (): RTE.ReaderTaskEither<
   void
 > =>
   pipe(
-    RTE.rightReaderIO(constructCoarPayload({ coarNotifyUrl: hardcodedCoarNotifyUrl })),
-    RTE.chainW(payload =>
-      pipe(payload.target.inbox, F.Request('POST'), F.setBody(JSON.stringify(payload), 'application/json'), F.send),
-    ),
+    { coarNotifyUrl: hardcodedCoarNotifyUrl },
+    constructCoarPayload,
+    RTE.rightReaderIO,
+    RTE.chainW(sendReviewActionOffer),
+  )
+
+const sendReviewActionOffer = (payload: CoarReviewActionOfferPayload) =>
+  pipe(
+    payload.target.inbox,
+    F.Request('POST'),
+    F.setBody(JSON.stringify(payload), 'application/json'),
+    F.send,
     RTE.local(timeoutRequest(2000)),
     RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
     RTE.bimap(
