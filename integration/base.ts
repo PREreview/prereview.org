@@ -899,6 +899,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       orcidTokenStore: new Keyv(),
       publicUrl: new URL(`http://localhost:${port}`),
       researchInterestsStore,
+      reviewRequestStore: new Keyv(),
       scietyListToken: 'secret' as NonEmptyString,
       secret: '',
       sessionCookie: 'session',

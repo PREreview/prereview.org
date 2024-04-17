@@ -17,6 +17,7 @@ import { LanguagesC } from './languages'
 import { LocationC } from './location'
 import { OrcidTokenC } from './orcid-token'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
+import { ReviewRequestC } from './review-request'
 import { SlackUserIdC } from './slack-user-id'
 import { NonEmptyStringC } from './types/string'
 import { UuidC } from './types/uuid'
@@ -56,6 +57,10 @@ export interface ResearchInterestsStoreEnv {
 
 export interface OrcidTokenStoreEnv {
   orcidTokenStore: Keyv<unknown>
+}
+
+export interface ReviewRequestStoreEnv {
+  reviewRequestStore: Keyv<unknown>
 }
 
 export interface SlackUserIdStoreEnv {
@@ -320,4 +325,14 @@ export const saveAvatar = flow(
 export const deleteAvatar = flow(
   deleteKey(OrcidE),
   RTE.local((env: AvatarStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.avatarStore })),
+)
+
+export const getReviewRequest = flow(
+  getKey(OrcidE, ReviewRequestC),
+  RTE.local((env: ReviewRequestStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.reviewRequestStore })),
+)
+
+export const saveReviewRequest = flow(
+  setKey(OrcidE, ReviewRequestC),
+  RTE.local((env: ReviewRequestStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.reviewRequestStore })),
 )

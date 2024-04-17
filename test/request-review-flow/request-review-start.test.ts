@@ -1,25 +1,56 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
+import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import type { CanRequestReviewsEnv } from '../../src/feature-flags'
 import * as _ from '../../src/request-review-flow'
+import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request'
 import { requestReviewCheckMatch, requestReviewStartMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('requestReviewStart', () => {
   describe('when the user is logged in', () => {
-    test.prop([fc.user()])('when reviews can be requested', async user => {
-      const actual = await _.requestReviewStart({ user })({
-        canRequestReviews: () => true,
-      })()
+    describe('when reviews can be requested', () => {
+      test.prop([fc.user()])("when a request hasn't been started", async user => {
+        const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
+        const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
 
-      expect(actual).toStrictEqual({
-        _tag: 'RedirectResponse',
-        status: Status.SeeOther,
-        location: format(requestReviewCheckMatch.formatter, {}),
+        const actual = await _.requestReviewStart({ user })({
+          canRequestReviews: () => true,
+          getReviewRequest,
+          saveReviewRequest,
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(requestReviewCheckMatch.formatter, {}),
+        })
+        expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
+        expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, { status: 'incomplete' })
       })
+
+      test.prop([fc.user(), fc.reviewRequest()])(
+        'when a request has already been started',
+        async (user, reviewRequest) => {
+          const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.right(reviewRequest))
+
+          const actual = await _.requestReviewStart({ user })({
+            canRequestReviews: () => true,
+            getReviewRequest,
+            saveReviewRequest: shouldNotBeCalled,
+          })()
+
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: Status.SeeOther,
+            location: format(requestReviewCheckMatch.formatter, {}),
+          })
+          expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
+        },
+      )
     })
 
     test.prop([fc.user()])("when reviews can't be requested", async user => {
@@ -27,6 +58,8 @@ describe('requestReviewStart', () => {
 
       const actual = await _.requestReviewStart({ user })({
         canRequestReviews,
+        getReviewRequest: shouldNotBeCalled,
+        saveReviewRequest: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -44,6 +77,8 @@ describe('requestReviewStart', () => {
   test('when the user is not logged in', async () => {
     const actual = await _.requestReviewStart({})({
       canRequestReviews: shouldNotBeCalled,
+      getReviewRequest: shouldNotBeCalled,
+      saveReviewRequest: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({

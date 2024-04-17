@@ -115,6 +115,7 @@ const server = app({
       : undefined,
   publicUrl: env.PUBLIC_URL,
   researchInterestsStore: new Keyv({ namespace: 'research-interests', store: keyvStore }),
+  reviewRequestStore: new Keyv({ namespace: 'review-request', store: keyvStore }),
   scietyListToken: env.SCIETY_LIST_TOKEN,
   secret: env.SECRET,
   sessionCookie: 'session',

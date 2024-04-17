@@ -4,8 +4,14 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags'
-import { pageNotFound } from '../../http-error'
-import { LogInResponse, type PageResponse, RedirectResponse } from '../../response'
+import { havingProblemsPage, pageNotFound } from '../../http-error'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
+import {
+  type GetReviewRequestEnv,
+  type SaveReviewRequestEnv,
+  maybeGetReviewRequest,
+  saveReviewRequest,
+} from '../../review-request'
 import { requestReviewCheckMatch, requestReviewStartMatch } from '../../routes'
 import type { User } from '../../user'
 
@@ -13,23 +19,35 @@ export const requestReviewStart = ({
   user,
 }: {
   user?: User
-}): RT.ReaderTask<CanRequestReviewsEnv, LogInResponse | PageResponse | RedirectResponse> =>
+}): RT.ReaderTask<
+  CanRequestReviewsEnv & GetReviewRequestEnv & SaveReviewRequestEnv,
+  LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
+> =>
   pipe(
-    RTE.fromNullable('no-session' as const)(user),
+    RTE.Do,
+    RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
     RTE.chainFirstW(
       flow(
-        RTE.fromReaderK(canRequestReviews),
+        RTE.fromReaderK(({ user }) => canRequestReviews(user)),
         RTE.filterOrElse(
           canRequestReviews => canRequestReviews,
           () => 'not-found' as const,
         ),
       ),
     ),
+    RTE.bindW('reviewRequest', ({ user }) => pipe(maybeGetReviewRequest(user.orcid))),
+    RTE.chainFirstW(({ reviewRequest, user }) =>
+      match(reviewRequest)
+        .with({ status: 'incomplete' }, () => RTE.of(undefined))
+        .with(undefined, () => pipe(saveReviewRequest(user.orcid, { status: 'incomplete' })))
+        .exhaustive(),
+    ),
     RTE.matchW(
       error =>
         match(error)
           .with('no-session', () => LogInResponse({ location: format(requestReviewStartMatch.formatter, {}) }))
           .with('not-found', () => pageNotFound)
+          .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
       () => RedirectResponse({ location: format(requestReviewCheckMatch.formatter, {}) }),
     ),

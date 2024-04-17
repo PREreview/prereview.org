@@ -1932,3 +1932,139 @@ describe('deleteAvatar', () => {
     expect(actual).toStrictEqual(E.left('unavailable'))
   })
 })
+
+describe('getReviewRequest', () => {
+  test.prop([fc.orcid(), fc.reviewRequest()])(
+    'when the key contains a review request',
+    async (orcid, reviewRequest) => {
+      const store = new Keyv()
+      await store.set(orcid, reviewRequest)
+
+      const actual = await _.getReviewRequest(orcid)({
+        reviewRequestStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.right(reviewRequest))
+    },
+  )
+
+  test.prop([fc.orcid(), fc.anything()])(
+    'when the key contains something other than a review request',
+    async (orcid, value) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.getReviewRequest(orcid)({
+        reviewRequestStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('not-found'))
+    },
+  )
+
+  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+    const store = new Keyv()
+
+    const actual = await _.getReviewRequest(orcid)({
+      reviewRequestStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('not-found'))
+  })
+
+  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
+    const store = new Keyv()
+    store.get = (): Promise<never> => Promise.reject(error)
+
+    const actual = await _.getReviewRequest(orcid)({
+      reviewRequestStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.left('unavailable'))
+  })
+})
+
+describe('saveReviewRequest', () => {
+  test.prop([fc.orcid(), fc.reviewRequest()])(
+    'when the key contains a review request',
+    async (orcid, reviewRequest) => {
+      const store = new Keyv()
+      await store.set(orcid, reviewRequest)
+
+      const actual = await _.saveReviewRequest(
+        orcid,
+        reviewRequest,
+      )({
+        reviewRequestStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(reviewRequest)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.anything(), fc.reviewRequest()])(
+    'when the key already contains something other than a review request',
+    async (orcid, value, reviewRequest) => {
+      const store = new Keyv()
+      await store.set(orcid, value)
+
+      const actual = await _.saveReviewRequest(
+        orcid,
+        reviewRequest,
+      )({
+        reviewRequestStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(orcid)).toStrictEqual(reviewRequest)
+    },
+  )
+
+  test.prop([fc.orcid(), fc.reviewRequest()])('when the key is not set', async (orcid, reviewRequest) => {
+    const store = new Keyv()
+
+    const actual = await _.saveReviewRequest(
+      orcid,
+      reviewRequest,
+    )({
+      reviewRequestStore: store,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(actual).toStrictEqual(E.right(undefined))
+    expect(await store.get(orcid)).toStrictEqual(reviewRequest)
+  })
+
+  test.prop([fc.orcid(), fc.reviewRequest(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, reviewRequest, error) => {
+      const store = new Keyv()
+      store.set = () => Promise.reject(error)
+
+      const actual = await _.saveReviewRequest(
+        orcid,
+        reviewRequest,
+      )({
+        reviewRequestStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
+
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
+})

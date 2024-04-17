@@ -316,6 +316,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   PhaseEnv &
   PublicUrlEnv &
   Keyv.ResearchInterestsStoreEnv &
+  Keyv.ReviewRequestStoreEnv &
   ScietyListEnv &
   SendEmailEnv &
   SessionEnv &
@@ -1502,6 +1503,19 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.bindW('response', RM.fromReaderTaskK(requestReviewStart)),
           RM.ichainW(handleResponse),
         ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getReviewRequest: withEnv(Keyv.getReviewRequest, env),
+          saveReviewRequest: withEnv(Keyv.saveReviewRequest, env),
+        })),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getReviewRequest: withEnv(Keyv.getReviewRequest, env),
+        })),
       ),
     ),
     pipe(
