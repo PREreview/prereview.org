@@ -1517,7 +1517,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          publishRequest: publishToPrereviewCoarNotifyInbox,
+          publishRequest: withEnv(publishToPrereviewCoarNotifyInbox, env),
         })),
       ),
     ),

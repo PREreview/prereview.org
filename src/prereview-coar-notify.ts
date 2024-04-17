@@ -1,3 +1,5 @@
-import * as TE from 'fp-ts/TaskEither'
+import type * as F from 'fetch-fp-ts'
+import * as RTE from 'fp-ts/ReaderTaskEither'
 
-export const publishToPrereviewCoarNotifyInbox = (): TE.TaskEither<'unavailable', void> => TE.left('unavailable')
+export const publishToPrereviewCoarNotifyInbox = (): RTE.ReaderTaskEither<F.FetchEnv, 'unavailable', void> =>
+  RTE.left('unavailable')
