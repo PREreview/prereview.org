@@ -3,8 +3,8 @@ import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { identity, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
-import { timeoutRequest } from './fetch'
-import { type GenerateUuidEnv, generateUuid } from './types/uuid'
+import { timeoutRequest } from '../fetch'
+import { type GenerateUuidEnv, generateUuid } from '../types/uuid'
 
 const hardcodedCoarNotifyUrl = 'https://coar-notify-sandbox.prereview.org'
 

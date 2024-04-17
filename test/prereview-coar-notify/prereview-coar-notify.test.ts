@@ -2,8 +2,8 @@ import { test } from '@fast-check/jest'
 import { describe, expect } from '@jest/globals'
 import * as E from 'fp-ts/Either'
 import { Status } from 'hyper-ts'
-import * as _ from '../src/prereview-coar-notify'
-import * as fc from './fc'
+import * as _ from '../../src/prereview-coar-notify/index'
+import * as fc from '../fc'
 
 describe('publishToPrereviewCoarNotifyInbox', () => {
   test.prop([fc.fetchResponse({ status: fc.constant(Status.Created) }), fc.uuid()])(
