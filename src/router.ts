@@ -1532,7 +1532,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
+          getReviewRequest: withEnv(Keyv.getReviewRequest, env),
           publishRequest: withEnv(publishToPrereviewCoarNotifyInbox, env),
+          saveReviewRequest: withEnv(Keyv.saveReviewRequest, env),
         })),
       ),
     ),
@@ -1545,6 +1547,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.bindW('response', RM.fromReaderTaskK(requestReviewPublished)),
           RM.ichainW(handleResponse),
         ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getReviewRequest: withEnv(Keyv.getReviewRequest, env),
+        })),
       ),
     ),
     pipe(

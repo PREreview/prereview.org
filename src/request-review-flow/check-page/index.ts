@@ -5,9 +5,14 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
-import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags'
-import { pageNotFound } from '../../http-error'
+import { havingProblemsPage, pageNotFound } from '../../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
+import {
+  type GetReviewRequestEnv,
+  type SaveReviewRequestEnv,
+  getReviewRequest,
+  saveReviewRequest,
+} from '../../review-request'
 import { requestReviewMatch, requestReviewPublishedMatch } from '../../routes'
 import type { User } from '../../user'
 import { checkPage } from './check-page'
@@ -24,18 +29,21 @@ export const requestReviewCheck = ({
   method: string
   user?: User
 }): RT.ReaderTask<
-  CanRequestReviewsEnv & PublishRequestEnv,
+  GetReviewRequestEnv & PublishRequestEnv & SaveReviewRequestEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-    RTE.chainFirstW(
+    RTE.bindW(
+      'reviewRequest',
       flow(
-        RTE.fromReaderK(({ user }) => canRequestReviews(user)),
-        RTE.filterOrElse(
-          canRequestReviews => canRequestReviews,
-          () => 'not-found' as const,
+        ({ user }) => getReviewRequest(user.orcid),
+        RTE.chainW(request =>
+          match(request)
+            .with({ status: 'completed' }, () => RTE.left('already-completed' as const))
+            .with({ status: 'incomplete' }, RTE.right)
+            .exhaustive(),
         ),
       ),
     ),
@@ -44,8 +52,12 @@ export const requestReviewCheck = ({
       error =>
         RT.of(
           match(error)
+            .with('already-completed', () =>
+              RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
+            )
             .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, {}) }))
             .with('not-found', () => pageNotFound)
+            .with('unavailable', () => havingProblemsPage)
             .exhaustive(),
         ),
       state =>
@@ -59,9 +71,10 @@ export const requestReviewCheck = ({
 const publishRequest = (): RTE.ReaderTaskEither<PublishRequestEnv, 'unavailable', void> =>
   R.asks(({ publishRequest }) => publishRequest())
 
-const handleForm = () =>
+const handleForm = ({ user }: { user: User }) =>
   pipe(
     publishRequest(),
+    RTE.chainFirstW(() => saveReviewRequest(user.orcid, { status: 'completed' })),
     RTE.matchW(
       () => failureMessage,
       () => RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),

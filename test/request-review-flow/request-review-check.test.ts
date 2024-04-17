@@ -3,60 +3,98 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import type { CanRequestReviewsEnv } from '../../src/feature-flags'
 import * as _ from '../../src/request-review-flow'
 import { RedirectResponse } from '../../src/response'
+import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request'
 import { requestReviewCheckMatch, requestReviewMatch, requestReviewPublishedMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('requestReviewCheck', () => {
   describe('when the user is logged in', () => {
-    describe('when reviews can be requested', () => {
+    describe('when there is a incomplete request', () => {
       describe('when the form has been submitted', () => {
-        test.prop([fc.user()])('when the request can be published', async user => {
-          const actual = await _.requestReviewCheck({
-            method: 'POST',
-            user,
-          })({
-            canRequestReviews: () => true,
-            publishRequest: () => TE.right(undefined),
-          })()
+        test.prop([fc.user(), fc.incompleteReviewRequest()])(
+          'when the request can be published',
+          async (user, reviewRequest) => {
+            const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
 
-          expect(actual).toStrictEqual(
-            RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
-          )
-        })
+            const actual = await _.requestReviewCheck({
+              method: 'POST',
+              user,
+            })({
+              getReviewRequest: () => TE.right(reviewRequest),
+              publishRequest: () => TE.right(undefined),
+              saveReviewRequest,
+            })()
 
-        test.prop([fc.user()])('when the request can not be published', async user => {
-          const actual = await _.requestReviewCheck({
-            method: 'POST',
-            user,
-          })({
-            canRequestReviews: () => true,
-            publishRequest: () => TE.left('unavailable'),
-          })()
+            expect(actual).toStrictEqual(
+              RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
+            )
+            expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, { status: 'completed' })
+          },
+        )
 
-          expect(actual).toStrictEqual({
-            _tag: 'StreamlinePageResponse',
-            status: Status.ServiceUnavailable,
-            title: expect.stringContaining('problems'),
-            main: expect.stringContaining('unable to'),
-            skipToLabel: 'main',
-            js: [],
-          })
-        })
+        test.prop([fc.user(), fc.incompleteReviewRequest()])(
+          "when the request state can't be changed",
+          async (user, reviewRequest) => {
+            const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.left('unavailable'))
+
+            const actual = await _.requestReviewCheck({
+              method: 'POST',
+              user,
+            })({
+              getReviewRequest: () => TE.right(reviewRequest),
+              publishRequest: () => TE.right(undefined),
+              saveReviewRequest,
+            })()
+
+            expect(actual).toStrictEqual({
+              _tag: 'StreamlinePageResponse',
+              status: Status.ServiceUnavailable,
+              title: expect.stringContaining('problems'),
+              main: expect.stringContaining('unable to'),
+              skipToLabel: 'main',
+              js: [],
+            })
+            expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, { status: 'completed' })
+          },
+        )
+
+        test.prop([fc.user(), fc.incompleteReviewRequest()])(
+          'when the request can not be published',
+          async (user, reviewRequest) => {
+            const actual = await _.requestReviewCheck({
+              method: 'POST',
+              user,
+            })({
+              getReviewRequest: () => TE.right(reviewRequest),
+              publishRequest: () => TE.left('unavailable'),
+              saveReviewRequest: shouldNotBeCalled,
+            })()
+
+            expect(actual).toStrictEqual({
+              _tag: 'StreamlinePageResponse',
+              status: Status.ServiceUnavailable,
+              title: expect.stringContaining('problems'),
+              main: expect.stringContaining('unable to'),
+              skipToLabel: 'main',
+              js: [],
+            })
+          },
+        )
       })
 
-      test.prop([fc.string().filter(method => method !== 'POST'), fc.user()])(
+      test.prop([fc.string().filter(method => method !== 'POST'), fc.user(), fc.incompleteReviewRequest()])(
         'when the form needs submitting',
-        async (method, user) => {
+        async (method, user, reviewRequest) => {
           const actual = await _.requestReviewCheck({
             method,
             user,
           })({
-            canRequestReviews: () => true,
+            getReviewRequest: () => TE.right(reviewRequest),
             publishRequest: shouldNotBeCalled,
+            saveReviewRequest: shouldNotBeCalled,
           })()
 
           expect(actual).toStrictEqual({
@@ -72,12 +110,36 @@ describe('requestReviewCheck', () => {
       )
     })
 
-    test.prop([fc.string(), fc.user()])("when reviews can't be requested", async (method, user) => {
-      const canRequestReviews = jest.fn<CanRequestReviewsEnv['canRequestReviews']>(_ => false)
+    test.prop([fc.string(), fc.user(), fc.completedReviewRequest()])(
+      'when the request is already complete',
+      async (method, user, reviewRequest) => {
+        const actual = await _.requestReviewCheck({
+          method,
+          user,
+        })({
+          getReviewRequest: () => TE.right(reviewRequest),
+          publishRequest: shouldNotBeCalled,
+          saveReviewRequest: shouldNotBeCalled,
+        })()
 
-      const actual = await _.requestReviewCheck({ method, user })({
-        canRequestReviews,
+        expect(actual).toStrictEqual({
+          _tag: 'RedirectResponse',
+          status: Status.SeeOther,
+          location: format(requestReviewPublishedMatch.formatter, {}),
+        })
+      },
+    )
+
+    test.prop([fc.string(), fc.user()])("when a request hasn't been started", async (method, user) => {
+      const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
+
+      const actual = await _.requestReviewCheck({
+        method,
+        user,
+      })({
+        getReviewRequest,
         publishRequest: shouldNotBeCalled,
+        saveReviewRequest: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -88,14 +150,38 @@ describe('requestReviewCheck', () => {
         skipToLabel: 'main',
         js: [],
       })
-      expect(canRequestReviews).toHaveBeenCalledWith(user)
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
+    })
+
+    test.prop([fc.string(), fc.user()])("when the request can't be loaded", async (method, user) => {
+      const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('unavailable'))
+
+      const actual = await _.requestReviewCheck({
+        method,
+        user,
+      })({
+        getReviewRequest,
+        publishRequest: shouldNotBeCalled,
+        saveReviewRequest: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
     })
   })
 
   test.prop([fc.string()])('when the user is not logged in', async method => {
     const actual = await _.requestReviewCheck({ method })({
-      canRequestReviews: shouldNotBeCalled,
+      getReviewRequest: shouldNotBeCalled,
       publishRequest: shouldNotBeCalled,
+      saveReviewRequest: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({

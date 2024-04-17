@@ -3,9 +3,9 @@ import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { match } from 'ts-pattern'
-import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags'
-import { pageNotFound } from '../../http-error'
-import { LogInResponse, type PageResponse, type StreamlinePageResponse } from '../../response'
+import { havingProblemsPage, pageNotFound } from '../../http-error'
+import { LogInResponse, type PageResponse, type RedirectResponse, type StreamlinePageResponse } from '../../response'
+import { type GetReviewRequestEnv, getReviewRequest } from '../../review-request'
 import { requestReviewMatch } from '../../routes'
 import type { User } from '../../user'
 import { publishedPage } from './published-page'
@@ -14,24 +14,29 @@ export const requestReviewPublished = ({
   user,
 }: {
   user?: User
-}): RT.ReaderTask<CanRequestReviewsEnv, LogInResponse | PageResponse | StreamlinePageResponse> =>
+}): RT.ReaderTask<GetReviewRequestEnv, LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse> =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
-    RTE.chainFirstW(
+    RTE.bindW(
+      'reviewRequest',
       flow(
-        RTE.fromReaderK(({ user }) => canRequestReviews(user)),
-        RTE.filterOrElse(
-          canRequestReviews => canRequestReviews,
-          () => 'not-found' as const,
+        ({ user }) => getReviewRequest(user.orcid),
+        RTE.chainW(request =>
+          match(request)
+            .with({ status: 'incomplete' }, () => RTE.left('incomplete' as const))
+            .with({ status: 'completed' }, RTE.right)
+            .exhaustive(),
         ),
       ),
     ),
     RTE.matchW(
       error =>
         match(error)
+          .with('incomplete', () => pageNotFound)
           .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, {}) }))
           .with('not-found', () => pageNotFound)
+          .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
       () => publishedPage,
     ),

@@ -1,53 +1,75 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
+import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import type { CanRequestReviewsEnv } from '../../src/feature-flags'
 import * as _ from '../../src/request-review-flow'
+import type { GetReviewRequestEnv } from '../../src/review-request'
 import { requestReviewMatch, requestReviewPublishedMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('requestReviewPublished', () => {
   describe('when the user is logged in', () => {
-    test.prop([fc.user()])('when reviews can be requested', async user => {
+    test.prop([fc.user(), fc.completedReviewRequest()])(
+      'when the review has been completed',
+      async (user, reviewRequest) => {
+        const actual = await _.requestReviewPublished({ user })({
+          getReviewRequest: () => TE.right(reviewRequest),
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'StreamlinePageResponse',
+          canonical: format(requestReviewPublishedMatch.formatter, {}),
+          status: Status.OK,
+          title: expect.stringContaining('Request published'),
+          main: expect.stringContaining('Request published'),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
+
+    test.prop([fc.user(), fc.either(fc.constant('not-found'), fc.incompleteReviewRequest())])(
+      "when the review hasn't be completed",
+      async (user, reviewRequest) => {
+        const actual = await _.requestReviewPublished({ user })({
+          getReviewRequest: () => TE.fromEither(reviewRequest),
+        })()
+
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.NotFound,
+          title: expect.stringContaining('not found'),
+          main: expect.stringContaining('not found'),
+          skipToLabel: 'main',
+          js: [],
+        })
+      },
+    )
+
+    test.prop([fc.user()])("when the review can't be loaded", async user => {
+      const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('unavailable'))
+
       const actual = await _.requestReviewPublished({ user })({
-        canRequestReviews: () => true,
-      })()
-
-      expect(actual).toStrictEqual({
-        _tag: 'StreamlinePageResponse',
-        canonical: format(requestReviewPublishedMatch.formatter, {}),
-        status: Status.OK,
-        title: expect.stringContaining('Request published'),
-        main: expect.stringContaining('Request published'),
-        skipToLabel: 'main',
-        js: [],
-      })
-    })
-
-    test.prop([fc.user()])("when reviews can't be requested", async user => {
-      const canRequestReviews = jest.fn<CanRequestReviewsEnv['canRequestReviews']>(_ => false)
-
-      const actual = await _.requestReviewPublished({ user })({
-        canRequestReviews,
+        getReviewRequest,
       })()
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
-        status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
         skipToLabel: 'main',
         js: [],
       })
-      expect(canRequestReviews).toHaveBeenCalledWith(user)
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
     })
   })
 
   test('when the user is not logged in', async () => {
     const actual = await _.requestReviewPublished({})({
-      canRequestReviews: shouldNotBeCalled,
+      getReviewRequest: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({
