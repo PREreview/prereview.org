@@ -42,7 +42,7 @@ export const requestReviewCheck = ({
     ),
   )
 
-const publishRequest = (): E.Either<'unavailabe', void> => E.left('unavailabe')
+const publishRequest = (): E.Either<'unavailable', void> => E.left('unavailable')
 
 const handleForm = () =>
   pipe(
