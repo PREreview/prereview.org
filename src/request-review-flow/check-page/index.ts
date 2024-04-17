@@ -1,11 +1,12 @@
 import { format } from 'fp-ts-routing'
+import * as E from 'fp-ts/Either'
 import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags'
 import { pageNotFound } from '../../http-error'
-import { LogInResponse, type PageResponse, type StreamlinePageResponse } from '../../response'
+import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import { requestReviewMatch } from '../../routes'
 import type { User } from '../../user'
 import { checkPage } from './check-page'
@@ -17,7 +18,7 @@ export const requestReviewCheck = ({
 }: {
   method: string
   user?: User
-}): RT.ReaderTask<CanRequestReviewsEnv, LogInResponse | PageResponse | StreamlinePageResponse> =>
+}): RT.ReaderTask<CanRequestReviewsEnv, LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse> =>
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
@@ -41,4 +42,11 @@ export const requestReviewCheck = ({
     ),
   )
 
-const publishRequest = () => failureMessage
+const publishRequest = () =>
+  pipe(
+    E.left(''),
+    E.matchW(
+      () => failureMessage,
+      () => RedirectResponse({ location: '/' }),
+    ),
+  )
