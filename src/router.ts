@@ -8,6 +8,7 @@ import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as T from 'fp-ts/Task'
+import * as TE from 'fp-ts/TaskEither'
 import { constVoid, constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
@@ -1512,6 +1513,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.bindW('response', RM.fromReaderTaskK(requestReviewCheck)),
           RM.ichainW(handleResponse),
         ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          publishRequest: () => TE.left('unavailable'),
+        })),
       ),
     ),
     pipe(

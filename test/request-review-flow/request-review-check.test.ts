@@ -1,9 +1,11 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
+import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
 import type { CanRequestReviewsEnv } from '../../src/feature-flags'
 import * as _ from '../../src/request-review-flow'
+import { RedirectResponse } from '../../src/response'
 import { requestReviewCheckMatch, requestReviewMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
@@ -11,21 +13,36 @@ import { shouldNotBeCalled } from '../should-not-be-called'
 describe('requestReviewCheck', () => {
   describe('when the user is logged in', () => {
     describe('when reviews can be requested', () => {
-      test.prop([fc.user()])('when the form has been submitted', async user => {
-        const actual = await _.requestReviewCheck({
-          method: 'POST',
-          user,
-        })({
-          canRequestReviews: () => true,
-        })()
+      describe('when the form has been submitted', () => {
+        test.prop([fc.user()])('when the request can be published', async user => {
+          const actual = await _.requestReviewCheck({
+            method: 'POST',
+            user,
+          })({
+            canRequestReviews: () => true,
+            publishRequest: () => TE.right(undefined),
+          })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'StreamlinePageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('unable to'),
-          skipToLabel: 'main',
-          js: [],
+          expect(actual).toStrictEqual(RedirectResponse({ location: '/' }))
+        })
+
+        test.prop([fc.user()])('when the request can not be published', async user => {
+          const actual = await _.requestReviewCheck({
+            method: 'POST',
+            user,
+          })({
+            canRequestReviews: () => true,
+            publishRequest: () => TE.left('unavailable'),
+          })()
+
+          expect(actual).toStrictEqual({
+            _tag: 'StreamlinePageResponse',
+            status: Status.ServiceUnavailable,
+            title: expect.stringContaining('problems'),
+            main: expect.stringContaining('unable to'),
+            skipToLabel: 'main',
+            js: [],
+          })
         })
       })
 
@@ -37,6 +54,7 @@ describe('requestReviewCheck', () => {
             user,
           })({
             canRequestReviews: () => true,
+            publishRequest: shouldNotBeCalled,
           })()
 
           expect(actual).toStrictEqual({
@@ -57,6 +75,7 @@ describe('requestReviewCheck', () => {
 
       const actual = await _.requestReviewCheck({ method, user })({
         canRequestReviews,
+        publishRequest: shouldNotBeCalled,
       })()
 
       expect(actual).toStrictEqual({
@@ -74,6 +93,7 @@ describe('requestReviewCheck', () => {
   test.prop([fc.string()])('when the user is not logged in', async method => {
     const actual = await _.requestReviewCheck({ method })({
       canRequestReviews: shouldNotBeCalled,
+      publishRequest: shouldNotBeCalled,
     })()
 
     expect(actual).toStrictEqual({
