@@ -8,7 +8,7 @@ import { P, match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags'
 import { pageNotFound } from '../../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
-import { requestReviewMatch } from '../../routes'
+import { requestReviewMatch, requestReviewPublishedMatch } from '../../routes'
 import type { User } from '../../user'
 import { checkPage } from './check-page'
 import { failureMessage } from './failure-message'
@@ -64,6 +64,6 @@ const handleForm = () =>
     publishRequest(),
     RTE.matchW(
       () => failureMessage,
-      () => RedirectResponse({ location: '/' }),
+      () => RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
     ),
   )

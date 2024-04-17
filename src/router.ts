@@ -112,7 +112,7 @@ import { publishToPrereviewCoarNotifyInbox } from './prereview-coar-notify'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
 import type { PublicUrlEnv } from './public-url'
-import { requestReview, requestReviewCheck, requestReviewStart } from './request-review-flow'
+import { requestReview, requestReviewCheck, requestReviewPublished, requestReviewStart } from './request-review-flow'
 import { resources } from './resources'
 import { handleResponse } from './response'
 import { reviewAPreprint } from './review-a-preprint'
@@ -172,6 +172,7 @@ import {
   removeAvatarMatch,
   requestReviewCheckMatch,
   requestReviewMatch,
+  requestReviewPublishedMatch,
   requestReviewStartMatch,
   resourcesMatch,
   reviewAPreprintMatch,
@@ -1519,6 +1520,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           ...env,
           publishRequest: withEnv(publishToPrereviewCoarNotifyInbox, env),
         })),
+      ),
+    ),
+    pipe(
+      requestReviewPublishedMatch.parser,
+      P.map(
+        flow(
+          RM.of,
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(requestReviewPublished)),
+          RM.ichainW(handleResponse),
+        ),
       ),
     ),
     pipe(

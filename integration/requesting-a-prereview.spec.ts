@@ -16,5 +16,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     fetch.postOnce('https://coar-notify-sandbox.prereview.org/inbox', { status: Status.Created })
 
     await page.getByRole('button', { name: 'Request PREreview' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
   },
 )

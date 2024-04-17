@@ -6,7 +6,7 @@ import { Status } from 'hyper-ts'
 import type { CanRequestReviewsEnv } from '../../src/feature-flags'
 import * as _ from '../../src/request-review-flow'
 import { RedirectResponse } from '../../src/response'
-import { requestReviewCheckMatch, requestReviewMatch } from '../../src/routes'
+import { requestReviewCheckMatch, requestReviewMatch, requestReviewPublishedMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
@@ -23,7 +23,9 @@ describe('requestReviewCheck', () => {
             publishRequest: () => TE.right(undefined),
           })()
 
-          expect(actual).toStrictEqual(RedirectResponse({ location: '/' }))
+          expect(actual).toStrictEqual(
+            RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
+          )
         })
 
         test.prop([fc.user()])('when the request can not be published', async user => {
