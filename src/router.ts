@@ -8,7 +8,6 @@ import * as RIO from 'fp-ts/ReaderIO'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as T from 'fp-ts/Task'
-import * as TE from 'fp-ts/TaskEither'
 import { constVoid, constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
 import { NotFound } from 'http-errors'
@@ -109,6 +108,7 @@ import { partners } from './partners'
 import { people } from './people'
 import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv } from './preprint'
 import { preprintReviews } from './preprint-reviews'
+import { publishToPrereviewCoarNotifyInbox } from './prereview-coar-notify'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
 import type { PublicUrlEnv } from './public-url'
@@ -1517,7 +1517,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          publishRequest: () => TE.left('unavailable'),
+          publishRequest: publishToPrereviewCoarNotifyInbox,
         })),
       ),
     ),
