@@ -1,6 +1,5 @@
 import { format } from 'fp-ts-routing'
-import * as E from 'fp-ts/Either'
-import type * as RT from 'fp-ts/ReaderTask'
+import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
@@ -32,22 +31,28 @@ export const requestReviewCheck = ({
       ),
     ),
     RTE.let('method', () => method),
-    RTE.matchW(
+    RTE.matchEW(
       error =>
-        match(error)
-          .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, {}) }))
-          .with('not-found', () => pageNotFound)
+        RT.of(
+          match(error)
+            .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, {}) }))
+            .with('not-found', () => pageNotFound)
+            .exhaustive(),
+        ),
+      state =>
+        match(state)
+          .with({ method: 'POST' }, handleForm)
+          .with({ method: P.string }, flow(checkPage, RT.of))
           .exhaustive(),
-      state => match(state).with({ method: 'POST' }, handleForm).with({ method: P.string }, checkPage).exhaustive(),
     ),
   )
 
-const publishRequest = (): E.Either<'unavailable', void> => E.left('unavailable')
+const publishRequest = (): RTE.ReaderTaskEither<Record<never, never>, 'unavailable', void> => RTE.left('unavailable')
 
 const handleForm = () =>
   pipe(
     publishRequest(),
-    E.matchW(
+    RTE.matchW(
       () => failureMessage,
       () => RedirectResponse({ location: '/' }),
     ),
