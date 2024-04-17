@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
@@ -38,7 +38,7 @@ export const requestReviewStart = ({
     RTE.bindW('reviewRequest', ({ user }) => pipe(maybeGetReviewRequest(user.orcid))),
     RTE.chainFirstW(({ reviewRequest, user }) =>
       match(reviewRequest)
-        .with({ status: 'incomplete' }, () => RTE.of(undefined))
+        .with({ status: P.union('incomplete', 'completed') }, () => RTE.of(undefined))
         .with(undefined, () => pipe(saveReviewRequest(user.orcid, { status: 'incomplete' })))
         .exhaustive(),
     ),

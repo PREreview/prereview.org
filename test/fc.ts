@@ -59,7 +59,7 @@ import type {
   StreamlinePageResponse,
   TwoUpPageResponse,
 } from '../src/response'
-import type { ReviewRequest } from '../src/review-request'
+import type { CompletedReviewRequest, IncompleteReviewRequest, ReviewRequest } from '../src/review-request'
 import type { SlackUser } from '../src/slack-user'
 import type { SlackUserId } from '../src/slack-user-id'
 import { type ClubId, clubIds } from '../src/types/club-id'
@@ -802,7 +802,14 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcid)
 
-export const reviewRequest = (): fc.Arbitrary<ReviewRequest> => fc.record({ status: constant('incomplete') })
+export const reviewRequest = (): fc.Arbitrary<ReviewRequest> =>
+  fc.oneof(incompleteReviewRequest(), completedReviewRequest())
+
+export const incompleteReviewRequest = (): fc.Arbitrary<IncompleteReviewRequest> =>
+  fc.record({ status: constant('incomplete') })
+
+export const completedReviewRequest = (): fc.Arbitrary<CompletedReviewRequest> =>
+  fc.record({ status: constant('completed') })
 
 export const authorInvite = (): fc.Arbitrary<AuthorInvite> =>
   fc.oneof(openAuthorInvite(), declinedAuthorInvite(), assignedAuthorInvite(), completedAuthorInvite())

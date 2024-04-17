@@ -2,11 +2,18 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { flow } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
+import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
 
-export interface ReviewRequest {
+export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
+
+export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
+}
+
+export interface CompletedReviewRequest {
+  readonly status: 'completed'
 }
 
 export interface GetReviewRequestEnv {
@@ -17,8 +24,22 @@ export interface SaveReviewRequestEnv {
   saveReviewRequest: (orcid: Orcid, reviewRequest: ReviewRequest) => TE.TaskEither<'unavailable', void>
 }
 
-export const ReviewRequestC = C.struct({
+const IncompleteReviewRequestC = C.struct({
   status: C.literal('incomplete'),
+}) satisfies C.Codec<unknown, unknown, IncompleteReviewRequest>
+
+const CompletedReviewRequestC = C.struct({
+  status: C.literal('completed'),
+}) satisfies C.Codec<unknown, unknown, CompletedReviewRequest>
+
+// Unfortunately, there's no way to describe a union encoder, so we must implement it ourselves.
+// Refs https://github.com/gcanti/io-ts/issues/625#issuecomment-1007478009
+export const ReviewRequestC = C.make(D.union(IncompleteReviewRequestC, CompletedReviewRequestC), {
+  encode: reviewRequest =>
+    match(reviewRequest)
+      .with({ status: 'incomplete' }, IncompleteReviewRequestC.encode)
+      .with({ status: 'completed' }, CompletedReviewRequestC.encode)
+      .exhaustive(),
 }) satisfies C.Codec<unknown, unknown, ReviewRequest>
 
 export const getReviewRequest = (
