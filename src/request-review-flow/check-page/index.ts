@@ -37,10 +37,8 @@ export const requestReviewCheck = ({
           .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, {}) }))
           .with('not-found', () => pageNotFound)
           .exhaustive(),
-      state =>
-        match(state)
-          .with({ method: 'POST' }, () => failureMessage)
-          .with({ method: P.string }, checkPage)
-          .exhaustive(),
+      state => match(state).with({ method: 'POST' }, publishRequest).with({ method: P.string }, checkPage).exhaustive(),
     ),
   )
+
+const publishRequest = () => failureMessage
