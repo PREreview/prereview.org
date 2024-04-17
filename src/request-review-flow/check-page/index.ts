@@ -38,13 +38,15 @@ export const requestReviewCheck = ({
           .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, {}) }))
           .with('not-found', () => pageNotFound)
           .exhaustive(),
-      state => match(state).with({ method: 'POST' }, publishRequest).with({ method: P.string }, checkPage).exhaustive(),
+      state => match(state).with({ method: 'POST' }, handleForm).with({ method: P.string }, checkPage).exhaustive(),
     ),
   )
 
-const publishRequest = () =>
+const publishRequest = (): E.Either<'unavailabe', void> => E.left('unavailabe')
+
+const handleForm = () =>
   pipe(
-    E.left(''),
+    publishRequest(),
     E.matchW(
       () => failureMessage,
       () => RedirectResponse({ location: '/' }),
