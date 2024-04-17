@@ -4,18 +4,20 @@ import { identity, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import { timeoutRequest } from './fetch'
 
-const hardcodedBody = {
+const hardcodedCoarNotifyUrl = 'https://coar-notify-sandbox.prereview.org'
+
+const constructCoarPayload = ({ coarNotifyUrl }: { coarNotifyUrl: string }) => ({
   id: '78965d36-830d-47c3-b0b7-01ed47cbec28',
   '@context': ['https://www.w3.org/ns/activitystreams', 'https://purl.org/coar/notify'],
   type: ['Offer', 'coar-notify:ReviewAction'],
   origin: {
-    id: 'https://coar-notify-sandbox.prereview.org',
-    inbox: 'https://coar-notify-sandbox.prereview.org/inbox',
+    id: coarNotifyUrl,
+    inbox: `${coarNotifyUrl}/inbox`,
     type: 'Service',
   },
   target: {
-    id: 'https://coar-notify-sandbox.prereview.org',
-    inbox: 'https://coar-notify-sandbox.prereview.org/inbox',
+    id: coarNotifyUrl,
+    inbox: `${coarNotifyUrl}/inbox`,
     type: 'Service',
   },
   object: {
@@ -27,13 +29,13 @@ const hardcodedBody = {
     type: 'Person',
     name: 'A PREreviewer',
   },
-}
+})
 
 export const publishToPrereviewCoarNotifyInbox = (): RTE.ReaderTaskEither<F.FetchEnv, 'unavailable', void> =>
   pipe(
-    'https://coar-notify-sandbox.prereview.org/inbox',
+    `${hardcodedCoarNotifyUrl}/inbox`,
     F.Request('POST'),
-    F.setBody(JSON.stringify(hardcodedBody), 'application/json'),
+    F.setBody(JSON.stringify(constructCoarPayload({ coarNotifyUrl: hardcodedCoarNotifyUrl })), 'application/json'),
     F.send,
     RTE.local(timeoutRequest(2000)),
     RTE.filterOrElseW(F.hasStatus(Status.Created), identity),
