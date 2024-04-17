@@ -28,6 +28,16 @@ describe('publishToPrereviewCoarNotifyInbox', () => {
       expect(result).toStrictEqual(E.left('unavailable'))
     })
 
-    test.todo('with an unexpected status')
+    test.prop([fc.fetchResponse({ status: fc.statusCode().filter(status => status !== Status.Created) }), fc.uuid()])(
+      'with an unexpected status',
+      async (response, uuid) => {
+        const result = await _.publishToPrereviewCoarNotifyInbox()({
+          fetch: () => Promise.resolve(response),
+          generateUuid: () => uuid,
+        })()
+
+        expect(result).toStrictEqual(E.left('unavailable'))
+      },
+    )
   })
 })
