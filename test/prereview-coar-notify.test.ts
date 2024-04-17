@@ -19,7 +19,14 @@ describe('publishToPrereviewCoarNotifyInbox', () => {
   )
 
   describe('publishing fails', () => {
-    test.todo('with a network error')
+    test.prop([fc.anything(), fc.uuid()])('with a network error', async (reason, uuid) => {
+      const result = await _.publishToPrereviewCoarNotifyInbox()({
+        fetch: () => Promise.reject(reason),
+        generateUuid: () => uuid,
+      })()
+
+      expect(result).toStrictEqual(E.left('unavailable'))
+    })
 
     test.todo('with an unexpected status')
   })
