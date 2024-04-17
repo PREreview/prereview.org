@@ -6,7 +6,7 @@ import { Status } from 'hyper-ts'
 import type { CanRequestReviewsEnv } from '../../src/feature-flags'
 import * as _ from '../../src/request-review-flow'
 import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request'
-import { requestReviewCheckMatch, requestReviewStartMatch } from '../../src/routes'
+import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
@@ -32,7 +32,27 @@ describe('requestReviewStart', () => {
         expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, { status: 'incomplete' })
       })
 
-      test.prop([fc.user(), fc.reviewRequest()])(
+      test.prop([fc.user(), fc.completedReviewRequest()])(
+        'when a request has already been completed',
+        async (user, reviewRequest) => {
+          const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.right(reviewRequest))
+
+          const actual = await _.requestReviewStart({ user })({
+            canRequestReviews: () => true,
+            getReviewRequest,
+            saveReviewRequest: shouldNotBeCalled,
+          })()
+
+          expect(actual).toStrictEqual({
+            _tag: 'RedirectResponse',
+            status: Status.SeeOther,
+            location: format(requestReviewPublishedMatch.formatter, {}),
+          })
+          expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
+        },
+      )
+
+      test.prop([fc.user(), fc.incompleteReviewRequest()])(
         'when a request has already been started',
         async (user, reviewRequest) => {
           const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.right(reviewRequest))

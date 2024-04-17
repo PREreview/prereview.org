@@ -12,7 +12,7 @@ import {
   maybeGetReviewRequest,
   saveReviewRequest,
 } from '../../review-request'
-import { requestReviewCheckMatch, requestReviewStartMatch } from '../../routes'
+import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../routes'
 import type { User } from '../../user'
 
 export const requestReviewStart = ({
@@ -49,6 +49,14 @@ export const requestReviewStart = ({
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
-      () => RedirectResponse({ location: format(requestReviewCheckMatch.formatter, {}) }),
+      state =>
+        match(state)
+          .with({ reviewRequest: P.union(undefined, { status: 'incomplete' }) }, () =>
+            RedirectResponse({ location: format(requestReviewCheckMatch.formatter, {}) }),
+          )
+          .with({ reviewRequest: { status: 'completed' } }, () =>
+            RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
+          )
+          .exhaustive(),
     ),
   )
