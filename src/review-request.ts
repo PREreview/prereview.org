@@ -5,8 +5,11 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
+import type { BiorxivPreprintId, PreprintId, ScieloPreprintId } from './types/preprint-id'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
+
+export type ReviewRequestPreprintId = BiorxivPreprintId | ScieloPreprintId
 
 export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
@@ -62,3 +65,9 @@ export const saveReviewRequest = (
   reviewRequest: ReviewRequest,
 ): RTE.ReaderTaskEither<SaveReviewRequestEnv, 'unavailable', void> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ saveReviewRequest }) => saveReviewRequest(orcid, reviewRequest)))
+
+export function isReviewRequestPreprintId(preprint: PreprintId): preprint is ReviewRequestPreprintId {
+  return match(preprint.type)
+    .with('biorxiv', 'scielo', () => true)
+    .otherwise(() => false)
+}

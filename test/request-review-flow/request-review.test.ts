@@ -15,63 +15,38 @@ describe('requestReview', () => {
   describe('when the user is logged in', () => {
     describe('when reviews can be requested', () => {
       describe("when a review hasn't been started", () => {
+        test.prop([fc.indeterminatePreprintId(), fc.user(), fc.preprintTitle({ id: fc.reviewRequestPreprintId() })])(
+          'when the preprint is supported',
+          async (preprint, user, preprintTitle) => {
+            const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
+            const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.right(preprintTitle))
+
+            const actual = await _.requestReview({ preprint, user })({
+              canRequestReviews: () => true,
+              getReviewRequest,
+              getPreprintTitle,
+            })()
+
+            expect(actual).toStrictEqual({
+              _tag: 'StreamlinePageResponse',
+              canonical: format(requestReviewMatch.formatter, {}),
+              status: Status.OK,
+              title: expect.stringContaining('Request a PREreview'),
+              nav: expect.stringContaining('Back'),
+              main: expect.stringContaining('request a PREreview'),
+              skipToLabel: 'main',
+              js: [],
+              allowRobots: false,
+            })
+            expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
+            expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
+          },
+        )
+
         test.prop([
           fc.indeterminatePreprintId(),
           fc.user(),
-          fc.preprintTitle({ id: fc.oneof(fc.biorxivPreprintId(), fc.scieloPreprintId()) }),
-        ])('when the preprint is supported', async (preprint, user, preprintTitle) => {
-          const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
-          const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.right(preprintTitle))
-
-          const actual = await _.requestReview({ preprint, user })({
-            canRequestReviews: () => true,
-            getReviewRequest,
-            getPreprintTitle,
-          })()
-
-          expect(actual).toStrictEqual({
-            _tag: 'StreamlinePageResponse',
-            canonical: format(requestReviewMatch.formatter, {}),
-            status: Status.OK,
-            title: expect.stringContaining('Request a PREreview'),
-            nav: expect.stringContaining('Back'),
-            main: expect.stringContaining('request a PREreview'),
-            skipToLabel: 'main',
-            js: [],
-            allowRobots: false,
-          })
-          expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
-          expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
-        })
-
-        test.prop([
-          fc.indeterminatePreprintId(),
-          fc.user(),
-          fc.preprintTitle({
-            id: fc.oneof(
-              fc.africarxivPreprintId(),
-              fc.arxivPreprintId(),
-              fc.authoreaPreprintId(),
-              fc.chemrxivPreprintId(),
-              fc.eartharxivPreprintId(),
-              fc.ecoevorxivPreprintId(),
-              fc.edarxivPreprintId(),
-              fc.engrxivPreprintId(),
-              fc.medrxivPreprintId(),
-              fc.metaarxivPreprintId(),
-              fc.osfPreprintId(),
-              fc.osfPreprintsPreprintId(),
-              fc.philsciPreprintId(),
-              fc.preprintsorgPreprintId(),
-              fc.psyarxivPreprintId(),
-              fc.psychArchivesPreprintId(),
-              fc.researchSquarePreprintId(),
-              fc.scienceOpenPreprintId(),
-              fc.socarxivPreprintId(),
-              fc.techrxivPreprintId(),
-              fc.zenodoPreprintId(),
-            ),
-          }),
+          fc.preprintTitle({ id: fc.notAReviewRequestPreprintId() }),
         ])("when the preprint isn't supported", async (preprint, user, preprintTitle) => {
           const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
           const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.right(preprintTitle))

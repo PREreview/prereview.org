@@ -1,7 +1,7 @@
 import { toUrl } from 'doi-ts'
 import * as RIO from 'fp-ts/ReaderIO'
 import { pipe } from 'fp-ts/function'
-import type { BiorxivPreprintId, ScieloPreprintId } from '../types/preprint-id'
+import type { ReviewRequestPreprintId } from '../review-request'
 import { type GenerateUuidEnv, generateUuid } from '../types/uuid'
 import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-payload'
 
@@ -10,7 +10,7 @@ export const constructCoarPayload = ({
   preprint,
 }: {
   coarNotifyUrl: string
-  preprint: BiorxivPreprintId | ScieloPreprintId
+  preprint: ReviewRequestPreprintId
 }): RIO.ReaderIO<GenerateUuidEnv, CoarReviewActionOfferPayload> =>
   pipe(
     generateUuid,

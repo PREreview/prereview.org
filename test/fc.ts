@@ -59,7 +59,12 @@ import type {
   StreamlinePageResponse,
   TwoUpPageResponse,
 } from '../src/response'
-import type { CompletedReviewRequest, IncompleteReviewRequest, ReviewRequest } from '../src/review-request'
+import type {
+  CompletedReviewRequest,
+  IncompleteReviewRequest,
+  ReviewRequest,
+  ReviewRequestPreprintId,
+} from '../src/review-request'
 import type { SlackUser } from '../src/slack-user'
 import type { SlackUserId } from '../src/slack-user-id'
 import { type ClubId, clubIds } from '../src/types/club-id'
@@ -801,6 +806,34 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     })
     .map(value => mod11_2.generate(value).replace(/.{4}(?=.)/g, '$&-'))
     .filter(isOrcid)
+
+export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId> =>
+  fc.oneof(biorxivPreprintId(), scieloPreprintId())
+
+export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, ReviewRequestPreprintId>> =>
+  fc.oneof(
+    africarxivPreprintId(),
+    arxivPreprintId(),
+    authoreaPreprintId(),
+    chemrxivPreprintId(),
+    eartharxivPreprintId(),
+    ecoevorxivPreprintId(),
+    edarxivPreprintId(),
+    engrxivPreprintId(),
+    medrxivPreprintId(),
+    metaarxivPreprintId(),
+    osfPreprintId(),
+    osfPreprintsPreprintId(),
+    philsciPreprintId(),
+    preprintsorgPreprintId(),
+    psyarxivPreprintId(),
+    psychArchivesPreprintId(),
+    researchSquarePreprintId(),
+    scienceOpenPreprintId(),
+    socarxivPreprintId(),
+    techrxivPreprintId(),
+    zenodoPreprintId(),
+  )
 
 export const reviewRequest = (): fc.Arbitrary<ReviewRequest> =>
   fc.oneof(incompleteReviewRequest(), completedReviewRequest())

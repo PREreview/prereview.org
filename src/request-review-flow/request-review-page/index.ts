@@ -7,7 +7,7 @@ import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flag
 import { havingProblemsPage, pageNotFound } from '../../http-error'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
-import { type GetReviewRequestEnv, maybeGetReviewRequest } from '../../review-request'
+import { type GetReviewRequestEnv, isReviewRequestPreprintId, maybeGetReviewRequest } from '../../review-request'
 import { requestReviewMatch, requestReviewStartMatch } from '../../routes'
 import type { IndeterminatePreprintId } from '../../types/preprint-id'
 import type { User } from '../../user'
@@ -47,10 +47,7 @@ export const requestReview = ({
     ),
     RTE.chainW(() => getPreprintTitle(preprint)),
     RTE.filterOrElseW(
-      preprint =>
-        match(preprint.id.type)
-          .with('biorxiv', 'scielo', () => true)
-          .otherwise(() => false),
+      preprint => isReviewRequestPreprintId(preprint.id),
       () => 'not-found' as const,
     ),
     RTE.matchW(
