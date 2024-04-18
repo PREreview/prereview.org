@@ -219,7 +219,7 @@ import {
 } from './slack'
 import type { SlackUserId } from './slack-user-id'
 import { trainings } from './trainings'
-import type { PreprintId } from './types/preprint-id'
+import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id'
 import { type GenerateUuidEnv, generateUuid } from './types/uuid'
 import { type GetUserEnv, type User, maybeGetUser } from './user'
 import type { GetUserOnboardingEnv } from './user-onboarding'
@@ -1486,9 +1486,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       requestReviewMatch.parser,
-      P.map(
-        flow(
-          RM.of,
+      P.map(() =>
+        pipe(
+          RM.of({
+            preprint: {
+              type: 'biorxiv-medrxiv',
+              value: '10.1101/2022.10.06.511170' as Doi<'1101'>,
+            } satisfies IndeterminatePreprintId,
+          }),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(requestReview)),
           RM.ichainW(handleResponse),

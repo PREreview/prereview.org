@@ -1,4 +1,3 @@
-import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -10,12 +9,15 @@ import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import { type GetReviewRequestEnv, maybeGetReviewRequest } from '../../review-request'
 import { requestReviewMatch, requestReviewStartMatch } from '../../routes'
+import type { IndeterminatePreprintId } from '../../types/preprint-id'
 import type { User } from '../../user'
 import { requestReviewPage } from './request-review-page'
 
 export const requestReview = ({
+  preprint,
   user,
 }: {
+  preprint: IndeterminatePreprintId
   user?: User
 }): RT.ReaderTask<
   CanRequestReviewsEnv & GetPreprintTitleEnv & GetReviewRequestEnv,
@@ -43,7 +45,14 @@ export const requestReview = ({
         ),
       ),
     ),
-    RTE.chainW(() => getPreprintTitle({ type: 'biorxiv', value: '10.1101/2024.02.07.578830' as Doi<'1101'> })),
+    RTE.chainW(() => getPreprintTitle(preprint)),
+    RTE.filterOrElseW(
+      preprint =>
+        match(preprint.id.type)
+          .with('biorxiv', 'scielo', () => true)
+          .otherwise(() => false),
+      () => 'not-found' as const,
+    ),
     RTE.matchW(
       error =>
         match(error)

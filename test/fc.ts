@@ -1065,9 +1065,9 @@ export const preprint = ({ authors }: { authors?: Arbitrary<Preprint['authors']>
     { requiredKeys: ['authors', 'id', 'posted', 'title', 'url'] },
   )
 
-export const preprintTitle = (): fc.Arbitrary<PreprintTitle> =>
+export const preprintTitle = ({ id }: { id?: fc.Arbitrary<PreprintId> } = {}): fc.Arbitrary<PreprintTitle> =>
   fc.record({
-    id: preprintId(),
+    id: id ?? preprintId(),
     language: languageCode(),
     title: html(),
   })
