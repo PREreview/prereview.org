@@ -1,4 +1,5 @@
 import cookieSignature from 'cookie-signature'
+import type { Doi } from 'doi-ts'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { concatAll } from 'fp-ts/Monoid'
@@ -1539,7 +1540,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getReviewRequest: withEnv(Keyv.getReviewRequest, env),
-          publishRequest: withEnv(publishToPrereviewCoarNotifyInbox, env),
+          publishRequest: () =>
+            withEnv(
+              publishToPrereviewCoarNotifyInbox,
+              env,
+            )({
+              type: 'biorxiv',
+              value: '10.1101/2022.10.06.511170' as Doi<'1101'>,
+            }),
           saveReviewRequest: withEnv(Keyv.saveReviewRequest, env),
         })),
       ),

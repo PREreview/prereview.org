@@ -13,8 +13,8 @@ export interface CoarReviewActionOfferPayload {
     type: 'Service'
   }
   object: {
-    id: '10.1101/2024.02.07.578830'
-    'ietf:cite-as': 'https://doi.org/10.1101/2024.02.07.578830'
+    id: string
+    'ietf:cite-as': string
   }
   actor: {
     id: 'https://prereview.org'

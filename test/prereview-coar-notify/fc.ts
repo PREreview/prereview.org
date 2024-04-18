@@ -19,8 +19,8 @@ export const coarReviewActionOfferPayload = (): fc.Arbitrary<CoarReviewActionOff
       type: fc.constant('Service'),
     }),
     object: fc.record({
-      id: fc.constant('10.1101/2024.02.07.578830'),
-      'ietf:cite-as': fc.constant('https://doi.org/10.1101/2024.02.07.578830'),
+      id: fc.string(),
+      'ietf:cite-as': fc.string(),
     }),
     actor: fc.record({
       id: fc.constant('https://prereview.org'),

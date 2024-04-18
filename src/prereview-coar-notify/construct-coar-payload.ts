@@ -1,12 +1,16 @@
+import { toUrl } from 'doi-ts'
 import * as RIO from 'fp-ts/ReaderIO'
 import { pipe } from 'fp-ts/function'
+import type { BiorxivPreprintId, ScieloPreprintId } from '../types/preprint-id'
 import { type GenerateUuidEnv, generateUuid } from '../types/uuid'
 import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-payload'
 
 export const constructCoarPayload = ({
   coarNotifyUrl,
+  preprint,
 }: {
   coarNotifyUrl: string
+  preprint: BiorxivPreprintId | ScieloPreprintId
 }): RIO.ReaderIO<GenerateUuidEnv, CoarReviewActionOfferPayload> =>
   pipe(
     generateUuid,
@@ -25,8 +29,8 @@ export const constructCoarPayload = ({
         type: 'Service',
       },
       object: {
-        id: '10.1101/2024.02.07.578830',
-        'ietf:cite-as': 'https://doi.org/10.1101/2024.02.07.578830',
+        id: preprint.value,
+        'ietf:cite-as': toUrl(preprint.value).href,
       },
       actor: {
         id: 'https://prereview.org',
