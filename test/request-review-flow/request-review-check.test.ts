@@ -3,7 +3,7 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import * as _ from '../../src/request-review-flow'
+import * as _ from '../../src/request-review-flow/check-page'
 import { RedirectResponse } from '../../src/response'
 import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request'
 import { requestReviewCheckMatch, requestReviewMatch, requestReviewPublishedMatch } from '../../src/routes'
@@ -18,19 +18,21 @@ describe('requestReviewCheck', () => {
           'when the request can be published',
           async (user, reviewRequest) => {
             const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
+            const publishRequest = jest.fn<_.PublishRequestEnv['publishRequest']>(_ => TE.right(undefined))
 
             const actual = await _.requestReviewCheck({
               method: 'POST',
               user,
             })({
               getReviewRequest: () => TE.right(reviewRequest),
-              publishRequest: () => TE.right(undefined),
+              publishRequest,
               saveReviewRequest,
             })()
 
             expect(actual).toStrictEqual(
               RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
             )
+            expect(publishRequest).toHaveBeenCalledWith({ type: 'biorxiv', value: '10.1101/2024.02.07.578830' })
             expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, { status: 'completed' })
           },
         )
@@ -39,13 +41,14 @@ describe('requestReviewCheck', () => {
           "when the request state can't be changed",
           async (user, reviewRequest) => {
             const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.left('unavailable'))
+            const publishRequest = jest.fn<_.PublishRequestEnv['publishRequest']>(_ => TE.right(undefined))
 
             const actual = await _.requestReviewCheck({
               method: 'POST',
               user,
             })({
               getReviewRequest: () => TE.right(reviewRequest),
-              publishRequest: () => TE.right(undefined),
+              publishRequest,
               saveReviewRequest,
             })()
 
@@ -57,6 +60,7 @@ describe('requestReviewCheck', () => {
               skipToLabel: 'main',
               js: [],
             })
+            expect(publishRequest).toHaveBeenCalledWith({ type: 'biorxiv', value: '10.1101/2024.02.07.578830' })
             expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, { status: 'completed' })
           },
         )
@@ -64,12 +68,14 @@ describe('requestReviewCheck', () => {
         test.prop([fc.user(), fc.incompleteReviewRequest()])(
           'when the request can not be published',
           async (user, reviewRequest) => {
+            const publishRequest = jest.fn<_.PublishRequestEnv['publishRequest']>(_ => TE.left('unavailable'))
+
             const actual = await _.requestReviewCheck({
               method: 'POST',
               user,
             })({
               getReviewRequest: () => TE.right(reviewRequest),
-              publishRequest: () => TE.left('unavailable'),
+              publishRequest,
               saveReviewRequest: shouldNotBeCalled,
             })()
 
@@ -81,6 +87,7 @@ describe('requestReviewCheck', () => {
               skipToLabel: 'main',
               js: [],
             })
+            expect(publishRequest).toHaveBeenCalledWith({ type: 'biorxiv', value: '10.1101/2024.02.07.578830' })
           },
         )
       })

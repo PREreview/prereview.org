@@ -1,3 +1,4 @@
+import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
@@ -9,6 +10,7 @@ import { havingProblemsPage, pageNotFound } from '../../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import {
   type GetReviewRequestEnv,
+  type ReviewRequestPreprintId,
   type SaveReviewRequestEnv,
   getReviewRequest,
   saveReviewRequest,
@@ -19,7 +21,7 @@ import { checkPage } from './check-page'
 import { failureMessage } from './failure-message'
 
 export interface PublishRequestEnv {
-  publishRequest: () => TE.TaskEither<'unavailable', void>
+  publishRequest: (preprint: ReviewRequestPreprintId) => TE.TaskEither<'unavailable', void>
 }
 
 export const requestReviewCheck = ({
@@ -48,6 +50,10 @@ export const requestReviewCheck = ({
       ),
     ),
     RTE.let('method', () => method),
+    RTE.let(
+      'preprint',
+      () => ({ type: 'biorxiv', value: '10.1101/2024.02.07.578830' as Doi<'1101'> }) satisfies ReviewRequestPreprintId,
+    ),
     RTE.matchEW(
       error =>
         RT.of(
@@ -68,12 +74,14 @@ export const requestReviewCheck = ({
     ),
   )
 
-const publishRequest = (): RTE.ReaderTaskEither<PublishRequestEnv, 'unavailable', void> =>
-  R.asks(({ publishRequest }) => publishRequest())
+const publishRequest = (
+  preprint: ReviewRequestPreprintId,
+): RTE.ReaderTaskEither<PublishRequestEnv, 'unavailable', void> =>
+  R.asks(({ publishRequest }) => publishRequest(preprint))
 
-const handleForm = ({ user }: { user: User }) =>
+const handleForm = ({ preprint, user }: { preprint: ReviewRequestPreprintId; user: User }) =>
   pipe(
-    publishRequest(),
+    publishRequest(preprint),
     RTE.chainFirstW(() => saveReviewRequest(user.orcid, { status: 'completed' })),
     RTE.matchW(
       () => failureMessage,

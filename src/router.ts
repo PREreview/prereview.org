@@ -1545,14 +1545,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getReviewRequest: withEnv(Keyv.getReviewRequest, env),
-          publishRequest: () =>
-            withEnv(
-              publishToPrereviewCoarNotifyInbox,
-              env,
-            )({
-              type: 'biorxiv',
-              value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-            }),
+          publishRequest: withEnv(publishToPrereviewCoarNotifyInbox, env),
           saveReviewRequest: withEnv(Keyv.saveReviewRequest, env),
         })),
       ),
