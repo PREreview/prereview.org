@@ -1491,7 +1491,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.of({
             preprint: {
               type: 'biorxiv-medrxiv',
-              value: '10.1101/2022.10.06.511170' as Doi<'1101'>,
+              value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
             } satisfies IndeterminatePreprintId,
           }),
           RM.apS('user', maybeGetUser),
@@ -1551,7 +1551,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               env,
             )({
               type: 'biorxiv',
-              value: '10.1101/2022.10.06.511170' as Doi<'1101'>,
+              value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
             }),
           saveReviewRequest: withEnv(Keyv.saveReviewRequest, env),
         })),
