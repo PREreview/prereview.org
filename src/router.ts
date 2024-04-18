@@ -1493,6 +1493,12 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.ichainW(handleResponse),
         ),
       ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getReviewRequest: withEnv(Keyv.getReviewRequest, env),
+        })),
+      ),
     ),
     pipe(
       requestReviewStartMatch.parser,
