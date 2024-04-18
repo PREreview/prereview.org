@@ -26,6 +26,7 @@ describe('requestReview', () => {
           canonical: format(requestReviewMatch.formatter, {}),
           status: Status.OK,
           title: expect.stringContaining('Request a PREreview'),
+          nav: expect.stringContaining('Back'),
           main: expect.stringContaining('request a PREreview'),
           skipToLabel: 'main',
           js: [],

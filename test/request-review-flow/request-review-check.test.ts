@@ -102,6 +102,7 @@ describe('requestReviewCheck', () => {
             canonical: format(requestReviewCheckMatch.formatter, {}),
             status: Status.OK,
             title: expect.stringContaining('Check your request'),
+            nav: expect.stringContaining('Back'),
             main: expect.stringContaining('Check your request'),
             skipToLabel: 'form',
             js: ['single-use-form.js'],

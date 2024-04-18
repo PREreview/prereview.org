@@ -175,3 +175,17 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
+  'can go back through the form',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-2024.02.07.578830/request-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your request')
+
+    await page.goBack()
+
+    await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
+  },
+)

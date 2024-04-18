@@ -1,10 +1,20 @@
+import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import { html, plainText } from '../../html'
 import { StreamlinePageResponse } from '../../response'
-import { requestReviewMatch, requestReviewStartMatch } from '../../routes'
+import { preprintReviewsMatch, requestReviewMatch, requestReviewStartMatch } from '../../routes'
 
 export const requestReviewPage = StreamlinePageResponse({
   title: plainText`Request a PREreview`,
+  nav: html`
+    <a
+      href="${format(preprintReviewsMatch.formatter, {
+        id: { type: 'biorxiv', value: '10.1101/2024.02.07.578830' as Doi<'1101'> },
+      })}"
+      class="back"
+      >Back to preprint</a
+    >
+  `,
   main: html`
     <h1>Request a PREreview</h1>
 
