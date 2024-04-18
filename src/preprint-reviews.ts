@@ -1,4 +1,4 @@
-import { isDoi, toUrl } from 'doi-ts'
+import { type Doi, Eq as eqDoi, isDoi, toUrl } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as I from 'fp-ts/Identity'
 import type * as RT from 'fp-ts/ReaderTask'
@@ -16,15 +16,17 @@ import { get } from 'spectacles-ts'
 import textClipper from 'text-clipper'
 import { match, P as p } from 'ts-pattern'
 import { getClubName } from './club-details'
+import { type CanRequestReviewsEnv, canRequestReviews } from './feature-flags'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from './html'
 import { pageNotFound } from './http-error'
 import { type GetPreprintEnv, type Preprint, getPreprint } from './preprint'
 import { PageResponse, TwoUpPageResponse } from './response'
-import { preprintReviewsMatch, profileMatch, reviewMatch, writeReviewMatch } from './routes'
+import { preprintReviewsMatch, profileMatch, requestReviewMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
 import type { ClubId } from './types/club-id'
 import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id'
 import { isPseudonym } from './types/pseudonym'
+import type { User } from './user'
 
 export interface Prereview {
   authors: {
@@ -76,27 +78,33 @@ const getRapidPrereviews = (
 ): RTE.ReaderTaskEither<GetRapidPrereviewsEnv, 'unavailable', ReadonlyArray<RapidPrereview>> =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getRapidPrereviews }) => getRapidPrereviews(id)))
 
-export const preprintReviews: (
+export const preprintReviews = (
   id: IndeterminatePreprintId,
-) => RT.ReaderTask<GetPreprintEnv & GetPrereviewsEnv & GetRapidPrereviewsEnv, PageResponse | TwoUpPageResponse> = flow(
-  getPreprint,
-  RTE.chainW(preprint =>
-    pipe(
-      RTE.Do,
-      RTE.let('preprint', () => preprint),
-      RTE.apS('rapidPrereviews', getRapidPrereviews(preprint.id)),
-      RTE.apSW('reviews', getPrereviews(preprint.id)),
+  user?: User,
+): RT.ReaderTask<
+  CanRequestReviewsEnv & GetPreprintEnv & GetPrereviewsEnv & GetRapidPrereviewsEnv,
+  PageResponse | TwoUpPageResponse
+> =>
+  pipe(
+    getPreprint(id),
+    RTE.chainW(preprint =>
+      pipe(
+        RTE.Do,
+        RTE.let('preprint', () => preprint),
+        RTE.apS('rapidPrereviews', getRapidPrereviews(preprint.id)),
+        RTE.apSW('reviews', getPrereviews(preprint.id)),
+        RTE.apSW('canRequestReviews', user ? RTE.fromReader(canRequestReviews(user)) : RTE.of(false)),
+      ),
     ),
-  ),
-  RTE.matchW(
-    error =>
-      match(error)
-        .with('not-found', () => pageNotFound)
-        .with('unavailable', () => failureMessage)
-        .exhaustive(),
-    createPage,
-  ),
-)
+    RTE.matchW(
+      error =>
+        match(error)
+          .with('not-found', () => pageNotFound)
+          .with('unavailable', () => failureMessage)
+          .exhaustive(),
+      createPage,
+    ),
+  )
 
 const failureMessage = PageResponse({
   status: Status.ServiceUnavailable,
@@ -111,10 +119,12 @@ const failureMessage = PageResponse({
 })
 
 function createPage({
+  canRequestReviews,
   preprint,
   reviews,
   rapidPrereviews,
 }: {
+  canRequestReviews: boolean
   preprint: Preprint
   reviews: ReadonlyArray<Prereview>
   rapidPrereviews: ReadonlyArray<RapidPrereview>
@@ -230,7 +240,15 @@ function createPage({
 
       <h2>${reviews.length} PREreview${reviews.length !== 1 ? 's' : ''}</h2>
 
-      <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}" class="button">Write a PREreview</a>
+      <div class="button-group" role="group">
+        <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}" class="button">Write a PREreview</a>
+
+        ${preprint.id.type === 'biorxiv' &&
+        eqDoi.equals(preprint.id.value, '10.1101/2024.02.07.578830' as Doi<'1101'>) &&
+        canRequestReviews
+          ? html`<a href="${format(requestReviewMatch.formatter, {})}">Request a PREreview</a>`
+          : ''}
+      </div>
 
       <ol class="cards">
         ${reviews.map(showReview)}
