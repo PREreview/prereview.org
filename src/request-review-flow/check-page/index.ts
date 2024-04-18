@@ -1,4 +1,3 @@
-import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as R from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
@@ -7,15 +6,18 @@ import type * as TE from 'fp-ts/TaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import {
   type GetReviewRequestEnv,
   type ReviewRequestPreprintId,
   type SaveReviewRequestEnv,
   getReviewRequest,
+  isReviewRequestPreprintId,
   saveReviewRequest,
 } from '../../review-request'
 import { requestReviewMatch, requestReviewPublishedMatch } from '../../routes'
+import type { IndeterminatePreprintId } from '../../types/preprint-id'
 import type { User } from '../../user'
 import { checkPage } from './check-page'
 import { failureMessage } from './failure-message'
@@ -26,12 +28,14 @@ export interface PublishRequestEnv {
 
 export const requestReviewCheck = ({
   method,
+  preprint,
   user,
 }: {
   method: string
+  preprint: IndeterminatePreprintId
   user?: User
 }): RT.ReaderTask<
-  GetReviewRequestEnv & PublishRequestEnv & SaveReviewRequestEnv,
+  GetPreprintTitleEnv & GetReviewRequestEnv & PublishRequestEnv & SaveReviewRequestEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -50,9 +54,12 @@ export const requestReviewCheck = ({
       ),
     ),
     RTE.let('method', () => method),
-    RTE.let(
-      'preprint',
-      () => ({ type: 'biorxiv', value: '10.1101/2024.02.07.578830' as Doi<'1101'> }) satisfies ReviewRequestPreprintId,
+    RTE.bindW('preprint', () =>
+      pipe(
+        getPreprintTitle(preprint),
+        RTE.map(preprint => preprint.id),
+        RTE.filterOrElseW(isReviewRequestPreprintId, () => 'not-found' as const),
+      ),
     ),
     RTE.matchEW(
       error =>

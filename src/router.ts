@@ -1508,9 +1508,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       requestReviewStartMatch.parser,
-      P.map(
-        flow(
-          RM.of,
+      P.map(() =>
+        pipe(
+          RM.of({
+            preprint: {
+              type: 'biorxiv-medrxiv',
+              value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
+            } satisfies IndeterminatePreprintId,
+          }),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(requestReviewStart)),
           RM.ichainW(handleResponse),
@@ -1532,9 +1537,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       requestReviewCheckMatch.parser,
-      P.map(
-        flow(
-          RM.of,
+      P.map(() =>
+        pipe(
+          RM.of({
+            preprint: {
+              type: 'biorxiv-medrxiv',
+              value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
+            } satisfies IndeterminatePreprintId,
+          }),
           RM.apS('user', maybeGetUser),
           RM.apS('method', RM.fromMiddleware(getMethod)),
           RM.bindW('response', RM.fromReaderTaskK(requestReviewCheck)),

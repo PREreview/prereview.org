@@ -1,4 +1,3 @@
-import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -6,24 +5,28 @@ import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
+import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import {
   type GetReviewRequestEnv,
-  type ReviewRequestPreprintId,
   type SaveReviewRequestEnv,
+  isReviewRequestPreprintId,
   maybeGetReviewRequest,
   saveReviewRequest,
 } from '../../review-request'
 import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../routes'
+import type { IndeterminatePreprintId } from '../../types/preprint-id'
 import type { User } from '../../user'
 import { carryOnPage } from './carry-on-page'
 
 export const requestReviewStart = ({
+  preprint,
   user,
 }: {
+  preprint: IndeterminatePreprintId
   user?: User
 }): RT.ReaderTask<
-  CanRequestReviewsEnv & GetReviewRequestEnv & SaveReviewRequestEnv,
+  CanRequestReviewsEnv & GetPreprintTitleEnv & GetReviewRequestEnv & SaveReviewRequestEnv,
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
@@ -45,9 +48,12 @@ export const requestReviewStart = ({
         .with(undefined, () => pipe(saveReviewRequest(user.orcid, { status: 'incomplete' })))
         .exhaustive(),
     ),
-    RTE.let(
-      'preprint',
-      () => ({ type: 'biorxiv', value: '10.1101/2024.02.07.578830' as Doi<'1101'> }) satisfies ReviewRequestPreprintId,
+    RTE.bindW('preprint', () =>
+      pipe(
+        getPreprintTitle(preprint),
+        RTE.map(preprint => preprint.id),
+        RTE.filterOrElseW(isReviewRequestPreprintId, () => 'not-found' as const),
+      ),
     ),
     RTE.matchW(
       error =>
