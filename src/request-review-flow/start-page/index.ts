@@ -1,3 +1,4 @@
+import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
@@ -8,6 +9,7 @@ import { havingProblemsPage, pageNotFound } from '../../http-error'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import {
   type GetReviewRequestEnv,
+  type ReviewRequestPreprintId,
   type SaveReviewRequestEnv,
   maybeGetReviewRequest,
   saveReviewRequest,
@@ -43,6 +45,10 @@ export const requestReviewStart = ({
         .with(undefined, () => pipe(saveReviewRequest(user.orcid, { status: 'incomplete' })))
         .exhaustive(),
     ),
+    RTE.let(
+      'preprint',
+      () => ({ type: 'biorxiv', value: '10.1101/2024.02.07.578830' as Doi<'1101'> }) satisfies ReviewRequestPreprintId,
+    ),
     RTE.matchW(
       error =>
         match(error)
@@ -55,7 +61,7 @@ export const requestReviewStart = ({
           .with({ reviewRequest: undefined }, () =>
             RedirectResponse({ location: format(requestReviewCheckMatch.formatter, {}) }),
           )
-          .with({ reviewRequest: { status: 'incomplete' } }, () => carryOnPage)
+          .with({ reviewRequest: { status: 'incomplete' } }, state => carryOnPage(state.preprint))
           .with({ reviewRequest: { status: 'completed' } }, () =>
             RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
           )

@@ -1,22 +1,16 @@
-import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import type { Orcid } from 'orcid-id-ts'
 import { html, plainText } from '../../html'
 import { StreamlinePageResponse } from '../../response'
+import type { ReviewRequestPreprintId } from '../../review-request'
 import { preprintReviewsMatch, profileMatch, requestReviewCheckMatch } from '../../routes'
 import type { User } from '../../user'
 
-export function checkPage({ user }: { user: User }) {
+export function checkPage({ preprint, user }: { preprint: ReviewRequestPreprintId; user: User }) {
   return StreamlinePageResponse({
     title: plainText`Check your request`,
     nav: html`
-      <a
-        href="${format(preprintReviewsMatch.formatter, {
-          id: { type: 'biorxiv', value: '10.1101/2024.02.07.578830' as Doi<'1101'> },
-        })}"
-        class="back"
-        >Back to preprint</a
-      >
+      <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back">Back to preprint</a>
     `,
     main: html`
       <single-use-form>
