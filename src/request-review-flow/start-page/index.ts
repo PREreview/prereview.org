@@ -14,6 +14,7 @@ import {
 } from '../../review-request'
 import { requestReviewCheckMatch, requestReviewPublishedMatch, requestReviewStartMatch } from '../../routes'
 import type { User } from '../../user'
+import { carryOnPage } from './carry-on-page'
 
 export const requestReviewStart = ({
   user,
@@ -51,9 +52,10 @@ export const requestReviewStart = ({
           .exhaustive(),
       state =>
         match(state)
-          .with({ reviewRequest: P.union(undefined, { status: 'incomplete' }) }, () =>
+          .with({ reviewRequest: undefined }, () =>
             RedirectResponse({ location: format(requestReviewCheckMatch.formatter, {}) }),
           )
+          .with({ reviewRequest: { status: 'incomplete' } }, () => carryOnPage)
           .with({ reviewRequest: { status: 'completed' } }, () =>
             RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
           )

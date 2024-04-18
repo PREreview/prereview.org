@@ -64,9 +64,13 @@ describe('requestReviewStart', () => {
           })()
 
           expect(actual).toStrictEqual({
-            _tag: 'RedirectResponse',
-            status: Status.SeeOther,
-            location: format(requestReviewCheckMatch.formatter, {}),
+            _tag: 'StreamlinePageResponse',
+            canonical: format(requestReviewStartMatch.formatter, {}),
+            status: Status.OK,
+            title: expect.stringContaining('Request a PREreview'),
+            main: expect.stringContaining('Continue'),
+            skipToLabel: 'main',
+            js: [],
           })
           expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
         },

@@ -20,3 +20,21 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
+  'are returned to the next step if you have already started requesting a PREreview',
+  async ({ page }, testInfo) => {
+    await page.goto('/preprints/doi-10.1101-2024.02.07.578830/request-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.waitForLoadState()
+    await page.goto('/preprints/doi-10.1101-2024.02.07.578830/request-a-prereview')
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request a PREreview')
+    testInfo.fail()
+    await expect(page.getByRole('main')).toContainText('carry on')
+
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
+  },
+)
