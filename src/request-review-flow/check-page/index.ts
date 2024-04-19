@@ -66,9 +66,11 @@ export const requestReviewCheck = ({
         RT.of(
           match(error)
             .with('already-completed', () =>
-              RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
+              RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprint }) }),
             )
-            .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, {}) }))
+            .with('no-session', () =>
+              LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
+            )
             .with('not-found', () => pageNotFound)
             .with('unavailable', () => havingProblemsPage)
             .exhaustive(),
@@ -92,6 +94,6 @@ const handleForm = ({ preprint, user }: { preprint: ReviewRequestPreprintId; use
     RTE.chainFirstW(() => saveReviewRequest(user.orcid, preprint, { status: 'completed' })),
     RTE.matchW(
       () => failureMessage,
-      () => RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
+      () => RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprint }) }),
     ),
   )

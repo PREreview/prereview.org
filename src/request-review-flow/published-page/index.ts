@@ -48,10 +48,10 @@ export const requestReviewPublished = ({
       error =>
         match(error)
           .with('incomplete', () => pageNotFound)
-          .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, {}) }))
+          .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }))
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
-      () => publishedPage,
+      state => publishedPage(state.preprint),
     ),
   )

@@ -1,5 +1,4 @@
 import cookieSignature from 'cookie-signature'
-import type { Doi } from 'doi-ts'
 import * as P from 'fp-ts-routing'
 import * as E from 'fp-ts/Either'
 import { concatAll } from 'fp-ts/Monoid'
@@ -219,7 +218,7 @@ import {
 } from './slack'
 import type { SlackUserId } from './slack-user-id'
 import { trainings } from './trainings'
-import type { IndeterminatePreprintId, PreprintId } from './types/preprint-id'
+import type { PreprintId } from './types/preprint-id'
 import { type GenerateUuidEnv, generateUuid } from './types/uuid'
 import { type GetUserEnv, type User, maybeGetUser } from './user'
 import type { GetUserOnboardingEnv } from './user-onboarding'
@@ -1486,14 +1485,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       requestReviewMatch.parser,
-      P.map(() =>
+      P.map(({ id }) =>
         pipe(
-          RM.of({
-            preprint: {
-              type: 'biorxiv-medrxiv',
-              value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-            } satisfies IndeterminatePreprintId,
-          }),
+          RM.of({ preprint: id }),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(requestReview)),
           RM.ichainW(handleResponse),
@@ -1508,14 +1502,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       requestReviewStartMatch.parser,
-      P.map(() =>
+      P.map(({ id }) =>
         pipe(
-          RM.of({
-            preprint: {
-              type: 'biorxiv-medrxiv',
-              value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-            } satisfies IndeterminatePreprintId,
-          }),
+          RM.of({ preprint: id }),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(requestReviewStart)),
           RM.ichainW(handleResponse),
@@ -1532,14 +1521,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       requestReviewCheckMatch.parser,
-      P.map(() =>
+      P.map(({ id }) =>
         pipe(
-          RM.of({
-            preprint: {
-              type: 'biorxiv-medrxiv',
-              value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-            } satisfies IndeterminatePreprintId,
-          }),
+          RM.of({ preprint: id }),
           RM.apS('user', maybeGetUser),
           RM.apS('method', RM.fromMiddleware(getMethod)),
           RM.bindW('response', RM.fromReaderTaskK(requestReviewCheck)),
@@ -1558,14 +1542,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     ),
     pipe(
       requestReviewPublishedMatch.parser,
-      P.map(() =>
+      P.map(({ id }) =>
         pipe(
-          RM.of({
-            preprint: {
-              type: 'biorxiv-medrxiv',
-              value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-            } satisfies IndeterminatePreprintId,
-          }),
+          RM.of({ preprint: id }),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(requestReviewPublished)),
           RM.ichainW(handleResponse),

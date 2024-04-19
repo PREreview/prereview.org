@@ -21,8 +21,10 @@ export const requestReviewPage = (preprint: PreprintTitle) =>
         peer-review report.
       </p>
 
-      <a href="${format(requestReviewStartMatch.formatter, {})}" role="button" draggable="false">Start now</a>
+      <a href="${format(requestReviewStartMatch.formatter, { id: preprint.id })}" role="button" draggable="false"
+        >Start now</a
+      >
     `,
-    canonical: format(requestReviewMatch.formatter, {}),
+    canonical: format(requestReviewMatch.formatter, { id: preprint.id }),
     allowRobots: false,
   })

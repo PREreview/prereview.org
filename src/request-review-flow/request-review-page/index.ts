@@ -62,8 +62,10 @@ export const requestReview = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('already-started', () => RedirectResponse({ location: format(requestReviewStartMatch.formatter, {}) }))
-          .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, {}) }))
+          .with('already-started', () =>
+            RedirectResponse({ location: format(requestReviewStartMatch.formatter, { id: preprint }) }),
+          )
+          .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }))
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),

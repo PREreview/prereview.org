@@ -24,7 +24,7 @@ describe('requestReviewPublished', () => {
 
       expect(actual).toStrictEqual({
         _tag: 'StreamlinePageResponse',
-        canonical: format(requestReviewPublishedMatch.formatter, {}),
+        canonical: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }),
         status: Status.OK,
         title: expect.stringContaining('Request published'),
         main: expect.stringContaining('Request published'),
@@ -85,7 +85,7 @@ describe('requestReviewPublished', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'LogInResponse',
-      location: format(requestReviewMatch.formatter, {}),
+      location: format(requestReviewMatch.formatter, { id: preprint }),
     })
   })
 })

@@ -14,7 +14,7 @@ export function checkPage({ preprint, user }: { preprint: ReviewRequestPreprintI
     `,
     main: html`
       <single-use-form>
-        <form method="post" action="${format(requestReviewCheckMatch.formatter, {})}" novalidate>
+        <form method="post" action="${format(requestReviewCheckMatch.formatter, { id: preprint })}" novalidate>
           <h1>Check your request</h1>
 
           <div class="summary-card">
@@ -38,7 +38,7 @@ export function checkPage({ preprint, user }: { preprint: ReviewRequestPreprintI
         </form>
       </single-use-form>
     `,
-    canonical: format(requestReviewCheckMatch.formatter, {}),
+    canonical: format(requestReviewCheckMatch.formatter, { id: preprint }),
     skipToLabel: 'form',
     js: ['single-use-form.js'],
   })

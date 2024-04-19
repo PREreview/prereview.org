@@ -29,7 +29,7 @@ describe('requestReviewStart', () => {
           expect(actual).toStrictEqual({
             _tag: 'RedirectResponse',
             status: Status.SeeOther,
-            location: format(requestReviewCheckMatch.formatter, {}),
+            location: format(requestReviewCheckMatch.formatter, { id: preprintTitle.id }),
           })
           expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
           expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'incomplete' })
@@ -54,7 +54,7 @@ describe('requestReviewStart', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: Status.SeeOther,
-          location: format(requestReviewPublishedMatch.formatter, {}),
+          location: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }),
         })
         expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
       })
@@ -76,7 +76,7 @@ describe('requestReviewStart', () => {
 
         expect(actual).toStrictEqual({
           _tag: 'StreamlinePageResponse',
-          canonical: format(requestReviewStartMatch.formatter, {}),
+          canonical: format(requestReviewStartMatch.formatter, { id: preprintTitle.id }),
           status: Status.OK,
           title: expect.stringContaining('Request a PREreview'),
           nav: expect.stringContaining('Back'),
@@ -120,7 +120,7 @@ describe('requestReviewStart', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'LogInResponse',
-      location: format(requestReviewStartMatch.formatter, {}),
+      location: format(requestReviewStartMatch.formatter, { id: preprint }),
     })
   })
 })

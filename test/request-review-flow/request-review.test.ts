@@ -29,7 +29,7 @@ describe('requestReview', () => {
 
             expect(actual).toStrictEqual({
               _tag: 'StreamlinePageResponse',
-              canonical: format(requestReviewMatch.formatter, {}),
+              canonical: format(requestReviewMatch.formatter, { id: preprintTitle.id }),
               status: Status.OK,
               title: expect.stringContaining('Request a PREreview'),
               nav: expect.stringContaining('Back'),
@@ -129,7 +129,7 @@ describe('requestReview', () => {
         expect(actual).toStrictEqual({
           _tag: 'RedirectResponse',
           status: Status.SeeOther,
-          location: format(requestReviewStartMatch.formatter, {}),
+          location: format(requestReviewStartMatch.formatter, { id: preprint }),
         })
       })
 
@@ -184,7 +184,7 @@ describe('requestReview', () => {
 
     expect(actual).toStrictEqual({
       _tag: 'LogInResponse',
-      location: format(requestReviewMatch.formatter, {}),
+      location: format(requestReviewMatch.formatter, { id: preprint }),
     })
   })
 })

@@ -246,7 +246,7 @@ function createPage({
         ${preprint.id.type === 'biorxiv' &&
         eqDoi.equals(preprint.id.value, '10.1101/2024.02.07.578830' as Doi<'1101'>) &&
         canRequestReviews
-          ? html`<a href="${format(requestReviewMatch.formatter, {})}">Request a PREreview</a>`
+          ? html`<a href="${format(requestReviewMatch.formatter, { id: preprint.id })}">Request a PREreview</a>`
           : ''}
       </div>
 

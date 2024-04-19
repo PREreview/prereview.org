@@ -15,7 +15,9 @@ export const carryOnPage = (preprint: ReviewRequestPreprintId) =>
 
       <p>As you’ve already started, we’ll take you to the next step so you can carry&nbsp;on.</p>
 
-      <a href="${format(requestReviewCheckMatch.formatter, {})}" role="button" draggable="false">Continue</a>
+      <a href="${format(requestReviewCheckMatch.formatter, { id: preprint })}" role="button" draggable="false"
+        >Continue</a
+      >
     `,
-    canonical: format(requestReviewStartMatch.formatter, {}),
+    canonical: format(requestReviewStartMatch.formatter, { id: preprint }),
   })

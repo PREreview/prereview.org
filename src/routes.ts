@@ -384,7 +384,7 @@ export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit
 
 const requestReviewBaseMatch = pipe(
   P.lit('preprints'),
-  P.then(P.lit('doi-10.1101-2024.02.07.578830')),
+  P.then(type('id', PreprintIdC)),
   P.then(P.lit('request-a-prereview')),
 )
 

@@ -58,18 +58,20 @@ export const requestReviewStart = ({
     RTE.matchW(
       error =>
         match(error)
-          .with('no-session', () => LogInResponse({ location: format(requestReviewStartMatch.formatter, {}) }))
+          .with('no-session', () =>
+            LogInResponse({ location: format(requestReviewStartMatch.formatter, { id: preprint }) }),
+          )
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
       state =>
         match(state)
-          .with({ reviewRequest: undefined }, () =>
-            RedirectResponse({ location: format(requestReviewCheckMatch.formatter, {}) }),
+          .with({ reviewRequest: undefined }, state =>
+            RedirectResponse({ location: format(requestReviewCheckMatch.formatter, { id: state.preprint }) }),
           )
           .with({ reviewRequest: { status: 'incomplete' } }, state => carryOnPage(state.preprint))
           .with({ reviewRequest: { status: 'completed' } }, () =>
-            RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
+            RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: state.preprint }) }),
           )
           .exhaustive(),
     ),
