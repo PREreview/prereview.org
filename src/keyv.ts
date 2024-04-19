@@ -5,6 +5,7 @@ import { flow, identity, pipe } from 'fp-ts/function'
 import type { Decoder } from 'io-ts/Decoder'
 import * as D from 'io-ts/Decoder'
 import type { Encoder } from 'io-ts/Encoder'
+import * as EN from 'io-ts/Encoder'
 import type Keyv from 'keyv'
 import * as L from 'logger-fp-ts'
 import type { Orcid } from 'orcid-id-ts'
@@ -19,6 +20,7 @@ import { OrcidTokenC } from './orcid-token'
 import { type ResearchInterests, ResearchInterestsC } from './research-interests'
 import { ReviewRequestC } from './review-request'
 import { SlackUserIdC } from './slack-user-id'
+import type { PreprintId } from './types/preprint-id'
 import { NonEmptyStringC } from './types/string'
 import { UuidC } from './types/uuid'
 import { type UserOnboarding, UserOnboardingC } from './user-onboarding'
@@ -76,6 +78,12 @@ interface KeyvEnv {
 }
 
 const OrcidE: Encoder<string, Orcid> = { encode: identity }
+
+const PreprintIdE: Encoder<string, PreprintId> = {
+  encode: preprintId => `${preprintId.type}-${preprintId.value}`,
+}
+
+const UnderscoreTupleE = flow(EN.tuple, EN.compose({ encode: values => values.join('_') }))
 
 const deleteKey =
   <K>(keyEncoder: Encoder<string, K>) =>
@@ -328,11 +336,11 @@ export const deleteAvatar = flow(
 )
 
 export const getReviewRequest = flow(
-  getKey(OrcidE, ReviewRequestC),
+  getKey(UnderscoreTupleE(OrcidE, PreprintIdE), ReviewRequestC),
   RTE.local((env: ReviewRequestStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.reviewRequestStore })),
 )
 
 export const saveReviewRequest = flow(
-  setKey(OrcidE, ReviewRequestC),
+  setKey(UnderscoreTupleE(OrcidE, PreprintIdE), ReviewRequestC),
   RTE.local((env: ReviewRequestStoreEnv & L.LoggerEnv) => ({ ...env, keyv: env.reviewRequestStore })),
 )

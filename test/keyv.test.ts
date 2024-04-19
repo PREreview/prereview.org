@@ -1934,13 +1934,13 @@ describe('deleteAvatar', () => {
 })
 
 describe('getReviewRequest', () => {
-  test.prop([fc.orcid(), fc.reviewRequest()])(
+  test.prop([fc.orcid(), fc.preprintId(), fc.reviewRequest()])(
     'when the key contains a review request',
-    async (orcid, reviewRequest) => {
+    async (orcid, preprint, reviewRequest) => {
       const store = new Keyv()
-      await store.set(orcid, reviewRequest)
+      await store.set(`${orcid}_${preprint.type}-${preprint.value}`, reviewRequest)
 
-      const actual = await _.getReviewRequest(orcid)({
+      const actual = await _.getReviewRequest([orcid, preprint])({
         reviewRequestStore: store,
         clock: SystemClock,
         logger: () => IO.of(undefined),
@@ -1950,13 +1950,13 @@ describe('getReviewRequest', () => {
     },
   )
 
-  test.prop([fc.orcid(), fc.anything()])(
+  test.prop([fc.orcid(), fc.preprintId(), fc.anything()])(
     'when the key contains something other than a review request',
-    async (orcid, value) => {
+    async (orcid, preprint, value) => {
       const store = new Keyv()
-      await store.set(orcid, value)
+      await store.set(`${orcid}_${preprint.type}-${preprint.value}`, value)
 
-      const actual = await _.getReviewRequest(orcid)({
+      const actual = await _.getReviewRequest([orcid, preprint])({
         reviewRequestStore: store,
         clock: SystemClock,
         logger: () => IO.of(undefined),
@@ -1966,10 +1966,10 @@ describe('getReviewRequest', () => {
     },
   )
 
-  test.prop([fc.orcid()])('when the key is not found', async orcid => {
+  test.prop([fc.orcid(), fc.preprintId()])('when the key is not found', async (orcid, preprint) => {
     const store = new Keyv()
 
-    const actual = await _.getReviewRequest(orcid)({
+    const actual = await _.getReviewRequest([orcid, preprint])({
       reviewRequestStore: store,
       clock: SystemClock,
       logger: () => IO.of(undefined),
@@ -1978,29 +1978,32 @@ describe('getReviewRequest', () => {
     expect(actual).toStrictEqual(E.left('not-found'))
   })
 
-  test.prop([fc.orcid(), fc.anything()])('when the key cannot be accessed', async (orcid, error) => {
-    const store = new Keyv()
-    store.get = (): Promise<never> => Promise.reject(error)
+  test.prop([fc.orcid(), fc.preprintId(), fc.anything()])(
+    'when the key cannot be accessed',
+    async (orcid, preprint, error) => {
+      const store = new Keyv()
+      store.get = (): Promise<never> => Promise.reject(error)
 
-    const actual = await _.getReviewRequest(orcid)({
-      reviewRequestStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = await _.getReviewRequest([orcid, preprint])({
+        reviewRequestStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
-    expect(actual).toStrictEqual(E.left('unavailable'))
-  })
+      expect(actual).toStrictEqual(E.left('unavailable'))
+    },
+  )
 })
 
 describe('saveReviewRequest', () => {
-  test.prop([fc.orcid(), fc.reviewRequest()])(
+  test.prop([fc.orcid(), fc.preprintId(), fc.reviewRequest()])(
     'when the key contains a review request',
-    async (orcid, reviewRequest) => {
+    async (orcid, preprint, reviewRequest) => {
       const store = new Keyv()
-      await store.set(orcid, reviewRequest)
+      await store.set(`${orcid}_${preprint.type}-${preprint.value}`, reviewRequest)
 
       const actual = await _.saveReviewRequest(
-        orcid,
+        [orcid, preprint],
         reviewRequest,
       )({
         reviewRequestStore: store,
@@ -2009,18 +2012,18 @@ describe('saveReviewRequest', () => {
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(reviewRequest)
+      expect(await store.get(`${orcid}_${preprint.type}-${preprint.value}`)).toStrictEqual(reviewRequest)
     },
   )
 
-  test.prop([fc.orcid(), fc.anything(), fc.reviewRequest()])(
+  test.prop([fc.orcid(), fc.preprintId(), fc.anything(), fc.reviewRequest()])(
     'when the key already contains something other than a review request',
-    async (orcid, value, reviewRequest) => {
+    async (orcid, preprint, value, reviewRequest) => {
       const store = new Keyv()
-      await store.set(orcid, value)
+      await store.set(`${orcid}_${preprint.type}-${preprint.value}`, value)
 
       const actual = await _.saveReviewRequest(
-        orcid,
+        [orcid, preprint],
         reviewRequest,
       )({
         reviewRequestStore: store,
@@ -2029,34 +2032,37 @@ describe('saveReviewRequest', () => {
       })()
 
       expect(actual).toStrictEqual(E.right(undefined))
-      expect(await store.get(orcid)).toStrictEqual(reviewRequest)
+      expect(await store.get(`${orcid}_${preprint.type}-${preprint.value}`)).toStrictEqual(reviewRequest)
     },
   )
 
-  test.prop([fc.orcid(), fc.reviewRequest()])('when the key is not set', async (orcid, reviewRequest) => {
-    const store = new Keyv()
+  test.prop([fc.orcid(), fc.preprintId(), fc.reviewRequest()])(
+    'when the key is not set',
+    async (orcid, preprint, reviewRequest) => {
+      const store = new Keyv()
 
-    const actual = await _.saveReviewRequest(
-      orcid,
-      reviewRequest,
-    )({
-      reviewRequestStore: store,
-      clock: SystemClock,
-      logger: () => IO.of(undefined),
-    })()
+      const actual = await _.saveReviewRequest(
+        [orcid, preprint],
+        reviewRequest,
+      )({
+        reviewRequestStore: store,
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
+      })()
 
-    expect(actual).toStrictEqual(E.right(undefined))
-    expect(await store.get(orcid)).toStrictEqual(reviewRequest)
-  })
+      expect(actual).toStrictEqual(E.right(undefined))
+      expect(await store.get(`${orcid}_${preprint.type}-${preprint.value}`)).toStrictEqual(reviewRequest)
+    },
+  )
 
-  test.prop([fc.orcid(), fc.reviewRequest(), fc.anything()])(
+  test.prop([fc.orcid(), fc.preprintId(), fc.reviewRequest(), fc.anything()])(
     'when the key cannot be accessed',
-    async (orcid, reviewRequest, error) => {
+    async (orcid, preprint, reviewRequest, error) => {
       const store = new Keyv()
       store.set = () => Promise.reject(error)
 
       const actual = await _.saveReviewRequest(
-        orcid,
+        [orcid, preprint],
         reviewRequest,
       )({
         reviewRequestStore: store,

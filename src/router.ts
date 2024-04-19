@@ -1502,7 +1502,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getReviewRequest: withEnv(Keyv.getReviewRequest, env),
+          getReviewRequest: orcid =>
+            withEnv(
+              Keyv.getReviewRequest,
+              env,
+            )([
+              orcid,
+              {
+                type: 'biorxiv',
+                value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
+              },
+            ]),
         })),
       ),
     ),
@@ -1524,8 +1534,28 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getReviewRequest: withEnv(Keyv.getReviewRequest, env),
-          saveReviewRequest: withEnv(Keyv.saveReviewRequest, env),
+          getReviewRequest: orcid =>
+            withEnv(
+              Keyv.getReviewRequest,
+              env,
+            )([
+              orcid,
+              {
+                type: 'biorxiv',
+                value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
+              },
+            ]),
+          saveReviewRequest: (orcid, request) =>
+            withEnv(Keyv.saveReviewRequest, env)(
+              [
+                orcid,
+                {
+                  type: 'biorxiv',
+                  value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
+                },
+              ],
+              request,
+            ),
         })),
       ),
     ),
@@ -1548,9 +1578,29 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getReviewRequest: withEnv(Keyv.getReviewRequest, env),
+          getReviewRequest: orcid =>
+            withEnv(
+              Keyv.getReviewRequest,
+              env,
+            )([
+              orcid,
+              {
+                type: 'biorxiv',
+                value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
+              },
+            ]),
           publishRequest: withEnv(publishToPrereviewCoarNotifyInbox, env),
-          saveReviewRequest: withEnv(Keyv.saveReviewRequest, env),
+          saveReviewRequest: (orcid, request) =>
+            withEnv(Keyv.saveReviewRequest, env)(
+              [
+                orcid,
+                {
+                  type: 'biorxiv',
+                  value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
+                },
+              ],
+              request,
+            ),
         })),
       ),
     ),
@@ -1567,7 +1617,17 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getReviewRequest: withEnv(Keyv.getReviewRequest, env),
+          getReviewRequest: orcid =>
+            withEnv(
+              Keyv.getReviewRequest,
+              env,
+            )([
+              orcid,
+              {
+                type: 'biorxiv',
+                value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
+              },
+            ]),
         })),
       ),
     ),
