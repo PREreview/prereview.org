@@ -198,8 +198,7 @@ export const app = (config: ConfigEnv) => {
         },
       }),
     )
-    .use(
-      '/api/v2',
+    .use('/api/v2', (req, res, next) => {
       createProxyMiddleware({
         target: `${config.legacyPrereviewApi.url.href}/api/v2`,
         changeOrigin: true,
@@ -229,8 +228,8 @@ export const app = (config: ConfigEnv) => {
             })
           },
         },
-      }),
-    )
+      })(req, res, next)?.catch(() => next())
+    })
     .use(slashes(false))
     .use(express.urlencoded({ extended: true }))
     .use((req, res, next) => {
