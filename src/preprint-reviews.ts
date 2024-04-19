@@ -1,4 +1,4 @@
-import { type Doi, Eq as eqDoi, isDoi, toUrl } from 'doi-ts'
+import { isDoi, toUrl } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as I from 'fp-ts/Identity'
 import type * as RT from 'fp-ts/ReaderTask'
@@ -21,6 +21,7 @@ import { type Html, fixHeadingLevels, html, plainText, rawHtml } from './html'
 import { pageNotFound } from './http-error'
 import { type GetPreprintEnv, type Preprint, getPreprint } from './preprint'
 import { PageResponse, TwoUpPageResponse } from './response'
+import { isReviewRequestPreprintId } from './review-request'
 import { preprintReviewsMatch, profileMatch, requestReviewMatch, reviewMatch, writeReviewMatch } from './routes'
 import { renderDate } from './time'
 import type { ClubId } from './types/club-id'
@@ -243,9 +244,7 @@ function createPage({
       <div class="button-group" role="group">
         <a href="${format(writeReviewMatch.formatter, { id: preprint.id })}" class="button">Write a PREreview</a>
 
-        ${preprint.id.type === 'biorxiv' &&
-        eqDoi.equals(preprint.id.value, '10.1101/2024.02.07.578830' as Doi<'1101'>) &&
-        canRequestReviews
+        ${canRequestReviews && isReviewRequestPreprintId(preprint.id)
           ? html`<a href="${format(requestReviewMatch.formatter, { id: preprint.id })}">Request a PREreview</a>`
           : ''}
       </div>
