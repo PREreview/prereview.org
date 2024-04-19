@@ -198,38 +198,38 @@ export const app = (config: ConfigEnv) => {
         },
       }),
     )
-    .use(
-      '/api/v2',
+    .use('/api/v2', (req, res, next) => {
       createProxyMiddleware({
-        target: config.legacyPrereviewApi.url.href,
+        target: `${config.legacyPrereviewApi.url.href}/api/v2`,
         changeOrigin: true,
-        logLevel: 'silent',
-        onProxyReq: (proxyReq, req) => {
-          const payload = {
-            url: `${proxyReq.protocol}//${proxyReq.host}${proxyReq.path}`,
-            method: proxyReq.method,
-            requestId: req.header('Fly-Request-Id') ?? null,
-          }
+        on: {
+          proxyReq: (proxyReq, req) => {
+            const payload = {
+              url: `${proxyReq.protocol}//${proxyReq.host}${proxyReq.path}`,
+              method: proxyReq.method,
+              requestId: req.headers['fly-request-id'] ?? null,
+            }
 
-          L.debugP('Sending proxy HTTP request')(payload)(config)()
+            L.debugP('Sending proxy HTTP request')(payload)(config)()
 
-          proxyReq.once('response', response => {
-            L.debugP('Received proxy HTTP response')({
-              ...payload,
-              status: response.statusCode as Json,
-              headers: response.headers as Json,
-            })(config)()
-          })
+            proxyReq.once('response', response => {
+              L.debugP('Received proxy HTTP response')({
+                ...payload,
+                status: response.statusCode as Json,
+                headers: response.headers as Json,
+              })(config)()
+            })
 
-          proxyReq.once('error', error => {
-            L.warnP('Did not receive a proxy HTTP response')({
-              ...payload,
-              error: error.message,
-            })(config)()
-          })
+            proxyReq.once('error', error => {
+              L.warnP('Did not receive a proxy HTTP response')({
+                ...payload,
+                error: error.message,
+              })(config)()
+            })
+          },
         },
-      }),
-    )
+      })(req, res, next)?.catch(() => next())
+    })
     .use(slashes(false))
     .use(express.urlencoded({ extended: true }))
     .use((req, res, next) => {
