@@ -41,10 +41,17 @@ export const requestReviewCheck = ({
   pipe(
     RTE.Do,
     RTE.apS('user', RTE.fromNullable('no-session' as const)(user)),
+    RTE.bindW('preprint', () =>
+      pipe(
+        getPreprintTitle(preprint),
+        RTE.map(preprint => preprint.id),
+        RTE.filterOrElseW(isReviewRequestPreprintId, () => 'not-found' as const),
+      ),
+    ),
     RTE.bindW(
       'reviewRequest',
       flow(
-        ({ user }) => getReviewRequest(user.orcid),
+        ({ user, preprint }) => getReviewRequest(user.orcid, preprint),
         RTE.chainW(request =>
           match(request)
             .with({ status: 'completed' }, () => RTE.left('already-completed' as const))
@@ -54,13 +61,6 @@ export const requestReviewCheck = ({
       ),
     ),
     RTE.let('method', () => method),
-    RTE.bindW('preprint', () =>
-      pipe(
-        getPreprintTitle(preprint),
-        RTE.map(preprint => preprint.id),
-        RTE.filterOrElseW(isReviewRequestPreprintId, () => 'not-found' as const),
-      ),
-    ),
     RTE.matchEW(
       error =>
         RT.of(
@@ -89,7 +89,7 @@ const publishRequest = (
 const handleForm = ({ preprint, user }: { preprint: ReviewRequestPreprintId; user: User }) =>
   pipe(
     publishRequest(preprint),
-    RTE.chainFirstW(() => saveReviewRequest(user.orcid, { status: 'completed' })),
+    RTE.chainFirstW(() => saveReviewRequest(user.orcid, preprint, { status: 'completed' })),
     RTE.matchW(
       () => failureMessage,
       () => RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),

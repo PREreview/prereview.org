@@ -39,7 +39,7 @@ describe('requestReviewCheck', () => {
             RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, {}) }),
           )
           expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id)
-          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, { status: 'completed' })
+          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'completed' })
         })
 
         test.prop([
@@ -71,7 +71,7 @@ describe('requestReviewCheck', () => {
             js: [],
           })
           expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id)
-          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, { status: 'completed' })
+          expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'completed' })
         })
 
         test.prop([
@@ -139,83 +139,90 @@ describe('requestReviewCheck', () => {
       })
     })
 
-    test.prop([fc.indeterminatePreprintId(), fc.string(), fc.user(), fc.completedReviewRequest()])(
-      'when the request is already complete',
-      async (preprint, method, user, reviewRequest) => {
-        const actual = await _.requestReviewCheck({
-          method,
-          preprint,
-          user,
-        })({
-          getPreprintTitle: shouldNotBeCalled,
-          getReviewRequest: () => TE.right(reviewRequest),
-          publishRequest: shouldNotBeCalled,
-          saveReviewRequest: shouldNotBeCalled,
-        })()
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.string(),
+      fc.user(),
+      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.completedReviewRequest(),
+    ])('when the request is already complete', async (preprint, method, user, preprintTitle, reviewRequest) => {
+      const actual = await _.requestReviewCheck({
+        method,
+        preprint,
+        user,
+      })({
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getReviewRequest: () => TE.right(reviewRequest),
+        publishRequest: shouldNotBeCalled,
+        saveReviewRequest: shouldNotBeCalled,
+      })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'RedirectResponse',
-          status: Status.SeeOther,
-          location: format(requestReviewPublishedMatch.formatter, {}),
-        })
-      },
-    )
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(requestReviewPublishedMatch.formatter, {}),
+      })
+    })
 
-    test.prop([fc.indeterminatePreprintId(), fc.string(), fc.user()])(
-      "when a request hasn't been started",
-      async (preprint, method, user) => {
-        const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.string(),
+      fc.user(),
+      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+    ])("when a request hasn't been started", async (preprint, method, user, preprintTitle) => {
+      const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('not-found'))
 
-        const actual = await _.requestReviewCheck({
-          method,
-          preprint,
-          user,
-        })({
-          getPreprintTitle: shouldNotBeCalled,
-          getReviewRequest,
-          publishRequest: shouldNotBeCalled,
-          saveReviewRequest: shouldNotBeCalled,
-        })()
+      const actual = await _.requestReviewCheck({
+        method,
+        preprint,
+        user,
+      })({
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getReviewRequest,
+        publishRequest: shouldNotBeCalled,
+        saveReviewRequest: shouldNotBeCalled,
+      })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.NotFound,
-          title: expect.stringContaining('not found'),
-          main: expect.stringContaining('not found'),
-          skipToLabel: 'main',
-          js: [],
-        })
-        expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
-      },
-    )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.NotFound,
+        title: expect.stringContaining('not found'),
+        main: expect.stringContaining('not found'),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+    })
 
-    test.prop([fc.indeterminatePreprintId(), fc.string(), fc.user()])(
-      "when the request can't be loaded",
-      async (preprint, method, user) => {
-        const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('unavailable'))
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.string(),
+      fc.user(),
+      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+    ])("when the request can't be loaded", async (preprint, method, user, preprintTitle) => {
+      const getReviewRequest = jest.fn<GetReviewRequestEnv['getReviewRequest']>(_ => TE.left('unavailable'))
 
-        const actual = await _.requestReviewCheck({
-          method,
-          preprint,
-          user,
-        })({
-          getPreprintTitle: shouldNotBeCalled,
-          getReviewRequest,
-          publishRequest: shouldNotBeCalled,
-          saveReviewRequest: shouldNotBeCalled,
-        })()
+      const actual = await _.requestReviewCheck({
+        method,
+        preprint,
+        user,
+      })({
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getReviewRequest,
+        publishRequest: shouldNotBeCalled,
+        saveReviewRequest: shouldNotBeCalled,
+      })()
 
-        expect(actual).toStrictEqual({
-          _tag: 'PageResponse',
-          status: Status.ServiceUnavailable,
-          title: expect.stringContaining('problems'),
-          main: expect.stringContaining('problems'),
-          skipToLabel: 'main',
-          js: [],
-        })
-        expect(getReviewRequest).toHaveBeenCalledWith(user.orcid)
-      },
-    )
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        status: Status.ServiceUnavailable,
+        title: expect.stringContaining('problems'),
+        main: expect.stringContaining('problems'),
+        skipToLabel: 'main',
+        js: [],
+      })
+      expect(getReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id)
+    })
   })
 
   test.prop([fc.indeterminatePreprintId(), fc.string()])('when the user is not logged in', async (preprint, method) => {

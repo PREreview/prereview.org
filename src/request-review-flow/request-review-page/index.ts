@@ -24,19 +24,33 @@ export const requestReview = ({
   LogInResponse | PageResponse | RedirectResponse | StreamlinePageResponse
 > =>
   pipe(
-    RTE.fromNullable('no-session' as const)(user),
-    RTE.chainFirstW(
-      flow(
-        RTE.fromReaderK(canRequestReviews),
-        RTE.filterOrElse(
-          canRequestReviews => canRequestReviews,
-          () => 'not-found' as const,
+    RTE.Do,
+    RTE.apS(
+      'user',
+      pipe(
+        RTE.fromNullable('no-session' as const)(user),
+        RTE.chainFirstW(
+          flow(
+            RTE.fromReaderK(canRequestReviews),
+            RTE.filterOrElse(
+              canRequestReviews => canRequestReviews,
+              () => 'not-found' as const,
+            ),
+          ),
         ),
+      ),
+    ),
+    RTE.bindW('preprint', () => getPreprintTitle(preprint)),
+    RTE.bindW(
+      'preprintId',
+      flow(
+        ({ preprint }) => preprint.id,
+        RTE.fromPredicate(isReviewRequestPreprintId, () => 'not-found' as const),
       ),
     ),
     RTE.chainFirstW(
       flow(
-        user => maybeGetReviewRequest(user.orcid),
+        ({ preprintId, user }) => maybeGetReviewRequest(user.orcid, preprintId),
         RTE.chainW(reviewRequest =>
           match(reviewRequest)
             .with({ status: P.string }, () => RTE.left('already-started' as const))
@@ -44,11 +58,6 @@ export const requestReview = ({
             .exhaustive(),
         ),
       ),
-    ),
-    RTE.chainW(() => getPreprintTitle(preprint)),
-    RTE.filterOrElseW(
-      preprint => isReviewRequestPreprintId(preprint.id),
-      () => 'not-found' as const,
     ),
     RTE.matchW(
       error =>
@@ -58,6 +67,6 @@ export const requestReview = ({
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
-      requestReviewPage,
+      state => requestReviewPage(state.preprint),
     ),
   )

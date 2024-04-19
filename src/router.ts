@@ -1502,17 +1502,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getReviewRequest: orcid =>
-            withEnv(
-              Keyv.getReviewRequest,
-              env,
-            )([
-              orcid,
-              {
-                type: 'biorxiv',
-                value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-              },
-            ]),
+          getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
         })),
       ),
     ),
@@ -1534,28 +1524,9 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getReviewRequest: orcid =>
-            withEnv(
-              Keyv.getReviewRequest,
-              env,
-            )([
-              orcid,
-              {
-                type: 'biorxiv',
-                value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-              },
-            ]),
-          saveReviewRequest: (orcid, request) =>
-            withEnv(Keyv.saveReviewRequest, env)(
-              [
-                orcid,
-                {
-                  type: 'biorxiv',
-                  value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-                },
-              ],
-              request,
-            ),
+          getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
+          saveReviewRequest: (orcid, preprint, request) =>
+            withEnv(Keyv.saveReviewRequest, env)([orcid, preprint], request),
         })),
       ),
     ),
@@ -1578,37 +1549,23 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getReviewRequest: orcid =>
-            withEnv(
-              Keyv.getReviewRequest,
-              env,
-            )([
-              orcid,
-              {
-                type: 'biorxiv',
-                value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-              },
-            ]),
+          getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
           publishRequest: withEnv(publishToPrereviewCoarNotifyInbox, env),
-          saveReviewRequest: (orcid, request) =>
-            withEnv(Keyv.saveReviewRequest, env)(
-              [
-                orcid,
-                {
-                  type: 'biorxiv',
-                  value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-                },
-              ],
-              request,
-            ),
+          saveReviewRequest: (orcid, preprint, request) =>
+            withEnv(Keyv.saveReviewRequest, env)([orcid, preprint], request),
         })),
       ),
     ),
     pipe(
       requestReviewPublishedMatch.parser,
-      P.map(
-        flow(
-          RM.of,
+      P.map(() =>
+        pipe(
+          RM.of({
+            preprint: {
+              type: 'biorxiv-medrxiv',
+              value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
+            } satisfies IndeterminatePreprintId,
+          }),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(requestReviewPublished)),
           RM.ichainW(handleResponse),
@@ -1617,17 +1574,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
       P.map(
         R.local((env: RouterEnv) => ({
           ...env,
-          getReviewRequest: orcid =>
-            withEnv(
-              Keyv.getReviewRequest,
-              env,
-            )([
-              orcid,
-              {
-                type: 'biorxiv',
-                value: '10.1101/2024.02.07.578830' as Doi<'1101'>,
-              },
-            ]),
+          getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
         })),
       ),
     ),

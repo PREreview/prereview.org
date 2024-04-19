@@ -41,19 +41,19 @@ export const requestReviewStart = ({
         ),
       ),
     ),
-    RTE.bindW('reviewRequest', ({ user }) => pipe(maybeGetReviewRequest(user.orcid))),
-    RTE.chainFirstW(({ reviewRequest, user }) =>
-      match(reviewRequest)
-        .with({ status: P.union('incomplete', 'completed') }, () => RTE.of(undefined))
-        .with(undefined, () => pipe(saveReviewRequest(user.orcid, { status: 'incomplete' })))
-        .exhaustive(),
-    ),
     RTE.bindW('preprint', () =>
       pipe(
         getPreprintTitle(preprint),
         RTE.map(preprint => preprint.id),
         RTE.filterOrElseW(isReviewRequestPreprintId, () => 'not-found' as const),
       ),
+    ),
+    RTE.bindW('reviewRequest', ({ preprint, user }) => pipe(maybeGetReviewRequest(user.orcid, preprint))),
+    RTE.chainFirstW(({ preprint, reviewRequest, user }) =>
+      match(reviewRequest)
+        .with({ status: P.union('incomplete', 'completed') }, () => RTE.of(undefined))
+        .with(undefined, () => pipe(saveReviewRequest(user.orcid, preprint, { status: 'incomplete' })))
+        .exhaustive(),
     ),
     RTE.matchW(
       error =>
