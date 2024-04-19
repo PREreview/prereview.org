@@ -27,7 +27,7 @@
     "helmet": "^7.1.0",
     "html-entities": "^2.5.2",
     "http-errors": "^2.0.0",
-    "http-proxy-middleware": "^2.0.6",
+    "http-proxy-middleware": "^3.0.0",
     "hyper-ts": "^0.7.9",
     "hyper-ts-oauth": "^0.1.1",
     "hyper-ts-routing": "^0.1.1",
