@@ -1528,12 +1528,6 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           saveReviewRequest: withEnv(Keyv.saveReviewRequest, env),
         })),
       ),
-      P.map(
-        R.local((env: RouterEnv) => ({
-          ...env,
-          getReviewRequest: withEnv(Keyv.getReviewRequest, env),
-        })),
-      ),
     ),
     pipe(
       requestReviewCheckMatch.parser,
