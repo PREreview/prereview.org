@@ -68,6 +68,19 @@ describe('handleDecision', () => {
     })
   })
 
+  test.prop([fc.preprintId()])('with a ShowUnsupportedPreprint decision', preprint => {
+    const actual = _.handleDecision({ _tag: 'ShowUnsupportedPreprint', preprint })
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.BadRequest,
+      title: expect.stringContaining('support requests'),
+      main: expect.stringContaining('support requests'),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
+
   test('with a ShowUnsupportedDoi decision', () => {
     const actual = _.handleDecision({ _tag: 'ShowUnsupportedDoi' })
 

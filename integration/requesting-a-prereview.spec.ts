@@ -177,3 +177,84 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t know this preprint')
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
+  'when the preprint is not supported',
+  async ({ fetch, page }) => {
+    await page.goto('/request-a-prereview')
+    await page.getByLabel('Which preprint would you like reviewed?').fill('10.35542/osf.io/hsnke')
+
+    fetch.get('https://api.crossref.org/works/10.35542%2Fosf.io%2Fhsnke', {
+      body: {
+        status: 'ok',
+        'message-type': 'work',
+        'message-version': '1.0.0',
+        message: {
+          indexed: { 'date-parts': [[2024, 1, 4]], 'date-time': '2024-01-04T00:22:13Z', timestamp: 1704327733507 },
+          posted: { 'date-parts': [[2024, 1, 2]] },
+          'group-title': 'EdArXiv',
+          'reference-count': 0,
+          publisher: 'Center for Open Science',
+          license: [
+            {
+              start: {
+                'date-parts': [[2024, 1, 2]],
+                'date-time': '2024-01-02T00:00:00Z',
+                timestamp: 1704153600000,
+              },
+              'content-version': 'unspecified',
+              'delay-in-days': 0,
+              URL: 'https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode',
+            },
+          ],
+          'content-domain': { domain: [], 'crossmark-restriction': false },
+          'short-container-title': [],
+          abstract:
+            '<p>Nearly a third of Australian university students are international, and major contributors to Australia\u2019s economy. We explore the contribution to global higher education equity through population rates of international student enrolment in Australian universities. In 2022, per 100,000 population, median rates in regions studied were: Indian subcontinent 42, Pacific 28.9,  China 10.5, South-East Asia 5.8,  Sub-Saharan Africa 0.5: national rates varied from 0.03 to 403 per 100,000 population.  We find no regional or national patterns with GDP, proportion of GDP spent on education or access to national higher education, apart from some high GDP countries with high rates of student enrolment in Australian universities. We call for Australia to develop a strategy for international higher education based on global need rather than solely Australia\u2019s economic benefit, and for a global alliance to support access to higher education for all individuals and populations that have capacity to acquire and use it.</p>',
+          DOI: '10.35542/osf.io/hsnke',
+          type: 'posted-content',
+          created: { 'date-parts': [[2024, 1, 3]], 'date-time': '2024-01-03T05:00:42Z', timestamp: 1704258042000 },
+          source: 'Crossref',
+          'is-referenced-by-count': 0,
+          title: ['A population perspective on international students in Australian universities'],
+          prefix: '10.35542',
+          author: [
+            {
+              ORCID: 'http://orcid.org/0000-0003-3161-5967',
+              'authenticated-orcid': true,
+              given: 'Richard F',
+              family: 'Heller',
+              sequence: 'first',
+              affiliation: [],
+            },
+            { given: 'Stephen R', family: 'Leeder', sequence: 'additional', affiliation: [] },
+          ],
+          member: '15934',
+          'container-title': [],
+          'original-title': [],
+          deposited: {
+            'date-parts': [[2024, 1, 3]],
+            'date-time': '2024-01-03T05:00:42Z',
+            timestamp: 1704258042000,
+          },
+          score: 1,
+          resource: { primary: { URL: 'https://osf.io/hsnke' } },
+          subtitle: [],
+          'short-title': [],
+          issued: { 'date-parts': [[2024, 1, 2]] },
+          'references-count': 0,
+          URL: 'http://dx.doi.org/10.35542/osf.io/hsnke',
+          relation: {},
+          published: { 'date-parts': [[2024, 1, 2]] },
+          subtype: 'preprint',
+        },
+      },
+    })
+
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Sorry, we don’t support requests for this preprint',
+    )
+  },
+)

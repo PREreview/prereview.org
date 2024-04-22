@@ -6,6 +6,7 @@ import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags'
 import * as Preprint from '../preprint'
+import * as ReviewRequest from '../review-request'
 import * as PreprintId from '../types/preprint-id'
 import type { User } from '../user'
 import * as Decision from './decision'
@@ -72,6 +73,7 @@ const handleForm = flow(
       ),
     ),
   ),
+  RTE.filterOrElseW(ReviewRequest.isReviewRequestPreprintId, Decision.ShowUnsupportedPreprint),
   RTE.map(() => Decision.ShowError),
   RTE.toUnion,
 )

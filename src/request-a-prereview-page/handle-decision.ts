@@ -8,6 +8,7 @@ import { notAPreprintPage } from './not-a-preprint-page'
 import { requestAPrereviewPage } from './request-a-prereview-page'
 import { unknownPreprintPage } from './unknown-preprint-page'
 import { unsupportedDoiPage } from './unsupported-doi-page'
+import { unsupportedPreprintPage } from './unsupported-preprint-page'
 import { unsupportedUrlPage } from './unsupported-url-page'
 
 export const handleDecision = (decision: Decision.Decision): Response.Response =>
@@ -21,5 +22,6 @@ export const handleDecision = (decision: Decision.Decision): Response.Response =
     .with({ _tag: 'ShowNotAPreprint' }, () => notAPreprintPage)
     .with({ _tag: 'ShowUnknownPreprint', preprint: P.select() }, unknownPreprintPage)
     .with({ _tag: 'ShowUnsupportedDoi' }, () => unsupportedDoiPage)
+    .with({ _tag: 'ShowUnsupportedPreprint', preprint: P.select() }, unsupportedPreprintPage)
     .with({ _tag: 'ShowUnsupportedUrl' }, () => unsupportedUrlPage)
     .exhaustive()

@@ -1,4 +1,4 @@
-import type { IndeterminatePreprintId } from '../types/preprint-id'
+import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id'
 import type * as Form from './form'
 
 export type Decision =
@@ -7,6 +7,7 @@ export type Decision =
   | ShowError
   | ShowNotAPreprint
   | ShowUnknownPreprint
+  | ShowUnsupportedPreprint
   | ShowUnsupportedDoi
   | ShowUnsupportedUrl
   | ShowForm
@@ -32,6 +33,11 @@ export interface ShowUnknownPreprint {
   preprint: IndeterminatePreprintId
 }
 
+export interface ShowUnsupportedPreprint {
+  _tag: 'ShowUnsupportedPreprint'
+  preprint: PreprintId
+}
+
 export interface ShowUnsupportedDoi {
   _tag: 'ShowUnsupportedDoi'
 }
@@ -55,6 +61,11 @@ export const ShowNotAPreprint: ShowNotAPreprint = { _tag: 'ShowNotAPreprint' }
 
 export const ShowUnknownPreprint = (preprint: IndeterminatePreprintId): ShowUnknownPreprint => ({
   _tag: 'ShowUnknownPreprint',
+  preprint,
+})
+
+export const ShowUnsupportedPreprint = (preprint: PreprintId): ShowUnsupportedPreprint => ({
+  _tag: 'ShowUnsupportedPreprint',
   preprint,
 })
 
