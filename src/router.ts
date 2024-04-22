@@ -112,6 +112,7 @@ import { publishToPrereviewCoarNotifyInbox } from './prereview-coar-notify'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
 import type { PublicUrlEnv } from './public-url'
+import { requestAPrereview } from './request-a-prereview-page'
 import { requestReview, requestReviewCheck, requestReviewPublished, requestReviewStart } from './request-review-flow'
 import { resources } from './resources'
 import { handleResponse } from './response'
@@ -170,6 +171,7 @@ import {
   privacyPolicyMatch,
   profileMatch,
   removeAvatarMatch,
+  requestAPrereviewMatch,
   requestReviewCheckMatch,
   requestReviewMatch,
   requestReviewPublishedMatch,
@@ -1482,6 +1484,21 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       writeReviewPublishedMatch.parser,
       P.map(({ id }) => writeReviewPublished(id)),
+    ),
+    pipe(
+      requestAPrereviewMatch.parser,
+      P.map(() =>
+        pipe(
+          RM.of({}),
+          RM.apS(
+            'method',
+            RM.gets(c => c.getMethod()),
+          ),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderK(requestAPrereview)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
     ),
     pipe(
       requestReviewMatch.parser,

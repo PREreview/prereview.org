@@ -4,6 +4,9 @@ import { areLoggedIn, canLogIn, canRequestReviews, expect, test } from './base'
 test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
   'can request a PREreview',
   async ({ fetch, page }) => {
+    await page.goto('/request-a-prereview')
+    await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
+    await page.getByRole('button', { name: 'Continue' }).click()
     await page.goto('/preprints/doi-10.1101-12345678')
 
     await page.getByRole('link', { name: 'Request a PREreview' }).click()
