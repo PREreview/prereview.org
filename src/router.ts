@@ -106,7 +106,7 @@ import { type OrcidApiEnv, getNameFromOrcid } from './orcid'
 import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page'
 import { partners } from './partners'
 import { people } from './people'
-import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv } from './preprint'
+import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint'
 import { preprintReviews } from './preprint-reviews'
 import { publishToPrereviewCoarNotifyInbox } from './prereview-coar-notify'
 import { privacyPolicy } from './privacy-policy'
@@ -293,6 +293,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   CanRequestReviewsEnv &
   CanUploadAvatarEnv &
   DoesPreprintExistEnv &
+  ResolvePreprintIdEnv &
   GenerateUuidEnv &
   GetPreprintEnv &
   GetPreprintTitleEnv &
@@ -1499,7 +1500,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
             RM.gets(c => c.getBody()),
           ),
           RM.apS('user', maybeGetUser),
-          RM.bindW('response', RM.fromReaderK(requestAPrereview)),
+          RM.bindW('response', RM.fromReaderTaskK(requestAPrereview)),
           RM.ichainW(handleResponse),
         ),
       ),

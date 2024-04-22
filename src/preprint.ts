@@ -35,6 +35,12 @@ export interface DoesPreprintExistEnv {
   doesPreprintExist: (id: IndeterminatePreprintId) => TE.TaskEither<'not-a-preprint' | 'unavailable', boolean>
 }
 
+export interface ResolvePreprintIdEnv {
+  resolvePreprintId: (
+    id: IndeterminatePreprintId,
+  ) => TE.TaskEither<'not-a-preprint' | 'not-found' | 'unavailable', PreprintId>
+}
+
 export interface GetPreprintEnv {
   getPreprint: (id: IndeterminatePreprintId) => TE.TaskEither<'not-found' | 'unavailable', Preprint>
 }
@@ -45,6 +51,9 @@ export interface GetPreprintTitleEnv {
 
 export const doesPreprintExist = (id: IndeterminatePreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ doesPreprintExist }: DoesPreprintExistEnv) => doesPreprintExist(id)))
+
+export const resolvePreprintId = (id: IndeterminatePreprintId) =>
+  RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ resolvePreprintId }: ResolvePreprintIdEnv) => resolvePreprintId(id)))
 
 export const getPreprint = (id: IndeterminatePreprintId) =>
   RTE.asksReaderTaskEither(RTE.fromTaskEitherK(({ getPreprint }: GetPreprintEnv) => getPreprint(id)))

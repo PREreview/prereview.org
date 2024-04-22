@@ -1,5 +1,6 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import * as TE from 'fp-ts/TaskEither'
 import type { CanRequestReviewsEnv } from '../../src/feature-flags'
 import * as _ from '../../src/request-a-prereview-page/make-decision'
 import * as fc from '../fc'
@@ -15,28 +16,47 @@ describe('makeDecision', () => {
             fc.supportedPreprintUrl().map(([url]) => url.href),
           ),
           fc.user(),
-        ])('when the form is valid', (value, user) => {
-          const actual = _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
+          fc.either(fc.constantFrom('not-found', 'unavailable'), fc.preprintId()),
+        ])('when the form is valid', async (value, user, preprintId) => {
+          const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
-          })
+            resolvePreprintId: () => TE.fromEither(preprintId),
+          })()
 
           expect(actual).toStrictEqual({ _tag: 'ShowError' })
         })
 
-        test.prop([fc.nonPreprintDoi(), fc.user()])('when it is not a supported DOI', (value, user) => {
-          const actual = _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
+        test.prop([
+          fc.oneof(
+            fc.preprintDoi(),
+            fc.supportedPreprintUrl().map(([url]) => url.href),
+          ),
+          fc.user(),
+        ])('when it is not a preprint', async (value, user) => {
+          const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
-          })
+            resolvePreprintId: () => TE.left('not-a-preprint'),
+          })()
+
+          expect(actual).toStrictEqual({ _tag: 'ShowNotAPreprint' })
+        })
+
+        test.prop([fc.nonPreprintDoi(), fc.user()])('when it is not a supported DOI', async (value, user) => {
+          const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
+            canRequestReviews: () => true,
+            resolvePreprintId: shouldNotBeCalled,
+          })()
 
           expect(actual).toStrictEqual({ _tag: 'ShowUnsupportedDoi' })
         })
 
         test.prop([fc.nonPreprintUrl().map(url => url.href), fc.user()])(
           'when it is not a supported URL',
-          (value, user) => {
-            const actual = _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
+          async (value, user) => {
+            const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
               canRequestReviews: () => true,
-            })
+              resolvePreprintId: shouldNotBeCalled,
+            })()
 
             expect(actual).toStrictEqual({ _tag: 'ShowUnsupportedUrl' })
           },
@@ -52,10 +72,11 @@ describe('makeDecision', () => {
                 !string.includes('/'),
             ),
           fc.user(),
-        ])('when the form is invalid', (value, user) => {
-          const actual = _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
+        ])('when the form is invalid', async (value, user) => {
+          const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
-          })
+            resolvePreprintId: shouldNotBeCalled,
+          })()
 
           expect(actual).toStrictEqual({ _tag: 'ShowForm', form: { _tag: 'InvalidForm', value } })
         })
@@ -63,32 +84,38 @@ describe('makeDecision', () => {
 
       test.prop([fc.anything(), fc.string().filter(method => method !== 'POST'), fc.user()])(
         'when the form needs submitting',
-        (body, method, user) => {
-          const actual = _.makeDecision({ body, method, user })({
+        async (body, method, user) => {
+          const actual = await _.makeDecision({ body, method, user })({
             canRequestReviews: () => true,
-          })
+            resolvePreprintId: shouldNotBeCalled,
+          })()
 
           expect(actual).toStrictEqual({ _tag: 'ShowForm', form: { _tag: 'UnsubmittedForm' } })
         },
       )
     })
 
-    test.prop([fc.anything(), fc.string(), fc.user()])("when reviews can't be requested", (body, method, user) => {
-      const canRequestReviews = jest.fn<CanRequestReviewsEnv['canRequestReviews']>(_ => false)
+    test.prop([fc.anything(), fc.string(), fc.user()])(
+      "when reviews can't be requested",
+      async (body, method, user) => {
+        const canRequestReviews = jest.fn<CanRequestReviewsEnv['canRequestReviews']>(_ => false)
 
-      const actual = _.makeDecision({ body, method, user })({
-        canRequestReviews,
-      })
+        const actual = await _.makeDecision({ body, method, user })({
+          canRequestReviews,
+          resolvePreprintId: shouldNotBeCalled,
+        })()
 
-      expect(actual).toStrictEqual({ _tag: 'DenyAccess' })
-      expect(canRequestReviews).toHaveBeenCalledWith(user)
-    })
+        expect(actual).toStrictEqual({ _tag: 'DenyAccess' })
+        expect(canRequestReviews).toHaveBeenCalledWith(user)
+      },
+    )
   })
 
-  test.prop([fc.anything(), fc.string()])('when the user is not logged in', (body, method) => {
-    const actual = _.makeDecision({ body, method })({
+  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
+    const actual = await _.makeDecision({ body, method })({
       canRequestReviews: shouldNotBeCalled,
-    })
+      resolvePreprintId: shouldNotBeCalled,
+    })()
 
     expect(actual).toStrictEqual({ _tag: 'RequireLogIn' })
   })

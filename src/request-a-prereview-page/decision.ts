@@ -1,6 +1,13 @@
 import type * as Form from './form'
 
-export type Decision = DenyAccess | RequireLogIn | ShowError | ShowUnsupportedDoi | ShowUnsupportedUrl | ShowForm
+export type Decision =
+  | DenyAccess
+  | RequireLogIn
+  | ShowError
+  | ShowNotAPreprint
+  | ShowUnsupportedDoi
+  | ShowUnsupportedUrl
+  | ShowForm
 
 export interface DenyAccess {
   _tag: 'DenyAccess'
@@ -12,6 +19,10 @@ export interface RequireLogIn {
 
 export interface ShowError {
   _tag: 'ShowError'
+}
+
+export interface ShowNotAPreprint {
+  _tag: 'ShowNotAPreprint'
 }
 
 export interface ShowUnsupportedDoi {
@@ -32,6 +43,8 @@ export const RequireLogIn: RequireLogIn = { _tag: 'RequireLogIn' }
 export const DenyAccess: DenyAccess = { _tag: 'DenyAccess' }
 
 export const ShowError: ShowError = { _tag: 'ShowError' }
+
+export const ShowNotAPreprint: ShowNotAPreprint = { _tag: 'ShowNotAPreprint' }
 
 export const ShowUnsupportedDoi: ShowUnsupportedDoi = { _tag: 'ShowUnsupportedDoi' }
 

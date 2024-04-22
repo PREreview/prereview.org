@@ -42,6 +42,19 @@ describe('handleDecision', () => {
     })
   })
 
+  test('with a ShowNotAPreprint decision', () => {
+    const actual = _.handleDecision({ _tag: 'ShowNotAPreprint' })
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.BadRequest,
+      title: expect.stringContaining('support preprints'),
+      main: expect.stringContaining('support preprints'),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
+
   test('with a ShowUnsupportedDoi decision', () => {
     const actual = _.handleDecision({ _tag: 'ShowUnsupportedDoi' })
 

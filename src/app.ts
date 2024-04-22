@@ -35,6 +35,7 @@ import { getUserFromSession, maybeGetUser } from './user'
 export type ConfigEnv = Omit<
   RouterEnv & LegacyEnv,
   | 'doesPreprintExist'
+  | 'resolvePreprintId'
   | 'generateUuid'
   | 'getUser'
   | 'getUserOnboarding'
@@ -75,9 +76,14 @@ const getPreprintTitle = flow(
   })),
 )
 
-const doesPreprintExist = flow(
+const resolvePreprintId = flow(
   getPreprintFromSource,
   RTE.local(useStaleCache()),
+  RTE.map(preprint => preprint.id),
+)
+
+const doesPreprintExist = flow(
+  resolvePreprintId,
   RTE.map(() => true),
   RTE.orElseW(error =>
     match(error)
@@ -252,6 +258,7 @@ export const app = (config: ConfigEnv) => {
           templatePage: withEnv(page, env),
           getPreprintIdFromUuid: withEnv(getPreprintIdFromLegacyPreviewUuid, env),
           getProfileIdFromUuid: withEnv(getProfileIdFromLegacyPreviewUuid, env),
+          resolvePreprintId: withEnv(resolvePreprintId, env),
           sendEmail: withEnv(sendEmail, env),
         })),
         R.local(collapseRequests()),

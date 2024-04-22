@@ -1,10 +1,11 @@
 import * as E from 'fp-ts/Either'
-import type * as R from 'fp-ts/Reader'
 import type { Reader } from 'fp-ts/Reader'
-import * as RE from 'fp-ts/ReaderEither'
-import { flow, identity, pipe } from 'fp-ts/function'
+import * as RT from 'fp-ts/ReaderTask'
+import * as RTE from 'fp-ts/ReaderTaskEither'
+import { flow, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags'
+import * as Preprint from '../preprint'
 import * as PreprintId from '../types/preprint-id'
 import type { User } from '../user'
 import * as Decision from './decision'
@@ -20,42 +21,59 @@ export const makeDecision = ({
   body: unknown
   method: string
   user?: User
-}): R.Reader<CanRequestReviewsEnv, Decision.Decision> =>
+}): RT.ReaderTask<CanRequestReviewsEnv & Preprint.ResolvePreprintIdEnv, Decision.Decision> =>
   pipe(
-    RE.Do,
-    RE.apS(
+    RTE.Do,
+    RTE.apS(
       'user',
-      RE.liftNullable(
+      RTE.liftNullable(
         () => user,
         () => Decision.RequireLogIn,
       )(),
     ),
-    RE.chainFirstW(
+    RTE.chainFirstW(
       flow(
-        RE.fromReaderK(({ user }) => canRequestReviews(user)),
-        RE.filterOrElse(
+        RTE.fromReaderK(({ user }) => canRequestReviews(user)),
+        RTE.filterOrElse(
           canRequestReviews => canRequestReviews,
           () => Decision.DenyAccess,
         ),
       ),
     ),
-    RE.let('method', () => method),
-    RE.let('body', () => body),
-    RE.matchW(
-      identity,
-      flow(Form.fromRequest, form => match(form).with({ _tag: 'ValidForm' }, handleForm).otherwise(Decision.ShowForm)),
+    RTE.let('method', () => method),
+    RTE.let('body', () => body),
+    RTE.matchEW(
+      RT.of,
+      flow(Form.fromRequest, form =>
+        match(form)
+          .with({ _tag: 'ValidForm' }, handleForm)
+          .otherwise(form => RT.of(Decision.ShowForm(form))),
+      ),
     ),
   )
 
 const handleForm = flow(
-  (form: Form.ValidForm) =>
+  RTE.fromEitherK((form: Form.ValidForm) =>
     match(form.value)
       .returnType<E.Either<Decision.Decision, PreprintId.IndeterminatePreprintId>>()
       .with(P.string, E.fromOptionK(() => Decision.ShowUnsupportedDoi)(PreprintId.parsePreprintDoi))
       .with(P.instanceOf(URL), E.fromOptionK(() => Decision.ShowUnsupportedUrl)(PreprintId.fromUrl))
       .exhaustive(),
-  E.map(() => Decision.ShowError),
-  E.toUnion,
+  ),
+  RTE.chainW(
+    flow(
+      Preprint.resolvePreprintId,
+      RTE.mapLeft(error =>
+        match(error)
+          .with('not-a-preprint', () => Decision.ShowNotAPreprint)
+          .with('not-found', () => Decision.ShowError)
+          .with('unavailable', () => Decision.ShowError)
+          .exhaustive(),
+      ),
+    ),
+  ),
+  RTE.map(() => Decision.ShowError),
+  RTE.toUnion,
 )
 
 type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never
