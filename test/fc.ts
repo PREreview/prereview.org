@@ -766,7 +766,10 @@ export const preprintIdWithDoi = (): fc.Arbitrary<Extract<PreprintId, { value: D
   )
 
 export const indeterminatePreprintId = (): fc.Arbitrary<IndeterminatePreprintId> =>
-  fc.oneof(preprintId(), biorxivOrMedrxivPreprintId(), zenodoOrAfricarxivPreprintId())
+  fc.oneof(philsciPreprintId(), indeterminatePreprintIdWithDoi())
+
+export const indeterminatePreprintIdWithDoi = (): fc.Arbitrary<Extract<IndeterminatePreprintId, { value: Doi }>> =>
+  fc.oneof(preprintIdWithDoi(), biorxivOrMedrxivPreprintId(), zenodoOrAfricarxivPreprintId())
 
 export const crossrefPreprintId = (): fc.Arbitrary<CrossrefPreprintId> =>
   fc.oneof(

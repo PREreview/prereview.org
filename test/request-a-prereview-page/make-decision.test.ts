@@ -28,7 +28,7 @@ describe('makeDecision', () => {
 
         test.prop([
           fc.oneof(
-            fc.preprintIdWithDoi().map(id => [id.value, id] as const),
+            fc.indeterminatePreprintIdWithDoi().map(id => [id.value, id] as const),
             fc.supportedPreprintUrl().map(([url, id]) => [url.href, id] as const),
           ),
           fc.user(),
@@ -38,12 +38,15 @@ describe('makeDecision', () => {
             resolvePreprintId: () => TE.left('not-found'),
           })()
 
-          expect(actual).toStrictEqual({ _tag: 'ShowUnknownPreprint', preprint })
+          expect(actual).toStrictEqual({
+            _tag: 'ShowUnknownPreprint',
+            preprint: expect.objectContaining({ value: preprint.value }),
+          })
         })
 
         test.prop([
           fc.oneof(
-            fc.preprintDoi(),
+            fc.indeterminatePreprintIdWithDoi().map(id => id.value),
             fc.supportedPreprintUrl().map(([url]) => url.href),
           ),
           fc.user(),
