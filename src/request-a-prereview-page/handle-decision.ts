@@ -6,6 +6,7 @@ import { requestAPrereviewMatch } from '../routes'
 import type * as Decision from './decision'
 import { requestAPrereviewPage } from './request-a-prereview-page'
 import { unsupportedDoiPage } from './unsupported-doi-page'
+import { unsupportedUrlPage } from './unsupported-url-page'
 
 export const handleDecision = (decision: Decision.Decision): Response.Response =>
   match(decision)
@@ -16,4 +17,5 @@ export const handleDecision = (decision: Decision.Decision): Response.Response =
     .with({ _tag: 'ShowError' }, () => havingProblemsPage)
     .with({ _tag: 'ShowForm', form: P.select() }, requestAPrereviewPage)
     .with({ _tag: 'ShowUnsupportedDoi' }, () => unsupportedDoiPage)
+    .with({ _tag: 'ShowUnsupportedUrl' }, () => unsupportedUrlPage)
     .exhaustive()

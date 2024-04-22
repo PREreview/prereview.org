@@ -59,7 +59,16 @@ const handleForm = (form: Form.ValidForm) =>
         ),
       ),
     )
-    .with(P.instanceOf(URL), () => Decision.ShowError)
+    .with(
+      P.instanceOf(URL),
+      flow(
+        PreprintId.fromUrl,
+        O.matchW(
+          () => Decision.ShowUnsupportedUrl,
+          () => Decision.ShowError,
+        ),
+      ),
+    )
     .exhaustive()
 
 type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

@@ -1,6 +1,6 @@
 import type * as Form from './form'
 
-export type Decision = DenyAccess | RequireLogIn | ShowError | ShowUnsupportedDoi | ShowForm
+export type Decision = DenyAccess | RequireLogIn | ShowError | ShowUnsupportedDoi | ShowUnsupportedUrl | ShowForm
 
 export interface DenyAccess {
   _tag: 'DenyAccess'
@@ -18,6 +18,10 @@ export interface ShowUnsupportedDoi {
   _tag: 'ShowUnsupportedDoi'
 }
 
+export interface ShowUnsupportedUrl {
+  _tag: 'ShowUnsupportedUrl'
+}
+
 export interface ShowForm {
   _tag: 'ShowForm'
   form: Form.IncompleteForm
@@ -30,5 +34,7 @@ export const DenyAccess: DenyAccess = { _tag: 'DenyAccess' }
 export const ShowError: ShowError = { _tag: 'ShowError' }
 
 export const ShowUnsupportedDoi: ShowUnsupportedDoi = { _tag: 'ShowUnsupportedDoi' }
+
+export const ShowUnsupportedUrl: ShowUnsupportedUrl = { _tag: 'ShowUnsupportedUrl' }
 
 export const ShowForm = (form: Form.IncompleteForm): ShowForm => ({ _tag: 'ShowForm', form })

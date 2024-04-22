@@ -80,3 +80,16 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this DOI')
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
+  'when the URL is not supported',
+  async ({ page }) => {
+    await page.goto('/request-a-prereview')
+    await page
+      .getByLabel('Which preprint would you like reviewed?')
+      .fill('https://chemrxiv.org/engage/chemrxiv/article-details/6424647b91074bccd07d1aa5')
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this URL')
+  },
+)

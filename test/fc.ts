@@ -381,6 +381,8 @@ export const nonPreprintDoi = (): fc.Arbitrary<Doi> => doi().filter(not(isPrepri
 export const preprintDoi = (): fc.Arbitrary<Extract<PreprintId, { value: Doi }>['value']> =>
   preprintIdWithDoi().map(id => id.value)
 
+export const nonPreprintUrl = (): fc.Arbitrary<URL> => fc.oneof(url(), unsupportedPreprintUrl())
+
 export const supportedPreprintUrl = (): fc.Arbitrary<[URL, PreprintId]> =>
   fc.oneof(
     africarxivPreprintUrl(),

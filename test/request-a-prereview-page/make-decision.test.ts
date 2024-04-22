@@ -9,7 +9,13 @@ describe('makeDecision', () => {
   describe('when the user is logged in', () => {
     describe('when reviews can be requested', () => {
       describe('when the form has been submitted', () => {
-        test.prop([fc.oneof(fc.preprintDoi(), fc.webUrl()), fc.user()])('when the form is valid', (value, user) => {
+        test.prop([
+          fc.oneof(
+            fc.preprintDoi(),
+            fc.supportedPreprintUrl().map(([url]) => url.href),
+          ),
+          fc.user(),
+        ])('when the form is valid', (value, user) => {
           const actual = _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
           })
@@ -24,6 +30,17 @@ describe('makeDecision', () => {
 
           expect(actual).toStrictEqual({ _tag: 'ShowUnsupportedDoi' })
         })
+
+        test.prop([fc.nonPreprintUrl().map(url => url.href), fc.user()])(
+          'when it is not a supported URL',
+          (value, user) => {
+            const actual = _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
+              canRequestReviews: () => true,
+            })
+
+            expect(actual).toStrictEqual({ _tag: 'ShowUnsupportedUrl' })
+          },
+        )
 
         test.prop([
           fc
