@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import * as Response from '../response'
-import { requestAPrereviewMatch } from '../routes'
+import { requestAPrereviewMatch, requestReviewMatch } from '../routes'
 import type * as Decision from './decision'
 import { notAPreprintPage } from './not-a-preprint-page'
 import { requestAPrereviewPage } from './request-a-prereview-page'
@@ -13,6 +13,9 @@ import { unsupportedUrlPage } from './unsupported-url-page'
 
 export const handleDecision = (decision: Decision.Decision): Response.Response =>
   match(decision)
+    .with({ _tag: 'BeginFlow', preprint: P.select() }, preprint =>
+      Response.RedirectResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
+    )
     .with({ _tag: 'DenyAccess' }, () => pageNotFound)
     .with({ _tag: 'RequireLogIn' }, () =>
       Response.LogInResponse({ location: format(requestAPrereviewMatch.formatter, {}) }),

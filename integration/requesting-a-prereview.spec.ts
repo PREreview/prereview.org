@@ -7,9 +7,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await page.goto('/request-a-prereview')
     await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
     await page.getByRole('button', { name: 'Continue' }).click()
-    await page.goto('/preprints/doi-10.1101-12345678')
-
-    await page.getByRole('link', { name: 'Request a PREreview' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request a PREreview')
 
@@ -32,8 +29,9 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
     await page.waitForLoadState()
-    await page.goto('/preprints/doi-10.1101-12345678')
-    await page.getByRole('link', { name: 'Request a PREreview' }).click()
+    await page.goto('/request-a-prereview')
+    await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request a PREreview')
     await expect(page.getByRole('main')).toContainText('carry on')

@@ -3,10 +3,20 @@ import { describe, expect } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/request-a-prereview-page/handle-decision'
-import { requestAPrereviewMatch } from '../../src/routes'
+import { requestAPrereviewMatch, requestReviewMatch } from '../../src/routes'
 import * as fc from './fc'
 
 describe('handleDecision', () => {
+  test.prop([fc.reviewRequestPreprintId()])('with a BeginFlow decision', preprint => {
+    const actual = _.handleDecision({ _tag: 'BeginFlow', preprint })
+
+    expect(actual).toStrictEqual({
+      _tag: 'RedirectResponse',
+      status: Status.SeeOther,
+      location: format(requestReviewMatch.formatter, { id: preprint }),
+    })
+  })
+
   test('with a DenyAccess decision', () => {
     const actual = _.handleDecision({ _tag: 'DenyAccess' })
 

@@ -2,7 +2,7 @@ import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { flow, pipe } from 'fp-ts/function'
+import { flow, identity, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags'
 import * as Preprint from '../preprint'
@@ -74,8 +74,7 @@ const handleForm = flow(
     ),
   ),
   RTE.filterOrElseW(ReviewRequest.isReviewRequestPreprintId, Decision.ShowUnsupportedPreprint),
-  RTE.map(() => Decision.ShowError),
-  RTE.toUnion,
+  RTE.match(identity, Decision.BeginFlow),
 )
 
 type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

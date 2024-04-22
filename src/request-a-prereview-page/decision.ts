@@ -1,7 +1,9 @@
+import type { ReviewRequestPreprintId } from '../review-request'
 import type { IndeterminatePreprintId, PreprintId } from '../types/preprint-id'
 import type * as Form from './form'
 
 export type Decision =
+  | BeginFlow
   | DenyAccess
   | RequireLogIn
   | ShowError
@@ -11,6 +13,11 @@ export type Decision =
   | ShowUnsupportedDoi
   | ShowUnsupportedUrl
   | ShowForm
+
+export interface BeginFlow {
+  _tag: 'BeginFlow'
+  preprint: ReviewRequestPreprintId
+}
 
 export interface DenyAccess {
   _tag: 'DenyAccess'
@@ -50,6 +57,8 @@ export interface ShowForm {
   _tag: 'ShowForm'
   form: Form.IncompleteForm
 }
+
+export const BeginFlow = (preprint: ReviewRequestPreprintId): BeginFlow => ({ _tag: 'BeginFlow', preprint })
 
 export const RequireLogIn: RequireLogIn = { _tag: 'RequireLogIn' }
 
