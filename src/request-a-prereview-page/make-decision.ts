@@ -1,9 +1,11 @@
+import * as O from 'fp-ts/Option'
 import type * as R from 'fp-ts/Reader'
 import type { Reader } from 'fp-ts/Reader'
 import * as RE from 'fp-ts/ReaderEither'
 import { flow, identity, pipe } from 'fp-ts/function'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags'
+import * as PreprintId from '../types/preprint-id'
 import type { User } from '../user'
 import * as Decision from './decision'
 import * as Form from './form'
@@ -41,12 +43,23 @@ export const makeDecision = ({
     RE.let('body', () => body),
     RE.matchW(
       identity,
-      flow(Form.fromRequest, form =>
-        match(form)
-          .with({ _tag: 'ValidForm' }, () => Decision.ShowError)
-          .otherwise(Decision.ShowForm),
-      ),
+      flow(Form.fromRequest, form => match(form).with({ _tag: 'ValidForm' }, handleForm).otherwise(Decision.ShowForm)),
     ),
   )
+
+const handleForm = (form: Form.ValidForm) =>
+  match(form.value)
+    .with(
+      P.string,
+      flow(
+        PreprintId.parsePreprintDoi,
+        O.matchW(
+          () => Decision.ShowUnsupportedDoi,
+          () => Decision.ShowError,
+        ),
+      ),
+    )
+    .with(P.instanceOf(URL), () => Decision.ShowError)
+    .exhaustive()
 
 type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

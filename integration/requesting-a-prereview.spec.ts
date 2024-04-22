@@ -69,3 +69,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)('requires a 
 
   await expect(page.getByLabel('Which preprint would you like reviewed?')).toBeFocused()
 })
+
+test('when the DOI is not supported', async ({ page }) => {
+  await page.goto('/request-a-prereview')
+  await page.getByLabel('Which preprint would you like reviewed?').fill('10.5555/12345678')
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this DOI')
+})

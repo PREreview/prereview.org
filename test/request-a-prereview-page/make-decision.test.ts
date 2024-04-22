@@ -9,12 +9,20 @@ describe('makeDecision', () => {
   describe('when the user is logged in', () => {
     describe('when reviews can be requested', () => {
       describe('when the form has been submitted', () => {
-        test.prop([fc.oneof(fc.doi(), fc.webUrl()), fc.user()])('when the form is valid', (value, user) => {
+        test.prop([fc.oneof(fc.preprintDoi(), fc.webUrl()), fc.user()])('when the form is valid', (value, user) => {
           const actual = _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
           })
 
           expect(actual).toStrictEqual({ _tag: 'ShowError' })
+        })
+
+        test.prop([fc.nonPreprintDoi(), fc.user()])('when it is not a supported DOI', (value, user) => {
+          const actual = _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
+            canRequestReviews: () => true,
+          })
+
+          expect(actual).toStrictEqual({ _tag: 'ShowUnsupportedDoi' })
         })
 
         test.prop([

@@ -42,6 +42,19 @@ describe('handleDecision', () => {
     })
   })
 
+  test('with a ShowUnsupportedDoi decision', () => {
+    const actual = _.handleDecision({ _tag: 'ShowUnsupportedDoi' })
+
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      status: Status.BadRequest,
+      title: expect.stringContaining('support this DOI'),
+      main: expect.stringContaining('support this DOI'),
+      skipToLabel: 'main',
+      js: [],
+    })
+  })
+
   describe('with a ShowForm decision', () => {
     test.prop([fc.invalidForm()])('with an InvalidForm', form => {
       const actual = _.handleDecision({ _tag: 'ShowForm', form })
