@@ -390,7 +390,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         pipe(
           RM.of({}),
           RM.apS('user', maybeGetUser),
-          RM.apSW('response', RM.fromReaderTask(home)),
+          RM.bindW('response', RM.fromReaderTaskK(home)),
           RM.ichainW(handleResponse),
         ),
       ),

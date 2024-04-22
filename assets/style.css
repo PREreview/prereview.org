@@ -1128,7 +1128,11 @@ label {
   column-gap: var(--space-2xs-s);
   row-gap: var(--space-2xs-xs);
 
-  p + & {
+  .hero & {
+    display: inline-flex;
+  }
+
+  :not(.hero) > p + & {
     margin-block-start: var(--space-xs);
   }
 
@@ -2175,6 +2179,14 @@ skip-link {
     @media (width >= 30em) {
       max-inline-size: 58%;
     }
+  }
+
+  & .button-group > * {
+    z-index: 1;
+  }
+
+  & :any-link:not(.button) {
+    background-color: var(--color-background);
   }
 
   & :--button {

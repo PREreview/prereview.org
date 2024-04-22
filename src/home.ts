@@ -9,13 +9,22 @@ import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from './club-details'
+import { type CanRequestReviewsEnv, canRequestReviews } from './feature-flags'
 import { type Html, html, plainText, rawHtml } from './html'
 import * as assets from './manifest.json'
 import { PageResponse } from './response'
-import { aboutUsMatch, homeMatch, reviewAPreprintMatch, reviewMatch, reviewsMatch } from './routes'
+import {
+  aboutUsMatch,
+  homeMatch,
+  requestAPrereviewMatch,
+  reviewAPreprintMatch,
+  reviewMatch,
+  reviewsMatch,
+} from './routes'
 import { renderDate } from './time'
 import type { ClubId } from './types/club-id'
 import type { PreprintId } from './types/preprint-id'
+import type { User } from './user'
 
 import PlainDate = Temporal.PlainDate
 
@@ -41,9 +50,25 @@ const getRecentPrereviews = () =>
     RT.chainTaskK(({ getRecentPrereviews }) => getRecentPrereviews()),
   )
 
-export const home: RT.ReaderTask<GetRecentPrereviewsEnv, PageResponse> = pipe(getRecentPrereviews(), RT.map(createPage))
+export const home = ({
+  user,
+}: {
+  user?: User
+}): RT.ReaderTask<CanRequestReviewsEnv & GetRecentPrereviewsEnv, PageResponse> =>
+  pipe(
+    RT.Do,
+    RT.apS('recentPrereviews', getRecentPrereviews()),
+    RT.apSW('canRequestReviews', user ? RT.fromReader(canRequestReviews(user)) : RT.of(false)),
+    RT.map(createPage),
+  )
 
-function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
+function createPage({
+  canRequestReviews,
+  recentPrereviews,
+}: {
+  canRequestReviews: boolean
+  recentPrereviews: ReadonlyArray<RecentPrereview>
+}) {
   return PageResponse({
     title: plainText`PREreview: Open preprint reviews. For all researchers.`,
     main: html`
@@ -51,7 +76,12 @@ function createPage(recentPrereviews: ReadonlyArray<RecentPrereview>) {
         <h1>Open preprint reviews.<br />For&nbsp;<em>all</em> researchers.</h1>
         <p>Provide and receive constructive feedback on preprints from an international community of your peers.</p>
 
-        <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
+        <div class="button-group">
+          <a href="${format(reviewAPreprintMatch.formatter, {})}" class="button">Review a preprint</a>
+          ${canRequestReviews
+            ? html` <a href="${format(requestAPrereviewMatch.formatter, {})}">Request a review</a> `
+            : ''}
+        </div>
 
         <img src="${assets['stool.svg']}" width="794" height="663" alt="" />
       </div>
