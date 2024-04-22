@@ -57,3 +57,15 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await expect(page.getByRole('button', { name: 'Start now' })).toBeVisible()
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)('requires a valid preprint', async ({ page }) => {
+  await page.goto('/request-a-prereview')
+  await page.getByLabel('Which preprint would you like reviewed?').fill('not-a-preprint')
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await expect(page.getByLabel('Which preprint would you like reviewed?')).toHaveAttribute('aria-invalid', 'true')
+
+  await page.getByRole('link', { name: 'Enter the preprint DOI or URL' }).click()
+
+  await expect(page.getByLabel('Which preprint would you like reviewed?')).toBeFocused()
+})

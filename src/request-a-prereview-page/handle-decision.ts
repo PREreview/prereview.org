@@ -1,5 +1,5 @@
 import { format } from 'fp-ts-routing'
-import { match } from 'ts-pattern'
+import { P, match } from 'ts-pattern'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import * as Response from '../response'
 import { requestAPrereviewMatch } from '../routes'
@@ -13,5 +13,5 @@ export const handleDecision = (decision: Decision.Decision): Response.Response =
       Response.LogInResponse({ location: format(requestAPrereviewMatch.formatter, {}) }),
     )
     .with({ _tag: 'ShowError' }, () => havingProblemsPage)
-    .with({ _tag: 'ShowForm' }, () => requestAPrereviewPage)
+    .with({ _tag: 'ShowForm', form: P.select() }, requestAPrereviewPage)
     .exhaustive()

@@ -4,6 +4,7 @@ import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/request-a-prereview-page/handle-decision'
 import { requestAPrereviewMatch } from '../../src/routes'
+import * as fc from './fc'
 
 describe('handleDecision', () => {
   test('with a DenyAccess decision', () => {
@@ -41,17 +42,33 @@ describe('handleDecision', () => {
     })
   })
 
-  test('with a ShowForm decision', () => {
-    const actual = _.handleDecision({ _tag: 'ShowForm' })
+  describe('with a ShowForm decision', () => {
+    test.prop([fc.invalidForm()])('with an InvalidForm', form => {
+      const actual = _.handleDecision({ _tag: 'ShowForm', form })
 
-    expect(actual).toStrictEqual({
-      _tag: 'PageResponse',
-      canonical: format(requestAPrereviewMatch.formatter, {}),
-      status: Status.OK,
-      title: expect.stringContaining('Which preprint'),
-      main: expect.stringContaining('Which preprint'),
-      skipToLabel: 'form',
-      js: [],
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(requestAPrereviewMatch.formatter, {}),
+        status: Status.BadRequest,
+        title: expect.stringContaining('Error: Which preprint'),
+        main: expect.stringContaining('Which preprint'),
+        skipToLabel: 'form',
+        js: ['error-summary.js'],
+      })
+    })
+
+    test('with an UnsubmittedForm', () => {
+      const actual = _.handleDecision({ _tag: 'ShowForm', form: { _tag: 'UnsubmittedForm' } })
+
+      expect(actual).toStrictEqual({
+        _tag: 'PageResponse',
+        canonical: format(requestAPrereviewMatch.formatter, {}),
+        status: Status.OK,
+        title: expect.stringContaining('Which preprint'),
+        main: expect.stringContaining('Which preprint'),
+        skipToLabel: 'form',
+        js: [],
+      })
     })
   })
 })

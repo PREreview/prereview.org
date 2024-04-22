@@ -6,13 +6,16 @@ import { match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags'
 import type { User } from '../user'
 import * as Decision from './decision'
+import * as Form from './form'
 
 export type Env = EnvFor<ReturnType<typeof makeDecision>>
 
 export const makeDecision = ({
+  body,
   method,
   user,
 }: {
+  body: unknown
   method: string
   user?: User
 }): R.Reader<CanRequestReviewsEnv, Decision.Decision> =>
@@ -35,10 +38,14 @@ export const makeDecision = ({
       ),
     ),
     RE.let('method', () => method),
-    RE.matchW(identity, state =>
-      match(state)
-        .with({ method: 'POST' }, () => Decision.ShowError)
-        .otherwise(() => Decision.ShowForm),
+    RE.let('body', () => body),
+    RE.matchW(
+      identity,
+      flow(Form.fromRequest, form =>
+        match(form)
+          .with({ _tag: 'ValidForm' }, () => Decision.ShowError)
+          .otherwise(Decision.ShowForm),
+      ),
     ),
   )
 
