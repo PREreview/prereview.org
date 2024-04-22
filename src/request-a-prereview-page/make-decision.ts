@@ -1,4 +1,4 @@
-import * as O from 'fp-ts/Option'
+import * as E from 'fp-ts/Either'
 import type * as R from 'fp-ts/Reader'
 import type { Reader } from 'fp-ts/Reader'
 import * as RE from 'fp-ts/ReaderEither'
@@ -47,28 +47,15 @@ export const makeDecision = ({
     ),
   )
 
-const handleForm = (form: Form.ValidForm) =>
-  match(form.value)
-    .with(
-      P.string,
-      flow(
-        PreprintId.parsePreprintDoi,
-        O.matchW(
-          () => Decision.ShowUnsupportedDoi,
-          () => Decision.ShowError,
-        ),
-      ),
-    )
-    .with(
-      P.instanceOf(URL),
-      flow(
-        PreprintId.fromUrl,
-        O.matchW(
-          () => Decision.ShowUnsupportedUrl,
-          () => Decision.ShowError,
-        ),
-      ),
-    )
-    .exhaustive()
+const handleForm = flow(
+  (form: Form.ValidForm) =>
+    match(form.value)
+      .returnType<E.Either<Decision.Decision, PreprintId.IndeterminatePreprintId>>()
+      .with(P.string, E.fromOptionK(() => Decision.ShowUnsupportedDoi)(PreprintId.parsePreprintDoi))
+      .with(P.instanceOf(URL), E.fromOptionK(() => Decision.ShowUnsupportedUrl)(PreprintId.fromUrl))
+      .exhaustive(),
+  E.map(() => Decision.ShowError),
+  E.toUnion,
+)
 
 type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never
