@@ -1,3 +1,4 @@
+import type { IndeterminatePreprintId } from '../types/preprint-id'
 import type * as Form from './form'
 
 export type Decision =
@@ -5,6 +6,7 @@ export type Decision =
   | RequireLogIn
   | ShowError
   | ShowNotAPreprint
+  | ShowUnknownPreprint
   | ShowUnsupportedDoi
   | ShowUnsupportedUrl
   | ShowForm
@@ -23,6 +25,11 @@ export interface ShowError {
 
 export interface ShowNotAPreprint {
   _tag: 'ShowNotAPreprint'
+}
+
+export interface ShowUnknownPreprint {
+  _tag: 'ShowUnknownPreprint'
+  preprint: IndeterminatePreprintId
 }
 
 export interface ShowUnsupportedDoi {
@@ -45,6 +52,11 @@ export const DenyAccess: DenyAccess = { _tag: 'DenyAccess' }
 export const ShowError: ShowError = { _tag: 'ShowError' }
 
 export const ShowNotAPreprint: ShowNotAPreprint = { _tag: 'ShowNotAPreprint' }
+
+export const ShowUnknownPreprint = (preprint: IndeterminatePreprintId): ShowUnknownPreprint => ({
+  _tag: 'ShowUnknownPreprint',
+  preprint,
+})
 
 export const ShowUnsupportedDoi: ShowUnsupportedDoi = { _tag: 'ShowUnsupportedDoi' }
 

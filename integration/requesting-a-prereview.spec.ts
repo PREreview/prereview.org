@@ -163,3 +163,17 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we only support preprints')
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
+  'when the preprint is not found',
+  async ({ fetch, page }) => {
+    await page.goto('/request-a-prereview')
+    await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/this-should-not-find-anything')
+
+    fetch.get('https://api.crossref.org/works/10.1101%2Fthis-should-not-find-anything', { status: Status.NotFound })
+
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t know this preprint')
+  },
+)

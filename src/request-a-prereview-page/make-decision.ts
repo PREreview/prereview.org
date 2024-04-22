@@ -60,13 +60,13 @@ const handleForm = flow(
       .with(P.instanceOf(URL), E.fromOptionK(() => Decision.ShowUnsupportedUrl)(PreprintId.fromUrl))
       .exhaustive(),
   ),
-  RTE.chainW(
-    flow(
-      Preprint.resolvePreprintId,
+  RTE.chainW(preprintId =>
+    pipe(
+      Preprint.resolvePreprintId(preprintId),
       RTE.mapLeft(error =>
         match(error)
           .with('not-a-preprint', () => Decision.ShowNotAPreprint)
-          .with('not-found', () => Decision.ShowError)
+          .with('not-found', () => Decision.ShowUnknownPreprint(preprintId))
           .with('unavailable', () => Decision.ShowError)
           .exhaustive(),
       ),

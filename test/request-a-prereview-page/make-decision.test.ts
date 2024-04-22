@@ -16,7 +16,7 @@ describe('makeDecision', () => {
             fc.supportedPreprintUrl().map(([url]) => url.href),
           ),
           fc.user(),
-          fc.either(fc.constantFrom('not-found', 'unavailable'), fc.preprintId()),
+          fc.either(fc.constantFrom('unavailable'), fc.preprintId()),
         ])('when the form is valid', async (value, user, preprintId) => {
           const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
             canRequestReviews: () => true,
@@ -24,6 +24,21 @@ describe('makeDecision', () => {
           })()
 
           expect(actual).toStrictEqual({ _tag: 'ShowError' })
+        })
+
+        test.prop([
+          fc.oneof(
+            fc.preprintIdWithDoi().map(id => [id.value, id] as const),
+            fc.supportedPreprintUrl().map(([url, id]) => [url.href, id] as const),
+          ),
+          fc.user(),
+        ])('when the preprint is not found', async ([value, preprint], user) => {
+          const actual = await _.makeDecision({ body: { preprint: value }, method: 'POST', user })({
+            canRequestReviews: () => true,
+            resolvePreprintId: () => TE.left('not-found'),
+          })()
+
+          expect(actual).toStrictEqual({ _tag: 'ShowUnknownPreprint', preprint })
         })
 
         test.prop([
