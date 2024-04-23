@@ -67,6 +67,25 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
 )
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
+  'can change the name after previewing',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+
+    await page.getByRole('link', { name: 'Change name' }).click()
+
+    await page.getByLabel('Orange Panda').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
   'can go back through the form',
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')

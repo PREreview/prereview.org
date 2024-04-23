@@ -41,6 +41,11 @@ export function checkPage({
                       .exhaustive(),
                   )}
                 </dd>
+                <dd>
+                  <a href="${format(requestReviewPersonaMatch.formatter, { id: preprint })}"
+                    >Change <span class="visually-hidden">name</span></a
+                  >
+                </dd>
               </div>
             </dl>
           </div>
