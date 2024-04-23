@@ -2,18 +2,22 @@ import { toUrl } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as RIO from 'fp-ts/ReaderIO'
 import { pipe } from 'fp-ts/function'
+import { match } from 'ts-pattern'
 import type { ReviewRequestPreprintId } from '../review-request'
 import { profileMatch } from '../routes'
+import type { ProfileId } from '../types/profile-id'
 import { type GenerateUuidEnv, generateUuid } from '../types/uuid'
 import type { User } from '../user'
 import type { CoarReviewActionOfferPayload } from './coar-review-action-offer-payload'
 
 export const constructCoarPayload = ({
   coarNotifyUrl,
+  persona,
   preprint,
   user,
 }: {
   coarNotifyUrl: string
+  persona: 'public' | 'pseudonym'
   preprint: ReviewRequestPreprintId
   user: User
 }): RIO.ReaderIO<GenerateUuidEnv, CoarReviewActionOfferPayload> =>
@@ -38,9 +42,18 @@ export const constructCoarPayload = ({
         'ietf:cite-as': toUrl(preprint.value).href,
       },
       actor: {
-        id: `https://prereview.org${format(profileMatch.formatter, { profile: { type: 'orcid', value: user.orcid } })}`,
+        id: `https://prereview.org${format(profileMatch.formatter, {
+          profile: match(persona)
+            .returnType<ProfileId>()
+            .with('public', () => ({ type: 'orcid', value: user.orcid }))
+            .with('pseudonym', () => ({ type: 'pseudonym', value: user.pseudonym }))
+            .exhaustive(),
+        })}`,
         type: 'Person',
-        name: user.name,
+        name: match(persona)
+          .with('public', () => user.name)
+          .with('pseudonym', () => user.pseudonym)
+          .exhaustive(),
       },
     })),
   )

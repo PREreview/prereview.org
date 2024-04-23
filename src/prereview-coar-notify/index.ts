@@ -12,9 +12,10 @@ const hardcodedCoarNotifyUrl = 'https://coar-notify-sandbox.prereview.org'
 export const publishToPrereviewCoarNotifyInbox = (
   preprint: ReviewRequestPreprintId,
   user: User,
+  persona: 'public' | 'pseudonym',
 ): RTE.ReaderTaskEither<F.FetchEnv & GenerateUuidEnv, 'unavailable', void> =>
   pipe(
-    { coarNotifyUrl: hardcodedCoarNotifyUrl, preprint, user },
+    { coarNotifyUrl: hardcodedCoarNotifyUrl, preprint, user, persona },
     constructCoarPayload,
     RTE.rightReaderIO,
     RTE.chainW(sendReviewActionOffer),
