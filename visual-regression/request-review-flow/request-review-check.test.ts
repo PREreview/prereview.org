@@ -14,6 +14,28 @@ const preprint = {
 test('content looks right', async ({ showPage }) => {
   const response = checkPage({
     preprint,
+    reviewRequest: {
+      status: 'incomplete',
+    },
+    user: {
+      name: 'Josiah Carberry',
+      orcid: '0000-0002-1825-0097' as Orcid,
+      pseudonym: 'Orange Panda' as Pseudonym,
+    },
+  })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right with a pseudonym', async ({ showPage }) => {
+  const response = checkPage({
+    preprint,
+    reviewRequest: {
+      status: 'incomplete',
+      persona: 'pseudonym',
+    },
     user: {
       name: 'Josiah Carberry',
       orcid: '0000-0002-1825-0097' as Orcid,

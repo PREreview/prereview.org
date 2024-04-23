@@ -10,6 +10,7 @@ import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint'
 import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import {
   type GetReviewRequestEnv,
+  type IncompleteReviewRequest,
   type ReviewRequestPreprintId,
   type SaveReviewRequestEnv,
   getReviewRequest,
@@ -94,9 +95,17 @@ const publishRequest = (
 ): RTE.ReaderTaskEither<PublishRequestEnv, 'unavailable', void> =>
   R.asks(({ publishRequest }) => publishRequest(preprint, user, persona))
 
-const handleForm = ({ preprint, user }: { preprint: ReviewRequestPreprintId; user: User }) =>
+const handleForm = ({
+  preprint,
+  reviewRequest,
+  user,
+}: {
+  preprint: ReviewRequestPreprintId
+  reviewRequest: IncompleteReviewRequest
+  user: User
+}) =>
   pipe(
-    publishRequest(preprint, user, 'public'),
+    publishRequest(preprint, user, reviewRequest.persona ?? 'public'),
     RTE.chainFirstW(() => saveReviewRequest(user.orcid, preprint, { status: 'completed' })),
     RTE.matchW(
       () => failureMessage,

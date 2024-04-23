@@ -844,7 +844,13 @@ export const reviewRequest = (): fc.Arbitrary<ReviewRequest> =>
   fc.oneof(incompleteReviewRequest(), completedReviewRequest())
 
 export const incompleteReviewRequest = (): fc.Arbitrary<IncompleteReviewRequest> =>
-  fc.record({ status: constant('incomplete') })
+  fc.record(
+    {
+      status: constant('incomplete'),
+      persona: constantFrom('public', 'pseudonym'),
+    },
+    { requiredKeys: ['status'] },
+  )
 
 export const completedReviewRequest = (): fc.Arbitrary<CompletedReviewRequest> =>
   fc.record({ status: constant('completed') })

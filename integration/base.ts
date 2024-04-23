@@ -41,6 +41,7 @@ import type {
   LanguagesStoreEnv,
   LocationStoreEnv,
   ResearchInterestsStoreEnv,
+  ReviewRequestStoreEnv,
   UserOnboardingStoreEnv,
 } from '../src/keyv'
 import type { LegacyPrereviewApiEnv } from '../src/legacy-prereview'
@@ -75,6 +76,7 @@ interface AppFixtures {
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   canConnectOrcidProfile: CanConnectOrcidProfileEnv['canConnectOrcidProfile']
   canRequestReviews: CanRequestReviewsEnv['canRequestReviews']
+  reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canUploadAvatar: CanUploadAvatarEnv['canUploadAvatar']
 }
 
@@ -831,6 +833,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
   researchInterestsStore: async ({}, use) => {
     await use(new Keyv())
   },
+  reviewRequestStore: async ({}, use) => {
+    await use(new Keyv())
+  },
   server: async (
     {
       fetch,
@@ -846,6 +851,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       languagesStore,
       locationStore,
       researchInterestsStore,
+      reviewRequestStore,
       slackUserIdStore,
       userOnboardingStore,
       wasPrereviewRemoved,
@@ -899,7 +905,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       orcidTokenStore: new Keyv(),
       publicUrl: new URL(`http://localhost:${port}`),
       researchInterestsStore,
-      reviewRequestStore: new Keyv(),
+      reviewRequestStore,
       scietyListToken: 'secret' as NonEmptyString,
       secret: '',
       sessionCookie: 'session',

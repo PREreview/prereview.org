@@ -1,12 +1,22 @@
 import { format } from 'fp-ts-routing'
 import type { Orcid } from 'orcid-id-ts'
+import { P, match } from 'ts-pattern'
 import { html, plainText } from '../../html'
 import { StreamlinePageResponse } from '../../response'
-import type { ReviewRequestPreprintId } from '../../review-request'
+import type { IncompleteReviewRequest, ReviewRequestPreprintId } from '../../review-request'
 import { preprintReviewsMatch, profileMatch, requestReviewCheckMatch } from '../../routes'
+import { isPseudonym } from '../../types/pseudonym'
 import type { User } from '../../user'
 
-export function checkPage({ preprint, user }: { preprint: ReviewRequestPreprintId; user: User }) {
+export function checkPage({
+  preprint,
+  reviewRequest,
+  user,
+}: {
+  preprint: ReviewRequestPreprintId
+  reviewRequest: IncompleteReviewRequest
+  user: User
+}) {
   return StreamlinePageResponse({
     title: plainText`Check your request`,
     nav: html`
@@ -25,7 +35,14 @@ export function checkPage({ preprint, user }: { preprint: ReviewRequestPreprintI
             <dl class="summary-list">
               <div>
                 <dt>Published name</dt>
-                <dd>${displayAuthor(user)}</dd>
+                <dd>
+                  ${displayAuthor(
+                    match(reviewRequest.persona)
+                      .with(P.optional('public'), () => user)
+                      .with('pseudonym', () => ({ name: user.pseudonym }))
+                      .exhaustive(),
+                  )}
+                </dd>
               </div>
             </dl>
           </div>
@@ -44,8 +61,18 @@ export function checkPage({ preprint, user }: { preprint: ReviewRequestPreprintI
   })
 }
 
-function displayAuthor({ name, orcid }: { name: string; orcid: Orcid }) {
-  return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
-    >${name}</a
-  >`
+function displayAuthor({ name, orcid }: { name: string; orcid?: Orcid }) {
+  if (orcid) {
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'orcid', value: orcid } })}" class="orcid"
+      >${name}</a
+    >`
+  }
+
+  if (isPseudonym(name)) {
+    return html`<a href="${format(profileMatch.formatter, { profile: { type: 'pseudonym', value: name } })}"
+      >${name}</a
+    >`
+  }
+
+  return name
 }

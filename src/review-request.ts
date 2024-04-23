@@ -1,6 +1,6 @@
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
-import { flow } from 'fp-ts/function'
+import { flow, pipe } from 'fp-ts/function'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
@@ -13,6 +13,7 @@ export type ReviewRequestPreprintId = BiorxivPreprintId | ScieloPreprintId
 
 export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
+  readonly persona?: 'public' | 'pseudonym'
 }
 
 export interface CompletedReviewRequest {
@@ -34,9 +35,16 @@ export interface SaveReviewRequestEnv {
   ) => TE.TaskEither<'unavailable', void>
 }
 
-const IncompleteReviewRequestC = C.struct({
-  status: C.literal('incomplete'),
-}) satisfies C.Codec<unknown, unknown, IncompleteReviewRequest>
+const IncompleteReviewRequestC = pipe(
+  C.struct({
+    status: C.literal('incomplete'),
+  }),
+  C.intersect(
+    C.partial({
+      persona: C.literal('public', 'pseudonym'),
+    }),
+  ),
+) satisfies C.Codec<unknown, unknown, IncompleteReviewRequest>
 
 const CompletedReviewRequestC = C.struct({
   status: C.literal('completed'),
