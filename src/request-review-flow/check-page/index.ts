@@ -23,7 +23,7 @@ import { checkPage } from './check-page'
 import { failureMessage } from './failure-message'
 
 export interface PublishRequestEnv {
-  publishRequest: (preprint: ReviewRequestPreprintId) => TE.TaskEither<'unavailable', void>
+  publishRequest: (preprint: ReviewRequestPreprintId, user: User) => TE.TaskEither<'unavailable', void>
 }
 
 export const requestReviewCheck = ({
@@ -85,12 +85,13 @@ export const requestReviewCheck = ({
 
 const publishRequest = (
   preprint: ReviewRequestPreprintId,
+  user: User,
 ): RTE.ReaderTaskEither<PublishRequestEnv, 'unavailable', void> =>
-  R.asks(({ publishRequest }) => publishRequest(preprint))
+  R.asks(({ publishRequest }) => publishRequest(preprint, user))
 
 const handleForm = ({ preprint, user }: { preprint: ReviewRequestPreprintId; user: User }) =>
   pipe(
-    publishRequest(preprint),
+    publishRequest(preprint, user),
     RTE.chainFirstW(() => saveReviewRequest(user.orcid, preprint, { status: 'completed' })),
     RTE.matchW(
       () => failureMessage,

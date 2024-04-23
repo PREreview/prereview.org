@@ -23,8 +23,8 @@ export const coarReviewActionOfferPayload = (): fc.Arbitrary<CoarReviewActionOff
       'ietf:cite-as': fc.string(),
     }),
     actor: fc.record({
-      id: fc.constant('https://prereview.org'),
+      id: fc.string(),
       type: fc.constant('Person'),
-      name: fc.constant('A PREreviewer'),
+      name: fc.string(),
     }),
   })

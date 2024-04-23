@@ -17,8 +17,8 @@ export interface CoarReviewActionOfferPayload {
     'ietf:cite-as': string
   }
   actor: {
-    id: 'https://prereview.org'
+    id: string
     type: 'Person'
-    name: 'A PREreviewer'
+    name: string
   }
 }
