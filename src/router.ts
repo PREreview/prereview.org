@@ -1556,8 +1556,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
         R.local((env: RouterEnv) => ({
           ...env,
           getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
-          publishRequest: (preprint, user) =>
-            withEnv(publishToPrereviewCoarNotifyInbox, env)(preprint, user, 'pseudonym'),
+          publishRequest: withEnv(publishToPrereviewCoarNotifyInbox, env),
           saveReviewRequest: (orcid, preprint, request) =>
             withEnv(Keyv.saveReviewRequest, env)([orcid, preprint], request),
         })),

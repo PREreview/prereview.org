@@ -38,7 +38,7 @@ describe('requestReviewCheck', () => {
           expect(actual).toStrictEqual(
             RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }) }),
           )
-          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user)
+          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, 'public')
           expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'completed' })
         })
 
@@ -70,7 +70,7 @@ describe('requestReviewCheck', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user)
+          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, 'public')
           expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'completed' })
         })
 
@@ -101,7 +101,7 @@ describe('requestReviewCheck', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user)
+          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, 'public')
         })
       })
 
