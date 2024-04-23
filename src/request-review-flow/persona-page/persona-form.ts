@@ -6,7 +6,7 @@ import { type MissingE, hasAnError } from '../../form'
 import { html, plainText, rawHtml } from '../../html'
 import { StreamlinePageResponse } from '../../response'
 import type { ReviewRequestPreprintId } from '../../review-request'
-import { requestReviewPersonaMatch } from '../../routes'
+import { preprintReviewsMatch, requestReviewPersonaMatch } from '../../routes'
 import type { User } from '../../user'
 
 export interface PersonaForm {
@@ -27,6 +27,7 @@ export function personaForm({
   return StreamlinePageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: plainText`${error ? 'Error: ' : ''}What name would you like to use?`,
+    nav: html`<a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back">Back to preprint</a>`,
     main: html`
       <form method="post" action="${format(requestReviewPersonaMatch.formatter, { id: preprint })}" novalidate>
         ${error

@@ -4,7 +4,7 @@ import { match } from 'ts-pattern'
 import { html, plainText } from '../../html'
 import { StreamlinePageResponse } from '../../response'
 import type { IncompleteReviewRequest, ReviewRequestPreprintId } from '../../review-request'
-import { preprintReviewsMatch, profileMatch, requestReviewCheckMatch } from '../../routes'
+import { profileMatch, requestReviewCheckMatch, requestReviewPersonaMatch } from '../../routes'
 import { isPseudonym } from '../../types/pseudonym'
 import type { User } from '../../user'
 
@@ -19,9 +19,7 @@ export function checkPage({
 }) {
   return StreamlinePageResponse({
     title: plainText`Check your request`,
-    nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint })}" class="back">Back to preprint</a>
-    `,
+    nav: html`<a href="${format(requestReviewPersonaMatch.formatter, { id: preprint })}" class="back">Back</a>`,
     main: html`
       <single-use-form>
         <form method="post" action="${format(requestReviewCheckMatch.formatter, { id: preprint })}" novalidate>

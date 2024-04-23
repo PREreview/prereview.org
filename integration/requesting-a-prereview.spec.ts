@@ -86,6 +86,22 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
   },
 )
 
+test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
+  'see existing values when going back a step',
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+    await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
+
+    await page.getByRole('link', { name: 'Back' }).click()
+
+    await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
+  },
+)
+
 test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)('requires a valid preprint', async ({ page }) => {
   await page.goto('/request-a-prereview')
   await page.getByLabel('Which preprint would you like reviewed?').fill('not-a-preprint')
