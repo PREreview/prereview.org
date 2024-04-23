@@ -278,3 +278,21 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     )
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)('have to choose a name', async ({ page }) => {
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview/choose-name')
+
+  await page.getByRole('button', { name: 'Save and continue' }).click()
+
+  await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
+  await expect(page.getByRole('group', { name: 'What name would you like to use?' })).toHaveAttribute(
+    'aria-invalid',
+    'true',
+  )
+
+  await page.getByRole('link', { name: 'Select the name that you would like to use' }).click()
+
+  await expect(page.getByLabel('Josiah Carberry')).toBeFocused()
+})
