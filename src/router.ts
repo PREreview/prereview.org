@@ -113,7 +113,13 @@ import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
 import type { PublicUrlEnv } from './public-url'
 import { requestAPrereview } from './request-a-prereview-page'
-import { requestReview, requestReviewCheck, requestReviewPublished, requestReviewStart } from './request-review-flow'
+import {
+  requestReview,
+  requestReviewCheck,
+  requestReviewPersona,
+  requestReviewPublished,
+  requestReviewStart,
+} from './request-review-flow'
 import { resources } from './resources'
 import { handleResponse } from './response'
 import { reviewAPreprint } from './review-a-preprint'
@@ -174,6 +180,7 @@ import {
   requestAPrereviewMatch,
   requestReviewCheckMatch,
   requestReviewMatch,
+  requestReviewPersonaMatch,
   requestReviewPublishedMatch,
   requestReviewStartMatch,
   resourcesMatch,
@@ -1529,6 +1536,30 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           RM.of({ preprint: id }),
           RM.apS('user', maybeGetUser),
           RM.bindW('response', RM.fromReaderTaskK(requestReviewStart)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getReviewRequest: (orcid, preprint) => withEnv(Keyv.getReviewRequest, env)([orcid, preprint]),
+          saveReviewRequest: (orcid, preprint, request) =>
+            withEnv(Keyv.saveReviewRequest, env)([orcid, preprint], request),
+        })),
+      ),
+    ),
+    pipe(
+      requestReviewPersonaMatch.parser,
+      P.map(({ id }) =>
+        pipe(
+          RM.of({ preprint: id }),
+          RM.apS('user', maybeGetUser),
+          RM.apS(
+            'body',
+            RM.gets(c => c.getBody()),
+          ),
+          RM.apS('method', RM.fromMiddleware(getMethod)),
+          RM.bindW('response', RM.fromReaderTaskK(requestReviewPersona)),
           RM.ichainW(handleResponse),
         ),
       ),

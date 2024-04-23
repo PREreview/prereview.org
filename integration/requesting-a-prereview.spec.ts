@@ -26,15 +26,12 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
   'can request a PREreview using a pseudonym',
-  async ({ fetch, page, reviewRequestStore }) => {
+  async ({ fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-
-    await reviewRequestStore.set('0000-0002-1825-0097_biorxiv-10.1101/12345678', {
-      status: 'incomplete',
-      persona: 'pseudonym',
-    })
-    await page.reload()
+    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview/choose-name')
+    await page.getByLabel('Orange Panda').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
     await expect(page.getByRole('main')).toContainText('Published name Orange Panda')

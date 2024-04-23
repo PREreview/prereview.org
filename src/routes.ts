@@ -394,6 +394,8 @@ export const requestReviewMatch = pipe(requestReviewBaseMatch, P.then(P.end))
 
 export const requestReviewStartMatch = pipe(requestReviewBaseMatch, P.then(P.lit('start-now')), P.then(P.end))
 
+export const requestReviewPersonaMatch = pipe(requestReviewBaseMatch, P.then(P.lit('choose-name')), P.then(P.end))
+
 export const requestReviewCheckMatch = pipe(requestReviewBaseMatch, P.then(P.lit('check-your-request')), P.then(P.end))
 
 export const requestReviewPublishedMatch = pipe(
