@@ -843,13 +843,15 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
 export const reviewRequest = (): fc.Arbitrary<ReviewRequest> =>
   fc.oneof(incompleteReviewRequest(), completedReviewRequest())
 
-export const incompleteReviewRequest = (): fc.Arbitrary<IncompleteReviewRequest> =>
+export const incompleteReviewRequest = ({
+  persona,
+}: { persona?: fc.Arbitrary<IncompleteReviewRequest['persona']> } = {}): fc.Arbitrary<IncompleteReviewRequest> =>
   fc.record(
     {
       status: constant('incomplete'),
-      persona: constantFrom('public', 'pseudonym'),
+      persona: persona ?? constantFrom('public', 'pseudonym'),
     },
-    { requiredKeys: ['status'] },
+    !persona ? { requiredKeys: ['status'] } : {},
   )
 
 export const completedReviewRequest = (): fc.Arbitrary<CompletedReviewRequest> =>

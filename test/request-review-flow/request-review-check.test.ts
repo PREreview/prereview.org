@@ -7,7 +7,12 @@ import type { GetPreprintTitleEnv } from '../../src/preprint'
 import * as _ from '../../src/request-review-flow/check-page'
 import { RedirectResponse } from '../../src/response'
 import type { GetReviewRequestEnv, SaveReviewRequestEnv } from '../../src/review-request'
-import { requestReviewCheckMatch, requestReviewMatch, requestReviewPublishedMatch } from '../../src/routes'
+import {
+  requestReviewCheckMatch,
+  requestReviewMatch,
+  requestReviewPersonaMatch,
+  requestReviewPublishedMatch,
+} from '../../src/routes'
 import * as fc from '../fc'
 import { shouldNotBeCalled } from '../should-not-be-called'
 
@@ -18,7 +23,7 @@ describe('requestReviewCheck', () => {
         test.prop([
           fc.indeterminatePreprintId(),
           fc.user(),
-          fc.incompleteReviewRequest(),
+          fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
           fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
         ])('when the request can be published', async (preprint, user, reviewRequest, preprintTitle) => {
           const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.right(undefined))
@@ -38,14 +43,14 @@ describe('requestReviewCheck', () => {
           expect(actual).toStrictEqual(
             RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprintTitle.id }) }),
           )
-          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, reviewRequest.persona ?? 'public')
+          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, reviewRequest.persona)
           expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'completed' })
         })
 
         test.prop([
           fc.indeterminatePreprintId(),
           fc.user(),
-          fc.incompleteReviewRequest(),
+          fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
           fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
         ])("when the request state can't be changed", async (preprint, user, reviewRequest, preprintTitle) => {
           const saveReviewRequest = jest.fn<SaveReviewRequestEnv['saveReviewRequest']>(_ => TE.left('unavailable'))
@@ -70,14 +75,14 @@ describe('requestReviewCheck', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, reviewRequest.persona ?? 'public')
+          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, reviewRequest.persona)
           expect(saveReviewRequest).toHaveBeenCalledWith(user.orcid, preprintTitle.id, { status: 'completed' })
         })
 
         test.prop([
           fc.indeterminatePreprintId(),
           fc.user(),
-          fc.incompleteReviewRequest(),
+          fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
           fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
         ])('when the request can not be published', async (preprint, user, reviewRequest, preprintTitle) => {
           const publishRequest = jest.fn<_.PublishRequestEnv['publishRequest']>(_ => TE.left('unavailable'))
@@ -101,7 +106,7 @@ describe('requestReviewCheck', () => {
             skipToLabel: 'main',
             js: [],
           })
-          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, reviewRequest.persona ?? 'public')
+          expect(publishRequest).toHaveBeenCalledWith(preprintTitle.id, user, reviewRequest.persona)
         })
       })
 
@@ -109,7 +114,7 @@ describe('requestReviewCheck', () => {
         fc.indeterminatePreprintId(),
         fc.string().filter(method => method !== 'POST'),
         fc.user(),
-        fc.incompleteReviewRequest(),
+        fc.incompleteReviewRequest({ persona: fc.constantFrom('public', 'pseudonym') }),
         fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
       ])('when the form needs submitting', async (preprint, method, user, reviewRequest, preprintTitle) => {
         const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.right(preprintTitle))
@@ -161,6 +166,31 @@ describe('requestReviewCheck', () => {
         _tag: 'RedirectResponse',
         status: Status.SeeOther,
         location: format(requestReviewPublishedMatch.formatter, { id: preprint }),
+      })
+    })
+
+    test.prop([
+      fc.indeterminatePreprintId(),
+      fc.string().filter(method => method !== 'POST'),
+      fc.user(),
+      fc.preprintTitle({ id: fc.reviewRequestPreprintId() }),
+      fc.incompleteReviewRequest({ persona: fc.constant(undefined) }),
+    ])("when a name hasn't been chosen", async (preprint, method, user, preprintTitle, reviewRequest) => {
+      const actual = await _.requestReviewCheck({
+        method,
+        preprint,
+        user,
+      })({
+        getPreprintTitle: () => TE.right(preprintTitle),
+        getReviewRequest: () => TE.right(reviewRequest),
+        publishRequest: shouldNotBeCalled,
+        saveReviewRequest: shouldNotBeCalled,
+      })()
+
+      expect(actual).toStrictEqual({
+        _tag: 'RedirectResponse',
+        status: Status.SeeOther,
+        location: format(requestReviewPersonaMatch.formatter, { id: preprint }),
       })
     })
 

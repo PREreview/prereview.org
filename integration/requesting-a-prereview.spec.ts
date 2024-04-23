@@ -12,6 +12,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request a PREreview')
 
     await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
     await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
@@ -29,7 +31,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
   async ({ fetch, page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview/choose-name')
     await page.getByLabel('Orange Panda').check()
     await page.getByRole('button', { name: 'Save and continue' }).click()
 
@@ -49,7 +50,8 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
-    await page.waitForLoadState()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
     await page.goto('/')
     await page.getByRole('link', { name: 'Request a review' }).click()
     await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
@@ -69,8 +71,14 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
   async ({ page }) => {
     await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
     await page.getByRole('button', { name: 'Start now' }).click()
+    await page.getByLabel('Josiah Carberry').check()
+    await page.getByRole('button', { name: 'Save and continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Check your request')
+
+    await page.goBack()
+
+    await expect(page.getByLabel('Josiah Carberry')).toBeChecked()
 
     await page.goBack()
 
@@ -282,7 +290,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
 test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)('have to choose a name', async ({ page }) => {
   await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
   await page.getByRole('button', { name: 'Start now' }).click()
-  await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview/choose-name')
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
 

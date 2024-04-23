@@ -1,6 +1,6 @@
 import { format } from 'fp-ts-routing'
 import type { Orcid } from 'orcid-id-ts'
-import { P, match } from 'ts-pattern'
+import { match } from 'ts-pattern'
 import { html, plainText } from '../../html'
 import { StreamlinePageResponse } from '../../response'
 import type { IncompleteReviewRequest, ReviewRequestPreprintId } from '../../review-request'
@@ -14,7 +14,7 @@ export function checkPage({
   user,
 }: {
   preprint: ReviewRequestPreprintId
-  reviewRequest: IncompleteReviewRequest
+  reviewRequest: Required<IncompleteReviewRequest>
   user: User
 }) {
   return StreamlinePageResponse({
@@ -38,7 +38,7 @@ export function checkPage({
                 <dd>
                   ${displayAuthor(
                     match(reviewRequest.persona)
-                      .with(P.optional('public'), () => user)
+                      .with('public', () => user)
                       .with('pseudonym', () => ({ name: user.pseudonym }))
                       .exhaustive(),
                   )}

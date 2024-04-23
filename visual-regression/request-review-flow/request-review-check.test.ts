@@ -16,6 +16,7 @@ test('content looks right', async ({ showPage }) => {
     preprint,
     reviewRequest: {
       status: 'incomplete',
+      persona: 'public',
     },
     user: {
       name: 'Josiah Carberry',

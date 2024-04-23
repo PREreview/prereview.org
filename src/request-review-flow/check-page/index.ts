@@ -17,7 +17,7 @@ import {
   isReviewRequestPreprintId,
   saveReviewRequest,
 } from '../../review-request'
-import { requestReviewMatch, requestReviewPublishedMatch } from '../../routes'
+import { requestReviewMatch, requestReviewPersonaMatch, requestReviewPublishedMatch } from '../../routes'
 import type { IndeterminatePreprintId } from '../../types/preprint-id'
 import type { User } from '../../user'
 import { checkPage } from './check-page'
@@ -60,7 +60,8 @@ export const requestReviewCheck = ({
         RTE.chainW(request =>
           match(request)
             .with({ status: 'completed' }, () => RTE.left('already-completed' as const))
-            .with({ status: 'incomplete' }, RTE.right)
+            .with({ status: 'incomplete', persona: P.optional(P.nullish) }, () => RTE.left('no-persona' as const))
+            .with({ status: 'incomplete', persona: P.string }, RTE.right)
             .exhaustive(),
         ),
       ),
@@ -72,6 +73,9 @@ export const requestReviewCheck = ({
           match(error)
             .with('already-completed', () =>
               RedirectResponse({ location: format(requestReviewPublishedMatch.formatter, { id: preprint }) }),
+            )
+            .with('no-persona', () =>
+              RedirectResponse({ location: format(requestReviewPersonaMatch.formatter, { id: preprint }) }),
             )
             .with('no-session', () =>
               LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }),
