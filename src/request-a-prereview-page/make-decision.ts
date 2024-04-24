@@ -1,7 +1,10 @@
 import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
+import * as R from 'fp-ts/Reader'
+import type * as RE from 'fp-ts/ReaderEither'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
+import * as b from 'fp-ts/boolean'
 import { flow, identity, pipe } from 'fp-ts/function'
 import { P, match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../feature-flags'
@@ -25,22 +28,29 @@ export const makeDecision = ({
 }): RT.ReaderTask<CanRequestReviewsEnv & Preprint.ResolvePreprintIdEnv, Decision.Decision> =>
   pipe(
     user,
-    RTE.fromNullable(Decision.RequireLogIn),
-    RTE.chainFirstW(
-      flow(
-        RTE.fromReaderK(user => canRequestReviews(user)),
-        RTE.filterOrElse(
-          canRequestReviews => canRequestReviews,
-          () => Decision.DenyAccess,
-        ),
-      ),
-    ),
+    RTE.fromEitherK(ensureUserIsLoggedIn),
+    RTE.chainFirstReaderEitherKW(ensureUserCanRequestReviews),
     RTE.filterOrElseW(
       () => method === 'POST',
       () => Decision.ShowEmptyForm,
     ),
     RTE.chainEitherKW(() => pipe(Form.fromBody(body), E.mapLeft(Decision.ShowFormWithErrors))),
     RTE.matchEW(RT.of, handleForm),
+  )
+
+const ensureUserIsLoggedIn: (user: User | undefined) => E.Either<Decision.RequireLogIn, User> = E.fromNullable(
+  Decision.RequireLogIn,
+)
+
+const ensureUserCanRequestReviews: (user: User) => RE.ReaderEither<CanRequestReviewsEnv, Decision.DenyAccess, void> =
+  flow(
+    canRequestReviews,
+    R.map(
+      b.match(
+        () => E.left(Decision.DenyAccess),
+        () => E.right(undefined),
+      ),
+    ),
   )
 
 const handleForm = flow(
