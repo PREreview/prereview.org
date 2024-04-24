@@ -34,14 +34,7 @@ export const makeDecision = ({
       () => method === 'POST',
       () => Decision.ShowEmptyForm,
     ),
-    RTE.chainEitherKW(() => pipe(Form.fromBody(body), E.mapLeft(Decision.ShowFormWithErrors))),
-    RTE.chainEitherK(form =>
-      match(form.value)
-        .returnType<E.Either<Decision.Decision, PreprintId.IndeterminatePreprintId>>()
-        .with(P.string, E.fromOptionK(() => Decision.ShowUnsupportedDoi)(PreprintId.parsePreprintDoi))
-        .with(P.instanceOf(URL), E.fromOptionK(() => Decision.ShowUnsupportedUrl)(PreprintId.fromUrl))
-        .exhaustive(),
-    ),
+    RTE.chainEitherKW(() => extractPreprintId(body)),
     RTE.chainW(preprintId =>
       pipe(
         Preprint.resolvePreprintId(preprintId),
@@ -55,8 +48,27 @@ export const makeDecision = ({
       ),
     ),
     RTE.filterOrElseW(ReviewRequest.isReviewRequestPreprintId, Decision.ShowUnsupportedPreprint),
-    RTE.match(identity, Decision.BeginFlow),
+    RTE.matchW(identity, Decision.BeginFlow),
   )
+
+const extractPreprintId: (
+  body: unknown,
+) => E.Either<
+  Decision.ShowFormWithErrors | Decision.ShowUnsupportedDoi | Decision.ShowUnsupportedUrl,
+  PreprintId.IndeterminatePreprintId
+> = flow(
+  Form.fromBody,
+  E.mapLeft(Decision.ShowFormWithErrors),
+  E.chainW(form =>
+    match(form.value)
+      .returnType<
+        E.Either<Decision.ShowUnsupportedDoi | Decision.ShowUnsupportedUrl, PreprintId.IndeterminatePreprintId>
+      >()
+      .with(P.string, E.fromOptionK(() => Decision.ShowUnsupportedDoi)(PreprintId.parsePreprintDoi))
+      .with(P.instanceOf(URL), E.fromOptionK(() => Decision.ShowUnsupportedUrl)(PreprintId.fromUrl))
+      .exhaustive(),
+  ),
+)
 
 const ensureUserIsLoggedIn: (user: User | undefined) => E.Either<Decision.RequireLogIn, User> = E.fromNullable(
   Decision.RequireLogIn,
