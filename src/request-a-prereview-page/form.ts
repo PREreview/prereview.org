@@ -17,13 +17,13 @@ export interface InvalidForm {
 
 export type SubmittedForm = ValidForm | InvalidForm
 
-export interface UnsubmittedForm {
-  _tag: 'UnsubmittedForm'
+export interface EmptyForm {
+  _tag: 'EmptyForm'
 }
 
-export type Form = UnsubmittedForm | SubmittedForm
+export type Form = EmptyForm | SubmittedForm
 
-export type IncompleteForm = InvalidForm | UnsubmittedForm
+export type IncompleteForm = InvalidForm | EmptyForm
 
 export const ValidForm = (value: Doi.Doi | URL): ValidForm => ({
   _tag: 'ValidForm',
@@ -35,8 +35,8 @@ export const InvalidForm = (value: string): InvalidForm => ({
   value,
 })
 
-export const UnsubmittedForm: UnsubmittedForm = {
-  _tag: 'UnsubmittedForm',
+export const EmptyForm: EmptyForm = {
+  _tag: 'EmptyForm',
 }
 
 const UrlD = pipe(

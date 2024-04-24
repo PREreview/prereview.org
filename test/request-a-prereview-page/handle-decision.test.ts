@@ -132,8 +132,8 @@ describe('handleDecision', () => {
       })
     })
 
-    test('with an UnsubmittedForm', () => {
-      const actual = _.handleDecision({ _tag: 'ShowForm', form: { _tag: 'UnsubmittedForm' } })
+    test('with an EmptyForm', () => {
+      const actual = _.handleDecision({ _tag: 'ShowForm', form: { _tag: 'EmptyForm' } })
 
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',

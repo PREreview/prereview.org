@@ -3,7 +3,7 @@ import { requestAPrereviewPage } from '../../src/request-a-prereview-page/reques
 import { expect, test } from '../base'
 
 test('content looks right', async ({ showPage }) => {
-  const response = requestAPrereviewPage(Form.UnsubmittedForm)
+  const response = requestAPrereviewPage(Form.EmptyForm)
 
   const content = await showPage(response)
 
