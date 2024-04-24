@@ -1,4 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill'
+import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as RT from 'fp-ts/ReaderTask'
 import * as RA from 'fp-ts/ReadonlyArray'
@@ -9,7 +10,12 @@ import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
 import { getClubName } from './club-details'
-import { type CanRequestReviewsEnv, canRequestReviews } from './feature-flags'
+import {
+  type CanRequestReviewsEnv,
+  type CanSeeReviewRequestsEnv,
+  canRequestReviews,
+  canSeeReviewRequests,
+} from './feature-flags'
 import { type Html, html, plainText, rawHtml } from './html'
 import * as assets from './manifest.json'
 import { PageResponse } from './response'
@@ -20,6 +26,7 @@ import {
   reviewAPreprintMatch,
   reviewMatch,
   reviewsMatch,
+  writeReviewMatch,
 } from './routes'
 import { renderDate } from './time'
 import type { ClubId } from './types/club-id'
@@ -54,19 +61,22 @@ export const home = ({
   user,
 }: {
   user?: User
-}): RT.ReaderTask<CanRequestReviewsEnv & GetRecentPrereviewsEnv, PageResponse> =>
+}): RT.ReaderTask<CanRequestReviewsEnv & CanSeeReviewRequestsEnv & GetRecentPrereviewsEnv, PageResponse> =>
   pipe(
     RT.Do,
     RT.apS('recentPrereviews', getRecentPrereviews()),
     RT.apSW('canRequestReviews', user ? RT.fromReader(canRequestReviews(user)) : RT.of(false)),
+    RT.apSW('canSeeReviewRequests', user ? RT.fromReader(canSeeReviewRequests(user)) : RT.of(false)),
     RT.map(createPage),
   )
 
 function createPage({
   canRequestReviews,
+  canSeeReviewRequests,
   recentPrereviews,
 }: {
   canRequestReviews: boolean
+  canSeeReviewRequests: boolean
   recentPrereviews: ReadonlyArray<RecentPrereview>
 }) {
   return PageResponse({
@@ -107,35 +117,148 @@ function createPage({
         </section>
       </div>
 
-      <section class="tops" aria-labelledby="tops-title">
-        <h2 id="tops-title" class="visually-hidden">Year of Open Science</h2>
+      ${canSeeReviewRequests
+        ? html`
+            <section aria-labelledby="recent-prereviews-title">
+              <h2 id="recent-prereviews-title">Recent review requests</h2>
+              <ol class="cards" aria-labelledby="recent-prereviews-title" tabindex="0">
+                <li>
+                  <article>
+                    <a
+                      href="${format(writeReviewMatch.formatter, {
+                        id: { type: 'scielo', value: '10.1590/scielopreprints.8406' as Doi<'1590'> },
+                      })}"
+                    >
+                      A review was requested for
+                      <cite lang="pt"
+                        >TENDÊNCIAS TEMÁTICAS DE PESQUISAS SOBRE FORMAÇÃO DE PROFESSORES: REVISÃO BIBLIOMÉTRICA</cite
+                      >
+                    </a>
 
-        <img src="${assets['tops.png']}" width="400" height="564" loading="lazy" alt="" />
+                    <dl>
+                      <dt>Review published</dt>
+                      <dd><time datetime="2024-04-24">April 24, 2024</time></dd>
+                      <dt>Preprint server</dt>
+                      <dd>SciELO Preprints</dd>
+                    </dl>
+                  </article>
+                </li>
+                <li>
+                  <article>
+                    <a
+                      href="${format(writeReviewMatch.formatter, {
+                        id: { type: 'scielo', value: '10.1590/scielopreprints.8470' as Doi<'1590'> },
+                      })}"
+                    >
+                      A review was requested for
+                      <cite lang="pt"
+                        >CORPOS, SOCIEDADE E ESPAÇOS ACADÊMICOS: IDENTIDADES SUBALTERNAS E O DESAFIO DA CIDADANIA</cite
+                      >
+                    </a>
 
-        <div>
-          <p>
-            PREreview joined the US White House, 10 federal agencies, a coalition of more than 85 universities, and
-            other organizations in a commitment to advancing 4
-            <a href="https://nasa.github.io/Transform-to-Open-Science-Book/Year_of_Open_Science_Guide/readme.html"
-              >Year of Open Science</a
-            >
-            goals to:
-          </p>
+                    <dl>
+                      <dt>Review published</dt>
+                      <dd><time datetime="2024-04-24">April 24, 2024</time></dd>
+                      <dt>Preprint server</dt>
+                      <dd>SciELO Preprints</dd>
+                    </dl>
+                  </article>
+                </li>
+                <li>
+                  <article>
+                    <a
+                      href="${format(writeReviewMatch.formatter, {
+                        id: { type: 'biorxiv', value: '10.1101/2024.04.20.590411' as Doi<'1101'> },
+                      })}"
+                    >
+                      A review was requested for
+                      <cite>A Blueprint for Broadly Effective Bacteriophage Therapy Against Bacterial Infections</cite>
+                    </a>
 
-          <ol>
-            <li>Develop a strategic plan for open science.</li>
-            <li>Improve the transparency, integrity, and equity of reviews.</li>
-            <li>Account for open science activities in evaluations.</li>
-            <li>Engage underrepresented communities in the advancement of open science.</li>
-          </ol>
+                    <dl>
+                      <dt>Review published</dt>
+                      <dd><time datetime="2024-04-23">April 23, 2024</time></dd>
+                      <dt>Preprint server</dt>
+                      <dd>bioRxiv</dd>
+                    </dl>
+                  </article>
+                </li>
+                <li>
+                  <article>
+                    <a
+                      href="${format(writeReviewMatch.formatter, {
+                        id: { type: 'scielo', value: '10.1590/scielopreprints.8326' as Doi<'1590'> },
+                      })}"
+                    >
+                      A review was requested for
+                      <cite lang="es"
+                        >FACTORES ASOCIADOS A LA ERC-5 EN PACIENTES DE UNA EPS DEL VALLE DEL CAUCA 2018-2020</cite
+                      >
+                    </a>
 
-          <a
-            href="https://nasa.github.io/Transform-to-Open-Science-Book/Year_of_Open_Science_Guide/participants/PREreview.html"
-            class="forward"
-            >How PREreview is fulfilling this commitment</a
-          >
-        </div>
-      </section>
+                    <dl>
+                      <dt>Review published</dt>
+                      <dd><time datetime="2024-04-23">April 23, 2024</time></dd>
+                      <dt>Preprint server</dt>
+                      <dd>SciELO Preprints</dd>
+                    </dl>
+                  </article>
+                </li>
+                <li>
+                  <article>
+                    <a
+                      href="${format(writeReviewMatch.formatter, {
+                        id: { type: 'scielo', value: '10.1590/scielopreprints.7792' as Doi<'1590'> },
+                      })}"
+                    >
+                      A review was requested for
+                      <cite lang="pt"
+                        >A VARIAÇÃO LEXICAL E FONOLÓGICA NA LIBRAS NA EXPRESSÃO DO CONCEITO ‘ELEVADOR’</cite
+                      >
+                    </a>
+
+                    <dl>
+                      <dt>Review published</dt>
+                      <dd><time datetime="2024-04-22">April 22, 2024</time></dd>
+                      <dt>Preprint server</dt>
+                      <dd>SciELO Preprints</dd>
+                    </dl>
+                  </article>
+                </li>
+              </ol>
+            </section>
+          `
+        : html`
+            <section class="tops" aria-labelledby="tops-title">
+              <h2 id="tops-title" class="visually-hidden">Year of Open Science</h2>
+
+              <img src="${assets['tops.png']}" width="400" height="564" loading="lazy" alt="" />
+
+              <div>
+                <p>
+                  PREreview joined the US White House, 10 federal agencies, a coalition of more than 85 universities,
+                  and other organizations in a commitment to advancing 4
+                  <a href="https://nasa.github.io/Transform-to-Open-Science-Book/Year_of_Open_Science_Guide/readme.html"
+                    >Year of Open Science</a
+                  >
+                  goals to:
+                </p>
+
+                <ol>
+                  <li>Develop a strategic plan for open science.</li>
+                  <li>Improve the transparency, integrity, and equity of reviews.</li>
+                  <li>Account for open science activities in evaluations.</li>
+                  <li>Engage underrepresented communities in the advancement of open science.</li>
+                </ol>
+
+                <a
+                  href="https://nasa.github.io/Transform-to-Open-Science-Book/Year_of_Open_Science_Guide/participants/PREreview.html"
+                  class="forward"
+                  >How PREreview is fulfilling this commitment</a
+                >
+              </div>
+            </section>
+          `}
 
       <section aria-labelledby="statistics-title">
         <h2 id="statistics-title">Statistics</h2>

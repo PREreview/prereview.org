@@ -70,6 +70,7 @@ const server = app({
   avatarStore: new Keyv({ namespace: 'avatar-store', store: keyvStore }),
   canConnectOrcidProfile: () => true,
   canRequestReviews: isPrereviewTeam,
+  canSeeReviewRequests: isPrereviewTeam,
   canUploadAvatar: () => true,
   cloudinaryApi: { cloudName: 'prereview', key: env.CLOUDINARY_API_KEY, secret: env.CLOUDINARY_API_SECRET },
   contactEmailAddressStore: new Keyv({ namespace: 'contact-email-address', store: keyvStore }),

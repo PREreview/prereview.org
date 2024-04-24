@@ -21,3 +21,10 @@ export interface CanRequestReviewsEnv {
 
 export const canRequestReviews = (user: User) =>
   R.asks(({ canRequestReviews }: CanRequestReviewsEnv) => canRequestReviews(user))
+
+export interface CanSeeReviewRequestsEnv {
+  canSeeReviewRequests: (user: User) => boolean
+}
+
+export const canSeeReviewRequests = (user: User) =>
+  R.asks(({ canSeeReviewRequests }: CanSeeReviewRequestsEnv) => canSeeReviewRequests(user))
