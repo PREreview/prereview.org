@@ -37,9 +37,9 @@ export const makeDecision = ({
     ),
     RTE.filterOrElseW(
       () => method === 'POST',
-      () => Decision.ShowForm(Form.EmptyForm),
+      () => Decision.ShowEmptyForm,
     ),
-    RTE.chainEitherKW(() => pipe(Form.fromBody(body), E.mapLeft(Decision.ShowForm))),
+    RTE.chainEitherKW(() => pipe(Form.fromBody(body), E.mapLeft(Decision.ShowFormWithErrors))),
     RTE.matchEW(RT.of, handleForm),
   )
 

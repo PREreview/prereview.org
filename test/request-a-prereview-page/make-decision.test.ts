@@ -127,7 +127,7 @@ describe('makeDecision', () => {
             resolvePreprintId: shouldNotBeCalled,
           })()
 
-          expect(actual).toStrictEqual({ _tag: 'ShowForm', form: { _tag: 'InvalidForm', value } })
+          expect(actual).toStrictEqual({ _tag: 'ShowFormWithErrors', form: { _tag: 'InvalidForm', value } })
         })
       })
 
@@ -139,7 +139,7 @@ describe('makeDecision', () => {
             resolvePreprintId: shouldNotBeCalled,
           })()
 
-          expect(actual).toStrictEqual({ _tag: 'ShowForm', form: { _tag: 'EmptyForm' } })
+          expect(actual).toStrictEqual({ _tag: 'ShowEmptyForm' })
         },
       )
     })

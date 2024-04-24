@@ -117,33 +117,31 @@ describe('handleDecision', () => {
     })
   })
 
-  describe('with a ShowForm decision', () => {
-    test.prop([fc.invalidForm()])('with an InvalidForm', form => {
-      const actual = _.handleDecision({ _tag: 'ShowForm', form })
+  test.prop([fc.invalidForm()])('with an ShowFormWithErrors decision', form => {
+    const actual = _.handleDecision({ _tag: 'ShowFormWithErrors', form })
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        canonical: format(requestAPrereviewMatch.formatter, {}),
-        status: Status.BadRequest,
-        title: expect.stringContaining('Error: Which preprint'),
-        main: expect.stringContaining('Which preprint'),
-        skipToLabel: 'form',
-        js: ['error-summary.js'],
-      })
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(requestAPrereviewMatch.formatter, {}),
+      status: Status.BadRequest,
+      title: expect.stringContaining('Error: Which preprint'),
+      main: expect.stringContaining('Which preprint'),
+      skipToLabel: 'form',
+      js: ['error-summary.js'],
     })
+  })
 
-    test('with an EmptyForm', () => {
-      const actual = _.handleDecision({ _tag: 'ShowForm', form: { _tag: 'EmptyForm' } })
+  test('with an ShowEmptyForm decision', () => {
+    const actual = _.handleDecision({ _tag: 'ShowEmptyForm' })
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        canonical: format(requestAPrereviewMatch.formatter, {}),
-        status: Status.OK,
-        title: expect.stringContaining('Which preprint'),
-        main: expect.stringContaining('Which preprint'),
-        skipToLabel: 'form',
-        js: [],
-      })
+    expect(actual).toStrictEqual({
+      _tag: 'PageResponse',
+      canonical: format(requestAPrereviewMatch.formatter, {}),
+      status: Status.OK,
+      title: expect.stringContaining('Which preprint'),
+      main: expect.stringContaining('Which preprint'),
+      skipToLabel: 'form',
+      js: [],
     })
   })
 })

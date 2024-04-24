@@ -12,7 +12,8 @@ export type Decision =
   | ShowUnsupportedPreprint
   | ShowUnsupportedDoi
   | ShowUnsupportedUrl
-  | ShowForm
+  | ShowFormWithErrors
+  | ShowEmptyForm
 
 export interface BeginFlow {
   _tag: 'BeginFlow'
@@ -53,9 +54,13 @@ export interface ShowUnsupportedUrl {
   _tag: 'ShowUnsupportedUrl'
 }
 
-export interface ShowForm {
-  _tag: 'ShowForm'
-  form: Form.IncompleteForm
+export interface ShowFormWithErrors {
+  _tag: 'ShowFormWithErrors'
+  form: Form.InvalidForm
+}
+
+export interface ShowEmptyForm {
+  _tag: 'ShowEmptyForm'
 }
 
 export const BeginFlow = (preprint: ReviewRequestPreprintId): BeginFlow => ({ _tag: 'BeginFlow', preprint })
@@ -82,4 +87,9 @@ export const ShowUnsupportedDoi: ShowUnsupportedDoi = { _tag: 'ShowUnsupportedDo
 
 export const ShowUnsupportedUrl: ShowUnsupportedUrl = { _tag: 'ShowUnsupportedUrl' }
 
-export const ShowForm = (form: Form.IncompleteForm): ShowForm => ({ _tag: 'ShowForm', form })
+export const ShowFormWithErrors = (form: Form.InvalidForm): ShowFormWithErrors => ({
+  _tag: 'ShowFormWithErrors',
+  form,
+})
+
+export const ShowEmptyForm: ShowEmptyForm = { _tag: 'ShowEmptyForm' }
