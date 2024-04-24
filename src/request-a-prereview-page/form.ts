@@ -3,7 +3,6 @@ import * as E from 'fp-ts/Either'
 import * as O from 'fp-ts/Option'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
-import { P, match } from 'ts-pattern'
 import { getInput } from '../form'
 
 export interface ValidForm {
@@ -68,18 +67,25 @@ const WhichPreprintD = pipe(
   D.map(form => form.preprint),
 )
 
-export const fromRequest: (request: { method: string; body: unknown }) => Form = request =>
-  match(request)
-    .with({ method: 'POST', body: P.select() }, fromBody)
-    .otherwise(() => UnsubmittedForm)
-
-const fromBody: (body: unknown) => SubmittedForm = flow(
+const fromBody: (body: unknown) => E.Either<InvalidForm, ValidForm> = flow(
   WhichPreprintD.decode,
-  E.matchW(
+  E.bimap(
     flow(
       getInput('preprint'),
       O.match(() => InvalidForm(''), InvalidForm),
     ),
     ValidForm,
   ),
+)
+
+export const fromRequest: (request: {
+  method: string
+  body: unknown
+}) => E.Either<InvalidForm | UnsubmittedForm, ValidForm> = flow(
+  E.fromPredicate(
+    request => request.method === 'POST',
+    () => UnsubmittedForm,
+  ),
+  E.map(request => request.body),
+  E.chainW(fromBody),
 )

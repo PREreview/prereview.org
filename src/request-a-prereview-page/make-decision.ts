@@ -43,14 +43,8 @@ export const makeDecision = ({
     ),
     RTE.let('method', () => method),
     RTE.let('body', () => body),
-    RTE.matchEW(
-      RT.of,
-      flow(Form.fromRequest, form =>
-        match(form)
-          .with({ _tag: 'ValidForm' }, handleForm)
-          .otherwise(form => RT.of(Decision.ShowForm(form))),
-      ),
-    ),
+    RTE.chainEitherKW(flow(Form.fromRequest, E.mapLeft(Decision.ShowForm))),
+    RTE.matchEW(RT.of, handleForm),
   )
 
 const handleForm = flow(
