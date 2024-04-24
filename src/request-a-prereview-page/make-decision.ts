@@ -2,7 +2,7 @@ import * as E from 'fp-ts/Either'
 import type { Reader } from 'fp-ts/Reader'
 import * as R from 'fp-ts/Reader'
 import type * as RE from 'fp-ts/ReaderEither'
-import * as RT from 'fp-ts/ReaderTask'
+import type * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as b from 'fp-ts/boolean'
 import { flow, identity, pipe } from 'fp-ts/function'
@@ -35,7 +35,27 @@ export const makeDecision = ({
       () => Decision.ShowEmptyForm,
     ),
     RTE.chainEitherKW(() => pipe(Form.fromBody(body), E.mapLeft(Decision.ShowFormWithErrors))),
-    RTE.matchEW(RT.of, handleForm),
+    RTE.chainEitherK(form =>
+      match(form.value)
+        .returnType<E.Either<Decision.Decision, PreprintId.IndeterminatePreprintId>>()
+        .with(P.string, E.fromOptionK(() => Decision.ShowUnsupportedDoi)(PreprintId.parsePreprintDoi))
+        .with(P.instanceOf(URL), E.fromOptionK(() => Decision.ShowUnsupportedUrl)(PreprintId.fromUrl))
+        .exhaustive(),
+    ),
+    RTE.chainW(preprintId =>
+      pipe(
+        Preprint.resolvePreprintId(preprintId),
+        RTE.mapLeft(error =>
+          match(error)
+            .with('not-a-preprint', () => Decision.ShowNotAPreprint)
+            .with('not-found', () => Decision.ShowUnknownPreprint(preprintId))
+            .with('unavailable', () => Decision.ShowError)
+            .exhaustive(),
+        ),
+      ),
+    ),
+    RTE.filterOrElseW(ReviewRequest.isReviewRequestPreprintId, Decision.ShowUnsupportedPreprint),
+    RTE.match(identity, Decision.BeginFlow),
   )
 
 const ensureUserIsLoggedIn: (user: User | undefined) => E.Either<Decision.RequireLogIn, User> = E.fromNullable(
@@ -52,29 +72,5 @@ const ensureUserCanRequestReviews: (user: User) => RE.ReaderEither<CanRequestRev
       ),
     ),
   )
-
-const handleForm = flow(
-  RTE.fromEitherK((form: Form.ValidForm) =>
-    match(form.value)
-      .returnType<E.Either<Decision.Decision, PreprintId.IndeterminatePreprintId>>()
-      .with(P.string, E.fromOptionK(() => Decision.ShowUnsupportedDoi)(PreprintId.parsePreprintDoi))
-      .with(P.instanceOf(URL), E.fromOptionK(() => Decision.ShowUnsupportedUrl)(PreprintId.fromUrl))
-      .exhaustive(),
-  ),
-  RTE.chainW(preprintId =>
-    pipe(
-      Preprint.resolvePreprintId(preprintId),
-      RTE.mapLeft(error =>
-        match(error)
-          .with('not-a-preprint', () => Decision.ShowNotAPreprint)
-          .with('not-found', () => Decision.ShowUnknownPreprint(preprintId))
-          .with('unavailable', () => Decision.ShowError)
-          .exhaustive(),
-      ),
-    ),
-  ),
-  RTE.filterOrElseW(ReviewRequest.isReviewRequestPreprintId, Decision.ShowUnsupportedPreprint),
-  RTE.match(identity, Decision.BeginFlow),
-)
 
 type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never
