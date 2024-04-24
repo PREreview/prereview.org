@@ -24,26 +24,22 @@ export const makeDecision = ({
   user?: User
 }): RT.ReaderTask<CanRequestReviewsEnv & Preprint.ResolvePreprintIdEnv, Decision.Decision> =>
   pipe(
-    RTE.Do,
-    RTE.apS(
-      'user',
-      RTE.liftNullable(
-        () => user,
-        () => Decision.RequireLogIn,
-      )(),
-    ),
+    user,
+    RTE.fromNullable(Decision.RequireLogIn),
     RTE.chainFirstW(
       flow(
-        RTE.fromReaderK(({ user }) => canRequestReviews(user)),
+        RTE.fromReaderK(user => canRequestReviews(user)),
         RTE.filterOrElse(
           canRequestReviews => canRequestReviews,
           () => Decision.DenyAccess,
         ),
       ),
     ),
-    RTE.let('method', () => method),
-    RTE.let('body', () => body),
-    RTE.chainEitherKW(flow(Form.fromRequest, E.mapLeft(Decision.ShowForm))),
+    RTE.filterOrElseW(
+      () => method === 'POST',
+      () => Decision.ShowForm(Form.UnsubmittedForm),
+    ),
+    RTE.chainEitherKW(() => pipe(Form.fromBody(body), E.mapLeft(Decision.ShowForm))),
     RTE.matchEW(RT.of, handleForm),
   )
 

@@ -67,7 +67,7 @@ const WhichPreprintD = pipe(
   D.map(form => form.preprint),
 )
 
-const fromBody: (body: unknown) => E.Either<InvalidForm, ValidForm> = flow(
+export const fromBody: (body: unknown) => E.Either<InvalidForm, ValidForm> = flow(
   WhichPreprintD.decode,
   E.bimap(
     flow(
@@ -76,16 +76,4 @@ const fromBody: (body: unknown) => E.Either<InvalidForm, ValidForm> = flow(
     ),
     ValidForm,
   ),
-)
-
-export const fromRequest: (request: {
-  method: string
-  body: unknown
-}) => E.Either<InvalidForm | UnsubmittedForm, ValidForm> = flow(
-  E.fromPredicate(
-    request => request.method === 'POST',
-    () => UnsubmittedForm,
-  ),
-  E.map(request => request.body),
-  E.chainW(fromBody),
 )
