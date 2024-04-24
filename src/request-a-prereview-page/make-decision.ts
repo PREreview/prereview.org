@@ -35,20 +35,27 @@ export const makeDecision = ({
       () => Decision.ShowEmptyForm,
     ),
     RTE.chainEitherKW(() => extractPreprintId(body)),
-    RTE.chainW(preprintId =>
-      pipe(
-        Preprint.resolvePreprintId(preprintId),
-        RTE.mapLeft(error =>
-          match(error)
-            .with('not-a-preprint', () => Decision.ShowNotAPreprint)
-            .with('not-found', () => Decision.ShowUnknownPreprint(preprintId))
-            .with('unavailable', () => Decision.ShowError)
-            .exhaustive(),
-        ),
-      ),
-    ),
+    RTE.chainW(resolvePreprintId),
     RTE.filterOrElseW(ReviewRequest.isReviewRequestPreprintId, Decision.ShowUnsupportedPreprint),
     RTE.matchW(identity, Decision.BeginFlow),
+  )
+
+const resolvePreprintId = (
+  preprintId: PreprintId.IndeterminatePreprintId,
+): RTE.ReaderTaskEither<
+  Preprint.ResolvePreprintIdEnv,
+  Decision.ShowNotAPreprint | Decision.ShowUnknownPreprint | Decision.ShowError,
+  PreprintId.PreprintId
+> =>
+  pipe(
+    Preprint.resolvePreprintId(preprintId),
+    RTE.mapLeft(error =>
+      match(error)
+        .with('not-a-preprint', () => Decision.ShowNotAPreprint)
+        .with('not-found', () => Decision.ShowUnknownPreprint(preprintId))
+        .with('unavailable', () => Decision.ShowError)
+        .exhaustive(),
+    ),
   )
 
 const extractPreprintId: (
