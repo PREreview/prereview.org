@@ -45,7 +45,7 @@ import {
 } from 'zenodo-ts'
 import { getClubByName, getClubName } from './club-details'
 import { reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from './fetch'
-import type { RecentPrereview } from './home'
+import type { RecentPrereview } from './home-page'
 import { plainText, sanitizeHtml } from './html'
 import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
 import type { Prereview as PreprintPrereview } from './preprint-reviews'

@@ -76,7 +76,7 @@ import type {
 } from './feature-flags'
 import { funding } from './funding'
 import type { GhostApiEnv } from './ghost'
-import { home } from './home'
+import { home } from './home-page'
 import { howToUse } from './how-to-use'
 import * as Keyv from './keyv'
 import {
