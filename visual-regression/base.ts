@@ -46,6 +46,15 @@ export const test = baseTest.extend<ShowPage>({
 
       await page.setContent(pageHtml.toString())
 
+      const viewportSize = page.viewportSize()
+
+      if (viewportSize) {
+        const height = await page.evaluate(() => document.documentElement.scrollHeight).then(Math.ceil)
+        await page.setViewportSize({ width: viewportSize.width, height })
+        await page.waitForLoadState('networkidle')
+        await page.setViewportSize(viewportSize)
+      }
+
       return page.locator('.contents')
     })
   },
