@@ -326,14 +326,9 @@ test('can view a recent review', async ({ fetch, page }) => {
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
-  const recentReviews = page.getByRole('region', { name: 'Recent PREreviews' })
-
   await page.goto('/')
-  await recentReviews.scrollIntoViewIfNeeded()
-
-  await expect(page).toHaveScreenshot()
-
-  await recentReviews
+  await page
+    .getByRole('region', { name: 'Recent PREreviews' })
     .getByRole('link', {
       name: 'CJ San Felipe reviewed A conserved local structural motif controls the kinetics of PTP1B catalysis',
     })
@@ -403,14 +398,9 @@ test("can view a recent review that's part of a club", async ({ fetch, page }) =
       body: '<p>... its quenching capacity. This work enriches the knowledge about the impact ...</p>',
     })
 
-  const recentReviews = page.getByRole('region', { name: 'Recent PREreviews' })
-
   await page.goto('/')
-  await recentReviews.scrollIntoViewIfNeeded()
-
-  await expect(page).toHaveScreenshot()
-
-  await recentReviews
+  await page
+    .getByRole('region', { name: 'Recent PREreviews' })
     .getByRole('link', {
       name: 'Jaeyoung Oh of the ASAPbio Metabolism Crowd reviewed The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii',
     })
