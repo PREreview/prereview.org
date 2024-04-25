@@ -3,11 +3,11 @@ import { describe, expect, jest } from '@jest/globals'
 import { format } from 'fp-ts-routing'
 import * as T from 'fp-ts/Task'
 import { Status } from 'hyper-ts'
-import type { CanRequestReviewsEnv, CanSeeReviewRequestsEnv } from '../src/feature-flags'
-import * as _ from '../src/home'
-import { homeMatch } from '../src/routes'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import type { CanRequestReviewsEnv, CanSeeReviewRequestsEnv } from '../../src/feature-flags'
+import * as _ from '../../src/home'
+import { homeMatch } from '../../src/routes'
+import * as fc from '../fc'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('home', () => {
   test.prop([fc.user(), fc.boolean(), fc.boolean()])(

@@ -9,16 +9,16 @@ import { flow, pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
-import { getClubName } from './club-details'
+import { getClubName } from '../club-details'
 import {
   type CanRequestReviewsEnv,
   type CanSeeReviewRequestsEnv,
   canRequestReviews,
   canSeeReviewRequests,
-} from './feature-flags'
-import { type Html, html, plainText, rawHtml } from './html'
-import * as assets from './manifest.json'
-import { PageResponse } from './response'
+} from '../feature-flags'
+import { type Html, html, plainText, rawHtml } from '../html'
+import * as assets from '../manifest.json'
+import { PageResponse } from '../response'
 import {
   aboutUsMatch,
   homeMatch,
@@ -27,11 +27,11 @@ import {
   reviewMatch,
   reviewsMatch,
   writeReviewMatch,
-} from './routes'
-import { renderDate } from './time'
-import type { ClubId } from './types/club-id'
-import type { PreprintId } from './types/preprint-id'
-import type { User } from './user'
+} from '../routes'
+import { renderDate } from '../time'
+import type { ClubId } from '../types/club-id'
+import type { PreprintId } from '../types/preprint-id'
+import type { User } from '../user'
 
 import PlainDate = Temporal.PlainDate
 
