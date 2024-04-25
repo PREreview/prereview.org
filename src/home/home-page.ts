@@ -19,7 +19,7 @@ import {
   writeReviewMatch,
 } from '../routes'
 import { renderDate } from '../time'
-import type { RecentPrereview } from './'
+import type { RecentPrereview } from './recent-prereviews'
 
 export const createPage = ({
   canRequestReviews,
