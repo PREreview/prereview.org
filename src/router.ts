@@ -113,7 +113,10 @@ import { partners } from './partners'
 import { people } from './people'
 import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint'
 import { preprintReviews } from './preprint-reviews'
-import { publishToPrereviewCoarNotifyInbox } from './prereview-coar-notify'
+import {
+  getRecentReviewRequestsFromPrereviewCoarNotify,
+  publishToPrereviewCoarNotifyInbox,
+} from './prereview-coar-notify'
 import { privacyPolicy } from './privacy-policy'
 import { profile } from './profile-page'
 import type { PublicUrlEnv } from './public-url'
@@ -421,6 +424,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               ),
             env,
           ),
+          getRecentReviewRequests: () => T.of(getRecentReviewRequestsFromPrereviewCoarNotify()),
         })),
       ),
     ),

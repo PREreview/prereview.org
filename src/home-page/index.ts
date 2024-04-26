@@ -11,15 +11,19 @@ import type { PageResponse } from '../response'
 import type { User } from '../user'
 import { createPage } from './home-page'
 import { type GetRecentPrereviewsEnv, getRecentPrereviews } from './recent-prereviews'
-import { hardcodedRecentReviewRequests } from './recent-review-requests'
+import { type GetRecentReviewRequestsEnv, getRecentReviewRequests } from './recent-review-requests'
 
 export { RecentPrereview } from './recent-prereviews'
+export { RecentReviewRequest } from './recent-review-requests'
 
 export const home = ({
   user,
 }: {
   user?: User
-}): RT.ReaderTask<CanRequestReviewsEnv & CanSeeReviewRequestsEnv & GetRecentPrereviewsEnv, PageResponse> =>
+}): RT.ReaderTask<
+  CanRequestReviewsEnv & CanSeeReviewRequestsEnv & GetRecentPrereviewsEnv & GetRecentReviewRequestsEnv,
+  PageResponse
+> =>
   pipe(
     RT.Do,
     RT.apS('recentPrereviews', getRecentPrereviews()),
@@ -28,10 +32,10 @@ export const home = ({
       'recentReviewRequests',
       pipe(
         user ? RT.fromReader(canSeeReviewRequests(user)) : RT.of(false),
-        RT.map(
+        RT.chainW(
           b.matchW(
-            () => [],
-            () => hardcodedRecentReviewRequests,
+            () => RT.of([]),
+            () => getRecentReviewRequests(),
           ),
         ),
       ),
