@@ -1,7 +1,9 @@
+import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
+import type { ReadonlyNonEmptyArray } from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
 import { getLangDir } from 'rtl-detect'
 import { match } from 'ts-pattern'
@@ -20,6 +22,9 @@ import {
 } from '../routes'
 import { renderDate } from '../time'
 import type { RecentPrereview } from './recent-prereviews'
+import type { RecentReviewRequest } from './recent-review-requests'
+
+import PlainDate = Temporal.PlainDate
 
 export const createPage = ({
   canRequestReviews,
@@ -73,109 +78,36 @@ export const createPage = ({
             <section aria-labelledby="recent-prereviews-title">
               <h2 id="recent-prereviews-title">Recent review requests</h2>
               <ol class="cards" aria-labelledby="recent-prereviews-title" tabindex="0">
-                <li>
-                  <article>
-                    <a
-                      href="${format(writeReviewMatch.formatter, {
-                        id: { type: 'scielo', value: '10.1590/scielopreprints.8406' as Doi<'1590'> },
-                      })}"
-                    >
-                      A review was requested for
-                      <cite lang="pt"
-                        >TENDÊNCIAS TEMÁTICAS DE PESQUISAS SOBRE FORMAÇÃO DE PROFESSORES: REVISÃO BIBLIOMÉTRICA</cite
-                      >
-                    </a>
+                ${hardcodedRecentReviewRequests.map(
+                  request => html`
+                    <li>
+                      <article>
+                        <a
+                          href="${format(writeReviewMatch.formatter, {
+                            id: request.preprint.id,
+                          })}"
+                        >
+                          A review was requested for
+                          <cite dir="${getLangDir(request.preprint.language)}" lang="${request.preprint.language}"
+                            >${request.preprint.title}</cite
+                          >
+                        </a>
 
-                    <dl>
-                      <dt>Review published</dt>
-                      <dd><time datetime="2024-04-24">April 24, 2024</time></dd>
-                      <dt>Preprint server</dt>
-                      <dd>SciELO Preprints</dd>
-                    </dl>
-                  </article>
-                </li>
-                <li>
-                  <article>
-                    <a
-                      href="${format(writeReviewMatch.formatter, {
-                        id: { type: 'scielo', value: '10.1590/scielopreprints.8470' as Doi<'1590'> },
-                      })}"
-                    >
-                      A review was requested for
-                      <cite lang="pt"
-                        >CORPOS, SOCIEDADE E ESPAÇOS ACADÊMICOS: IDENTIDADES SUBALTERNAS E O DESAFIO DA CIDADANIA</cite
-                      >
-                    </a>
-
-                    <dl>
-                      <dt>Review published</dt>
-                      <dd><time datetime="2024-04-24">April 24, 2024</time></dd>
-                      <dt>Preprint server</dt>
-                      <dd>SciELO Preprints</dd>
-                    </dl>
-                  </article>
-                </li>
-                <li>
-                  <article>
-                    <a
-                      href="${format(writeReviewMatch.formatter, {
-                        id: { type: 'biorxiv', value: '10.1101/2024.04.20.590411' as Doi<'1101'> },
-                      })}"
-                    >
-                      A review was requested for
-                      <cite>A Blueprint for Broadly Effective Bacteriophage Therapy Against Bacterial Infections</cite>
-                    </a>
-
-                    <dl>
-                      <dt>Review published</dt>
-                      <dd><time datetime="2024-04-23">April 23, 2024</time></dd>
-                      <dt>Preprint server</dt>
-                      <dd>bioRxiv</dd>
-                    </dl>
-                  </article>
-                </li>
-                <li>
-                  <article>
-                    <a
-                      href="${format(writeReviewMatch.formatter, {
-                        id: { type: 'scielo', value: '10.1590/scielopreprints.8326' as Doi<'1590'> },
-                      })}"
-                    >
-                      A review was requested for
-                      <cite lang="es"
-                        >FACTORES ASOCIADOS A LA ERC-5 EN PACIENTES DE UNA EPS DEL VALLE DEL CAUCA 2018-2020</cite
-                      >
-                    </a>
-
-                    <dl>
-                      <dt>Review published</dt>
-                      <dd><time datetime="2024-04-23">April 23, 2024</time></dd>
-                      <dt>Preprint server</dt>
-                      <dd>SciELO Preprints</dd>
-                    </dl>
-                  </article>
-                </li>
-                <li>
-                  <article>
-                    <a
-                      href="${format(writeReviewMatch.formatter, {
-                        id: { type: 'scielo', value: '10.1590/scielopreprints.7792' as Doi<'1590'> },
-                      })}"
-                    >
-                      A review was requested for
-                      <cite lang="pt"
-                        >A VARIAÇÃO LEXICAL E FONOLÓGICA NA LIBRAS NA EXPRESSÃO DO CONCEITO ‘ELEVADOR’</cite
-                      >
-                    </a>
-
-                    <dl>
-                      <dt>Review published</dt>
-                      <dd><time datetime="2024-04-22">April 22, 2024</time></dd>
-                      <dt>Preprint server</dt>
-                      <dd>SciELO Preprints</dd>
-                    </dl>
-                  </article>
-                </li>
+                        <dl>
+                          <dt>Review published</dt>
+                          <dd>${renderDate(request.published)}</dd>
+                          <dt>Preprint server</dt>
+                          <dd>
+                            ${match(request.preprint.id.type)
+                              .with('biorxiv', () => 'bioRxiv')
+                              .with('scielo', () => 'SciELO Preprints')
+                              .exhaustive()}
+                          </dd>
+                        </dl>
+                      </article>
+                    </li>
+                  `,
+                )}
               </ol>
             </section>
           `
@@ -356,3 +288,46 @@ function formatList(
     rawHtml,
   )
 }
+
+const hardcodedRecentReviewRequests = [
+  {
+    published: PlainDate.from('2024-04-24'),
+    preprint: {
+      id: { type: 'scielo', value: '10.1590/scielopreprints.8406' as Doi<'1590'> },
+      language: 'pt',
+      title: rawHtml('TENDÊNCIAS TEMÁTICAS DE PESQUISAS SOBRE FORMAÇÃO DE PROFESSORES: REVISÃO BIBLIOMÉTRICA'),
+    },
+  },
+  {
+    published: PlainDate.from('2024-04-24'),
+    preprint: {
+      id: { type: 'scielo', value: '10.1590/scielopreprints.8470' as Doi<'1590'> },
+      language: 'pt',
+      title: rawHtml('CORPOS, SOCIEDADE E ESPAÇOS ACADÊMICOS: IDENTIDADES SUBALTERNAS E O DESAFIO DA CIDADANIA'),
+    },
+  },
+  {
+    published: PlainDate.from('2024-04-23'),
+    preprint: {
+      id: { type: 'biorxiv', value: '10.1101/2024.04.20.590411' as Doi<'1101'> },
+      language: 'en',
+      title: rawHtml('A Blueprint for Broadly Effective Bacteriophage Therapy Against Bacterial Infections'),
+    },
+  },
+  {
+    published: PlainDate.from('2024-04-23'),
+    preprint: {
+      id: { type: 'scielo', value: '10.1590/scielopreprints.8326' as Doi<'1590'> },
+      language: 'es',
+      title: rawHtml('FACTORES ASOCIADOS A LA ERC-5 EN PACIENTES DE UNA EPS DEL VALLE DEL CAUCA 2018-2020'),
+    },
+  },
+  {
+    published: PlainDate.from('2024-04-22'),
+    preprint: {
+      id: { type: 'scielo', value: '10.1590/scielopreprints.7792' as Doi<'1590'> },
+      language: 'pt',
+      title: rawHtml('A VARIAÇÃO LEXICAL E FONOLÓGICA NA LIBRAS NA EXPRESSÃO DO CONCEITO ‘ELEVADOR’'),
+    },
+  },
+] satisfies ReadonlyNonEmptyArray<RecentReviewRequest>
