@@ -2,6 +2,7 @@ import { Temporal } from '@js-temporal/polyfill'
 import type { Doi } from 'doi-ts'
 import type { RecentPrereview } from '../../src/home-page'
 import { createPage } from '../../src/home-page/home-page'
+import type { RecentReviewRequest } from '../../src/home-page/recent-review-requests'
 import { rawHtml } from '../../src/html'
 import { expect, test } from '../base'
 
@@ -11,7 +12,13 @@ test('content looks right', async ({ showPage }) => {
   const response = createPage({
     recentPrereviews: [recentPrereview1, recentPrereview2, recentPrereview3, recentPrereview4, recentPrereview5],
     canRequestReviews: false,
-    canSeeReviewRequests: false,
+    recentReviewRequests: [
+      recentReviewRequest1,
+      recentReviewRequest2,
+      recentReviewRequest3,
+      recentReviewRequest4,
+      recentReviewRequest5,
+    ],
   })
 
   const content = await showPage(response)
@@ -23,7 +30,7 @@ test('content looks right when empty', async ({ showPage }) => {
   const response = createPage({
     recentPrereviews: [],
     canRequestReviews: false,
-    canSeeReviewRequests: false,
+    recentReviewRequests: [],
   })
 
   const content = await showPage(response)
@@ -35,19 +42,7 @@ test('content looks right when reviews can be requested', async ({ showPage }) =
   const response = createPage({
     recentPrereviews: [recentPrereview1],
     canRequestReviews: true,
-    canSeeReviewRequests: false,
-  })
-
-  const content = await showPage(response)
-
-  await expect(content).toHaveScreenshot()
-})
-
-test('content looks right when review requests can be seen', async ({ showPage }) => {
-  const response = createPage({
-    recentPrereviews: [recentPrereview1],
-    canRequestReviews: false,
-    canSeeReviewRequests: true,
+    recentReviewRequests: [recentReviewRequest1],
   })
 
   const content = await showPage(response)
@@ -150,3 +145,48 @@ const recentPrereview5 = {
     title: rawHtml('Traduções de sinais de pontuação desacompanhados em HQs'),
   },
 } satisfies RecentPrereview
+
+const recentReviewRequest1 = {
+  published: PlainDate.from('2024-04-24'),
+  preprint: {
+    id: { type: 'scielo', value: '10.1590/scielopreprints.8406' as Doi<'1590'> },
+    language: 'pt',
+    title: rawHtml('TENDÊNCIAS TEMÁTICAS DE PESQUISAS SOBRE FORMAÇÃO DE PROFESSORES: REVISÃO BIBLIOMÉTRICA'),
+  },
+} satisfies RecentReviewRequest
+
+const recentReviewRequest2 = {
+  published: PlainDate.from('2024-04-24'),
+  preprint: {
+    id: { type: 'scielo', value: '10.1590/scielopreprints.8470' as Doi<'1590'> },
+    language: 'pt',
+    title: rawHtml('CORPOS, SOCIEDADE E ESPAÇOS ACADÊMICOS: IDENTIDADES SUBALTERNAS E O DESAFIO DA CIDADANIA'),
+  },
+} satisfies RecentReviewRequest
+
+const recentReviewRequest3 = {
+  published: PlainDate.from('2024-04-23'),
+  preprint: {
+    id: { type: 'biorxiv', value: '10.1101/2024.04.20.590411' as Doi<'1101'> },
+    language: 'en',
+    title: rawHtml('A Blueprint for Broadly Effective Bacteriophage Therapy Against Bacterial Infections'),
+  },
+} satisfies RecentReviewRequest
+
+const recentReviewRequest4 = {
+  published: PlainDate.from('2024-04-23'),
+  preprint: {
+    id: { type: 'scielo', value: '10.1590/scielopreprints.8326' as Doi<'1590'> },
+    language: 'es',
+    title: rawHtml('FACTORES ASOCIADOS A LA ERC-5 EN PACIENTES DE UNA EPS DEL VALLE DEL CAUCA 2018-2020'),
+  },
+} satisfies RecentReviewRequest
+
+const recentReviewRequest5 = {
+  published: PlainDate.from('2024-04-22'),
+  preprint: {
+    id: { type: 'scielo', value: '10.1590/scielopreprints.7792' as Doi<'1590'> },
+    language: 'pt',
+    title: rawHtml('A VARIAÇÃO LEXICAL E FONOLÓGICA NA LIBRAS NA EXPRESSÃO DO CONCEITO ‘ELEVADOR’'),
+  },
+} satisfies RecentReviewRequest
