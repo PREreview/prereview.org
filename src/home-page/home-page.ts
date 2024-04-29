@@ -14,6 +14,7 @@ import {
   requestAPrereviewMatch,
   reviewAPreprintMatch,
   reviewMatch,
+  reviewRequestsMatch,
   reviewsMatch,
   writeReviewMatch,
 } from '../routes'
@@ -158,6 +159,10 @@ export const createPage = ({
                   `,
                 )}
               </ol>
+
+              <nav>
+                <a href="${format(reviewRequestsMatch.formatter, { page: 1 })}" class="forward">See all requests</a>
+              </nav>
             </section>
           `,
         ),
