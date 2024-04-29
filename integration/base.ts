@@ -32,7 +32,12 @@ import { type ConfigEnv, app } from '../src/app'
 import { AuthorInviteC } from '../src/author-invite'
 import { ContactEmailAddressC } from '../src/contact-email-address'
 import { createAuthorInviteEmail } from '../src/email'
-import type { CanConnectOrcidProfileEnv, CanRequestReviewsEnv, CanUploadAvatarEnv } from '../src/feature-flags'
+import type {
+  CanConnectOrcidProfileEnv,
+  CanRequestReviewsEnv,
+  CanSeeReviewRequestsEnv,
+  CanUploadAvatarEnv,
+} from '../src/feature-flags'
 import { rawHtml } from '../src/html'
 import type {
   AuthorInviteStoreEnv,
@@ -76,6 +81,7 @@ interface AppFixtures {
   authorInviteStore: AuthorInviteStoreEnv['authorInviteStore']
   canConnectOrcidProfile: CanConnectOrcidProfileEnv['canConnectOrcidProfile']
   canRequestReviews: CanRequestReviewsEnv['canRequestReviews']
+  canSeeReviewRequests: CanSeeReviewRequestsEnv['canSeeReviewRequests']
   reviewRequestStore: ReviewRequestStoreEnv['reviewRequestStore']
   canUploadAvatar: CanUploadAvatarEnv['canUploadAvatar']
 }
@@ -97,6 +103,9 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
     await use(() => false)
   },
   canRequestReviews: async ({}, use) => {
+    await use(() => false)
+  },
+  canSeeReviewRequests: async ({}, use) => {
     await use(() => false)
   },
   canUploadAvatar: async ({}, use) => {
@@ -858,6 +867,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       authorInviteStore,
       canConnectOrcidProfile,
       canRequestReviews,
+      canSeeReviewRequests,
       canUploadAvatar,
     },
     use,
@@ -868,7 +878,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       avatarStore: new Keyv(),
       canConnectOrcidProfile,
       canRequestReviews,
-      canSeeReviewRequests: () => false,
+      canSeeReviewRequests,
       canUploadAvatar,
       cloudinaryApi: { cloudName: 'prereview', key: 'key', secret: 'app' },
       clock: SystemClock,
@@ -1374,6 +1384,29 @@ export const canRequestReviews: Fixtures<
   Pick<AppFixtures, 'canRequestReviews'>
 > = {
   canRequestReviews: async ({}, use) => {
+    await use(() => true)
+  },
+}
+
+export const canSeeReviewRequests: Fixtures<
+  Record<never, never>,
+  Record<never, never>,
+  Pick<AppFixtures, 'canSeeReviewRequests' | 'fetch'>
+> = {
+  canSeeReviewRequests: async ({ fetch }, use) => {
+    fetch.get('http://coar-notify.prereview.test/requests', {
+      body: [
+        {
+          timestamp: '2024-04-26T08:25:54.526Z',
+          preprint: '10.1101/2023.02.28.529746',
+        },
+        {
+          timestamp: '2024-04-25T10:42:37.213Z',
+          preprint: '10.1101/2022.01.13.476201',
+        },
+      ],
+    })
+
     await use(() => true)
   },
 }
