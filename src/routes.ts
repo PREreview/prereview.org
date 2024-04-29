@@ -382,6 +382,12 @@ export const writeReviewPublishMatch = pipe(writeReviewBaseMatch, P.then(P.lit('
 
 export const writeReviewPublishedMatch = pipe(writeReviewBaseMatch, P.then(P.lit('prereview-published')), P.then(P.end))
 
+export const reviewRequestsMatch = pipe(
+  P.lit('review-requests'),
+  P.then(query(C.struct({ page: IntegerFromStringC }))),
+  P.then(P.end),
+)
+
 export const requestAPrereviewMatch = pipe(P.lit('request-a-prereview'), P.then(P.end))
 
 const requestReviewBaseMatch = pipe(

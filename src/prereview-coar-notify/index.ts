@@ -8,6 +8,7 @@ import { match } from 'ts-pattern'
 import type { RecentReviewRequest } from '../home-page'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint'
 import type { ReviewRequestPreprintId } from '../review-request'
+import type { ReviewRequests } from '../review-requests-page'
 import type { GenerateUuidEnv } from '../types/uuid'
 import type { User } from '../user'
 import { constructCoarPayload } from './construct-coar-payload'
@@ -27,6 +28,50 @@ export const publishToPrereviewCoarNotifyInbox = (
     RTE.asks(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => coarNotifyUrl),
     RTE.chainReaderIOKW(coarNotifyUrl => constructCoarPayload({ coarNotifyUrl, preprint, user, persona })),
     RTE.chainW(sendReviewActionOffer),
+  )
+
+export const getReviewRequestsFromPrereviewCoarNotify = (
+  page: number,
+): RTE.ReaderTaskEither<
+  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
+  'not-found' | 'unavailable',
+  ReviewRequests
+> =>
+  pipe(
+    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
+    RTE.map(RA.chunksOf(5)),
+    RTE.chainW(pages =>
+      pipe(
+        RTE.Do,
+        RTE.let('currentPage', () => page),
+        RTE.let('totalPages', () => pages.length),
+        RTE.apS(
+          'reviewRequests',
+          pipe(
+            RTE.fromOption(() => 'not-found' as const)(RA.lookup(page - 1, pages)),
+            RTE.chainW(
+              RTE.traverseReadonlyNonEmptyArrayWithIndex((_, { timestamp, preprint }) =>
+                pipe(
+                  RTE.Do,
+                  RTE.let('published', () => timestamp.toZonedDateTimeISO('UTC').toPlainDate()),
+                  RTE.apS(
+                    'preprint',
+                    pipe(
+                      getPreprintTitle(preprint),
+                      RTE.mapLeft(error =>
+                        match(error)
+                          .with('not-found', () => 'unavailable' as const)
+                          .otherwise(identity),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
   )
 
 export const getRecentReviewRequestsFromPrereviewCoarNotify = (

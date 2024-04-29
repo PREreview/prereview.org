@@ -351,3 +351,16 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canSeeReviewRequests)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
   },
 )
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canSeeReviewRequests)(
+  'can view an older request',
+  async ({ page }) => {
+    await page.goto('/')
+    await page.goto('/review-requests?page=1')
+    await page
+      .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })
+      .click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Write a PREreview')
+  },
+)

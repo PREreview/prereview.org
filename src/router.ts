@@ -117,6 +117,7 @@ import { preprintReviews } from './preprint-reviews'
 import {
   type PrereviewCoarNotifyEnv,
   getRecentReviewRequestsFromPrereviewCoarNotify,
+  getReviewRequestsFromPrereviewCoarNotify,
   publishToPrereviewCoarNotifyInbox,
 } from './prereview-coar-notify'
 import { privacyPolicy } from './privacy-policy'
@@ -134,6 +135,7 @@ import { resources } from './resources'
 import { handleResponse } from './response'
 import { reviewAPreprint } from './review-a-preprint'
 import { reviewPage } from './review-page'
+import { reviewRequests } from './review-requests-page'
 import { reviewsPage } from './reviews-page'
 import {
   aboutUsMatch,
@@ -196,6 +198,7 @@ import {
   resourcesMatch,
   reviewAPreprintMatch,
   reviewMatch,
+  reviewRequestsMatch,
   reviewsMatch,
   scietyListMatch,
   trainingsMatch,
@@ -1512,6 +1515,23 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
     pipe(
       writeReviewPublishedMatch.parser,
       P.map(({ id }) => writeReviewPublished(id)),
+    ),
+    pipe(
+      reviewRequestsMatch.parser,
+      P.map(({ page }) =>
+        pipe(
+          RM.of({ page }),
+          RM.apS('user', maybeGetUser),
+          RM.bindW('response', RM.fromReaderTaskK(reviewRequests)),
+          RM.ichainW(handleResponse),
+        ),
+      ),
+      P.map(
+        R.local((env: RouterEnv) => ({
+          ...env,
+          getReviewRequests: withEnv(getReviewRequestsFromPrereviewCoarNotify, env),
+        })),
+      ),
     ),
     pipe(
       requestAPrereviewMatch.parser,
