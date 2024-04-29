@@ -127,8 +127,29 @@ export const createPage = ({
                           <dt>Preprint server</dt>
                           <dd>
                             ${match(request.preprint.id.type)
+                              .with('africarxiv', () => 'AfricArXiv Preprints')
+                              .with('arxiv', () => 'arXiv')
+                              .with('authorea', () => 'Authorea')
                               .with('biorxiv', () => 'bioRxiv')
+                              .with('chemrxiv', () => 'ChemRxiv')
+                              .with('eartharxiv', () => 'EarthArXiv')
+                              .with('ecoevorxiv', () => 'EcoEvoRxiv')
+                              .with('edarxiv', () => 'EdArXiv')
+                              .with('engrxiv', () => 'engrXiv')
+                              .with('medrxiv', () => 'medRxiv')
+                              .with('metaarxiv', () => 'MetaArXiv')
+                              .with('osf', () => 'OSF')
+                              .with('osf-preprints', () => 'OSF Preprints')
+                              .with('philsci', () => 'PhilSci-Archive')
+                              .with('preprints.org', () => 'Preprints.org')
+                              .with('psyarxiv', () => 'PsyArXiv')
+                              .with('psycharchives', () => 'PsychArchives')
+                              .with('research-square', () => 'Research Square')
                               .with('scielo', () => 'SciELO Preprints')
+                              .with('science-open', () => 'ScienceOpen Preprints')
+                              .with('socarxiv', () => 'SocArXiv')
+                              .with('techrxiv', () => 'TechRxiv')
+                              .with('zenodo', () => 'Zenodo')
                               .exhaustive()}
                           </dd>
                         </dl>

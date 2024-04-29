@@ -4,14 +4,14 @@ import type * as T from 'fp-ts/Task'
 import { pipe } from 'fp-ts/function'
 import type { LanguageCode } from 'iso-639-1'
 import type { Html } from '../html'
-import type { ReviewRequestPreprintId } from '../review-request'
+import type { PreprintId } from '../types/preprint-id'
 
 import PlainDate = Temporal.PlainDate
 
 export interface RecentReviewRequest {
   readonly published: PlainDate
   readonly preprint: {
-    readonly id: ReviewRequestPreprintId
+    readonly id: PreprintId
     readonly language: LanguageCode
     readonly title: Html
   }
