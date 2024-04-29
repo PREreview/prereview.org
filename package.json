@@ -19,7 +19,7 @@
     "cookie-signature": "^1.2.1",
     "crossref-ts": "^0.1.5",
     "datacite-ts": "^0.1.4",
-    "doi-ts": "^0.1.7",
+    "doi-ts": "^0.1.8",
     "express": "^4.19.2",
     "fetch-fp-ts": "^0.1.6",
     "fp-ts": "^2.16.5",
