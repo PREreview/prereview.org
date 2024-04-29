@@ -18,7 +18,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
     await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
-    fetch.postOnce('https://coar-notify-sandbox.prereview.org/inbox', { status: Status.Created })
+    fetch.postOnce('http://coar-notify.prereview.test/inbox', { status: Status.Created })
 
     await page.getByRole('button', { name: 'Request PREreview' }).click()
 
@@ -37,7 +37,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
     await expect(page.getByRole('main')).toContainText('Published name Orange Panda')
 
-    fetch.postOnce('https://coar-notify-sandbox.prereview.org/inbox', { status: Status.Created })
+    fetch.postOnce('http://coar-notify.prereview.test/inbox', { status: Status.Created })
 
     await page.getByRole('button', { name: 'Request PREreview' }).click()
 

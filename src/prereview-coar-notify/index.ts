@@ -13,27 +13,28 @@ import { constructCoarPayload } from './construct-coar-payload'
 import { type RecentReviewRequestFromPrereviewCoarNotify, getRecentReviewRequests } from './get-recent-review-requests'
 import { sendReviewActionOffer } from './send-review-action-offer'
 
-const hardcodedCoarNotifyUrl = new URL('https://coar-notify-sandbox.prereview.org')
+export interface PrereviewCoarNotifyEnv {
+  readonly coarNotifyUrl: URL
+}
 
 export const publishToPrereviewCoarNotifyInbox = (
   preprint: ReviewRequestPreprintId,
   user: User,
   persona: 'public' | 'pseudonym',
-): RTE.ReaderTaskEither<F.FetchEnv & GenerateUuidEnv, 'unavailable', void> =>
+): RTE.ReaderTaskEither<F.FetchEnv & GenerateUuidEnv & PrereviewCoarNotifyEnv, 'unavailable', void> =>
   pipe(
-    { coarNotifyUrl: hardcodedCoarNotifyUrl, preprint, user, persona },
-    constructCoarPayload,
-    RTE.rightReaderIO,
+    RTE.asks(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => coarNotifyUrl),
+    RTE.chainReaderIOKW(coarNotifyUrl => constructCoarPayload({ coarNotifyUrl, preprint, user, persona })),
     RTE.chainW(sendReviewActionOffer),
   )
 
 export const getRecentReviewRequestsFromPrereviewCoarNotify = (): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintTitleEnv & LoggerEnv,
+  FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
   'unavailable',
   ReadonlyArray<RecentReviewRequest>
 > =>
   pipe(
-    getRecentReviewRequests(hardcodedCoarNotifyUrl),
+    RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
     RTE.chainW(
       RTE.traverseArray(({ timestamp, preprint }: RecentReviewRequestFromPrereviewCoarNotify) =>
         pipe(

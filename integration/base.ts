@@ -875,6 +875,7 @@ const appFixtures: Fixtures<AppFixtures, Record<never, never>, PlaywrightTestArg
       fetch,
       formStore,
       careerStageStore,
+      coarNotifyUrl: new URL('http://coar-notify.prereview.test'),
       contactEmailAddressStore,
       ghostApi: {
         key: 'key',

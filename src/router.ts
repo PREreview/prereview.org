@@ -115,6 +115,7 @@ import { people } from './people'
 import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint'
 import { preprintReviews } from './preprint-reviews'
 import {
+  type PrereviewCoarNotifyEnv,
   getRecentReviewRequestsFromPrereviewCoarNotify,
   publishToPrereviewCoarNotifyInbox,
 } from './prereview-coar-notify'
@@ -334,6 +335,7 @@ export type RouterEnv = Keyv.AvatarStoreEnv &
   Keyv.OrcidTokenStoreEnv &
   OrcidOAuthEnv &
   PhaseEnv &
+  PrereviewCoarNotifyEnv &
   PublicUrlEnv &
   Keyv.ResearchInterestsStoreEnv &
   Keyv.ReviewRequestStoreEnv &
