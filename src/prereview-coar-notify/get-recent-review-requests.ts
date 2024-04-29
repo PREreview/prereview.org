@@ -41,10 +41,7 @@ const InstantC = C.make(
 const DoiUrlC = C.make(
   pipe(
     D.string,
-    D.parse(s => {
-      console.log(s)
-      return E.fromOption(() => D.error(s, 'DOI'))(parsePreprintDoi(s))
-    }),
+    D.parse(s => E.fromOption(() => D.error(s, 'DOI'))(parsePreprintDoi(s))),
   ),
   { encode: id => Doi.toUrl(id.value).href },
 )
