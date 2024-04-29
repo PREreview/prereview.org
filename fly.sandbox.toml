@@ -1,6 +1,7 @@
 app = "prereview-sandbox"
 
 [env]
+COAR_NOTIFY_URL = "https://coar-notify-sandbox.prereview.org/"
 FATHOM_SITE_ID = "BGNKWQNI"
 LEGACY_PREREVIEW_URL = "https://prereview2.azurewebsites.net/"
 LOG_FORMAT = "json"
