@@ -993,14 +993,17 @@ export const headers = () =>
 
 export const statusCode = (): fc.Arbitrary<Status> => constantFrom(...Object.values(Status))
 
-export const fetchResponse = ({ status }: { status?: fc.Arbitrary<number> } = {}): fc.Arbitrary<F.Response> =>
+export const fetchResponse = ({
+  status,
+  text,
+}: { status?: fc.Arbitrary<number>; text?: fc.Arbitrary<string> } = {}): fc.Arbitrary<F.Response> =>
   fc
     .record({
       headers: headers(),
       status: status ?? fc.integer(),
       statusText: fc.string(),
       url: fc.string(),
-      text: fc.string(),
+      text: text ?? fc.string(),
     })
     .map(args =>
       Object.defineProperties(

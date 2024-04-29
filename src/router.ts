@@ -5,6 +5,7 @@ import { concatAll } from 'fp-ts/Monoid'
 import * as O from 'fp-ts/Option'
 import * as R from 'fp-ts/Reader'
 import * as RIO from 'fp-ts/ReaderIO'
+import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RA from 'fp-ts/ReadonlyArray'
 import * as T from 'fp-ts/Task'
@@ -424,7 +425,14 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
               ),
             env,
           ),
-          getRecentReviewRequests: () => T.of(getRecentReviewRequestsFromPrereviewCoarNotify()),
+          getRecentReviewRequests: withEnv(
+            () =>
+              pipe(
+                getRecentReviewRequestsFromPrereviewCoarNotify(),
+                RTE.getOrElseW(() => RT.of(RA.empty)),
+              ),
+            env,
+          ),
         })),
       ),
     ),
