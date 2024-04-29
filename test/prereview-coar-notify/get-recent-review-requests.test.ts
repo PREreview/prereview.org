@@ -33,7 +33,7 @@ describe('getRecentReviewRequests', () => {
   ])('when a list is found', async (origin, [requests, response]) => {
     const fetch = jest.fn<Fetch>(_ => Promise.resolve(response))
 
-    const result = await _.getRecentReviewRequests(origin.href)({
+    const result = await _.getRecentReviewRequests(origin)({
       fetch,
       clock: SystemClock,
       logger: () => IO.of(undefined),
@@ -45,7 +45,7 @@ describe('getRecentReviewRequests', () => {
 
   describe('when the request fails', () => {
     test.prop([fc.origin(), fc.anything()])('with a network error', async (origin, reason) => {
-      const result = await _.getRecentReviewRequests(origin.href)({
+      const result = await _.getRecentReviewRequests(origin)({
         fetch: () => Promise.reject(reason),
         clock: SystemClock,
         logger: () => IO.of(undefined),
@@ -57,7 +57,7 @@ describe('getRecentReviewRequests', () => {
     test.prop([fc.origin(), fc.fetchResponse({ status: fc.statusCode().filter(status => status !== Status.OK) })])(
       'with an unexpected status',
       async (origin, response) => {
-        const result = await _.getRecentReviewRequests(origin.href)({
+        const result = await _.getRecentReviewRequests(origin)({
           fetch: () => Promise.resolve(response),
           clock: SystemClock,
           logger: () => IO.of(undefined),

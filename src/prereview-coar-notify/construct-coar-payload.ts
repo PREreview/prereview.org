@@ -16,7 +16,7 @@ export const constructCoarPayload = ({
   preprint,
   user,
 }: {
-  coarNotifyUrl: string
+  coarNotifyUrl: URL
   persona: 'public' | 'pseudonym'
   preprint: ReviewRequestPreprintId
   user: User
@@ -28,13 +28,13 @@ export const constructCoarPayload = ({
       '@context': ['https://www.w3.org/ns/activitystreams', 'https://purl.org/coar/notify'],
       type: ['Offer', 'coar-notify:ReviewAction'],
       origin: {
-        id: coarNotifyUrl,
-        inbox: `${coarNotifyUrl}/inbox`,
+        id: coarNotifyUrl.href,
+        inbox: new URL('/inbox', coarNotifyUrl).href,
         type: 'Service',
       },
       target: {
-        id: coarNotifyUrl,
-        inbox: `${coarNotifyUrl}/inbox`,
+        id: coarNotifyUrl.href,
+        inbox: new URL('/inbox', coarNotifyUrl).href,
         type: 'Service',
       },
       object: {

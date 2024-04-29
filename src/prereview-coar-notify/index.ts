@@ -13,7 +13,7 @@ import { constructCoarPayload } from './construct-coar-payload'
 import { type RecentReviewRequestFromPrereviewCoarNotify, getRecentReviewRequests } from './get-recent-review-requests'
 import { sendReviewActionOffer } from './send-review-action-offer'
 
-const hardcodedCoarNotifyUrl = 'https://coar-notify-sandbox.prereview.org'
+const hardcodedCoarNotifyUrl = new URL('https://coar-notify-sandbox.prereview.org')
 
 export const publishToPrereviewCoarNotifyInbox = (
   preprint: ReviewRequestPreprintId,

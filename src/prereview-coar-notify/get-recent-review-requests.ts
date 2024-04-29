@@ -63,7 +63,7 @@ export const RecentReviewRequestsC = pipe(
 export type RecentReviewRequestFromPrereviewCoarNotify = C.TypeOf<typeof RecentReviewRequestsC>[number]
 
 export const getRecentReviewRequests = flow(
-  (baseUrl: string) => new URL('/requests', baseUrl),
+  (baseUrl: URL) => new URL('/requests', baseUrl),
   F.Request('GET'),
   F.send,
   RTE.local(timeoutRequest(2000)),
