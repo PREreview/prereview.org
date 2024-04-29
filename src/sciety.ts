@@ -55,7 +55,10 @@ export const isScietyPreprint: Refinement<PreprintId, PreprintIdSupportedBySciet
 
 export const scietyUrl = (preprint: PreprintIdSupportedBySciety) => {
   const url = new URL('https://sciety.org/articles/activity/')
-  url.pathname = `articles/activity/${preprint.value.replace(/\/(\.{1,2})\//g, '/$1%2F').replace(/\\/g, '%5C')}`
+  url.pathname = `articles/activity/${preprint.value
+    .replace('%', '%25')
+    .replace(/\/(\.{1,2})\//g, '/$1%2F')
+    .replace(/\\/g, '%5C')}`
 
   return url
 }
