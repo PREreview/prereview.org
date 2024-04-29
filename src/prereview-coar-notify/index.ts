@@ -1,7 +1,8 @@
 import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { identity, pipe } from 'fp-ts/function'
+import * as RA from 'fp-ts/ReadonlyArray'
+import { flow, identity, pipe } from 'fp-ts/function'
 import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import type { RecentReviewRequest } from '../home-page'
@@ -28,13 +29,16 @@ export const publishToPrereviewCoarNotifyInbox = (
     RTE.chainW(sendReviewActionOffer),
   )
 
-export const getRecentReviewRequestsFromPrereviewCoarNotify = (): RTE.ReaderTaskEither<
+export const getRecentReviewRequestsFromPrereviewCoarNotify = (
+  page: number,
+): RTE.ReaderTaskEither<
   FetchEnv & GetPreprintTitleEnv & LoggerEnv & PrereviewCoarNotifyEnv,
-  'unavailable',
+  'not-found' | 'unavailable',
   ReadonlyArray<RecentReviewRequest>
 > =>
   pipe(
     RTE.asksReaderTaskEitherW(({ coarNotifyUrl }: PrereviewCoarNotifyEnv) => getRecentReviewRequests(coarNotifyUrl)),
+    RTE.chainOptionKW(() => 'not-found' as const)(flow(RA.chunksOf(5), RA.lookup(page - 1))),
     RTE.chainW(
       RTE.traverseArray(({ timestamp, preprint }: RecentReviewRequestFromPrereviewCoarNotify) =>
         pipe(

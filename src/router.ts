@@ -430,7 +430,7 @@ const router: P.Parser<RM.ReaderMiddleware<RouterEnv, StatusOpen, ResponseEnded,
           getRecentReviewRequests: withEnv(
             () =>
               pipe(
-                getRecentReviewRequestsFromPrereviewCoarNotify(),
+                getRecentReviewRequestsFromPrereviewCoarNotify(1),
                 RTE.getOrElseW(() => RT.of(RA.empty)),
               ),
             env,
