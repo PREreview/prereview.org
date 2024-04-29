@@ -103,9 +103,9 @@ export const createPage = ({
             </section>
           `,
           requests => html`
-            <section aria-labelledby="recent-prereviews-title">
-              <h2 id="recent-prereviews-title">Recent review requests</h2>
-              <ol class="cards" aria-labelledby="recent-prereviews-title" tabindex="0">
+            <section aria-labelledby="recent-review-requests-title">
+              <h2 id="recent-review-requests-title">Recent review requests</h2>
+              <ol class="cards" aria-labelledby="recent-review-requests-title" tabindex="0">
                 ${requests.map(
                   request => html`
                     <li>
