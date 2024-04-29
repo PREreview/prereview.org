@@ -1,7 +1,9 @@
 import { test } from '@fast-check/jest'
 import { describe, expect, jest } from '@jest/globals'
+import { SystemClock } from 'clock-ts'
 import type { Fetch } from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
+import * as IO from 'fp-ts/IO'
 import { Status } from 'hyper-ts'
 import * as _ from '../../src/prereview-coar-notify/get-recent-review-requests'
 import { RecentReviewRequestsC } from '../../src/prereview-coar-notify/get-recent-review-requests'
@@ -31,7 +33,11 @@ describe('getRecentReviewRequests', () => {
   ])('when a list is found', async (origin, [requests, response]) => {
     const fetch = jest.fn<Fetch>(_ => Promise.resolve(response))
 
-    const result = await _.getRecentReviewRequests(origin.href)({ fetch })()
+    const result = await _.getRecentReviewRequests(origin.href)({
+      fetch,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
 
     expect(result).toStrictEqual(E.right(requests))
     expect(fetch).toHaveBeenCalledWith(`${origin}requests`, expect.objectContaining({ method: 'GET' }))
@@ -41,6 +47,8 @@ describe('getRecentReviewRequests', () => {
     test.prop([fc.origin(), fc.anything()])('with a network error', async (origin, reason) => {
       const result = await _.getRecentReviewRequests(origin.href)({
         fetch: () => Promise.reject(reason),
+        clock: SystemClock,
+        logger: () => IO.of(undefined),
       })()
 
       expect(result).toStrictEqual(E.left('unavailable'))
@@ -51,6 +59,8 @@ describe('getRecentReviewRequests', () => {
       async (origin, response) => {
         const result = await _.getRecentReviewRequests(origin.href)({
           fetch: () => Promise.resolve(response),
+          clock: SystemClock,
+          logger: () => IO.of(undefined),
         })()
 
         expect(result).toStrictEqual(E.left('unavailable'))

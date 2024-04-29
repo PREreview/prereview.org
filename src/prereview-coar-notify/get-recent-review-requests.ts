@@ -4,10 +4,12 @@ import * as F from 'fetch-fp-ts'
 import * as E from 'fp-ts/Either'
 import * as J from 'fp-ts/Json'
 import * as RTE from 'fp-ts/ReaderTaskEither'
-import { flow, identity, pipe } from 'fp-ts/function'
+import * as TE from 'fp-ts/TaskEither'
+import { flow, pipe } from 'fp-ts/function'
 import { Status } from 'hyper-ts'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
+import * as L from 'logger-fp-ts'
 import safeStableStringify from 'safe-stable-stringify'
 import { timeoutRequest } from '../fetch'
 import { parsePreprintDoi } from '../types/preprint-id'
@@ -65,7 +67,9 @@ export const getRecentReviewRequests = flow(
   F.Request('GET'),
   F.send,
   RTE.local(timeoutRequest(2000)),
-  RTE.filterOrElseW(F.hasStatus(Status.OK), identity),
-  RTE.chainTaskEitherKW(F.decode(RecentReviewRequestsC)),
+  RTE.mapLeft(() => 'network'),
+  RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
+  RTE.chainTaskEitherKW(flow(F.decode(RecentReviewRequestsC), TE.mapLeft(D.draw))),
+  RTE.orElseFirstW(RTE.fromReaderIOK(flow(error => ({ error }), L.errorP('Failed to get recent review requests')))),
   RTE.mapLeft(() => 'unavailable' as const),
 )

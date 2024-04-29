@@ -2,6 +2,7 @@ import type * as F from 'fetch-fp-ts'
 import type { FetchEnv } from 'fetch-fp-ts'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import { identity, pipe } from 'fp-ts/function'
+import type { LoggerEnv } from 'logger-fp-ts'
 import { match } from 'ts-pattern'
 import type { RecentReviewRequest } from '../home-page'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../preprint'
@@ -27,7 +28,7 @@ export const publishToPrereviewCoarNotifyInbox = (
   )
 
 export const getRecentReviewRequestsFromPrereviewCoarNotify = (): RTE.ReaderTaskEither<
-  FetchEnv & GetPreprintTitleEnv,
+  FetchEnv & GetPreprintTitleEnv & LoggerEnv,
   'unavailable',
   ReadonlyArray<RecentReviewRequest>
 > =>
