@@ -63,6 +63,6 @@ export const requestReview = ({
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),
-      state => requestReviewPage(state.preprint),
+      requestReviewPage,
     ),
   )

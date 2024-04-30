@@ -1,7 +1,10 @@
 import type { Doi } from 'doi-ts'
+import type { Orcid } from 'orcid-id-ts'
 import { html } from '../../src/html'
 import type { PreprintTitle } from '../../src/preprint'
 import { requestReviewPage } from '../../src/request-review-flow/request-review-page/request-review-page'
+import type { Pseudonym } from '../../src/types/pseudonym'
+import type { User } from '../../src/user'
 import { expect, test } from '../base'
 
 const preprint = {
@@ -13,8 +16,22 @@ const preprint = {
   language: 'en',
 } satisfies PreprintTitle
 
+const user = {
+  name: 'Josiah Carberry',
+  orcid: '0000-0002-1825-0097' as Orcid,
+  pseudonym: 'Orange Panda' as Pseudonym,
+} satisfies User
+
 test('content looks right', async ({ showPage }) => {
-  const response = requestReviewPage(preprint)
+  const response = requestReviewPage({ preprint })
+
+  const content = await showPage(response)
+
+  await expect(content).toHaveScreenshot()
+})
+
+test('content looks right when a user is logged in', async ({ showPage }) => {
+  const response = requestReviewPage({ preprint, user })
 
   const content = await showPage(response)
 

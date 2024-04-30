@@ -1,30 +1,28 @@
 import { Status } from 'hyper-ts'
 import { areLoggedIn, canLogIn, canRequestReviews, canSeeReviewRequests, expect, test } from './base'
 
-test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
-  'can request a PREreview',
-  async ({ fetch, page }) => {
-    await page.goto('/')
-    await page.getByRole('link', { name: 'Request a review' }).click()
-    await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
-    await page.getByRole('button', { name: 'Continue' }).click()
+test.extend(canLogIn).extend(canRequestReviews)('can request a PREreview', async ({ fetch, page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Request a review' }).click()
+  await page.getByLabel('Which preprint would you like reviewed?').fill('10.1101/12345678')
+  await page.getByRole('button', { name: 'Continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request a PREreview')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request a PREreview')
+  await expect(page.getByRole('main')).toContainText('We will ask you to log in')
 
-    await page.getByRole('button', { name: 'Start now' }).click()
-    await page.getByLabel('Josiah Carberry').check()
-    await page.getByRole('button', { name: 'Save and continue' }).click()
+  await page.getByRole('button', { name: 'Start now' }).click()
+  await page.getByLabel('Josiah Carberry').check()
+  await page.getByRole('button', { name: 'Save and continue' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
-    await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
+  await expect(page.getByRole('main')).toContainText('Published name Josiah Carberry')
 
-    fetch.postOnce('http://coar-notify.prereview.test/inbox', { status: Status.Created })
+  fetch.postOnce('http://coar-notify.prereview.test/inbox', { status: Status.Created })
 
-    await page.getByRole('button', { name: 'Request PREreview' }).click()
+  await page.getByRole('button', { name: 'Request PREreview' }).click()
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
-  },
-)
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Request published')
+})
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
   'can request a PREreview using a pseudonym',
@@ -63,6 +61,19 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Check your request')
+  },
+)
+
+test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
+  "aren't told about ORCID when already logged in",
+  async ({ page }) => {
+    await page.goto('/preprints/doi-10.1101-12345678/request-a-prereview')
+
+    await expect(page.getByRole('main')).not.toContainText('ORCID')
+
+    await page.getByRole('button', { name: 'Start now' }).click()
+
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('What name would you like to use?')
   },
 )
 
