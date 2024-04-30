@@ -30,15 +30,6 @@ describe('handleDecision', () => {
     })
   })
 
-  test('with a RequireLogIn decision', () => {
-    const actual = _.handleDecision({ _tag: 'RequireLogIn' })
-
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(requestAPrereviewMatch.formatter, {}),
-    })
-  })
-
   test('with a ShowError decision', () => {
     const actual = _.handleDecision({ _tag: 'ShowError' })
 
