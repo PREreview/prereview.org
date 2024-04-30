@@ -6,9 +6,9 @@ import { P, match } from 'ts-pattern'
 import { type CanRequestReviewsEnv, canRequestReviews } from '../../feature-flags'
 import { havingProblemsPage, pageNotFound } from '../../http-error'
 import { type GetPreprintTitleEnv, getPreprintTitle } from '../../preprint'
-import { LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
+import { type LogInResponse, type PageResponse, RedirectResponse, type StreamlinePageResponse } from '../../response'
 import { type GetReviewRequestEnv, isReviewRequestPreprintId, maybeGetReviewRequest } from '../../review-request'
-import { requestReviewMatch, requestReviewStartMatch } from '../../routes'
+import { requestReviewStartMatch } from '../../routes'
 import type { IndeterminatePreprintId } from '../../types/preprint-id'
 import type { User } from '../../user'
 import { requestReviewPage } from './request-review-page'
@@ -25,18 +25,13 @@ export const requestReview = ({
 > =>
   pipe(
     RTE.Do,
-    RTE.apS(
-      'user',
-      pipe(
-        RTE.fromNullable('no-session' as const)(user),
-        RTE.chainFirstW(
-          flow(
-            RTE.fromReaderK(canRequestReviews),
-            RTE.filterOrElse(
-              canRequestReviews => canRequestReviews,
-              () => 'not-found' as const,
-            ),
-          ),
+    RTE.let('user', () => user),
+    RTE.chainFirstW(
+      flow(
+        RTE.fromReaderK(({ user }) => canRequestReviews(user)),
+        RTE.filterOrElse(
+          canRequestReviews => canRequestReviews,
+          () => 'not-found' as const,
         ),
       ),
     ),
@@ -50,7 +45,7 @@ export const requestReview = ({
     ),
     RTE.chainFirstW(
       flow(
-        ({ preprintId, user }) => maybeGetReviewRequest(user.orcid, preprintId),
+        ({ preprintId, user }) => (user ? maybeGetReviewRequest(user.orcid, preprintId) : RTE.right(undefined)),
         RTE.chainW(reviewRequest =>
           match(reviewRequest)
             .with({ status: P.string }, () => RTE.left('already-started' as const))
@@ -65,7 +60,6 @@ export const requestReview = ({
           .with('already-started', () =>
             RedirectResponse({ location: format(requestReviewStartMatch.formatter, { id: preprint }) }),
           )
-          .with('no-session', () => LogInResponse({ location: format(requestReviewMatch.formatter, { id: preprint }) }))
           .with('not-found', () => pageNotFound)
           .with('unavailable', () => havingProblemsPage)
           .exhaustive(),

@@ -144,7 +144,7 @@ describe('makeDecision', () => {
       )
     })
 
-    test.prop([fc.anything(), fc.string(), fc.user()])(
+    test.prop([fc.anything(), fc.string(), fc.option(fc.user(), { nil: undefined })])(
       "when reviews can't be requested",
       async (body, method, user) => {
         const canRequestReviews = jest.fn<CanRequestReviewsEnv['canRequestReviews']>(_ => false)
@@ -158,14 +158,5 @@ describe('makeDecision', () => {
         expect(canRequestReviews).toHaveBeenCalledWith(user)
       },
     )
-  })
-
-  test.prop([fc.anything(), fc.string()])('when the user is not logged in', async (body, method) => {
-    const actual = await _.makeDecision({ body, method })({
-      canRequestReviews: shouldNotBeCalled,
-      resolvePreprintId: shouldNotBeCalled,
-    })()
-
-    expect(actual).toStrictEqual({ _tag: 'RequireLogIn' })
   })
 })

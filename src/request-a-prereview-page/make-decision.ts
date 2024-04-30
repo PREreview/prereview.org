@@ -28,8 +28,7 @@ export const makeDecision = ({
 }): RT.ReaderTask<CanRequestReviewsEnv & Preprint.ResolvePreprintIdEnv, Decision.Decision> =>
   pipe(
     user,
-    RTE.fromEitherK(ensureUserIsLoggedIn),
-    RTE.chainFirstReaderEitherKW(ensureUserCanRequestReviews),
+    RTE.fromReaderEitherK(ensureUserCanRequestReviews),
     RTE.filterOrElseW(
       () => method === 'POST',
       () => Decision.ShowEmptyForm,
@@ -77,11 +76,7 @@ const extractPreprintId: (
   ),
 )
 
-const ensureUserIsLoggedIn: (user: User | undefined) => E.Either<Decision.RequireLogIn, User> = E.fromNullable(
-  Decision.RequireLogIn,
-)
-
-const ensureUserCanRequestReviews: (user: User) => RE.ReaderEither<CanRequestReviewsEnv, Decision.DenyAccess, void> =
+const ensureUserCanRequestReviews: (user?: User) => RE.ReaderEither<CanRequestReviewsEnv, Decision.DenyAccess, void> =
   flow(
     canRequestReviews,
     R.map(

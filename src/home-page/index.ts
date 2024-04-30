@@ -27,7 +27,7 @@ export const home = ({
   pipe(
     RT.Do,
     RT.apS('recentPrereviews', getRecentPrereviews()),
-    RT.apSW('canRequestReviews', user ? RT.fromReader(canRequestReviews(user)) : RT.of(false)),
+    RT.apSW('canRequestReviews', RT.fromReader(canRequestReviews(user))),
     RT.apSW(
       'recentReviewRequests',
       pipe(

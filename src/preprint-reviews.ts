@@ -94,7 +94,7 @@ export const preprintReviews = (
         RTE.let('preprint', () => preprint),
         RTE.apS('rapidPrereviews', getRapidPrereviews(preprint.id)),
         RTE.apSW('reviews', getPrereviews(preprint.id)),
-        RTE.apSW('canRequestReviews', user ? RTE.fromReader(canRequestReviews(user)) : RTE.of(false)),
+        RTE.apSW('canRequestReviews', RTE.fromReader(canRequestReviews(user))),
       ),
     ),
     RTE.matchW(

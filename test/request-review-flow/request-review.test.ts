@@ -45,7 +45,7 @@ describe('requestReview', () => {
 
         test.prop([
           fc.indeterminatePreprintId(),
-          fc.user(),
+          fc.option(fc.user(), { nil: undefined }),
           fc.preprintTitle({ id: fc.notAReviewRequestPreprintId() }),
         ])("when the preprint isn't supported", async (preprint, user, preprintTitle) => {
           const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.right(preprintTitle))
@@ -67,7 +67,7 @@ describe('requestReview', () => {
           expect(getPreprintTitle).toHaveBeenCalledWith(preprint)
         })
 
-        test.prop([fc.indeterminatePreprintId(), fc.user()])(
+        test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined })])(
           "when the preprint doesn't exist",
           async (preprint, user) => {
             const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.left('not-found'))
@@ -90,7 +90,7 @@ describe('requestReview', () => {
           },
         )
 
-        test.prop([fc.indeterminatePreprintId(), fc.user()])(
+        test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined })])(
           "when the preprint can't be loaded",
           async (preprint, user) => {
             const getPreprintTitle = jest.fn<GetPreprintTitleEnv['getPreprintTitle']>(_ => TE.left('unavailable'))
@@ -154,37 +154,27 @@ describe('requestReview', () => {
       )
     })
 
-    test.prop([fc.indeterminatePreprintId(), fc.user()])("when reviews can't be requested", async (preprint, user) => {
-      const canRequestReviews = jest.fn<CanRequestReviewsEnv['canRequestReviews']>(_ => false)
+    test.prop([fc.indeterminatePreprintId(), fc.option(fc.user(), { nil: undefined })])(
+      "when reviews can't be requested",
+      async (preprint, user) => {
+        const canRequestReviews = jest.fn<CanRequestReviewsEnv['canRequestReviews']>(_ => false)
 
-      const actual = await _.requestReview({ preprint, user })({
-        canRequestReviews,
-        getPreprintTitle: shouldNotBeCalled,
-        getReviewRequest: shouldNotBeCalled,
-      })()
+        const actual = await _.requestReview({ preprint, user })({
+          canRequestReviews,
+          getPreprintTitle: shouldNotBeCalled,
+          getReviewRequest: shouldNotBeCalled,
+        })()
 
-      expect(actual).toStrictEqual({
-        _tag: 'PageResponse',
-        status: Status.NotFound,
-        title: expect.stringContaining('not found'),
-        main: expect.stringContaining('not found'),
-        skipToLabel: 'main',
-        js: [],
-      })
-      expect(canRequestReviews).toHaveBeenCalledWith(user)
-    })
-  })
-
-  test.prop([fc.indeterminatePreprintId()])('when the user is not logged in', async preprint => {
-    const actual = await _.requestReview({ preprint })({
-      canRequestReviews: shouldNotBeCalled,
-      getPreprintTitle: shouldNotBeCalled,
-      getReviewRequest: shouldNotBeCalled,
-    })()
-
-    expect(actual).toStrictEqual({
-      _tag: 'LogInResponse',
-      location: format(requestReviewMatch.formatter, { id: preprint }),
-    })
+        expect(actual).toStrictEqual({
+          _tag: 'PageResponse',
+          status: Status.NotFound,
+          title: expect.stringContaining('not found'),
+          main: expect.stringContaining('not found'),
+          skipToLabel: 'main',
+          js: [],
+        })
+        expect(canRequestReviews).toHaveBeenCalledWith(user)
+      },
+    )
   })
 })
