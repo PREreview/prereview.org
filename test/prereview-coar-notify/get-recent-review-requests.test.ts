@@ -43,6 +43,48 @@ describe('getRecentReviewRequests', () => {
     expect(fetch).toHaveBeenCalledWith(`${origin}requests`, expect.objectContaining({ method: 'GET' }))
   })
 
+  test.prop([
+    fc.origin(),
+    fc
+      .array(
+        fc.record({
+          timestamp: fc.instant(),
+          preprint: fc
+            .indeterminatePreprintIdWithDoi()
+            .filter(id => !['biorxiv', 'medrxiv', 'zenodo', 'africarxiv'].includes(id.type)),
+        }),
+      )
+      .chain(requests =>
+        fc.tuple(
+          fc.constant(requests),
+          fc.fetchResponse({
+            headers: fc.headers(fc.constant({ 'x-local-cache-status': 'stale' })),
+            status: fc.constant(Status.OK),
+            text: fc.constant(RecentReviewRequestsC.encode(requests)),
+          }),
+        ),
+      ),
+  ])('when the response is stale', async (origin, [requests, response]) => {
+    const fetch = jest.fn<Fetch>(_ => Promise.resolve(response))
+
+    const result = await _.getRecentReviewRequests(origin)({
+      fetch,
+      clock: SystemClock,
+      logger: () => IO.of(undefined),
+    })()
+
+    expect(result).toStrictEqual(E.right(requests))
+    expect(fetch).toHaveBeenCalledTimes(2)
+    expect(fetch).toHaveBeenCalledWith(
+      `${origin}requests`,
+      expect.objectContaining({ cache: 'force-cache', method: 'GET' }),
+    )
+    expect(fetch).toHaveBeenCalledWith(
+      `${origin}requests`,
+      expect.objectContaining({ cache: 'no-cache', method: 'GET' }),
+    )
+  })
+
   describe('when the request fails', () => {
     test.prop([fc.origin(), fc.anything()])('with a network error', async (origin, reason) => {
       const result = await _.getRecentReviewRequests(origin)({

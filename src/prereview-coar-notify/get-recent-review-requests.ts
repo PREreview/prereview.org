@@ -11,7 +11,7 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import * as L from 'logger-fp-ts'
 import safeStableStringify from 'safe-stable-stringify'
-import { timeoutRequest } from '../fetch'
+import { revalidateIfStale, timeoutRequest, useStaleCache } from '../fetch'
 import { parsePreprintDoi } from '../types/preprint-id'
 
 import Instant = Temporal.Instant
@@ -66,7 +66,7 @@ export const getRecentReviewRequests = flow(
   (baseUrl: URL) => new URL('/requests', baseUrl),
   F.Request('GET'),
   F.send,
-  RTE.local(timeoutRequest(2000)),
+  RTE.local(flow(revalidateIfStale(), useStaleCache(), timeoutRequest(2000))),
   RTE.mapLeft(() => 'network'),
   RTE.filterOrElseW(F.hasStatus(Status.OK), () => 'non-200-response' as const),
   RTE.chainTaskEitherKW(flow(F.decode(RecentReviewRequestsC), TE.mapLeft(D.draw))),

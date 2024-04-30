@@ -984,22 +984,37 @@ const headerName = () =>
     { minLength: 1 },
   )
 
-export const headers = () =>
-  fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init =>
-    Object.defineProperties(new Headers(init), {
-      [fc.toStringMethod]: { value: () => fc.stringify(init) },
-    }),
-  )
+export const headers = (include: fc.Arbitrary<Record<string, string>> = constant({})) =>
+  fc
+    .tuple(
+      fc.option(fc.dictionary(headerName(), fc.string()), { nil: undefined }).map(init =>
+        Object.defineProperties(new Headers(init), {
+          [fc.toStringMethod]: { value: () => fc.stringify(init) },
+        }),
+      ),
+      include,
+    )
+    .map(([headers, include]) => {
+      Object.entries(include).forEach(([key, value]) => {
+        headers.set(key, value)
+      })
+      return headers
+    })
 
 export const statusCode = (): fc.Arbitrary<Status> => constantFrom(...Object.values(Status))
 
 export const fetchResponse = ({
+  headers: headers_,
   status,
   text,
-}: { status?: fc.Arbitrary<number>; text?: fc.Arbitrary<string> } = {}): fc.Arbitrary<F.Response> =>
+}: {
+  headers?: fc.Arbitrary<Headers>
+  status?: fc.Arbitrary<number>
+  text?: fc.Arbitrary<string>
+} = {}): fc.Arbitrary<F.Response> =>
   fc
     .record({
-      headers: headers(),
+      headers: headers_ ?? headers(),
       status: status ?? fc.integer(),
       statusText: fc.string(),
       url: fc.string(),
