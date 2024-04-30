@@ -31,7 +31,7 @@ export const home = ({
     RT.apSW(
       'recentReviewRequests',
       pipe(
-        user ? RT.fromReader(canSeeReviewRequests(user)) : RT.of(false),
+        RT.fromReader(canSeeReviewRequests(user)),
         RT.chainW(
           b.matchW(
             () => RT.of([]),

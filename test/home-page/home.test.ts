@@ -69,11 +69,13 @@ describe('home', () => {
   })
 
   test('when the user is not logged in', async () => {
+    const canSeeReviewRequests = jest.fn<CanSeeReviewRequestsEnv['canSeeReviewRequests']>(_ => true)
+
     const actual = await _.home({})({
       getRecentPrereviews: () => T.of([]),
       canRequestReviews: shouldNotBeCalled,
-      canSeeReviewRequests: shouldNotBeCalled,
-      getRecentReviewRequests: shouldNotBeCalled,
+      canSeeReviewRequests,
+      getRecentReviewRequests: () => T.of([]),
     })()
 
     expect(actual).toStrictEqual({
@@ -86,5 +88,6 @@ describe('home', () => {
       skipToLabel: 'main',
       js: [],
     })
+    expect(canSeeReviewRequests).toHaveBeenCalledWith(undefined)
   })
 })
