@@ -9,13 +9,19 @@ import type {
   ArxivPreprintId,
   BiorxivPreprintId,
   EdarxivPreprintId,
+  MedrxivPreprintId,
   PreprintId,
   ScieloPreprintId,
 } from './types/preprint-id'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 
-export type ReviewRequestPreprintId = ArxivPreprintId | BiorxivPreprintId | EdarxivPreprintId | ScieloPreprintId
+export type ReviewRequestPreprintId =
+  | ArxivPreprintId
+  | BiorxivPreprintId
+  | EdarxivPreprintId
+  | MedrxivPreprintId
+  | ScieloPreprintId
 
 export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
@@ -93,6 +99,6 @@ export const saveReviewRequest = (
 
 export function isReviewRequestPreprintId(preprint: PreprintId): preprint is ReviewRequestPreprintId {
   return match(preprint.type)
-    .with('arxiv', 'biorxiv', 'edarxiv', 'scielo', () => true)
+    .with('arxiv', 'biorxiv', 'edarxiv', 'medrxiv', 'scielo', () => true)
     .otherwise(() => false)
 }

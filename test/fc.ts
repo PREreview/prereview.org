@@ -813,7 +813,7 @@ export const orcid = (): fc.Arbitrary<Orcid> =>
     .filter(isOrcid)
 
 export const reviewRequestPreprintId = (): fc.Arbitrary<ReviewRequestPreprintId> =>
-  fc.oneof(arxivPreprintId(), biorxivPreprintId(), edarxivPreprintId(), scieloPreprintId())
+  fc.oneof(arxivPreprintId(), biorxivPreprintId(), edarxivPreprintId(), medrxivPreprintId(), scieloPreprintId())
 
 export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, ReviewRequestPreprintId>> =>
   fc.oneof(
@@ -823,7 +823,6 @@ export const notAReviewRequestPreprintId = (): fc.Arbitrary<Exclude<PreprintId, 
     eartharxivPreprintId(),
     ecoevorxivPreprintId(),
     engrxivPreprintId(),
-    medrxivPreprintId(),
     metaarxivPreprintId(),
     osfPreprintId(),
     osfPreprintsPreprintId(),
