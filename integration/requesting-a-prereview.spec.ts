@@ -256,72 +256,78 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canRequestReviews)(
   'when the preprint is not supported',
   async ({ fetch, page }) => {
     await page.goto('/request-a-prereview')
-    await page.getByLabel('Which preprint would you like reviewed?').fill('10.35542/osf.io/hsnke')
+    await page.getByLabel('Which preprint would you like reviewed?').fill('https://philsci-archive.pitt.edu/23254/')
 
-    fetch.get('https://api.crossref.org/works/10.35542%2Fosf.io%2Fhsnke', {
+    fetch.get('https://philsci-archive.pitt.edu/cgi/export/eprint/23254/JSON/pittphilsci-eprint-23254.json', {
       body: {
-        status: 'ok',
-        'message-type': 'work',
-        'message-version': '1.0.0',
-        message: {
-          indexed: { 'date-parts': [[2024, 1, 4]], 'date-time': '2024-01-04T00:22:13Z', timestamp: 1704327733507 },
-          posted: { 'date-parts': [[2024, 1, 2]] },
-          'group-title': 'EdArXiv',
-          'reference-count': 0,
-          publisher: 'Center for Open Science',
-          license: [
-            {
-              start: {
-                'date-parts': [[2024, 1, 2]],
-                'date-time': '2024-01-02T00:00:00Z',
-                timestamp: 1704153600000,
+        subjects: [
+          'biology',
+          'earth-sciences',
+          'ethical-issues',
+          'experimentation',
+          'mathematics',
+          'models-and-idealization',
+          'physics',
+          'science-education',
+          'social-epistemology-of-science',
+          'sociology',
+          'thought-experiments',
+        ],
+        eprintid: 23254,
+        date: 2024,
+        userid: 27167,
+        documents: [
+          {
+            language: 'en',
+            placement: 1,
+            eprintid: 23254,
+            files: [
+              {
+                hash_type: 'MD5',
+                mtime: '2024-04-02 16:18:49',
+                datasetid: 'document',
+                fileid: 210365,
+                objectid: 80655,
+                uri: 'https://philsci-archive.pitt.edu/id/file/210365',
+                mime_type: 'application/pdf',
+                hash: '6bcf2f0b4e13b346fc4476f18b8bfdae',
+                filesize: 386692,
+                filename: 'Final Preprint Qualitative Study of Scientific Imagination.pdf',
               },
-              'content-version': 'unspecified',
-              'delay-in-days': 0,
-              URL: 'https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode',
-            },
-          ],
-          'content-domain': { domain: [], 'crossmark-restriction': false },
-          'short-container-title': [],
-          abstract:
-            '<p>Nearly a third of Australian university students are international, and major contributors to Australia\u2019s economy. We explore the contribution to global higher education equity through population rates of international student enrolment in Australian universities. In 2022, per 100,000 population, median rates in regions studied were: Indian subcontinent 42, Pacific 28.9,  China 10.5, South-East Asia 5.8,  Sub-Saharan Africa 0.5: national rates varied from 0.03 to 403 per 100,000 population.  We find no regional or national patterns with GDP, proportion of GDP spent on education or access to national higher education, apart from some high GDP countries with high rates of student enrolment in Australian universities. We call for Australia to develop a strategy for international higher education based on global need rather than solely Australia\u2019s economic benefit, and for a global alliance to support access to higher education for all individuals and populations that have capacity to acquire and use it.</p>',
-          DOI: '10.35542/osf.io/hsnke',
-          type: 'posted-content',
-          created: { 'date-parts': [[2024, 1, 3]], 'date-time': '2024-01-03T05:00:42Z', timestamp: 1704258042000 },
-          source: 'Crossref',
-          'is-referenced-by-count': 0,
-          title: ['A population perspective on international students in Australian universities'],
-          prefix: '10.35542',
-          author: [
-            {
-              ORCID: 'http://orcid.org/0000-0003-3161-5967',
-              'authenticated-orcid': true,
-              given: 'Richard F',
-              family: 'Heller',
-              sequence: 'first',
-              affiliation: [],
-            },
-            { given: 'Stephen R', family: 'Leeder', sequence: 'additional', affiliation: [] },
-          ],
-          member: '15934',
-          'container-title': [],
-          'original-title': [],
-          deposited: {
-            'date-parts': [[2024, 1, 3]],
-            'date-time': '2024-01-03T05:00:42Z',
-            timestamp: 1704258042000,
+            ],
+            rev_number: 2,
+            uri: 'https://philsci-archive.pitt.edu/id/document/80655',
+            main: 'Final Preprint Qualitative Study of Scientific Imagination.pdf',
+            mime_type: 'application/pdf',
+            docid: 80655,
+            format: 'text',
+            security: 'public',
+            pos: 1,
           },
-          score: 1,
-          resource: { primary: { URL: 'https://osf.io/hsnke' } },
-          subtitle: [],
-          'short-title': [],
-          issued: { 'date-parts': [[2024, 1, 2]] },
-          'references-count': 0,
-          URL: 'http://dx.doi.org/10.35542/osf.io/hsnke',
-          relation: {},
-          published: { 'date-parts': [[2024, 1, 2]] },
-          subtype: 'preprint',
-        },
+        ],
+        rev_number: 18,
+        creators: [
+          {
+            orcid: '0000-0002-4165-2641',
+            name: { lineage: null, given: 'Michael T.', honourific: null, family: 'Stuart' },
+            id: 'mike.stuart.post@gmail.com',
+          },
+        ],
+        dir: 'disk0/00/02/32/54',
+        keywords:
+          'scientific imagination; imagination; qualitative methods; empirical philosophy of science; internalism; externalism; consequentialism; virtue epistemology; deontology; ethics of science',
+        lastmod: '2024-04-05 06:43:17',
+        metadata_visibility: 'show',
+        eprint_status: 'archive',
+        status_changed: '2024-04-05 06:43:17',
+        datestamp: '2024-04-05 06:43:17',
+        uri: 'https://philsci-archive.pitt.edu/id/eprint/23254',
+        note: 'Forthcoming in Qualitative Psychology',
+        full_text_status: 'public',
+        abstract:
+          'Imagination is extremely important for science, yet very little is known about how scientists actually use it. Are scientists taught to imagine? What do they value imagination for? How do social and disciplinary factors shape it? How is the labor of imagining distributed? These questions should be high priority for anyone who studies or practices science, and this paper argues that the best methods for addressing them are qualitative. I summarize a few preliminary findings derived from recent interview-based and observational qualitative studies that I have performed. These finding include: (i) imagination is only valued for use in addressing maximally specific problems, and only when all else fails; (ii) younger scientists and scientists who are members of underrepresented groups express less positive views about imagination in general, and have less confidence in their own imaginations; (iii) while scientists seem to employ various epistemological frameworks to evaluate imaginings, overall they appear to be epistemic consequentialists about imagination, and this holds also for their evaluations of the tools they use to extend the power of their imaginations. I close by discussing the epistemic and ethical consequences of these findings, and then suggesting a few research avenues that could be explored next as we move forward in the study of scientific imagination.',
+        type: 'pittpreprint',
+        title: 'The Qualitative Study of Scientific Imagination',
       },
     })
 
