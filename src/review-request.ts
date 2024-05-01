@@ -5,11 +5,17 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import type { Orcid } from 'orcid-id-ts'
 import { match } from 'ts-pattern'
-import type { ArxivPreprintId, BiorxivPreprintId, PreprintId, ScieloPreprintId } from './types/preprint-id'
+import type {
+  ArxivPreprintId,
+  BiorxivPreprintId,
+  EdarxivPreprintId,
+  PreprintId,
+  ScieloPreprintId,
+} from './types/preprint-id'
 
 export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 
-export type ReviewRequestPreprintId = ArxivPreprintId | BiorxivPreprintId | ScieloPreprintId
+export type ReviewRequestPreprintId = ArxivPreprintId | BiorxivPreprintId | EdarxivPreprintId | ScieloPreprintId
 
 export interface IncompleteReviewRequest {
   readonly status: 'incomplete'
@@ -87,6 +93,6 @@ export const saveReviewRequest = (
 
 export function isReviewRequestPreprintId(preprint: PreprintId): preprint is ReviewRequestPreprintId {
   return match(preprint.type)
-    .with('arxiv', 'biorxiv', 'scielo', () => true)
+    .with('arxiv', 'biorxiv', 'edarxiv', 'scielo', () => true)
     .otherwise(() => false)
 }
