@@ -4,7 +4,7 @@ import { URL } from 'url'
 import { RecordC, RecordsC } from 'zenodo-ts'
 import { expect, test } from './base'
 
-test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
+test('can find and view a club', async ({ fetch, page }) => {
   fetch
     .getOnce('http://zenodo.test/api/records/7820084', {
       body: RecordC.encode({
