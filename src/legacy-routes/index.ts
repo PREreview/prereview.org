@@ -7,16 +7,16 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe, tuple } from 'fp-ts/function'
 import { NotFound } from 'http-errors'
-import { type ResponseEnded, Status, type StatusOpen } from 'hyper-ts'
+import type { ResponseEnded, StatusOpen } from 'hyper-ts'
 import { route } from 'hyper-ts-routing'
 import * as RM from 'hyper-ts/ReaderMiddleware'
 import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { match, P as p } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { html, plainText, sendHtml } from '../html'
 import { movedPermanently, notFound, serviceUnavailable } from '../middleware'
-import { type FathomEnv, type PhaseEnv, page } from '../page'
+import type { FathomEnv, PhaseEnv, TemplatePageEnv } from '../page'
+import { handlePageResponse } from '../response'
 import {
   aboutUsMatch,
   clubsMatch,
@@ -42,9 +42,18 @@ import {
 } from '../types/preprint-id'
 import type { ProfileId } from '../types/profile-id'
 import { UuidC } from '../types/uuid'
-import { type GetUserEnv, type User, maybeGetUser } from '../user'
+import { type GetUserEnv, maybeGetUser } from '../user'
+import type { GetUserOnboardingEnv } from '../user-onboarding'
+import { removedForNowPage } from './removed-for-now-page'
+import { removedPermanentlyPage } from './removed-permanently-page'
 
-export type LegacyEnv = FathomEnv & GetPreprintIdFromUuidEnv & GetProfileIdFromUuidEnv & GetUserEnv & PhaseEnv
+export type LegacyEnv = FathomEnv &
+  GetPreprintIdFromUuidEnv &
+  GetProfileIdFromUuidEnv &
+  GetUserEnv &
+  GetUserOnboardingEnv &
+  PhaseEnv &
+  TemplatePageEnv
 
 export interface GetPreprintIdFromUuidEnv {
   getPreprintIdFromUuid: (uuid: Uuid) => TE.TaskEither<'not-found' | 'unavailable', IndeterminatePreprintId>
@@ -373,17 +382,17 @@ const legacyRouter: P.Parser<RM.ReaderMiddleware<LegacyEnv, StatusOpen, Response
 export const legacyRoutes = pipe(route(legacyRouter, constant(new NotFound())), RM.fromMiddleware, RM.iflatten)
 
 const showRemovedPermanentlyMessage = pipe(
-  maybeGetUser,
-  RM.chainReaderKW(removedPermanentlyMessage),
-  RM.ichainFirst(() => RM.status(Status.Gone)),
-  RM.ichainMiddlewareK(sendHtml),
+  RM.of({}),
+  RM.apS('user', maybeGetUser),
+  RM.apSW('response', RM.of(removedPermanentlyPage)),
+  RM.ichainW(handlePageResponse),
 )
 
 const showRemovedForNowMessage = pipe(
-  maybeGetUser,
-  RM.chainReaderKW(removedForNowMessage),
-  RM.ichainFirst(() => RM.status(Status.NotFound)),
-  RM.ichainMiddlewareK(sendHtml),
+  RM.of({}),
+  RM.apS('user', maybeGetUser),
+  RM.apSW('response', RM.of(removedForNowPage)),
+  RM.ichainW(handlePageResponse),
 )
 
 const redirectToPreprintReviews = flow(
@@ -407,48 +416,6 @@ const redirectToProfile = flow(
       .exhaustive(),
   ),
 )
-
-function removedPermanentlyMessage(user?: User) {
-  return page({
-    title: plainText`Sorry, we’ve taken this page down`,
-    content: html`
-      <main id="main-content">
-        <h1>Sorry, we’ve taken this page down</h1>
-
-        <p>We’re making changes to PREreview and have removed this page.</p>
-
-        <p>
-          If you have any questions or you selected a link or button, please
-          <a href="mailto:help@prereview.org">get in touch</a>.
-        </p>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
-}
-
-function removedForNowMessage(user?: User) {
-  return page({
-    title: plainText`Sorry, we’ve removed this page for now`,
-    content: html`
-      <main id="main-content">
-        <h1>Sorry, we’ve removed this page for now</h1>
-
-        <p>We’re making changes to PREreview and have removed this page for now.</p>
-
-        <p>We are working to return it by the end of 2023.</p>
-
-        <p>
-          If you have any questions or you selected a link or button, please
-          <a href="mailto:help@prereview.org">get in touch</a>.
-        </p>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-    user,
-  })
-}
 
 // https://github.com/gcanti/fp-ts-routing/pull/64
 function query<A>(codec: C.Codec<unknown, Record<string, P.QueryValues>, A>): P.Match<A> {

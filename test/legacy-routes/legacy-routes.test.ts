@@ -7,6 +7,7 @@ import { MediaType, Status } from 'hyper-ts'
 import * as M from 'hyper-ts/Middleware'
 import { ExpressConnection } from 'hyper-ts/express'
 import { createRequest, createResponse } from 'node-mocks-http'
+import { rawHtml } from '../../src/html'
 import * as _ from '../../src/legacy-routes'
 import { preprintReviewsMatch, profileMatch } from '../../src/routes'
 import * as fc from '../fc'
@@ -87,6 +88,8 @@ describe('legacyRoutes', () => {
         getPreprintIdFromUuid: shouldNotBeCalled,
         getProfileIdFromUuid: shouldNotBeCalled,
         getUser: shouldNotBeCalled,
+        getUserOnboarding: shouldNotBeCalled,
+        templatePage: shouldNotBeCalled,
       }),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
@@ -113,6 +116,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid: shouldNotBeCalled,
           getProfileIdFromUuid,
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -140,6 +145,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid: shouldNotBeCalled,
           getProfileIdFromUuid: () => TE.left('not-found'),
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -163,6 +170,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid: shouldNotBeCalled,
           getProfileIdFromUuid: () => TE.left('unavailable'),
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -191,6 +200,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid,
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -218,6 +229,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid: () => TE.left('not-found'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -241,6 +254,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid: () => TE.left('unavailable'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -276,6 +291,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid,
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -305,6 +322,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid: () => TE.left('not-found'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -330,6 +349,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid: () => TE.left('unavailable'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -358,6 +379,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid,
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -385,6 +408,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid: () => TE.left('not-found'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -408,6 +433,8 @@ describe('legacyRoutes', () => {
           getPreprintIdFromUuid: () => TE.left('unavailable'),
           getProfileIdFromUuid: shouldNotBeCalled,
           getUser: () => M.fromEither(user),
+          getUserOnboarding: shouldNotBeCalled,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -452,6 +479,8 @@ describe('legacyRoutes', () => {
         getPreprintIdFromUuid: shouldNotBeCalled,
         getProfileIdFromUuid: shouldNotBeCalled,
         getUser: () => M.left('no-session'),
+        getUserOnboarding: shouldNotBeCalled,
+        templatePage: () => rawHtml('page-content'),
       }),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
@@ -460,7 +489,7 @@ describe('legacyRoutes', () => {
       E.right([
         { type: 'setStatus', status: Status.NotFound },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
+        { type: 'setBody', body: 'page-content' },
       ]),
     )
   })
@@ -479,6 +508,8 @@ describe('legacyRoutes', () => {
         getPreprintIdFromUuid: shouldNotBeCalled,
         getProfileIdFromUuid: shouldNotBeCalled,
         getUser: () => M.left('no-session'),
+        getUserOnboarding: shouldNotBeCalled,
+        templatePage: () => rawHtml('page-content'),
       }),
       new ExpressConnection(createRequest({ path }), createResponse()),
     )()
@@ -487,7 +518,7 @@ describe('legacyRoutes', () => {
       E.right([
         { type: 'setStatus', status: Status.Gone },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
+        { type: 'setBody', body: 'page-content' },
       ]),
     )
   })
