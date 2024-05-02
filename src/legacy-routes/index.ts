@@ -14,9 +14,9 @@ import * as C from 'io-ts/Codec'
 import * as D from 'io-ts/Decoder'
 import { match, P as p } from 'ts-pattern'
 import type { Uuid } from 'uuid-ts'
-import { html, plainText, sendHtml } from './html'
-import { movedPermanently, notFound, serviceUnavailable } from './middleware'
-import { type FathomEnv, type PhaseEnv, page } from './page'
+import { html, plainText, sendHtml } from '../html'
+import { movedPermanently, notFound, serviceUnavailable } from '../middleware'
+import { type FathomEnv, type PhaseEnv, page } from '../page'
 import {
   aboutUsMatch,
   clubsMatch,
@@ -32,17 +32,17 @@ import {
   reviewAPreprintMatch,
   reviewsMatch,
   writeReviewReviewTypeMatch,
-} from './routes'
+} from '../routes'
 import {
   type ArxivPreprintId,
   type IndeterminatePreprintId,
   type PhilsciPreprintId,
   PreprintDoiD,
   fromPreprintDoi,
-} from './types/preprint-id'
-import type { ProfileId } from './types/profile-id'
-import { UuidC } from './types/uuid'
-import { type GetUserEnv, type User, maybeGetUser } from './user'
+} from '../types/preprint-id'
+import type { ProfileId } from '../types/profile-id'
+import { UuidC } from '../types/uuid'
+import { type GetUserEnv, type User, maybeGetUser } from '../user'
 
 export type LegacyEnv = FathomEnv & GetPreprintIdFromUuidEnv & GetProfileIdFromUuidEnv & GetUserEnv & PhaseEnv
 
