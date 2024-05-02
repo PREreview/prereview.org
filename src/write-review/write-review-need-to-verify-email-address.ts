@@ -12,6 +12,7 @@ import {
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from '../flash-message'
 import { html, plainText, sendHtml } from '../html'
 import { getMethod, notFound, seeOther, serviceUnavailable } from '../middleware'
+import { showNotificationBanner } from '../notification-banner'
 import { page } from '../page'
 import { type PreprintTitle, getPreprintTitle } from '../preprint'
 import {
@@ -121,15 +122,12 @@ function needToVerifyEmailAddressMessage({
 
       <main id="main-content">
         ${match(message)
-          .with(
-            'verify-contact-email-resend',
-            () => html`
-              <notification-banner aria-labelledby="notification-banner-title" type="notice" role="alert">
-                <h2 id="notification-banner-title">Important</h2>
-
-                <p>We’ve sent you a new email.</p>
-              </notification-banner>
-            `,
+          .with('verify-contact-email-resend', () =>
+            showNotificationBanner({
+              type: 'notice',
+              title: html`Important`,
+              content: html`<p>We’ve sent you a new email.</p>`,
+            }),
           )
           .with(undefined, () => '')
           .exhaustive()}

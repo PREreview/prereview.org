@@ -10,6 +10,7 @@ import { P, match } from 'ts-pattern'
 import { deleteFlashMessage, getFlashMessage, setFlashMessage } from './flash-message'
 import { type Html, html, sendHtml } from './html'
 import type { OrcidOAuthEnv } from './log-in'
+import { showNotificationBanner } from './notification-banner'
 import { type Page, type TemplatePageEnv, templatePage } from './page'
 import { type PublicUrlEnv, toUrl } from './public-url'
 import { orcidCodeMatch } from './routes'
@@ -289,115 +290,82 @@ const handleLogInResponse = ({
 
 function showFlashMessage(message: D.TypeOf<typeof FlashMessageD>) {
   return match(message)
-    .with(
-      'logged-out',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" role="alert">
-          <h2 id="notification-banner-title">Success</h2>
-
-          <p>You have been logged out.</p>
-        </notification-banner>
-      `,
+    .with('logged-out', () =>
+      showNotificationBanner({
+        type: 'success',
+        title: html`Success`,
+        content: html`<p>You have been logged out.</p>`,
+      }),
     )
-    .with(
-      'logged-in',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" role="alert">
-          <h2 id="notification-banner-title">Success</h2>
-
-          <p>You have been logged in.</p>
-        </notification-banner>
-      `,
+    .with('logged-in', () =>
+      showNotificationBanner({
+        type: 'success',
+        title: html`Success`,
+        content: html`<p>You have been logged in.</p>`,
+      }),
     )
-    .with(
-      'blocked',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" type="failure" role="alert">
-          <h2 id="notification-banner-title">Access denied</h2>
-
-          <p>You are not allowed to log in.</p>
-        </notification-banner>
-      `,
+    .with('blocked', () =>
+      showNotificationBanner({
+        type: 'failure',
+        title: html`Access denied`,
+        content: html` <p>You are not allowed to log in.</p>`,
+      }),
     )
-    .with(
-      'verify-contact-email',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" type="notice" role="alert">
-          <h2 id="notification-banner-title">Important</h2>
-
-          <p>We’re sending you an email. Please open it and follow the link to verify your address.</p>
-        </notification-banner>
-      `,
+    .with('verify-contact-email', () =>
+      showNotificationBanner({
+        type: 'notice',
+        title: html`Important`,
+        content: html`<p>We’re sending you an email. Please open it and follow the link to verify your address.</p>`,
+      }),
     )
-    .with(
-      'contact-email-verified',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" role="alert">
-          <h2 id="notification-banner-title">Success</h2>
-
-          <p>Your email address has been verified.</p>
-        </notification-banner>
-      `,
+    .with('contact-email-verified', () =>
+      showNotificationBanner({
+        type: 'success',
+        title: html`Success`,
+        content: html`<p>Your email address has been verified.</p>`,
+      }),
     )
-    .with(
-      'orcid-connected',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" role="alert">
-          <h2 id="notification-banner-title">Success</h2>
-
-          <p>Your ORCID profile has been connected.</p>
-        </notification-banner>
-      `,
+    .with('orcid-connected', () =>
+      showNotificationBanner({
+        type: 'success',
+        title: html`Success`,
+        content: html` <p>Your ORCID profile has been connected.</p>`,
+      }),
     )
-    .with(
-      'orcid-disconnected',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" role="alert">
-          <h2 id="notification-banner-title">Success</h2>
-
-          <p>Your ORCID profile has been disconnected.</p>
-        </notification-banner>
-      `,
+    .with('orcid-disconnected', () =>
+      showNotificationBanner({
+        type: 'success',
+        title: html`Success`,
+        content: html` <p>Your ORCID profile has been disconnected.</p>`,
+      }),
     )
-    .with(
-      'slack-connected',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" role="alert">
-          <h2 id="notification-banner-title">Success</h2>
-
-          <p>Your Community Slack account has been connected.</p>
-        </notification-banner>
-      `,
+    .with('slack-connected', () =>
+      showNotificationBanner({
+        type: 'success',
+        title: html`Success`,
+        content: html`<p>Your Community Slack account has been connected.</p>`,
+      }),
     )
-    .with(
-      'slack-disconnected',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" role="alert">
-          <h2 id="notification-banner-title">Success</h2>
-
-          <p>Your Community Slack account has been disconnected.</p>
-        </notification-banner>
-      `,
+    .with('slack-disconnected', () =>
+      showNotificationBanner({
+        type: 'success',
+        title: html`Success`,
+        content: html` <p>Your Community Slack account has been disconnected.</p>`,
+      }),
     )
-    .with(
-      'avatar-changed',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" role="alert">
-          <h2 id="notification-banner-title">Success</h2>
-
-          <p>Your avatar has been changed.</p>
-        </notification-banner>
-      `,
+    .with('avatar-changed', () =>
+      showNotificationBanner({
+        type: 'success',
+        title: html`Success`,
+        content: html` <p>Your avatar has been changed.</p>`,
+      }),
     )
-    .with(
-      'avatar-removed',
-      () => html`
-        <notification-banner aria-labelledby="notification-banner-title" role="alert">
-          <h2 id="notification-banner-title">Success</h2>
-
-          <p>Your avatar has been removed.</p>
-        </notification-banner>
-      `,
+    .with('avatar-removed', () =>
+      showNotificationBanner({
+        type: 'success',
+        title: html`Success`,
+        content: html` <p>Your avatar has been removed.</p>`,
+      }),
     )
     .exhaustive()
 }
