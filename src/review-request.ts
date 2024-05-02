@@ -8,6 +8,7 @@ import { match } from 'ts-pattern'
 import type {
   ArxivPreprintId,
   BiorxivPreprintId,
+  EcoevorxivPreprintId,
   EdarxivPreprintId,
   MedrxivPreprintId,
   OsfPreprintsPreprintId,
@@ -21,6 +22,7 @@ export type ReviewRequest = IncompleteReviewRequest | CompletedReviewRequest
 export type ReviewRequestPreprintId =
   | ArxivPreprintId
   | BiorxivPreprintId
+  | EcoevorxivPreprintId
   | EdarxivPreprintId
   | MedrxivPreprintId
   | OsfPreprintsPreprintId
@@ -103,6 +105,6 @@ export const saveReviewRequest = (
 
 export function isReviewRequestPreprintId(preprint: PreprintId): preprint is ReviewRequestPreprintId {
   return match(preprint.type)
-    .with('arxiv', 'biorxiv', 'edarxiv', 'medrxiv', 'osf-preprints', 'psyarxiv', 'scielo', () => true)
+    .with('arxiv', 'biorxiv', 'ecoevorxiv', 'edarxiv', 'medrxiv', 'osf-preprints', 'psyarxiv', 'scielo', () => true)
     .otherwise(() => false)
 }
