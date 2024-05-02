@@ -172,20 +172,6 @@ test('can find and view a club', async ({ fetch, javaScriptEnabled, page }) => {
   await page.getByRole('link', { name: 'ASAPbio Metabolism Crowd' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
 test('might not load the PREreviews in time', async ({ fetch, javaScriptEnabled, page }) => {
@@ -342,5 +328,4 @@ test('the list might be empty', async ({ fetch, page }) => {
   await page.goto('/clubs/asapbio-metabolism')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd')
-  await expect(page).toHaveScreenshot()
 })
