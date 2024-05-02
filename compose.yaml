@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   mailcatcher:
     image: sj26/mailcatcher
