@@ -165,13 +165,6 @@ export function page({
                                   >About</a
                                 >
                               </li>
-                              <li>
-                                <a
-                                  href="${format(partnersMatch.formatter, {})}"
-                                  ${current === 'partners' ? html`aria-current="page"` : ''}
-                                  >Partners</a
-                                >
-                              </li>
                               <li><a href="https://donorbox.org/prereview">Donate</a></li>
                             `
                           : ''}
@@ -247,6 +240,13 @@ export function page({
                             href="${format(clubsMatch.formatter, {})}"
                             ${current === 'clubs' ? html`aria-current="page"` : ''}
                             >Clubs</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="${format(partnersMatch.formatter, {})}"
+                            ${current === 'partners' ? html`aria-current="page"` : ''}
+                            >Partners</a
                           >
                         </li>
                       </ul>
