@@ -41,7 +41,7 @@ import {
   removeAvatarFromCloudinary,
   saveAvatarOnCloudinary,
 } from './cloudinary'
-import { clubProfile } from './club-profile'
+import { clubProfile } from './club-profile-page'
 import { clubs } from './clubs'
 import { codeOfConduct } from './code-of-conduct'
 import {
