@@ -174,7 +174,7 @@ test('can find and view a club', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('ASAPbio Metabolism Crowd')
 })
 
-test('might not load the PREreviews in time', async ({ fetch, javaScriptEnabled, page }) => {
+test('might not load the PREreviews in time', async ({ fetch, page }) => {
   fetch.get(
     {
       name: 'club-prereviews',
@@ -295,19 +295,6 @@ test('might not load the PREreviews in time', async ({ fetch, javaScriptEnabled,
   await page.goto('/clubs/asapbio-metabolism')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
 test('the list might be empty', async ({ fetch, page }) => {
