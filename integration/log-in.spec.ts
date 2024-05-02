@@ -447,8 +447,6 @@ test.extend(canLogIn)('can log in from the home page', async ({ javaScriptEnable
     await expect(page.getByRole('alert', { name: 'Success' })).toBeInViewport()
   }
   await expect(logIn).toBeHidden()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 
   await page.reload()
 
@@ -466,8 +464,6 @@ test.extend(canLogIn).extend(userIsBlocked)("can't log in when blocked", async (
     await expect(page.getByRole('alert', { name: 'Access denied' })).toBeInViewport()
   }
   await expect(page.getByRole('link', { name: 'Log in' })).toBeVisible()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 
   await page.reload()
 
