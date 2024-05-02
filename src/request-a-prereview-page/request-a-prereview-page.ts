@@ -2,7 +2,7 @@ import { format } from 'fp-ts-routing'
 import { Status } from 'hyper-ts'
 import { html, plainText, rawHtml } from '../html'
 import { PageResponse } from '../response'
-import { requestAPrereviewMatch } from '../routes'
+import { homeMatch, requestAPrereviewMatch } from '../routes'
 import type * as Form from './form'
 
 export const requestAPrereviewPage = (form: Form.IncompleteForm) => {
@@ -11,6 +11,7 @@ export const requestAPrereviewPage = (form: Form.IncompleteForm) => {
   return PageResponse({
     status: error ? Status.BadRequest : Status.OK,
     title: plainText`${error ? 'Error: ' : ''}Which preprint would you like reviewed?`,
+    nav: html`<a href="${format(homeMatch.formatter, {})}" class="back">Back</a>`,
     main: html`
       <form method="post" action="${format(requestAPrereviewMatch.formatter, {})}" novalidate>
         ${error
