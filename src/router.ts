@@ -113,7 +113,7 @@ import type { FathomEnv, PhaseEnv, TemplatePageEnv } from './page'
 import { partners } from './partners'
 import { people } from './people'
 import type { DoesPreprintExistEnv, GetPreprintEnv, GetPreprintTitleEnv, ResolvePreprintIdEnv } from './preprint'
-import { preprintReviews } from './preprint-reviews'
+import { preprintReviews } from './preprint-reviews-page'
 import {
   type PrereviewCoarNotifyEnv,
   getRecentReviewRequestsFromPrereviewCoarNotify,

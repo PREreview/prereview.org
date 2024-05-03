@@ -48,7 +48,7 @@ import { reloadCache, revalidateIfStale, timeoutRequest, useStaleCache } from '.
 import type { RecentPrereview } from './home-page'
 import { plainText, sanitizeHtml } from './html'
 import { type GetPreprintEnv, type GetPreprintTitleEnv, getPreprint, getPreprintTitle } from './preprint'
-import type { Prereview as PreprintPrereview } from './preprint-reviews'
+import type { Prereview as PreprintPrereview } from './preprint-reviews-page'
 import { type PublicUrlEnv, toUrl } from './public-url'
 import type { Prereview } from './review-page'
 import { reviewMatch } from './routes'
