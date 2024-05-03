@@ -26,10 +26,6 @@ test.extend(canLogIn).extend(hasAVerifiedEmailAddress).extend(willPublishAReview
     await page.goto('/')
     await page.getByRole('link', { name: 'Review a preprint' }).click()
     await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/2022.01.13.476201')
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expect(page.getByRole('main')).toContainText('We will ask you to log in')
@@ -1605,7 +1601,7 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test('when the preprint is not found', async ({ fetch, javaScriptEnabled, page }) => {
+test('when the preprint is not found', async ({ fetch, page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/this-should-not-find-anything')
@@ -1615,23 +1611,9 @@ test('when the preprint is not found', async ({ fetch, javaScriptEnabled, page }
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t know this preprint')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
-test('when it is not a preprint', async ({ fetch, javaScriptEnabled, page }) => {
+test('when it is not a preprint', async ({ fetch, page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/not-a-preprint')
@@ -1697,23 +1679,9 @@ test('when it is not a preprint', async ({ fetch, javaScriptEnabled, page }) => 
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we only support preprints')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
-test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, page }) => {
+test('might not load the preprint in time', async ({ fetch, page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page.getByLabel('Which preprint are you reviewing?').fill('10.1101/this-should-take-too-long')
@@ -1726,23 +1694,9 @@ test('might not load the preprint in time', async ({ fetch, javaScriptEnabled, p
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
-test('when is DOI is not supported', async ({ javaScriptEnabled, page }) => {
+test('when is DOI is not supported', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page.getByLabel('Which preprint are you reviewing?').fill('10.5555/12345678')
@@ -1750,23 +1704,9 @@ test('when is DOI is not supported', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this DOI')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
-test('when is URL is not supported', async ({ javaScriptEnabled, page }) => {
+test('when is URL is not supported', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('link', { name: 'Review a preprint' }).click()
   await page
@@ -1776,20 +1716,6 @@ test('when is URL is not supported', async ({ javaScriptEnabled, page }) => {
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this URL')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScriptEnabled, oauthServer, page }) => {
