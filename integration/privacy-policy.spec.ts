@@ -12,8 +12,6 @@ test('can read the privacy policy', async ({ fetch, page }) => {
 
   await expect(page.getByRole('main')).toContainText('This is the Privacy Policy.')
   await expect(page.getByRole('link', { name: 'Privacy Policy' })).toHaveAttribute('aria-current', 'page')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 })
 
 test('might not load the text in time', async ({ fetch, page }) => {

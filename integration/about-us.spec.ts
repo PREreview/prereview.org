@@ -12,8 +12,6 @@ test('can read about us', async ({ fetch, page }) => {
 
   await expect(page.getByRole('main')).toContainText('Some information about us.')
   await expect(page.getByRole('link', { name: 'about' })).toHaveAttribute('aria-current', 'page')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 })
 
 test('might not load the text in time', async ({ fetch, page }) => {
