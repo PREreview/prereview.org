@@ -4,12 +4,12 @@ import type { Doi } from 'doi-ts'
 import { format } from 'fp-ts-routing'
 import * as TE from 'fp-ts/TaskEither'
 import { Status } from 'hyper-ts'
-import type { DoesPreprintExistEnv } from '../src/preprint'
-import * as _ from '../src/review-a-preprint'
-import { reviewAPreprintMatch, writeReviewMatch } from '../src/routes'
-import { fromPreprintDoi } from '../src/types/preprint-id'
-import * as fc from './fc'
-import { shouldNotBeCalled } from './should-not-be-called'
+import type { DoesPreprintExistEnv } from '../../src/preprint'
+import * as _ from '../../src/review-a-preprint-page'
+import { reviewAPreprintMatch, writeReviewMatch } from '../../src/routes'
+import { fromPreprintDoi } from '../../src/types/preprint-id'
+import * as fc from '../fc'
+import { shouldNotBeCalled } from '../should-not-be-called'
 
 describe('reviewAPreprint', () => {
   test.prop([fc.requestMethod().filter(method => method !== 'POST'), fc.anything()])(

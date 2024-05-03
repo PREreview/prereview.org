@@ -133,7 +133,7 @@ import {
 } from './request-review-flow'
 import { resources } from './resources'
 import { handleResponse } from './response'
-import { reviewAPreprint } from './review-a-preprint'
+import { reviewAPreprint } from './review-a-preprint-page'
 import { reviewPage } from './review-page'
 import { reviewRequests } from './review-requests-page'
 import { reviewsPage } from './reviews-page'
