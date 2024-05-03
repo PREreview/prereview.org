@@ -67,6 +67,12 @@ import type {
 } from '../src/review-request'
 import type { SlackUser } from '../src/slack-user'
 import type { SlackUserId } from '../src/slack-user-id'
+import {
+  type CacheableStatusCodes,
+  type NonCacheableStatusCodes,
+  isCacheable,
+  isNonCacheable,
+} from '../src/status-code'
 import { type ClubId, clubIds } from '../src/types/club-id'
 import type { EmailAddress } from '../src/types/email-address'
 import {
@@ -213,8 +219,10 @@ export const uuid = (): fc.Arbitrary<Uuid> => fc.uuid().filter(isUuid)
 
 export const pageResponse = ({
   canonical,
+  status,
 }: {
   canonical?: fc.Arbitrary<PageResponse['canonical']>
+  status?: fc.Arbitrary<PageResponse['status']>
 } = {}): fc.Arbitrary<PageResponse> =>
   fc.record({
     _tag: constant('PageResponse'),
@@ -239,7 +247,7 @@ export const pageResponse = ({
       { nil: undefined },
     ),
     skipToLabel: constant('main'),
-    status: statusCode(),
+    status: status ?? statusCode(),
     title: plainText(),
     description: fc.option(plainText(), { nil: undefined }),
     main: html(),
@@ -251,9 +259,11 @@ export const pageResponse = ({
 export const streamlinePageResponse = ({
   allowRobots,
   canonical,
+  status,
 }: {
   allowRobots?: fc.Arbitrary<StreamlinePageResponse['allowRobots']>
   canonical?: fc.Arbitrary<StreamlinePageResponse['canonical']>
+  status?: fc.Arbitrary<StreamlinePageResponse['status']>
 } = {}): fc.Arbitrary<StreamlinePageResponse> =>
   fc.record({
     _tag: constant('StreamlinePageResponse'),
@@ -278,7 +288,7 @@ export const streamlinePageResponse = ({
       { nil: undefined },
     ),
     skipToLabel: constant('main'),
-    status: statusCode(),
+    status: status ?? statusCode(),
     title: plainText(),
     description: fc.option(plainText(), { nil: undefined }),
     main: html(),
@@ -1005,6 +1015,10 @@ export const headers = (include: fc.Arbitrary<Record<string, string>> = constant
     })
 
 export const statusCode = (): fc.Arbitrary<Status> => constantFrom(...Object.values(Status))
+
+export const cacheableStatusCode = (): fc.Arbitrary<CacheableStatusCodes> => statusCode().filter(isCacheable)
+
+export const nonCacheableStatusCode = (): fc.Arbitrary<NonCacheableStatusCodes> => statusCode().filter(isNonCacheable)
 
 export const fetchResponse = ({
   headers: headers_,

@@ -14,6 +14,7 @@ import { showNotificationBanner } from './notification-banner'
 import { type Page, type TemplatePageEnv, templatePage } from './page'
 import { type PublicUrlEnv, toUrl } from './public-url'
 import { orcidCodeMatch } from './routes'
+import { isCacheable } from './status-code'
 import type { User } from './user'
 import { type GetUserOnboardingEnv, maybeGetUserOnboarding } from './user-onboarding'
 
@@ -194,6 +195,14 @@ export const handlePageResponse = ({
       }),
     ),
     RM.ichainFirst(() => RM.status(response.status)),
+    RM.ichainFirst(() =>
+      !isCacheable(response.status)
+        ? RM.header('Cache-Control', 'no-store, must-revalidate')
+        : user
+          ? RM.header('Cache-Control', 'no-cache, private')
+          : RM.header('Cache-Control', 'no-cache, public'),
+    ),
+    RM.ichainFirst(() => RM.header('Vary', 'Cookie')),
     RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
     RM.ichainFirst(() =>
       RM.fromMiddleware(
@@ -247,6 +256,10 @@ const handleTwoUpPageResponse = ({
       }),
     ),
     RM.ichainFirst(() => RM.status(Status.OK)),
+    RM.ichainFirst(() =>
+      user ? RM.header('Cache-Control', 'no-cache, private') : RM.header('Cache-Control', 'no-cache, public'),
+    ),
+    RM.ichainFirst(() => RM.header('Vary', 'Cookie')),
     RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
     RM.ichainFirst(() => RM.header('Link', `<${response.canonical}>; rel="canonical"`)),
     RM.ichainMiddlewareK(sendHtml),
@@ -254,11 +267,21 @@ const handleTwoUpPageResponse = ({
 
 const handleRedirectResponse = ({
   response,
+  user,
 }: {
   response: RedirectResponse
+  user?: User
 }): M.Middleware<StatusOpen, ResponseEnded, never, void> =>
   pipe(
     M.status(response.status),
+    M.ichain(() =>
+      !isCacheable(response.status)
+        ? M.header('Cache-Control', 'no-store, must-revalidate')
+        : user
+          ? M.header('Cache-Control', 'no-cache, private')
+          : M.header('Cache-Control', 'no-cache, public'),
+    ),
+    M.ichain(() => M.header('Vary', 'Cookie')),
     M.ichain(() => M.header('Location', response.location.toString())),
     M.ichain(() => M.closeHeaders()),
     M.ichain(() => M.end()),
@@ -272,6 +295,7 @@ const handleFlashMessageResponse = ({
   pipe(
     M.status(Status.SeeOther),
     M.ichain(() => M.header('Location', response.location.toString())),
+    M.ichain(() => M.header('Cache-Control', 'no-store, must-revalidate')),
     M.ichain(() => setFlashMessage(response.message)),
     M.ichain(() => M.closeHeaders()),
     M.ichain(() => M.end()),

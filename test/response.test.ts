@@ -14,53 +14,60 @@ import { shouldNotBeCalled } from './should-not-be-called'
 describe('handleResponse', () => {
   describe('with a PageResponse', () => {
     describe('templates the page', () => {
-      test.prop([
-        fc.connection(),
-        fc.pageResponse(),
-        fc.user(),
-        fc.userOnboarding(),
-        fc.html(),
-        fc.oauth(),
-        fc.origin(),
-      ])('when there is a user', async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
-        const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
-        const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+      describe('with a cacheable response', () => {
+        test.prop([
+          fc.connection(),
+          fc.pageResponse({ status: fc.cacheableStatusCode() }),
+          fc.user(),
+          fc.userOnboarding(),
+          fc.html(),
+          fc.oauth(),
+          fc.origin(),
+        ])('when there is a user', async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
+          const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
+          const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-        const actual = await runMiddleware(
-          _.handleResponse({ response, user })({
-            getUserOnboarding,
-            orcidOauth,
-            publicUrl,
-            templatePage,
-          }),
-          connection,
-        )()
+          const actual = await runMiddleware(
+            _.handleResponse({ response, user })({
+              getUserOnboarding,
+              orcidOauth,
+              publicUrl,
+              templatePage,
+            }),
+            connection,
+          )()
 
-        expect(actual).toStrictEqual(
-          E.right(
-            expect.arrayContaining([
-              { type: 'setStatus', status: response.status },
-              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-              { type: 'setBody', body: page.toString() },
-            ]),
-          ),
-        )
-        expect(getUserOnboarding).toHaveBeenCalledWith(user.orcid)
-        expect(templatePage).toHaveBeenCalledWith({
-          title: response.title,
-          description: response.description,
-          content: expect.stringContaining(response.main.toString()),
-          skipLinks: [[rawHtml('Skip to main content'), '#main']],
-          current: response.current,
-          js: response.js,
-          user,
-          userOnboarding,
+          expect(actual).toStrictEqual(
+            E.right(
+              expect.arrayContaining([
+                { type: 'setStatus', status: response.status },
+                { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, private' },
+                { type: 'setHeader', name: 'Vary', value: 'Cookie' },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: page.toString() },
+              ]),
+            ),
+          )
+          expect(getUserOnboarding).toHaveBeenCalledWith(user.orcid)
+          expect(templatePage).toHaveBeenCalledWith({
+            title: response.title,
+            description: response.description,
+            content: expect.stringContaining(response.main.toString()),
+            skipLinks: [[rawHtml('Skip to main content'), '#main']],
+            current: response.current,
+            js: response.js,
+            user,
+            userOnboarding,
+          })
         })
-      })
 
-      test.prop([fc.connection(), fc.pageResponse(), fc.html(), fc.oauth(), fc.origin()])(
-        "when there isn't a user",
-        async (connection, response, page, orcidOauth, publicUrl) => {
+        test.prop([
+          fc.connection(),
+          fc.pageResponse({ status: fc.cacheableStatusCode() }),
+          fc.html(),
+          fc.oauth(),
+          fc.origin(),
+        ])("when there isn't a user", async (connection, response, page, orcidOauth, publicUrl) => {
           const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
           const actual = await runMiddleware(
@@ -75,6 +82,8 @@ describe('handleResponse', () => {
             E.right(
               expect.arrayContaining([
                 { type: 'setStatus', status: response.status },
+                { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, public' },
+                { type: 'setHeader', name: 'Vary', value: 'Cookie' },
                 { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
                 { type: 'setBody', body: page.toString() },
               ]),
@@ -90,6 +99,41 @@ describe('handleResponse', () => {
             user: undefined,
             userOnboarding: undefined,
           })
+        })
+      })
+
+      test.prop([
+        fc.connection(),
+        fc.pageResponse({ status: fc.nonCacheableStatusCode() }),
+        fc.option(fc.user(), { nil: undefined }),
+        fc.userOnboarding(),
+        fc.html(),
+        fc.oauth(),
+        fc.origin(),
+      ])(
+        'with a non-cacheable response',
+        async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
+          const actual = await runMiddleware(
+            _.handleResponse({ response, user })({
+              getUserOnboarding: () => TE.right(userOnboarding),
+              orcidOauth,
+              publicUrl,
+              templatePage: () => page,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right(
+              expect.arrayContaining([
+                { type: 'setStatus', status: response.status },
+                { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+                { type: 'setHeader', name: 'Vary', value: 'Cookie' },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: page.toString() },
+              ]),
+            ),
+          )
         },
       )
     })
@@ -150,54 +194,61 @@ describe('handleResponse', () => {
 
   describe('with a StreamlinePageResponse', () => {
     describe('templates the page', () => {
-      test.prop([
-        fc.connection(),
-        fc.streamlinePageResponse(),
-        fc.user(),
-        fc.userOnboarding(),
-        fc.html(),
-        fc.oauth(),
-        fc.origin(),
-      ])('when there is a user', async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
-        const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
-        const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+      describe('with a cacheable response', () => {
+        test.prop([
+          fc.connection(),
+          fc.streamlinePageResponse({ status: fc.cacheableStatusCode() }),
+          fc.user(),
+          fc.userOnboarding(),
+          fc.html(),
+          fc.oauth(),
+          fc.origin(),
+        ])('when there is a user', async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
+          const getUserOnboarding = jest.fn<GetUserOnboardingEnv['getUserOnboarding']>(_ => TE.right(userOnboarding))
+          const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
-        const actual = await runMiddleware(
-          _.handleResponse({ response, user })({
-            getUserOnboarding,
-            orcidOauth,
-            publicUrl,
-            templatePage,
-          }),
-          connection,
-        )()
+          const actual = await runMiddleware(
+            _.handleResponse({ response, user })({
+              getUserOnboarding,
+              orcidOauth,
+              publicUrl,
+              templatePage,
+            }),
+            connection,
+          )()
 
-        expect(actual).toStrictEqual(
-          E.right(
-            expect.arrayContaining([
-              { type: 'setStatus', status: response.status },
-              { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-              { type: 'setBody', body: page.toString() },
-            ]),
-          ),
-        )
-        expect(getUserOnboarding).toHaveBeenCalledWith(user.orcid)
-        expect(templatePage).toHaveBeenCalledWith({
-          title: response.title,
-          description: response.description,
-          content: expect.stringContaining(response.main.toString()),
-          skipLinks: [[rawHtml('Skip to main content'), '#main']],
-          current: response.current,
-          js: response.js,
-          type: 'streamline',
-          user,
-          userOnboarding,
+          expect(actual).toStrictEqual(
+            E.right(
+              expect.arrayContaining([
+                { type: 'setStatus', status: response.status },
+                { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, private' },
+                { type: 'setHeader', name: 'Vary', value: 'Cookie' },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: page.toString() },
+              ]),
+            ),
+          )
+          expect(getUserOnboarding).toHaveBeenCalledWith(user.orcid)
+          expect(templatePage).toHaveBeenCalledWith({
+            title: response.title,
+            description: response.description,
+            content: expect.stringContaining(response.main.toString()),
+            skipLinks: [[rawHtml('Skip to main content'), '#main']],
+            current: response.current,
+            js: response.js,
+            type: 'streamline',
+            user,
+            userOnboarding,
+          })
         })
-      })
 
-      test.prop([fc.connection(), fc.streamlinePageResponse(), fc.html(), fc.oauth(), fc.origin()])(
-        "when there isn't a user",
-        async (connection, response, page, orcidOauth, publicUrl) => {
+        test.prop([
+          fc.connection(),
+          fc.streamlinePageResponse({ status: fc.cacheableStatusCode() }),
+          fc.html(),
+          fc.oauth(),
+          fc.origin(),
+        ])("when there isn't a user", async (connection, response, page, orcidOauth, publicUrl) => {
           const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
 
           const actual = await runMiddleware(
@@ -212,6 +263,8 @@ describe('handleResponse', () => {
             E.right(
               expect.arrayContaining([
                 { type: 'setStatus', status: response.status },
+                { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, public' },
+                { type: 'setHeader', name: 'Vary', value: 'Cookie' },
                 { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
                 { type: 'setBody', body: page.toString() },
               ]),
@@ -228,6 +281,41 @@ describe('handleResponse', () => {
             user: undefined,
             userOnboarding: undefined,
           })
+        })
+      })
+
+      test.prop([
+        fc.connection(),
+        fc.streamlinePageResponse({ status: fc.nonCacheableStatusCode() }),
+        fc.option(fc.user(), { nil: undefined }),
+        fc.userOnboarding(),
+        fc.html(),
+        fc.oauth(),
+        fc.origin(),
+      ])(
+        'with a non-cacheable response',
+        async (connection, response, user, userOnboarding, page, orcidOauth, publicUrl) => {
+          const actual = await runMiddleware(
+            _.handleResponse({ response, user })({
+              getUserOnboarding: () => TE.right(userOnboarding),
+              orcidOauth,
+              publicUrl,
+              templatePage: () => page,
+            }),
+            connection,
+          )()
+
+          expect(actual).toStrictEqual(
+            E.right(
+              expect.arrayContaining([
+                { type: 'setStatus', status: response.status },
+                { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+                { type: 'setHeader', name: 'Vary', value: 'Cookie' },
+                { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
+                { type: 'setBody', body: page.toString() },
+              ]),
+            ),
+          )
         },
       )
     })
@@ -334,6 +422,8 @@ describe('handleResponse', () => {
       expect(actual).toStrictEqual(
         E.right([
           { type: 'setStatus', status: Status.OK },
+          { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, private' },
+          { type: 'setHeader', name: 'Vary', value: 'Cookie' },
           { type: 'setHeader', name: 'Link', value: `<${response.canonical}>; rel="canonical"` },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: page.toString() },
@@ -371,6 +461,8 @@ describe('handleResponse', () => {
         expect(actual).toStrictEqual(
           E.right([
             { type: 'setStatus', status: Status.OK },
+            { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, public' },
+            { type: 'setHeader', name: 'Vary', value: 'Cookie' },
             { type: 'setHeader', name: 'Link', value: `<${response.canonical}>; rel="canonical"` },
             { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
             { type: 'setBody', body: page.toString() },

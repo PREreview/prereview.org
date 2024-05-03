@@ -488,6 +488,8 @@ describe('legacyRoutes', () => {
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.NotFound },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, public' },
+        { type: 'setHeader', name: 'Vary', value: 'Cookie' },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: 'page-content' },
       ]),
@@ -517,6 +519,8 @@ describe('legacyRoutes', () => {
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.Gone },
+        { type: 'setHeader', name: 'Cache-Control', value: 'no-cache, public' },
+        { type: 'setHeader', name: 'Vary', value: 'Cookie' },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: 'page-content' },
       ]),
