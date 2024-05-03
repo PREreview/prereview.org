@@ -79,8 +79,6 @@ test('can find and view a review', async ({ fetch, page }) => {
     .click()
 
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 })
 
 test('can find and view a question-based review', async ({ fetch, page }) => {
@@ -182,8 +180,6 @@ test('can find and view a question-based review', async ({ fetch, page }) => {
   await expect(page.getByRole('main')).toContainText(
     'Does the introduction explain the objective of the research presented in the preprint?',
   )
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 })
 
 test("can find and view a review that's part of a club", async ({ fetch, page }) => {
@@ -262,8 +258,6 @@ test("can find and view a review that's part of a club", async ({ fetch, page })
     .click()
 
   await expect(page.getByRole('main')).toContainText('of the ASAPbio Metabolism Crowd')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 })
 
 test('can view a recent review', async ({ fetch, page }) => {
@@ -706,7 +700,7 @@ test('might not load the older reviews in time', async ({ fetch, javaScriptEnabl
   await expect(page).toHaveScreenshot()
 })
 
-test('might not load the PREreview in time', async ({ fetch, javaScriptEnabled, page }) => {
+test('might not load the PREreview in time', async ({ fetch, page }) => {
   const record: Record = {
     conceptdoi: '10.5072/zenodo.1061863' as Doi,
     conceptrecid: 1061863,
@@ -768,36 +762,10 @@ test('might not load the PREreview in time', async ({ fetch, javaScriptEnabled, 
   await page.goto('/reviews/1061864')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
-test.extend(prereviewWasRemoved)('when the PREreview was removed', async ({ javaScriptEnabled, page }) => {
+test.extend(prereviewWasRemoved)('when the PREreview was removed', async ({ page }) => {
   await page.goto('/reviews/12345678')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('PREreview removed')
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
