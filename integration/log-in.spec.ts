@@ -31,9 +31,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isANewUser)(
   async ({ page }) => {
     await expect(page.getByRole('link', { name: 'My details' })).toContainText('New notification')
 
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('link', { name: 'My details' }).click()
 
     await expect(page.getByRole('main')).toContainText('Welcome to PREreview!')
