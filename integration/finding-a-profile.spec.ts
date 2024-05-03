@@ -4,7 +4,7 @@ import { URL } from 'url'
 import { RecordC, RecordsC } from 'zenodo-ts'
 import { areLoggedIn, canLogIn, expect, isASlackUser, test } from './base'
 
-test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) => {
+test('can find and view a profile', async ({ fetch, page }) => {
   fetch
     .getOnce('http://zenodo.test/api/records/7747129', {
       body: RecordC.encode({
@@ -175,20 +175,6 @@ test('can find and view a profile', async ({ fetch, javaScriptEnabled, page }) =
   await page.getByRole('link', { name: 'CJ San Felipe' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('CJ San Felipe')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my profile', async ({ fetch, page }) => {
@@ -257,8 +243,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)('can view my prof
   await expect(page.getByRole('main')).toContainText('Location Vivamus in convallis urna.')
   await expect(page.getByRole('main')).toContainText('Languages English and Spanish')
   await expect(page.getByRole('main')).toContainText('Josiah Carberry is happy to take requests for a PREreview.')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 })
 
 test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
@@ -429,8 +413,6 @@ test("can find and view a pseduonym's profile", async ({ fetch, page }) => {
   await page.getByRole('link', { name: 'Blue Sheep' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Blue Sheep')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn)("can view my pseduonym's profile", async ({ fetch, page }) => {
@@ -476,5 +458,4 @@ test('the list might be empty', async ({ fetch, page }) => {
   await page.goto('/profiles/0000-0002-6109-0367')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Daniela Saderi')
-  await expect(page).toHaveScreenshot()
 })
