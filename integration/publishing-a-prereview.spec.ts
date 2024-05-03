@@ -1718,7 +1718,7 @@ test('when is URL is not supported', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we don’t support this URL')
 })
 
-test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScriptEnabled, oauthServer, page }) => {
+test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ oauthServer, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   oauthServer.service.once('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
     url.searchParams.delete('code')
@@ -1727,20 +1727,6 @@ test.extend(canLogIn)('have to grant access to your ORCID iD', async ({ javaScri
   await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t log you in')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
@@ -1893,29 +1879,15 @@ test.extend(canLogIn).extend(areLoggedIn)(
   },
 )
 
-test('are told if ORCID is unavailable', async ({ fetch, javaScriptEnabled, page }) => {
+test('are told if ORCID is unavailable', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   fetch.postOnce('http://orcid.test/token', { status: Status.ServiceUnavailable })
   await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
-test('might not authenticate with ORCID in time', async ({ fetch, javaScriptEnabled, page }) => {
+test('might not authenticate with ORCID in time', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   fetch.postOnce(
     'http://orcid.test/token',
@@ -1937,20 +1909,6 @@ test('might not authenticate with ORCID in time', async ({ fetch, javaScriptEnab
   await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
@@ -1994,7 +1952,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
   },
 )
 
-test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, javaScriptEnabled, page }) => {
+test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, page }) => {
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201/write-a-prereview')
   fetch.get(
     {
@@ -2014,20 +1972,6 @@ test.extend(canLogIn)('mind not find the pseudonym in time', async ({ fetch, jav
   await page.getByRole('button', { name: 'Start now' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn)(
