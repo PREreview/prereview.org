@@ -10,7 +10,9 @@ import * as TE from 'fp-ts/TaskEither'
 import { MediaType, Status } from 'hyper-ts'
 import all from 'it-all'
 import Keyv from 'keyv'
+import { rawHtml } from '../../src/html'
 import * as _ from '../../src/log-in'
+import type { TemplatePageEnv } from '../../src/page'
 import { homeMatch, writeReviewMatch } from '../../src/routes'
 import { UserC } from '../../src/user'
 import * as fc from '../fc'
@@ -193,6 +195,7 @@ describe('authenticate', () => {
             body: accessToken,
           }),
           getPseudonym: () => TE.right(pseudonym),
+          getUserOnboarding: shouldNotBeCalled,
           isUserBlocked: () => false,
           logger: () => IO.of(undefined),
           orcidOauth,
@@ -200,6 +203,7 @@ describe('authenticate', () => {
           secret,
           sessionCookie,
           sessionStore,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -254,6 +258,7 @@ describe('authenticate', () => {
             body: accessToken,
           }),
           getPseudonym: shouldNotBeCalled,
+          getUserOnboarding: shouldNotBeCalled,
           isUserBlocked,
           logger: () => IO.of(undefined),
           orcidOauth,
@@ -261,6 +266,7 @@ describe('authenticate', () => {
           secret,
           sessionCookie,
           sessionStore,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -292,9 +298,10 @@ describe('authenticate', () => {
     fc.string(),
     fc.cookieName(),
     fc.connection(),
+    fc.html(),
   ])(
     'when a pseudonym cannot be retrieved',
-    async (code, [referer], orcidOauth, accessToken, secret, sessionCookie, connection) => {
+    async (code, [referer], orcidOauth, accessToken, secret, sessionCookie, connection, page) => {
       const sessionStore = new Keyv()
       const fetch = fetchMock.sandbox().postOnce(orcidOauth.tokenUrl.href, {
         status: Status.OK,
@@ -309,6 +316,7 @@ describe('authenticate', () => {
           clock: SystemClock,
           fetch,
           getPseudonym: () => TE.left('unavailable'),
+          getUserOnboarding: shouldNotBeCalled,
           isUserBlocked: () => false,
           logger: () => IO.of(undefined),
           orcidOauth,
@@ -316,6 +324,7 @@ describe('authenticate', () => {
           secret,
           sessionCookie,
           sessionStore,
+          templatePage: () => page,
         }),
         connection,
       )()
@@ -326,8 +335,9 @@ describe('authenticate', () => {
         E.right([
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+          { type: 'setHeader', name: 'Vary', value: 'Cookie' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-          { type: 'setBody', body: expect.anything() },
+          { type: 'setBody', body: page.toString() },
         ]),
       )
       expect(fetch.done()).toBeTruthy()
@@ -365,6 +375,7 @@ describe('authenticate', () => {
             body: accessToken,
           }),
           getPseudonym: () => TE.right(pseudonym),
+          getUserOnboarding: shouldNotBeCalled,
           isUserBlocked: () => false,
           logger: () => IO.of(undefined),
           orcidOauth,
@@ -372,6 +383,7 @@ describe('authenticate', () => {
           secret,
           sessionCookie,
           sessionStore,
+          templatePage: shouldNotBeCalled,
         }),
         connection,
       )()
@@ -399,29 +411,59 @@ describe('authenticate', () => {
 })
 
 describe('authenticateError', () => {
-  test.prop([fc.connection()])('with an access_denied error', async connection => {
-    const actual = await runMiddleware(_.authenticateError('access_denied')({}), connection)()
+  test.prop([fc.connection(), fc.html()])('with an access_denied error', async (connection, page) => {
+    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
+    const actual = await runMiddleware(
+      _.authenticateError('access_denied')({
+        getUserOnboarding: shouldNotBeCalled,
+        templatePage,
+      }),
+      connection,
+    )()
 
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.Forbidden },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Vary', value: 'Cookie' },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
+        { type: 'setBody', body: page.toString() },
       ]),
     )
+    expect(templatePage).toHaveBeenCalledWith({
+      title: expect.stringContaining('Sorry'),
+      content: expect.stringContaining('denied'),
+      skipLinks: [[rawHtml('Skip to main content'), '#main']],
+      js: [],
+    })
   })
 
-  test.prop([fc.string(), fc.connection()])('with an unknown error', async (error, connection) => {
-    const actual = await runMiddleware(_.authenticateError(error)({}), connection)()
+  test.prop([fc.string(), fc.connection(), fc.html()])('with an unknown error', async (error, connection, page) => {
+    const templatePage = jest.fn<TemplatePageEnv['templatePage']>(_ => page)
+
+    const actual = await runMiddleware(
+      _.authenticateError(error)({
+        getUserOnboarding: shouldNotBeCalled,
+        templatePage,
+      }),
+      connection,
+    )()
 
     expect(actual).toStrictEqual(
       E.right([
         { type: 'setStatus', status: Status.ServiceUnavailable },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
+        { type: 'setHeader', name: 'Vary', value: 'Cookie' },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
-        { type: 'setBody', body: expect.anything() },
+        { type: 'setBody', body: page.toString() },
       ]),
     )
+    expect(templatePage).toHaveBeenCalledWith({
+      title: expect.stringContaining('Sorry'),
+      content: expect.stringContaining('unable'),
+      skipLinks: [[rawHtml('Skip to main content'), '#main']],
+      js: [],
+    })
   })
 })

@@ -8,7 +8,6 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import type * as TE from 'fp-ts/TaskEither'
 import { constant, flow, pipe } from 'fp-ts/function'
 import { isString } from 'fp-ts/string'
-import { Status } from 'hyper-ts'
 import { type OAuthEnv, exchangeAuthorizationCode, requestAuthorizationCode } from 'hyper-ts-oauth'
 import { endSession as _endSession, storeSession } from 'hyper-ts-session'
 import * as RM from 'hyper-ts/ReaderMiddleware'
@@ -20,12 +19,13 @@ import { get } from 'spectacles-ts'
 import { match } from 'ts-pattern'
 import { timeoutRequest } from '../fetch'
 import { setFlashMessage } from '../flash-message'
-import { html, plainText, sendHtml } from '../html'
-import { page } from '../page'
 import { type PublicUrlEnv, ifHasSameOrigin, toUrl } from '../public-url'
+import { handlePageResponse } from '../response'
 import { homeMatch, orcidCodeMatch } from '../routes'
 import type { Pseudonym } from '../types/pseudonym'
 import { newSessionForUser } from '../user'
+import { accessDeniedMessage } from './access-denied-message'
+import { failureMessage } from './failure-message'
 
 export interface OrcidOAuthEnv {
   orcidOauth: Omit<OAuthEnv['oauth'], 'redirectUri'>
@@ -167,53 +167,11 @@ function getReferer(state: string) {
   )
 }
 
-const showAccessDeniedMessage = pipe(
-  RM.rightReader(accessDeniedMessage()),
-  RM.ichainFirst(() => RM.status(Status.Forbidden)),
-  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showAccessDeniedMessage = handlePageResponse({ response: accessDeniedMessage })
 
-const showFailureMessage = pipe(
-  RM.rightReader(failureMessage()),
-  RM.ichainFirst(() => RM.status(Status.ServiceUnavailable)),
-  RM.ichainFirst(() => RM.header('Cache-Control', 'no-store, must-revalidate')),
-  RM.ichainMiddlewareK(sendHtml),
-)
+const showFailureMessage = handlePageResponse({ response: failureMessage })
 
 const endSession = pipe(
   _endSession(),
   RM.orElseW(() => RM.right(undefined)),
 )
-
-function accessDeniedMessage() {
-  return page({
-    title: plainText`Sorry, we can’t log you in`,
-    content: html`
-      <main id="main-content">
-        <h1>Sorry, we can’t log you in</h1>
-
-        <p>You have denied PREreview access to your ORCID&nbsp;iD.</p>
-
-        <p>Please try again.</p>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-  })
-}
-
-function failureMessage() {
-  return page({
-    title: plainText`Sorry, we’re having problems`,
-    content: html`
-      <main id="main-content">
-        <h1>Sorry, we’re having problems</h1>
-
-        <p>We’re unable to log you in right now.</p>
-
-        <p>Please try again later.</p>
-      </main>
-    `,
-    skipLinks: [[html`Skip to main content`, '#main-content']],
-  })
-}
