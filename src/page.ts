@@ -23,6 +23,7 @@ import {
   peopleMatch,
   privacyPolicyMatch,
   resourcesMatch,
+  reviewRequestsMatch,
   reviewsMatch,
   trainingsMatch,
 } from './routes'
@@ -60,6 +61,7 @@ export interface Page {
     | 'people'
     | 'privacy-policy'
     | 'resources'
+    | 'review-requests'
     | 'reviews'
     | 'trainings'
   readonly js?: ReadonlyArray<Exclude<Assets<'.js'>, 'skip-link.js'>>
@@ -219,6 +221,13 @@ export function page({
                             href="${format(reviewsMatch.formatter, { page: 1 })}"
                             ${current === 'reviews' ? html`aria-current="page"` : ''}
                             >Reviews</a
+                          >
+                        </li>
+                        <li>
+                          <a
+                            href="${format(reviewRequestsMatch.formatter, { page: 1 })}"
+                            ${current === 'review-requests' ? html`aria-current="page"` : ''}
+                            >Requests</a
                           >
                         </li>
                         <li>

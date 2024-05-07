@@ -28,6 +28,7 @@ describe('reviewRequests', () => {
       expect(actual).toStrictEqual({
         _tag: 'PageResponse',
         canonical: format(reviewRequestsMatch.formatter, { page: reviewRequests.currentPage }),
+        current: 'review-requests',
         status: Status.OK,
         title: expect.stringContaining('requests'),
         main: expect.stringContaining('requests'),

@@ -374,6 +374,11 @@ test.extend(canLogIn).extend(areLoggedIn).extend(canSeeReviewRequests)(
   async ({ page }) => {
     await page.goto('/')
     await page.getByRole('link', { name: 'See all requests' }).click()
+
+    await expect(page).toHaveTitle('Recent review requests (page 1) | PREreview')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent review requests')
+    await expect(page.getByRole('link', { name: 'Requests', exact: true })).toHaveAttribute('aria-current', 'page')
+
     await page
       .getByRole('link', { name: 'A conserved local structural motif controls the kinetics of PTP1B catalysis' })
       .click()

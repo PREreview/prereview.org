@@ -77,4 +77,5 @@ export const createPage = ({ currentPage, totalPages, reviewRequests }: ReviewRe
       </nav>
     `,
     canonical: format(reviewRequestsMatch.formatter, { page: currentPage }),
+    current: 'review-requests',
   })
