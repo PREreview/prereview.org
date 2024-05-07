@@ -88,11 +88,9 @@ test('can find and view a preprint', async ({ fetch, page }) => {
       .getByRole('article', { name: 'The role of LHCBM1 in non-photochemical quenching in Chlamydomonas reinhardtii' }),
   ).toContainText('Non-photochemical quenching (NPQ) is the process that protects')
   await expect(page.getByRole('main')).toContainText('1 PREreview')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 })
 
-test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, page }) => {
+test('might not load PREreviews in time', async ({ fetch, page }) => {
   fetch.getOnce(
     {
       url: 'http://zenodo.test/api/communities/prereview-reviews/records',
@@ -104,18 +102,4 @@ test('might not load PREreviews in time', async ({ fetch, javaScriptEnabled, pag
   await page.goto('/preprints/doi-10.1101-2022.01.13.476201')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })

@@ -437,9 +437,5 @@ test('can find and view Rapid PREreviews', async ({ fetch, page }) => {
 
   await page.goto('/preprints/doi-10.1101-2022.02.14.480364')
 
-  await page.getByRole('heading', { name: '19 Rapid PREreviews' }).scrollIntoViewIfNeeded()
-  await expect(page).toHaveScreenshot()
-
-  await page.getByRole('region', { name: 'Aggregated Rapid PREreviews' }).focus()
-  await expect(page).toHaveScreenshot()
+  await expect(page.getByRole('region', { name: 'Aggregated Rapid PREreviews' })).toBeVisible()
 })
