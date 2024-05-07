@@ -10,12 +10,13 @@ import { P, match } from 'ts-pattern'
 import { type MissingE, hasAnError, missingE } from '../form'
 import { html, plainText, rawHtml } from '../html'
 import { havingProblemsPage, pageNotFound } from '../http-error'
-import { type GetPreprintEnv, type Preprint, type PreprintTitle, getPreprint } from '../preprint'
-import { LogInResponse, PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
+import { type GetPreprintEnv, type PreprintTitle, getPreprint } from '../preprint'
+import { LogInResponse, type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewReviewTypeMatch } from '../routes'
 import type { IndeterminatePreprintId } from '../types/preprint-id'
 import type { User } from '../user'
 import { type Form, type FormStoreEnv, createForm, getForm, nextFormMatch, saveForm, updateForm } from './form'
+import { ownPreprintPage } from './own-preprint-page'
 import { ensureUserIsNotAnAuthor } from './user-is-author'
 
 export const writeReviewReviewType = ({
@@ -71,7 +72,7 @@ export const writeReviewReviewType = ({
             error =>
               RT.of(
                 match(error)
-                  .with({ type: 'is-author' }, () => ownPreprintPage(preprint))
+                  .with({ type: 'is-author' }, () => ownPreprintPage(preprint.id, writeReviewReviewTypeMatch.formatter))
                   .with('no-session', () =>
                     LogInResponse({ location: format(writeReviewMatch.formatter, { id: preprint.id }) }),
                   )
@@ -259,21 +260,5 @@ function reviewTypeForm(preprint: PreprintTitle, form: ReviewTypeForm) {
     skipToLabel: 'form',
     canonical: format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }),
     js: error ? ['error-summary.js'] : [],
-  })
-}
-
-function ownPreprintPage(preprint: Preprint) {
-  return PageResponse({
-    status: Status.Forbidden,
-    title: plainText`Sorry, you can’t review your own preprint`,
-    nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
-    `,
-    main: html`
-      <h1>Sorry, you can’t review your own preprint</h1>
-
-      <p>If you’re not an author, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
-    `,
-    canonical: format(writeReviewReviewTypeMatch.formatter, { id: preprint.id }),
   })
 }

@@ -5,18 +5,18 @@ import * as RT from 'fp-ts/ReaderTask'
 import * as RTE from 'fp-ts/ReaderTaskEither'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
 import { flow, pipe } from 'fp-ts/function'
-import { Status } from 'hyper-ts'
 import { getLangDir } from 'rtl-detect'
 import { P, match } from 'ts-pattern'
 import { type Html, fixHeadingLevels, html, plainText, rawHtml } from '../html'
 import { havingProblemsPage, pageNotFound } from '../http-error'
 import { type GetPreprintEnv, type Preprint, getPreprint } from '../preprint'
-import { PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
+import { type PageResponse, RedirectResponse, StreamlinePageResponse } from '../response'
 import { preprintReviewsMatch, writeReviewMatch, writeReviewStartMatch } from '../routes'
 import { renderDate } from '../time'
 import type { IndeterminatePreprintId } from '../types/preprint-id'
 import type { User } from '../user'
 import { type FormStoreEnv, getForm } from './form'
+import { ownPreprintPage } from './own-preprint-page'
 import { ensureUserIsNotAnAuthor } from './user-is-author'
 
 export const writeReview = ({
@@ -56,7 +56,7 @@ export const writeReview = ({
           RTE.matchW(
             error =>
               match(error)
-                .with({ type: 'is-author' }, () => ownPreprintPage(preprint))
+                .with({ type: 'is-author' }, () => ownPreprintPage(preprint.id, writeReviewMatch.formatter))
                 .with('no-session', () => startPage(preprint))
                 .with('form-unavailable', P.instanceOf(Error), () => havingProblemsPage)
                 .exhaustive(),
@@ -198,22 +198,6 @@ function startPage(preprint: Preprint, user?: User) {
       >Start now</a
       >
       </main>
-    `,
-    canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
-  })
-}
-
-function ownPreprintPage(preprint: Preprint) {
-  return PageResponse({
-    status: Status.Forbidden,
-    title: plainText`Sorry, you can’t review your own preprint`,
-    nav: html`
-      <a href="${format(preprintReviewsMatch.formatter, { id: preprint.id })}" class="back">Back to preprint</a>
-    `,
-    main: html`
-      <h1>Sorry, you can’t review your own preprint</h1>
-
-      <p>If you’re not an author, please <a href="mailto:help@prereview.org">get in touch</a>.</p>
     `,
     canonical: format(writeReviewMatch.formatter, { id: preprint.id }),
   })
