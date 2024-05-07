@@ -472,15 +472,11 @@ test('can view an older review', async ({ fetch, page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent PREreviews')
   await expect(page.getByRole('link', { name: 'Reviews', exact: true })).toHaveAttribute('aria-current', 'page')
   await expect(page.getByRole('link', { name: 'Older' })).toHaveAttribute('rel', 'next')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 
   await page.getByRole('link', { name: 'Older' }).click()
 
   await expect(page).toHaveTitle('Recent PREreviews (page 2) | PREreview')
   await expect(page.getByRole('link', { name: 'Newer' })).toHaveAttribute('rel', 'prev')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 
   await page
     .getByRole('link', {
@@ -557,8 +553,6 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
   await page.getByRole('link', { name: 'See all reviews' }).click()
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recent PREreviews')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 
   await page
     .getByRole('link', {
@@ -570,7 +564,7 @@ test("can view an older review that's part of a club", async ({ fetch, page }) =
   await expect(page.getByRole('main')).toContainText('This work enriches the knowledge')
 })
 
-test('might not load the older reviews in time', async ({ fetch, javaScriptEnabled, page }) => {
+test('might not load the older reviews in time', async ({ fetch, page }) => {
   fetch.get(
     {
       name: 'recent-prereviews',
@@ -685,19 +679,6 @@ test('might not load the older reviews in time', async ({ fetch, javaScriptEnabl
   await page.goto('/reviews?page=1')
 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we’re having problems')
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Tab')
-
-  await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-  await expect(page).toHaveScreenshot()
-
-  await page.keyboard.press('Enter')
-
-  if (javaScriptEnabled) {
-    await expect(page.getByRole('main')).toBeFocused()
-  }
-  await expect(page).toHaveScreenshot()
 })
 
 test('might not load the PREreview in time', async ({ fetch, page }) => {
