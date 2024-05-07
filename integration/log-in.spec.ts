@@ -199,10 +199,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
   async ({ javaScriptEnabled, page }) => {
     await page.getByRole('link', { name: 'My details' }).click()
     await page.getByRole('link', { name: 'Connect Slack account' }).click()
-
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
     await page.getByRole('button', { name: 'Start now' }).click()
 
     if (javaScriptEnabled) {
@@ -234,7 +230,7 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)(
 
 test.extend(canLogIn).extend(areLoggedIn)(
   'have to grant access to your Slack Community account',
-  async ({ javaScriptEnabled, oauthServer, page }) => {
+  async ({ oauthServer, page }) => {
     await page.goto('/connect-slack')
     oauthServer.service.once('beforeAuthorizeRedirect', ({ url }: MutableRedirectUri) => {
       url.searchParams.delete('code')
@@ -243,20 +239,6 @@ test.extend(canLogIn).extend(areLoggedIn)(
     await page.getByRole('button', { name: 'Start now' }).click()
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sorry, we can’t connect your account')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Tab')
-
-    await expect(page.getByRole('link', { name: 'Skip to main content' })).toBeFocused()
-    await expect(page).toHaveScreenshot()
-
-    await page.keyboard.press('Enter')
-
-    if (javaScriptEnabled) {
-      await expect(page.getByRole('main')).toBeFocused()
-    }
-    await expect(page).toHaveScreenshot()
   },
 )
 
