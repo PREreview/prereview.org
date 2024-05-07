@@ -198,11 +198,11 @@ export const handlePageResponse = ({
     RM.ichainFirst(() =>
       !isCacheable(response.status)
         ? RM.header('Cache-Control', 'no-store, must-revalidate')
-        : user
-          ? RM.header('Cache-Control', 'no-cache, private')
-          : RM.header('Cache-Control', 'no-cache, public'),
+        : pipe(
+            user ? RM.header('Cache-Control', 'no-cache, private') : RM.header('Cache-Control', 'no-cache, public'),
+            RM.ichainFirst(() => RM.header('Vary', 'Cookie')),
+          ),
     ),
-    RM.ichainFirst(() => RM.header('Vary', 'Cookie')),
     RM.ichainFirst(() => RM.fromMiddleware(deleteFlashMessage)),
     RM.ichainFirst(() =>
       RM.fromMiddleware(

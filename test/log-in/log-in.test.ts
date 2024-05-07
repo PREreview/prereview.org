@@ -335,7 +335,6 @@ describe('authenticate', () => {
         E.right([
           { type: 'setStatus', status: Status.ServiceUnavailable },
           { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-          { type: 'setHeader', name: 'Vary', value: 'Cookie' },
           { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
           { type: 'setBody', body: page.toString() },
         ]),
@@ -426,7 +425,6 @@ describe('authenticateError', () => {
       E.right([
         { type: 'setStatus', status: Status.Forbidden },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Vary', value: 'Cookie' },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: page.toString() },
       ]),
@@ -454,7 +452,6 @@ describe('authenticateError', () => {
       E.right([
         { type: 'setStatus', status: Status.ServiceUnavailable },
         { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-        { type: 'setHeader', name: 'Vary', value: 'Cookie' },
         { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
         { type: 'setBody', body: page.toString() },
       ]),

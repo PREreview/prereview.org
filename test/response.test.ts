@@ -128,7 +128,6 @@ describe('handleResponse', () => {
               expect.arrayContaining([
                 { type: 'setStatus', status: response.status },
                 { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-                { type: 'setHeader', name: 'Vary', value: 'Cookie' },
                 { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
                 { type: 'setBody', body: page.toString() },
               ]),
@@ -310,7 +309,6 @@ describe('handleResponse', () => {
               expect.arrayContaining([
                 { type: 'setStatus', status: response.status },
                 { type: 'setHeader', name: 'Cache-Control', value: 'no-store, must-revalidate' },
-                { type: 'setHeader', name: 'Vary', value: 'Cookie' },
                 { type: 'setHeader', name: 'Content-Type', value: MediaType.textHTML },
                 { type: 'setBody', body: page.toString() },
               ]),
