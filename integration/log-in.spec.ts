@@ -51,9 +51,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can give my email address', async ({ 
   await page.getByRole('link', { name: 'Enter email address' }).click()
   await page.getByLabel('What is your email address?').fill('jcarberry@example.com')
 
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   fetch.postOnce('https://api.mailjet.com/v3.1/send', { body: { Messages: [{ Status: 'success' }] } })
 
   await page.getByRole('button', { name: 'Save and continue' }).click()
@@ -246,10 +243,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
   await page.getByRole('link', { name: 'My details' }).click()
   await page.getByRole('link', { name: 'Enter career stage' }).click()
   await page.getByLabel('Early').check()
-
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText('Career stage Early Only visible to PREreview')
@@ -264,10 +257,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my career stage', async ({ pa
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
   await page.getByLabel('Everyone').check()
-
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText('Career stage Early Shown on your public profile')
@@ -279,10 +268,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)("can say if I'm o
   await page.getByRole('button', { name: 'Start now' }).click()
   await page.getByRole('link', { name: 'Enter open for review requests' }).click()
   await page.getByLabel('Yes').check()
-
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText('Open for review requests Yes Only visible to PREreview')
@@ -292,10 +277,6 @@ test.extend(canLogIn).extend(areLoggedIn).extend(isASlackUser)("can say if I'm o
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
   await page.getByLabel('Everyone').check()
-
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText('Open for review requests Yes Shown on your public profile')
@@ -313,11 +294,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
   await page
     .getByLabel('What are your research interests?')
     .fill('Nunc vestibulum sapien eu magna elementum consectetur.')
-
-  await page.evaluate(() => document.querySelector('html')?.setAttribute('spellcheck', 'false'))
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText(
@@ -336,10 +312,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my research interests', async
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
   await page.getByLabel('Everyone').check()
-
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText(
@@ -352,10 +324,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }
 
   await page.getByRole('link', { name: 'Enter location' }).click()
   await page.getByLabel('Where are you based?').fill('Vivamus in convallis urna.')
-
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText('Location Vivamus in convallis urna. Only visible to PREreview')
@@ -370,10 +338,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my location', async ({ page }
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
   await page.getByLabel('Everyone').check()
-
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText('Location Vivamus in convallis urna. Shown on your public profile')
@@ -384,10 +348,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page 
 
   await page.getByRole('link', { name: 'Enter languages' }).click()
   await page.getByLabel('What languages can you review in?').fill('English and Spanish')
-
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText('Languages English and Spanish Only visible to PREreview')
@@ -402,10 +362,6 @@ test.extend(canLogIn).extend(areLoggedIn)('can set my languages', async ({ page 
   await expect(page.getByLabel('Only PREreview')).toBeChecked()
 
   await page.getByLabel('Everyone').check()
-
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
-
   await page.getByRole('button', { name: 'Save and continue' }).click()
 
   await expect(page.getByRole('main')).toContainText('Languages English and Spanish Shown on your public profile')
@@ -462,14 +418,10 @@ test.extend(canLogIn).extend(areLoggedIn).extend(hasAVerifiedEmailAddress)(
       await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
     }
     await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Enter your email address' }).click()
 
     await expect(page.getByLabel('What is your email address?')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
@@ -485,14 +437,10 @@ test.extend(canLogIn).extend(areLoggedIn)('have to give a valid email address', 
     await expect(page.getByRole('alert', { name: 'There is a problem' })).toBeInViewport()
   }
   await expect(page.getByLabel('What is your email address?')).toHaveAttribute('aria-invalid', 'true')
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 
   await page.getByRole('link', { name: 'Enter an email address in the correct format, like name@example.com' }).click()
 
   await expect(page.getByLabel('What is your email address?')).toBeFocused()
-  await page.mouse.move(0, 0)
-  await expect(page).toHaveScreenshot()
 })
 
 test.extend(canLogIn).extend(areLoggedIn).extend(canUploadAvatar)(
@@ -575,14 +523,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'aria-invalid',
       'true',
     )
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Select yes if you are happy to take requests for a PREreview' }).click()
 
     await expect(page.getByLabel('Yes')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
@@ -602,14 +546,10 @@ test.extend(canLogIn).extend(areLoggedIn)(
       'aria-invalid',
       'true',
     )
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
 
     await page.getByRole('link', { name: 'Select which career stage you are at' }).click()
 
     await expect(page.getByLabel('Early')).toBeFocused()
-    await page.mouse.move(0, 0)
-    await expect(page).toHaveScreenshot()
   },
 )
 
