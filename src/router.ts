@@ -59,7 +59,7 @@ import {
   connectSlackError,
   connectSlackStart,
 } from './connect-slack'
-import { disconnectSlack } from './disconnect-slack'
+import { disconnectSlack } from './disconnect-slack-page'
 import { ediaStatement } from './edia-statement'
 import {
   type SendEmailEnv,
