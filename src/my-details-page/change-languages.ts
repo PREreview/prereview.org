@@ -6,14 +6,14 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { P, match } from 'ts-pattern'
-import { html, plainText } from '../html'
+import { match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error'
-import { type Languages, deleteLanguages, getLanguages, saveLanguages } from '../languages'
-import { LogInResponse, PageResponse, RedirectResponse } from '../response'
-import { changeLanguagesMatch, myDetailsMatch } from '../routes'
+import { deleteLanguages, getLanguages, saveLanguages } from '../languages'
+import { LogInResponse, RedirectResponse } from '../response'
+import { myDetailsMatch } from '../routes'
 import { NonEmptyStringC } from '../types/string'
 import type { User } from '../user'
+import { createFormPage } from './change-languages-form-page'
 
 export type Env = EnvFor<ReturnType<typeof changeLanguages>>
 
@@ -76,31 +76,5 @@ const handleChangeLanguagesForm = ({ body, user }: { body: unknown; user: User }
         ),
     ),
   )
-
-function createFormPage(languages: O.Option<Languages>) {
-  return PageResponse({
-    title: plainText`What languages can you review in?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
-    main: html`
-      <form method="post" action="${format(changeLanguagesMatch.formatter, {})}" novalidate>
-        <h1><label for="languages">What languages can you review in?</label></h1>
-
-        <input
-          name="languages"
-          id="languages"
-          type="text"
-          ${match(languages)
-            .with({ value: { value: P.select() } }, languages => html`value="${languages}"`)
-            .when(O.isNone, () => '')
-            .exhaustive()}
-        />
-
-        <button>Save and continue</button>
-      </form>
-    `,
-    skipToLabel: 'form',
-    canonical: format(changeLanguagesMatch.formatter, {}),
-  })
-}
 
 type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

@@ -6,19 +6,14 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { P, match } from 'ts-pattern'
-import { html, plainText, rawHtml } from '../html'
+import { match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error'
-import {
-  type ResearchInterests,
-  deleteResearchInterests,
-  getResearchInterests,
-  saveResearchInterests,
-} from '../research-interests'
-import { LogInResponse, PageResponse, RedirectResponse } from '../response'
-import { changeResearchInterestsMatch, myDetailsMatch } from '../routes'
+import { deleteResearchInterests, getResearchInterests, saveResearchInterests } from '../research-interests'
+import { LogInResponse, RedirectResponse } from '../response'
+import { myDetailsMatch } from '../routes'
 import { NonEmptyStringC } from '../types/string'
 import type { User } from '../user'
+import { createFormPage } from './change-research-interests-form-page'
 
 export type Env = EnvFor<ReturnType<typeof changeResearchInterests>>
 
@@ -84,28 +79,5 @@ const handleChangeResearchInterestsForm = ({ body, user }: { body: unknown; user
         ),
     ),
   )
-
-function createFormPage(researchInterests: O.Option<ResearchInterests>) {
-  return PageResponse({
-    title: plainText`What are your research interests?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
-    main: html`
-      <form method="post" action="${format(changeResearchInterestsMatch.formatter, {})}" novalidate>
-        <h1><label for="research-interests">What are your research interests?</label></h1>
-
-        <textarea name="researchInterests" id="research-interests" rows="5">
-${match(researchInterests)
-            .with({ value: { value: P.select() } }, rawHtml)
-            .when(O.isNone, () => '')
-            .exhaustive()}</textarea
-        >
-
-        <button>Save and continue</button>
-      </form>
-    `,
-    skipToLabel: 'form',
-    canonical: format(changeResearchInterestsMatch.formatter, {}),
-  })
-}
 
 type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never

@@ -6,14 +6,14 @@ import * as RTE from 'fp-ts/ReaderTaskEither'
 import { flow, pipe } from 'fp-ts/function'
 import * as D from 'io-ts/Decoder'
 import { get } from 'spectacles-ts'
-import { P, match } from 'ts-pattern'
-import { html, plainText } from '../html'
+import { match } from 'ts-pattern'
 import { havingProblemsPage } from '../http-error'
-import { type Location, deleteLocation, getLocation, saveLocation } from '../location'
-import { LogInResponse, PageResponse, RedirectResponse } from '../response'
-import { changeLocationMatch, myDetailsMatch } from '../routes'
+import { deleteLocation, getLocation, saveLocation } from '../location'
+import { LogInResponse, RedirectResponse } from '../response'
+import { myDetailsMatch } from '../routes'
 import { NonEmptyStringC } from '../types/string'
 import type { User } from '../user'
+import { createFormPage } from './change-location-form-page'
 
 export type Env = EnvFor<ReturnType<typeof changeLocation>>
 
@@ -76,31 +76,5 @@ const handleChangeLocationForm = ({ body, user }: { body: unknown; user: User })
         ),
     ),
   )
-
-function createFormPage(location: O.Option<Location>) {
-  return PageResponse({
-    title: plainText`Where are you based?`,
-    nav: html`<a href="${format(myDetailsMatch.formatter, {})}" class="back">Back</a>`,
-    main: html`
-      <form method="post" action="${format(changeLocationMatch.formatter, {})}" novalidate>
-        <h1><label for="location">Where are you based?</label></h1>
-
-        <input
-          name="location"
-          id="location"
-          type="text"
-          ${match(location)
-            .with({ value: { value: P.select() } }, location => html`value="${location}"`)
-            .when(O.isNone, () => '')
-            .exhaustive()}
-        />
-
-        <button>Save and continue</button>
-      </form>
-    `,
-    skipToLabel: 'form',
-    canonical: format(changeLocationMatch.formatter, {}),
-  })
-}
 
 type EnvFor<T> = T extends Reader<infer R, unknown> ? R : never
