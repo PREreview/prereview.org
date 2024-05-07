@@ -3,12 +3,14 @@ import path from 'path'
 import { P, match } from 'ts-pattern'
 import { html } from '../src/html'
 import { page as templatePage } from '../src/page'
-import type { PageResponse, StreamlinePageResponse } from '../src/response'
+import type { PageResponse, StreamlinePageResponse, TwoUpPageResponse } from '../src/response'
 
 export { expect } from '@playwright/test'
 
 interface ShowPage {
-  showPage: (response: PageResponse | StreamlinePageResponse) => Promise<Locator>
+  showPage(response: PageResponse | StreamlinePageResponse): Promise<Locator>
+
+  showTwoUpPage(response: TwoUpPageResponse): Promise<[Locator, Locator]>
 }
 
 export const test = baseTest.extend<ShowPage>({
@@ -56,6 +58,36 @@ export const test = baseTest.extend<ShowPage>({
       }
 
       return page.locator('.contents')
+    })
+  },
+  showTwoUpPage: async ({ page }, use) => {
+    await use(async response => {
+      const content = html`
+        <h1 class="visually-hidden">${response.h1}</h1>
+
+        <aside id="preprint-details" tabindex="0" aria-label="Preprint details">${response.aside}</aside>
+
+        <main id="prereviews">${response.main}</main>
+      `
+
+      const pageHtml = templatePage({
+        content,
+        title: response.title,
+        type: 'two-up',
+      })({})
+
+      await page.setContent(pageHtml.toString())
+
+      const viewportSize = page.viewportSize()
+
+      if (viewportSize) {
+        const height = await page.evaluate(() => document.documentElement.scrollHeight).then(Math.ceil)
+        await page.setViewportSize({ width: viewportSize.width, height })
+        await page.waitForLoadState('networkidle')
+        await page.setViewportSize(viewportSize)
+      }
+
+      return [page.locator('.contents > main'), page.locator('.contents > aside')] as const
     })
   },
 })
