@@ -58,7 +58,7 @@ import {
   connectSlackCode,
   connectSlackError,
   connectSlackStart,
-} from './connect-slack'
+} from './connect-slack-page'
 import { disconnectSlack } from './disconnect-slack-page'
 import { ediaStatement } from './edia-statement'
 import {
